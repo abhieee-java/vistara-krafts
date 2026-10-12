@@ -20,7 +20,7 @@
   /* 10% High-RT Conversion & Romantic Accents (Antique Brass & Rose Terracotta) */
   --accent-10-brass: #b08d57;
   --accent-10-gold: #775928;
-  --accent-10-flirty: #c85a48;
+  --accent-10-flirty: #9e3322;
   --accent-10-rose-soft: #ffe4de;
   --accent-10-emerald: #266b4e;
 
@@ -45,8 +45,55 @@ body {
   padding: 0;
   background-color: var(--surface-60-canvas);
   color: var(--structure-30-ink);
-  font-family: 'Plus Jakarta Sans', 'Inter', system-ui, -apple-system, sans-serif;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
   overflow-x: hidden;
+}
+
+body.modal-open {
+  overflow: hidden !important;
+}
+
+/* Accessible 2px Focus Ring with Offset (Brand Antique Brass) */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+summary:focus-visible,
+[tabindex]:focus-visible {
+  outline: 2px solid var(--accent-10-brass) !important;
+  outline-offset: 2px !important;
+}
+
+/* Prevent iOS Safari Auto-Zoom on Mobile Inputs (< 640px requires >= 16px) */
+@media (max-width: 639px) {
+  input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+  select,
+  textarea {
+    font-size: 16px !important;
+  }
+}
+
+/* Material Symbols Outlined Containment — prevents FOUT ligature expansion */
+.material-symbols-outlined {
+  font-family: 'Material Symbols Outlined';
+  font-weight: normal;
+  font-style: normal;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1em;
+  height: 1em;
+  overflow: hidden;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  flex-shrink: 0;
+  user-select: none;
+  -webkit-font-smoothing: antialiased;
 }
 
 /* Tabular Figures for Pricing & Formulation Metrics (DESIGN.md Mandate) */
@@ -58,9 +105,13 @@ table td {
   font-variant-numeric: tabular-nums;
 }
 
-h1, h2, h3, .font-serif-editorial {
+h1, h2, h3, .font-serif-editorial, .font-serif {
   font-family: 'Playfair Display', Georgia, serif;
   text-wrap: balance;
+}
+
+p {
+  max-width: 68ch;
 }
 
 /* Hide scrollbars on horizontal rails while keeping scrollability */

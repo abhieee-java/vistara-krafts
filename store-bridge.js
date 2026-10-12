@@ -927,7 +927,7 @@
     },
 
     getProductById(id) {
-      const aliasMap = { 'potry-sienna-pitcher': 'potry-sienna-01' };
+      const aliasMap = { 'potry-sienna-pitcher': 'potry-sienna-01', 'vk-dom-101': 'vk-res-003' };
       const resolvedId = aliasMap[id] || id;
       const list = this.getProducts();
       return list.find(p => p.id === resolvedId) || list[0];

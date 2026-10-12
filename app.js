@@ -69,6 +69,43 @@
     return '₹' + val.toLocaleString('en-IN');
   }
 
+  // Modal Scroll-Lock & Accessibility Helpers
+  const MODAL_IDS = [
+    'mobile-menu-drawer',
+    'global-filter-drawer',
+    'story-viewer-modal',
+    'lightbox-modal',
+    'tds-spec-modal',
+    'share-memory-modal',
+    'checkout-modal',
+    'global-pincode-modal'
+  ];
+
+  function syncBodyModalLock() {
+    if (typeof document === 'undefined' || !document.body) return;
+    const anyOpen = MODAL_IDS.some(id => {
+      const el = document.getElementById(id);
+      return el && !el.classList.contains('hidden');
+    });
+    document.body.classList.toggle('modal-open', anyOpen);
+  }
+
+  window.openModalById = function (id) {
+    const el = document.getElementById(id);
+    if (el) {
+      el.classList.remove('hidden');
+      syncBodyModalLock();
+    }
+  };
+
+  window.closeModalById = function (id) {
+    const el = document.getElementById(id);
+    if (el) {
+      el.classList.add('hidden');
+      syncBodyModalLock();
+    }
+  };
+
   // Toast Notification System
   let toastTimer = null;
   window.showToast = function (message, subtitle = '') {
@@ -164,6 +201,7 @@
     renderActiveView();
     updateNavHighlight();
     updateGlobalBadges();
+    syncBodyModalLock();
   }
 
   function updateNavHighlight() {
@@ -194,24 +232,24 @@
 
     if (isListView) {
       return `
-        <article class="ram-card p-3.5 flex flex-row gap-4 items-center group" data-product-id="${esc(p.id)}">
-          <div class="relative w-28 h-28 sm:w-36 sm:h-36 rounded-xl bg-surface-container-low overflow-hidden shrink-0 cursor-pointer" onclick="window.navigateTo('product', '${esc(p.id)}')">
+        <article class="ram-card p-3.5 flex flex-col sm:flex-row gap-4 items-start sm:items-center group" data-product-id="${esc(p.id)}">
+          <div class="relative w-full sm:w-36 h-44 sm:h-36 rounded-xl bg-surface-container-low overflow-hidden shrink-0 cursor-pointer" onclick="window.navigateTo('product', '${esc(p.id)}')">
             <img src="${esc(p.image)}" alt="${esc(p.name)}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" loading="lazy">
-            <span class="absolute top-2 left-2 px-2 py-0.5 rounded-full bg-primary text-on-primary text-[10px] font-semibold uppercase">${esc(p.badge)}</span>
+            <span class="absolute top-2 left-2 max-w-[calc(100%-1rem)] truncate px-2.5 py-0.5 rounded-full bg-primary text-on-primary text-[10px] font-semibold uppercase">${esc(p.badge)}</span>
           </div>
-          <div class="flex-1 min-w-0 flex flex-col justify-between gap-2">
+          <div class="flex-1 min-w-0 w-full flex flex-col justify-between gap-2">
             <div>
               <div class="flex items-center justify-between gap-2">
                 <div class="flex items-center gap-1 text-xs text-secondary">
-                  <span class="material-symbols-outlined text-[14px]" style="font-variation-settings: 'FILL' 1;">star</span>
+                  <span class="material-symbols-outlined text-[14px]" style="font-variation-settings: 'FILL' 1;" aria-hidden="true">star</span>
                   <span class="font-spec-numeral font-bold text-primary">${p.rating.toFixed(1)}</span>
                   <span class="text-outline font-spec-numeral">(${p.reviewsCount})</span>
                 </div>
-                <button type="button" aria-label="Toggle Wishlist" onclick="window.handleWishlistToggle(event, '${esc(p.id)}')" class="w-8 h-8 rounded-full bg-surface-container-low flex items-center justify-center ${isFav ? 'text-[#c85a48]' : 'text-primary'} hover:scale-110 transition-transform">
-                  <span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' ${isFav ? 1 : 0};">${isFav ? 'favorite' : 'favorite_border'}</span>
+                <button type="button" aria-label="Toggle Wishlist" onclick="window.handleWishlistToggle(event, '${esc(p.id)}')" class="w-11 h-11 rounded-full bg-surface-container-low flex items-center justify-center ${isFav ? 'text-[#9e3322]' : 'text-primary'} hover:scale-105 transition-transform cursor-pointer">
+                  <span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' ${isFav ? 1 : 0};" aria-hidden="true">${isFav ? 'favorite' : 'favorite_border'}</span>
                 </button>
               </div>
-              <h3 class="font-headline-sm text-base text-primary font-semibold cursor-pointer hover:text-secondary transition-colors line-clamp-1" onclick="window.navigateTo('product', '${esc(p.id)}')">${esc(p.name)}</h3>
+              <h2 class="font-headline-sm text-base text-primary font-semibold cursor-pointer hover:text-secondary transition-colors line-clamp-1" onclick="window.navigateTo('product', '${esc(p.id)}')">${esc(p.name)}</h2>
               <p class="text-xs text-on-surface-variant line-clamp-2 mt-0.5">${esc(p.subtitle)}</p>
               <div class="flex flex-wrap gap-1.5 mt-2">
                 <span class="px-2 py-0.5 rounded bg-surface-container-high text-primary font-spec-numeral text-[11px]">Ratio: ${esc(p.ratio)}</span>
@@ -219,16 +257,16 @@
                 <span class="px-2 py-0.5 rounded bg-surface-container-high text-on-surface-variant font-spec-numeral text-[11px]">${esc(p.unitPriceLabel)}</span>
               </div>
             </div>
-            <div class="flex items-center justify-between pt-2 border-t border-surface-container">
+            <div class="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-surface-container">
               <div class="flex items-baseline gap-2">
                 <span class="font-spec-numeral text-lg font-bold text-primary">${formatINR(p.price)}</span>
                 <span class="font-spec-numeral text-xs text-outline line-through">${formatINR(p.regularPrice)}</span>
-                ${discountPct > 0 ? `<span class="text-[11px] font-bold text-[#c85a48]">${discountPct}% OFF</span>` : ''}
+                ${discountPct > 0 ? `<span class="text-[11px] font-bold text-[#9e3322]">${discountPct}% OFF</span>` : ''}
               </div>
               <div class="flex items-center gap-2">
-                <button type="button" onclick="window.navigateTo('product', '${esc(p.id)}')" class="px-3 py-2 rounded-lg border border-primary text-primary text-xs font-semibold hover:bg-surface-container-high transition-colors">Specs</button>
-                <button type="button" onclick="window.handleQuickAdd(this, '${esc(p.id)}')" class="px-4 py-2 rounded-lg bg-primary text-on-primary text-xs font-semibold flex items-center gap-1 hover:bg-primary-container active:scale-95 transition-all">
-                  <span class="material-symbols-outlined text-sm">add_shopping_cart</span>
+                <button type="button" onclick="window.navigateTo('product', '${esc(p.id)}')" class="min-h-[44px] px-3.5 py-2 rounded-lg border border-primary text-primary text-xs font-semibold hover:bg-surface-container-high transition-colors cursor-pointer">Specs</button>
+                <button type="button" onclick="window.handleQuickAdd(this, '${esc(p.id)}')" class="min-h-[44px] px-4 py-2 rounded-lg bg-primary text-on-primary text-xs font-semibold flex items-center gap-1.5 hover:bg-primary-container active:scale-95 transition-all cursor-pointer">
+                  <span class="material-symbols-outlined text-sm" aria-hidden="true">add_shopping_cart</span>
                   <span>Quick Add</span>
                 </button>
               </div>
@@ -240,46 +278,46 @@
 
     return `
       <article class="ram-card p-2.5 sm:p-3 flex flex-col justify-between relative group h-full" data-product-id="${esc(p.id)}" data-price="${p.price}" data-ratio="${esc(p.ratio)}">
-        <button type="button" aria-label="Save to Wishlist" onclick="window.handleWishlistToggle(event, '${esc(p.id)}')" class=" absolute top-4 right-4 z-10 w-8 h-8 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center ${isFav ? 'text-[#c85a48]' : 'text-primary'} shadow-sm hover:scale-110 active:scale-90 transition-transform">
-          <span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' ${isFav ? 1 : 0};">${isFav ? 'favorite' : 'favorite_border'}</span>
+        <button type="button" aria-label="Save to Wishlist" onclick="window.handleWishlistToggle(event, '${esc(p.id)}')" class="absolute top-3.5 right-3.5 z-10 w-11 h-11 rounded-full bg-white/95 backdrop-blur-sm flex items-center justify-center ${isFav ? 'text-[#9e3322]' : 'text-primary'} shadow-sm hover:scale-105 active:scale-95 transition-transform cursor-pointer">
+          <span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' ${isFav ? 1 : 0};" aria-hidden="true">${isFav ? 'favorite' : 'favorite_border'}</span>
         </button>
         <div>
           <div class="relative w-full aspect-square rounded-xl bg-surface-container-low overflow-hidden mb-2.5 cursor-pointer" onclick="window.navigateTo('product', '${esc(p.id)}')">
-            <img src="${esc(p.image)}" alt="${esc(p.name)}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" loading="lazy">
-            <div class="absolute top-2.5 left-2.5 flex flex-col gap-1">
-              <span class="px-2.5 py-0.5 rounded-full bg-primary/90 backdrop-blur-xs text-on-primary font-label-sm text-[10px] uppercase font-semibold tracking-wider shadow-xs">${esc(p.badge)}</span>
+            <img src="${esc(p.image)}" alt="${esc(p.name)}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
+            <div class="absolute top-2.5 left-2.5 max-w-[calc(100%-3.75rem)] flex flex-col gap-1">
+              <span class="px-2.5 py-0.5 rounded-full bg-primary/95 backdrop-blur-xs text-on-primary font-label-sm text-[10px] uppercase font-semibold tracking-wider shadow-xs truncate block">${esc(p.badge)}</span>
             </div>
-            <div class="absolute bottom-0 inset-x-0 bg-gradient-to-t from-primary/80 via-primary/30 to-transparent px-2.5 py-1.5 flex items-center justify-between text-[11px] font-spec-numeral text-white">
-              <span>${p.category === 'keepsakes' ? 'Custom Keepsake' : 'Ratio ' + esc(p.ratio)}</span>
-              <span>Depth ${esc(p.pourDepth)}</span>
+            <div class="absolute bottom-0 inset-x-0 bg-primary/90 bg-gradient-to-t from-primary/95 via-primary/85 to-primary/75 px-2.5 py-1.5 flex items-center justify-between gap-1 text-[11px] font-spec-numeral text-white">
+              <span class="truncate">${p.category === 'keepsakes' ? 'Custom Keepsake' : 'Ratio ' + esc(p.ratio)}</span>
+              <span class="shrink-0">Depth ${esc(p.pourDepth)}</span>
             </div>
           </div>
           <div class="flex items-center justify-between gap-1 mb-1">
             <div class="flex items-center gap-1">
-              <span class="material-symbols-outlined text-secondary text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+              <span class="material-symbols-outlined text-secondary text-sm" style="font-variation-settings: 'FILL' 1;" aria-hidden="true">star</span>
               <span class="font-spec-numeral text-xs text-primary font-semibold">${p.rating.toFixed(1)}</span>
               <span class="font-spec-numeral text-[11px] text-outline">(${p.reviewsCount})</span>
             </div>
-            ${discountPct > 0 ? `<span class="font-spec-numeral text-[10px] font-bold px-1.5 py-0.5 rounded bg-[#ffe4de] text-[#c85a48]">${discountPct}% OFF</span>` : ''}
+            ${discountPct > 0 ? `<span class="font-spec-numeral text-[10px] font-bold px-1.5 py-0.5 rounded bg-[#ffe4de] text-[#9e3322]">${discountPct}% OFF</span>` : ''}
           </div>
-          <h3 class="font-title-md text-[14px] sm:text-[15px] leading-snug text-primary font-semibold line-clamp-2 min-h-[2.5rem] cursor-pointer hover:text-secondary transition-colors" onclick="window.navigateTo('product', '${esc(p.id)}')">
+          <h2 class="font-title-md text-[14px] sm:text-[15px] leading-snug text-primary font-semibold line-clamp-2 min-h-[2.5rem] cursor-pointer hover:text-secondary transition-colors" onclick="window.navigateTo('product', '${esc(p.id)}')">
             ${esc(p.shortName || p.name)}
-          </h3>
+          </h2>
           <div class="flex flex-wrap gap-1 mt-1.5">
             <span class="px-1.5 py-0.5 rounded bg-surface-container-high text-on-surface-variant font-label-sm text-[10px]">${esc(p.unitPriceLabel)}</span>
             <span class="px-1.5 py-0.5 rounded bg-secondary-container/40 text-on-secondary-container font-label-sm text-[10px]">${p.isCustomizable ? '✨ Personalizable' : 'Lab Certified'}</span>
           </div>
         </div>
-        <div class="pt-2.5 mt-2 border-t border-surface-container flex flex-col gap-2">
-          <div class="flex items-baseline justify-between">
+        <div class="pt-2.5 mt-2 border-t border-surface-container flex flex-col gap-1.5">
+          <div class="flex items-center justify-between">
             <div class="flex items-baseline gap-1.5">
               <span class="font-spec-numeral text-base sm:text-lg text-primary font-bold">${formatINR(p.price)}</span>
               <span class="font-spec-numeral text-[11px] text-outline line-through">${formatINR(p.regularPrice)}</span>
             </div>
-            <button type="button" onclick="window.navigateTo('product', '${esc(p.id)}')" class="text-[11px] font-semibold text-secondary hover:underline">Details</button>
+            <button type="button" onclick="window.navigateTo('product', '${esc(p.id)}')" class="min-h-[44px] px-2 inline-flex items-center text-xs font-semibold text-secondary hover:underline cursor-pointer">Details</button>
           </div>
-          <button type="button" onclick="window.handleQuickAdd(this, '${esc(p.id)}')" class="w-full h-9 sm:h-10 rounded-lg bg-primary hover:bg-primary-container text-on-primary font-label-md text-xs font-semibold flex items-center justify-center gap-1.5 active:scale-[0.98] transition-all shadow-xs">
-            <span class="material-symbols-outlined text-base">add_shopping_cart</span>
+          <button type="button" onclick="window.handleQuickAdd(this, '${esc(p.id)}')" class="w-full h-11 rounded-xl bg-primary hover:bg-primary-container text-on-primary font-label-md text-xs font-semibold flex items-center justify-center gap-1.5 active:scale-[0.98] transition-all shadow-xs cursor-pointer">
+            <span class="material-symbols-outlined text-base" aria-hidden="true">add_shopping_cart</span>
             <span>Quick Add</span>
           </button>
         </div>
@@ -300,14 +338,14 @@
       <div class="route-view-enter flex flex-col w-full max-w-7xl mx-auto">
         <!-- Shoppable Instagram Stories Rail (@resin.art.memories) -->
         <section class="px-4 sm:px-8 pt-4 pb-3 bg-surface border-b border-[#e4e0d8]/70">
-          <div class="flex items-center justify-between mb-2.5">
+          <div class="flex items-center justify-between mb-2">
             <div class="flex items-center gap-2">
-              <span class="w-2 h-2 rounded-full bg-[#c85a48] animate-pulse"></span>
+              <span class="w-2 h-2 rounded-full bg-[#9e3322] animate-pulse"></span>
               <span class="font-label-sm text-xs uppercase tracking-wider text-primary font-bold">Live from @resin.art.memories</span>
             </div>
-            <a href="https://www.instagram.com/resin.art.memories?utm_source=qr" target="_blank" rel="noopener noreferrer" class="text-xs font-semibold text-[#c85a48] hover:underline flex items-center gap-1">
+            <a href="https://www.instagram.com/resin.art.memories?utm_source=qr" target="_blank" rel="noopener noreferrer" class="min-h-[44px] text-xs font-semibold text-[#9e3322] hover:underline inline-flex items-center gap-1">
               <span>Open Instagram</span>
-              <span class="material-symbols-outlined text-sm">open_in_new</span>
+              <span class="material-symbols-outlined text-sm" aria-hidden="true">open_in_new</span>
             </a>
           </div>
           <div class="flex items-center gap-4 overflow-x-auto no-scrollbar pb-1">
@@ -341,13 +379,13 @@
           <div class="relative grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
             <!-- Hero Left Column (7 cols) -->
             <div class="lg:col-span-7 flex flex-col items-start gap-4">
-              <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#ffe4de] text-[#9e3828] border border-[#c85a48]/20 shadow-2xs">
-                <span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">favorite</span>
+              <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#ffe4de] text-[#9e3322] border border-[#9e3322]/20 shadow-2xs">
+                <span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;" aria-hidden="true">favorite</span>
                 <span class="font-label-sm text-xs uppercase tracking-wider font-bold">Resin Art Memories × Vistāra Krafts Studio</span>
               </div>
 
               <h1 class="font-headline-lg text-3xl sm:text-5xl text-primary font-bold tracking-tight leading-[1.12]">
-                Hold Your Most Intimate Memories in <span class="italic text-[#c85a48] font-serif">Liquid Glass</span>.
+                Hold Your Most Intimate Memories in <span class="italic text-[#9e3322] font-serif">Liquid Glass</span>.
               </h1>
 
               <p class="font-body-lg text-sm sm:text-base text-on-surface-variant max-w-xl leading-relaxed">
@@ -358,10 +396,10 @@
               <div class="flex flex-col sm:flex-row w-full sm:w-auto gap-3 pt-1">
                 <button type="button" onclick="window.navigateTo('catalog', 'all')" class="btn-shimmer h-12 px-7 rounded-xl bg-primary hover:bg-primary-container text-on-primary font-title-md text-sm font-semibold flex items-center justify-center gap-2 shadow-md active:scale-[0.98] transition-all cursor-pointer">
                   <span>Shop Keepsakes &amp; Epoxy Kits</span>
-                  <span class="material-symbols-outlined text-lg">arrow_forward</span>
+                  <span class="material-symbols-outlined text-lg" aria-hidden="true">arrow_forward</span>
                 </button>
                 <button type="button" onclick="window.navigateTo('custom-studio')" class="h-12 px-6 rounded-xl bg-white hover:bg-[#fdf6f3] text-primary border border-[#b08d57] font-title-md text-sm font-semibold flex items-center justify-center gap-2 shadow-xs active:scale-[0.98] transition-all cursor-pointer">
-                  <span class="material-symbols-outlined text-lg text-[#c85a48]">auto_awesome</span>
+                  <span class="material-symbols-outlined text-lg text-[#9e3322]" aria-hidden="true">auto_awesome</span>
                   <span>Custom Floral Preservation &amp; Calculator</span>
                 </button>
               </div>
@@ -371,8 +409,8 @@
                 <div class="rounded-xl bg-white/90 border border-[#e4e0d8] p-3 flex items-center gap-3 shadow-2xs">
                   <img src="${esc(Store.IMAGES.floralCube)}" alt="Preserved Bridal Roses" class="w-12 h-12 rounded-lg object-cover shrink-0">
                   <div class="min-w-0">
-                    <div class="flex items-center gap-1 text-[#c85a48] font-label-sm text-[11px] uppercase font-bold">
-                      <span class="material-symbols-outlined text-sm">local_florist</span>
+                    <div class="flex items-center gap-1 text-[#9e3322] font-label-sm text-[11px] uppercase font-bold">
+                      <span class="material-symbols-outlined text-sm" aria-hidden="true">local_florist</span>
                       <span>Pan-India Varmala Pickup</span>
                     </div>
                     <p class="text-xs text-on-surface truncate">Doorstep flower pickup in 24h across 19,000+ PINs</p>
@@ -382,7 +420,7 @@
                   <img src="${esc(Store.IMAGES.ultraclearThumb2)}" alt="Optical Clarity Test Disc" class="w-12 h-12 rounded-lg object-cover shrink-0">
                   <div class="min-w-0">
                     <div class="flex items-center gap-1 text-secondary font-label-sm text-[11px] uppercase font-bold">
-                      <span class="material-symbols-outlined text-sm">verified</span>
+                      <span class="material-symbols-outlined text-sm" aria-hidden="true">verified</span>
                       <span>99.4% Optical Transmission</span>
                     </div>
                     <p class="text-xs text-on-surface truncate">ASTM D1003 HALS UV-shielded non-yellowing resin</p>
@@ -395,23 +433,23 @@
             <div class="lg:col-span-5">
               <div class="relative rounded-2xl overflow-hidden shadow-xl border border-[#b08d57]/40 bg-primary group cursor-pointer" onclick="window.navigateTo('product', 'ram-keep-001')">
                 <div class="aspect-[4/4] sm:aspect-[4/3] lg:aspect-[4/4] w-full overflow-hidden">
-                  <img src="${esc(Store.IMAGES.floralCube)}" alt="Bridal Bouquet Preserved in Crystal Clear Resin" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+                  <img src="${esc(Store.IMAGES.floralCube)}" alt="Bridal Bouquet Preserved in Crystal Clear Resin" class="w-full h-full object-cover object-center scale-[1.22] group-hover:scale-[1.26] transition-transform duration-700">
                 </div>
-                <div class="absolute inset-0 bg-gradient-to-t from-primary/90 via-primary/25 to-transparent flex flex-col justify-end p-5 text-white">
+                <div class="absolute inset-x-0 bottom-0 bg-primary/90 bg-gradient-to-t from-primary via-primary/95 to-primary/70 flex flex-col justify-end p-5 text-white">
                   <div class="flex items-center justify-between gap-2 mb-1">
-                    <span class="px-2.5 py-0.5 rounded-full bg-[#c85a48] text-white text-[10px] font-bold uppercase tracking-wider">Most Loved on @resin.art.memories</span>
-                    <span class="font-spec-numeral text-xs bg-black/40 backdrop-blur-xs px-2.5 py-0.5 rounded-full">★ 5.0 (418)</span>
+                    <span class="px-2.5 py-0.5 rounded-full bg-[#9e3322] text-white text-[10px] font-bold uppercase tracking-wider truncate">Most Loved on @resin.art.memories</span>
+                    <span class="font-spec-numeral text-xs bg-black/50 backdrop-blur-xs px-2.5 py-0.5 rounded-full shrink-0">★ 5.0 (418)</span>
                   </div>
                   <h2 class="font-headline-sm text-xl sm:text-2xl font-bold">Eternal Varmala &amp; Rose Keepsake Block</h2>
-                  <p class="text-xs text-white/85 mt-1">Includes silica-gel cryo-drying, 24K gold leaf &amp; couple name engraving</p>
+                  <p class="text-xs text-white/90 mt-1">Includes silica-gel cryo-drying, 24K gold leaf &amp; couple name engraving</p>
                   <div class="mt-3 pt-3 border-t border-white/15 flex items-center justify-between">
                     <div>
                       <span class="font-spec-numeral text-xl font-bold text-[#ffd79b]">₹4,499</span>
-                      <span class="font-spec-numeral text-xs line-through text-white/60 ml-1.5">₹5,499</span>
+                      <span class="font-spec-numeral text-xs line-through text-white/80 ml-1.5">₹5,499</span>
                     </div>
-                    <span class="inline-flex items-center gap-1 text-xs font-semibold bg-white text-primary px-3.5 py-2 rounded-lg">
+                    <span class="inline-flex items-center gap-1 min-h-[44px] text-xs font-semibold bg-white text-primary px-3.5 py-2 rounded-lg">
                       <span>Customize Piece</span>
-                      <span class="material-symbols-outlined text-sm">arrow_forward</span>
+                      <span class="material-symbols-outlined text-sm" aria-hidden="true">arrow_forward</span>
                     </span>
                   </div>
                 </div>
@@ -426,8 +464,8 @@
           <div class="lg:col-span-7 ram-card p-5 flex flex-col justify-between gap-4 bg-gradient-to-r from-white to-[#fdf6f3]">
             <div class="flex items-start justify-between gap-2">
               <div>
-                <div class="flex items-center gap-1.5 text-[#c85a48] font-label-sm text-[11px] uppercase tracking-wider font-bold">
-                  <span class="material-symbols-outlined text-base">psychology</span>
+                <div class="flex items-center gap-1.5 text-[#9e3322] font-label-sm text-[11px] uppercase tracking-wider font-bold">
+                  <span class="material-symbols-outlined text-base" aria-hidden="true">psychology</span>
                   <span>First-User Research Guided Matcher</span>
                 </div>
                 <h2 class="font-headline-sm text-lg sm:text-xl text-primary font-bold mt-0.5">What are you creating or preserving today?</h2>
@@ -437,27 +475,27 @@
             </div>
 
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5" id="persona-quiz-options">
-              <button type="button" onclick="window.selectPersonaGoal('preserve')" class="p-3 rounded-xl border ${AppState.quizAnswers.goal === 'preserve' ? 'border-[#c85a48] bg-[#ffe4de]/50 ring-2 ring-[#c85a48]/30' : 'border-[#e4e0d8] bg-white'} text-left hover:border-secondary transition-all cursor-pointer">
+              <button type="button" onclick="window.selectPersonaGoal('preserve')" class="p-3 rounded-xl border ${AppState.quizAnswers.goal === 'preserve' ? 'border-[#9e3322] bg-[#ffe4de]/50 ring-2 ring-[#9e3322]/30' : 'border-[#e4e0d8] bg-white'} text-left hover:border-secondary transition-all cursor-pointer">
                 <div class="flex items-center justify-between mb-1">
-                  <span class="material-symbols-outlined text-[#c85a48]">local_florist</span>
+                  <span class="material-symbols-outlined text-[#9e3322]" aria-hidden="true">local_florist</span>
                   <span class="text-[10px] font-bold uppercase text-secondary">Bride / Gift</span>
                 </div>
                 <p class="font-title-md text-xs font-bold text-primary">Preserve My Flowers</p>
                 <p class="text-[11px] text-on-surface-variant mt-0.5">Wedding varmala, bouquet or memorial block</p>
               </button>
 
-              <button type="button" onclick="window.selectPersonaGoal('decor')" class="p-3 rounded-xl border ${AppState.quizAnswers.goal === 'decor' ? 'border-[#c85a48] bg-[#ffe4de]/50 ring-2 ring-[#c85a48]/30' : 'border-[#e4e0d8] bg-white'} text-left hover:border-secondary transition-all cursor-pointer">
+              <button type="button" onclick="window.selectPersonaGoal('decor')" class="p-3 rounded-xl border ${AppState.quizAnswers.goal === 'decor' ? 'border-[#9e3322] bg-[#ffe4de]/50 ring-2 ring-[#9e3322]/30' : 'border-[#e4e0d8] bg-white'} text-left hover:border-secondary transition-all cursor-pointer">
                 <div class="flex items-center justify-between mb-1">
-                  <span class="material-symbols-outlined text-secondary">diamond</span>
+                  <span class="material-symbols-outlined text-secondary" aria-hidden="true">diamond</span>
                   <span class="text-[10px] font-bold uppercase text-secondary">Collector</span>
                 </div>
                 <p class="font-title-md text-xs font-bold text-primary">Buy Ready Resin Art</p>
                 <p class="text-[11px] text-on-surface-variant mt-0.5">Ocean trays, geode wall art &amp; brass coasters</p>
               </button>
 
-              <button type="button" onclick="window.selectPersonaGoal('diy')" class="p-3 rounded-xl border ${AppState.quizAnswers.goal === 'diy' ? 'border-[#c85a48] bg-[#ffe4de]/50 ring-2 ring-[#c85a48]/30' : 'border-[#e4e0d8] bg-white'} text-left hover:border-secondary transition-all cursor-pointer">
+              <button type="button" onclick="window.selectPersonaGoal('diy')" class="p-3 rounded-xl border ${AppState.quizAnswers.goal === 'diy' ? 'border-[#9e3322] bg-[#ffe4de]/50 ring-2 ring-[#9e3322]/30' : 'border-[#e4e0d8] bg-white'} text-left hover:border-secondary transition-all cursor-pointer">
                 <div class="flex items-center justify-between mb-1">
-                  <span class="material-symbols-outlined text-primary">science</span>
+                  <span class="material-symbols-outlined text-primary" aria-hidden="true">science</span>
                   <span class="text-[10px] font-bold uppercase text-secondary">Resin Artist</span>
                 </div>
                 <p class="font-title-md text-xs font-bold text-primary">DIY Epoxy &amp; Molds</p>
@@ -473,12 +511,12 @@
           <!-- Right: Live Pan-India Transit & Floral Pickup Checker (5 cols) -->
           <div class="lg:col-span-5 ram-card p-5 flex flex-col justify-between gap-3 bg-white">
             <div>
-              <div class="flex items-center justify-between">
+              <div class="flex items-center justify-between gap-2">
                 <div class="flex items-center gap-2">
-                  <span class="material-symbols-outlined text-primary text-xl">local_shipping</span>
-                  <h3 class="font-title-md text-base text-primary font-bold">Pan-India Transit &amp; Pickup Check</h3>
+                  <span class="material-symbols-outlined text-primary text-xl" aria-hidden="true">local_shipping</span>
+                  <h2 class="font-title-md text-base text-primary font-bold">Pan-India Transit &amp; Pickup Check</h2>
                 </div>
-                <span class="font-label-sm text-[11px] text-secondary px-2.5 py-0.5 rounded-full bg-secondary-container/40 font-semibold">Air &amp; Surface Cargo</span>
+                <span class="font-label-sm text-[11px] text-secondary px-2.5 py-0.5 rounded-full bg-secondary-container/40 font-semibold shrink-0">Air &amp; Surface Cargo</span>
               </div>
               <p class="text-xs text-on-surface-variant mt-1">
                 Verify expedited courier dispatch &amp; 24-hour bridal flower pickup via BlueDart, Delhivery &amp; DTDC:
@@ -486,14 +524,15 @@
             </div>
 
             <form class="flex gap-2" onsubmit="event.preventDefault(); window.submitHomePincode();">
-              <input id="home-pincode-input" type="text" maxlength="6" value="${esc(pinInfo.pin)}" placeholder="Enter 6-digit PIN (e.g. 560001)" class="flex-1 h-11 px-3.5 rounded-lg bg-surface-container-low border border-[#e4e0d8] font-spec-numeral text-sm text-primary focus:outline-none focus:border-primary">
-              <button type="submit" class="h-11 px-5 rounded-lg bg-primary hover:bg-primary-container text-on-primary font-label-md text-xs font-semibold shrink-0 active:scale-95 transition-transform cursor-pointer">
+              <label for="home-pincode-input" class="sr-only">Enter 6-digit PIN code</label>
+              <input id="home-pincode-input" type="text" maxlength="6" aria-label="Enter 6-digit PIN code" value="${esc(pinInfo.pin)}" placeholder="Enter 6-digit PIN (e.g. 560001)" class="min-w-0 flex-1 h-12 px-3.5 rounded-lg bg-surface-container-low border border-[#e4e0d8] font-spec-numeral text-sm text-primary">
+              <button type="submit" class="h-12 px-5 rounded-lg bg-primary hover:bg-primary-container text-on-primary font-label-md text-xs font-semibold shrink-0 active:scale-95 transition-transform cursor-pointer">
                 Verify PIN
               </button>
             </form>
 
             <div id="home-pincode-result" class="p-3 rounded-lg bg-surface-container-low flex items-start gap-2 text-xs">
-              <span class="material-symbols-outlined text-base text-[#266b4e] shrink-0 mt-0.5">check_circle</span>
+              <span class="material-symbols-outlined text-base text-[#266b4e] shrink-0 mt-0.5" aria-hidden="true">check_circle</span>
               <span id="home-pincode-msg" class="text-primary leading-relaxed">
                 <strong>PIN ${esc(pinInfo.pin)} (${esc(pinInfo.city)})</strong> — Express Delivery in <strong>${esc(pinInfo.days)}</strong> via ${esc(pinInfo.courier)}. Doorstep Floral Pickup &amp; COD active.
               </span>
@@ -508,9 +547,9 @@
               <span class="font-label-sm text-[11px] uppercase tracking-widest text-secondary font-bold">Curated Mediums</span>
               <h2 class="font-headline-sm text-xl sm:text-2xl text-primary font-bold tracking-tight">Explore by Memory &amp; Craft Project</h2>
             </div>
-            <button type="button" onclick="window.navigateTo('catalog', 'all')" class="font-label-sm text-xs text-secondary font-semibold flex items-center gap-0.5 hover:underline cursor-pointer">
+            <button type="button" onclick="window.navigateTo('catalog', 'all')" class="min-h-[44px] px-2 font-label-sm text-xs text-secondary font-semibold inline-flex items-center gap-0.5 hover:underline cursor-pointer shrink-0">
               <span>View All 12 Series</span>
-              <span class="material-symbols-outlined text-sm">chevron_right</span>
+              <span class="material-symbols-outlined text-sm" aria-hidden="true">chevron_right</span>
             </button>
           </div>
 
@@ -521,7 +560,7 @@
               </div>
               <div>
                 <span class="font-title-md text-xs font-bold text-primary block truncate">Bridal Varmala</span>
-                <span class="font-label-sm text-[11px] text-[#c85a48] block">50mm Deep Cast</span>
+                <span class="font-label-sm text-[11px] text-[#9e3322] block">50mm Deep Cast</span>
               </div>
             </button>
 
@@ -585,19 +624,19 @@
           <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-2">
             <div>
               <div class="inline-flex items-center gap-1.5 text-secondary font-label-sm text-xs uppercase tracking-wider mb-1 font-bold">
-                <span class="material-symbols-outlined text-sm">diamond</span>
+                <span class="material-symbols-outlined text-sm" aria-hidden="true">diamond</span>
                 <span>Archival Craft &amp; Keepsake Series</span>
               </div>
               <h2 class="font-headline-sm text-2xl sm:text-3xl text-primary font-bold tracking-tight">Bestselling Keepsakes &amp; Chemical Systems</h2>
             </div>
-            <div class="flex items-center gap-2">
-              <button type="button" onclick="window.navigateTo('catalog', 'keepsakes')" class="px-3.5 py-1.5 rounded-full bg-[#ffe4de] text-[#9e3828] font-label-sm text-xs font-bold hover:opacity-90 cursor-pointer">Preserved Keepsakes</button>
-              <button type="button" onclick="window.navigateTo('catalog', 'casting')" class="px-3.5 py-1.5 rounded-full bg-surface-container-high text-primary font-label-sm text-xs font-semibold hover:bg-secondary-container cursor-pointer">Epoxy Kits</button>
-              <button type="button" onclick="window.navigateTo('catalog', 'all')" class="px-3.5 py-1.5 rounded-full bg-primary text-on-primary font-label-sm text-xs font-semibold cursor-pointer">All (12)</button>
+            <div class="flex flex-wrap items-center gap-2">
+              <button type="button" onclick="window.navigateTo('catalog', 'keepsakes')" class="min-h-[44px] px-4 py-2 rounded-full bg-[#ffe4de] text-[#9e3322] font-label-sm text-xs font-bold hover:opacity-90 inline-flex items-center cursor-pointer">Preserved Keepsakes</button>
+              <button type="button" onclick="window.navigateTo('catalog', 'casting')" class="min-h-[44px] px-4 py-2 rounded-full bg-surface-container-high text-primary font-label-sm text-xs font-semibold hover:bg-secondary-container inline-flex items-center cursor-pointer">Epoxy Kits</button>
+              <button type="button" onclick="window.navigateTo('catalog', 'all')" class="min-h-[44px] px-4 py-2 rounded-full bg-primary text-on-primary font-label-sm text-xs font-semibold inline-flex items-center cursor-pointer">All (12)</button>
             </div>
           </div>
 
-          <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3.5 sm:gap-5">
+          <div class="grid grid-cols-1 min-[360px]:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3.5 sm:gap-5">
             ${featuredProducts.map(p => renderProductCard(p, false)).join('')}
           </div>
         </section>
@@ -606,15 +645,15 @@
         <section class="px-4 sm:px-8 py-8 bg-[#fdf6f3] border-y border-[#e4e0d8] flex flex-col gap-5">
           <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div>
-              <div class="inline-flex items-center gap-1.5 text-[#c85a48] font-label-sm text-xs uppercase tracking-wider font-bold">
-                <span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">favorite</span>
+              <div class="inline-flex items-center gap-1.5 text-[#9e3322] font-label-sm text-xs uppercase tracking-wider font-bold">
+                <span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;" aria-hidden="true">favorite</span>
                 <span>Social Commerce Community • @resin.art.memories</span>
               </div>
               <h2 class="font-headline-sm text-2xl text-primary font-bold">Shop Directly from Our Studio Reels &amp; Client Diaries</h2>
             </div>
-            <button type="button" onclick="window.navigateTo('social')" class="self-start sm:self-auto px-5 py-2.5 rounded-xl bg-[#c85a48] text-white font-label-md text-xs font-bold flex items-center gap-1.5 shadow-sm hover:opacity-95 cursor-pointer">
+            <button type="button" onclick="window.navigateTo('social')" class="self-start sm:self-auto min-h-[44px] px-5 py-2.5 rounded-xl bg-[#9e3322] text-white font-label-md text-xs font-bold flex items-center gap-1.5 shadow-sm hover:opacity-95 cursor-pointer">
               <span>Explore Full Social Feed</span>
-              <span class="material-symbols-outlined text-base">arrow_forward</span>
+              <span class="material-symbols-outlined text-base" aria-hidden="true">arrow_forward</span>
             </button>
           </div>
 
@@ -626,32 +665,32 @@
                   <div>
                     <div class="p-3 flex items-center justify-between border-b border-surface-container">
                       <div class="flex items-center gap-2">
-                        <img src="${esc(post.avatar)}" alt="${esc(post.handle)}" class="w-8 h-8 rounded-full object-cover ring-2 ring-[#c85a48]">
+                        <img src="${esc(post.avatar)}" alt="${esc(post.handle)}" class="w-8 h-8 rounded-full object-cover ring-2 ring-[#9e3322]">
                         <div>
                           <p class="text-xs font-bold text-primary leading-none">${esc(post.handle)}</p>
                           <p class="text-[10px] text-on-surface-variant mt-0.5">${esc(post.location)}</p>
                         </div>
                       </div>
-                      <span class="px-2 py-0.5 rounded-full bg-[#ffe4de] text-[#9e3828] text-[10px] font-bold">#${esc(post.tag)}</span>
+                      <span class="px-2 py-0.5 rounded-full bg-[#ffe4de] text-[#9e3322] text-[10px] font-bold">#${esc(post.tag)}</span>
                     </div>
                     <div class="relative aspect-square bg-surface-container overflow-hidden cursor-pointer" onclick="window.navigateTo('social')">
                       <img src="${esc(post.image)}" alt="${esc(post.caption)}" class="w-full h-full object-cover hover:scale-105 transition-transform duration-500">
-                      <span class="absolute top-2.5 left-2.5 px-2.5 py-0.5 rounded-full bg-black/60 backdrop-blur-xs text-white text-[10px] font-semibold">${esc(post.badge)}</span>
+                      <span class="absolute top-2.5 left-2.5 px-2.5 py-0.5 rounded-full bg-black/65 backdrop-blur-xs text-white text-[10px] font-semibold">${esc(post.badge)}</span>
                     </div>
                     <div class="p-3.5">
-                      <div class="flex items-center justify-between mb-2">
-                        <div class="flex items-center gap-3">
-                          <button type="button" onclick="window.handleSocialLike('${esc(post.id)}')" class="flex items-center gap-1 text-xs font-semibold ${post.liked ? 'text-[#c85a48]' : 'text-primary'} cursor-pointer">
-                            <span class="material-symbols-outlined text-lg" style="font-variation-settings: 'FILL' ${post.liked ? 1 : 0};">favorite</span>
+                      <div class="flex items-center justify-between mb-1">
+                        <div class="flex items-center gap-2">
+                          <button type="button" onclick="window.handleSocialLike('${esc(post.id)}')" class="min-h-[44px] px-2 flex items-center gap-1 text-xs font-semibold ${post.liked ? 'text-[#9e3322]' : 'text-primary'} cursor-pointer">
+                            <span class="material-symbols-outlined text-lg" style="font-variation-settings: 'FILL' ${post.liked ? 1 : 0};" aria-hidden="true">favorite</span>
                             <span class="font-spec-numeral">${post.likes.toLocaleString('en-IN')}</span>
                           </button>
-                          <button type="button" onclick="window.navigateTo('social')" class="flex items-center gap-1 text-xs text-on-surface-variant hover:text-primary cursor-pointer">
-                            <span class="material-symbols-outlined text-lg">chat_bubble</span>
+                          <button type="button" onclick="window.navigateTo('social')" class="min-h-[44px] px-2 flex items-center gap-1 text-xs text-on-surface-variant hover:text-primary cursor-pointer">
+                            <span class="material-symbols-outlined text-lg" aria-hidden="true">chat_bubble</span>
                             <span class="font-spec-numeral">${post.comments.length}</span>
                           </button>
                         </div>
-                        <button type="button" onclick="window.handleSocialSave('${esc(post.id)}')" class="text-primary hover:text-secondary cursor-pointer">
-                          <span class="material-symbols-outlined text-lg" style="font-variation-settings: 'FILL' ${post.saved ? 1 : 0};">bookmark</span>
+                        <button type="button" aria-label="Save post" onclick="window.handleSocialSave('${esc(post.id)}')" class="w-11 h-11 flex items-center justify-center text-primary hover:text-secondary cursor-pointer">
+                          <span class="material-symbols-outlined text-lg" style="font-variation-settings: 'FILL' ${post.saved ? 1 : 0};" aria-hidden="true">bookmark</span>
                         </button>
                       </div>
                       <p class="text-xs text-on-surface line-clamp-2 leading-relaxed">${esc(post.caption)}</p>
@@ -666,7 +705,7 @@
                           <p class="font-spec-numeral text-[11px] text-secondary font-bold">${formatINR(taggedProduct.price)}</p>
                         </div>
                       </div>
-                      <button type="button" onclick="window.handleQuickAdd(this, '${esc(taggedProduct.id)}')" class="px-3 py-1.5 rounded-lg bg-primary text-on-primary text-[11px] font-semibold shrink-0 cursor-pointer">
+                      <button type="button" onclick="window.handleQuickAdd(this, '${esc(taggedProduct.id)}')" class="min-h-[44px] px-3.5 py-2 rounded-lg bg-primary text-on-primary text-[11px] font-semibold shrink-0 cursor-pointer">
                         Add to Bag
                       </button>
                     </div>
@@ -684,28 +723,28 @@
             <div class="flex items-start justify-between gap-3">
               <div>
                 <span class="font-label-sm text-[11px] text-secondary font-bold uppercase tracking-wider">Studio Knowledge Hub</span>
-                <h3 class="font-headline-sm text-xl text-primary font-bold mt-0.5">Interactive Epoxy Pour &amp; Ratio Calculator</h3>
+                <h2 class="font-headline-sm text-xl text-primary font-bold mt-0.5">Interactive Epoxy Pour &amp; Ratio Calculator</h2>
                 <p class="text-xs text-on-surface-variant mt-1">Calculate exact Part A (Resin) + Part B (Hardener) gram weights for any mould dimension:</p>
               </div>
-              <span class="material-symbols-outlined text-secondary text-3xl">calculate</span>
+              <span class="material-symbols-outlined text-secondary text-3xl" aria-hidden="true">calculate</span>
             </div>
 
             <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 bg-surface-container-low p-3.5 rounded-xl">
               <div>
                 <label class="font-label-sm text-[11px] text-on-surface-variant block mb-1" for="home-calc-len">Length (cm)</label>
-                <input id="home-calc-len" type="number" min="1" max="500" value="${AppState.calcLength}" class="w-full h-9 px-2.5 bg-white rounded-lg border border-[#e4e0d8] font-spec-numeral text-sm text-primary">
+                <input id="home-calc-len" type="number" min="1" max="500" value="${AppState.calcLength}" class="w-full h-12 px-2.5 bg-white rounded-lg border border-[#e4e0d8] font-spec-numeral text-sm text-primary">
               </div>
               <div>
                 <label class="font-label-sm text-[11px] text-on-surface-variant block mb-1" for="home-calc-wid">Width (cm)</label>
-                <input id="home-calc-wid" type="number" min="1" max="500" value="${AppState.calcWidth}" class="w-full h-9 px-2.5 bg-white rounded-lg border border-[#e4e0d8] font-spec-numeral text-sm text-primary">
+                <input id="home-calc-wid" type="number" min="1" max="500" value="${AppState.calcWidth}" class="w-full h-12 px-2.5 bg-white rounded-lg border border-[#e4e0d8] font-spec-numeral text-sm text-primary">
               </div>
               <div>
                 <label class="font-label-sm text-[11px] text-on-surface-variant block mb-1" for="home-calc-dep">Depth (cm)</label>
-                <input id="home-calc-dep" type="number" min="0.1" max="10" step="0.5" value="${AppState.calcDepth}" class="w-full h-9 px-2.5 bg-white rounded-lg border border-[#e4e0d8] font-spec-numeral text-sm text-primary">
+                <input id="home-calc-dep" type="number" min="0.1" max="10" step="0.5" value="${AppState.calcDepth}" class="w-full h-12 px-2.5 bg-white rounded-lg border border-[#e4e0d8] font-spec-numeral text-sm text-primary">
               </div>
               <div>
                 <label class="font-label-sm text-[11px] text-on-surface-variant block mb-1" for="home-calc-sys">Ratio System</label>
-                <select id="home-calc-sys" class="w-full h-9 px-2 bg-white rounded-lg border border-[#e4e0d8] font-label-sm text-xs text-primary">
+                <select id="home-calc-sys" class="w-full h-12 px-2 bg-white rounded-lg border border-[#e4e0d8] font-label-sm text-xs text-primary">
                   <option value="3:1" ${AppState.calcSystem === '3:1' ? 'selected' : ''}>3:1 UltraClear</option>
                   <option value="2:1" ${AppState.calcSystem === '2:1' ? 'selected' : ''}>2:1 Deep Pour</option>
                   <option value="1:1" ${AppState.calcSystem === '1:1' ? 'selected' : ''}>1:1 Doming</option>
@@ -720,7 +759,7 @@
                   ~660g total (Part A: 495g + Part B: 165g)
                 </span>
               </div>
-              <button type="button" onclick="window.runHomeCalculator()" class="w-full sm:w-auto px-4 py-2.5 rounded-lg bg-primary text-on-primary text-xs font-semibold shrink-0 cursor-pointer">
+              <button type="button" onclick="window.runHomeCalculator()" class="w-full sm:w-auto min-h-[48px] px-4 py-2.5 rounded-lg bg-primary text-on-primary text-xs font-semibold shrink-0 cursor-pointer">
                 Calculate Grams
               </button>
             </div>
@@ -731,21 +770,21 @@
             <div aria-hidden="true" class="absolute -right-12 -bottom-12 w-52 h-52 rounded-full bg-secondary/15 pointer-events-none"></div>
             <div class="relative flex flex-col gap-2">
               <div class="flex items-center gap-2">
-                <span class="material-symbols-outlined text-secondary-fixed text-2xl">warehouse</span>
+                <span class="material-symbols-outlined text-secondary-fixed text-2xl" aria-hidden="true">warehouse</span>
                 <span class="font-label-sm text-xs text-secondary-fixed uppercase tracking-wider font-bold">Industrial Craft, Bridal Planners &amp; Furniture Supply</span>
               </div>
-              <h3 class="font-headline-sm text-2xl text-white font-bold">Studio &amp; Production Wholesale</h3>
+              <h2 class="font-headline-sm text-2xl text-white font-bold">Studio &amp; Production Wholesale</h2>
               <p class="text-xs sm:text-sm text-on-tertiary-container leading-relaxed">
                 Tiered pricing from 10kg pails to 200kg drums with official 18% GST Input Tax Credit invoices and Batch Certificate of Analysis (COA) for verified workshops.
               </p>
             </div>
             <div class="relative flex flex-wrap items-center gap-3 pt-2">
-              <button type="button" onclick="window.openTdsModal('wholesale')" class="h-11 px-5 rounded-xl bg-secondary text-on-secondary font-label-md text-xs font-bold flex items-center gap-2 shadow-sm active:scale-95 transition-transform cursor-pointer">
-                <span class="material-symbols-outlined text-lg">download</span>
+              <button type="button" onclick="window.openTdsModal('wholesale')" class="min-h-[44px] px-5 rounded-xl bg-secondary text-on-secondary font-label-md text-xs font-bold flex items-center gap-2 shadow-sm active:scale-95 transition-transform cursor-pointer">
+                <span class="material-symbols-outlined text-lg" aria-hidden="true">download</span>
                 <span>View Wholesale Slab &amp; COA Sheet</span>
               </button>
-              <button type="button" onclick="window.navigateTo('account')" class="h-11 px-4 rounded-xl bg-white/10 hover:bg-white/20 text-white font-label-md text-xs font-semibold flex items-center gap-1.5 cursor-pointer">
-                <span class="material-symbols-outlined text-base">sync</span>
+              <button type="button" onclick="window.navigateTo('account')" class="min-h-[44px] px-4 rounded-xl bg-white/10 hover:bg-white/20 text-white font-label-md text-xs font-semibold flex items-center gap-1.5 cursor-pointer">
+                <span class="material-symbols-outlined text-base" aria-hidden="true">sync</span>
                 <span>Host Admin &amp; Supabase Status</span>
               </button>
             </div>
@@ -757,18 +796,18 @@
           <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-3">
             <div>
               <span class="font-label-sm text-[10px] uppercase tracking-widest text-secondary font-bold">Stitch Design System Screens (All Verified &amp; Repaired)</span>
-              <h3 class="font-headline-sm text-base text-primary font-bold">Direct Screen Flows in Workspace</h3>
+              <h2 class="font-headline-sm text-base text-primary font-bold">Direct Screen Flows in Workspace</h2>
             </div>
             <span class="text-xs text-on-surface-variant">Every static Stitch screen below has also been debugged &amp; linked:</span>
           </div>
           <div class="flex flex-wrap gap-2">
-            <a href="./vist_ra_krafts_home_storefront/code.html" class="px-3 py-1.5 rounded-lg bg-white border border-[#e4e0d8] text-xs font-medium text-primary hover:border-secondary">Vistāra Home Storefront</a>
-            <a href="./vist_ra_krafts_resin_catalog_filters/code.html" class="px-3 py-1.5 rounded-lg bg-white border border-[#e4e0d8] text-xs font-medium text-primary hover:border-secondary">Vistāra Catalog &amp; Filters</a>
-            <a href="./vist_ra_krafts_ultraclear_3_1_pdp/code.html" class="px-3 py-1.5 rounded-lg bg-white border border-[#e4e0d8] text-xs font-medium text-primary hover:border-secondary">UltraClear 3:1 PDP</a>
-            <a href="./vist_ra_krafts_cart_checkout/code.html" class="px-3 py-1.5 rounded-lg bg-white border border-[#e4e0d8] text-xs font-medium text-primary hover:border-secondary">Vistāra Cart &amp; Checkout</a>
-            <a href="./potry_storefront_discovery_interactive/code.html" class="px-3 py-1.5 rounded-lg bg-white border border-[#e4e0d8] text-xs font-medium text-primary hover:border-secondary">POTRY Interactive Storefront</a>
-            <a href="./potry_sienna_ridged_pitcher_interactive_pdp/code.html" class="px-3 py-1.5 rounded-lg bg-white border border-[#e4e0d8] text-xs font-medium text-primary hover:border-secondary">POTRY Sienna Pitcher PDP</a>
-            <a href="./potry_navigation_drawer/code.html" class="px-3 py-1.5 rounded-lg bg-white border border-[#e4e0d8] text-xs font-medium text-primary hover:border-secondary">POTRY Navigation Overlay</a>
+            <a href="./vist_ra_krafts_home_storefront/code.html" class="min-h-[44px] px-3.5 py-2 inline-flex items-center rounded-lg bg-white border border-[#e4e0d8] text-xs font-medium text-primary hover:border-secondary">Vistāra Home Storefront</a>
+            <a href="./vist_ra_krafts_resin_catalog_filters/code.html" class="min-h-[44px] px-3.5 py-2 inline-flex items-center rounded-lg bg-white border border-[#e4e0d8] text-xs font-medium text-primary hover:border-secondary">Vistāra Catalog &amp; Filters</a>
+            <a href="./vist_ra_krafts_ultraclear_3_1_pdp/code.html" class="min-h-[44px] px-3.5 py-2 inline-flex items-center rounded-lg bg-white border border-[#e4e0d8] text-xs font-medium text-primary hover:border-secondary">UltraClear 3:1 PDP</a>
+            <a href="./vist_ra_krafts_cart_checkout/code.html" class="min-h-[44px] px-3.5 py-2 inline-flex items-center rounded-lg bg-white border border-[#e4e0d8] text-xs font-medium text-primary hover:border-secondary">Vistāra Cart &amp; Checkout</a>
+            <a href="./potry_storefront_discovery_interactive/code.html" class="min-h-[44px] px-3.5 py-2 inline-flex items-center rounded-lg bg-white border border-[#e4e0d8] text-xs font-medium text-primary hover:border-secondary">POTRY Interactive Storefront</a>
+            <a href="./potry_sienna_ridged_pitcher_interactive_pdp/code.html" class="min-h-[44px] px-3.5 py-2 inline-flex items-center rounded-lg bg-white border border-[#e4e0d8] text-xs font-medium text-primary hover:border-secondary">POTRY Sienna Pitcher PDP</a>
+            <a href="./potry_navigation_drawer/code.html" class="min-h-[44px] px-3.5 py-2 inline-flex items-center rounded-lg bg-white border border-[#e4e0d8] text-xs font-medium text-primary hover:border-secondary">POTRY Navigation Overlay</a>
           </div>
         </section>
       </div>
@@ -787,7 +826,7 @@
           </div>
         </div>
         <div class="flex items-center gap-2 shrink-0 w-full sm:w-auto">
-          <button type="button" onclick="window.navigateTo('product', 'ram-keep-001')" class="flex-1 sm:flex-initial px-3.5 py-2 rounded-lg bg-[#c85a48] text-white text-xs font-bold cursor-pointer">Customize Now</button>
+          <button type="button" onclick="window.navigateTo('product', 'ram-keep-001')" class="flex-1 sm:flex-initial min-h-[44px] px-4 py-2 rounded-lg bg-[#9e3322] text-white text-xs font-bold cursor-pointer">Customize Now</button>
         </div>
       `;
     }
@@ -801,7 +840,7 @@
           </div>
         </div>
         <div class="flex items-center gap-2 shrink-0 w-full sm:w-auto">
-          <button type="button" onclick="window.navigateTo('product', 'ram-keep-002')" class="flex-1 sm:flex-initial px-3.5 py-2 rounded-lg bg-secondary text-white text-xs font-bold cursor-pointer">View Piece</button>
+          <button type="button" onclick="window.navigateTo('product', 'ram-keep-002')" class="flex-1 sm:flex-initial min-h-[44px] px-4 py-2 rounded-lg bg-secondary text-white text-xs font-bold cursor-pointer">View Piece</button>
         </div>
       `;
     }
@@ -814,7 +853,7 @@
         </div>
       </div>
       <div class="flex items-center gap-2 shrink-0 w-full sm:w-auto">
-        <button type="button" onclick="window.navigateTo('product', 'vk-epx-301')" class="flex-1 sm:flex-initial px-3.5 py-2 rounded-lg bg-secondary text-white text-xs font-bold cursor-pointer">View Specs</button>
+        <button type="button" onclick="window.navigateTo('product', 'vk-epx-301')" class="flex-1 sm:flex-initial min-h-[44px] px-4 py-2 rounded-lg bg-secondary text-white text-xs font-bold cursor-pointer">View Specs</button>
       </div>
     `;
   }
@@ -884,20 +923,20 @@
         <!-- Category Header -->
         <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-3">
           <div>
-            <div class="flex items-center gap-1.5 text-on-surface-variant font-label-sm text-xs uppercase tracking-wider">
-              <button type="button" onclick="window.navigateTo('home')" class="hover:text-primary cursor-pointer">Home</button>
-              <span class="material-symbols-outlined text-xs">chevron_right</span>
+            <div class="flex items-center gap-1 text-on-surface-variant font-label-sm text-xs uppercase tracking-wider">
+              <button type="button" onclick="window.navigateTo('home')" class="min-h-[44px] min-w-[44px] px-2 inline-flex items-center justify-center hover:text-primary cursor-pointer">Home</button>
+              <span class="material-symbols-outlined text-xs" aria-hidden="true">chevron_right</span>
               <span class="text-secondary font-bold">Storefront Catalogue</span>
             </div>
-            <h1 class="font-headline-lg text-2xl sm:text-4xl text-primary font-bold tracking-tight mt-1">
+            <h1 class="font-headline-lg text-2xl sm:text-4xl text-primary font-bold tracking-tight mt-0.5">
               Keepsake Art &amp; Archival Resin Systems
             </h1>
             <p class="text-xs sm:text-sm text-on-surface-variant mt-0.5">
               Bespoke preserved floral blocks, hand-poured ocean decor, and ISO-certified 3:1, 2:1 &amp; UV epoxy formulations.
             </p>
           </div>
-          <div class="flex items-center gap-2 bg-surface-container-low px-3.5 py-2 rounded-xl border border-[#e4e0d8] self-start sm:self-end">
-            <span class="material-symbols-outlined text-secondary text-base">verified</span>
+          <div class="flex items-center gap-2 bg-surface-container-low px-3.5 py-2 rounded-xl border border-[#e4e0d8] self-start sm:self-end shrink-0">
+            <span class="material-symbols-outlined text-secondary text-base" aria-hidden="true">verified</span>
             <span class="font-label-sm text-xs text-primary font-semibold">Batch 2026-C • ISO 9001 Lab Certified</span>
           </div>
         </div>
@@ -905,35 +944,37 @@
         <!-- Horizontal Category Pills -->
         <div class="flex items-center gap-2 overflow-x-auto no-scrollbar py-1">
           ${categories.map(cat => `
-            <button type="button" onclick="window.setCatalogCategory('${cat.id}')" class="px-4 py-2 rounded-full font-label-sm text-xs whitespace-nowrap transition-all cursor-pointer ${AppState.catalogCategory === cat.id ? 'bg-primary text-on-primary font-bold shadow-xs' : 'bg-surface-container-high text-on-surface-variant hover:bg-secondary-container/50'}">
+            <button type="button" onclick="window.setCatalogCategory('${cat.id}')" class="min-h-[44px] px-4 py-2 rounded-full font-label-sm text-xs whitespace-nowrap shrink-0 transition-all cursor-pointer ${AppState.catalogCategory === cat.id ? 'bg-primary text-on-primary font-bold shadow-xs' : 'bg-surface-container-high text-on-surface-variant hover:bg-secondary-container/50'}">
               ${esc(cat.label)}
             </button>
           `).join('')}
         </div>
 
         <!-- Sticky Search, Filter & Sort Controls Bar -->
-        <div class="sticky top-16 z-30 bg-surface/95 backdrop-blur-md py-3 border-y border-[#e4e0d8] flex flex-col gap-2.5">
+        <div class="sticky top-[92px] z-30 bg-surface/95 backdrop-blur-md py-3 border-y border-[#e4e0d8] flex flex-col gap-2.5">
           <div class="flex flex-wrap items-center justify-between gap-2.5">
             <!-- Instant Search Input -->
             <div class="relative flex-1 min-w-[200px]">
-              <span class="material-symbols-outlined text-on-surface-variant text-lg absolute left-3 top-2.5">search</span>
-              <input id="catalog-search-input" type="text" value="${esc(AppState.catalogSearch)}" oninput="window.setCatalogSearch(this.value)" placeholder="Search varmala block, 3:1 resin, ocean tray, mica, mold..." class="w-full h-10 pl-9 pr-8 rounded-lg bg-white border border-[#e4e0d8] text-xs sm:text-sm text-primary focus:outline-none focus:border-primary">
+              <label for="catalog-search-input" class="sr-only">Search catalogue products</label>
+              <span class="material-symbols-outlined text-on-surface-variant text-lg absolute left-3 top-3.5 pointer-events-none" aria-hidden="true">search</span>
+              <input id="catalog-search-input" type="text" aria-label="Search catalogue products" value="${esc(AppState.catalogSearch)}" oninput="window.setCatalogSearch(this.value)" placeholder="Search varmala block, 3:1 resin, ocean tray, mica, mold..." class="w-full h-12 pl-9 pr-10 rounded-xl bg-white border border-[#e4e0d8] text-xs sm:text-sm text-primary">
               ${AppState.catalogSearch ? `
-                <button type="button" onclick="window.setCatalogSearch('')" class="absolute right-2.5 top-2.5 text-outline hover:text-primary">
-                  <span class="material-symbols-outlined text-base">close</span>
+                <button type="button" aria-label="Clear search" onclick="window.setCatalogSearch('')" class="w-11 h-11 absolute right-1 top-0.5 flex items-center justify-center text-outline hover:text-primary cursor-pointer">
+                  <span class="material-symbols-outlined text-base" aria-hidden="true">close</span>
                 </button>
               ` : ''}
             </div>
 
-            <div class="flex items-center gap-2">
+            <div class="flex flex-wrap items-center gap-2">
               <!-- Filter Drawer Trigger -->
-              <button type="button" onclick="window.toggleCatalogFilterDrawer(true)" class="h-10 px-3.5 rounded-lg bg-primary text-on-primary font-label-sm text-xs font-semibold flex items-center gap-1.5 shadow-xs cursor-pointer">
-                <span class="material-symbols-outlined text-base">tune</span>
+              <button type="button" onclick="window.toggleCatalogFilterDrawer(true)" class="h-12 px-4 rounded-xl bg-primary text-on-primary font-label-sm text-xs font-semibold flex items-center gap-1.5 shadow-xs cursor-pointer">
+                <span class="material-symbols-outlined text-base" aria-hidden="true">tune</span>
                 <span>Specs Filter</span>
               </button>
 
               <!-- Sort Select -->
-              <select id="catalog-sort-select" aria-label="Sort products" onchange="window.setCatalogSort(this.value)" class="h-10 px-3 rounded-lg bg-white border border-[#e4e0d8] font-label-sm text-xs text-primary focus:outline-none focus:border-primary cursor-pointer">
+              <label for="catalog-sort-select" class="sr-only">Sort products</label>
+              <select id="catalog-sort-select" aria-label="Sort products" onchange="window.setCatalogSort(this.value)" class="h-12 px-3 rounded-xl bg-white border border-[#e4e0d8] font-label-sm text-xs text-primary cursor-pointer">
                 <option value="popular" ${AppState.catalogSort === 'popular' ? 'selected' : ''}>Sort: Popularity</option>
                 <option value="price_asc" ${AppState.catalogSort === 'price_asc' ? 'selected' : ''}>Price: Low to High</option>
                 <option value="price_desc" ${AppState.catalogSort === 'price_desc' ? 'selected' : ''}>Price: High to Low</option>
@@ -942,39 +983,39 @@
               </select>
 
               <!-- Grid / List Switcher -->
-              <div class="flex items-center bg-surface-container-low p-1 rounded-lg border border-[#e4e0d8]">
-                <button type="button" aria-label="Grid View" onclick="window.setCatalogView('grid')" class="w-8 h-8 rounded flex items-center justify-center ${AppState.catalogView === 'grid' ? 'bg-white text-primary shadow-2xs' : 'text-on-surface-variant'} cursor-pointer">
-                  <span class="material-symbols-outlined text-lg">grid_view</span>
+              <div class="flex items-center bg-surface-container-low p-0.5 rounded-xl border border-[#e4e0d8]">
+                <button type="button" aria-label="Grid View" onclick="window.setCatalogView('grid')" class="w-11 h-11 rounded-lg flex items-center justify-center ${AppState.catalogView === 'grid' ? 'bg-white text-primary shadow-2xs' : 'text-on-surface-variant'} cursor-pointer">
+                  <span class="material-symbols-outlined text-lg" aria-hidden="true">grid_view</span>
                 </button>
-                <button type="button" aria-label="List View" onclick="window.setCatalogView('list')" class="w-8 h-8 rounded flex items-center justify-center ${AppState.catalogView === 'list' ? 'bg-white text-primary shadow-2xs' : 'text-on-surface-variant'} cursor-pointer">
-                  <span class="material-symbols-outlined text-lg">view_stream</span>
+                <button type="button" aria-label="List View" onclick="window.setCatalogView('list')" class="w-11 h-11 rounded-lg flex items-center justify-center ${AppState.catalogView === 'list' ? 'bg-white text-primary shadow-2xs' : 'text-on-surface-variant'} cursor-pointer">
+                  <span class="material-symbols-outlined text-lg" aria-hidden="true">view_stream</span>
                 </button>
               </div>
             </div>
           </div>
 
           <!-- Active Filter Summary Row -->
-          <div class="flex items-center justify-between text-xs text-on-surface-variant">
+          <div class="flex items-center justify-between gap-2 text-xs text-on-surface-variant">
             <div class="flex items-center gap-1.5 flex-wrap">
               ${AppState.catalogCategory !== 'all' ? `
-                <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-surface-container-high text-primary font-medium">
-                  Category: ${esc(AppState.catalogCategory)}
-                  <button type="button" onclick="window.setCatalogCategory('all')" class="material-symbols-outlined text-xs">close</button>
-                </span>
+                <button type="button" onclick="window.setCatalogCategory('all')" class="min-h-[44px] inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-surface-container-high text-primary font-medium cursor-pointer">
+                  <span>Category: ${esc(AppState.catalogCategory)}</span>
+                  <span class="material-symbols-outlined text-xs" aria-hidden="true">close</span>
+                </button>
               ` : ''}
               ${AppState.catalogRatioFilter !== 'all' ? `
-                <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-surface-container-high text-primary font-medium">
-                  Ratio: ${esc(AppState.catalogRatioFilter)}
-                  <button type="button" onclick="window.setCatalogRatio('all')" class="material-symbols-outlined text-xs">close</button>
-                </span>
+                <button type="button" onclick="window.setCatalogRatio('all')" class="min-h-[44px] inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-surface-container-high text-primary font-medium cursor-pointer">
+                  <span>Ratio: ${esc(AppState.catalogRatioFilter)}</span>
+                  <span class="material-symbols-outlined text-xs" aria-hidden="true">close</span>
+                </button>
               ` : ''}
               ${AppState.catalogMaxPrice < 12000 ? `
-                <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-surface-container-high text-primary font-medium">
-                  Max: ${formatINR(AppState.catalogMaxPrice)}
-                  <button type="button" onclick="window.setCatalogMaxPrice(12000)" class="material-symbols-outlined text-xs">close</button>
-                </span>
+                <button type="button" onclick="window.setCatalogMaxPrice(12000)" class="min-h-[44px] inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-surface-container-high text-primary font-medium cursor-pointer">
+                  <span>Max: ${formatINR(AppState.catalogMaxPrice)}</span>
+                  <span class="material-symbols-outlined text-xs" aria-hidden="true">close</span>
+                </button>
               ` : ''}
-              <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-[#e8f5e9] text-[#266b4e] font-semibold">
+              <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-[#e8f5e9] text-[#266b4e] font-semibold">
                 In Stock • Pan-India Dispatch
               </span>
             </div>
@@ -985,13 +1026,13 @@
         <!-- Product Grid or Empty State -->
         ${filtered.length === 0 ? `
           <div class="ram-card p-10 text-center flex flex-col items-center gap-3 my-4">
-            <span class="material-symbols-outlined text-4xl text-secondary">search_off</span>
-            <h3 class="font-headline-sm text-xl text-primary font-bold">No matching formulations or keepsakes</h3>
+            <span class="material-symbols-outlined text-4xl text-secondary" aria-hidden="true">search_off</span>
+            <h2 class="font-headline-sm text-xl text-primary font-bold">No matching formulations or keepsakes</h2>
             <p class="text-xs text-on-surface-variant max-w-sm">Try clearing your active search query or resetting the technical ratio filters.</p>
-            <button type="button" onclick="window.resetCatalogFilters()" class="px-5 py-2.5 rounded-lg bg-primary text-on-primary text-xs font-semibold cursor-pointer">Reset All Filters</button>
+            <button type="button" onclick="window.resetCatalogFilters()" class="min-h-[48px] px-5 py-2.5 rounded-xl bg-primary text-on-primary text-xs font-semibold cursor-pointer">Reset All Filters</button>
           </div>
         ` : `
-          <div class="${AppState.catalogView === 'list' ? 'flex flex-col gap-3.5' : 'grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3.5 sm:gap-5'}" id="catalog-product-grid">
+          <div class="${AppState.catalogView === 'list' ? 'flex flex-col gap-3.5' : 'grid grid-cols-1 min-[360px]:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3.5 sm:gap-5'}" id="catalog-product-grid">
             ${visible.map(p => renderProductCard(p, AppState.catalogView === 'list')).join('')}
           </div>
         `}
@@ -1000,8 +1041,8 @@
         ${filtered.length > visible.length ? `
           <div class="py-6 flex flex-col items-center gap-3">
             <p class="text-xs text-on-surface-variant font-spec-numeral">Showing <strong>${visible.length}</strong> of <strong>${filtered.length}</strong> formulations</p>
-            <button type="button" onclick="window.loadMoreCatalog()" class="px-6 py-3 rounded-xl bg-primary text-on-primary font-label-md text-xs font-semibold flex items-center gap-2 shadow-sm cursor-pointer">
-              <span class="material-symbols-outlined text-base">refresh</span>
+            <button type="button" onclick="window.loadMoreCatalog()" class="min-h-[48px] px-6 py-3 rounded-xl bg-primary text-on-primary font-label-md text-xs font-semibold flex items-center gap-2 shadow-sm cursor-pointer">
+              <span class="material-symbols-outlined text-base" aria-hidden="true">refresh</span>
               <span>Load Remaining (${filtered.length - visible.length}) Products</span>
             </button>
           </div>
@@ -1043,11 +1084,11 @@
     const prodReviews = AppState.reviews[product.id] || AppState.reviews['vk-epx-301'] || [];
 
     return `
-      <div class="route-view-enter flex flex-col w-full max-w-7xl mx-auto pb-24">
+      <div class="route-view-enter flex flex-col w-full max-w-7xl mx-auto pb-36 lg:pb-24">
         <!-- Logistics & Batch Ribbon -->
-        <div class="bg-primary text-on-primary px-4 sm:px-8 py-2 flex items-center justify-between text-[11px] font-label-sm">
+        <div class="bg-primary text-on-primary px-4 sm:px-8 py-2 flex flex-wrap items-center justify-between gap-2 text-[11px] font-label-sm">
           <div class="flex items-center gap-1.5">
-            <span class="material-symbols-outlined text-secondary-fixed text-sm">science</span>
+            <span class="material-symbols-outlined text-secondary-fixed text-sm" aria-hidden="true">science</span>
             <span class="font-spec-numeral">SKU: ${esc(product.sku)} • Batch VK-26-C38 Lab Certified</span>
           </div>
           <span class="text-secondary-fixed flex items-center gap-1 font-semibold">
@@ -1057,16 +1098,16 @@
         </div>
 
         <!-- Breadcrumb -->
-        <nav aria-label="Breadcrumb" class="px-4 sm:px-8 py-2.5 bg-surface-container-low text-on-surface-variant text-xs flex items-center justify-between border-b border-[#e4e0d8]">
-          <ol class="flex items-center gap-1.5 overflow-x-auto whitespace-nowrap">
-            <li><button type="button" onclick="window.navigateTo('home')" class="hover:text-primary cursor-pointer">Home</button></li>
+        <nav aria-label="Breadcrumb" class="px-4 sm:px-8 py-1.5 bg-surface-container-low text-on-surface-variant text-xs flex items-center justify-between gap-2 border-b border-[#e4e0d8]">
+          <ol class="flex items-center gap-1 overflow-x-auto no-scrollbar whitespace-nowrap">
+            <li><button type="button" onclick="window.navigateTo('home')" class="min-h-[44px] min-w-[44px] px-2 inline-flex items-center justify-center hover:text-primary cursor-pointer">Home</button></li>
             <li>/</li>
-            <li><button type="button" onclick="window.navigateTo('catalog', '${esc(product.category)}')" class="hover:text-primary capitalize cursor-pointer">${esc(product.category.replace('_', ' '))}</button></li>
+            <li><button type="button" onclick="window.navigateTo('catalog', '${esc(product.category)}')" class="min-h-[44px] min-w-[44px] px-2 inline-flex items-center justify-center hover:text-primary capitalize cursor-pointer">${esc(product.category.replace('_', ' '))}</button></li>
             <li>/</li>
-            <li class="text-primary font-bold truncate">${esc(product.shortName || product.name)}</li>
+            <li class="text-primary font-bold truncate pl-1">${esc(product.shortName || product.name)}</li>
           </ol>
-          <button type="button" onclick="window.shareCurrentProduct('${esc(product.id)}')" class="flex items-center gap-1 text-secondary font-semibold hover:underline shrink-0 cursor-pointer">
-            <span class="material-symbols-outlined text-sm">share</span>
+          <button type="button" onclick="window.shareCurrentProduct('${esc(product.id)}')" class="min-h-[44px] px-2 flex items-center gap-1 text-secondary font-semibold hover:underline shrink-0 cursor-pointer">
+            <span class="material-symbols-outlined text-sm" aria-hidden="true">share</span>
             <span>Share</span>
           </button>
         </nav>
@@ -1080,16 +1121,16 @@
               <div class="absolute top-3.5 left-3.5 flex flex-col gap-1.5 items-start">
                 <span class="bg-secondary text-on-secondary px-3 py-1 rounded-full font-label-sm text-[11px] tracking-wider uppercase font-bold shadow-xs">${esc(product.badge)}</span>
                 <span class="bg-primary/90 text-on-primary px-3 py-1 rounded-full font-label-sm text-[11px] flex items-center gap-1 shadow-xs">
-                  <span class="material-symbols-outlined text-xs text-secondary-fixed">verified</span>
+                  <span class="material-symbols-outlined text-xs text-secondary-fixed" aria-hidden="true">verified</span>
                   Optical Grade
                 </span>
               </div>
               <div class="absolute bottom-3.5 right-3.5 flex items-center gap-2">
-                <span id="pdp-gallery-counter" class="bg-primary/80 backdrop-blur-md text-on-primary px-3 py-1 rounded-full font-spec-numeral text-xs">
+                <span id="pdp-gallery-counter" class="bg-primary/85 backdrop-blur-md text-on-primary px-3 py-1.5 rounded-full font-spec-numeral text-xs">
                   ${AppState.pdpGalleryIdx + 1} of ${gallery.length}
                 </span>
-                <button type="button" aria-label="Zoom Image" onclick="window.openLightbox('${esc(activeImg)}', '${esc(product.name)}')" class="w-9 h-9 rounded-full bg-primary/80 backdrop-blur-md text-on-primary flex items-center justify-center hover:bg-primary cursor-pointer">
-                  <span class="material-symbols-outlined text-lg">zoom_in</span>
+                <button type="button" aria-label="Zoom Image" onclick="window.openLightbox('${esc(activeImg)}', '${esc(product.name)}')" class="w-11 h-11 rounded-full bg-primary/85 backdrop-blur-md text-on-primary flex items-center justify-center hover:bg-primary cursor-pointer">
+                  <span class="material-symbols-outlined text-lg" aria-hidden="true">zoom_in</span>
                 </button>
               </div>
             </div>
@@ -1097,7 +1138,7 @@
             <!-- 4-Angle Thumbnail Selector -->
             <div class="grid grid-cols-4 gap-2.5">
               ${gallery.map((imgUrl, idx) => `
-                <button type="button" onclick="window.selectPdpGallery(${idx})" class="aspect-square rounded-xl overflow-hidden border-2 transition-all cursor-pointer ${idx === AppState.pdpGalleryIdx ? 'border-primary ring-2 ring-primary/30 scale-[1.02]' : 'border-[#e4e0d8] opacity-75 hover:opacity-100'}">
+                <button type="button" aria-label="View Gallery Angle ${idx + 1}" onclick="window.selectPdpGallery(${idx})" class="aspect-square rounded-xl overflow-hidden border-2 transition-all cursor-pointer ${idx === AppState.pdpGalleryIdx ? 'border-primary ring-2 ring-primary/30 scale-[1.02]' : 'border-[#e4e0d8] opacity-75 hover:opacity-100'}">
                   <img src="${esc(imgUrl)}" alt="Angle ${idx + 1}" class="w-full h-full object-cover">
                 </button>
               `).join('')}
@@ -1105,30 +1146,30 @@
 
             <!-- Frequently Paired Studio Bundle -->
             <div class="ram-card p-4 bg-surface-container-low mt-2 flex flex-col gap-3">
-              <div class="flex items-center justify-between">
-                <h3 class="font-headline-sm text-base text-primary font-bold">Frequently Paired Studio Bundle</h3>
-                <span class="bg-secondary text-on-secondary font-spec-numeral text-[11px] px-2.5 py-0.5 rounded-full font-bold">Save ₹349</span>
+              <div class="flex items-center justify-between gap-2">
+                <h2 class="font-headline-sm text-base text-primary font-bold">Frequently Paired Studio Bundle</h2>
+                <span class="bg-secondary text-on-secondary font-spec-numeral text-[11px] px-2.5 py-0.5 rounded-full font-bold shrink-0">Save ₹349</span>
               </div>
-              <div class="flex items-center justify-between gap-2 py-1 overflow-x-auto">
+              <div class="flex items-center justify-between gap-2 py-1 overflow-x-auto no-scrollbar">
                 <div class="flex flex-col items-center text-center w-24 shrink-0">
                   <img src="${esc(Store.IMAGES.ultraclearMain)}" alt="UltraClear 3:1" class="w-16 h-16 rounded-lg object-cover border border-[#e4e0d8] bg-white p-0.5">
                   <span class="text-[11px] font-semibold text-primary mt-1 truncate w-full">UltraClear 3:1</span>
                   <span class="font-spec-numeral text-xs text-secondary font-bold">₹1,299</span>
                 </div>
-                <span class="material-symbols-outlined text-secondary">add</span>
+                <span class="material-symbols-outlined text-secondary" aria-hidden="true">add</span>
                 <div class="flex flex-col items-center text-center w-24 shrink-0">
                   <img src="${esc(Store.IMAGES.siliconeMold4x)}" alt="Silicone Molds" class="w-16 h-16 rounded-lg object-cover border border-[#e4e0d8] bg-white p-0.5">
                   <span class="text-[11px] font-semibold text-primary mt-1 truncate w-full">Geode Molds (4x)</span>
                   <span class="font-spec-numeral text-xs text-secondary font-bold">₹449</span>
                 </div>
-                <span class="material-symbols-outlined text-secondary">add</span>
+                <span class="material-symbols-outlined text-secondary" aria-hidden="true">add</span>
                 <div class="flex flex-col items-center text-center w-24 shrink-0">
                   <img src="${esc(Store.IMAGES.oceanMicaJar)}" alt="Chameleon Mica" class="w-16 h-16 rounded-lg object-cover border border-[#e4e0d8] bg-white p-0.5">
                   <span class="text-[11px] font-semibold text-primary mt-1 truncate w-full">Chameleon Mica</span>
                   <span class="font-spec-numeral text-xs text-secondary font-bold">₹899</span>
                 </div>
               </div>
-              <div class="p-3 rounded-xl bg-white border border-[#e4e0d8] flex items-center justify-between">
+              <div class="p-3 rounded-xl bg-white border border-[#e4e0d8] flex flex-wrap items-center justify-between gap-2">
                 <div>
                   <div class="flex items-baseline gap-1.5">
                     <span class="font-spec-numeral text-lg font-bold text-primary">₹2,298</span>
@@ -1136,8 +1177,8 @@
                   </div>
                   <p class="text-[11px] text-secondary font-medium">Complete resin + 4x geode molds + 12x mica combo</p>
                 </div>
-                <button type="button" onclick="window.addStudioBundle()" class="px-4 py-2.5 rounded-lg bg-secondary hover:opacity-95 text-on-secondary text-xs font-bold flex items-center gap-1.5 shadow-xs cursor-pointer">
-                  <span class="material-symbols-outlined text-base">shopping_bag</span>
+                <button type="button" onclick="window.addStudioBundle()" class="min-h-[44px] px-4 py-2.5 rounded-lg bg-secondary hover:opacity-95 text-on-secondary text-xs font-bold flex items-center gap-1.5 shadow-xs cursor-pointer shrink-0">
+                  <span class="material-symbols-outlined text-base" aria-hidden="true">shopping_bag</span>
                   <span>Add 3 Items</span>
                 </button>
               </div>
@@ -1153,14 +1194,14 @@
 
               <!-- Ratings & Badges -->
               <div class="flex items-center flex-wrap gap-2 mt-3">
-                <div class="flex items-center gap-1.5 bg-surface-container-high px-3 py-1 rounded-full text-xs">
-                  <span class="material-symbols-outlined text-amber-500 text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+                <div class="flex items-center gap-1.5 bg-surface-container-high px-3 min-h-[44px] rounded-full text-xs">
+                  <span class="material-symbols-outlined text-secondary text-sm" style="font-variation-settings: 'FILL' 1;" aria-hidden="true">star</span>
                   <span class="font-spec-numeral font-bold text-primary">${product.rating.toFixed(1)}</span>
                   <span class="text-outline">•</span>
-                  <a href="#pdp-reviews" class="text-on-surface-variant underline">${product.reviewsCount} verified reviews</a>
+                  <a href="#pdp-reviews" class="min-h-[44px] inline-flex items-center text-on-surface-variant underline">${product.reviewsCount} verified reviews</a>
                 </div>
-                <span class="flex items-center gap-1 text-[#266b4e] text-xs bg-[#e8f5e9] px-2.5 py-1 rounded-full font-semibold">
-                  <span class="material-symbols-outlined text-xs">water_drop</span>
+                <span class="flex items-center gap-1 text-[#266b4e] text-xs bg-[#e8f5e9] px-3 min-h-[44px] rounded-full font-semibold">
+                  <span class="material-symbols-outlined text-xs" aria-hidden="true">water_drop</span>
                   98% Bubble-Free Rating
                 </span>
               </div>
@@ -1172,14 +1213,14 @@
                 <div class="flex items-baseline gap-2.5">
                   <span id="pdp-display-price" class="font-spec-numeral text-2xl sm:text-3xl text-primary font-bold">${formatINR(currentPrice)}</span>
                   <span id="pdp-display-regular" class="font-spec-numeral text-sm line-through text-outline">${formatINR(regularPrice)}</span>
-                  ${discountPct > 0 ? `<span id="pdp-display-discount" class="font-spec-numeral text-xs font-bold bg-[#ffe4de] text-[#c85a48] px-2.5 py-0.5 rounded-full">${discountPct}% OFF</span>` : ''}
+                  ${discountPct > 0 ? `<span id="pdp-display-discount" class="font-spec-numeral text-xs font-bold bg-[#ffe4de] text-[#9e3322] px-2.5 py-0.5 rounded-full">${discountPct}% OFF</span>` : ''}
                 </div>
                 <span id="pdp-display-unit" class="font-spec-numeral text-xs text-primary font-semibold bg-surface-container-highest px-2.5 py-1 rounded-lg">${esc(activeVariant.unitPrice)}</span>
               </div>
-              <div class="flex items-center justify-between text-xs text-on-surface-variant pt-1">
+              <div class="flex items-center justify-between gap-2 text-xs text-on-surface-variant pt-1">
                 <span>Inclusive of all GST taxes (18% B2B Input Credit eligible)</span>
-                <span class="text-[#266b4e] font-bold flex items-center gap-0.5">
-                  <span class="material-symbols-outlined text-sm">check_circle</span> In Stock
+                <span class="text-[#266b4e] font-bold flex items-center gap-0.5 shrink-0">
+                  <span class="material-symbols-outlined text-sm" aria-hidden="true">check_circle</span> In Stock
                 </span>
               </div>
             </div>
@@ -1187,7 +1228,7 @@
             <!-- Variant / Kit Selector -->
             <div class="flex flex-col gap-2">
               <div class="flex justify-between items-center">
-                <label class="font-title-md text-sm text-primary font-bold">Select Kit / Edition Architecture</label>
+                <span class="font-title-md text-sm text-primary font-bold">Select Kit / Edition Architecture</span>
                 <span class="font-label-sm text-xs text-secondary font-semibold">Self-Leveling Low Exotherm</span>
               </div>
               <div class="grid grid-cols-1 gap-2">
@@ -1195,14 +1236,14 @@
                   const isSelected = idx === AppState.selectedVariantIdx;
                   return `
                     <button type="button" onclick="window.selectPdpVariant(${idx})" class="p-3.5 rounded-xl border text-left flex items-center justify-between transition-all cursor-pointer ${isSelected ? 'bg-primary text-on-primary border-primary shadow-md' : 'bg-white text-primary border-[#e4e0d8] hover:bg-surface-container-low'}">
-                      <div class="flex items-center gap-3">
-                        <span class="material-symbols-outlined text-xl ${isSelected ? 'text-secondary-fixed' : 'text-secondary'}">workspace_premium</span>
-                        <div>
-                          <div class="flex items-center gap-2">
+                      <div class="flex items-center gap-3 min-w-0">
+                        <span class="material-symbols-outlined text-xl ${isSelected ? 'text-secondary-fixed' : 'text-secondary'}" aria-hidden="true">workspace_premium</span>
+                        <div class="min-w-0">
+                          <div class="flex items-center gap-2 flex-wrap">
                             <p class="font-title-md text-sm font-bold ${isSelected ? 'text-white' : 'text-primary'}">${esc(v.label)}</p>
                             ${v.popular ? `<span class="px-2 py-0.5 rounded bg-secondary-fixed text-on-secondary-fixed text-[10px] font-bold uppercase">Most Popular</span>` : ''}
                           </div>
-                          <p class="text-xs ${isSelected ? 'text-white/80' : 'text-on-surface-variant'}">${esc(v.desc)}</p>
+                          <p class="text-xs ${isSelected ? 'text-white/85' : 'text-on-surface-variant'}">${esc(v.desc)}</p>
                         </div>
                       </div>
                       <div class="text-right shrink-0 pl-2">
@@ -1216,41 +1257,41 @@
             </div>
 
             <!-- Custom Memory / Engraving Note (Especially for Keepsake items) -->
-            <div class="p-3.5 rounded-xl bg-[#fdf6f3] border border-[#c85a48]/30 flex flex-col gap-2">
-              <div class="flex items-center justify-between">
+            <div class="p-3.5 rounded-xl bg-[#fdf6f3] border border-[#9e3322]/30 flex flex-col gap-2">
+              <div class="flex items-center justify-between gap-2">
                 <label for="pdp-custom-note" class="text-xs font-bold text-primary flex items-center gap-1.5">
-                  <span class="material-symbols-outlined text-sm text-[#c85a48]">edit_note</span>
+                  <span class="material-symbols-outlined text-sm text-[#9e3322]" aria-hidden="true">edit_note</span>
                   <span>${product.isCustomizable ? 'Personalization / Couple Name & Date Engraving (Free)' : 'Studio Batch Note / COA Request (Optional)'}</span>
                 </label>
-                <span class="text-[10px] font-semibold text-[#c85a48] uppercase">Included</span>
+                <span class="text-[10px] font-semibold text-[#9e3322] uppercase shrink-0">Included</span>
               </div>
-              <input id="pdp-custom-note" type="text" value="${esc(AppState.pdpCustomNote)}" oninput="window.setPdpCustomNote(this.value)" placeholder="${product.isCustomizable ? 'e.g. Aarav & Meera • 12 Oct 2026 • Gold Foil Calligraphy' : 'e.g. Include printed ASTM Certificate of Analysis with shipment'}" class="w-full h-10 px-3 rounded-lg bg-white border border-[#e4e0d8] text-xs text-primary focus:outline-none focus:border-primary">
+              <input id="pdp-custom-note" type="text" value="${esc(AppState.pdpCustomNote)}" oninput="window.setPdpCustomNote(this.value)" placeholder="${product.isCustomizable ? 'e.g. Aarav & Meera • 12 Oct 2026 • Gold Foil Calligraphy' : 'e.g. Include printed ASTM Certificate of Analysis with shipment'}" class="w-full h-12 px-3 rounded-lg bg-white border border-[#e4e0d8] text-xs text-primary">
             </div>
 
             <!-- Tiered Studio Volume Pricing -->
             <div class="p-4 rounded-xl bg-surface-container-high flex flex-col gap-2">
               <div class="flex items-center justify-between">
-                <h3 class="text-xs font-bold text-primary flex items-center gap-1.5 uppercase tracking-wider">
-                  <span class="material-symbols-outlined text-secondary text-base">local_offer</span>
+                <h2 class="text-xs font-bold text-primary flex items-center gap-1.5 uppercase tracking-wider font-body-md">
+                  <span class="material-symbols-outlined text-secondary text-base" aria-hidden="true">local_offer</span>
                   <span>Tiered Studio Volume Pricing</span>
-                </h3>
+                </h2>
                 <span class="text-[11px] text-secondary font-semibold">Auto-applied in bag</span>
               </div>
               <div class="grid grid-cols-3 gap-2 text-center">
                 <div class="p-2.5 rounded-lg ${AppState.pdpQty < 3 ? 'bg-primary text-white shadow-xs' : 'bg-white text-primary'}">
-                  <span class="text-[11px] block opacity-80">1 – 2 Units</span>
+                  <span class="text-[11px] block ${AppState.pdpQty < 3 ? 'text-white/90' : 'text-on-surface-variant'}">1 – 2 Units</span>
                   <span class="font-spec-numeral text-sm font-bold block mt-0.5">${formatINR(tier1Price)}</span>
-                  <span class="text-[10px] block opacity-75">Standard Rate</span>
+                  <span class="text-[10px] block ${AppState.pdpQty < 3 ? 'text-white/85' : 'text-on-surface-variant'}">Standard Rate</span>
                 </div>
                 <div class="p-2.5 rounded-lg ${AppState.pdpQty >= 3 && AppState.pdpQty < 6 ? 'bg-primary text-white shadow-xs' : 'bg-white text-primary'}">
-                  <span class="text-[11px] block opacity-80">3 – 5 Units</span>
+                  <span class="text-[11px] block ${AppState.pdpQty >= 3 && AppState.pdpQty < 6 ? 'text-white/90' : 'text-on-surface-variant'}">3 – 5 Units</span>
                   <span class="font-spec-numeral text-sm font-bold block mt-0.5">${formatINR(tier2Price)}</span>
-                  <span class="text-[10px] font-bold text-secondary-fixed block">Save 8%</span>
+                  <span class="text-[10px] font-bold ${AppState.pdpQty >= 3 && AppState.pdpQty < 6 ? 'text-secondary-fixed' : 'text-secondary'} block">Save 8%</span>
                 </div>
                 <div class="p-2.5 rounded-lg ${AppState.pdpQty >= 6 ? 'bg-primary text-white shadow-xs' : 'bg-white text-primary'}">
-                  <span class="text-[11px] block opacity-80">6+ Units</span>
+                  <span class="text-[11px] block ${AppState.pdpQty >= 6 ? 'text-white/90' : 'text-on-surface-variant'}">6+ Units</span>
                   <span class="font-spec-numeral text-sm font-bold block mt-0.5">${formatINR(tier3Price)}</span>
-                  <span class="text-[10px] font-bold text-secondary-fixed block">Save 16%</span>
+                  <span class="text-[10px] font-bold ${AppState.pdpQty >= 6 ? 'text-secondary-fixed' : 'text-secondary'} block">Save 16%</span>
                 </div>
               </div>
             </div>
@@ -1281,16 +1322,16 @@
               </div>
 
               <!-- Downloadable TDS & SDS Triggers -->
-              <div class="grid grid-cols-2 gap-2.5 pt-1">
-                <button type="button" onclick="window.openTdsModal('tds')" class="p-3 rounded-xl bg-white border border-[#e4e0d8] hover:border-secondary text-primary flex items-center gap-2.5 text-left cursor-pointer">
-                  <span class="material-symbols-outlined text-secondary text-xl">picture_as_pdf</span>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-1">
+                <button type="button" onclick="window.openTdsModal('tds')" class="min-h-[48px] p-3 rounded-xl bg-white border border-[#e4e0d8] hover:border-secondary text-primary flex items-center gap-2.5 text-left cursor-pointer">
+                  <span class="material-symbols-outlined text-secondary text-xl" aria-hidden="true">picture_as_pdf</span>
                   <div>
                     <p class="text-xs font-bold">TDS (Spec Sheet)</p>
                     <p class="text-[10px] text-on-surface-variant">Interactive Lab Data • PDF</p>
                   </div>
                 </button>
-                <button type="button" onclick="window.openTdsModal('sds')" class="p-3 rounded-xl bg-white border border-[#e4e0d8] hover:border-secondary text-primary flex items-center gap-2.5 text-left cursor-pointer">
-                  <span class="material-symbols-outlined text-secondary text-xl">security</span>
+                <button type="button" onclick="window.openTdsModal('sds')" class="min-h-[48px] p-3 rounded-xl bg-white border border-[#e4e0d8] hover:border-secondary text-primary flex items-center gap-2.5 text-left cursor-pointer">
+                  <span class="material-symbols-outlined text-secondary text-xl" aria-hidden="true">security</span>
                   <div>
                     <p class="text-xs font-bold">SDS (Safety Sheet)</p>
                     <p class="text-[10px] text-on-surface-variant">ISO 11014 Zero-VOC Cert</p>
@@ -1301,19 +1342,19 @@
 
             <!-- Live Indian PIN Code Serviceability Check -->
             <div class="p-4 rounded-xl bg-surface-container-low border border-[#e4e0d8] flex flex-col gap-2.5">
-              <div class="flex items-center justify-between">
-                <span class="text-xs font-bold text-primary flex items-center gap-1.5">
-                  <span class="material-symbols-outlined text-base text-primary">local_shipping</span>
-                  Express Delivery &amp; Pickup Estimation
-                </span>
-                <span class="text-[11px] text-secondary font-semibold">Solvent Safe Sealed</span>
+              <div class="flex items-center justify-between gap-2">
+                <label for="pdp-pincode-input" class="text-xs font-bold text-primary flex items-center gap-1.5">
+                  <span class="material-symbols-outlined text-base text-primary" aria-hidden="true">local_shipping</span>
+                  <span>Express Delivery &amp; Pickup Estimation</span>
+                </label>
+                <span class="text-[11px] text-secondary font-semibold shrink-0">Solvent Safe Sealed</span>
               </div>
               <div class="flex gap-2">
-                <input id="pdp-pincode-input" type="text" maxlength="6" value="${esc(pinInfo.pin)}" placeholder="Enter 6-digit PIN code" class="flex-1 h-10 px-3 bg-white rounded-lg border border-[#e4e0d8] font-spec-numeral text-xs text-primary">
-                <button type="button" onclick="window.verifyPdpPincode()" class="px-4 h-10 rounded-lg bg-primary text-on-primary text-xs font-semibold cursor-pointer">Verify</button>
+                <input id="pdp-pincode-input" type="text" maxlength="6" aria-label="Enter 6-digit PIN code" value="${esc(pinInfo.pin)}" placeholder="Enter 6-digit PIN code" class="min-w-0 flex-1 h-12 px-3 bg-white rounded-lg border border-[#e4e0d8] font-spec-numeral text-xs text-primary">
+                <button type="button" onclick="window.verifyPdpPincode()" class="px-5 h-12 rounded-lg bg-primary text-on-primary text-xs font-semibold cursor-pointer shrink-0">Verify</button>
               </div>
               <div id="pdp-pincode-result" class="p-2.5 rounded-lg bg-white text-xs text-primary flex items-start gap-2">
-                <span class="material-symbols-outlined text-[#266b4e] text-base shrink-0 mt-0.5">verified_user</span>
+                <span class="material-symbols-outlined text-[#266b4e] text-base shrink-0 mt-0.5" aria-hidden="true">verified_user</span>
                 <span><strong>${esc(pinInfo.pin)} (${esc(pinInfo.city)})</strong> — Delivery in <strong>${esc(pinInfo.days)}</strong> via ${esc(pinInfo.courier)}. Cash on Delivery &amp; UPI supported.</span>
               </div>
             </div>
@@ -1325,32 +1366,39 @@
           <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-t border-[#e4e0d8] pt-8">
             <div>
               <span class="font-label-sm text-xs uppercase tracking-wider text-secondary font-bold">Verified Studio Patrons</span>
-              <h3 class="font-headline-sm text-xl text-primary font-bold">Artisan &amp; Bride Reviews (${prodReviews.length})</h3>
+              <h2 class="font-headline-sm text-xl text-primary font-bold">Artisan &amp; Bride Reviews (${prodReviews.length})</h2>
             </div>
-            <button type="button" onclick="window.toggleReviewForm()" class="self-start px-4 py-2 rounded-lg border border-primary text-primary text-xs font-bold hover:bg-surface-container-high cursor-pointer">
+            <button type="button" onclick="window.toggleReviewForm()" class="self-start min-h-[44px] px-4 py-2 rounded-lg border border-primary text-primary text-xs font-bold hover:bg-surface-container-high cursor-pointer">
               + Write a Studio Review
             </button>
           </div>
 
           <form id="pdp-review-form" onsubmit="event.preventDefault(); window.submitPdpReview('${esc(product.id)}');" class="hidden ram-card p-4 flex flex-col gap-3 bg-surface-container-low">
-            <h4 class="text-xs font-bold text-primary uppercase">Submit Your Experience</h4>
+            <h3 class="text-xs font-bold text-primary uppercase font-body-md">Submit Your Experience</h3>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <input id="rev-author" type="text" required placeholder="Your Name & City (e.g.Kavya • Bengaluru)" class="h-10 px-3 rounded-lg bg-white border border-[#e4e0d8] text-xs">
-              <select id="rev-rating" class="h-10 px-3 rounded-lg bg-white border border-[#e4e0d8] text-xs">
-                <option value="5">★★★★★ (5.0 — Flawless Pour / Keepsake)</option>
-                <option value="4">★★★★☆ (4.0 — Very Good)</option>
-              </select>
+              <div>
+                <label for="rev-author" class="sr-only">Your Name and City</label>
+                <input id="rev-author" type="text" required aria-label="Your Name and City" placeholder="Your Name & City (e.g. Kavya • Bengaluru)" class="w-full h-12 px-3 rounded-lg bg-white border border-[#e4e0d8] text-xs">
+              </div>
+              <div>
+                <label for="rev-rating" class="sr-only">Review Rating</label>
+                <select id="rev-rating" aria-label="Review Rating" class="w-full h-12 px-3 rounded-lg bg-white border border-[#e4e0d8] text-xs">
+                  <option value="5">★★★★★ (5.0 — Flawless Pour / Keepsake)</option>
+                  <option value="4">★★★★☆ (4.0 — Very Good)</option>
+                </select>
+              </div>
             </div>
-            <textarea id="rev-text" rows="2" required placeholder="Share how the clarity, pot life, or floral preservation turned out..." class="p-3 rounded-lg bg-white border border-[#e4e0d8] text-xs"></textarea>
-            <button type="submit" class="self-start px-5 py-2 rounded-lg bg-primary text-on-primary text-xs font-semibold cursor-pointer">Post Verified Review</button>
+            <label for="rev-text" class="sr-only">Review Details</label>
+            <textarea id="rev-text" rows="2" required aria-label="Review Details" placeholder="Share how the clarity, pot life, or floral preservation turned out..." class="p-3 rounded-lg bg-white border border-[#e4e0d8] text-xs"></textarea>
+            <button type="submit" class="self-start min-h-[48px] px-5 py-2.5 rounded-lg bg-primary text-on-primary text-xs font-semibold cursor-pointer">Post Verified Review</button>
           </form>
 
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             ${prodReviews.map(r => `
               <div class="ram-card p-4 flex flex-col gap-2 bg-white">
-                <div class="flex items-center justify-between">
+                <div class="flex items-center justify-between gap-2">
                   <span class="text-xs font-bold text-primary">${esc(r.author)}</span>
-                  <span class="text-[11px] text-[#266b4e] font-semibold">✓ Verified Purchase • ${esc(r.date)}</span>
+                  <span class="text-[11px] text-[#266b4e] font-semibold shrink-0">✓ Verified Purchase • ${esc(r.date)}</span>
                 </div>
                 <div class="flex items-center text-amber-500 text-xs">${'★'.repeat(r.rating)}</div>
                 <p class="text-xs text-on-surface-variant leading-relaxed">${esc(r.text)}</p>
@@ -1359,24 +1407,24 @@
           </div>
         </section>
 
-        <!-- Sticky Bottom PDP Action Bar -->
-        <aside class="fixed bottom-16 md:bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-lg border-t border-[#e4e0d8] px-4 sm:px-8 py-3 shadow-lg">
-          <div class="max-w-5xl mx-auto flex items-center gap-3">
-            <button type="button" aria-label="Save to Wishlist" onclick="window.handleWishlistToggle(event, '${esc(product.id)}')" class="w-12 h-12 rounded-xl bg-surface-container-low flex items-center justify-center ${isFav ? 'text-[#c85a48]' : 'text-primary'} shrink-0 cursor-pointer">
-              <span class="material-symbols-outlined text-2xl" style="font-variation-settings: 'FILL' ${isFav ? 1 : 0};">${isFav ? 'favorite' : 'favorite_border'}</span>
+        <!-- Sticky Bottom PDP Action Bar (aligned with lg:hidden mobile bottom nav) -->
+        <aside class="fixed bottom-16 lg:bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-lg border-t border-[#e4e0d8] px-3 sm:px-8 py-2.5 shadow-lg">
+          <div class="max-w-5xl mx-auto flex items-center gap-2 sm:gap-3">
+            <button type="button" aria-label="Save to Wishlist" onclick="window.handleWishlistToggle(event, '${esc(product.id)}')" class="w-12 h-12 rounded-xl bg-surface-container-low flex items-center justify-center ${isFav ? 'text-[#9e3322]' : 'text-primary'} shrink-0 cursor-pointer">
+              <span class="material-symbols-outlined text-2xl" style="font-variation-settings: 'FILL' ${isFav ? 1 : 0};" aria-hidden="true">${isFav ? 'favorite' : 'favorite_border'}</span>
             </button>
-            <div class="h-12 bg-surface-container-low rounded-xl flex items-center px-2 shrink-0 border border-[#e4e0d8]">
-              <button type="button" aria-label="Decrease quantity" onclick="window.changePdpQty(-1)" class="w-8 h-8 flex items-center justify-center text-primary font-bold cursor-pointer">
-                <span class="material-symbols-outlined text-base">remove</span>
+            <div class="h-12 bg-surface-container-low rounded-xl flex items-center px-1 shrink-0 border border-[#e4e0d8]">
+              <button type="button" aria-label="Decrease quantity" onclick="window.changePdpQty(-1)" class="w-11 h-11 flex items-center justify-center text-primary font-bold cursor-pointer">
+                <span class="material-symbols-outlined text-base" aria-hidden="true">remove</span>
               </button>
-              <span id="pdp-qty-val" class="w-8 text-center font-spec-numeral text-sm text-primary font-bold">${AppState.pdpQty}</span>
-              <button type="button" aria-label="Increase quantity" onclick="window.changePdpQty(1)" class="w-8 h-8 flex items-center justify-center text-primary font-bold cursor-pointer">
-                <span class="material-symbols-outlined text-base">add</span>
+              <span id="pdp-qty-val" class="w-6 sm:w-8 text-center font-spec-numeral text-sm text-primary font-bold">${AppState.pdpQty}</span>
+              <button type="button" aria-label="Increase quantity" onclick="window.changePdpQty(1)" class="w-11 h-11 flex items-center justify-center text-primary font-bold cursor-pointer">
+                <span class="material-symbols-outlined text-base" aria-hidden="true">add</span>
               </button>
             </div>
-            <button type="button" id="pdp-add-to-cart-btn" onclick="window.addPdpToCart()" class="btn-shimmer flex-1 h-12 rounded-xl bg-primary hover:bg-primary-container text-on-primary font-title-md text-sm font-bold flex items-center justify-center gap-2 shadow-md active:scale-[0.99] transition-all cursor-pointer">
-              <span class="material-symbols-outlined text-xl">shopping_bag</span>
-              <span id="pdp-cta-label">Add to Studio Bag • ${formatINR(totalCtaPrice)}</span>
+            <button type="button" id="pdp-add-to-cart-btn" onclick="window.addPdpToCart()" class="btn-shimmer min-w-0 flex-1 h-12 px-3 sm:px-5 rounded-xl bg-primary hover:bg-primary-container text-on-primary font-title-md text-xs sm:text-sm font-bold flex items-center justify-center gap-1.5 sm:gap-2 shadow-md active:scale-[0.99] transition-all whitespace-nowrap cursor-pointer">
+              <span class="material-symbols-outlined text-lg sm:text-xl shrink-0" aria-hidden="true">shopping_bag</span>
+              <span id="pdp-cta-label" class="truncate">Add to Studio Bag • ${formatINR(totalCtaPrice)}</span>
             </button>
           </div>
         </aside>
@@ -1396,20 +1444,20 @@
     return `
       <div class="route-view-enter flex flex-col w-full max-w-6xl mx-auto px-4 sm:px-8 py-6 gap-6">
         <!-- Official Instagram Profile Header Card -->
-        <div class="ram-card p-6 bg-gradient-to-r from-[#031a38] via-[#1b2f4e] to-[#2c1e21] text-white flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
-          <div class="flex items-center gap-4">
+        <div class="ram-card p-5 sm:p-6 !bg-[#031a38] bg-gradient-to-r from-[#031a38] via-[#1b2f4e] to-[#2c1e21] text-white flex flex-col md:flex-row items-start md:items-center justify-between gap-5">
+          <div class="flex flex-col sm:flex-row items-start sm:items-center gap-4">
             <div class="story-ring w-20 h-20 sm:w-24 sm:h-24 shrink-0">
               <img src="${esc(Store.IMAGES.floralCube)}" alt="@resin.art.memories" class="w-full h-full rounded-full object-cover border-2 border-[#031a38]">
             </div>
             <div>
               <div class="flex items-center gap-2 flex-wrap">
                 <h1 class="font-headline-sm text-xl sm:text-2xl font-bold">@resin.art.memories</h1>
-                <span class="px-2.5 py-0.5 rounded-full bg-[#c85a48] text-white text-[10px] font-bold uppercase">Verified Official Storefront</span>
+                <span class="px-2.5 py-0.5 rounded-full bg-[#9e3322] text-white text-[10px] font-bold uppercase whitespace-nowrap">Verified Official Storefront</span>
               </div>
-              <p class="text-xs sm:text-sm text-white/85 mt-1 max-w-xl">
+              <p class="text-xs sm:text-sm text-white/90 mt-1.5 max-w-xl leading-relaxed">
                 🌹 Preserving Wedding Varmalas, Anniversary Roses &amp; Intimate Memories in Museum-Grade Crystal Resin • Powered by Vistāra Krafts Optical Formulations
               </p>
-              <div class="flex items-center gap-5 mt-3 font-spec-numeral text-xs">
+              <div class="flex flex-wrap items-center gap-4 sm:gap-5 mt-3 font-spec-numeral text-xs">
                 <span><strong>642</strong> Creations</span>
                 <span><strong>48.9K</strong> Patrons</span>
                 <span><strong>100%</strong> Custom Hand-Poured</span>
@@ -1418,12 +1466,12 @@
           </div>
 
           <div class="flex flex-wrap items-center gap-2.5 w-full md:w-auto">
-            <a href="https://www.instagram.com/resin.art.memories?utm_source=qr" target="_blank" rel="noopener noreferrer" class="flex-1 md:flex-initial px-4 py-2.5 rounded-xl bg-[#c85a48] hover:opacity-95 text-white text-xs font-bold flex items-center justify-center gap-1.5 shadow-sm">
-              <span class="material-symbols-outlined text-base">open_in_new</span>
+            <a href="https://www.instagram.com/resin.art.memories?utm_source=qr" target="_blank" rel="noopener noreferrer" class="flex-1 md:flex-initial min-h-[48px] px-4 py-2.5 rounded-xl bg-[#9e3322] hover:opacity-95 text-white text-xs font-bold flex items-center justify-center gap-1.5 shadow-sm whitespace-nowrap">
+              <span class="material-symbols-outlined text-base" aria-hidden="true">open_in_new</span>
               <span>Follow on Instagram</span>
             </a>
-            <button type="button" onclick="window.openShareMemoryModal()" class="flex-1 md:flex-initial px-4 py-2.5 rounded-xl bg-white text-primary text-xs font-bold flex items-center justify-center gap-1.5 cursor-pointer">
-              <span class="material-symbols-outlined text-base text-[#c85a48]">add_a_photo</span>
+            <button type="button" onclick="window.openShareMemoryModal()" class="flex-1 md:flex-initial min-h-[48px] px-4 py-2.5 rounded-xl bg-white text-primary text-xs font-bold flex items-center justify-center gap-1.5 whitespace-nowrap cursor-pointer">
+              <span class="material-symbols-outlined text-base text-[#9e3322]" aria-hidden="true">add_a_photo</span>
               <span>Post Your Memory</span>
             </button>
           </div>
@@ -1431,7 +1479,7 @@
 
         <!-- Filter Pills -->
         <div class="flex items-center justify-between flex-wrap gap-2">
-          <div class="flex items-center gap-2 overflow-x-auto no-scrollbar">
+          <div class="flex items-center gap-2 overflow-x-auto no-scrollbar py-0.5 max-w-full">
             ${[
               { id: 'all', label: 'All Feed Posts' },
               { id: 'BridalVarmala', label: '#BridalVarmala' },
@@ -1439,12 +1487,12 @@
               { id: 'ResinFormulas', label: '#ResinFormulas' },
               { id: 'ClientLove', label: '#ClientLove' }
             ].map(t => `
-              <button type="button" onclick="window.setSocialTagFilter('${t.id}')" class="px-4 py-2 rounded-full text-xs font-semibold transition-all cursor-pointer ${AppState.socialTagFilter === t.id ? 'bg-primary text-white shadow-xs' : 'bg-surface-container-high text-primary hover:bg-secondary-container/50'}">
+              <button type="button" onclick="window.setSocialTagFilter('${t.id}')" class="min-h-[44px] px-4 py-2 rounded-full text-xs font-semibold whitespace-nowrap shrink-0 transition-all cursor-pointer ${AppState.socialTagFilter === t.id ? 'bg-primary text-white shadow-xs' : 'bg-surface-container-high text-primary hover:bg-secondary-container/50'}">
                 ${esc(t.label)}
               </button>
             `).join('')}
           </div>
-          <span class="text-xs text-on-surface-variant font-spec-numeral">${filtered.length} Shoppable Posts</span>
+          <span class="text-xs text-on-surface-variant font-spec-numeral shrink-0">${filtered.length} Shoppable Posts</span>
         </div>
 
         <!-- Social Feed Grid -->
@@ -1455,35 +1503,35 @@
               <article class="ram-card overflow-hidden flex flex-col justify-between bg-white">
                 <div>
                   <div class="p-3.5 flex items-center justify-between border-b border-surface-container">
-                    <div class="flex items-center gap-2.5">
-                      <img src="${esc(post.avatar)}" alt="${esc(post.authorName)}" class="w-9 h-9 rounded-full object-cover ring-2 ring-[#c85a48]">
-                      <div>
-                        <p class="text-xs font-bold text-primary">${esc(post.authorName)}</p>
-                        <p class="text-[11px] text-on-surface-variant">${esc(post.handle)} • ${esc(post.timeAgo)}</p>
+                    <div class="flex items-center gap-2.5 min-w-0">
+                      <img src="${esc(post.avatar)}" alt="${esc(post.authorName)}" class="w-9 h-9 rounded-full object-cover ring-2 ring-[#9e3322] shrink-0">
+                      <div class="min-w-0">
+                        <p class="text-xs font-bold text-primary truncate">${esc(post.authorName)}</p>
+                        <p class="text-[11px] text-on-surface-variant truncate">${esc(post.handle)} • ${esc(post.timeAgo)}</p>
                       </div>
                     </div>
-                    <span class="px-2.5 py-0.5 rounded-full bg-surface-container-high text-primary text-[10px] font-bold">#${esc(post.tag)}</span>
+                    <span class="px-2.5 py-0.5 rounded-full bg-surface-container-high text-primary text-[10px] font-bold shrink-0">#${esc(post.tag)}</span>
                   </div>
 
                   <div class="relative aspect-square bg-surface-container overflow-hidden group" ondblclick="window.handleSocialLike('${esc(post.id)}')">
                     <img src="${esc(post.image)}" alt="${esc(post.caption)}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
-                    <span class="absolute top-3 left-3 px-2.5 py-1 rounded-full bg-black/65 backdrop-blur-xs text-white text-[10px] font-semibold">${esc(post.badge)}</span>
+                    <span class="absolute top-3 left-3 px-2.5 py-1 rounded-full bg-black/70 backdrop-blur-xs text-white text-[10px] font-semibold">${esc(post.badge)}</span>
                   </div>
 
                   <div class="p-4 flex flex-col gap-2.5">
                     <div class="flex items-center justify-between">
-                      <div class="flex items-center gap-4">
-                        <button type="button" onclick="window.handleSocialLike('${esc(post.id)}')" class="flex items-center gap-1 text-xs font-bold ${post.liked ? 'text-[#c85a48]' : 'text-primary'} cursor-pointer">
-                          <span class="material-symbols-outlined text-xl ${post.liked ? 'animate-heart-pop' : ''}" style="font-variation-settings: 'FILL' ${post.liked ? 1 : 0};">favorite</span>
+                      <div class="flex items-center gap-3">
+                        <button type="button" onclick="window.handleSocialLike('${esc(post.id)}')" class="min-h-[44px] px-2 flex items-center gap-1 text-xs font-bold ${post.liked ? 'text-[#9e3322]' : 'text-primary'} cursor-pointer">
+                          <span class="material-symbols-outlined text-xl ${post.liked ? 'animate-heart-pop' : ''}" style="font-variation-settings: 'FILL' ${post.liked ? 1 : 0};" aria-hidden="true">favorite</span>
                           <span class="font-spec-numeral">${post.likes.toLocaleString('en-IN')}</span>
                         </button>
                         <span class="flex items-center gap-1 text-xs text-on-surface-variant font-spec-numeral">
-                          <span class="material-symbols-outlined text-lg">chat_bubble</span>
+                          <span class="material-symbols-outlined text-lg" aria-hidden="true">chat_bubble</span>
                           ${(post.comments || []).length}
                         </span>
                       </div>
-                      <button type="button" onclick="window.handleSocialSave('${esc(post.id)}')" class="text-xs font-semibold flex items-center gap-1 ${post.saved ? 'text-secondary' : 'text-on-surface-variant'} cursor-pointer">
-                        <span class="material-symbols-outlined text-lg" style="font-variation-settings: 'FILL' ${post.saved ? 1 : 0};">bookmark</span>
+                      <button type="button" onclick="window.handleSocialSave('${esc(post.id)}')" class="min-h-[44px] px-2 text-xs font-semibold flex items-center gap-1 ${post.saved ? 'text-secondary' : 'text-on-surface-variant'} cursor-pointer">
+                        <span class="material-symbols-outlined text-lg" style="font-variation-settings: 'FILL' ${post.saved ? 1 : 0};" aria-hidden="true">bookmark</span>
                         <span>${post.saved ? 'Saved' : 'Save'}</span>
                       </button>
                     </div>
@@ -1499,8 +1547,8 @@
 
                     <!-- Add Comment Input -->
                     <form class="flex gap-1.5 pt-1" onsubmit="event.preventDefault(); window.handleSocialComment('${esc(post.id)}', this);">
-                      <input type="text" name="commentText" required placeholder="Add a comment for @resin.art.memories..." class="flex-1 h-8 px-2.5 rounded-lg bg-surface-container-low border border-[#e4e0d8] text-xs text-primary focus:outline-none">
-                      <button type="submit" class="px-3 h-8 rounded-lg bg-primary text-white text-[11px] font-semibold cursor-pointer">Post</button>
+                      <input type="text" name="commentText" required aria-label="Add a comment for @resin.art.memories" placeholder="Add a comment for @resin.art.memories..." class="min-w-0 flex-1 h-12 px-3 rounded-lg bg-surface-container-low border border-[#e4e0d8] text-xs text-primary">
+                      <button type="submit" class="px-4 h-12 rounded-lg bg-primary text-white text-xs font-semibold shrink-0 cursor-pointer">Post</button>
                     </form>
                   </div>
                 </div>
@@ -1511,12 +1559,12 @@
                     <div class="flex items-center gap-2.5 min-w-0 cursor-pointer" onclick="window.navigateTo('product', '${esc(tagged.id)}')">
                       <img src="${esc(tagged.image)}" alt="${esc(tagged.shortName)}" class="w-10 h-10 rounded-lg object-cover shrink-0 border border-[#e4e0d8]">
                       <div class="min-w-0">
-                        <span class="text-[10px] uppercase tracking-wider text-[#c85a48] font-bold block">Tagged in Reel</span>
+                        <span class="text-[10px] uppercase tracking-wider text-[#9e3322] font-bold block">Tagged in Reel</span>
                         <p class="text-xs font-bold text-primary truncate">${esc(tagged.shortName)}</p>
                         <p class="font-spec-numeral text-xs font-bold text-secondary">${formatINR(tagged.price)}</p>
                       </div>
                     </div>
-                    <button type="button" onclick="window.handleQuickAdd(this, '${esc(tagged.id)}')" class="px-3.5 py-2 rounded-lg bg-primary text-white text-xs font-semibold shrink-0 cursor-pointer">
+                    <button type="button" onclick="window.handleQuickAdd(this, '${esc(tagged.id)}')" class="min-h-[44px] px-4 py-2 rounded-lg bg-primary text-white text-xs font-semibold shrink-0 cursor-pointer">
                       Shop Piece
                     </button>
                   </div>
@@ -1545,14 +1593,14 @@
       depthCm: AppState.calcDepth,
       ratioSystem: AppState.calcSystem
     });
-    const recommendedProdId = AppState.calcSystem === '2:1' ? 'vk-epx-201' : (AppState.calcSystem === '1:1' ? 'vk-dom-101' : 'vk-epx-301');
+    const recommendedProdId = AppState.calcSystem === '2:1' ? 'vk-epx-201' : (AppState.calcSystem === '1:1' ? 'vk-res-003' : 'vk-epx-301');
     const recommendedProd = Store.getProductById(recommendedProdId);
 
     return `
       <div class="route-view-enter flex flex-col w-full max-w-6xl mx-auto px-4 sm:px-8 py-6 gap-8">
         <!-- Studio Header -->
         <div class="flex flex-col gap-1">
-          <span class="font-label-sm text-xs uppercase tracking-widest text-[#c85a48] font-bold">Bespoke Atelier &amp; Formulation Lab</span>
+          <span class="font-label-sm text-xs uppercase tracking-widest text-[#9e3322] font-bold">Bespoke Atelier &amp; Formulation Lab</span>
           <h1 class="font-headline-lg text-2xl sm:text-4xl text-primary font-bold">Custom Memory Preservation &amp; Pour Calculator</h1>
           <p class="text-xs sm:text-sm text-on-surface-variant">Design your one-of-a-kind wedding/anniversary floral block OR calculate exact resin ratios for your own DIY moulds.</p>
         </div>
@@ -1560,14 +1608,14 @@
         <!-- Part A: Interactive 4-Step Custom Keepsake Configurator -->
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
           <div class="lg:col-span-7 ram-card p-5 sm:p-6 flex flex-col gap-5 bg-white">
-            <div class="flex items-center justify-between border-b border-surface-container pb-3">
+            <div class="flex flex-wrap items-center justify-between gap-2 border-b border-surface-container pb-3">
               <h2 class="font-headline-sm text-xl text-primary font-bold">1. Configure Your Custom Resin Keepsake</h2>
-              <span class="px-2.5 py-1 rounded-full bg-[#ffe4de] text-[#9e3828] text-xs font-bold">Doorstep Flower Pickup</span>
+              <span class="px-2.5 py-1 rounded-full bg-[#ffe4de] text-[#9e3322] text-xs font-bold whitespace-nowrap shrink-0">Doorstep Flower Pickup</span>
             </div>
 
             <!-- Step 1: Vessel Architecture -->
             <div>
-              <label class="text-xs font-bold text-primary uppercase tracking-wider block mb-2">Step 1: Choose Keepsake Geometry</label>
+              <span class="text-xs font-bold text-primary uppercase tracking-wider block mb-2">Step 1: Choose Keepsake Geometry</span>
               <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
                 ${[
                   { label: '8" Romantic Cube', price: 2999, desc: '8–12 Roses • 50mm deep' },
@@ -1576,7 +1624,7 @@
                 ].map(item => `
                   <button type="button" onclick="window.updateCustomBuilder('shape', '${esc(item.label)}', ${item.price})" class="p-3 rounded-xl border text-left transition-all cursor-pointer ${b.shape === item.label ? 'bg-primary text-white border-primary shadow-sm' : 'bg-surface-container-low text-primary border-[#e4e0d8]'}">
                     <p class="text-xs font-bold">${esc(item.label)}</p>
-                    <p class="text-[11px] opacity-80 mt-0.5">${esc(item.desc)}</p>
+                    <p class="text-[11px] ${b.shape === item.label ? 'text-white/85' : 'text-on-surface-variant'} mt-0.5">${esc(item.desc)}</p>
                     <p class="font-spec-numeral text-sm font-bold mt-1.5 ${b.shape === item.label ? 'text-[#ffd79b]' : 'text-secondary'}">${formatINR(item.price)}</p>
                   </button>
                 `).join('')}
@@ -1585,13 +1633,13 @@
 
             <!-- Step 2: Flower / Memory Source -->
             <div>
-              <label class="text-xs font-bold text-primary uppercase tracking-wider block mb-2">Step 2: How Will Your Flowers Reach Our Studio?</label>
+              <span class="text-xs font-bold text-primary uppercase tracking-wider block mb-2">Step 2: How Will Your Flowers Reach Our Studio?</span>
               <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                 ${[
                   { label: 'Fresh Wedding Varmala (Free Doorstep Pickup)', addon: 0 },
                   { label: 'Studio Pre-Sourced Ecuadorian Roses & Orchids', addon: 650 }
                 ].map(src => `
-                  <button type="button" onclick="window.updateCustomBuilder('flowerSource', '${esc(src.label)}', ${src.addon})" class="p-3 rounded-xl border text-left transition-all cursor-pointer ${b.flowerSource === src.label ? 'border-[#c85a48] bg-[#ffe4de]/40 ring-1 ring-[#c85a48]' : 'border-[#e4e0d8] bg-white'}">
+                  <button type="button" onclick="window.updateCustomBuilder('flowerSource', '${esc(src.label)}', ${src.addon})" class="p-3 rounded-xl border text-left transition-all cursor-pointer ${b.flowerSource === src.label ? 'border-[#9e3322] bg-[#ffe4de]/40 ring-1 ring-[#9e3322]' : 'border-[#e4e0d8] bg-white'}">
                     <p class="text-xs font-bold text-primary">${esc(src.label)}</p>
                     <p class="font-spec-numeral text-[11px] text-secondary font-semibold mt-1">${src.addon === 0 ? 'Complimentary Courier Kit' : '+ ' + formatINR(src.addon)}</p>
                   </button>
@@ -1601,7 +1649,7 @@
 
             <!-- Step 3: Metallic & Pigment Accents -->
             <div>
-              <label class="text-xs font-bold text-primary uppercase tracking-wider block mb-2">Step 3: Select Luxury Inclusions</label>
+              <span class="text-xs font-bold text-primary uppercase tracking-wider block mb-2">Step 3: Select Luxury Inclusions</span>
               <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
                 ${[
                   { label: 'Pure Crystal Clear (Zero Flakes)', addon: 0 },
@@ -1620,44 +1668,44 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
                 <label class="text-xs font-bold text-primary block mb-1" for="custom-engraving-input">Custom Names / Date Calligraphy</label>
-                <input id="custom-engraving-input" type="text" value="${esc(b.engraving)}" oninput="window.updateCustomBuilderText(this.value)" placeholder="e.g. Aarav & Meera • 12.10.2026" class="w-full h-10 px-3 rounded-lg bg-surface-container-low border border-[#e4e0d8] text-xs text-primary">
+                <input id="custom-engraving-input" type="text" value="${esc(b.engraving)}" oninput="window.updateCustomBuilderText(this.value)" placeholder="e.g. Aarav & Meera • 12.10.2026" class="w-full h-12 px-3 rounded-lg bg-surface-container-low border border-[#e4e0d8] text-xs text-primary">
               </div>
               <div class="flex items-end">
-                <label class="w-full h-10 px-3 rounded-lg bg-surface-container-low border border-[#e4e0d8] flex items-center justify-between cursor-pointer">
+                <label class="w-full h-12 px-3 rounded-lg bg-surface-container-low border border-[#e4e0d8] flex items-center justify-between gap-2 cursor-pointer">
                   <span class="text-xs font-semibold text-primary">Warm Teak LED Light Base (+₹499)</span>
-                  <input type="checkbox" ${b.ledBase ? 'checked' : ''} onchange="window.updateCustomBuilderLed(this.checked)" class="w-4 h-4 accent-primary">
+                  <input type="checkbox" ${b.ledBase ? 'checked' : ''} onchange="window.updateCustomBuilderLed(this.checked)" class="w-5 h-5 accent-primary shrink-0">
                 </label>
               </div>
             </div>
           </div>
 
           <!-- Live Custom Preview & Instant Add to Bag Card (5 cols) -->
-          <div class="lg:col-span-5 ram-card p-5 bg-gradient-to-b from-primary to-[#101d33] text-white flex flex-col gap-4 sticky top-24">
+          <div class="lg:col-span-5 ram-card p-5 !bg-primary bg-gradient-to-b from-primary to-[#101d33] text-white flex flex-col gap-4 sticky top-24">
             <div class="flex items-center justify-between">
               <span class="text-[11px] uppercase tracking-widest text-[#ffd79b] font-bold">Live Bespoke Preview</span>
               <span class="px-2 py-0.5 rounded bg-white/10 font-spec-numeral text-[11px]">14-Day Cryo-Cure</span>
             </div>
             <div class="relative aspect-[4/3] rounded-xl overflow-hidden border border-white/15">
               <img src="${esc(Store.IMAGES.floralCube)}" alt="Custom Keepsake Preview" class="w-full h-full object-cover">
-              <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent flex flex-col justify-end p-4">
+              <div class="absolute inset-0 bg-black/55 bg-gradient-to-t from-black/85 via-black/40 to-transparent flex flex-col justify-end p-4">
                 <p id="custom-preview-engraving" class="font-serif italic text-base text-[#ffd79b] text-center tracking-wide">“${esc(b.engraving || 'Your Forever Memory')}”</p>
               </div>
             </div>
             <div class="space-y-1.5 text-xs border-y border-white/15 py-3">
-              <div class="flex justify-between"><span class="text-white/70">Architecture:</span><span class="font-semibold">${esc(b.shape)}</span></div>
-              <div class="flex justify-between"><span class="text-white/70">Floral Source:</span><span class="font-semibold truncate max-w-[200px]">${esc(b.flowerSource)}</span></div>
-              <div class="flex justify-between"><span class="text-white/70">Inclusions:</span><span class="font-semibold">${esc(b.metallic)}</span></div>
-              <div class="flex justify-between"><span class="text-white/70">Teak LED Stand:</span><span class="font-semibold">${b.ledBase ? 'Yes (+₹499)' : 'No'}</span></div>
+              <div class="flex justify-between gap-2"><span class="text-white/75">Architecture:</span><span class="font-semibold text-right">${esc(b.shape)}</span></div>
+              <div class="flex justify-between gap-2"><span class="text-white/75">Floral Source:</span><span class="font-semibold truncate max-w-[200px] text-right">${esc(b.flowerSource)}</span></div>
+              <div class="flex justify-between gap-2"><span class="text-white/75">Inclusions:</span><span class="font-semibold text-right">${esc(b.metallic)}</span></div>
+              <div class="flex justify-between gap-2"><span class="text-white/75">Teak LED Stand:</span><span class="font-semibold text-right">${b.ledBase ? 'Yes (+₹499)' : 'No'}</span></div>
             </div>
             <div class="flex items-baseline justify-between">
               <div>
-                <span class="text-xs text-white/70 block">Total Commission Estimate</span>
+                <span class="text-xs text-white/75 block">Total Commission Estimate</span>
                 <span class="font-spec-numeral text-2xl font-bold text-[#ffd79b]">${formatINR(totalCustomPrice)}</span>
               </div>
               <span class="text-[11px] text-emerald-300 font-semibold">Free Air Insured Return</span>
             </div>
-            <button type="button" onclick="window.addCustomCommissionToCart()" class="btn-shimmer w-full h-12 rounded-xl bg-[#c85a48] hover:opacity-95 text-white font-title-md text-sm font-bold flex items-center justify-center gap-2 shadow-lg cursor-pointer">
-              <span class="material-symbols-outlined text-lg">redeem</span>
+            <button type="button" onclick="window.addCustomCommissionToCart()" class="btn-shimmer w-full h-12 rounded-xl bg-[#9e3322] hover:opacity-95 text-white font-title-md text-sm font-bold flex items-center justify-center gap-2 shadow-lg cursor-pointer">
+              <span class="material-symbols-outlined text-lg" aria-hidden="true">redeem</span>
               <span>Book &amp; Add Custom Keepsake to Bag</span>
             </button>
           </div>
@@ -1671,11 +1719,11 @@
               <h2 class="font-headline-sm text-xl text-primary font-bold">2. Interactive Epoxy Pour &amp; Mix Ratio Calculator</h2>
               <p class="text-xs text-on-surface-variant">Calculate exact Resin (Part A) and Hardener (Part B) weights in grams for Rectangular or Circular moulds (1.10 g/cm³ density).</p>
             </div>
-            <div class="flex items-center gap-2">
-              <button type="button" id="studio-calc-shape-rect" onclick="window.setStudioCalcShape('rect')" class="px-3 py-1.5 rounded-lg text-xs font-bold border transition-colors cursor-pointer ${AppState.calcShape === 'rect' ? 'bg-primary text-white border-primary' : 'bg-surface-container-low text-primary border-[#e4e0d8]'}">
+            <div class="flex flex-wrap items-center gap-2">
+              <button type="button" id="studio-calc-shape-rect" onclick="window.setStudioCalcShape('rect')" class="min-h-[44px] px-3.5 py-2 rounded-lg text-xs font-bold border transition-colors cursor-pointer ${AppState.calcShape === 'rect' ? 'bg-primary text-white border-primary' : 'bg-surface-container-low text-primary border-[#e4e0d8]'}">
                 Rectangular (L × W × D)
               </button>
-              <button type="button" id="studio-calc-shape-circle" onclick="window.setStudioCalcShape('circle')" class="px-3 py-1.5 rounded-lg text-xs font-bold border transition-colors cursor-pointer ${AppState.calcShape === 'circle' ? 'bg-primary text-white border-primary' : 'bg-surface-container-low text-primary border-[#e4e0d8]'}">
+              <button type="button" id="studio-calc-shape-circle" onclick="window.setStudioCalcShape('circle')" class="min-h-[44px] px-3.5 py-2 rounded-lg text-xs font-bold border transition-colors cursor-pointer ${AppState.calcShape === 'circle' ? 'bg-primary text-white border-primary' : 'bg-surface-container-low text-primary border-[#e4e0d8]'}">
                 Circular / Round (Ø × D)
               </button>
             </div>
@@ -1687,25 +1735,25 @@
                 ${AppState.calcShape === 'circle' ? `
                   <div class="col-span-2">
                     <label class="text-xs font-bold text-primary block mb-1" for="studio-calc-diam">Mould Diameter Ø (cm)</label>
-                    <input id="studio-calc-diam" type="number" min="0.5" step="0.5" value="${AppState.calcDiameter}" class="w-full h-10 px-3 rounded-lg bg-surface-container-low border border-[#e4e0d8] font-spec-numeral text-sm text-primary">
+                    <input id="studio-calc-diam" type="number" min="0.5" step="0.5" value="${AppState.calcDiameter}" class="w-full h-12 px-3 rounded-lg bg-surface-container-low border border-[#e4e0d8] font-spec-numeral text-sm text-primary">
                   </div>
                 ` : `
                   <div>
                     <label class="text-xs font-bold text-primary block mb-1" for="studio-calc-len">Length (cm)</label>
-                    <input id="studio-calc-len" type="number" min="0.5" step="0.5" value="${AppState.calcLength}" class="w-full h-10 px-3 rounded-lg bg-surface-container-low border border-[#e4e0d8] font-spec-numeral text-sm text-primary">
+                    <input id="studio-calc-len" type="number" min="0.5" step="0.5" value="${AppState.calcLength}" class="w-full h-12 px-3 rounded-lg bg-surface-container-low border border-[#e4e0d8] font-spec-numeral text-sm text-primary">
                   </div>
                   <div>
                     <label class="text-xs font-bold text-primary block mb-1" for="studio-calc-wid">Width (cm)</label>
-                    <input id="studio-calc-wid" type="number" min="0.5" step="0.5" value="${AppState.calcWidth}" class="w-full h-10 px-3 rounded-lg bg-surface-container-low border border-[#e4e0d8] font-spec-numeral text-sm text-primary">
+                    <input id="studio-calc-wid" type="number" min="0.5" step="0.5" value="${AppState.calcWidth}" class="w-full h-12 px-3 rounded-lg bg-surface-container-low border border-[#e4e0d8] font-spec-numeral text-sm text-primary">
                   </div>
                 `}
                 <div>
                   <label class="text-xs font-bold text-primary block mb-1" for="studio-calc-dep">Pour Depth (cm)</label>
-                  <input id="studio-calc-dep" type="number" min="0.1" step="0.1" value="${AppState.calcDepth}" class="w-full h-10 px-3 rounded-lg bg-surface-container-low border border-[#e4e0d8] font-spec-numeral text-sm text-primary">
+                  <input id="studio-calc-dep" type="number" min="0.1" step="0.1" value="${AppState.calcDepth}" class="w-full h-12 px-3 rounded-lg bg-surface-container-low border border-[#e4e0d8] font-spec-numeral text-sm text-primary">
                 </div>
                 <div>
                   <label class="text-xs font-bold text-primary block mb-1" for="studio-calc-sys">Ratio System</label>
-                  <select id="studio-calc-sys" class="w-full h-10 px-2.5 rounded-lg bg-surface-container-low border border-[#e4e0d8] font-spec-numeral text-xs font-bold text-primary">
+                  <select id="studio-calc-sys" class="w-full h-12 px-2.5 rounded-lg bg-surface-container-low border border-[#e4e0d8] font-spec-numeral text-xs font-bold text-primary">
                     <option value="3:1" ${AppState.calcSystem === '3:1' ? 'selected' : ''}>3:1 Casting</option>
                     <option value="2:1" ${AppState.calcSystem === '2:1' ? 'selected' : ''}>2:1 Deep Pour</option>
                     <option value="1:1" ${AppState.calcSystem === '1:1' ? 'selected' : ''}>1:1 Doming</option>
@@ -1713,8 +1761,8 @@
                 </div>
               </div>
 
-              <button type="button" id="studio-calc-run-btn" onclick="window.runStudioCalculator()" class="h-11 px-5 rounded-xl bg-primary text-white font-label-md text-xs font-bold flex items-center justify-center gap-2 hover:opacity-95 cursor-pointer">
-                <span class="material-symbols-outlined text-base text-[#ffd79b]">calculate</span>
+              <button type="button" id="studio-calc-run-btn" onclick="window.runStudioCalculator()" class="min-h-[48px] px-5 rounded-xl bg-primary text-white font-label-md text-xs font-bold flex items-center justify-center gap-2 hover:opacity-95 cursor-pointer">
+                <span class="material-symbols-outlined text-base text-[#ffd79b]" aria-hidden="true">calculate</span>
                 <span>Calculate Exact Resin &amp; Hardener Mass</span>
               </button>
             </div>
@@ -1734,8 +1782,8 @@
                   <span class="text-[11px] text-on-surface-variant block">Recommended Kit:</span>
                   <span class="text-xs font-bold text-primary truncate block">${esc(recommendedProd ? recommendedProd.name : 'UltraClear 3:1 Casting Resin')}</span>
                 </div>
-                <button type="button" onclick="window.addRecommendedCalcKitToCart()" class="px-3.5 py-2 rounded-lg bg-secondary text-white text-xs font-bold shrink-0 hover:opacity-95 cursor-pointer flex items-center gap-1">
-                  <span class="material-symbols-outlined text-sm">add_shopping_cart</span>
+                <button type="button" onclick="window.addRecommendedCalcKitToCart()" class="min-h-[44px] px-4 py-2 rounded-lg bg-secondary text-white text-xs font-bold shrink-0 hover:opacity-95 cursor-pointer flex items-center gap-1">
+                  <span class="material-symbols-outlined text-sm" aria-hidden="true">add_shopping_cart</span>
                   <span>Add Kit</span>
                 </button>
               </div>
@@ -1758,12 +1806,12 @@
       <div class="route-view-enter flex flex-col w-full max-w-7xl mx-auto px-4 sm:px-8 py-6 gap-6">
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#e4e0d8] pb-4">
           <div>
-            <span class="font-label-sm text-xs uppercase tracking-widest text-[#c85a48] font-bold">Personal Curation</span>
+            <span class="font-label-sm text-xs uppercase tracking-widest text-[#9e3322] font-bold">Personal Curation</span>
             <h1 class="font-headline-lg text-2xl sm:text-3xl text-primary font-bold">Saved Keepsakes &amp; Formulations (${products.length})</h1>
           </div>
           ${products.length > 0 ? `
-            <button type="button" onclick="window.moveAllWishlistToCart()" class="px-5 py-2.5 rounded-xl bg-primary text-on-primary text-xs font-bold flex items-center gap-2 self-start sm:self-auto cursor-pointer">
-              <span class="material-symbols-outlined text-base">shopping_bag</span>
+            <button type="button" onclick="window.moveAllWishlistToCart()" class="min-h-[48px] px-5 py-2.5 rounded-xl bg-primary text-on-primary text-xs font-bold flex items-center gap-2 self-start sm:self-auto cursor-pointer">
+              <span class="material-symbols-outlined text-base" aria-hidden="true">shopping_bag</span>
               <span>Add All ${products.length} Saved Items to Bag</span>
             </button>
           ` : ''}
@@ -1771,13 +1819,13 @@
 
         ${products.length === 0 ? `
           <div class="ram-card p-10 text-center flex flex-col items-center gap-3">
-            <span class="material-symbols-outlined text-4xl text-[#c85a48]">favorite_border</span>
-            <h3 class="font-headline-sm text-xl text-primary font-bold">Your Saved List is Empty</h3>
+            <span class="material-symbols-outlined text-4xl text-[#9e3322]" aria-hidden="true">favorite_border</span>
+            <h2 class="font-headline-sm text-xl text-primary font-bold">Your Saved List is Empty</h2>
             <p class="text-xs text-on-surface-variant max-w-sm">Tap the heart icon on any resin formulation or floral keepsake to bookmark it for your next pour.</p>
-            <button type="button" onclick="window.navigateTo('catalog', 'all')" class="px-5 py-2.5 rounded-xl bg-primary text-on-primary text-xs font-bold cursor-pointer">Explore Catalogue</button>
+            <button type="button" onclick="window.navigateTo('catalog', 'all')" class="min-h-[48px] px-5 py-2.5 rounded-xl bg-primary text-on-primary text-xs font-bold cursor-pointer">Explore Catalogue</button>
           </div>
         ` : `
-          <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          <div class="grid grid-cols-1 min-[360px]:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             ${products.map(p => renderProductCard(p, false)).join('')}
           </div>
         `}
@@ -1792,7 +1840,7 @@
                   <div class="min-w-0 flex-1">
                     <p class="text-xs font-bold text-primary truncate">${esc(post.handle)} • #${esc(post.tag)}</p>
                     <p class="text-[11px] text-on-surface-variant line-clamp-2 mt-0.5">${esc(post.caption)}</p>
-                    <button type="button" onclick="window.navigateTo('social')" class="text-[11px] font-bold text-[#c85a48] mt-1 hover:underline cursor-pointer">View in Feed →</button>
+                    <button type="button" onclick="window.navigateTo('social')" class="min-h-[44px] inline-flex items-center text-[11px] font-bold text-[#9e3322] mt-0.5 hover:underline cursor-pointer">View in Feed →</button>
                   </div>
                 </div>
               `).join('')}
@@ -1815,7 +1863,7 @@
       <div class="route-view-enter flex flex-col w-full max-w-6xl mx-auto px-4 sm:px-8 py-6 pb-28 gap-6">
         <!-- Free Shipping Progression Strip -->
         <div class="p-4 rounded-2xl bg-secondary-container text-on-secondary-container shadow-xs flex flex-col gap-2">
-          <div class="flex items-center justify-between text-xs font-semibold">
+          <div class="flex flex-wrap items-center justify-between gap-2 text-xs font-semibold">
             <div class="flex items-center gap-2 text-primary">
               <span class="material-symbols-outlined text-lg text-secondary" style="font-variation-settings: 'FILL' 1;">local_shipping</span>
               <span>
@@ -1824,19 +1872,19 @@
                   : `Add <strong>${formatINR(summary.amountToFreeShipping)}</strong> more for <strong>Free Pan-India Express Delivery</strong>!`}
               </span>
             </div>
-            <span class="font-spec-numeral font-bold text-primary">${formatINR(summary.subtotal)} / ₹1,499</span>
+            <span class="font-spec-numeral font-bold text-primary whitespace-nowrap">${formatINR(summary.subtotal)} / ₹1,499</span>
           </div>
           <div class="w-full bg-white/70 h-2 rounded-full overflow-hidden">
             <div class="bg-secondary h-full rounded-full transition-all duration-500" style="width: ${summary.shippingProgress}%;"></div>
           </div>
         </div>
 
-        <div class="flex items-center justify-between">
+        <div class="flex flex-wrap items-center justify-between gap-2">
           <div>
             <p class="font-label-sm text-xs uppercase tracking-wider text-secondary font-bold">Apothecary Dispatch Batch</p>
             <h1 class="font-headline-md text-2xl sm:text-3xl text-primary font-bold">Your Studio Bag (${summary.itemsCount})</h1>
           </div>
-          <span class="font-spec-numeral text-xs px-3 py-1 rounded-full bg-surface-container-high text-primary font-semibold">Batch #VK-4409</span>
+          <span class="font-spec-numeral text-xs px-3 py-1 rounded-full bg-surface-container-high text-primary font-semibold whitespace-nowrap">Batch #VK-4409</span>
         </div>
 
         ${summary.cart.length === 0 ? `
@@ -1844,7 +1892,7 @@
             <span class="material-symbols-outlined text-4xl text-secondary">shopping_bag</span>
             <h2 class="font-headline-sm text-xl text-primary font-bold">Your Studio Bag is Empty</h2>
             <p class="text-xs text-on-surface-variant max-w-sm">Explore our preserved bridal keepsakes, ocean serving boards, or optical 3:1 &amp; 2:1 epoxy systems.</p>
-            <button type="button" onclick="window.navigateTo('catalog', 'all')" class="px-6 py-3 rounded-xl bg-primary text-on-primary text-xs font-bold cursor-pointer">Browse Catalogue</button>
+            <button type="button" onclick="window.navigateTo('catalog', 'all')" class="min-h-[48px] px-6 py-3 rounded-xl bg-primary text-on-primary text-xs font-bold cursor-pointer">Browse Catalogue</button>
           </div>
         ` : `
           <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
@@ -1855,18 +1903,18 @@
                 const isTierDiscounted = effectiveUnit < item.price;
                 return `
                 <div class="ram-card p-4 bg-white flex flex-col gap-3" data-cart-item-id="${esc(item.cartItemId)}">
-                  <div class="flex gap-4">
+                  <div class="flex gap-3 sm:gap-4">
                     <img src="${esc(item.image)}" alt="${esc(item.name)}" onclick="window.navigateTo('product', '${esc(item.productId)}')" class="w-20 h-20 sm:w-24 sm:h-24 rounded-xl object-cover bg-surface-container shrink-0 cursor-pointer border border-[#e4e0d8]">
                     <div class="flex-1 min-w-0 flex flex-col justify-between">
                       <div>
                         <div class="flex items-start justify-between gap-2">
-                          <h3 onclick="window.navigateTo('product', '${esc(item.productId)}')" class="font-title-md text-sm sm:text-base text-primary font-bold truncate cursor-pointer hover:text-secondary">${esc(item.name)}</h3>
-                          <button type="button" aria-label="Remove item" onclick="window.handleCartRemove('${esc(item.cartItemId)}')" class="text-on-surface-variant hover:text-error p-1 cursor-pointer">
+                          <h2 onclick="window.navigateTo('product', '${esc(item.productId)}')" class="font-title-md text-sm sm:text-base text-primary font-bold line-clamp-2 cursor-pointer hover:text-secondary">${esc(item.name)}</h2>
+                          <button type="button" aria-label="Remove item" onclick="window.handleCartRemove('${esc(item.cartItemId)}')" class="w-11 h-11 rounded-lg text-on-surface-variant hover:text-error hover:bg-surface-container-low flex items-center justify-center shrink-0 cursor-pointer">
                             <span class="material-symbols-outlined text-lg">close</span>
                           </button>
                         </div>
                         <p class="text-xs text-on-surface-variant">${esc(item.variantLabel)} • SKU: ${esc(item.sku)}</p>
-                        ${item.customNote ? `<p class="text-[11px] text-[#c85a48] font-medium mt-1">✨ Note: “${esc(item.customNote)}”</p>` : ''}
+                        ${item.customNote ? `<p class="text-[11px] text-[#9e3322] font-medium mt-1">✨ Note: “${esc(item.customNote)}”</p>` : ''}
                       </div>
                       <div class="flex flex-wrap items-baseline gap-2 mt-2">
                         <span class="font-spec-numeral text-base font-bold text-primary" data-line-total="${effectiveUnit * item.qty}">${formatINR(effectiveUnit * item.qty)}</span>
@@ -1876,17 +1924,17 @@
                     </div>
                   </div>
 
-                  <div class="flex items-center justify-between pt-2 border-t border-surface-container">
-                    <div class="flex items-center bg-surface-container-low rounded-lg p-0.5 border border-[#e4e0d8]">
-                      <button type="button" aria-label="Decrease quantity" onclick="window.handleCartQty('${esc(item.cartItemId)}', -1)" class="w-8 h-8 rounded-md bg-white text-primary flex items-center justify-center font-bold hover:bg-surface-container cursor-pointer">
+                  <div class="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-surface-container">
+                    <div class="flex items-center bg-surface-container-low rounded-lg p-1 border border-[#e4e0d8]">
+                      <button type="button" aria-label="Decrease quantity" onclick="window.handleCartQty('${esc(item.cartItemId)}', -1)" class="w-11 h-11 rounded-md bg-white text-primary flex items-center justify-center font-bold hover:bg-surface-container cursor-pointer">
                         <span class="material-symbols-outlined text-sm">remove</span>
                       </button>
                       <span class="font-spec-numeral text-xs font-bold px-3.5 text-primary">${item.qty}</span>
-                      <button type="button" aria-label="Increase quantity" onclick="window.handleCartQty('${esc(item.cartItemId)}', 1)" class="w-8 h-8 rounded-md bg-white text-primary flex items-center justify-center font-bold hover:bg-surface-container cursor-pointer">
+                      <button type="button" aria-label="Increase quantity" onclick="window.handleCartQty('${esc(item.cartItemId)}', 1)" class="w-11 h-11 rounded-md bg-white text-primary flex items-center justify-center font-bold hover:bg-surface-container cursor-pointer">
                         <span class="material-symbols-outlined text-sm">add</span>
                       </button>
                     </div>
-                    <button type="button" onclick="window.handleSaveForLater('${esc(item.cartItemId)}', '${esc(item.productId)}')" class="text-xs text-secondary font-semibold hover:underline flex items-center gap-1 cursor-pointer">
+                    <button type="button" onclick="window.handleSaveForLater('${esc(item.cartItemId)}', '${esc(item.productId)}')" class="min-h-[44px] px-3 rounded-lg text-xs text-secondary font-semibold hover:bg-surface-container-low flex items-center gap-1 cursor-pointer">
                       <span class="material-symbols-outlined text-sm">bookmark_add</span>
                       <span>Save for later</span>
                     </button>
@@ -1896,22 +1944,22 @@
 
               <!-- Pincode Dispatch Indicator Card -->
               <div class="ram-card p-4 bg-white flex items-center justify-between gap-3">
-                <div class="flex items-center gap-3">
+                <div class="flex items-center gap-3 min-w-0">
                   <div class="w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center shrink-0">
                     <span class="material-symbols-outlined text-xl">pin_drop</span>
                   </div>
-                  <div>
+                  <div class="min-w-0">
                     <p class="text-xs sm:text-sm font-bold text-primary">Delivering to PIN ${esc(pinInfo.pin)} (${esc(pinInfo.city)})</p>
                     <p class="text-xs text-on-surface-variant">${esc(pinInfo.courier)} • Guaranteed in ${esc(pinInfo.days)}</p>
                   </div>
                 </div>
-                <button type="button" onclick="window.promptChangePincode()" class="text-xs font-bold text-secondary underline cursor-pointer">Change PIN</button>
+                <button type="button" onclick="window.promptChangePincode()" class="min-h-[44px] px-3 rounded-lg text-xs font-bold text-secondary underline whitespace-nowrap shrink-0 cursor-pointer">Change PIN</button>
               </div>
 
               <!-- B2B GST Input Tax Credit (18%) Box -->
               <div class="ram-card p-4 bg-white flex flex-col gap-3">
-                <label class="flex items-start gap-3 cursor-pointer">
-                  <input type="checkbox" ${gstInfo.enabled ? 'checked' : ''} onchange="window.toggleGstClaim(this.checked)" class="mt-1 w-4 h-4 accent-primary rounded">
+                <label class="flex items-start gap-3 cursor-pointer min-h-[44px]">
+                  <input type="checkbox" ${gstInfo.enabled ? 'checked' : ''} onchange="window.toggleGstClaim(this.checked)" class="mt-1 w-5 h-5 accent-primary rounded shrink-0">
                   <div class="flex-1">
                     <span class="text-sm font-bold text-primary flex items-center gap-1.5">
                       <span>Claim GST Input Tax Credit (18% ITC)</span>
@@ -1922,12 +1970,12 @@
                 </label>
                 <div id="cart-gst-fields" class="${gstInfo.enabled ? 'grid' : 'hidden'} grid-cols-1 sm:grid-cols-2 gap-3 pt-2 border-t border-surface-container">
                   <div>
-                    <label class="text-[11px] text-on-surface-variant block mb-1">GSTIN (15-Character ID)</label>
-                    <input id="cart-gstin-input" type="text" maxlength="15" value="${esc(gstInfo.gstin)}" onchange="window.saveGstField()" class="w-full h-10 px-3 rounded-lg bg-surface-container-low border border-[#e4e0d8] font-spec-numeral text-xs uppercase text-primary">
+                    <label for="cart-gstin-input" class="text-[11px] text-on-surface-variant font-medium block mb-1">GSTIN (15-Character ID)</label>
+                    <input id="cart-gstin-input" type="text" maxlength="15" value="${esc(gstInfo.gstin)}" onchange="window.saveGstField()" class="w-full h-12 px-3 rounded-lg bg-surface-container-low border border-[#e4e0d8] font-spec-numeral text-sm uppercase text-primary">
                   </div>
                   <div>
-                    <label class="text-[11px] text-on-surface-variant block mb-1">Registered Legal Studio / Entity Name</label>
-                    <input id="cart-tradename-input" type="text" value="${esc(gstInfo.tradeName)}" onchange="window.saveGstField()" class="w-full h-10 px-3 rounded-lg bg-surface-container-low border border-[#e4e0d8] text-xs text-primary">
+                    <label for="cart-tradename-input" class="text-[11px] text-on-surface-variant font-medium block mb-1">Registered Legal Studio / Entity Name</label>
+                    <input id="cart-tradename-input" type="text" value="${esc(gstInfo.tradeName)}" onchange="window.saveGstField()" class="w-full h-12 px-3 rounded-lg bg-surface-container-low border border-[#e4e0d8] text-sm text-primary">
                   </div>
                 </div>
               </div>
@@ -1939,12 +1987,12 @@
               <div class="ram-card p-4 bg-white flex flex-col gap-2.5">
                 <label for="cart-coupon-input" class="text-sm font-bold text-primary">Studio Voucher or Instagram Promo Code</label>
                 <div class="flex gap-2">
-                  <input id="cart-coupon-input" type="text" value="${esc(summary.couponCode || summary.savedCouponCode)}" placeholder="Enter code (e.g. KRAFTFIRST)" class="flex-1 h-10 px-3 rounded-lg bg-surface-container-low border border-[#e4e0d8] font-spec-numeral text-xs uppercase text-primary">
-                  <button type="button" onclick="window.handleApplyCoupon()" class="px-5 h-10 rounded-lg bg-primary text-white text-xs font-bold cursor-pointer">APPLY</button>
+                  <input id="cart-coupon-input" type="text" value="${esc(summary.couponCode || summary.savedCouponCode)}" placeholder="Enter code (e.g. KRAFTFIRST)" class="flex-1 min-w-0 h-12 px-3 rounded-lg bg-surface-container-low border border-[#e4e0d8] font-spec-numeral text-sm uppercase text-primary">
+                  <button type="button" onclick="window.handleApplyCoupon()" class="px-5 h-12 rounded-lg bg-primary text-white text-xs font-bold shrink-0 cursor-pointer">APPLY</button>
                 </div>
-                <div class="flex flex-wrap gap-1.5 pt-1">
+                <div class="flex flex-wrap gap-2 pt-1">
                   ${Object.values(Store.COUPONS).map(c => `
-                    <button type="button" onclick="window.quickSelectCoupon('${c.code}')" class="px-2.5 py-1 rounded-md text-[11px] font-spec-numeral font-semibold border transition-colors cursor-pointer ${summary.couponCode === c.code ? 'bg-secondary text-white border-secondary' : 'bg-surface-container-low text-primary border-[#e4e0d8] hover:border-secondary'}">
+                    <button type="button" onclick="window.quickSelectCoupon('${c.code}')" class="min-h-[44px] px-3.5 py-2 rounded-lg text-xs font-spec-numeral font-semibold border transition-colors cursor-pointer ${summary.couponCode === c.code ? 'bg-secondary text-white border-secondary' : 'bg-surface-container-low text-primary border-[#e4e0d8] hover:border-secondary'}">
                       ${c.code}
                     </button>
                   `).join('')}
@@ -1955,7 +2003,7 @@
                     <span>Code <strong>${esc(summary.couponCode)}</strong> active — ${formatINR(summary.couponDiscount)} saved!</span>
                   </div>
                 ` : (summary.couponInvalidReason ? `
-                  <div id="cart-coupon-warning" class="flex items-start gap-1.5 text-[#b57c1e] bg-[#fff5e0] p-2.5 rounded-lg text-xs font-medium mt-1">
+                  <div id="cart-coupon-warning" class="flex items-start gap-1.5 text-[#704600] bg-[#fff5e0] p-2.5 rounded-lg text-xs font-medium mt-1">
                     <span class="material-symbols-outlined text-sm shrink-0 mt-0.5">info</span>
                     <span>${esc(summary.couponInvalidReason)}</span>
                   </div>
@@ -2022,7 +2070,7 @@
         <!-- Patron Profile Banner -->
         <div class="ram-card p-5 bg-white flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div class="flex items-center gap-4">
-            <img src="${esc(Store.IMAGES.avatarPatron)}" alt="Patron Profile" class="w-16 h-16 rounded-full object-cover ring-2 ring-secondary">
+            <img src="${esc(Store.IMAGES.avatarPatron)}" alt="Patron Profile" class="w-16 h-16 rounded-full object-cover ring-2 ring-secondary shrink-0">
             <div>
               <span class="px-2.5 py-0.5 rounded-full bg-secondary-container/60 text-on-secondary-container text-[10px] font-bold uppercase">Atelier Patron #4820</span>
               <h1 class="font-headline-sm text-xl sm:text-2xl text-primary font-bold mt-0.5">Studio Account &amp; Order Tracking</h1>
@@ -2030,7 +2078,7 @@
             </div>
           </div>
           <div class="flex items-center gap-2">
-            <button type="button" onclick="window.simulateExternalAdminPush()" class="px-4 py-2.5 rounded-xl bg-[#c85a48] text-white text-xs font-bold flex items-center gap-1.5 shadow-xs cursor-pointer">
+            <button type="button" onclick="window.simulateExternalAdminPush()" class="min-h-[44px] px-4 py-2.5 rounded-xl bg-[#9e3322] text-white text-xs font-bold flex items-center gap-1.5 shadow-xs cursor-pointer">
               <span class="material-symbols-outlined text-base">bolt</span>
               <span>Simulate Admin Host Push</span>
             </button>
@@ -2082,7 +2130,7 @@
               <h2 class="font-headline-sm text-lg text-primary font-bold">External Admin Host, Supabase &amp; Cloudflare R2 Bridge</h2>
               <p class="text-xs text-on-surface-variant">As requested: the separate Admin Panel host website pushes catalog &amp; social updates directly to this customer storefront.</p>
             </div>
-            <span class="px-3 py-1 rounded-full bg-[#e8f5e9] text-[#266b4e] text-xs font-bold self-start">● Bridge Active</span>
+            <span class="px-3 py-1 rounded-full bg-[#e8f5e9] text-[#266b4e] text-xs font-bold self-start whitespace-nowrap">● Bridge Active</span>
           </div>
 
           <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -2091,7 +2139,7 @@
                 <span class="text-xs font-bold text-primary">1. External Admin Host Receiver</span>
                 <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-emerald-100 text-emerald-800">Listening</span>
               </div>
-              <p class="text-[11px] text-on-surface-variant">Channel: <code class="text-primary font-mono">${esc(cfg.adminHostBridge.channelName)}</code></p>
+              <p class="text-[11px] text-on-surface-variant">Channel: <code class="text-primary font-mono break-all">${esc(cfg.adminHostBridge.channelName)}</code></p>
               <p class="text-[11px] text-on-surface-variant">Receives live product drops, pricing changes &amp; IG reels from your separate Admin Host domain via <code class="font-mono">postMessage</code> / Webhook.</p>
             </div>
 
@@ -2109,7 +2157,7 @@
                 <span class="text-xs font-bold text-primary">3. Cloudflare R2 Object Storage</span>
                 <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-secondary-container text-on-secondary-container">CDN Ready</span>
               </div>
-              <p class="text-[11px] text-on-surface-variant">Bucket: <code class="text-primary font-mono">${esc(cfg.cloudflare.r2BucketUrl)}</code></p>
+              <p class="text-[11px] text-on-surface-variant">Bucket: <code class="text-primary font-mono break-all">${esc(cfg.cloudflare.r2BucketUrl)}</code></p>
               <p class="text-[11px] text-on-surface-variant">Handles high-res 4K resin videos, bridal flower upload photos, and PDF COA certificates.</p>
             </div>
           </div>
@@ -2118,7 +2166,7 @@
             <p class="text-xs font-bold text-primary mb-2">Recent Admin Host Sync Events:</p>
             <div class="space-y-1 max-h-28 overflow-y-auto">
               ${pushLogs.map(l => `
-                <div class="text-[11px] flex items-center justify-between text-on-surface-variant border-b border-surface-container py-1">
+                <div class="text-[11px] flex flex-wrap items-center justify-between gap-2 text-on-surface-variant border-b border-surface-container py-1">
                   <span><strong class="text-primary">[${esc(l.type)}]</strong> ${esc(l.summary)}</span>
                   <span class="font-spec-numeral">${esc(l.timestamp)}</span>
                 </div>
@@ -2303,7 +2351,7 @@
   };
 
   window.addRecommendedCalcKitToCart = function () {
-    const recommendedProdId = AppState.calcSystem === '2:1' ? 'vk-epx-201' : (AppState.calcSystem === '1:1' ? 'vk-dom-101' : 'vk-epx-301');
+    const recommendedProdId = AppState.calcSystem === '2:1' ? 'vk-epx-201' : (AppState.calcSystem === '1:1' ? 'vk-res-003' : 'vk-epx-301');
     const prod = Store.getProductById(recommendedProdId);
     if (!prod) return;
     Store.addToCart(prod.id, null, 1);
@@ -2318,9 +2366,9 @@
       const match = (btn.getAttribute('onclick') || '').match(/'([^']+)'/);
       const btnRatio = match ? match[1] : '';
       if (btnRatio === AppState.catalogRatioFilter) {
-        btn.className = 'py-2 rounded-lg bg-primary text-white font-spec-numeral text-xs font-semibold cursor-pointer';
+        btn.className = 'min-h-[44px] py-2.5 rounded-lg bg-primary text-white font-spec-numeral text-xs font-semibold cursor-pointer';
       } else {
-        btn.className = 'py-2 rounded-lg bg-surface-container-low text-primary font-spec-numeral text-xs font-semibold border border-[#e4e0d8] cursor-pointer';
+        btn.className = 'min-h-[44px] py-2.5 rounded-lg bg-surface-container-low text-primary font-spec-numeral text-xs font-semibold border border-[#e4e0d8] cursor-pointer';
       }
     });
     const rangeInput = drawer.querySelector('input[type="range"]');
@@ -2390,6 +2438,7 @@
     if (!drawer) return;
     syncGlobalFilterDrawerDom();
     drawer.classList.toggle('hidden', !show);
+    syncBodyModalLock();
   };
 
   // PDP handlers
@@ -2640,6 +2689,7 @@
   window.promptChangePincode = function () {
     const modal = document.getElementById('global-pincode-modal');
     if (modal) modal.classList.remove('hidden');
+    syncBodyModalLock();
   };
 
   window.saveModalPincode = function () {
@@ -2650,6 +2700,7 @@
       return;
     }
     document.getElementById('global-pincode-modal')?.classList.add('hidden');
+    syncBodyModalLock();
     updateGlobalBadges();
     renderActiveView();
     window.showToast(`Delivering to PIN ${res.pin}`, `${res.city} • ${res.courier}`);
@@ -2679,10 +2730,12 @@
     };
 
     modal.classList.remove('hidden');
+    syncBodyModalLock();
   };
 
   window.closeStoryModal = function () {
     document.getElementById('story-viewer-modal')?.classList.add('hidden');
+    syncBodyModalLock();
   };
 
   // Lightbox Modal
@@ -2694,6 +2747,7 @@
     img.src = imgSrc;
     if (cap) cap.textContent = caption || '';
     modal.classList.remove('hidden');
+    syncBodyModalLock();
   };
 
   // TDS / SDS / Wholesale Spec Modal
@@ -2737,11 +2791,13 @@
       `;
     }
     modal.classList.remove('hidden');
+    syncBodyModalLock();
   };
 
   // Share Your Memory Upload Modal
   window.openShareMemoryModal = function () {
     document.getElementById('share-memory-modal')?.classList.remove('hidden');
+    syncBodyModalLock();
   };
 
   window.submitShareMemoryForm = function (ev) {
@@ -2761,6 +2817,7 @@
       image: Store.IMAGES.floralCube
     });
     document.getElementById('share-memory-modal')?.classList.add('hidden');
+    syncBodyModalLock();
     window.navigateTo('social');
     window.showToast('Your Memory is Live!', 'Published to @resin.art.memories community feed');
   };
@@ -2776,6 +2833,7 @@
     const amountEl = document.getElementById('checkout-modal-payable');
     if (amountEl) amountEl.textContent = formatINR(summary.payable);
     if (modal) modal.classList.remove('hidden');
+    syncBodyModalLock();
   };
 
   window.submitCheckoutOrder = function (ev) {
@@ -2787,6 +2845,7 @@
 
     const res = Store.placeOrder({ name, phone, address, paymentMethod });
     document.getElementById('checkout-modal')?.classList.add('hidden');
+    syncBodyModalLock();
     updateGlobalBadges();
 
     if (res.success) {
@@ -2861,9 +2920,44 @@
     window.showToast('Admin Host Push Received!', 'New product & shoppable post synced to storefront');
   };
 
+  // Global Escape key listener to close any open modal or drawer
+  document.addEventListener('keydown', (ev) => {
+    if (ev.key === 'Escape') {
+      const modalIds = [
+        'mobile-menu-drawer',
+        'global-filter-drawer',
+        'story-viewer-modal',
+        'lightbox-modal',
+        'tds-spec-modal',
+        'share-memory-modal',
+        'checkout-modal',
+        'global-pincode-modal'
+      ];
+      let closedAny = false;
+      modalIds.forEach(id => {
+        const el = document.getElementById(id);
+        if (el && !el.classList.contains('hidden')) {
+          el.classList.add('hidden');
+          closedAny = true;
+        }
+      });
+      if (closedAny) syncBodyModalLock();
+    }
+  });
+
+  // Global image fallback handler to prevent raw broken image icons
+  document.addEventListener('error', (ev) => {
+    const target = ev.target;
+    if (target && target.tagName === 'IMG' && !target.dataset.fallbackApplied) {
+      target.dataset.fallbackApplied = 'true';
+      target.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400' viewBox='0 0 400 400'%3E%3Crect width='400' height='400' fill='%23f4f0e8'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='serif' font-size='20' fill='%23002444'%3EVist%C4%81ra Krafts%3C/text%3E%3C/svg%3E";
+    }
+  }, true);
+
   // Initialize on DOMContentLoaded
   window.addEventListener('hashchange', handleRouteChange);
   document.addEventListener('DOMContentLoaded', () => {
     handleRouteChange();
   });
 })();
+

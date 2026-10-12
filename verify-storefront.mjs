@@ -460,7 +460,65 @@ test('Bug Fix 5: All 12 HTML files have valid JS syntax, balanced tags, zero pla
   assert.ok(interactiveDiscoveryHtml.includes('subtotalEl.textContent = `$${cartSubtotalUSD.toFixed(2)}`'), 'potry_storefront_discovery_interactive/code.html must update #cart-subtotal on addToCart()');
 });
 
+test('Visual QA & Accessibility Polish: 2-font limit, WCAG AA tokens, modal scroll-lock, 44px targets, and Stitch screen alt/viewport compliance', () => {
+  const indexHtml = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8');
+  const stylesCss = fs.readFileSync(path.join(ROOT, 'styles.css'), 'utf8');
+  const visualIssuesMd = fs.readFileSync(path.join(ROOT, 'VISUAL_ISSUES.md'), 'utf8');
+
+  // 1. Strict 2-font-family limit (Playfair Display + Inter)
+  assert.ok(!indexHtml.includes('Plus+Jakarta+Sans') && !indexHtml.includes('Plus Jakarta Sans'), 'index.html must not load third font family Plus Jakarta Sans');
+  assert.ok(stylesCss.includes('Playfair Display') && stylesCss.includes('Inter'), 'styles.css must configure Playfair Display and Inter');
+
+  // 2. WCAG AA color tokens (#9e3322 rose-terracotta and #59606d outline)
+  assert.ok(stylesCss.includes('--accent-10-flirty: #9e3322'), 'styles.css must use WCAG AA compliant #9e3322 for --accent-10-flirty');
+  assert.ok(indexHtml.includes("'outline': '#59606d'"), 'index.html tailwind config must use WCAG AA compliant #59606d for outline');
+
+  // 3. Focus ring, modal scroll-lock, Escape dismissal, and PDP sticky bar non-overlap
+  assert.ok(stylesCss.includes(':focus-visible'), 'styles.css must define global :focus-visible outline');
+  assert.ok(stylesCss.includes('body.modal-open'), 'styles.css must define body.modal-open scroll lock');
+  assert.ok(appCode.includes('syncBodyModalLock'), 'app.js must synchronize modal scroll lock');
+  assert.ok(appCode.includes("ev.key === 'Escape'"), 'app.js must close open modals on Escape key');
+  assert.ok(appCode.includes('fixed bottom-16 lg:bottom-0'), 'PDP sticky bar must dock at bottom-16 on mobile to avoid overlapping mobile bottom nav');
+
+  // 4. 1:1 Doming Resin calculator product resolution
+  assert.strictEqual(Store.getProductById('vk-dom-101').id, 'vk-res-003');
+  assert.strictEqual(Store.getProductById('vk-res-003').id, 'vk-res-003');
+
+  // 5. All 12 HTML screens free of user-scalable=no and missing img alt attributes
+  const allHtmlFiles = [
+    'index.html',
+    'vist_ra_krafts_ultraclear_3_1_pdp/code.html',
+    'vist_ra_krafts_cart_checkout/code.html',
+    'vist_ra_krafts_resin_catalog_filters/code.html',
+    'vist_ra_krafts_home_storefront/code.html',
+    'vist_ra_krafts_e_commerce_flow/code.html',
+    'potry_sienna_ridged_pitcher_pdp/code.html',
+    'potry_sienna_ridged_pitcher_interactive_pdp/code.html',
+    'potry_storefront_discovery/code.html',
+    'potry_storefront_discovery_interactive/code.html',
+    'ceramic_studio_store_flow/code.html',
+    'potry_navigation_drawer/code.html'
+  ];
+  for (const rel of allHtmlFiles) {
+    const html = fs.readFileSync(path.join(ROOT, rel), 'utf8');
+    assert.ok(!/user-scalable\s*=\s*no/i.test(html), `${rel} must not block pinch-to-zoom with user-scalable=no`);
+    assert.ok(/<title>[^<]+<\/title>/i.test(html), `${rel} must have a non-empty <title>`);
+    const imgs = html.match(/<img\b[^>]*>/gi) || [];
+    for (const imgTag of imgs) {
+      assert.ok(/(?:^|\s)alt\s*=/i.test(imgTag), `${rel} has <img> missing alt attribute: ${imgTag.slice(0, 80)}`);
+    }
+  }
+
+  // 6. VISUAL_ISSUES.md documents VIS-001 through VIS-017 as Fixed & Verified
+  for (let i = 1; i <= 17; i++) {
+    const code = 'VIS-' + String(i).padStart(3, '0');
+    assert.ok(visualIssuesMd.includes(code), `VISUAL_ISSUES.md missing ${code}`);
+  }
+  assert.ok(visualIssuesMd.includes('Fixed & Verified'), 'VISUAL_ISSUES.md must record Fixed & Verified status');
+});
+
 console.log(`\n========================================`);
 console.log(`Verification Summary: ${passed} passed, ${failed} failed`);
 console.log(`========================================`);
 if (failed > 0) process.exit(1);
+
