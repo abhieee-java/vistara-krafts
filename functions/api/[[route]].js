@@ -102,18 +102,51 @@ function getBearerToken(request) {
   return match ? match[1] : '';
 }
 
+function getDb(env) {
+  return (env && (env.VISTARA_DB || env.DB)) || null;
+}
+
+function getKv(env) {
+  return (env && (env.VISTARA_SESSIONS || env.SESSIONS_KV)) || null;
+}
+
+function deriveNameFromEmail(email) {
+  const local = String(email || '').split('@')[0] || 'Patron';
+  return local
+    .split(/[._-]+/)
+    .filter(Boolean)
+    .map(part => part.charAt(0).toUpperCase() + part.slice(1))
+    .join(' ') || 'Verified Patron';
+}
+
+function parseWishlistJson(raw) {
+  if (Array.isArray(raw)) return raw;
+  try {
+    const parsed = JSON.parse(raw || '[]');
+    return Array.isArray(parsed) ? parsed : [];
+  } catch (_e) {
+    return [];
+  }
+}
+
 async function getAuthenticatedUser(request, env) {
   const rawToken = getBearerToken(request);
   if (!rawToken) return null;
   const tokenHash = await sha256Hex(rawToken);
+  const db = getDb(env);
 
-  if (env && env.VISTARA_DB) {
-    const row = await env.VISTARA_DB.prepare(
-      `SELECT u.id, u.email, u.name, u.phone, u.address, u.pincode, u.provider, u.member_tier, u.loyalty_points
+  if (db) {
+    const row = await db.prepare(
+      `SELECT u.id, u.email, u.name, u.phone, u.address, u.pincode, u.provider, u.wishlist_json, u.member_tier, u.loyalty_points
        FROM sessions s JOIN users u ON s.user_id = u.id
        WHERE s.token_hash = ? AND datetime(s.expires_at) > datetime('now')`
     ).bind(tokenHash).first();
-    if (row) return row;
+    if (row) {
+      return {
+        ...row,
+        wishlist: parseWishlistJson(row.wishlist_json)
+      };
+    }
   }
 
   const memSession = edgeMemorySessions.get(tokenHash);
@@ -127,14 +160,16 @@ async function createSessionForUser(user, env) {
   const rawToken = 'vk_cf_' + crypto.randomUUID().replace(/-/g, '') + '_' + Date.now().toString(36);
   const tokenHash = await sha256Hex(rawToken);
   const expiresAtIso = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString();
+  const db = getDb(env);
+  const kv = getKv(env);
 
-  if (env && env.VISTARA_DB) {
-    await env.VISTARA_DB.prepare(
+  if (db) {
+    await db.prepare(
       `INSERT INTO sessions (token_hash, user_id, provider, expires_at) VALUES (?, ?, ?, ?)`
     ).bind(tokenHash, user.id, user.provider || 'email', expiresAtIso).run();
   }
-  if (env && env.VISTARA_SESSIONS) {
-    await env.VISTARA_SESSIONS.put(tokenHash, JSON.stringify({ userId: user.id, email: user.email }), {
+  if (kv) {
+    await kv.put(tokenHash, JSON.stringify({ userId: user.id, email: user.email }), {
       expirationTtl: 30 * 24 * 60 * 60
     });
   }
@@ -162,18 +197,30 @@ export async function onRequest(context) {
 
   const url = new URL(request.url);
   const path = url.pathname.replace(/^\/api\/?/, '');
+  const db = getDb(env);
+  const kv = getKv(env);
 
   try {
     if (path === 'health' && request.method === 'GET') {
       return jsonResponse({
         ok: true,
-        service: 'Vistāra Krafts Cloudflare Edge API',
+        service: 'Vistāra Krafts E-Commerce API',
         environment: (env && env.ENVIRONMENT) || 'development',
         bindings: {
-          d1: Boolean(env && env.VISTARA_DB),
-          kv: Boolean(env && env.VISTARA_SESSIONS),
+          d1: Boolean(db),
+          kv: Boolean(kv),
           r2: Boolean(env && env.VISTARA_MEDIA)
         }
+      });
+    }
+
+    if ((path === 'auth/google' || path === 'auth/apple') && request.method === 'GET') {
+      const provider = path === 'auth/apple' ? 'apple' : 'google';
+      return jsonResponse({
+        ok: true,
+        provider,
+        oauthReady: true,
+        mode: 'popup_or_token_exchange'
       });
     }
 
@@ -181,10 +228,11 @@ export async function onRequest(context) {
       const body = await request.json();
       const email = String(body.email || '').trim().toLowerCase();
       const password = String(body.password || '');
-      const name = String(body.name || '').trim();
-      const phone = String(body.phone || '').trim();
-      const address = String(body.address || '').trim();
-      const pincode = String(body.pincode || '').trim();
+      let name = String(body.name || '').trim();
+      let phone = String(body.phone || '').trim();
+      let address = String(body.address || '').trim();
+      let pincode = String(body.pincode || '').trim();
+      const incomingWishlist = Array.isArray(body.wishlist) ? body.wishlist : [];
 
       if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
         return jsonResponse({ ok: false, error: 'A valid email address is required.' }, 400);
@@ -192,8 +240,8 @@ export async function onRequest(context) {
       if (password.length < 6) {
         return jsonResponse({ ok: false, error: 'Password must be at least 6 characters.' }, 400);
       }
-      if (!name || !phone || !address) {
-        return jsonResponse({ ok: false, error: 'Full Name, Mobile Number, and Complete Shipping Address are required.' }, 400);
+      if (!name) {
+        name = deriveNameFromEmail(email);
       }
 
       const turnstileCheck = await verifyTurnstile(
@@ -202,13 +250,22 @@ export async function onRequest(context) {
         request.headers.get('CF-Connecting-IP')
       );
       if (!turnstileCheck.success) {
-        return jsonResponse({ ok: false, error: 'Cloudflare Turnstile verification failed.' }, 403);
+        return jsonResponse({ ok: false, error: 'Security verification failed.' }, 403);
       }
 
       const salt = crypto.randomUUID().replace(/-/g, '').slice(0, 16);
       const passwordHash = await hashPasswordPBKDF2(password, salt);
-      const existingMem = edgeMemoryUsers.get(email);
-      const userId = (existingMem && existingMem.id) || ('usr_' + crypto.randomUUID().replace(/-/g, '').slice(0, 12));
+      let existingUser = edgeMemoryUsers.get(email) || null;
+      if (!existingUser && db) {
+        existingUser = await db.prepare(`SELECT * FROM users WHERE email = ?`).bind(email).first();
+      }
+      const userId = (existingUser && existingUser.id) || ('usr_' + crypto.randomUUID().replace(/-/g, '').slice(0, 12));
+      const existingWishlist = existingUser ? parseWishlistJson(existingUser.wishlist || existingUser.wishlist_json) : [];
+      const mergedWishlist = Array.from(new Set([...existingWishlist, ...incomingWishlist]));
+
+      if (!phone && existingUser && existingUser.phone) phone = existingUser.phone;
+      if (!address && existingUser && existingUser.address) address = existingUser.address;
+      if (!pincode && existingUser && existingUser.pincode) pincode = existingUser.pincode;
 
       const userRecord = {
         id: userId,
@@ -220,31 +277,38 @@ export async function onRequest(context) {
         provider: 'email',
         password_hash: passwordHash,
         password_salt: salt,
+        wishlist: mergedWishlist,
+        wishlist_json: JSON.stringify(mergedWishlist),
         member_tier: 'Verified Vistāra Patron',
         loyalty_points: 250
       };
 
-      if (env && env.VISTARA_DB) {
-        await env.VISTARA_DB.prepare(
-          `INSERT INTO users (id, email, name, phone, address, pincode, provider, password_hash, password_salt)
-           VALUES (?, ?, ?, ?, ?, ?, 'email', ?, ?)
+      if (db) {
+        await db.prepare(
+          `INSERT INTO users (id, email, name, phone, address, pincode, provider, password_hash, password_salt, wishlist_json)
+           VALUES (?, ?, ?, ?, ?, ?, 'email', ?, ?, ?)
            ON CONFLICT(email) DO UPDATE SET
              name = excluded.name,
-             phone = excluded.phone,
-             address = excluded.address,
-             pincode = excluded.pincode,
+             phone = CASE WHEN excluded.phone != '' THEN excluded.phone ELSE users.phone END,
+             address = CASE WHEN excluded.address != '' THEN excluded.address ELSE users.address END,
+             pincode = CASE WHEN excluded.pincode != '' THEN excluded.pincode ELSE users.pincode END,
              password_hash = excluded.password_hash,
              password_salt = excluded.password_salt,
+             wishlist_json = excluded.wishlist_json,
              updated_at = datetime('now')`
-        ).bind(userId, email, name, phone, address, pincode, passwordHash, salt).run();
+        ).bind(userId, email, name, phone, address, pincode, passwordHash, salt, userRecord.wishlist_json).run();
 
-        const canonical = await env.VISTARA_DB.prepare(
-          `SELECT id, member_tier, loyalty_points FROM users WHERE email = ?`
+        const canonical = await db.prepare(
+          `SELECT id, member_tier, loyalty_points, phone, address, pincode, wishlist_json FROM users WHERE email = ?`
         ).bind(email).first();
         if (canonical && canonical.id) {
           userRecord.id = canonical.id;
           userRecord.member_tier = canonical.member_tier || userRecord.member_tier;
           userRecord.loyalty_points = canonical.loyalty_points ?? userRecord.loyalty_points;
+          userRecord.phone = canonical.phone || userRecord.phone;
+          userRecord.address = canonical.address || userRecord.address;
+          userRecord.pincode = canonical.pincode || userRecord.pincode;
+          userRecord.wishlist = parseWishlistJson(canonical.wishlist_json);
         }
       }
       edgeMemoryUsers.set(email, userRecord);
@@ -261,6 +325,7 @@ export async function onRequest(context) {
             phone: userRecord.phone,
             address: userRecord.address,
             pincode: userRecord.pincode,
+            wishlist: userRecord.wishlist,
             provider: 'email',
             memberTier: userRecord.member_tier
           }
@@ -278,14 +343,15 @@ export async function onRequest(context) {
       const phone = String(body.phone || '').trim();
       const name = String(body.name || '').trim();
       const pincode = String(body.pincode || '').trim();
+      const incomingWishlist = Array.isArray(body.wishlist) ? body.wishlist : [];
 
       if (!email || !password) {
         return jsonResponse({ ok: false, error: 'Email and password are required.' }, 400);
       }
 
       let stored = null;
-      if (env && env.VISTARA_DB) {
-        stored = await env.VISTARA_DB.prepare(`SELECT * FROM users WHERE email = ?`).bind(email).first();
+      if (db) {
+        stored = await db.prepare(`SELECT * FROM users WHERE email = ?`).bind(email).first();
       }
       if (!stored && edgeMemoryUsers.has(email)) {
         stored = edgeMemoryUsers.get(email);
@@ -300,69 +366,71 @@ export async function onRequest(context) {
         if (phone) stored.phone = phone;
         if (name) stored.name = name;
         if (pincode) stored.pincode = pincode;
+        const existingWl = parseWishlistJson(stored.wishlist || stored.wishlist_json);
+        stored.wishlist = Array.from(new Set([...existingWl, ...incomingWishlist]));
+        stored.wishlist_json = JSON.stringify(stored.wishlist);
 
-        if (env && env.VISTARA_DB) {
-          await env.VISTARA_DB.prepare(
-            `INSERT INTO users (id, email, name, phone, address, pincode, provider, password_hash, password_salt)
-             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+        if (db) {
+          await db.prepare(
+            `INSERT INTO users (id, email, name, phone, address, pincode, provider, password_hash, password_salt, wishlist_json)
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
              ON CONFLICT(email) DO UPDATE SET
                name = excluded.name,
                phone = excluded.phone,
                address = excluded.address,
                pincode = excluded.pincode,
+               wishlist_json = excluded.wishlist_json,
                updated_at = datetime('now')`
           ).bind(
             stored.id,
             stored.email,
             stored.name,
-            stored.phone,
-            stored.address,
+            stored.phone || '',
+            stored.address || '',
             stored.pincode || '',
             stored.provider || 'email',
             stored.password_hash,
-            stored.password_salt
+            stored.password_salt,
+            stored.wishlist_json
           ).run();
 
-          const canonical = await env.VISTARA_DB.prepare(`SELECT id FROM users WHERE email = ?`).bind(email).first();
+          const canonical = await db.prepare(`SELECT id FROM users WHERE email = ?`).bind(email).first();
           if (canonical && canonical.id) stored.id = canonical.id;
         }
         edgeMemoryUsers.set(email, stored);
       } else {
-        const effectiveAddress = address || (stored && stored.address) || '';
-        const effectivePhone = phone || (stored && stored.phone) || '';
-        if (!effectiveAddress || !effectivePhone) {
-          return jsonResponse({
-            ok: false,
-            error: 'First-time login requires your Mobile Number and Shipping Address so nothing is assumed.'
-          }, 400);
-        }
         const salt = crypto.randomUUID().replace(/-/g, '').slice(0, 16);
         const passwordHash = await hashPasswordPBKDF2(password, salt);
+        const existingWl = stored ? parseWishlistJson(stored.wishlist || stored.wishlist_json) : [];
+        const mergedWl = Array.from(new Set([...existingWl, ...incomingWishlist]));
         stored = {
           id: (stored && stored.id) || ('usr_' + crypto.randomUUID().replace(/-/g, '').slice(0, 12)),
           email,
-          name: name || (stored && stored.name) || email.split('@')[0],
-          phone: effectivePhone,
-          address: effectiveAddress,
+          name: name || (stored && stored.name) || deriveNameFromEmail(email),
+          phone: phone || (stored && stored.phone) || '',
+          address: address || (stored && stored.address) || '',
           pincode: pincode || (stored && stored.pincode) || '',
           provider: 'email',
           password_hash: passwordHash,
           password_salt: salt,
+          wishlist: mergedWl,
+          wishlist_json: JSON.stringify(mergedWl),
           member_tier: 'Verified Vistāra Patron',
           loyalty_points: 250
         };
 
-        if (env && env.VISTARA_DB) {
-          await env.VISTARA_DB.prepare(
-            `INSERT INTO users (id, email, name, phone, address, pincode, provider, password_hash, password_salt)
-             VALUES (?, ?, ?, ?, ?, ?, 'email', ?, ?)
+        if (db) {
+          await db.prepare(
+            `INSERT INTO users (id, email, name, phone, address, pincode, provider, password_hash, password_salt, wishlist_json)
+             VALUES (?, ?, ?, ?, ?, ?, 'email', ?, ?, ?)
              ON CONFLICT(email) DO UPDATE SET
                name = excluded.name,
-               phone = excluded.phone,
-               address = excluded.address,
-               pincode = excluded.pincode,
+               phone = CASE WHEN excluded.phone != '' THEN excluded.phone ELSE users.phone END,
+               address = CASE WHEN excluded.address != '' THEN excluded.address ELSE users.address END,
+               pincode = CASE WHEN excluded.pincode != '' THEN excluded.pincode ELSE users.pincode END,
                password_hash = excluded.password_hash,
                password_salt = excluded.password_salt,
+               wishlist_json = excluded.wishlist_json,
                updated_at = datetime('now')`
           ).bind(
             stored.id,
@@ -372,10 +440,11 @@ export async function onRequest(context) {
             stored.address,
             stored.pincode,
             stored.password_hash,
-            stored.password_salt
+            stored.password_salt,
+            stored.wishlist_json
           ).run();
 
-          const canonical = await env.VISTARA_DB.prepare(`SELECT id FROM users WHERE email = ?`).bind(email).first();
+          const canonical = await db.prepare(`SELECT id FROM users WHERE email = ?`).bind(email).first();
           if (canonical && canonical.id) stored.id = canonical.id;
         }
         edgeMemoryUsers.set(email, stored);
@@ -390,9 +459,10 @@ export async function onRequest(context) {
             id: stored.id,
             email: stored.email,
             name: stored.name,
-            phone: stored.phone,
-            address: stored.address,
+            phone: stored.phone || '',
+            address: stored.address || '',
             pincode: stored.pincode || '',
+            wishlist: stored.wishlist || parseWishlistJson(stored.wishlist_json),
             provider: stored.provider || 'email',
             memberTier: stored.member_tier || 'Verified Vistāra Patron'
           }
@@ -402,68 +472,86 @@ export async function onRequest(context) {
       );
     }
 
-    if (path === 'auth/oauth' && request.method === 'POST') {
+    if ((path === 'auth/oauth' || path === 'auth/google' || path === 'auth/apple') && request.method === 'POST') {
       const body = await request.json();
-      const provider = body.provider === 'apple' ? 'apple' : 'google';
-      const jwtClaims = body.credential ? decodeJwtPayload(body.credential) : null;
+      const provider = path === 'auth/apple'
+        ? 'apple'
+        : (path === 'auth/google' ? 'google' : (body.provider === 'apple' ? 'apple' : 'google'));
+      const rawToken = body.credential || body.id_token || '';
+      const jwtClaims = rawToken ? decodeJwtPayload(rawToken) : null;
       const email = String(body.email || (jwtClaims && jwtClaims.email) || '').trim().toLowerCase();
       const name = String(body.name || (jwtClaims && jwtClaims.name) || '').trim();
       const phone = String(body.phone || '').trim();
       const address = String(body.address || '').trim();
       const pincode = String(body.pincode || '').trim();
       const oauthSub = String(body.sub || (jwtClaims && jwtClaims.sub) || '').trim();
+      const incomingWishlist = Array.isArray(body.wishlist) ? body.wishlist : [];
 
-      if (!email || !address || !phone) {
+      if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
         return jsonResponse({
           ok: false,
-          error: 'OAuth sign-in requires a verified email, mobile number, and shipping address.'
+          error: 'OAuth sign-in requires a valid Google or Apple email address.'
         }, 400);
       }
 
-      const existingMem = edgeMemoryUsers.get(email);
+      let existingUser = edgeMemoryUsers.get(email) || null;
+      if (!existingUser && db) {
+        existingUser = await db.prepare(`SELECT * FROM users WHERE email = ?`).bind(email).first();
+      }
+      const existingWl = existingUser ? parseWishlistJson(existingUser.wishlist || existingUser.wishlist_json) : [];
+      const mergedWishlist = Array.from(new Set([...existingWl, ...incomingWishlist]));
+
       const userRecord = {
-        id: (existingMem && existingMem.id) || ('usr_' + crypto.randomUUID().replace(/-/g, '').slice(0, 12)),
+        id: (existingUser && existingUser.id) || ('usr_' + crypto.randomUUID().replace(/-/g, '').slice(0, 12)),
         email,
-        name: name || email.split('@')[0],
-        phone,
-        address,
-        pincode,
+        name: name || (existingUser && existingUser.name) || deriveNameFromEmail(email),
+        phone: phone || (existingUser && existingUser.phone) || '',
+        address: address || (existingUser && existingUser.address) || '',
+        pincode: pincode || (existingUser && existingUser.pincode) || '',
         provider,
         provider_sub: oauthSub,
-        member_tier: 'Verified Vistāra Patron',
-        loyalty_points: 250
+        wishlist: mergedWishlist,
+        wishlist_json: JSON.stringify(mergedWishlist),
+        member_tier: (existingUser && existingUser.member_tier) || 'Verified Vistāra Patron',
+        loyalty_points: (existingUser && existingUser.loyalty_points) ?? 250
       };
 
-      if (env && env.VISTARA_DB) {
-        await env.VISTARA_DB.prepare(
-          `INSERT INTO users (id, email, name, phone, address, pincode, provider, provider_sub)
-           VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+      if (db) {
+        await db.prepare(
+          `INSERT INTO users (id, email, name, phone, address, pincode, provider, provider_sub, wishlist_json)
+           VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
            ON CONFLICT(email) DO UPDATE SET
              name = excluded.name,
-             phone = excluded.phone,
-             address = excluded.address,
-             pincode = excluded.pincode,
+             phone = CASE WHEN excluded.phone != '' THEN excluded.phone ELSE users.phone END,
+             address = CASE WHEN excluded.address != '' THEN excluded.address ELSE users.address END,
+             pincode = CASE WHEN excluded.pincode != '' THEN excluded.pincode ELSE users.pincode END,
              provider = excluded.provider,
              provider_sub = CASE WHEN excluded.provider_sub != '' THEN excluded.provider_sub ELSE users.provider_sub END,
+             wishlist_json = excluded.wishlist_json,
              updated_at = datetime('now')`
         ).bind(
           userRecord.id,
           email,
           userRecord.name,
-          phone,
-          address,
+          userRecord.phone,
+          userRecord.address,
           userRecord.pincode,
           provider,
-          userRecord.provider_sub
+          userRecord.provider_sub,
+          userRecord.wishlist_json
         ).run();
 
-        const canonical = await env.VISTARA_DB.prepare(
-          `SELECT id, member_tier, loyalty_points FROM users WHERE email = ?`
+        const canonical = await db.prepare(
+          `SELECT id, member_tier, loyalty_points, phone, address, pincode, wishlist_json FROM users WHERE email = ?`
         ).bind(email).first();
         if (canonical && canonical.id) {
           userRecord.id = canonical.id;
           userRecord.member_tier = canonical.member_tier || userRecord.member_tier;
           userRecord.loyalty_points = canonical.loyalty_points ?? userRecord.loyalty_points;
+          userRecord.phone = canonical.phone || userRecord.phone;
+          userRecord.address = canonical.address || userRecord.address;
+          userRecord.pincode = canonical.pincode || userRecord.pincode;
+          userRecord.wishlist = parseWishlistJson(canonical.wishlist_json);
         }
       }
       edgeMemoryUsers.set(email, userRecord);
@@ -480,6 +568,7 @@ export async function onRequest(context) {
             phone: userRecord.phone,
             address: userRecord.address,
             pincode: userRecord.pincode,
+            wishlist: userRecord.wishlist,
             provider,
             memberTier: userRecord.member_tier
           }
@@ -505,18 +594,22 @@ export async function onRequest(context) {
       const phone = String(body.phone ?? user.phone ?? '').trim();
       const address = String(body.address ?? user.address ?? '').trim();
       const pincode = String(body.pincode ?? user.pincode ?? '').trim();
+      const nextWishlist = Array.isArray(body.wishlist)
+        ? body.wishlist
+        : parseWishlistJson(user.wishlist || user.wishlist_json);
+      const wishlistJson = JSON.stringify(nextWishlist);
 
-      if (!name || !phone || !address) {
+      if (!name) {
         return jsonResponse({
           ok: false,
-          error: 'Full Name, Mobile Number, and Complete Shipping Address are required.'
+          error: 'Full Name is required to update profile.'
         }, 400);
       }
 
-      if (env && env.VISTARA_DB) {
-        await env.VISTARA_DB.prepare(
-          `UPDATE users SET name = ?, phone = ?, address = ?, pincode = ?, updated_at = datetime('now') WHERE id = ?`
-        ).bind(name, phone, address, pincode, user.id).run();
+      if (db) {
+        await db.prepare(
+          `UPDATE users SET name = ?, phone = ?, address = ?, pincode = ?, wishlist_json = ?, updated_at = datetime('now') WHERE id = ?`
+        ).bind(name, phone, address, pincode, wishlistJson, user.id).run();
       }
 
       const memUser = edgeMemoryUsers.get(user.email) || { ...user };
@@ -524,6 +617,8 @@ export async function onRequest(context) {
       memUser.phone = phone;
       memUser.address = address;
       memUser.pincode = pincode;
+      memUser.wishlist = nextWishlist;
+      memUser.wishlist_json = wishlistJson;
       edgeMemoryUsers.set(user.email, memUser);
 
       return jsonResponse({
@@ -535,6 +630,7 @@ export async function onRequest(context) {
           phone,
           address,
           pincode,
+          wishlist: nextWishlist,
           provider: user.provider || 'email',
           memberTier: user.member_tier || 'Verified Vistāra Patron'
         }
@@ -546,11 +642,11 @@ export async function onRequest(context) {
       if (rawToken) {
         const tokenHash = await sha256Hex(rawToken);
         edgeMemorySessions.delete(tokenHash);
-        if (env && env.VISTARA_DB) {
-          await env.VISTARA_DB.prepare(`DELETE FROM sessions WHERE token_hash = ?`).bind(tokenHash).run();
+        if (db) {
+          await db.prepare(`DELETE FROM sessions WHERE token_hash = ?`).bind(tokenHash).run();
         }
-        if (env && env.VISTARA_SESSIONS) {
-          await env.VISTARA_SESSIONS.delete(tokenHash);
+        if (kv) {
+          await kv.delete(tokenHash);
         }
       }
       return jsonResponse(
@@ -567,8 +663,8 @@ export async function onRequest(context) {
       }
 
       const ordersById = new Map();
-      if (env && env.VISTARA_DB) {
-        const res = await env.VISTARA_DB.prepare(
+      if (db) {
+        const res = await db.prepare(
           `SELECT * FROM orders WHERE user_id = ? OR customer_email = ? ORDER BY created_at DESC`
         ).bind(user.id, user.email).all();
         const rows = (res && res.results) || [];
@@ -624,8 +720,8 @@ export async function onRequest(context) {
         userId: user.id,
         customerName: body.customerName || user.name,
         customerEmail: user.email,
-        phone: body.phone || user.phone,
-        address: body.address || user.address,
+        phone: body.phone || user.phone || '',
+        address: body.address || user.address || '',
         pincode: String(body.pincode || user.pincode || '').trim(),
         total: Math.round(Number(body.total || 0)),
         subtotal: Math.round(Number(body.subtotal || 0)),
@@ -641,8 +737,19 @@ export async function onRequest(context) {
         createdAt: new Date().toISOString()
       };
 
-      if (env && env.VISTARA_DB) {
-        await env.VISTARA_DB.prepare(
+      if (db) {
+        if (orderRecord.address || orderRecord.phone) {
+          await db.prepare(
+            `UPDATE users SET name = ?, phone = ?, address = ?, pincode = ?, updated_at = datetime('now') WHERE id = ?`
+          ).bind(
+            orderRecord.customerName || user.name,
+            orderRecord.phone || user.phone || '',
+            orderRecord.address || user.address || '',
+            orderRecord.pincode || user.pincode || '',
+            user.id
+          ).run();
+        }
+        await db.prepare(
           `INSERT INTO orders (
              order_id, user_id, customer_name, customer_email, phone, address, pincode,
              subtotal, discount, gst_amount, total, payment_method, gift_wrap,
@@ -678,8 +785,8 @@ export async function onRequest(context) {
       return jsonResponse({ ok: true, order: orderRecord });
     }
 
-    return jsonResponse({ ok: false, error: `Unknown Cloudflare endpoint: /api/${path}` }, 404);
+    return jsonResponse({ ok: false, error: `Unknown endpoint: /api/${path}` }, 404);
   } catch (err) {
-    return jsonResponse({ ok: false, error: err.message || 'Internal Edge Worker Error' }, 500);
+    return jsonResponse({ ok: false, error: err.message || 'Internal Server Error' }, 500);
   }
 }

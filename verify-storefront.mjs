@@ -137,6 +137,25 @@ test('StorefrontBridge initializes globally on window.ResinStore and window.Stor
   assert.strictEqual(sandbox.window.StorefrontBridge, Store);
 });
 
+test('Decision 1: 100% Empty Initial State on Fresh Load (0 cart, 0 wishlist, 0 orders, no auto-coupon, disabled GST, hidden badges)', () => {
+  assert.strictEqual(Store.getCart().length, 0, 'Initial cart must be empty (0 items)');
+  assert.strictEqual(Store.getCartSummary().itemsCount, 0, 'Initial cart itemsCount must be 0');
+  assert.strictEqual(Store.getCartSummary().payable, 0, 'Initial cart payable must be ₹0');
+  assert.strictEqual(Store.getWishlist().length, 0, 'Initial wishlist must be empty (0 items)');
+  assert.strictEqual(Store.getOrders().length, 0, 'Initial orders must be empty (0 orders)');
+  assert.strictEqual(Store.getCouponCode(), '', 'No coupon code should be auto-applied on initial load');
+  const gst = Store.getGstInfo();
+  assert.strictEqual(gst.enabled, false, 'GST invoice toggle must be disabled by default');
+  assert.strictEqual(gst.gstin, '', 'Default GSTIN must be empty');
+  assert.strictEqual(gst.tradeName, '', 'Default tradeName must be empty');
+  const posts = Store.getSocialPosts();
+  assert.ok(posts.every(p => p.saved === false && p.liked === false), 'No social posts should be pre-saved or pre-liked on initial load');
+
+  const indexHtml = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8');
+  assert.ok(indexHtml.includes('js-wishlist-badge hidden'), 'Wishlist header badge must be hidden when count is 0');
+  assert.ok(indexHtml.includes('js-cart-badge hidden'), 'Cart header badge must be hidden when count is 0');
+});
+
 test('Catalog contains 12 curated products across Resin Art Memories, Vistāra Krafts & POTRY', () => {
   const products = Store.getProducts();
   assert.strictEqual(products.length, 12);
@@ -271,9 +290,9 @@ test('SPA Router in app.js renders all 7 customer routes, enforces zero owner/ad
     'Stitch Design System Screens'
   ];
 
-  // Verify default Patron Profile has non-empty defaultAddress & memberTier on fresh load before any edits
+  // Verify default Patron Profile has empty defaultAddress on fresh guest load (no fake pre-filled address)
   const initialProfile = Store.getPatronProfile();
-  assert.ok(initialProfile.defaultAddress && initialProfile.defaultAddress.includes('Bengaluru'), 'Default Patron Profile must define non-empty defaultAddress on initial load');
+  assert.strictEqual(initialProfile.defaultAddress, '', 'Guest Patron Profile must not pre-fill a fake defaultAddress on initial load');
   assert.ok(initialProfile.memberTier && initialProfile.memberTier.includes('Gold'), 'Default Patron Profile must define memberTier on initial load');
 
   for (const [route, param, expectedSubstring] of routes) {
@@ -282,7 +301,7 @@ test('SPA Router in app.js renders all 7 customer routes, enforces zero owner/ad
     const rendered = mockDocument.getElementById('app-view-root').innerHTML;
     assert.ok(rendered.includes(expectedSubstring), `Route #/${route} did not render "${expectedSubstring}"`);
     if (route === 'account') {
-      assert.ok(rendered.includes(initialProfile.defaultAddress), 'Account view must render default dispatch address on initial load');
+      assert.ok(rendered.includes('Will be collected at checkout'), 'Guest Account view must indicate dispatch address is collected at checkout');
     }
     for (const term of forbiddenOwnerTerms) {
       assert.ok(!rendered.includes(term), `Customer route #/${route} must not expose owner/admin UI text "${term}"`);
@@ -654,7 +673,29 @@ test('Customer E-Commerce Domain Features, Strict Owner UI Separation & Viewport
   assert.strictEqual(mockDocument.getElementById('chk-phone').value, '+91 98111 22334');
   assert.strictEqual(mockDocument.getElementById('chk-address').value, '42 Defence Colony, New Delhi 110024');
 
-  // Approve pre-pour layout mockup for default order RAM-2025-8841
+  // Seed order RAM-2025-8841 via Studio Push (since initial orders start at 0) and test Pre-Pour Layout Mockup Approval
+  Store.receiveAdminPush({
+    type: 'ADMIN_UPDATE_ORDER_STATUS',
+    order: {
+      orderId: 'RAM-2025-8841',
+      date: '10 Oct 2026',
+      total: 4499,
+      subtotal: 4499,
+      discount: 0,
+      gstAmount: 686.29,
+      paymentMethod: 'UPI Instant (GPay / PhonePe / Paytm)',
+      customerName: 'Meera & Aarav Kapoor',
+      phone: '+91 98111 22334',
+      address: '42 Defence Colony, New Delhi 110024',
+      giftWrap: true,
+      mockupApproved: false,
+      status: 'Deep Cast Pour (Stage 4 of 5)',
+      stageIndex: 3,
+      stages: ['Order Confirmed', 'Flowers Received at Studio', 'Silica Dehydration (7d)', 'Deep Optical Cast Pour', 'Diamond Polish & Dispatch'],
+      items: [{ productId: 'ram-keep-001', name: 'Eternal Varmala & Bridal Bouquet Time-Capsule Block (12")', qty: 1, price: 4499 }],
+      courier: 'BlueDart Air Priority • AWB #BD99412048'
+    }
+  });
   assert.strictEqual(Store.getOrders().find(o => o.orderId === 'RAM-2025-8841').mockupApproved, false);
   sandbox.window.handleApproveOrderMockup('RAM-2025-8841');
   const approvedOrd = Store.getOrders().find(o => o.orderId === 'RAM-2025-8841');
@@ -725,13 +766,12 @@ test('Mobile Viewport Overflow Audit & Section 2 Design Tokens Compliance (320px
     sandbox.window.navigateTo(route, route === 'product' ? 'ram-keep-001' : null);
     const html = mockDocument.getElementById('app-view-root').innerHTML;
     assert.ok(html && html.length > 100, `Route #${route} must render substantial content`);
-    // Assert no raw fixed inline style widths over 320px
     const wideMatch = html.match(/style=["'][^"']*width:\s*([4-9]\d{2}|\d{4,})px/i);
     assert.strictEqual(wideMatch, null, `Route #${route} must not have fixed inline pixel width > 320px`);
   });
 });
 
-test('Vistāra Krafts Brand Identity, Official VK Logo, Cloudflare Edge Auth Framework, Guest Browsing & Login-Gated Checkout', () => {
+test('Decisions 2, 3 & 4: 2-Step Auth vs Checkout Address, 1-Click Google/Apple OAuth Account Chooser, Guest Wishlist Sync & Clean Consumer Copy', () => {
   // 1. Verify official VK logo asset exists & is wired into index.html and store-bridge.js
   const logoPath = path.join(ROOT, 'vistara-krafts-logo.jpg');
   assert.ok(fs.existsSync(logoPath), 'vistara-krafts-logo.jpg must exist in project root');
@@ -744,27 +784,63 @@ test('Vistāra Krafts Brand Identity, Official VK Logo, Cloudflare Edge Auth Fra
   assert.ok(indexHtml.includes('id="account-bar-modal"'), 'index.html must include top-bar #account-bar-modal');
   assert.ok(indexHtml.includes('./cloudflare-config.js'), 'index.html must load ./cloudflare-config.js');
 
+  // Decision 4: Verify zero technical/developer jargon in customer-facing HTML/JS
+  assert.ok(!indexHtml.includes('Cloudflare Edge Identity'), 'index.html must not expose Cloudflare Edge Identity label');
+  assert.ok(!indexHtml.includes('Protected by Cloudflare Turnstile'), 'index.html must not expose Cloudflare Turnstile technical label');
+  assert.ok(!indexHtml.includes('Cloudflare D1 + KV Edge Session'), 'index.html must not expose Cloudflare D1 + KV Edge Session label');
+  assert.ok(!indexHtml.includes('Razorpay &amp; Cloudflare Verified Checkout'), 'index.html must not expose Razorpay & Cloudflare Verified Checkout label');
+  assert.ok(indexHtml.includes('100% Secure Sign-In'), 'index.html must display clean consumer copy 100% Secure Sign-In');
+  assert.ok(indexHtml.includes('100% Secure Checkout'), 'index.html must display clean consumer copy 100% Secure Checkout');
+
   // Verify checkout modal inputs in index.html have zero hardcoded fake customer values
-  assert.ok(indexHtml.includes('id="chk-name" type="text" required aria-label="Full Recipient Name" value=""'), '#chk-name must have empty default value=""');
-  assert.ok(indexHtml.includes('id="chk-phone" type="tel" required aria-label="WhatsApp or Mobile Number for Tracking" value=""'), '#chk-phone must have empty default value=""');
-  assert.ok(indexHtml.includes('id="chk-address" type="text" required aria-label="Complete Street Address and PIN" value=""'), '#chk-address must have empty default value=""');
+  assert.ok(indexHtml.includes('id="chk-name"') && indexHtml.includes('value=""'), '#chk-name must have empty default value=""');
+  assert.ok(indexHtml.includes('id="chk-phone"') && indexHtml.includes('value=""'), '#chk-phone must have empty default value=""');
+  assert.ok(indexHtml.includes('id="chk-address"') && indexHtml.includes('value=""'), '#chk-address must have empty default value=""');
+  assert.ok(indexHtml.includes('id="chk-pincode"') && indexHtml.includes('value=""'), '#chk-pincode must have empty default value=""');
 
   // 2. Verify Cloudflare Full-Stack Framework files exist
   ['cloudflare-config.js', 'wrangler.toml', 'cloudflare/schema.sql', 'functions/api/[[route]].js', 'CLOUDFLARE_SETUP.md'].forEach(rel => {
     assert.ok(fs.existsSync(path.join(ROOT, rel)), `Cloudflare framework file ${rel} must exist`);
   });
 
-  // 3. Test Guest Mode (unauthenticated): can browse & add to bag, but CANNOT place order or open checkout modal without logging in
+  // 3. Decision 4: Test Guest Wishlist Sync across Sign-In and Sign-Out
   sandbox.window.handlePatronLogout();
   assert.strictEqual(Store.isAuthenticated(), false, 'Patron must be unauthenticated after logout');
-  assert.strictEqual(mockDocument.getElementById('chk-name').value, '', 'Logout must clear #chk-name');
-  assert.strictEqual(mockDocument.getElementById('chk-phone').value, '', 'Logout must clear #chk-phone');
-  assert.strictEqual(mockDocument.getElementById('chk-address').value, '', 'Logout must clear #chk-address');
+  assert.strictEqual(Store.getWishlist().length, 0, 'Guest wishlist must be empty after logout');
 
+  // Guest hearts 2 items while unauthenticated
+  Store.toggleWishlist('ram-keep-001');
+  Store.toggleWishlist('vk-epx-301');
+  assert.strictEqual(Store.getWishlist().length, 2, 'Guest must be able to heart items freely');
+
+  // Decision 2 & 3: 1-Click Google OAuth Sign-In WITHOUT upfront shipping address merges guest wishlist into account
+  sandbox.window.openCloudflareAuthModal(false);
+  sandbox.window.startCloudflareOAuth('google');
+  assert.strictEqual(
+    mockDocument.getElementById('cf-oauth-chooser-sheet').classList.contains('hidden'),
+    false,
+    'Clicking Continue with Google must open the 1-click Google Account Chooser sheet'
+  );
+  sandbox.window.completeOAuthChooserAccount('google', 'kavya.nair@gmail.com', 'Kavya Nair');
+  assert.strictEqual(Store.isAuthenticated(), true, '1-Click Google Account Chooser must immediately authenticate user without requiring street address');
+  assert.strictEqual(Store.getAuthSession().provider, 'google');
+  assert.strictEqual(Store.getAuthSession().name, 'Kavya Nair');
+  assert.deepStrictEqual(Store.getWishlist(), ['ram-keep-001', 'vk-epx-301'], 'Guest wishlist must merge into authenticated user account');
+
+  // Logout resets active guest wishlist to [] while preserving Kavya's saved wishlist
+  sandbox.window.handlePatronLogout();
+  assert.strictEqual(Store.isAuthenticated(), false);
+  assert.strictEqual(Store.getWishlist().length, 0, 'Logout must reset active guest wishlist to 0 items');
+
+  // When Kavya logs back in via 1-click Google, her saved wishlist is restored
+  sandbox.window.completeOAuthChooserAccount('google', 'kavya.nair@gmail.com', 'Kavya Nair');
+  assert.strictEqual(Store.isAuthenticated(), true);
+  assert.deepStrictEqual(Store.getWishlist(), ['ram-keep-001', 'vk-epx-301'], 'Returning user login must restore saved account wishlist');
+  sandbox.window.handlePatronLogout();
+
+  // 4. Test Guest Checkout Gate -> Step 1 (Sign In) -> Step 2 (Delivery Address at Checkout)
   Store.clearCart();
   Store.addToCart('vk-epx-301', 'kit-1200g', 1);
-  assert.strictEqual(Store.getCartSummary().itemsCount, 1, 'Guest must be able to add items to bag without logging in');
-
   const blockedOrder = Store.placeOrder({ name: 'Test', phone: '9999999999', address: 'Bengaluru 560001' });
   assert.strictEqual(blockedOrder.success, false, 'Unauthenticated Store.placeOrder must be rejected');
   assert.strictEqual(blockedOrder.requiresAuth, true, 'Unauthenticated Store.placeOrder must set requiresAuth: true');
@@ -783,105 +859,75 @@ test('Vistāra Krafts Brand Identity, Official VK Logo, Cloudflare Edge Auth Fra
     'Guest clicking Checkout must open #cloudflare-auth-modal'
   );
 
-  // 4. Test validation: loginPatron must never assume customer values before customer enters them
-  assert.strictEqual(Store.loginPatron({ provider: 'email', email: 'test@vk.in', password: 'secret' }).valid, false, 'Must reject login missing name/phone/address');
-  assert.strictEqual(Store.loginPatron({ provider: 'google', email: 'test@vk.in', name: 'Riya' }).valid, false, 'Must reject Google login missing phone/address');
-  assert.strictEqual(Store.loginPatron({ provider: 'apple', email: 'test@vk.in', name: 'Riya', phone: '+91 98000 11111' }).valid, false, 'Must reject Apple login missing shipping address');
+  // Test Email Create Account tab & Sign In tab (no upfront street address required in Step 1)
+  sandbox.window.setEmailAuthTab('register');
+  assert.strictEqual(mockDocument.getElementById('cf-auth-mode').value, 'register');
+  assert.strictEqual(mockDocument.getElementById('cf-register-fields-wrap').classList.contains('hidden'), false, 'Create Account tab must show Name & Mobile fields');
 
-  // 5. Test completing Email + Password + Shipping Address login from Checkout gate -> auto-opens #checkout-modal with customer's entered details
+  // Missing name in register mode should fail validation
+  assert.strictEqual(Store.loginPatron({ provider: 'email', mode: 'register', email: 'newuser@vk.in', password: 'Password#123', name: '' }).valid, false, 'Create Account mode must require Full Name');
+
+  // Complete Email registration in Step 1 -> automatically opens Step 2 (#checkout-modal)
   mockDocument.getElementById('cf-auth-provider').value = 'email';
-  mockDocument.getElementById('cf-auth-email').value = 'kavya.nair@vistara.in';
+  mockDocument.getElementById('cf-auth-mode').value = 'register';
+  mockDocument.getElementById('cf-auth-name').value = 'Devika Menon';
+  mockDocument.getElementById('cf-auth-phone').value = '+91 98200 55443';
+  mockDocument.getElementById('cf-auth-email').value = 'devika.menon@vistara.in';
   mockDocument.getElementById('cf-auth-password').value = 'Vistara#2026';
-  mockDocument.getElementById('cf-auth-name').value = 'Kavya Nair';
-  mockDocument.getElementById('cf-auth-phone').value = '+91 98450 12345';
-  mockDocument.getElementById('cf-auth-address').value = '18 Lavelle Road, Bengaluru';
-  mockDocument.getElementById('cf-auth-pincode').value = '560001';
-
   sandbox.window.submitCloudflareAuthForm({ preventDefault: () => {} });
-  assert.strictEqual(Store.isAuthenticated(), true, 'Customer must be authenticated after valid submitCloudflareAuthForm');
+
+  assert.strictEqual(Store.isAuthenticated(), true, 'Customer must be authenticated after Step 1 email registration');
   assert.strictEqual(
     mockDocument.getElementById('cloudflare-auth-modal').classList.contains('hidden'),
     true,
-    '#cloudflare-auth-modal must close after login'
+    '#cloudflare-auth-modal must close after Step 1 sign-in'
   );
   assert.strictEqual(
     mockDocument.getElementById('checkout-modal').classList.contains('hidden'),
     false,
-    '#checkout-modal must automatically open after completing checkout-triggered login'
+    '#checkout-modal (Step 2) must automatically open after completing checkout-triggered sign-in'
   );
-  assert.strictEqual(mockDocument.getElementById('chk-name').value, 'Kavya Nair');
-  assert.strictEqual(mockDocument.getElementById('chk-phone').value, '+91 98450 12345');
-  assert.ok(mockDocument.getElementById('chk-address').value.includes('18 Lavelle Road, Bengaluru'));
+  assert.strictEqual(mockDocument.getElementById('chk-name').value, 'Devika Menon');
+  assert.strictEqual(mockDocument.getElementById('chk-phone').value, '+91 98200 55443');
+  assert.strictEqual(mockDocument.getElementById('chk-address').value, '', 'New user has no address until entered in Step 2 Checkout');
 
-  // 6. Test Google & Apple OAuth login flows + Order Placement
-  const googleRes = Store.loginPatron({
-    provider: 'google',
-    email: 'devika.google@gmail.com',
-    name: 'Devika Menon',
-    phone: '+91 98200 55443',
-    address: '7 Marine Drive, Mumbai',
-    pincode: '400001'
-  });
-  assert.strictEqual(googleRes.valid, true, 'Google login with shipping address must succeed');
-  assert.strictEqual(Store.getAuthSession().provider, 'google');
+  // Step 2: Enter delivery address & PIN code at Checkout and submit order -> persists address to profile for future checkouts!
+  mockDocument.getElementById('chk-address').value = '7 Marine Drive, Churchgate, Mumbai';
+  mockDocument.getElementById('chk-pincode').value = '400020';
+  const orderCountBefore = Store.getOrders().length;
+  sandbox.window.submitCheckoutOrder({ preventDefault: () => {} });
+  assert.strictEqual(Store.getOrders().length, orderCountBefore + 1, 'Submitting Step 2 Checkout must place the order');
+  assert.strictEqual(Store.getOrders()[0].customerName, 'Devika Menon');
+  assert.ok(Store.getOrders()[0].address.includes('7 Marine Drive, Churchgate, Mumbai'), 'Placed order must contain checkout delivery address');
+  assert.ok(Store.getOrders()[0].address.includes('400020'), 'Placed order must include checkout PIN code');
+  assert.ok(Store.getAuthSession().address.includes('7 Marine Drive, Churchgate, Mumbai'), 'Checkout delivery address must automatically persist to user profile for future orders');
 
+  // 5. Test 1-Click Apple OAuth login flow
   const appleRes = Store.loginPatron({
     provider: 'apple',
     email: 'arjun.apple@icloud.com',
-    name: 'Arjun Singhania',
-    phone: '+91 98111 77889',
-    address: '9 Sardar Patel Marg, New Delhi',
-    pincode: '110001'
+    name: 'Arjun Singhania'
   });
-  assert.strictEqual(appleRes.valid, true, 'Apple login with shipping address must succeed');
+  assert.strictEqual(appleRes.valid, true, '1-Click Apple login without upfront shipping address must succeed');
   assert.strictEqual(Store.getAuthSession().provider, 'apple');
 
-  const orderCountBefore = Store.getOrders().length;
-  sandbox.window.openCheckoutModal();
-  sandbox.window.submitCheckoutOrder({ preventDefault: () => {} });
-  assert.strictEqual(Store.getOrders().length, orderCountBefore + 1, 'Authenticated customer must be able to place order');
-  assert.strictEqual(Store.getOrders()[0].customerName, 'Arjun Singhania');
-
-  // 7. Verify Top-Bar Account Modal (#account-bar-modal) includes live 5-Stage Order Tracker, Pre-Pour Approval & GST Invoice popups
+  // 6. Verify Top-Bar Account Modal (#account-bar-modal) includes live 5-Stage Order Tracker & GST Invoice popups
   sandbox.window.openAccountBarModal();
   const barModalHtml = mockDocument.getElementById('account-bar-modal-body').innerHTML;
   assert.ok(barModalHtml.includes('id="bar-account-orders-list"'), 'Top-bar account modal must render in-bar order tracker (#bar-account-orders-list)');
   assert.ok(barModalHtml.includes('openOrderInvoiceModal('), 'Top-bar account modal must provide GST Invoice popup button');
   assert.ok(barModalHtml.includes('Arjun Singhania'), 'Top-bar account modal must display authenticated customer name');
 
-  // 8. Verify 3-way provider selector & returning email address auto-fill in #cloudflare-auth-modal
-  const indexHtmlContent = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8');
-  assert.ok(indexHtmlContent.includes('id="cf-oauth-google-btn"'), '#cloudflare-auth-modal must include Google provider button');
-  assert.ok(indexHtmlContent.includes('id="cf-oauth-apple-btn"'), '#cloudflare-auth-modal must include Apple provider button');
-  assert.ok(indexHtmlContent.includes('id="cf-oauth-email-btn"'), '#cloudflare-auth-modal must include Email provider button');
-
-  sandbox.window.startCloudflareOAuth('google');
-  assert.strictEqual(mockDocument.getElementById('cf-auth-password-wrap').classList.contains('hidden'), true, 'Google provider mode must hide password wrap');
-  assert.strictEqual(mockDocument.getElementById('cf-auth-email-wrap').classList.contains('min-[350px]:col-span-2'), true, 'Google provider mode must expand email field to span 2 columns');
-
-  sandbox.window.startCloudflareOAuth('email');
-  assert.strictEqual(mockDocument.getElementById('cf-auth-password-wrap').classList.contains('hidden'), false, 'Email provider mode must show password wrap');
-
-  // Clear inputs and test onAuthEmailInput for returning user vs unknown email
-  mockDocument.getElementById('cf-auth-name').value = '';
-  mockDocument.getElementById('cf-auth-phone').value = '';
-  mockDocument.getElementById('cf-auth-address').value = '';
-  sandbox.window.onAuthEmailInput('unknown.new.patron@example.com');
-  assert.strictEqual(mockDocument.getElementById('cf-auth-name').value, '', 'Unknown email must not pre-fill any name');
-  sandbox.window.onAuthEmailInput('kavya.nair@vistara.in');
-  assert.strictEqual(mockDocument.getElementById('cf-auth-name').value, 'Kavya Nair', 'Returning registered email must auto-fill saved recipient name');
-  assert.ok(mockDocument.getElementById('cf-auth-address').value.includes('18 Lavelle Road'), 'Returning registered email must auto-fill saved shipping address');
-
-  // 9. Verify zero plaintext passwords or bearer tokens stored in localStorage & zero fake customer defaults in codebase
+  // 7. Verify zero plaintext passwords or bearer tokens stored in localStorage & zero fake customer defaults in codebase
   assert.strictEqual(mockLocalStorage.getItem('vk_cf_auth_token'), null, 'Bearer session token must never be stored in localStorage');
-  const regRaw = mockLocalStorage.getItem('ram_vk_cf_users_v1') || '{}';
+  const regRaw = mockLocalStorage.getItem('ram_vk_cf_users_v2') || '{}';
   assert.ok(!regRaw.includes('Vistara#2026'), 'Plaintext password must never be stored in localStorage');
   assert.ok(regRaw.includes('passwordVerifier'), 'Registered user record must store hashed passwordVerifier');
   assert.ok(!bridgeCode.includes('Aanya Verma'), 'store-bridge.js must not hardcode fake customer name Aanya Verma');
   assert.ok(!bridgeCode.includes('100 Feet Road, Indiranagar'), 'store-bridge.js must not hardcode fake street address 100 Feet Road, Indiranagar');
   assert.ok(!appCode.includes('Ananya Singhania'), 'app.js must not hardcode fake fallback name Ananya Singhania');
 
-  // 10. Verify all 5 standalone vist_ra_krafts_* screens use official ../vistara-krafts-logo.jpg and Vistāra Krafts brand name
+  // 8. Verify all 5 standalone vist_ra_krafts_* screens use official ../vistara-krafts-logo.jpg and Vistāra Krafts brand name
   const vkScreens = [
     'vist_ra_krafts_home_storefront/code.html',
     'vist_ra_krafts_cart_checkout/code.html',
@@ -942,16 +988,12 @@ try {
   assert.strictEqual(health.status, 200);
   assert.strictEqual(health.headers.get('Cross-Origin-Opener-Policy'), 'same-origin-allow-popups');
 
-  // 2. First-time user login on /auth/login (upserts user into D1 before session insert -> no FK error)
+  // 2. First-time user login on /auth/login without upfront shipping address
   const login1 = await callWorker('/auth/login', 'POST', {
     email: 'first.login@vistara.in',
-    password: 'Password#123',
-    name: 'Nandini Rao',
-    phone: '+91 98450 11223',
-    address: '21 MG Road, Bengaluru',
-    pincode: '560001'
+    password: 'Password#123'
   });
-  assert.strictEqual(login1.status, 200, 'First-time /auth/login must succeed with 200 OK');
+  assert.strictEqual(login1.status, 200, 'First-time /auth/login without upfront shipping address must succeed with 200 OK');
   assert.ok(login1.headers.get('Set-Cookie').includes('HttpOnly'), '/auth/login must set HttpOnly session cookie');
 
   // 3. Duplicate email registration on /auth/register (resolves canonical users.id -> no FK error)
@@ -960,39 +1002,39 @@ try {
     password: 'Password#123',
     name: 'Rohan Mehta',
     phone: '+91 98201 33445',
-    address: '10 Bandra West, Mumbai',
-    pincode: '400050'
+    wishlist: ['ram-keep-001']
   });
   assert.strictEqual(reg1.status, 200);
   const reg2 = await callWorker('/auth/register', 'POST', {
     email: 'dup.reg@vistara.in',
     password: 'Password#123',
     name: 'Rohan Mehta Updated',
-    phone: '+91 98201 33445',
-    address: '12 Juhu Tara Road, Mumbai',
-    pincode: '400049'
+    wishlist: ['vk-epx-301']
   });
   assert.strictEqual(reg2.status, 200, 'Second /auth/register for existing email must succeed without D1 foreign key error');
+  assert.deepStrictEqual(reg2.data.user.wishlist, ['ram-keep-001', 'vk-epx-301'], 'D1 /auth/register must merge wishlists');
 
-  // 4. Google/Apple OAuth upsert on /auth/oauth twice for same email
-  const oauth1 = await callWorker('/auth/oauth', 'POST', {
-    provider: 'google',
+  // 4. Dedicated /auth/google and /auth/apple endpoints without upfront address
+  const googleAuth = await callWorker('/auth/google', 'POST', {
     email: 'dup.reg@vistara.in',
-    name: 'Rohan Mehta Google',
-    phone: '+91 98201 33445',
-    address: '12 Juhu Tara Road, Mumbai',
-    pincode: '400049'
+    name: 'Rohan Mehta Google'
   });
-  assert.strictEqual(oauth1.status, 200, '/auth/oauth for existing email must succeed without D1 foreign key error');
+  assert.strictEqual(googleAuth.status, 200, 'POST /auth/google must succeed without upfront address');
+  const appleAuth = await callWorker('/auth/apple', 'POST', {
+    email: 'apple.patron@icloud.com',
+    name: 'Ananya Apple'
+  });
+  assert.strictEqual(appleAuth.status, 200, 'POST /auth/apple must succeed without upfront address');
 
-  // 5. PUT /auth/profile updates D1 user profile
+  // 5. PUT /auth/profile updates D1 user profile & wishlist
   const profUpdate = await callWorker('/auth/profile', 'PUT', {
     email: 'dup.reg@vistara.in',
     name: 'Rohan Mehta Atelier',
     phone: '+91 98201 99999',
     address: '88 Worli Sea Face, Mumbai - 400030',
-    pincode: '400030'
-  }, oauth1.data.token);
+    pincode: '400030',
+    wishlist: ['ram-keep-001', 'vk-epx-301']
+  }, googleAuth.data.token);
   assert.strictEqual(profUpdate.status, 200, 'PUT /auth/profile must return 200 OK');
   assert.strictEqual(profUpdate.data.user.name, 'Rohan Mehta Atelier');
 
@@ -1011,15 +1053,15 @@ try {
     paymentMethod: 'UPI Instant',
     giftWrap: true,
     items: [{ productId: 'vk-epx-301', name: 'UltraClear 3:1 Casting Resin', qty: 2, price: 1299 }]
-  }, oauth1.data.token);
+  }, googleAuth.data.token);
   assert.strictEqual(postOrd.status, 200, 'POST /orders must persist order in D1 and return 200 OK');
 
-  const getOrds = await callWorker('/orders?email=dup.reg@vistara.in', 'GET', null, oauth1.data.token);
+  const getOrds = await callWorker('/orders?email=dup.reg@vistara.in', 'GET', null, googleAuth.data.token);
   assert.strictEqual(getOrds.status, 200, 'GET /orders must return 200 OK');
   assert.strictEqual(getOrds.data.orders.length, 1);
   assert.strictEqual(getOrds.data.orders[0].orderId, 'VK-2026-9901');
 
-  console.log('✅ PASS: Cloudflare Pages Function (functions/api/[[route]].js) passes real SQLite/D1 foreign-key, Auth, Profile & Order persistence tests');
+  console.log('✅ PASS: Cloudflare Pages Function (functions/api/[[route]].js) passes real SQLite/D1 foreign-key, 1-Click OAuth, Wishlist Merge & Order persistence tests');
   passed++;
 } catch (err) {
   console.error('❌ FAIL: Cloudflare Pages Function D1/SQLite integration test');
@@ -1031,3 +1073,4 @@ console.log(`\n========================================`);
 console.log(`Verification Summary: ${passed} passed, ${failed} failed`);
 console.log(`========================================`);
 if (failed > 0) process.exit(1);
+

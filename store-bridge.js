@@ -7,22 +7,22 @@
   'use strict';
 
   const STORAGE_KEYS = {
-    CART: 'ram_vk_cart_v1',
-    WISHLIST: 'ram_vk_wishlist_v1',
-    SAVED_POSTS: 'ram_vk_saved_posts_v1',
-    LIKED_POSTS: 'ram_vk_liked_posts_v1',
-    PRODUCTS: 'ram_vk_products_v1',
-    SOCIAL_POSTS: 'ram_vk_social_posts_v1',
-    ORDERS: 'ram_vk_orders_v1',
-    PINCODE: 'ram_vk_pincode_v1',
-    COUPON: 'ram_vk_coupon_v1',
-    GST_INFO: 'ram_vk_gst_v1',
-    QUIZ_PREF: 'ram_vk_quiz_pref_v1',
-    PATRON_PROFILE: 'ram_vk_patron_profile_v1',
-    AUTH_SESSION: 'ram_vk_cf_auth_v1',
-    REGISTERED_USERS: 'ram_vk_cf_users_v1',
-    RECENTLY_VIEWED: 'ram_vk_recently_viewed_v1',
-    STUDIO_SYNC_LOG: 'ram_vk_studio_sync_v1'
+    CART: 'ram_vk_cart_v2',
+    WISHLIST: 'ram_vk_wishlist_v2',
+    SAVED_POSTS: 'ram_vk_saved_posts_v2',
+    LIKED_POSTS: 'ram_vk_liked_posts_v2',
+    PRODUCTS: 'ram_vk_products_v2',
+    SOCIAL_POSTS: 'ram_vk_social_posts_v2',
+    ORDERS: 'ram_vk_orders_v2',
+    PINCODE: 'ram_vk_pincode_v2',
+    COUPON: 'ram_vk_coupon_v2',
+    GST_INFO: 'ram_vk_gst_v2',
+    QUIZ_PREF: 'ram_vk_quiz_pref_v2',
+    PATRON_PROFILE: 'ram_vk_patron_profile_v2',
+    AUTH_SESSION: 'ram_vk_cf_auth_v2',
+    REGISTERED_USERS: 'ram_vk_cf_users_v2',
+    RECENTLY_VIEWED: 'ram_vk_recently_viewed_v2',
+    STUDIO_SYNC_LOG: 'ram_vk_studio_sync_v2'
   };
 
   // Verified studio & product photography from the Stitch archive
@@ -606,8 +606,8 @@
       image: IMAGES.floralCube,
       caption: 'When she sent us her wedding varmala from Udaipur, the roses were already 4 days old 🌹✨ After 14 days of gentle silica-gel dehydration and 4 crystal-clear pours using our Deep Pour 2:1 formula, her memories are now frozen in glass forever! Drop a 💕 if you want your wedding flowers preserved!',
       likes: 2842,
-      saved: true,
-      liked: true,
+      saved: false,
+      liked: false,
       productId: 'ram-keep-001',
       comments: [
         { user: '@meera.kapoor', text: 'I literally cried opening my varmala block yesterday!! The clarity is unreal 😭💖', time: '1h' },
@@ -646,7 +646,7 @@
       image: IMAGES.ultraclearThumb2,
       caption: 'Look at the millimeter grid through a solid 50mm cured disc of our UltraClear 3:1 & Deep Pour systems 🔍 Zero optical distortion, zero micro-bubbles without a vacuum chamber, and fortified with HALS UV stabilizers for Indian summers.',
       likes: 3190,
-      saved: true,
+      saved: false,
       liked: false,
       productId: 'vk-epx-301',
       comments: [
@@ -666,7 +666,7 @@
       caption: 'Champagne gold, raw Himalayan quartz crystals, and chameleon bronze mica ✨ Hand-sculpted for a couple’snew living room in South Delhi. Every geode catches morning sunlight like liquid jewelry.',
       likes: 1920,
       saved: false,
-      liked: true,
+      liked: false,
       productId: 'ram-keep-003',
       comments: [
         { user: '@nisha_designs', text: 'Can we customize the colors to emerald and antique brass?', time: '1d' },
@@ -823,61 +823,10 @@
     }
   }
 
-  // Initialize default cart matching the Stitch cart screen if not yet initialized
-  const DEFAULT_CART = [
-    {
-      cartItemId: 'item_resin_uc31_1200g',
-      productId: 'vk-epx-301',
-      sku: 'VK-RES-UC31-12KG',
-      name: 'UltraClear 3:1 Casting Resin',
-      variantLabel: '1.2kg Kit • Industrial Grade',
-      price: 1299,
-      regularPrice: 1550,
-      qty: 1,
-      image: IMAGES.ultraclearMain,
-      ratio: '3:1 by weight',
-      viscosity: '600 mPa·s',
-      hsn: '39073010',
-      customNote: ''
-    },
-    {
-      cartItemId: 'item_mold_geode_4cav',
-      productId: 'vk-mld-geo',
-      sku: 'VK-MLD-GEO-04',
-      name: 'Silicone Geode Coaster Mold',
-      variantLabel: 'Set of 4 Organic Cavities',
-      price: 449,
-      regularPrice: 599,
-      qty: 1,
-      image: IMAGES.geodeMold,
-      ratio: 'Platinum cure',
-      viscosity: 'Mirror interior gloss',
-      hsn: '39269099',
-      customNote: ''
-    }
-  ];
+  // Initialize default cart and orders as empty arrays for new visitors
+  const DEFAULT_CART = [];
 
-  const DEFAULT_ORDERS = [
-    {
-      orderId: 'RAM-2025-8841',
-      date: '10 Oct 2026',
-      total: 4499,
-      subtotal: 4499,
-      discount: 0,
-      gstAmount: 686.29,
-      paymentMethod: 'UPI Instant (GPay / PhonePe / Paytm)',
-      customerName: 'Vistāra Studio Sample Order',
-      phone: 'Verified at Checkout',
-      address: 'Shipping address assigned upon Patron Sign-In',
-      giftWrap: true,
-      mockupApproved: false,
-      status: 'Deep Cast Pour (Stage 4 of 5)',
-      stageIndex: 3,
-      stages: ['Order Confirmed', 'Flowers Received at Studio', 'Silica Dehydration (7d)', 'Deep Optical Cast Pour', 'Diamond Polish & Dispatch'],
-      items: [{ productId: 'ram-keep-001', name: 'Eternal Varmala & Bridal Bouquet Time-Capsule Block (12")', qty: 1, price: 4499 }],
-      courier: 'BlueDart Air Priority • AWB #BD99412048'
-    }
-  ];
+  const DEFAULT_ORDERS = [];
 
   // Backend & External Admin Host Configuration
   const backendConfig = {
@@ -1155,7 +1104,7 @@
     },
 
     getCouponCode() {
-      return safeRead(STORAGE_KEYS.COUPON, 'KRAFTFIRST');
+      return safeRead(STORAGE_KEYS.COUPON, '');
     },
 
     applyCoupon(code) {
@@ -1260,7 +1209,7 @@
     },
 
     getWishlist() {
-      return safeRead(STORAGE_KEYS.WISHLIST, ['ram-keep-001', 'vk-epx-301', 'ram-keep-004']);
+      return safeRead(STORAGE_KEYS.WISHLIST, []);
     },
 
     isWishlisted(productId) {
@@ -1272,6 +1221,26 @@
       const exists = current.includes(productId);
       const updated = exists ? current.filter(id => id !== productId) : [...current, productId];
       safeWrite(STORAGE_KEYS.WISHLIST, updated);
+
+      // Persist wishlist to authenticated user's profile and backend
+      const authSession = this.getAuthSession();
+      if (authSession && authSession.email) {
+        const nextSession = { ...authSession, wishlist: updated };
+        safeWrite(STORAGE_KEYS.AUTH_SESSION, nextSession);
+        safeWrite(STORAGE_KEYS.PATRON_PROFILE, nextSession);
+        const registeredUsers = safeRead(STORAGE_KEYS.REGISTERED_USERS, {}) || {};
+        const emailKey = authSession.email.toLowerCase();
+        registeredUsers[emailKey] = { ...(registeredUsers[emailKey] || {}), ...nextSession, wishlist: updated };
+        safeWrite(STORAGE_KEYS.REGISTERED_USERS, registeredUsers);
+        callCloudflareEdge('/auth/profile', 'PUT', {
+          name: nextSession.name || '',
+          phone: nextSession.phone || '',
+          address: nextSession.address || '',
+          pincode: nextSession.pincode || '',
+          wishlist: updated
+        });
+      }
+
       this.notify('wishlist_updated', { productId, added: !exists, count: updated.length });
       return { added: !exists, count: updated.length, wishlist: updated };
     },
@@ -1309,9 +1278,9 @@
 
     getGstInfo() {
       return safeRead(STORAGE_KEYS.GST_INFO, {
-        enabled: true,
-        gstin: '29AAFCA1234F1ZX',
-        tradeName: 'Aura Craft & Design Studios LLP'
+        enabled: false,
+        gstin: '',
+        tradeName: ''
       });
     },
 
@@ -1324,7 +1293,7 @@
 
     getAuthSession() {
       const session = safeRead(STORAGE_KEYS.AUTH_SESSION, null);
-      if (session && typeof session === 'object' && session.authenticated && session.email && session.address) {
+      if (session && typeof session === 'object' && session.authenticated && session.email) {
         return session;
       }
       return null;
@@ -1343,6 +1312,7 @@
 
     loginPatron(payload = {}) {
       const provider = ['google', 'apple', 'email'].includes(payload.provider) ? payload.provider : 'email';
+      const mode = payload.mode === 'register' ? 'register' : 'signin';
       const email = String(payload.email || '').trim().toLowerCase();
       const password = String(payload.password || '');
       let name = String(payload.name || '').trim();
@@ -1373,32 +1343,33 @@
           const msg = 'Incorrect password for this email account.';
           return { ok: false, valid: false, error: msg, message: msg };
         }
+        if (mode === 'register' && !name && !(existingUser && existingUser.name)) {
+          const msg = 'Please enter your full name to create your account.';
+          return { ok: false, valid: false, error: msg, message: msg };
+        }
       }
 
-      // Use previously saved user details only if this exact user already registered them earlier
+      // Restore previously saved user details if this user already registered them earlier
       if (!name && existingUser && existingUser.name) name = existingUser.name;
+      if (!name) {
+        name = email.split('@')[0].replace(/[._-]+/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+      }
       if (!phone && existingUser && existingUser.phone) phone = existingUser.phone;
       if (!address && existingUser && existingUser.address) address = existingUser.address;
 
-      if (!name) {
-        const msg = 'Please enter your full recipient name.';
-        return { ok: false, valid: false, requiresAddress: true, error: msg, message: msg };
-      }
-      if (!phone) {
-        const msg = 'Please provide your Mobile / WhatsApp number for order dispatch.';
-        return { ok: false, valid: false, requiresAddress: true, error: msg, message: msg };
-      }
-      if (!address) {
-        const msg = 'Please provide your complete shipping address & PIN code.';
-        return { ok: false, valid: false, requiresAddress: true, error: msg, message: msg };
-      }
-
-      const pinMatch = address.match(/\b([1-9][0-9]{5})\b/);
-      const resolvedPin = pincode || (pinMatch ? pinMatch[1] : '');
+      const pinMatch = address ? address.match(/\b([1-9][0-9]{5})\b/) : null;
+      const resolvedPin = pincode || (pinMatch ? pinMatch[1] : (existingUser && existingUser.pincode) || '');
       if (resolvedPin && /^[1-9][0-9]{5}$/.test(resolvedPin)) {
         this.verifyPincode(resolvedPin);
       }
-      const fullAddress = (pincode && !address.includes(pincode)) ? `${address} - ${pincode}` : address;
+      const fullAddress = (address && resolvedPin && !address.includes(resolvedPin)) ? `${address} - ${resolvedPin}` : address;
+
+      // Merge any guest wishlist items into the authenticated user's wishlist
+      const guestWishlist = this.getWishlist();
+      const savedUserWishlist = (existingUser && Array.isArray(existingUser.wishlist)) ? existingUser.wishlist : [];
+      const payloadWishlist = Array.isArray(payload.wishlist) ? payload.wishlist : [];
+      const mergedWishlist = Array.from(new Set([...savedUserWishlist, ...guestWishlist, ...payloadWishlist])).filter(Boolean);
+      safeWrite(STORAGE_KEYS.WISHLIST, mergedWishlist);
 
       edgeSessionToken = 'vk_cf_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2, 8);
       const userRecord = {
@@ -1409,6 +1380,7 @@
         address: fullAddress,
         defaultAddress: fullAddress,
         pincode: resolvedPin,
+        wishlist: mergedWishlist,
         provider,
         passwordVerifier: provider === 'email'
           ? hashSecretLocal(password)
@@ -1425,10 +1397,12 @@
       safeWrite(STORAGE_KEYS.AUTH_SESSION, userRecord);
       safeWrite(STORAGE_KEYS.PATRON_PROFILE, userRecord);
 
-      // Sync with Cloudflare Pages Function / Worker (D1 + KV + HttpOnly cookie)
-      const endpoint = provider === 'email'
-        ? (existingUser ? '/auth/login' : '/auth/register')
-        : '/auth/oauth';
+      // Sync with backend (/api/auth/google, /api/auth/apple, /api/auth/login, /api/auth/register)
+      const endpoint = provider === 'google'
+        ? '/auth/google'
+        : provider === 'apple'
+          ? '/auth/apple'
+          : (existingUser && mode !== 'register' ? '/auth/login' : '/auth/register');
       callCloudflareEdge(endpoint, 'POST', {
         provider,
         email,
@@ -1437,6 +1411,7 @@
         phone,
         address: fullAddress,
         pincode: resolvedPin,
+        wishlist: mergedWishlist,
         credential
       }).then(data => {
         if (data && data.ok && data.token) {
@@ -1444,23 +1419,38 @@
         }
       });
 
+      this.notify('wishlist_updated', { count: mergedWishlist.length, wishlist: mergedWishlist });
       this.notify('auth_updated', userRecord);
       this.notify('patron_profile_updated', userRecord);
       return { ok: true, valid: true, user: userRecord, session: userRecord, token: edgeSessionToken };
     },
 
     logoutPatron() {
-      // Per sign-in-with-google-web skill: disable automatic One Tap re-selection on sign-out
+      // Disable automatic Google One Tap re-selection on sign-out
       try {
         if (global.google && global.google.accounts && global.google.accounts.id && typeof global.google.accounts.id.disableAutoSelect === 'function') {
           global.google.accounts.id.disableAutoSelect();
         }
       } catch (_e) { /* ignore */ }
 
+      const currentSession = this.getAuthSession();
+      if (currentSession && currentSession.email) {
+        const registeredUsers = safeRead(STORAGE_KEYS.REGISTERED_USERS, {}) || {};
+        const emailKey = currentSession.email.toLowerCase();
+        registeredUsers[emailKey] = {
+          ...(registeredUsers[emailKey] || {}),
+          ...currentSession,
+          wishlist: this.getWishlist()
+        };
+        safeWrite(STORAGE_KEYS.REGISTERED_USERS, registeredUsers);
+      }
+
       safeWrite(STORAGE_KEYS.AUTH_SESSION, null);
+      safeWrite(STORAGE_KEYS.WISHLIST, []);
       callCloudflareEdge('/auth/logout', 'POST');
       edgeSessionToken = '';
 
+      this.notify('wishlist_updated', { count: 0, wishlist: [] });
       this.notify('auth_updated', null);
       return { ok: true };
     },
@@ -1470,8 +1460,8 @@
       if (authSession) {
         return {
           ...authSession,
-          address: authSession.address,
-          defaultAddress: authSession.address,
+          address: authSession.address || '',
+          defaultAddress: authSession.address || '',
           tier: authSession.memberTier || 'Verified Vistāra Patron',
           memberTier: authSession.memberTier || 'Verified Vistāra Patron'
         };
@@ -1480,14 +1470,15 @@
         name: 'Vistāra Studio Guest',
         email: '',
         phone: '',
-        address: 'Bengaluru Studio Hub 560001',
-        defaultAddress: 'Bengaluru Studio Hub 560001',
+        address: '',
+        defaultAddress: '',
+        pincode: '',
         eventDate: '2026-11-18',
         tier: 'Gold Atelier Member',
         memberTier: 'Gold Atelier Member',
         loyaltyPoints: 250
       });
-      const resolvedAddress = profile.defaultAddress || profile.address || 'Bengaluru Studio Hub 560001';
+      const resolvedAddress = profile.defaultAddress || profile.address || '';
       const resolvedTier = profile.memberTier || profile.tier || 'Gold Atelier Member';
       return {
         ...profile,
@@ -1501,7 +1492,9 @@
     savePatronProfile(updates = {}) {
       const current = this.getPatronProfile();
       const next = { ...current, ...updates };
-      const resolvedAddress = updates.defaultAddress || updates.address || next.defaultAddress || next.address || 'Bengaluru Studio Hub 560001';
+      const resolvedAddress = updates.defaultAddress !== undefined
+        ? updates.defaultAddress
+        : (updates.address !== undefined ? updates.address : (next.defaultAddress || next.address || ''));
       const resolvedTier = updates.memberTier || updates.tier || next.memberTier || next.tier || 'Gold Atelier Member';
       next.address = resolvedAddress;
       next.defaultAddress = resolvedAddress;
@@ -1509,15 +1502,16 @@
       next.memberTier = resolvedTier;
       safeWrite(STORAGE_KEYS.PATRON_PROFILE, next);
 
-      // If explicit patron identity & address were saved, synchronize authenticated session state & D1
-      if (updates.name && (updates.defaultAddress || updates.address)) {
+      // Synchronize authenticated session state & D1 when user is signed in or saving profile details
+      const existingAuth = this.getAuthSession();
+      if (existingAuth || (updates.name && (updates.defaultAddress || updates.address))) {
         const sessionObj = {
-          ...(this.getAuthSession() || {}),
+          ...(existingAuth || {}),
           ...next,
-          email: next.email || 'patron@vistarakrafts.in',
+          email: next.email || (existingAuth && existingAuth.email) || 'patron@vistarakrafts.in',
           address: resolvedAddress,
           defaultAddress: resolvedAddress,
-          provider: next.provider || 'email',
+          provider: next.provider || (existingAuth && existingAuth.provider) || 'email',
           authenticated: true
         };
         safeWrite(STORAGE_KEYS.AUTH_SESSION, sessionObj);
@@ -1533,7 +1527,8 @@
           name: sessionObj.name,
           phone: sessionObj.phone || '',
           address: resolvedAddress,
-          pincode: sessionObj.pincode || ''
+          pincode: sessionObj.pincode || '',
+          wishlist: this.getWishlist()
         });
         this.notify('auth_updated', sessionObj);
       }
@@ -1634,15 +1629,41 @@
       const authSession = this.getAuthSession();
       const customerName = String(checkoutDetails.name || (authSession && authSession.name) || '').trim();
       const customerPhone = String(checkoutDetails.phone || (authSession && authSession.phone) || '').trim();
-      const customerAddress = String(checkoutDetails.address || (authSession && authSession.address) || '').trim();
+      const rawAddress = String(checkoutDetails.address || (authSession && authSession.address) || '').trim();
+      const customerPincode = String(checkoutDetails.pincode || (authSession && authSession.pincode) || '').trim();
 
-      if (!authSession || !customerName || !customerPhone || !customerAddress) {
+      if (!authSession) {
         return {
           success: false,
           requiresAuth: true,
-          message: 'Please sign in and provide your shipping address to place your order.'
+          message: 'Please sign in to your account to place your order.'
         };
       }
+      if (!customerName || !customerPhone || !rawAddress) {
+        return {
+          success: false,
+          requiresAddress: true,
+          message: 'Please enter your delivery recipient name, mobile number, and shipping address.'
+        };
+      }
+
+      const pinMatch = rawAddress.match(/\b([1-9][0-9]{5})\b/);
+      const resolvedPin = customerPincode || (pinMatch ? pinMatch[1] : '');
+      if (resolvedPin && /^[1-9][0-9]{5}$/.test(resolvedPin)) {
+        this.verifyPincode(resolvedPin);
+      }
+      const customerAddress = (resolvedPin && !rawAddress.includes(resolvedPin))
+        ? `${rawAddress} - ${resolvedPin}`
+        : rawAddress;
+
+      // Save shipping address to patron profile for future 1-click checkouts
+      this.savePatronProfile({
+        name: customerName,
+        phone: customerPhone,
+        address: customerAddress,
+        defaultAddress: customerAddress,
+        pincode: resolvedPin || this.getPincodeInfo().pin
+      });
 
       const orderId = 'RAM-2026-' + Math.floor(1000 + Math.random() * 9000);
       const newOrder = {
@@ -1656,6 +1677,7 @@
         customerName: customerName || 'Verified Patron',
         phone: customerPhone,
         address: customerAddress,
+        pincode: resolvedPin || this.getPincodeInfo().pin,
         giftWrap: checkoutDetails.giftWrap !== undefined ? Boolean(checkoutDetails.giftWrap) : true,
         mockupApproved: false,
         status: 'Order Confirmed • Studio Batch Allocated',
@@ -1668,7 +1690,7 @@
           price: i.price,
           customNote: i.customNote
         })),
-        courier: `BlueDart Priority Air • PIN ${this.getPincodeInfo().pin}`
+        courier: `BlueDart Priority Air • PIN ${resolvedPin || this.getPincodeInfo().pin}`
       };
       const orders = [newOrder, ...this.getOrders()];
       safeWrite(STORAGE_KEYS.ORDERS, orders);

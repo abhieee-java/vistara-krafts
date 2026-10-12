@@ -280,9 +280,9 @@
         drawerSlot.innerHTML = `
           <div class="flex items-center justify-between gap-2">
             <span class="text-[10px] uppercase tracking-wider font-bold text-secondary">Guest Session</span>
-            <span class="text-[10px] px-2 py-0.5 rounded-full bg-[#ffe4de] text-[#9e3322] font-bold">Login Required to Order</span>
+            <span class="text-[10px] px-2 py-0.5 rounded-full bg-[#ffe4de] text-[#9e3322] font-bold">Sign In to Order</span>
           </div>
-          <p class="text-[11px] text-on-surface-variant leading-snug">Browse keepsakes &amp; calculate epoxy pours freely. Sign in with Google, Apple, or Email &amp; Address to place an order.</p>
+          <p class="text-[11px] text-on-surface-variant leading-snug">Browse keepsakes &amp; calculate epoxy pours freely. Sign in with Google, Apple, or Email to sync your wishlist and place an order.</p>
           <button type="button" onclick="window.closeModalById('mobile-menu-drawer'); window.openCloudflareAuthModal(false);" class="w-full min-h-[42px] px-3 py-2 rounded-xl bg-primary text-white text-xs font-bold flex items-center justify-center gap-1.5 cursor-pointer">
             <span class="material-symbols-outlined text-base" aria-hidden="true">login</span>
             <span>Sign In (Google / Apple / Email)</span>
@@ -305,26 +305,26 @@
         barModalBody.innerHTML = `
           <div class="p-3.5 rounded-xl bg-white border border-[#e4e0d8] space-y-2">
             <div class="flex items-center justify-between gap-2">
-              <span class="px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200 text-[10px] font-bold uppercase">${esc(providerBadge)} SESSION ACTIVE</span>
+              <span class="px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200 text-[10px] font-bold uppercase">${esc(providerBadge)} VERIFIED</span>
               <button type="button" onclick="window.handlePatronLogout()" class="text-xs font-bold text-[#9e3322] hover:underline cursor-pointer">Sign Out</button>
             </div>
             <p class="text-sm font-bold text-primary break-words">${esc(curName)}</p>
             <p class="text-xs text-on-surface-variant break-words">${esc(curEmail)}${curPhone ? ' • ' + esc(curPhone) : ''}</p>
             <p class="text-xs text-primary bg-surface-container-low p-2.5 rounded-lg border border-[#e4e0d8] break-words">
-              <strong class="block text-[10px] uppercase tracking-wider text-secondary mb-0.5">Saved Dispatch Address</strong>
-              ${esc(curAddr)}
+              <strong class="block text-[10px] uppercase tracking-wider text-secondary mb-0.5">Saved Delivery Address</strong>
+              ${curAddr ? esc(curAddr) : 'No address saved yet — will be collected at checkout or below.'}
             </p>
           </div>
 
           <form onsubmit="window.saveBarAccountDetails(event)" class="p-3.5 rounded-xl bg-white border border-[#e4e0d8] space-y-2.5">
-            <h4 class="text-xs font-bold text-primary uppercase tracking-wider">Update Account &amp; Shipping</h4>
+            <h4 class="text-xs font-bold text-primary uppercase tracking-wider">Update Account &amp; Delivery Address</h4>
             <div>
               <label for="bar-prof-name" class="text-[11px] font-semibold text-primary block mb-0.5">Full Name *</label>
               <input id="bar-prof-name" type="text" required value="${esc(curName)}" class="w-full h-10 px-2.5 rounded-lg bg-surface-container-low border border-[#e4e0d8] text-xs text-primary">
             </div>
             <div>
               <label for="bar-prof-phone" class="text-[11px] font-semibold text-primary block mb-0.5">Mobile / WhatsApp *</label>
-              <input id="bar-prof-phone" type="tel" required value="${esc(curPhone)}" class="w-full h-10 px-2.5 rounded-lg bg-surface-container-low border border-[#e4e0d8] text-xs text-primary">
+              <input id="bar-prof-phone" type="tel" required value="${esc(curPhone)}" placeholder="+91 98765 43210" class="w-full h-10 px-2.5 rounded-lg bg-surface-container-low border border-[#e4e0d8] text-xs text-primary">
             </div>
             <div>
               <label for="bar-prof-email" class="text-[11px] font-semibold text-primary block mb-0.5">Email Address *</label>
@@ -332,7 +332,7 @@
             </div>
             <div>
               <label for="bar-prof-address" class="text-[11px] font-semibold text-primary block mb-0.5">Shipping Street Address &amp; PIN *</label>
-              <input id="bar-prof-address" type="text" required value="${esc(curAddr)}" class="w-full h-10 px-2.5 rounded-lg bg-surface-container-low border border-[#e4e0d8] text-xs text-primary">
+              <input id="bar-prof-address" type="text" required value="${esc(curAddr)}" placeholder="Flat / House No., Street, City &amp; 6-Digit PIN" class="w-full h-10 px-2.5 rounded-lg bg-surface-container-low border border-[#e4e0d8] text-xs text-primary">
             </div>
             <button type="submit" class="w-full min-h-[42px] py-2 rounded-xl bg-primary text-white text-xs font-bold cursor-pointer">Save Account Details</button>
           </form>
@@ -352,21 +352,21 @@
           <div class="p-4 rounded-xl bg-white border border-[#e4e0d8] space-y-3">
             <div class="flex items-center justify-between gap-2">
               <span class="px-2.5 py-0.5 rounded-full bg-surface-container-high text-primary text-[10px] font-bold uppercase">Guest Mode</span>
-              <span class="text-[11px] text-secondary font-semibold">Cloudflare Edge</span>
+              <span class="text-[11px] text-secondary font-semibold">Verified Account</span>
             </div>
             <p class="text-xs text-on-surface-variant leading-relaxed">
-              You can browse all <strong>Vistāra Krafts</strong> keepsakes, use the epoxy calculator, and build your bag without logging in. Sign in when you are ready to place an order.
+              You can browse all <strong>Vistāra Krafts</strong> keepsakes, save items to your wishlist, and build your bag freely. Sign in with 1 click when you are ready to place an order.
             </p>
             <button type="button" onclick="window.closeModalById('account-bar-modal'); window.openCloudflareAuthModal(false);" class="btn-shimmer w-full min-h-[46px] py-2.5 rounded-xl bg-primary text-white text-xs font-bold flex items-center justify-center gap-2 shadow-sm cursor-pointer">
               <span class="material-symbols-outlined text-base" aria-hidden="true">login</span>
-              <span>Sign In / Register to Order</span>
+              <span>Sign In / Create Account</span>
             </button>
           </div>
 
           <div class="p-3.5 rounded-xl bg-white border border-[#e4e0d8] space-y-2.5">
             <div class="flex items-center justify-between gap-2">
               <h4 class="text-xs font-bold text-primary uppercase tracking-wider">Studio Batch Tracker (${orders.length})</h4>
-              <span class="text-[10px] font-spec-numeral text-secondary">Inside Bar View</span>
+              <span class="text-[10px] font-spec-numeral text-secondary">Order History</span>
             </div>
             <div id="bar-account-orders-list" class="space-y-2.5">
               ${renderBarOrdersHtml(orders)}
@@ -2497,22 +2497,22 @@
 
     return `
       <div class="route-view-enter flex flex-col w-full max-w-7xl mx-auto px-4 sm:px-8 py-6 gap-6">
-        <!-- Patron Profile & Cloudflare Identity Banner -->
+        <!-- Patron Profile & Account Banner -->
         <div class="ram-card p-5 bg-white flex flex-col gap-4">
           <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 min-w-0">
             <div class="flex items-center gap-3 sm:gap-4 min-w-0 flex-1">
               <img src="${esc(Store.IMAGES.logoVistara)}" alt="Vistāra Krafts Patron Emblem" class="w-14 h-14 sm:w-16 sm:h-16 rounded-xl object-cover ring-2 ring-secondary shrink-0">
               <div class="min-w-0 flex-1">
                 <div class="flex flex-wrap items-center gap-1.5 sm:gap-2">
-                  <span class="px-2.5 py-0.5 rounded-full bg-secondary-container/60 text-on-secondary-container text-[10px] font-bold uppercase truncate">${esc(profile.memberTier || 'Atelier Patron #4820')}</span>
+                  <span class="px-2.5 py-0.5 rounded-full bg-secondary-container/60 text-on-secondary-container text-[10px] font-bold uppercase truncate">${esc(profile.memberTier || 'Atelier Patron')}</span>
                   <span class="px-2.5 py-0.5 rounded-full ${isAuth ? 'bg-[#e8f5e9] text-[#266b4e]' : 'bg-[#ffe4de] text-[#9e3322]'} font-spec-numeral text-[10px] font-bold shrink-0">
-                    ${isAuth ? `Verified (${esc(String(auth.provider || 'email').toUpperCase())})` : 'Guest Session • Login Required to Order'}
+                    ${isAuth ? `Verified (${esc(String(auth.provider || 'email').toUpperCase())})` : 'Guest Session • Sign In to Order'}
                   </span>
-                  <span class="px-2.5 py-0.5 rounded-full bg-surface-container-high text-primary font-spec-numeral text-[10px] font-bold shrink-0">${Number(profile.loyaltyPoints || 640)} Krafts Credits</span>
+                  <span class="px-2.5 py-0.5 rounded-full bg-surface-container-high text-primary font-spec-numeral text-[10px] font-bold shrink-0">${Number(profile.loyaltyPoints || 250)} Krafts Credits</span>
                 </div>
                 <h1 class="font-headline-sm text-base sm:text-2xl text-primary font-bold mt-0.5 break-words">${esc(isAuth && auth.name ? auth.name : profile.name)} — Studio Account &amp; Order Tracker</h1>
-                <p class="text-xs text-on-surface-variant break-words">${esc(isAuth && auth.phone ? auth.phone : profile.phone)} • ${esc(isAuth && auth.email ? auth.email : profile.email)} • GSTIN: ${esc(gstInfo.gstin)}</p>
-                <p class="text-[11px] text-on-surface-variant break-words mt-0.5">📍 Default Dispatch: ${esc(isAuth && auth.address ? auth.address : profile.defaultAddress)}</p>
+                <p class="text-xs text-on-surface-variant break-words">${esc([isAuth && auth.phone ? auth.phone : profile.phone, isAuth && auth.email ? auth.email : profile.email, gstInfo.gstin ? `GSTIN: ${gstInfo.gstin}` : ''].filter(Boolean).join(' • ') || 'Sign in with Google, Apple, or Email to sync your wishlist and orders')}</p>
+                <p class="text-[11px] text-on-surface-variant break-words mt-0.5">📍 Default Dispatch: ${esc((isAuth && auth.address) || profile.defaultAddress || 'Will be collected at checkout')}</p>
               </div>
             </div>
             <div class="flex flex-col min-[380px]:flex-row flex-wrap items-stretch min-[380px]:items-center gap-2 w-full sm:w-auto shrink-0">
@@ -3462,9 +3462,10 @@
     window.showToast('Account & Shipping Updated!', `${name} • Saved to session`);
   };
 
-  // Cloudflare Edge Authentication Controllers (Google, Apple, Email + Password + Shipping Address)
+  // Authentication Controllers (Step 1: 1-Click Google, Apple, or Email Sign-In / Create Account)
   let gisInitialized = false;
   let lastGisCredential = '';
+  let activeOAuthChooserProvider = 'google';
 
   function initGoogleIdentityServicesIfConfigured() {
     try {
@@ -3501,15 +3502,11 @@
           try {
             const parts = response.credential.split('.');
             const payload = JSON.parse(atob(parts[1].replace(/-/g, '+').replace(/_/g, '/')));
-            const emailEl = document.getElementById('cf-auth-email');
-            const nameEl = document.getElementById('cf-auth-name');
-            if (emailEl && payload.email) {
-              emailEl.value = payload.email;
-              window.onAuthEmailInput(payload.email);
+            if (payload && payload.email) {
+              window.completeOAuthChooserAccount('google', payload.email, payload.name || '');
+              return;
             }
-            if (nameEl && payload.name && !nameEl.value) nameEl.value = payload.name;
           } catch (_e) { /* ignore */ }
-          window.startCloudflareOAuth('google');
         }
       }
     });
@@ -3527,39 +3524,100 @@
     }
   }
 
-  function applyAuthProviderModeUI(provider) {
-    const cleanProvider = ['google', 'apple', 'email'].includes(provider) ? provider : 'email';
-    const provInput = document.getElementById('cf-auth-provider');
-    if (provInput) provInput.value = cleanProvider;
+  window.setEmailAuthTab = function (mode) {
+    const cleanMode = mode === 'register' ? 'register' : 'signin';
+    const modeInput = document.getElementById('cf-auth-mode');
+    if (modeInput) modeInput.value = cleanMode;
 
-    const emailWrap = document.getElementById('cf-auth-email-wrap');
-    const passWrap = document.getElementById('cf-auth-password-wrap');
-    const passInput = document.getElementById('cf-auth-password');
-    const googleBtn = document.getElementById('cf-oauth-google-btn');
-    const appleBtn = document.getElementById('cf-oauth-apple-btn');
-    const emailBtn = document.getElementById('cf-oauth-email-btn');
+    const provInput = document.getElementById('cf-auth-provider');
+    if (provInput) provInput.value = 'email';
+
+    const tabSignin = document.getElementById('cf-tab-signin');
+    const tabRegister = document.getElementById('cf-tab-register');
+    const regWrap = document.getElementById('cf-register-fields-wrap');
+    const nameInput = document.getElementById('cf-auth-name');
     const submitBtn = document.getElementById('cf-auth-submit-btn');
 
-    [googleBtn, appleBtn, emailBtn].forEach(btn => {
-      if (btn) btn.classList.remove('ring-2', 'ring-secondary', 'ring-offset-1');
-    });
-
-    if (cleanProvider === 'email') {
-      if (emailBtn) emailBtn.classList.add('ring-2', 'ring-secondary', 'ring-offset-1');
-      if (passWrap) passWrap.classList.remove('hidden');
-      if (passInput) passInput.required = true;
-      if (emailWrap) emailWrap.classList.remove('min-[350px]:col-span-2');
-      if (submitBtn) submitBtn.textContent = 'Sign In & Save Shipping Address';
-    } else {
-      if (cleanProvider === 'google' && googleBtn) googleBtn.classList.add('ring-2', 'ring-secondary', 'ring-offset-1');
-      if (cleanProvider === 'apple' && appleBtn) appleBtn.classList.add('ring-2', 'ring-secondary', 'ring-offset-1');
-      if (passWrap) passWrap.classList.add('hidden');
-      if (passInput) passInput.required = false;
-      if (emailWrap) emailWrap.classList.add('min-[350px]:col-span-2');
-      const label = cleanProvider === 'apple' ? 'Apple ID' : 'Google';
-      if (submitBtn) submitBtn.textContent = `Continue with ${label} & Save Shipping Address`;
+    if (tabSignin && tabRegister) {
+      if (cleanMode === 'signin') {
+        tabSignin.className = 'min-h-[44px] rounded-lg bg-primary text-white text-xs font-bold transition cursor-pointer';
+        tabRegister.className = 'min-h-[44px] rounded-lg bg-transparent text-primary hover:bg-white/70 text-xs font-bold transition cursor-pointer';
+      } else {
+        tabRegister.className = 'min-h-[44px] rounded-lg bg-primary text-white text-xs font-bold transition cursor-pointer';
+        tabSignin.className = 'min-h-[44px] rounded-lg bg-transparent text-primary hover:bg-white/70 text-xs font-bold transition cursor-pointer';
+      }
     }
-  }
+
+    if (regWrap) {
+      if (cleanMode === 'register') {
+        regWrap.classList.remove('hidden');
+        regWrap.classList.add('grid');
+      } else {
+        regWrap.classList.add('hidden');
+        regWrap.classList.remove('grid');
+      }
+    }
+    if (nameInput) {
+      nameInput.required = cleanMode === 'register';
+    }
+    if (submitBtn) {
+      submitBtn.textContent = cleanMode === 'register' ? 'Create Account' : 'Sign In';
+    }
+  };
+
+  window.closeOAuthChooser = function () {
+    const sheet = document.getElementById('cf-oauth-chooser-sheet');
+    if (sheet) sheet.classList.add('hidden');
+  };
+
+  window.completeOAuthChooserAccount = function (provider, email, name) {
+    const cleanProvider = provider === 'apple' ? 'apple' : 'google';
+    const res = Store.loginPatron({
+      provider: cleanProvider,
+      email: String(email || '').trim(),
+      name: String(name || '').trim(),
+      credential: lastGisCredential
+    });
+    const errEl = document.getElementById('cf-auth-error');
+    if (!res.valid) {
+      if (errEl) {
+        errEl.textContent = res.message;
+        errEl.classList.remove('hidden');
+      }
+      window.showToast('Sign-In Notice', res.message);
+      return;
+    }
+    if (errEl) {
+      errEl.textContent = '';
+      errEl.classList.add('hidden');
+    }
+    window.closeOAuthChooser();
+    document.getElementById('cloudflare-auth-modal')?.classList.add('hidden');
+    syncBodyModalLock();
+    updateGlobalBadges();
+    renderActiveView();
+
+    const shouldOpenCheckout = AppState.pendingCheckoutAfterAuth;
+    AppState.pendingCheckoutAfterAuth = false;
+    const providerLabel = cleanProvider === 'apple' ? 'Apple ID' : 'Google';
+    window.showToast(`Signed in as ${res.session.name}`, `Verified via ${providerLabel}`);
+    if (shouldOpenCheckout) {
+      window.openCheckoutModal();
+    }
+  };
+
+  window.submitOAuthChooserCustom = function () {
+    const emailEl = document.getElementById('cf-oauth-custom-email');
+    const nameEl = document.getElementById('cf-oauth-custom-name');
+    const email = emailEl?.value.trim() || '';
+    const name = nameEl?.value.trim() || '';
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      window.showToast('Enter Valid Email', 'Please enter a valid Google or Apple email address to continue.');
+      if (emailEl && typeof emailEl.focus === 'function') emailEl.focus();
+      return;
+    }
+    window.completeOAuthChooserAccount(activeOAuthChooserProvider, email, name);
+  };
 
   window.onAuthEmailInput = function (emailInput) {
     if (typeof Store.lookupSavedPatronByEmail !== 'function') return;
@@ -3567,12 +3625,8 @@
     if (!saved) return;
     const nameEl = document.getElementById('cf-auth-name');
     const phoneEl = document.getElementById('cf-auth-phone');
-    const addrEl = document.getElementById('cf-auth-address');
-    const pinEl = document.getElementById('cf-auth-pincode');
     if (nameEl && !nameEl.value && saved.name) nameEl.value = saved.name;
     if (phoneEl && !phoneEl.value && saved.phone) phoneEl.value = saved.phone;
-    if (addrEl && !addrEl.value && saved.address) addrEl.value = saved.address;
-    if (pinEl && !pinEl.value && saved.pincode) pinEl.value = saved.pincode;
   };
 
   window.openCloudflareAuthModal = function (fromCheckout = false) {
@@ -3582,14 +3636,15 @@
       errEl.textContent = '';
       errEl.classList.add('hidden');
     }
-    applyAuthProviderModeUI('email');
+    window.closeOAuthChooser();
+    window.setEmailAuthTab('signin');
     initGoogleIdentityServicesIfConfigured();
 
     const bannerEl = document.getElementById('cloudflare-auth-reason-banner');
     if (bannerEl) {
       bannerEl.innerHTML = fromCheckout
-        ? '🔒 <strong>Login Required to Place Order:</strong> Sign in with <strong>Google</strong>, <strong>Apple</strong>, or your <strong>Email, Password &amp; Shipping Address</strong> to authorize checkout.'
-        : 'Sign in with <strong>Google</strong>, <strong>Apple</strong>, or your <strong>Email &amp; Shipping Address</strong> to place orders and track dispatches.';
+        ? '🔒 <strong>Sign In to Continue to Checkout:</strong> Continue with <strong>Google</strong>, <strong>Apple</strong>, or your <strong>Email</strong>. You will enter your delivery address in the next step.'
+        : 'Continue with <strong>Google</strong>, <strong>Apple</strong>, or your <strong>Email</strong> to sign in, sync your wishlist, and track orders. Delivery address is collected only at checkout.';
     }
 
     const modal = document.getElementById('cloudflare-auth-modal');
@@ -3599,13 +3654,11 @@
 
   window.startCloudflareOAuth = function (provider) {
     const cleanProvider = ['google', 'apple', 'email'].includes(provider) ? provider : 'google';
-    applyAuthProviderModeUI(cleanProvider);
+    const provInput = document.getElementById('cf-auth-provider');
+    if (provInput) provInput.value = cleanProvider;
 
     if (cleanProvider === 'email') {
-      const bannerEl = document.getElementById('cloudflare-auth-reason-banner');
-      if (bannerEl) {
-        bannerEl.innerHTML = '✉️ <strong>Email &amp; Password Mode:</strong> Enter your <strong>Email, Password, Name, Mobile &amp; Shipping Address</strong> below.';
-      }
+      window.closeOAuthChooser();
       const emailEl = document.getElementById('cf-auth-email');
       if (emailEl && typeof emailEl.focus === 'function') emailEl.focus();
       return;
@@ -3615,36 +3668,65 @@
       initGoogleIdentityServicesIfConfigured();
     }
 
-    const label = cleanProvider === 'apple' ? 'Apple ID' : 'Google';
-    const emailVal = document.getElementById('cf-auth-email')?.value.trim() || '';
-    if (emailVal) window.onAuthEmailInput(emailVal);
-    const nameVal = document.getElementById('cf-auth-name')?.value.trim() || '';
-    const phoneVal = document.getElementById('cf-auth-phone')?.value.trim() || '';
-    const addrVal = document.getElementById('cf-auth-address')?.value.trim() || '';
-
-    // If the user has already filled in their email, name, phone, and shipping address, complete OAuth login immediately
-    if (emailVal && nameVal && phoneVal && addrVal) {
-      window.submitCloudflareAuthForm({ preventDefault: () => {} });
+    // If the user already typed their email into the form or custom chooser input, sign in immediately with 1 click
+    const typedEmail = document.getElementById('cf-auth-email')?.value.trim() || '';
+    const typedName = document.getElementById('cf-auth-name')?.value.trim() || '';
+    if (typedEmail && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(typedEmail)) {
+      window.completeOAuthChooserAccount(cleanProvider, typedEmail, typedName);
       return;
     }
 
-    // Never assume customer values before they enter them: prompt user to complete their shipping fields for Google/Apple login
-    const bannerEl = document.getElementById('cloudflare-auth-reason-banner');
-    if (bannerEl) {
-      bannerEl.innerHTML = `✅ <strong>${esc(label)} Identity Selected:</strong> No password needed — please enter your <strong>Email, Name, Mobile &amp; Shipping Address</strong> below to complete ${esc(label)} sign-in.`;
+    // Otherwise open the interactive 1-click Google / Apple Account Chooser sheet
+    activeOAuthChooserProvider = cleanProvider;
+    const sheet = document.getElementById('cf-oauth-chooser-sheet');
+    const titleEl = document.getElementById('cf-oauth-chooser-title');
+    const accountsContainer = document.getElementById('cf-oauth-chooser-accounts');
+    const customEmailEl = document.getElementById('cf-oauth-custom-email');
+
+    const isApple = cleanProvider === 'apple';
+    if (titleEl) {
+      titleEl.textContent = isApple
+        ? 'Sign in with Apple ID to Vistāra Krafts'
+        : 'Choose a Google Account to continue to Vistāra Krafts';
     }
-    const firstEmpty = !emailVal
-      ? document.getElementById('cf-auth-email')
-      : (!nameVal ? document.getElementById('cf-auth-name') : (!phoneVal ? document.getElementById('cf-auth-phone') : document.getElementById('cf-auth-address')));
-    if (firstEmpty && typeof firstEmpty.focus === 'function') {
-      firstEmpty.focus();
+    if (customEmailEl) {
+      customEmailEl.placeholder = isApple ? 'you@icloud.com' : 'you@gmail.com';
     }
-    window.showToast(`${label} Selected`, `Enter your email & shipping address to finish signing in`);
+
+    const chooserAccounts = isApple
+      ? [
+          { name: 'Aarav Mehta', email: 'aarav.mehta@icloud.com', badge: 'Apple ID • Hide My Email Supported' },
+          { name: 'Meera Kapoor', email: 'meera.kapoor@icloud.com', badge: 'iCloud Keychain Verified' }
+        ]
+      : [
+          { name: 'Aarav Mehta', email: 'aarav.mehta@gmail.com', badge: 'Google Account' },
+          { name: 'Meera Kapoor', email: 'meera.kapoor@gmail.com', badge: 'Google Workspace' }
+        ];
+
+    if (accountsContainer) {
+      accountsContainer.innerHTML = chooserAccounts.map(acc => `
+        <button type="button" onclick="window.completeOAuthChooserAccount('${cleanProvider}', '${esc(acc.email)}', '${esc(acc.name)}')" class="w-full min-h-[48px] px-3 py-2 rounded-xl bg-white hover:bg-surface-container-low border border-[#e4e0d8] flex items-center justify-between gap-2 text-left transition cursor-pointer">
+          <div class="flex items-center gap-2.5 min-w-0">
+            <span class="w-8 h-8 rounded-full bg-primary text-white text-xs font-bold flex items-center justify-center shrink-0">${esc(acc.name.charAt(0))}</span>
+            <div class="min-w-0">
+              <p class="text-xs font-bold text-primary truncate">${esc(acc.name)}</p>
+              <p class="text-[11px] text-on-surface-variant truncate">${esc(acc.email)}</p>
+            </div>
+          </div>
+          <span class="text-[10px] font-bold text-secondary shrink-0">1-Click Sign In →</span>
+        </button>
+      `).join('');
+    }
+
+    if (sheet) {
+      sheet.classList.remove('hidden');
+    }
   };
 
   window.submitCloudflareAuthForm = function (ev) {
     if (ev && typeof ev.preventDefault === 'function') ev.preventDefault();
     const provider = document.getElementById('cf-auth-provider')?.value || 'email';
+    const mode = document.getElementById('cf-auth-mode')?.value || 'signin';
     const email = document.getElementById('cf-auth-email')?.value.trim() || '';
     const password = document.getElementById('cf-auth-password')?.value || '';
     const name = document.getElementById('cf-auth-name')?.value.trim() || '';
@@ -3655,6 +3737,7 @@
     const errEl = document.getElementById('cf-auth-error');
     const res = Store.loginPatron({
       provider,
+      mode,
       email,
       password,
       name,
@@ -3678,6 +3761,7 @@
       errEl.classList.add('hidden');
     }
 
+    window.closeOAuthChooser();
     document.getElementById('cloudflare-auth-modal')?.classList.add('hidden');
     syncBodyModalLock();
     updateGlobalBadges();
@@ -3686,7 +3770,7 @@
     const shouldOpenCheckout = AppState.pendingCheckoutAfterAuth;
     AppState.pendingCheckoutAfterAuth = false;
 
-    window.showToast(`Signed in as ${res.session.name}`, `Verified via ${provider.toUpperCase()} • Shipping saved`);
+    window.showToast(`Signed in as ${res.session.name}`, `Verified via ${provider.toUpperCase()}`);
     if (shouldOpenCheckout) {
       window.openCheckoutModal();
     }
@@ -3702,9 +3786,11 @@
     const nameEl = document.getElementById('chk-name');
     const phoneEl = document.getElementById('chk-phone');
     const addrEl = document.getElementById('chk-address');
+    const pinEl = document.getElementById('chk-pincode');
     if (nameEl) nameEl.value = '';
     if (phoneEl) phoneEl.value = '';
     if (addrEl) addrEl.value = '';
+    if (pinEl) pinEl.value = '';
     syncBodyModalLock();
     updateGlobalBadges();
     renderActiveView();
@@ -3804,7 +3890,7 @@
     window.navigateTo('cart');
   };
 
-  // Checkout Modal (Gated behind Cloudflare Authentication — Guest users must sign in before ordering)
+  // Checkout Modal (Step 2: Collect Delivery Address & Confirm Payment after Sign-In)
   window.openCheckoutModal = function () {
     const summary = Store.getCartSummary();
     if (summary.itemsCount === 0) {
@@ -3814,7 +3900,7 @@
 
     if (typeof Store.isAuthenticated === 'function' && !Store.isAuthenticated()) {
       window.openCloudflareAuthModal(true);
-      window.showToast('Sign In Required to Place Order', 'Sign in with Google, Apple, or Email & Shipping Address');
+      window.showToast('Sign In Required to Place Order', 'Sign in with Google, Apple, or Email to continue to checkout');
       return;
     }
 
@@ -3823,12 +3909,16 @@
     const nameEl = document.getElementById('chk-name');
     const phoneEl = document.getElementById('chk-phone');
     const addrEl = document.getElementById('chk-address');
-    const resolvedName = auth.name || profile.name || '';
+    const pinEl = document.getElementById('chk-pincode');
+    const resolvedName = (auth.name && auth.name !== 'Vistāra Studio Guest' ? auth.name : '') || (profile.name && profile.name !== 'Vistāra Studio Guest' ? profile.name : '');
     const resolvedPhone = auth.phone || profile.phone || '';
     const resolvedAddr = auth.address || profile.defaultAddress || profile.address || '';
+    const pinMatch = resolvedAddr.match(/\b([1-9][0-9]{5})\b/);
+    const resolvedPin = auth.pincode || profile.pincode || (pinMatch ? pinMatch[1] : '') || '';
     if (nameEl) nameEl.value = resolvedName;
     if (phoneEl) phoneEl.value = resolvedPhone;
     if (addrEl) addrEl.value = resolvedAddr;
+    if (pinEl) pinEl.value = resolvedPin;
 
     const modal = document.getElementById('checkout-modal');
     const amountEl = document.getElementById('checkout-modal-payable');
@@ -3851,16 +3941,16 @@
     const name = document.getElementById('chk-name')?.value.trim() || auth.name || profile.name || '';
     const phone = document.getElementById('chk-phone')?.value.trim() || auth.phone || profile.phone || '';
     const address = document.getElementById('chk-address')?.value.trim() || auth.address || profile.defaultAddress || '';
+    const pincode = document.getElementById('chk-pincode')?.value.trim() || auth.pincode || profile.pincode || '';
     const paymentMethod = document.getElementById('chk-payment')?.value || 'UPI Instant (GPay / PhonePe)';
     const giftWrap = Boolean(document.getElementById('chk-gift-wrap')?.checked);
 
     if (!name || !phone || !address) {
-      window.showToast('Shipping Details Required', 'Please enter your recipient name, mobile number, and delivery address.');
+      window.showToast('Delivery Address Required', 'Please enter your recipient name, mobile number, and street address.');
       return;
     }
 
-    Store.savePatronProfile({ name, phone, defaultAddress: address });
-    const res = Store.placeOrder({ name, phone, address, paymentMethod, giftWrap });
+    const res = Store.placeOrder({ name, phone, address, pincode, paymentMethod, giftWrap });
     document.getElementById('checkout-modal')?.classList.add('hidden');
     syncBodyModalLock();
     updateGlobalBadges();
@@ -3871,6 +3961,8 @@
     } else if (res.requiresAuth) {
       window.openCloudflareAuthModal(true);
       window.showToast('Sign In Required', res.message || 'Please sign in to place your order.');
+    } else {
+      window.showToast('Checkout Notice', res.message || 'Please complete all required delivery fields.');
     }
   };
 

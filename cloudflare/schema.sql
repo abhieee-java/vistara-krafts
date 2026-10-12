@@ -7,14 +7,15 @@
 CREATE TABLE IF NOT EXISTS users (
   id TEXT PRIMARY KEY,
   email TEXT NOT NULL UNIQUE,
-  name TEXT NOT NULL,
-  phone TEXT NOT NULL,
-  address TEXT NOT NULL,
+  name TEXT NOT NULL DEFAULT '',
+  phone TEXT NOT NULL DEFAULT '',
+  address TEXT NOT NULL DEFAULT '',
   pincode TEXT DEFAULT '',
   provider TEXT NOT NULL DEFAULT 'email', -- 'email' | 'google' | 'apple'
   provider_sub TEXT DEFAULT '',
   password_hash TEXT DEFAULT '',
   password_salt TEXT DEFAULT '',
+  wishlist_json TEXT DEFAULT '[]',
   member_tier TEXT DEFAULT 'Verified Vistāra Patron',
   loyalty_points INTEGER DEFAULT 250,
   created_at TEXT NOT NULL DEFAULT (datetime('now')),

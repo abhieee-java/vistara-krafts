@@ -35,20 +35,22 @@
           enabled: true,
           // Replace with Client's Google Cloud OAuth 2.0 Web Client ID on launch
           clientId: 'DEV_GOOGLE_CLIENT_ID.apps.googleusercontent.com',
+          endpoint: '/api/auth/google',
           uxMode: 'popup'
         },
         apple: {
           enabled: true,
           // Replace with Client's Apple Services ID on launch
           clientId: 'in.vistarakrafts.storefront.dev',
+          endpoint: '/api/auth/apple',
           scope: 'name email',
           usePopup: true
         },
         emailPassword: {
           enabled: true,
           minPasswordLength: 6,
-          requireShippingAddress: true,
-          requirePhone: true
+          requireShippingAddress: false,
+          requirePhone: false
         }
       }
     },
@@ -75,19 +77,21 @@
         google: {
           enabled: true,
           clientId: (global && global.CF_GOOGLE_CLIENT_ID) || 'CLIENT_GOOGLE_CLIENT_ID.apps.googleusercontent.com',
+          endpoint: '/api/auth/google',
           uxMode: 'popup'
         },
         apple: {
           enabled: true,
           clientId: (global && global.CF_APPLE_CLIENT_ID) || 'in.vistarakrafts.storefront',
+          endpoint: '/api/auth/apple',
           scope: 'name email',
           usePopup: true
         },
         emailPassword: {
           enabled: true,
           minPasswordLength: 8,
-          requireShippingAddress: true,
-          requirePhone: true
+          requireShippingAddress: false,
+          requirePhone: false
         }
       }
     }
