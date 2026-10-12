@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+  <!-- Storefront Root & Home Discovery -->
+  <url>
+    <loc>https://vistara-krafts.vercel.app/</loc>
+    <lastmod>2026-10-12</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+    <xhtml:link rel="alternate" hreflang="en-IN" href="https://vistara-krafts.vercel.app/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://vistara-krafts.vercel.app/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://vistara-krafts.vercel.app/" />
+    <image:image>
+      <image:loc>https://vistara-krafts.vercel.app/vistara-krafts-logo.jpg</image:loc>
+      <image:title>Vistāra Krafts Official VK Monogram — Bridal Varmala Preservation &amp; Optical Epoxy Atelier</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://vistara-krafts.vercel.app/#/home</loc>
+    <lastmod>2026-10-12</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.95</priority>
+    <xhtml:link rel="alternate" hreflang="en-IN" href="https://vistara-krafts.vercel.app/#/home" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://vistara-krafts.vercel.app/#/home" />
+  </url>
+  <url>
+    <loc>https://vistara-krafts.vercel.app/#/catalog</loc>
+    <lastmod>2026-10-12</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.95</priority>
+    <xhtml:link rel="alternate" hreflang="en-IN" href="https://vistara-krafts.vercel.app/#/catalog" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://vistara-krafts.vercel.app/#/catalog" />
+  </url>
+  <url>
+    <loc>https://vistara-krafts.vercel.app/#/custom-studio</loc>
+    <lastmod>2026-10-12</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.90</priority>
+    <xhtml:link rel="alternate" hreflang="en-IN" href="https://vistara-krafts.vercel.app/#/custom-studio" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://vistara-krafts.vercel.app/#/custom-studio" />
+  </url>
+  <url>
+    <loc>https://vistara-krafts.vercel.app/#/social</loc>
+    <lastmod>2026-10-12</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="en-IN" href="https://vistara-krafts.vercel.app/#/social" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://vistara-krafts.vercel.app/#/social" />
+  </url>
+
+  <!-- 12 Curated Vistāra Krafts & @resin.art.memories Products -->
+  <url>
+    <loc>https://vistara-krafts.vercel.app/#/product/ram-keep-001</loc>
+    <lastmod>2026-10-12</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.95</priority>
+    <xhtml:link rel="alternate" hreflang="en-IN" href="https://vistara-krafts.vercel.app/#/product/ram-keep-001" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://vistara-krafts.vercel.app/#/product/ram-keep-001" />
+    <image:image>
+      <image:title>Eternal Varmala &amp; Bridal Bouquet Time-Capsule Block — Vistāra Krafts</image:title>
+      <image:loc>https://vistara-krafts.vercel.app/vistara-krafts-logo.jpg</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://vistara-krafts.vercel.app/#/product/vk-epx-301</loc>
+    <lastmod>2026-10-12</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.95</priority>
+    <xhtml:link rel="alternate" hreflang="en-IN" href="https://vistara-krafts.vercel.app/#/product/vk-epx-301" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://vistara-krafts.vercel.app/#/product/vk-epx-301" />
+  </url>
+  <url>
+    <loc>https://vistara-krafts.vercel.app/#/product/ram-keep-002</loc>
+    <lastmod>2026-10-12</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.90</priority>
+    <xhtml:link rel="alternate" hreflang="en-IN" href="https://vistara-krafts.vercel.app/#/product/ram-keep-002" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://vistara-krafts.vercel.app/#/product/ram-keep-002" />
+  </url>
+  <url>
+    <loc>https://vistara-krafts.vercel.app/#/product/vk-epx-201</loc>
+    <lastmod>2026-10-12</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.95</priority>
+    <xhtml:link rel="alternate" hreflang="en-IN" href="https://vistara-krafts.vercel.app/#/product/vk-epx-201" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://vistara-krafts.vercel.app/#/product/vk-epx-201" />
+  </url>
+  <url>
+    <loc>https://vistara-krafts.vercel.app/#/product/ram-keep-003</loc>
+    <lastmod>2026-10-12</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.90</priority>
+    <xhtml:link rel="alternate" hreflang="en-IN" href="https://vistara-krafts.vercel.app/#/product/ram-keep-003" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://vistara-krafts.vercel.app/#/product/ram-keep-003" />
+  </url>
+  <url>
+    <loc>https://vistara-krafts.vercel.app/#/product/vk-uv-hard</loc>
+    <lastmod>2026-10-12</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.88</priority>
+    <xhtml:link rel="alternate" hreflang="en-IN" href="https://vistara-krafts.vercel.app/#/product/vk-uv-hard" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://vistara-krafts.vercel.app/#/product/vk-uv-hard" />
+  </url>
+  <url>
+    <loc>https://vistara-krafts.vercel.app/#/product/vk-pig-cham</loc>
+    <lastmod>2026-10-12</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="en-IN" href="https://vistara-krafts.vercel.app/#/product/vk-pig-cham" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://vistara-krafts.vercel.app/#/product/vk-pig-cham" />
+  </url>
+  <url>
+    <loc>https://vistara-krafts.vercel.app/#/product/ram-keep-004</loc>
+    <lastmod>2026-10-12</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.88</priority>
+    <xhtml:link rel="alternate" hreflang="en-IN" href="https://vistara-krafts.vercel.app/#/product/ram-keep-004" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://vistara-krafts.vercel.app/#/product/ram-keep-004" />
+  </url>
+  <url>
+    <loc>https://vistara-krafts.vercel.app/#/product/vk-res-003</loc>
+    <lastmod>2026-10-12</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.88</priority>
+    <xhtml:link rel="alternate" hreflang="en-IN" href="https://vistara-krafts.vercel.app/#/product/vk-res-003" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://vistara-krafts.vercel.app/#/product/vk-res-003" />
+  </url>
+  <url>
+    <loc>https://vistara-krafts.vercel.app/#/product/vk-mld-geo</loc>
+    <lastmod>2026-10-12</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="en-IN" href="https://vistara-krafts.vercel.app/#/product/vk-mld-geo" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://vistara-krafts.vercel.app/#/product/vk-mld-geo" />
+  </url>
+  <url>
+    <loc>https://vistara-krafts.vercel.app/#/product/vk-res-006</loc>
+    <lastmod>2026-10-12</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="en-IN" href="https://vistara-krafts.vercel.app/#/product/vk-res-006" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://vistara-krafts.vercel.app/#/product/vk-res-006" />
+  </url>
+  <url>
+    <loc>https://vistara-krafts.vercel.app/#/product/potry-sienna-01</loc>
+    <lastmod>2026-10-12</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="en-IN" href="https://vistara-krafts.vercel.app/#/product/potry-sienna-01" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://vistara-krafts.vercel.app/#/product/potry-sienna-01" />
+  </url>
+
+  <!-- Generative Engine Optimization (GEO) & Answer Engine Discovery Documents -->
+  <url>
+    <loc>https://vistara-krafts.vercel.app/llms.txt</loc>
+    <lastmod>2026-10-12</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.80</priority>
+  </url>
+  <url>
+    <loc>https://vistara-krafts.vercel.app/llms-full.txt</loc>
+    <lastmod>2026-10-12</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.80</priority>
+  </url>
+</urlset>

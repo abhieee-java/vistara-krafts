@@ -2706,6 +2706,468 @@
   }
 
   // =========================================================================
+  // DYNAMIC SEO, GEO & AEO (SCHEMA.ORG JSON-LD @GRAPH) CONTROLLER
+  // =========================================================================
+  let lastSeoSnapshot = null;
+
+  function setMetaTagValue(id, value) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    const strVal = String(value ?? '');
+    el.content = strVal;
+    if (typeof el.setAttribute === 'function') {
+      el.setAttribute('content', strVal);
+    }
+  }
+
+  function setLinkTagHref(id, hrefValue) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    const strHref = String(hrefValue ?? '');
+    el.href = strHref;
+    if (typeof el.setAttribute === 'function') {
+      el.setAttribute('href', strHref);
+    }
+  }
+
+  function buildDynamicSchemaGraph(seoCfg, routeMeta, activeProduct, activeVariant) {
+    const siteUrl = seoCfg.siteUrl;
+    const allProducts = (Store && typeof Store.getProducts === 'function') ? Store.getProducts() : [];
+
+    const orgNode = {
+      '@type': ['Organization', 'OnlineStore', 'LocalBusiness'],
+      '@id': `${siteUrl}/#organization`,
+      name: 'Vistāra Krafts × Resin Art Memories',
+      alternateName: ['Vistara Krafts', 'Resin Art Memories', '@resin.art.memories', 'Vistāra Krafts Studio'],
+      legalName: 'Vistāra Krafts Studio India',
+      url: `${siteUrl}/`,
+      logo: {
+        '@type': 'ImageObject',
+        '@id': `${siteUrl}/#logo`,
+        url: `${siteUrl}/vistara-krafts-logo.jpg`,
+        contentUrl: `${siteUrl}/vistara-krafts-logo.jpg`,
+        width: 512,
+        height: 512,
+        caption: 'Vistāra Krafts × Resin Art Memories (@resin.art.memories) Official Studio Emblem'
+      },
+      image: `${siteUrl}/vistara-krafts-logo.jpg`,
+      description: seoCfg.defaultDescription,
+      email: 'concierge@vistarakrafts.in',
+      telephone: '+91-80-4890-7210',
+      priceRange: '₹299 - ₹12,999',
+      currenciesAccepted: 'INR',
+      paymentAccepted: 'UPI, Google Pay, PhonePe, Paytm, Credit Card, Debit Card, NetBanking, Cash on Delivery (COD)',
+      address: {
+        '@type': 'PostalAddress',
+        streetAddress: '42 Craft Enclave, Indiranagar 100 Feet Road',
+        addressLocality: 'Bengaluru',
+        addressRegion: 'Karnataka',
+        postalCode: seoCfg.geo.postalCode || '560001',
+        addressCountry: seoCfg.geo.country || 'IN'
+      },
+      geo: {
+        '@type': 'GeoCoordinates',
+        latitude: seoCfg.geo.latitude || 12.9716,
+        longitude: seoCfg.geo.longitude || 77.5946
+      },
+      areaServed: [
+        { '@type': 'Country', name: 'India' },
+        { '@type': 'City', name: 'Bengaluru' },
+        { '@type': 'City', name: 'Mumbai' },
+        { '@type': 'City', name: 'New Delhi' },
+        { '@type': 'City', name: 'Hyderabad' },
+        { '@type': 'City', name: 'Chennai' },
+        { '@type': 'City', name: 'Pune' },
+        { '@type': 'City', name: 'Kolkata' },
+        { '@type': 'City', name: 'Ahmedabad' },
+        { '@type': 'City', name: 'Jaipur' }
+      ],
+      sameAs: [
+        'https://www.instagram.com/resin.art.memories?utm_source=qr',
+        'https://www.instagram.com/resin.art.memories',
+        seoCfg.futureCustomDomain || 'https://vistarakrafts.in'
+      ]
+    };
+
+    const websiteNode = {
+      '@type': 'WebSite',
+      '@id': `${siteUrl}/#website`,
+      url: `${siteUrl}/`,
+      name: 'Vistāra Krafts (@resin.art.memories) — Epoxy Resin & Bridal Keepsake Studio',
+      inLanguage: 'en-IN',
+      publisher: { '@id': `${siteUrl}/#organization` },
+      potentialAction: {
+        '@type': 'SearchAction',
+        target: {
+          '@type': 'EntryPoint',
+          urlTemplate: `${siteUrl}/#/catalog?q={search_term_string}`
+        },
+        'query-input': 'required name=search_term_string'
+      }
+    };
+
+    const webPageNode = {
+      '@type': routeMeta.pageSchemaType || 'WebPage',
+      '@id': `${routeMeta.canonicalUrl}#webpage`,
+      url: routeMeta.canonicalUrl,
+      name: routeMeta.title,
+      description: routeMeta.description,
+      inLanguage: 'en-IN',
+      isPartOf: { '@id': `${siteUrl}/#website` },
+      about: { '@id': `${siteUrl}/#organization` },
+      speakable: {
+        '@type': 'SpeakableSpecification',
+        cssSelector: ['meta[name="description"]', 'h1', 'h2']
+      }
+    };
+
+    const breadcrumbNode = {
+      '@type': 'BreadcrumbList',
+      '@id': `${routeMeta.canonicalUrl}#breadcrumb`,
+      itemListElement: routeMeta.breadcrumbs.map((crumb, idx) => ({
+        '@type': 'ListItem',
+        position: idx + 1,
+        name: crumb.name,
+        item: crumb.url
+      }))
+    };
+
+    const mapProductToSchema = (prod, isPrimaryActive) => {
+      const specsList = [];
+      if (prod.specs && typeof prod.specs === 'object') {
+        Object.entries(prod.specs).forEach(([k, v]) => {
+          specsList.push({
+            '@type': 'PropertyValue',
+            name: k,
+            value: String(v)
+          });
+        });
+      }
+      const prodReviews = (AppState.reviews && AppState.reviews[prod.id]) || [];
+      const schemaReviews = prodReviews.length > 0
+        ? prodReviews.map(r => ({
+            '@type': 'Review',
+            author: { '@type': 'Person', name: String(r.author || 'Verified Patron').trim() },
+            reviewRating: { '@type': 'Rating', ratingValue: String(r.rating || 5), bestRating: '5' },
+            reviewBody: String(r.text || '')
+          }))
+        : [
+            {
+              '@type': 'Review',
+              author: { '@type': 'Person', name: 'Verified Vistāra Patron' },
+              reviewRating: { '@type': 'Rating', ratingValue: '5', bestRating: '5' },
+              reviewBody: `${prod.name} delivered optical-grade clarity and zero micro-bubbles in Indian studio conditions.`
+            }
+          ];
+
+      const selectedPrice = (isPrimaryActive && activeVariant && activeVariant.price) ? activeVariant.price : prod.price;
+
+      const productSchema = {
+        '@type': 'Product',
+        '@id': `${siteUrl}/#/product/${prod.id}${isPrimaryActive ? '#active-product' : '#product'}`,
+        sku: prod.sku,
+        mpn: prod.sku,
+        name: isPrimaryActive && activeVariant ? `${prod.name} (${activeVariant.label})` : prod.name,
+        description: prod.subtitle,
+        image: prod.image,
+        url: `${siteUrl}/#/product/${prod.id}`,
+        category: prod.category,
+        brand: {
+          '@type': 'Brand',
+          name: String(prod.id).startsWith('ram-')
+            ? 'Resin Art Memories (@resin.art.memories)'
+            : (String(prod.id).startsWith('potry-') ? 'Potry × Vistāra Krafts' : 'Vistāra Krafts')
+        },
+        offers: {
+          '@type': 'Offer',
+          url: `${siteUrl}/#/product/${prod.id}`,
+          priceCurrency: 'INR',
+          price: String(selectedPrice),
+          priceValidUntil: '2027-12-31',
+          itemCondition: 'https://schema.org/NewCondition',
+          availability: prod.inStock !== false ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock',
+          seller: { '@id': `${siteUrl}/#organization` }
+        },
+        aggregateRating: {
+          '@type': 'AggregateRating',
+          ratingValue: String(prod.rating || 4.9),
+          reviewCount: String(prod.reviewsCount || 120),
+          bestRating: '5',
+          worstRating: '1'
+        },
+        review: schemaReviews
+      };
+
+      if (specsList.length > 0) {
+        productSchema.additionalProperty = specsList;
+      }
+      return productSchema;
+    };
+
+    const itemListNode = {
+      '@type': 'ItemList',
+      '@id': `${siteUrl}/#catalog-list`,
+      name: 'Vistāra Krafts × Resin Art Memories Complete Product Catalogue',
+      numberOfItems: allProducts.length,
+      itemListOrder: 'https://schema.org/ItemListOrderAscending',
+      itemListElement: allProducts.map((p, index) => ({
+        '@type': 'ListItem',
+        position: index + 1,
+        item: mapProductToSchema(p, false)
+      }))
+    };
+
+    const faqNode = {
+      '@type': 'FAQPage',
+      '@id': `${siteUrl}/#faq`,
+      mainEntity: [
+        {
+          '@type': 'Question',
+          name: 'How do I preserve my wedding varmala or bridal bouquet in epoxy resin across India?',
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: 'Book a commission on the Vistāra Krafts Custom Bridal Studio (#/custom-studio). Keep your flowers in a refrigerator (4°C–8°C, never frozen) wrapped in breathable paper. Vistāra Krafts arranges free doorstep BlueDart Priority Air flower pickup across 28,000+ Indian PIN codes, performs 7-day silica gel chromatic dehydration, and casts your flowers in 50mm museum-grade HALS UV-stabilized 2:1 deep-pour epoxy.'
+          }
+        },
+        {
+          '@type': 'Question',
+          name: 'How much epoxy resin do I need for my mould dimensions?',
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: 'Multiply Length (cm) × Width (cm) × Depth (cm) for rectangular moulds (or π × r² × Depth for circular moulds) to find volume in cm³, then multiply by 1.1 g/cm³ epoxy density. For 3:1 Casting Resin, split total weight into 75% Part A Resin and 25% Part B Hardener. For 2:1 Deep Pour Epoxy, split into 66.7% Part A and 33.3% Part B. For 1:1 Art Doming Resin, split 50% Part A and 50% Part B.'
+          }
+        },
+        {
+          '@type': 'Question',
+          name: 'Which epoxy resin is best for deep river tables vs coasters and ocean trays?',
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: 'Use River Flow 2:1 Deep Pour Epoxy (SKU: VK-EPX-201-3KG) for pours between 20mm and 50mm such as live-edge river tables and bridal floral blocks. Use UltraClear 3:1 Casting Resin (SKU: VK-EPX-301-12K) for 5mm to 20mm casts, and ProCoat 1:1 Art Doming Resin (SKU: VK-DOM-101-1K) for high-gloss surface coats and ocean wave lacing.'
+          }
+        }
+      ]
+    };
+
+    const howToNode = {
+      '@type': 'HowTo',
+      '@id': `${siteUrl}/#howto-varmala-preservation`,
+      name: 'How to Preserve a Wedding Varmala or Bridal Bouquet in Museum-Grade Epoxy Resin',
+      totalTime: 'P21D',
+      estimatedCost: { '@type': 'MonetaryAmount', currency: 'INR', value: '2999' },
+      step: [
+        { '@type': 'HowToStep', position: 1, name: 'Chilled Flower Care & Air Pickup', text: 'Refrigerate garlands at 4°C–8°C in breathable newspaper and schedule free BlueDart Priority Air pickup.' },
+        { '@type': 'HowToStep', position: 2, name: '7-Day Silica Gel Chromatic Dehydration', text: 'Submerge petals in fine optical silica crystals to lock in natural crimson, pastel, and ivory pigments.' },
+        { '@type': 'HowToStep', position: 3, name: 'Bespoke Layout & WhatsApp Mockup Approval', text: 'Approve the 1:1 floral arrangement, 24K gold leaf accents, and custom calligraphy tag before pouring.' },
+        { '@type': 'HowToStep', position: 4, name: 'Vacuum-Degassed Multi-Layer 2:1 Deep Pour', text: 'Cast in 12mm thermal-controlled stages up to 50mm depth inside a dust-free cleanroom.' },
+        { '@type': 'HowToStep', position: 5, name: '5000-Grit Diamond Polish & Insured Delivery', text: 'Wet-sand, buff to optical refraction, and ship via insured air courier across India.' }
+      ]
+    };
+
+    const graph = [orgNode, websiteNode, webPageNode, breadcrumbNode];
+    if (activeProduct) {
+      graph.push(mapProductToSchema(activeProduct, true));
+    }
+    graph.push(itemListNode, faqNode, howToNode);
+
+    return {
+      '@context': 'https://schema.org',
+      '@graph': graph
+    };
+  }
+
+  function updateRouteSeoAndSchema() {
+    if (typeof document === 'undefined') return null;
+    const seoCfg = (Store && typeof Store.getSeoConfig === 'function')
+      ? Store.getSeoConfig()
+      : {
+          siteUrl: String(window.VISTARA_SITE_URL || 'https://vistara-krafts.vercel.app').replace(/\/+$/, ''),
+          futureCustomDomain: 'https://vistarakrafts.in',
+          defaultTitle: 'Vistāra Krafts (@resin.art.memories) | UltraClear Epoxy Resin Systems & Bridal Varmala Preservation Studio India',
+          defaultDescription: 'Official Vistāra Krafts × Resin Art Memories (@resin.art.memories) Storefront.',
+          defaultKeywords: 'Vistara Krafts, Resin Art Memories, @resin.art.memories, bridal varmala preservation India, epoxy resin kit India',
+          locale: 'en_IN',
+          currency: 'INR',
+          geo: {
+            country: 'IN',
+            region: 'IN-KA',
+            placename: 'Bengaluru, Karnataka, India',
+            postalCode: '560001',
+            latitude: 12.9716,
+            longitude: 77.5946,
+            position: '12.9716;77.5946',
+            icbm: '12.9716, 77.5946'
+          }
+        };
+
+    const siteUrl = String(window.VISTARA_SITE_URL || seoCfg.siteUrl || 'https://vistara-krafts.vercel.app').replace(/\/+$/, '');
+    seoCfg.siteUrl = siteUrl;
+
+    const route = AppState.currentRoute || 'home';
+    let routeMeta = {
+      route,
+      title: seoCfg.defaultTitle,
+      description: seoCfg.defaultDescription,
+      keywords: seoCfg.defaultKeywords,
+      robots: 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1',
+      canonicalUrl: `${siteUrl}/`,
+      ogType: 'website',
+      ogImage: `${siteUrl}/vistara-krafts-logo.jpg`,
+      priceAmount: '299',
+      priceCurrency: 'INR',
+      availability: 'instock',
+      pageSchemaType: 'WebPage',
+      breadcrumbs: [
+        { name: 'Vistāra Krafts Studio Home', url: `${siteUrl}/` }
+      ]
+    };
+
+    let activeProduct = null;
+    let activeVariant = null;
+
+    if (route === 'product') {
+      activeProduct = Store.getProductById(AppState.currentProductId) || (Store.getProducts && Store.getProducts()[0]);
+      if (activeProduct) {
+        activeVariant = (activeProduct.variants && activeProduct.variants[AppState.selectedVariantIdx]) ||
+          (activeProduct.variants && activeProduct.variants[0]) ||
+          { label: 'Standard Edition', price: activeProduct.price, regularPrice: activeProduct.regularPrice };
+        const priceNum = Number(activeVariant.price || activeProduct.price || 1299);
+        const canonicalUrl = `${siteUrl}/#/product/${activeProduct.id}`;
+        routeMeta = {
+          route: 'product',
+          productId: activeProduct.id,
+          sku: activeProduct.sku,
+          variantLabel: activeVariant.label,
+          title: `${activeProduct.name} (${activeVariant.label} — ₹${priceNum.toLocaleString('en-IN')}) | Vistāra Krafts (@resin.art.memories)`,
+          description: `${activeProduct.subtitle}. SKU: ${activeProduct.sku}. Mix Ratio: ${activeProduct.ratio}, Max Pour Depth: ${activeProduct.pourDepth}, Cure Time: ${activeProduct.cureTime}, Pot Life: ${activeProduct.potLife}. Rated ${activeProduct.rating}/5 (${activeProduct.reviewsCount} reviews). Pan-India Express Delivery.`,
+          keywords: `${activeProduct.name}, ${activeProduct.shortName || activeProduct.name}, ${activeProduct.sku}, ${activeVariant.label}, ${activeProduct.category} epoxy resin India, Vistara Krafts, @resin.art.memories`,
+          robots: 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1',
+          canonicalUrl,
+          ogType: 'product',
+          ogImage: activeProduct.image || `${siteUrl}/vistara-krafts-logo.jpg`,
+          priceAmount: String(priceNum),
+          priceCurrency: 'INR',
+          availability: activeProduct.inStock !== false ? 'instock' : 'oos',
+          pageSchemaType: 'ItemPage',
+          breadcrumbs: [
+            { name: 'Vistāra Krafts Studio Home', url: `${siteUrl}/` },
+            { name: 'Epoxy & Keepsake Catalogue', url: `${siteUrl}/#/catalog` },
+            { name: activeProduct.shortName || activeProduct.name, url: canonicalUrl }
+          ]
+        };
+      }
+    } else if (route === 'catalog') {
+      const catLabel = AppState.catalogCategory && AppState.catalogCategory !== 'all'
+        ? AppState.catalogCategory.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase())
+        : 'All Formulations & Bridal Keepsakes';
+      const canonicalUrl = `${siteUrl}/#/catalog`;
+      routeMeta = {
+        ...routeMeta,
+        title: `Shop ${catLabel} — Epoxy Resin Kits & Varmala Keepsakes | Vistāra Krafts (@resin.art.memories)`,
+        description: `Browse Vistāra Krafts (${catLabel}): ASTM D-4236 certified 3:1 casting epoxy, 2:1 deep-pour river table resin, bridal varmala preservation blocks, UV resin, chameleon mica pigments & silicone geode molds with Pan-India shipping.`,
+        canonicalUrl,
+        pageSchemaType: 'CollectionPage',
+        breadcrumbs: [
+          { name: 'Vistāra Krafts Studio Home', url: `${siteUrl}/` },
+          { name: `Catalogue (${catLabel})`, url: canonicalUrl }
+        ]
+      };
+    } else if (route === 'custom-studio') {
+      const canonicalUrl = `${siteUrl}/#/custom-studio`;
+      const shapePrice = (AppState.customBuilder && AppState.customBuilder.shapePrice) || 4499;
+      routeMeta = {
+        ...routeMeta,
+        title: `Custom Bridal Varmala Preservation & Epoxy Pour Calculator Studio | Vistāra Krafts (@resin.art.memories)`,
+        description: `Commission a bespoke 50mm museum-grade bridal varmala or wedding bouquet resin block with free Pan-India BlueDart air flower pickup, or calculate exact Part A + Part B epoxy resin weight with our interactive studio calculator.`,
+        canonicalUrl,
+        priceAmount: String(shapePrice),
+        pageSchemaType: 'WebPage',
+        breadcrumbs: [
+          { name: 'Vistāra Krafts Studio Home', url: `${siteUrl}/` },
+          { name: 'Custom Bridal Varmala & Pour Calculator Studio', url: canonicalUrl }
+        ]
+      };
+    } else if (route === 'social') {
+      const canonicalUrl = `${siteUrl}/#/social`;
+      routeMeta = {
+        ...routeMeta,
+        title: `@resin.art.memories Community Feed & Shoppable Studio Reels | Vistāra Krafts India`,
+        description: `Explore 50,000+ community creations, bridal varmala unboxings, ocean wave charcuterie pours, and deep-pour river table tutorials from @resin.art.memories.`,
+        canonicalUrl,
+        priceAmount: '1299',
+        pageSchemaType: 'CollectionPage',
+        breadcrumbs: [
+          { name: 'Vistāra Krafts Studio Home', url: `${siteUrl}/` },
+          { name: '@resin.art.memories Community Feed', url: canonicalUrl }
+        ]
+      };
+    } else if (route === 'wishlist' || route === 'cart' || route === 'account') {
+      const canonicalUrl = `${siteUrl}/#/${route}`;
+      const routeLabels = {
+        wishlist: 'Saved Atelier Wishlist & Studio Reels',
+        cart: 'Studio Shopping Bag & Instant GST/UPI Checkout',
+        account: 'Patron Concierge Account & Live Order Tracker'
+      };
+      routeMeta = {
+        ...routeMeta,
+        title: `${routeLabels[route]} | Vistāra Krafts (@resin.art.memories)`,
+        description: `Manage your ${routeLabels[route]} at Vistāra Krafts × Resin Art Memories (@resin.art.memories).`,
+        robots: 'noindex, follow',
+        canonicalUrl,
+        breadcrumbs: [
+          { name: 'Vistāra Krafts Studio Home', url: `${siteUrl}/` },
+          { name: routeLabels[route], url: canonicalUrl }
+        ]
+      };
+    }
+
+    document.title = routeMeta.title;
+    setMetaTagValue('meta-title', routeMeta.title);
+    setMetaTagValue('meta-description', routeMeta.description);
+    setMetaTagValue('meta-keywords', routeMeta.keywords);
+    setMetaTagValue('meta-robots', routeMeta.robots);
+    setMetaTagValue('meta-googlebot', routeMeta.robots);
+
+    setLinkTagHref('link-canonical', routeMeta.canonicalUrl);
+    setLinkTagHref('link-hreflang-in', routeMeta.canonicalUrl);
+    setLinkTagHref('link-hreflang-en', routeMeta.canonicalUrl);
+    setLinkTagHref('link-hreflang-default', routeMeta.canonicalUrl);
+
+    setMetaTagValue('og-type', routeMeta.ogType);
+    setMetaTagValue('og-url', routeMeta.canonicalUrl);
+    setMetaTagValue('og-title', routeMeta.title);
+    setMetaTagValue('og-description', routeMeta.description);
+    setMetaTagValue('og-image', routeMeta.ogImage);
+    setMetaTagValue('og-price-amount', routeMeta.priceAmount);
+    setMetaTagValue('og-price-currency', routeMeta.priceCurrency);
+    setMetaTagValue('og-availability', routeMeta.availability);
+
+    setMetaTagValue('twitter-url', routeMeta.canonicalUrl);
+    setMetaTagValue('twitter-title', routeMeta.title);
+    setMetaTagValue('twitter-description', routeMeta.description);
+    setMetaTagValue('twitter-image', routeMeta.ogImage);
+
+    const schemaJsonObj = buildDynamicSchemaGraph(seoCfg, routeMeta, activeProduct, activeVariant);
+    const schemaScriptEl = document.getElementById('vistara-schema-jsonld');
+    if (schemaScriptEl) {
+      schemaScriptEl.textContent = JSON.stringify(schemaJsonObj);
+    }
+
+    lastSeoSnapshot = {
+      ...routeMeta,
+      siteUrl,
+      futureCustomDomain: seoCfg.futureCustomDomain,
+      geo: seoCfg.geo,
+      schemaGraph: schemaJsonObj
+    };
+    return lastSeoSnapshot;
+  }
+
+  window.updateRouteSeoAndSchema = updateRouteSeoAndSchema;
+  window.getActiveSeoSnapshot = function () {
+    return lastSeoSnapshot || updateRouteSeoAndSchema();
+  };
+
+  // =========================================================================
   // MAIN VIEW MOUNT & INTERACTION HANDLERS
   // =========================================================================
   function renderActiveView(options) {
@@ -2741,6 +3203,8 @@
         root.innerHTML = renderHomeView();
         break;
     }
+
+    updateRouteSeoAndSchema();
 
     if (preserveScroll && prevScrollY > 0) {
       try {

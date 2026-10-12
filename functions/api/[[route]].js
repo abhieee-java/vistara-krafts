@@ -282,6 +282,103 @@ export async function onRequest(context) {
       });
     }
 
+    if ((path === 'seo' || path === 'sitemap.xml' || path === 'llms.txt') && request.method === 'GET') {
+      const domainParam = url.searchParams.get('domain');
+      const siteOrigin = String(
+        domainParam ||
+        (env && (env.SITE_URL || env.VISTARA_SITE_URL)) ||
+        'https://vistara-krafts.vercel.app'
+      ).replace(/\/+$/, '');
+      const futureCustomDomain = String(
+        (env && env.FUTURE_CUSTOM_DOMAIN) || 'https://vistarakrafts.in'
+      ).replace(/\/+$/, '');
+
+      const productIds = [
+        'ram-keep-001',
+        'vk-epx-301',
+        'ram-keep-002',
+        'vk-epx-201',
+        'ram-keep-003',
+        'vk-res-003',
+        'vk-res-004',
+        'vk-uv-100',
+        'vk-pig-cham',
+        'vk-pig-ocean',
+        'vk-mld-geo',
+        'potry-sienna-01'
+      ];
+
+      if (path === 'sitemap.xml') {
+        const urls = [
+          `${siteOrigin}/`,
+          `${siteOrigin}/#/home`,
+          `${siteOrigin}/#/catalog`,
+          `${siteOrigin}/#/custom-studio`,
+          `${siteOrigin}/#/social`,
+          ...productIds.map(id => `${siteOrigin}/#/product/${id}`),
+          `${siteOrigin}/llms.txt`,
+          `${siteOrigin}/llms-full.txt`
+        ];
+        const xmlBody = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls
+          .map(u => `  <url><loc>${u}</loc><changefreq>weekly</changefreq><priority>0.9</priority></url>`)
+          .join('\n')}\n</urlset>`;
+        return new Response(xmlBody, {
+          status: 200,
+          headers: {
+            ...CORS_HEADERS,
+            'Content-Type': 'application/xml; charset=utf-8'
+          }
+        });
+      }
+
+      if (path === 'llms.txt') {
+        const llmsBody = [
+          '# Vistāra Krafts × Resin Art Memories (@resin.art.memories)',
+          `> Official E-Commerce Storefront: ${siteOrigin}`,
+          `> Future Custom Domain: ${futureCustomDomain}`,
+          '> Headquarters: 42 Craft Enclave, Indiranagar 100 Feet Road, Bengaluru, Karnataka 560001, India (12.9716, 77.5946)',
+          `> Full Documentation: ${siteOrigin}/llms-full.txt`,
+          `> Sitemap: ${siteOrigin}/sitemap.xml`,
+          '',
+          '## Key Product Catalogue (INR)',
+          ...productIds.map(id => `- ${siteOrigin}/#/product/${id}`)
+        ].join('\n');
+        return new Response(llmsBody, {
+          status: 200,
+          headers: {
+            ...CORS_HEADERS,
+            'Content-Type': 'text/plain; charset=utf-8'
+          }
+        });
+      }
+
+      return jsonResponse({
+        ok: true,
+        siteUrl: siteOrigin,
+        futureCustomDomain,
+        brand: 'Vistāra Krafts × Resin Art Memories (@resin.art.memories)',
+        locale: 'en_IN',
+        currency: 'INR',
+        sitemapUrl: `${siteOrigin}/sitemap.xml`,
+        llmsTxtUrl: `${siteOrigin}/llms.txt`,
+        llmsFullTxtUrl: `${siteOrigin}/llms-full.txt`,
+        productsCount: productIds.length,
+        geo: {
+          country: 'IN',
+          countryName: 'India',
+          region: 'IN-KA',
+          placename: 'Bengaluru, Karnataka, India',
+          postalCode: '560001',
+          latitude: 12.9716,
+          longitude: 77.5946,
+          position: '12.9716;77.5946',
+          icbm: '12.9716, 77.5946',
+          areaServed: ['India', 'Bengaluru', 'Mumbai', 'Delhi NCR', 'Hyderabad', 'Chennai', 'Pune', 'Kolkata', 'Ahmedabad', 'Jaipur']
+        },
+        aeoSchemas: ['Organization', 'OnlineStore', 'LocalBusiness', 'WebSite', 'WebPage', 'BreadcrumbList', 'ItemList', 'Product', 'FAQPage', 'HowTo']
+      });
+    }
+
     if ((path === 'auth/google' || path === 'auth/apple') && request.method === 'GET') {
       const provider = path === 'auth/apple' ? 'apple' : 'google';
       return jsonResponse({

@@ -19,7 +19,37 @@
         name: 'Vistāra Krafts',
         legalName: 'Vistāra Krafts Studio & Chemical Atelier',
         instagramHandle: '@resin.art.memories',
-        logoPath: './vistara-krafts-logo.jpg'
+        instagramUrl: 'https://www.instagram.com/resin.art.memories',
+        logoPath: './vistara-krafts-logo.jpg',
+        siteUrl: (global && global.VISTARA_SITE_URL) || 'https://vistara-krafts.vercel.app',
+        futureCustomDomain: (global && global.VISTARA_CUSTOM_DOMAIN) || 'https://vistarakrafts.in'
+      },
+      seo: {
+        siteUrl: (global && global.VISTARA_SITE_URL) || 'https://vistara-krafts.vercel.app',
+        futureCustomDomain: (global && global.VISTARA_CUSTOM_DOMAIN) || 'https://vistarakrafts.in',
+        defaultTitle: 'Vistāra Krafts — Bespoke Varmala Preservation & Optical Epoxy Storefront',
+        defaultDescription: 'Official Vistāra Krafts (@resin.art.memories) E-Commerce Storefront in India. Preserved wedding varmalas in 50mm crystal blocks, ocean resin art, and ISO-9001 optical 3:1 & 2:1 epoxy systems with Pan-India express delivery.',
+        defaultKeywords: 'Vistara Krafts, Vistāra Krafts, resin.art.memories, bridal varmala preservation India, wedding garland preservation in resin, 3:1 casting epoxy resin India, 2:1 deep pour river table epoxy, 1:1 doming epoxy, UV resin jewelry India, ocean wave resin tray, quartz geode wall art, epoxy pour calculator, HALS UV non-yellowing epoxy, HSN 39073010',
+        locale: 'en_IN',
+        language: 'en-IN',
+        currency: 'INR',
+        twitterHandle: '@resin.art.memories',
+        instagramUrl: 'https://www.instagram.com/resin.art.memories',
+        ogImage: 'https://vistara-krafts.vercel.app/vistara-krafts-logo.jpg',
+        llmsTxtPath: '/llms.txt',
+        llmsFullTxtPath: '/llms-full.txt',
+        sitemapPath: '/sitemap.xml',
+        geo: {
+          region: 'IN-KA',
+          placename: 'Bengaluru, Karnataka, India',
+          position: '12.9716;77.5946',
+          icbm: '12.9716, 77.5946',
+          latitude: 12.9716,
+          longitude: 77.5946,
+          postalCode: '560001',
+          country: 'IN',
+          areaServed: ['IN', 'Bengaluru', 'Mumbai', 'New Delhi', 'Hyderabad', 'Chennai', 'Pune', 'Jaipur', 'Kolkata', 'Udaipur', 'Goa']
+        }
       },
       cloudflare: {
         accountId: 'dev_cf_account_local',
@@ -63,7 +93,37 @@
         name: 'Vistāra Krafts',
         legalName: 'Vistāra Krafts Studio & Chemical Atelier',
         instagramHandle: '@resin.art.memories',
-        logoPath: './vistara-krafts-logo.jpg'
+        instagramUrl: 'https://www.instagram.com/resin.art.memories',
+        logoPath: './vistara-krafts-logo.jpg',
+        siteUrl: (global && global.VISTARA_SITE_URL) || 'https://vistara-krafts.vercel.app',
+        futureCustomDomain: (global && global.VISTARA_CUSTOM_DOMAIN) || 'https://vistarakrafts.in'
+      },
+      seo: {
+        siteUrl: (global && global.VISTARA_SITE_URL) || 'https://vistara-krafts.vercel.app',
+        futureCustomDomain: (global && global.VISTARA_CUSTOM_DOMAIN) || 'https://vistarakrafts.in',
+        defaultTitle: 'Vistāra Krafts — Bespoke Varmala Preservation & Optical Epoxy Storefront',
+        defaultDescription: 'Official Vistāra Krafts (@resin.art.memories) E-Commerce Storefront in India. Preserved wedding varmalas in 50mm crystal blocks, ocean resin art, and ISO-9001 optical 3:1 & 2:1 epoxy systems with Pan-India express delivery.',
+        defaultKeywords: 'Vistara Krafts, Vistāra Krafts, resin.art.memories, bridal varmala preservation India, wedding garland preservation in resin, 3:1 casting epoxy resin India, 2:1 deep pour river table epoxy, 1:1 doming epoxy, UV resin jewelry India, ocean wave resin tray, quartz geode wall art, epoxy pour calculator, HALS UV non-yellowing epoxy, HSN 39073010',
+        locale: 'en_IN',
+        language: 'en-IN',
+        currency: 'INR',
+        twitterHandle: '@resin.art.memories',
+        instagramUrl: 'https://www.instagram.com/resin.art.memories',
+        ogImage: ((global && global.VISTARA_SITE_URL) || 'https://vistara-krafts.vercel.app').replace(/\/+$/, '') + '/vistara-krafts-logo.jpg',
+        llmsTxtPath: '/llms.txt',
+        llmsFullTxtPath: '/llms-full.txt',
+        sitemapPath: '/sitemap.xml',
+        geo: {
+          region: 'IN-KA',
+          placename: 'Bengaluru, Karnataka, India',
+          position: '12.9716;77.5946',
+          icbm: '12.9716, 77.5946',
+          latitude: 12.9716,
+          longitude: 77.5946,
+          postalCode: '560001',
+          country: 'IN',
+          areaServed: ['IN', 'Bengaluru', 'Mumbai', 'New Delhi', 'Hyderabad', 'Chennai', 'Pune', 'Jaipur', 'Kolkata', 'Udaipur', 'Goa']
+        }
       },
       cloudflare: {
         accountId: (global && global.CF_ACCOUNT_ID) || 'CLIENT_CLOUDFLARE_ACCOUNT_ID',
@@ -99,7 +159,31 @@
 
   const activeConfig = ENVIRONMENTS[ACTIVE_ENV] || ENVIRONMENTS.development;
 
+  activeConfig.getSiteOrigin = function () {
+    const raw = (global && global.VISTARA_SITE_URL) || (activeConfig.seo && activeConfig.seo.siteUrl) || 'https://vistara-krafts.vercel.app';
+    return String(raw).replace(/\/+$/, '');
+  };
+
+  activeConfig.getCanonicalUrl = function (routePath = '') {
+    const origin = activeConfig.getSiteOrigin();
+    const cleaned = String(routePath || '').trim();
+    if (!cleaned || cleaned === '/' || cleaned === '#/home' || cleaned === 'home') {
+      return origin + '/';
+    }
+    if (cleaned.startsWith('http://') || cleaned.startsWith('https://')) {
+      return cleaned;
+    }
+    if (cleaned.startsWith('#/')) {
+      return origin + '/' + cleaned;
+    }
+    if (cleaned.startsWith('/')) {
+      return origin + cleaned;
+    }
+    return origin + '/#/' + cleaned.replace(/^#\/?/, '');
+  };
+
   if (global) {
     global.VistaraCloudflareConfig = activeConfig;
   }
 })(typeof window !== 'undefined' ? window : globalThis);
+

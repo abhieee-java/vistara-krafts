@@ -8,7 +8,11 @@ const STATIC_ASSETS = [
   'app.js',
   'styles.css',
   'tokens.css',
-  'vistara-krafts-logo.jpg'
+  'vistara-krafts-logo.jpg',
+  'robots.txt',
+  'sitemap.xml',
+  'llms.txt',
+  'llms-full.txt'
 ];
 
 export default defineConfig({

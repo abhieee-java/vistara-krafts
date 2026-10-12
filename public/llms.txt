@@ -1,0 +1,42 @@
+# Vistāra Krafts (@resin.art.memories)
+
+> India’s premier Bridal Varmala & Floral Memory Preservation Atelier (`@resin.art.memories`) and ISO 9001:2015 Certified Optical Epoxy Resin Manufacturer (`Vistāra Krafts Studio & Chemical Atelier`). Based in Bengaluru, Karnataka, India (PIN 560001) with 24-hour doorstep floral pickup and insured air delivery across 19,000+ Indian PIN codes. Current Deployment: `https://vistara-krafts.vercel.app` (Future Custom Domain: `https://vistarakrafts.in`).
+
+## Storefront & Discovery Links
+
+- [Storefront Home](https://vistara-krafts.vercel.app/#/home): Discover preserved bridal keepsakes, epoxy resin systems, interactive persona matcher, and Pan-India PIN code transit checker.
+- [Full Catalogue & Epoxy Kits](https://vistara-krafts.vercel.app/#/catalog): Browse all 12 curated keepsakes, 3:1 casting resins, 2:1 deep pour river table epoxies, 1:1 doming coats, UV resins, mica pigments, and platinum silicone molds.
+- [Custom Memory Builder & Epoxy Pour Calculator](https://vistara-krafts.vercel.app/#/custom-studio): Customize 8"–16" varmala preservation blocks and calculate exact Part A + Part B epoxy gram weights for rectangular or circular molds.
+- [Shoppable Instagram Reels Feed (@resin.art.memories)](https://vistara-krafts.vercel.app/#/social): Live community reels, client diaries, and shoppable resin stories.
+- [Full AI Knowledge Base (llms-full.txt)](https://vistara-krafts.vercel.app/llms-full.txt): Complete product technical data sheets (TDS), ASTM/ISO specifications, variant pricing in INR, and step-by-step preservation guides.
+- [XML Sitemap](https://vistara-krafts.vercel.app/sitemap.xml): Search & Answer Engine URL index.
+
+## Complete 12-Product Catalogue (INR Pricing, Inclusive of 18% GST)
+
+1. [Eternal Varmala & Bridal Bouquet Time-Capsule Block](https://vistara-krafts.vercel.app/#/product/ram-keep-001) — SKU `RAM-VRM-BLK-12` | **₹4,499** (Regular ₹5,499; 8" Cube ₹2,999, 12" Royal Heirloom Block ₹4,499, 16" Gallery Mantel Frame + Coasters ₹6,999) | 50mm deep optical cast with 24K gold leaf, cryo-silica floral dehydration & free Pan-India doorstep pickup.
+2. [UltraClear 3:1 Casting Resin](https://vistara-krafts.vercel.app/#/product/vk-epx-301) — SKU `VK-EPX-301-12K` | **₹1,299** for 1.2kg Kit (400g ₹549, 1.2kg ₹1,299, 4kg ₹3,799, 12kg ₹9,999) | 3:1 by weight optical degassed epoxy system, 600–800 mPa·s viscosity, 20mm max pour depth, 24h cure, 82D hardness, HALS UV-stabilized.
+3. [Maldives Ocean Wave Teak Charcuterie & Vanity Tray](https://vistara-krafts.vercel.app/#/product/ram-keep-002) — SKU `RAM-OCN-TRY-01` | **₹2,199** (14" Board ₹2,199, 14" Board + 4 Ocean Coasters ₹3,199) | Multi-layer lacing ocean waves over seasoned Burma teak, food-contact safe 84D cure.
+4. [River Flow 2:1 Deep Pour River Table Epoxy](https://vistara-krafts.vercel.app/#/product/vk-epx-201) — SKU `VK-EPX-201-3KG` | **₹2,850** for 3.0kg Kit (3kg ₹2,850, 9kg ₹7,999) | 2:1 by weight ultra-slow exotherm formula for 50mm (2-inch) single-pass river tables and bridal floral blocks, 320–450 mPa·s water-thin viscosity, 48–72h cure, 85D structural hardness.
+5. [Royal Champagne & Quartz Geode Statement Wall Art](https://vistara-krafts.vercel.app/#/product/ram-keep-003) — SKU `RAM-GEO-CLK-18` | **₹3,899** (18" Geode Clock ₹3,899, 24" Backlit Statement Panel ₹6,499) | Encrusted with natural clear quartz crystals, metallic bronze & 24K rose-gold leaf.
+6. [Jewelry Glass Optical UV Resin (Hard Type 365nm)](https://vistara-krafts.vercel.app/#/product/vk-uv-hard) — SKU `VK-UV-HRD-200G` | **₹649** for 200g Twin Pack + UV Torch (100g ₹379, 200g ₹649) | 1-part ready-to-use UV LED curing resin, 90-second cure under 365nm lamp, 84D tack-free finish for botanical pendants and bezels.
+7. [Metallic Chameleon Mica Powder Set (12 Shades)](https://vistara-krafts.vercel.app/#/product/vk-pig-cham) — SKU `VK-MICA-CHAM-12` | **₹899** (12×10g Jars ₹899, 24×10g Master Vault ₹1,599) | Cosmetic-grade 10–60 μm dichroic color-shifting mineral pigments in apothecary glass jars.
+8. [Petrified Botanical & Brass Edge Coaster Set (Set of 4)](https://vistara-krafts.vercel.app/#/product/ram-keep-004) — SKU `RAM-CST-FLR-04` | **₹1,399** (Blush Rose & 24K Gold ₹1,399, Emerald Agate ₹1,499) | Real pressed delphiniums & roses in 85°C heat-resistant 3:1 epoxy with electroplated brass rims.
+9. [High-Gloss Doming & Topcoat Epoxy 1:1](https://vistara-krafts.vercel.app/#/product/vk-res-003) — SKU `VK-HG-11-500` | **₹799** for 500g Kit (500g ₹799, 2kg ₹2,499) | 1:1 equal-part high-viscosity (2400 mPa·s) self-leveling glass doming resin for ocean lacing cells, nameplates, and canvas art.
+10. [Platinum Silicone Geode Coaster & Tray Mold Set](https://vistara-krafts.vercel.app/#/product/vk-mld-geo) — SKU `VK-MLD-GEO-04` | **₹449** (4x Agate Coaster Molds ₹449, 8"×8"×2.5" Deep Varmala Block Mold ₹1,199) | Shore A 30 tear-resistant platinum addition-cure silicone with mirror interior for 80+ casts.
+11. [EcoBio 3:1 Botanical Bio-Based Casting Resin](https://vistara-krafts.vercel.app/#/product/vk-res-006) — SKU `VK-EB-31-1000` | **₹1,450** for 1.0kg Kit | ASTM D6866 certified 42% plant-derived bio-carbon epoxy, zero VOC, low odor for home studios.
+12. [Sienna Ridged Stoneware & Resin-Glazed Vessel](https://vistara-krafts.vercel.app/#/product/potry-sienna-01) — SKU `PTR-SN-1200` | **₹2,499** (1.2L Ochre Sand Pitcher ₹2,499, 0.8L Charcoal Basalt Carafe ₹1,999) | POTRY × Vistāra Krafts collaboration: Cone 10 wheel-thrown iron stoneware with lead-free vitreous glaze.
+
+## 5-Stage Bridal Varmala & Bouquet Preservation Ritual
+
+1. **Stage 01 — 24h Doorstep Pickup**: Courier pickup of fresh or dried wedding garlands in a breathable moisture-lock carton across India.
+2. **Stage 02 — Cryo-Silica Drying (10–14 Days)**: Gentle dehydration in grade-A floral silica crystals to preserve natural rose, orchid, and marigold pigments.
+3. **Stage 03 — Digital Mockup Approval**: Pre-pour petal arrangement & calligraphy layout preview sent to the patron for 1-click approval.
+4. **Stage 04 — 50mm Multi-Layer Optical Pour**: 4 vacuum-degassed pours using Vistāra 2:1 Deep Pour epoxy fortified with HALS + UV400 non-yellowing armor.
+5. **Stage 05 — Diamond Buff & Insured Air Return**: Polished to 85D mirror glass and delivered in a velvet heirloom trunk via BlueDart Priority Air.
+
+## Geo-Targeting, Shipping, GST & Offers
+
+- **Headquarters & Lab**: Vistāra Krafts Studio & Chemical Atelier, Bengaluru, Karnataka 560001, India (`geo.region: IN-KA`, `12.9716, 77.5946`).
+- **Pan-India Express Air Delivery**: Free shipping on orders above ₹1,499 (₹99 below ₹1,499). Priority 1–3 day transit to Bengaluru (`560001`), Mumbai (`400001`), New Delhi (`110001`), Hyderabad (`500001`), Chennai (`600001`), Pune (`411001`), Jaipur (`302001`), Kolkata (`700001`), and 19,000+ PIN codes via BlueDart & Delhivery.
+- **Volume Discounts & Coupons**: Save 8% on 3–5 units, 16% on 6+ units. Active promo codes: `KRAFTFIRST` (₹150 off min ₹500), `MEMORIES10` (10% off min ₹1,000), `FLIRTY15` (15% off min ₹2,500), `STUDIO20` (20% off min ₹5,000).
+- **Tax & Compliance**: HSN `39073010` (Epoxy Resins in Primary Forms) & `69120010` (Ceramic Stoneware), 18% GST inclusive with B2B Input Tax Credit (ITC) tax invoices, ISO 9001:2015 & ISO 11014 SDS certified.

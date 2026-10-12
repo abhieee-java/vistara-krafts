@@ -1804,6 +1804,50 @@
       return this.getStudioSyncLog();
     },
 
+    getSeoConfig() {
+      const cfCfg = global.VistaraCloudflareConfig || {};
+      const seoCfg = cfCfg.seo || {};
+      const siteUrl = String(
+        global.VISTARA_SITE_URL ||
+        seoCfg.siteUrl ||
+        (cfCfg.brand && cfCfg.brand.siteUrl) ||
+        'https://vistara-krafts.vercel.app'
+      ).replace(/\/+$/, '');
+      const futureCustomDomain = String(
+        seoCfg.futureCustomDomain ||
+        (cfCfg.brand && cfCfg.brand.futureCustomDomain) ||
+        'https://vistarakrafts.in'
+      ).replace(/\/+$/, '');
+      return {
+        siteUrl,
+        futureCustomDomain,
+        defaultTitle: seoCfg.defaultTitle || 'Vistāra Krafts (@resin.art.memories) | UltraClear Epoxy Resin Systems & Bridal Varmala Preservation Studio India',
+        defaultDescription: seoCfg.defaultDescription || 'Official Vistāra Krafts × Resin Art Memories (@resin.art.memories) Storefront. Shop ASTM D-4236 Certified Non-Yellowing 3:1 Casting Epoxy, 2:1 Deep Pour River Table Resin, UV Resin, Chameleon Mica Pigments, and Commission Museum-Grade Bridal Varmala & Bouquet Preservation Blocks across India.',
+        defaultKeywords: seoCfg.defaultKeywords || 'Vistara Krafts, Resin Art Memories, @resin.art.memories, bridal varmala preservation India, wedding garland resin block Bengaluru, epoxy resin kit India, 3:1 casting epoxy resin, 2:1 deep pour river table epoxy, UV resin India, non yellowing HALS epoxy, silicone geode molds, Potry sienna stoneware',
+        locale: seoCfg.locale || 'en_IN',
+        language: seoCfg.language || 'en-IN',
+        currency: seoCfg.currency || 'INR',
+        twitterHandle: seoCfg.twitterHandle || '@resin_art_mem',
+        instagramHandle: '@resin.art.memories',
+        instagramUrl: 'https://www.instagram.com/resin.art.memories?utm_source=qr',
+        llmsTxtUrl: `${siteUrl}${seoCfg.llmsTxtPath || '/llms.txt'}`,
+        llmsFullTxtUrl: `${siteUrl}${seoCfg.llmsFullTxtPath || '/llms-full.txt'}`,
+        sitemapUrl: `${siteUrl}${seoCfg.sitemapPath || '/sitemap.xml'}`,
+        geo: seoCfg.geo || {
+          country: 'IN',
+          countryName: 'India',
+          region: 'IN-KA',
+          placename: 'Bengaluru, Karnataka, India',
+          postalCode: '560001',
+          latitude: 12.9716,
+          longitude: 77.5946,
+          position: '12.9716;77.5946',
+          icbm: '12.9716, 77.5946',
+          areaServed: ['India', 'Bengaluru', 'Mumbai', 'Delhi NCR', 'Hyderabad', 'Chennai', 'Pune', 'Kolkata', 'Ahmedabad', 'Jaipur']
+        }
+      };
+    },
+
     subscribe(fn) {
       listeners.add(fn);
       return () => listeners.delete(fn);

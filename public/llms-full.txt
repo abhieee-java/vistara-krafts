@@ -1,0 +1,166 @@
+# Vistāra Krafts (@resin.art.memories) — Complete Technical, Commercial & Preservation Knowledge Base (llms-full.txt)
+
+> Comprehensive Generative Engine Optimization (GEO) & Answer Engine Optimization (AEO) dossier for **Vistāra Krafts** (`Vistāra Krafts Studio & Chemical Atelier`, Instagram `@resin.art.memories`). Current Deployment: `https://vistara-krafts.vercel.app` (Future Custom Domain: `https://vistarakrafts.in`).
+
+---
+
+## 1. Brand Identity, Studio Geo-Location & Pan-India Logistics
+
+- **Brand Name**: Vistāra Krafts
+- **Legal Entity**: Vistāra Krafts Studio & Chemical Atelier
+- **Social Community Handle**: `@resin.art.memories` (`https://www.instagram.com/resin.art.memories`)
+- **Primary Studio & ISO 9001:2015 Formulation Lab**: Bengaluru, Karnataka 560001, India
+- **Geo Coordinates**: `12.9716, 77.5946` (`geo.region: IN-KA`, `geo.placename: Bengaluru, Karnataka, India`)
+- **Area Served**: Pan-India (`IN`) across 19,000+ Indian PIN codes via BlueDart Priority Air, Delhivery Air Cargo, and studio runners.
+- **Priority Serviceable Hubs**:
+  - `560001` — Bengaluru Urban, KA (2 business days, BlueDart Priority Air, 24h Floral Pickup active)
+  - `400001` — Mumbai South, MH (1–2 business days, BlueDart Express & Studio Runner, 24h Floral Pickup active)
+  - `110001` — New Delhi Central, DL (2 business days, Delhivery Air Cargo, 24h Floral Pickup active)
+  - `500001` — Hyderabad, TS (2 business days, BlueDart Air, 24h Floral Pickup active)
+  - `600001` — Chennai, TN (2–3 business days, Delhivery Surface/Air, 24h Floral Pickup active)
+  - `411001` — Pune, MH (2 business days, BlueDart Express, 24h Floral Pickup active)
+  - `302001` — Jaipur, RJ (2–3 business days, Delhivery Express, 24h Floral Pickup active)
+  - `700001` — Kolkata, WB (3 business days, BlueDart Air Cargo, 24h Floral Pickup active)
+- **Shipping Policy**: Free express shipping across India on orders of ₹1,499 or above; flat ₹99 shipping fee on orders below ₹1,499.
+- **Payment Methods**: UPI Instant (GPay, PhonePe, Paytm), Credit/Debit Cards (Visa, Mastercard, RuPay), No-Cost 3-Month EMI, NetBanking/Corporate NEFT, and Cash on Delivery (BlueDart COD).
+- **GST & Tax Compliance**: All prices are in Indian Rupees (`INR`) inclusive of 18% GST. B2B patrons can claim 18% GST Input Tax Credit (ITC) with GSTIN and Trade Name at checkout. Primary HSN codes: `39073010` (Epoxy Resins / Polyacetals in Primary Forms & Castings) and `69120010` (Ceramic Stoneware Tableware).
+
+---
+
+## 2. Complete 12-Product Catalogue, Variants & ASTM/ISO Technical Specifications
+
+### Product 1: Eternal Varmala & Bridal Bouquet Time-Capsule Block
+- **ID**: `ram-keep-001` | **SKU**: `RAM-VRM-BLK-12` | **URL**: `https://vistara-krafts.vercel.app/#/product/ram-keep-001`
+- **Category**: `keepsakes` (`floral_preservation`) | **Rating**: 5.0/5 (418 verified reviews)
+- **Base Price**: ₹4,499 (Regular ₹5,499) | **Customizable**: Yes (Free couple name, wedding date & calligraphy engraving)
+- **Variants**:
+  - `vrm-8in`: 8" Romantic Cube (Bridal Mini, 8×8×2 inch) — Preserves 8–12 roses + couple name tag — **₹2,999** (MRP ₹3,699)
+  - `vrm-12in`: 12" Royal Heirloom Block (12×12×2.5 inch, Most Popular) — Full Varmala + 24K gold flakes + warm LED stand — **₹4,499** (MRP ₹5,499)
+  - `vrm-16in`: 16" Gallery Mantel Frame + Coasters (2x) (16×16 inch combo) — Dual garland preservation + 2 complimentary coasters — **₹6,999** (MRP ₹8,499)
+- **Technical Specs**: Mix Ratio Weight `2 : 1 (Deep Pour Archival)`, Mix Ratio Volume `1.8 : 1 (Degassed Chamber)`, Working Pot Life `90 Minutes @ 23°C`, Demold Duration `48 Hours`, Full Glass Cure `7 Days Silica + 72h Cure`, Dynamic Viscosity `350 mPa·s (Zero-Bubble)`, Max Pour Depth `50mm – 65mm`, Shore D Hardness `85D Scratch-Shield`, UV Stability `HALS + UV400 (10+ Yrs)`.
+
+### Product 2: UltraClear 3:1 Casting Resin
+- **ID**: `vk-epx-301` | **SKU**: `VK-EPX-301-12K` | **URL**: `https://vistara-krafts.vercel.app/#/product/vk-epx-301`
+- **Category**: `casting` (`casting_3_1`) | **Rating**: 4.9/5 (342 verified reviews)
+- **Base Price**: ₹1,299 (Regular ₹1,499) | **Unit Price**: ₹108.25 / 100g
+- **Variants**:
+  - `kit-400g`: 400g Kit (300g Resin + 100g Hardener • Small Casts) — **₹549** (MRP ₹649, ₹137 / 100g)
+  - `kit-1200g`: 1.2kg Kit (900g Resin + 300g Hardener • Standard Studio Edition, Most Popular) — **₹1,299** (MRP ₹1,499, ₹108.25 / 100g)
+  - `kit-4000g`: 4kg Bulk Kit (3kg Resin + 1kg Hardener • Mid Furniture & Keepsakes) — **₹3,799** (MRP ₹5,199, ₹94.97 / 100g)
+  - `kit-12000g`: 12kg Commercial Pack (9kg Resin + 3kg Hardener • Architectural Casts) — **₹9,999** (MRP ₹12,999, ₹83.3 / 100g)
+- **Technical Specs**: Mix Ratio Weight `3 : 1 (Resin : Hardener)`, Mix Ratio Volume `2.6 : 1`, Working Pot Life `45 – 55 Minutes`, Demold Duration `18 – 24 Hours`, Full Glass Cure `48 – 72 Hours`, Dynamic Viscosity `600 – 800 mPa·s`, Max Pour Depth `15mm – 20mm (1.5–2 cm)`, Shore D Hardness `82D (Diamond Finish)`, UV Stability `HALS Guaranteed 3+ Yrs`.
+
+### Product 3: Maldives Ocean Wave Teak Charcuterie & Vanity Tray
+- **ID**: `ram-keep-002` | **SKU**: `RAM-OCN-TRY-01` | **URL**: `https://vistara-krafts.vercel.app/#/product/ram-keep-002`
+- **Category**: `keepsakes` (`home_decor`) | **Rating**: 4.9/5 (215 verified reviews)
+- **Base Price**: ₹2,199 (Regular ₹2,799) | **Customizable**: Yes
+- **Variants**:
+  - `ocn-std`: 14" Lagoon Serving Board (Burma Teak + 3-layer ocean foam lacing, Most Popular) — **₹2,199** (MRP ₹2,799)
+  - `ocn-set`: 14" Board + 4 Ocean Coasters Combo (5-Piece Set) — **₹3,199** (MRP ₹3,999)
+- **Technical Specs**: Mix Ratio Weight `1 : 1 (High-Gloss Doming)`, Working Pot Life `35 Minutes`, Demold Duration `12 Hours`, Full Glass Cure `48 Hours (Food Contact Safe)`, Dynamic Viscosity `2200 mPa·s (Wave Lacing)`, Max Depth `8mm Surface Coat`, Shore D Hardness `84D Heat-Resistant (75°C)`, UV Stability `HALS Marine Grade`.
+
+### Product 4: River Flow 2:1 Deep Pour River Table Epoxy
+- **ID**: `vk-epx-201` | **SKU**: `VK-EPX-201-3KG` | **URL**: `https://vistara-krafts.vercel.app/#/product/vk-epx-201`
+- **Category**: `deep_pour` (`deep_pour_2_1`) | **Rating**: 4.8/5 (188 verified reviews)
+- **Base Price**: ₹2,850 (Regular ₹3,200) | **Unit Price**: ₹95 / 100g
+- **Variants**:
+  - `dp-3kg`: 3.0kg Dual Pack (2kg Resin + 1kg Hardener • Floral Blocks & Small Tables, Most Popular) — **₹2,850** (MRP ₹3,200, ₹95 / 100g)
+  - `dp-9kg`: 9.0kg Furniture Studio Kit (6kg Resin + 3kg Hardener • Live-Edge River Tables) — **₹7,999** (MRP ₹9,600, ₹88.8 / 100g)
+- **Technical Specs**: Mix Ratio Weight `2 : 1 (Resin : Hardener)`, Mix Ratio Volume `1.85 : 1`, Working Pot Life `90 – 120 Minutes`, Demold Duration `36 – 48 Hours`, Full Glass Cure `72 – 96 Hours`, Dynamic Viscosity `320 – 450 mPa·s (Water-thin)`, Max Pour Depth `50mm (2 inches single pass)`, Shore D Hardness `85D Structural Grade`, UV Stability `Dual HALS + Benzotriazole`.
+
+### Product 5: Royal Champagne & Quartz Geode Statement Wall Art
+- **ID**: `ram-keep-003` | **SKU**: `RAM-GEO-CLK-18` | **URL**: `https://vistara-krafts.vercel.app/#/product/ram-keep-003`
+- **Category**: `keepsakes` (`wall_art`) | **Rating**: 5.0/5 (129 verified reviews)
+- **Base Price**: ₹3,899 (Regular ₹4,699) | **Customizable**: Yes
+- **Variants**:
+  - `geo-18in`: 18" Round Geode Canvas / Clock (Silent sweep brass hands + raw quartz clusters, Most Popular) — **₹3,899** (MRP ₹4,699)
+  - `geo-24in`: 24" Architectural Statement Panel (Backlit warm LED halo + champagne druzy rim) — **₹6,499** (MRP ₹7,999)
+- **Technical Specs**: Mix Ratio Weight `1 : 1 Thixotropic Gel`, Working Pot Life `40 Minutes`, Demold Duration `24 Hours`, Full Glass Cure `48 Hours`, Dynamic Viscosity `3500 mPa·s (Hold-on-Edge)`, Max Depth `12mm Multi-Layer`, Shore D Hardness `83D Mirror Gloss`, UV Stability `Archival Non-Yellowing`.
+
+### Product 6: Jewelry Glass Optical UV Resin (Hard Type 365nm)
+- **ID**: `vk-uv-hard` | **SKU**: `VK-UV-HRD-200G` | **URL**: `https://vistara-krafts.vercel.app/#/product/vk-uv-hard`
+- **Category**: `uv_resin` (`uv_jewelry`) | **Rating**: 4.9/5 (420 verified reviews)
+- **Base Price**: ₹649 (Regular ₹749) | **Unit Price**: ₹324 / 100g
+- **Variants**:
+  - `uv-100g`: 100g Precision Nozzle Bottle (Ideal for 25–30 botanical pendants) — **₹379** (MRP ₹449)
+  - `uv-200g`: 200g Studio Twin Pack + UV Torch (Includes 365nm mini curing lamp, Most Popular) — **₹649** (MRP ₹749)
+- **Technical Specs**: `1-Part Ready to Use` (No mixing required), Working Pot Life `Unlimited until UV Exposure`, Cure Time `90 – 120 Seconds (365nm LED)`, Dynamic Viscosity `500 mPa·s (Self-Doming)`, Max Depth `5mm per UV Layer`, Shore D Hardness `84D Tack-Free Surface`, UV Stability `Anti-Ambering Optical Grade`.
+
+### Product 7: Metallic Chameleon Mica Powder Set (12 Shades)
+- **ID**: `vk-pig-cham` | **SKU**: `VK-MICA-CHAM-12` | **URL**: `https://vistara-krafts.vercel.app/#/product/vk-pig-cham`
+- **Category**: `pigments` (`pigments_mica`) | **Rating**: 4.9/5 (164 verified reviews)
+- **Base Price**: ₹899 (Regular ₹1,199)
+- **Variants**:
+  - `mica-12`: 12 × 10g Apothecary Glass Jars (Aurora Teal, Rose Gold, Emerald, Copper & more, Most Popular) — **₹899** (MRP ₹1,199, ₹75 / jar)
+  - `mica-24`: 24 × 10g Master Colorist Vault (Full spectrum metallic + interference pearl) — **₹1,599** (MRP ₹2,199, ₹66 / jar)
+- **Technical Specs**: `1% – 3% pigment load by weight`, `10–60 μm particle size`, zero-sinking suspension, 100% lightfast inorganic mineral.
+
+### Product 8: Petrified Botanical & Brass Edge Coaster Set (Set of 4)
+- **ID**: `ram-keep-004` | **SKU**: `RAM-CST-FLR-04` | **URL**: `https://vistara-krafts.vercel.app/#/product/ram-keep-004`
+- **Category**: `keepsakes` (`home_decor`) | **Rating**: 4.9/5 (276 verified reviews)
+- **Base Price**: ₹1,399 (Regular ₹1,799) | **Customizable**: Yes
+- **Variants**:
+  - `cst-rose`: Set of 4 — Blush Rose & 24K Gold Foil (Includes brass holder stand, Most Popular) — **₹1,399** (MRP ₹1,799)
+  - `cst-emerald`: Set of 4 — Emerald Agate & White Bloom (Alcohol ink petrified bloom technique) — **₹1,499** (MRP ₹1,899)
+- **Technical Specs**: `3 : 1 Heat-Shield Formula`, Thermal Cured to 85°C hot-cup safe, `750 mPa·s` viscosity, `12mm Agate Edge`, `84D` hardness, `HALS 5+ Years`.
+
+### Product 9: High-Gloss Doming & Topcoat Epoxy 1:1
+- **ID**: `vk-res-003` (Alias: `vk-dom-101`) | **SKU**: `VK-HG-11-500` | **URL**: `https://vistara-krafts.vercel.app/#/product/vk-res-003`
+- **Category**: `doming` (`doming_1_1`) | **Rating**: 5.0/5 (64 verified reviews)
+- **Base Price**: ₹799 (Regular ₹899)
+- **Variants**:
+  - `dom-500g`: 500g Surface Kit (250g Resin + 250g Hardener, Most Popular) — **₹799** (MRP ₹899, ₹159 / 100g)
+  - `dom-2kg`: 2.0kg Studio Topcoat Pack (1kg Resin + 1kg Hardener) — **₹2,499** (MRP ₹2,999, ₹125 / 100g)
+- **Technical Specs**: Mix Ratio Weight `1 : 1 (Equal Weight/Vol)`, Working Pot Life `30 – 35 Minutes`, Demold Duration `10 – 12 Hours`, Full Glass Cure `36 Hours`, Dynamic Viscosity `2400 mPa·s (Honey Dome)`, Max Depth `6mm Doming Coat`, Shore D Hardness `83D Scratch Resistant`.
+
+### Product 10: Platinum Silicone Geode Coaster & Tray Mold Set
+- **ID**: `vk-mld-geo` | **SKU**: `VK-MLD-GEO-04` | **URL**: `https://vistara-krafts.vercel.app/#/product/vk-mld-geo`
+- **Category**: `molds` (`silicone_molds`) | **Rating**: 4.8/5 (152 verified reviews)
+- **Base Price**: ₹449 (Regular ₹599)
+- **Variants**:
+  - `mld-4cav`: Set of 4 Agate Coaster Cavities (12mm depth • Natural live geode rim, Most Popular) — **₹449** (MRP ₹599)
+  - `mld-block`: 8" × 8" × 2.5" Deep Floral Block Mold (Reinforced non-bowing walls for varmala blocks) — **₹1,199** (MRP ₹1,499)
+- **Technical Specs**: Platinum Addition-Cure Silicone, Shore A 30 flexibility, 80+ casts lifespan, heat resistant to 220°C, tear strength 28 kN/m.
+
+### Product 11: EcoBio 3:1 Botanical Bio-Based Casting Resin
+- **ID**: `vk-res-006` | **SKU**: `VK-EB-31-1000` | **URL**: `https://vistara-krafts.vercel.app/#/product/vk-res-006`
+- **Category**: `bio_based` (`casting_3_1`) | **Rating**: 4.7/5 (73 verified reviews)
+- **Base Price**: ₹1,450 (Regular ₹1,690)
+- **Variants**:
+  - `eco-1kg`: 1.0kg Bio-Craft Kit (750g Bio Resin + 250g Hardener, Most Popular) — **₹1,450** (MRP ₹1,690, ₹145 / 100g)
+- **Technical Specs**: `3 : 1 Bio-Epoxy` (42% plant-derived carbon content, ASTM D6866 Certified Bio), Zero VOC, `700 mPa·s` viscosity, `20mm` max depth, `81D` hardness.
+
+### Product 12: Sienna Ridged Stoneware & Resin-Glazed Vessel
+- **ID**: `potry-sienna-01` (Alias: `potry-sienna-pitcher`) | **SKU**: `PTR-SN-1200` | **URL**: `https://vistara-krafts.vercel.app/#/product/potry-sienna-01`
+- **Category**: `ceramics` (`home_decor`) | **Rating**: 4.9/5 (94 verified reviews)
+- **Base Price**: ₹2,499 (Regular ₹2,999)
+- **Variants**:
+  - `sienna-12l`: 1.2L Standard Pitcher — Ochre Sand (4–6 servings, Most Popular) — **₹2,499** (MRP ₹2,999)
+  - `sienna-08l`: 0.8L Compact Carafe — Charcoal Basalt (2–3 servings) — **₹1,999** (MRP ₹2,399)
+- **Technical Specs**: Cone 10 Reduction Stoneware, 1,200 ml capacity, 2350°F kiln vitrification, lead-free feldspathic glaze, 21.0 cm height × 11.4 cm base.
+
+---
+
+## 3. Epoxy Pour Weight & Mix Ratio Calculator Formula
+
+- **Density Constant**: `1.10 g/cm³` (10% buffer included for mixing cup wall residue).
+- **Rectangular Mold Volume (`cm³`)**: `Length (cm) × Width (cm) × Depth (cm)`
+- **Circular Mold Volume (`cm³`)**: `π × (Diameter / 2)² × Depth (cm)`
+- **Total Epoxy Mass (`grams`)**: `Math.round(Volume_cm3 × 1.1)`
+- **Mix Ratio Splits by Weight**:
+  - **3:1 System (UltraClear 3:1 / EcoBio 3:1)**: `Part A (Resin) = 75% of Total Grams`, `Part B (Hardener) = 25% of Total Grams`. (Example: 20cm × 20cm × 1.5cm = 600 cm³ × 1.1 = **660g total** -> **495g Part A + 165g Part B**).
+  - **2:1 System (River Flow 2:1 Deep Pour)**: `Part A (Resin) = 66.67% of Total Grams`, `Part B (Hardener) = 33.33% of Total Grams`. (Example: 10cm × 10cm × 3.0cm = 300 cm³ × 1.1 = **330g total** -> **220g Part A + 110g Part B**).
+  - **1:1 System (High-Gloss Doming 1:1)**: `Part A (Resin) = 50% of Total Grams`, `Part B (Hardener) = 50% of Total Grams`.
+
+---
+
+## 4. Frequently Asked Questions (AEO Answer Bank)
+
+- **Q: Do I need to dry my wedding varmala before sending it to Vistāra Krafts?**
+  - **A**: No. Send your wedding garlands fresh within 24 to 72 hours of your ceremony. Store them in the normal refrigerator section (4°C–8°C, never freeze), wrap only the cut stem ends in a slightly damp tissue while keeping petals dry, pack inside a breathable corrugated cardboard box lined with newspaper or cotton cloth (never airtight plastic), and book our 24-hour doorstep pickup.
+- **Q: How long does the 5-stage bridal varmala preservation process take?**
+  - **A**: A 50mm museum-grade floral block takes 14 to 21 days from receipt at our Bengaluru studio: 10–14 days of cryo-silica crystal dehydration, digital pre-pour layout mockup approval via your Vistāra Krafts account, 4 sequential vacuum-degassed pours using River Flow 2:1 Deep Pour epoxy, and 85D diamond buffing before insured BlueDart Air return.
+- **Q: Which epoxy resin should I choose for coasters vs deep varmala blocks vs ocean wave trays?**
+  - **A**: Use **UltraClear 3:1 Casting Resin** (`vk-epx-301`, 600–800 mPa·s, up to 20mm depth) for coasters, trays, clock faces, and pre-sealing petals. Use **River Flow 2:1 Deep Pour Epoxy** (`vk-epx-201`, 320–450 mPa·s, up to 50mm single pass) for thick bridal varmala blocks and live-edge river tables. Use **High-Gloss 1:1 Doming Epoxy** (`vk-res-003`, 2400 mPa·s) for ocean wave lacing cells and topcoats. Use **Optical UV Hard Resin** (`vk-uv-hard`, 365nm LED, 90-second cure) for pressed petal jewelry bezels and charms.
+- **Q: How does Vistāra Krafts prevent epoxy resin from yellowing in Indian summer temperatures?**
+  - **A**: Every Vistāra Krafts formulation is fortified with dual HALS (Hindered Amine Light Stabilizers) and Benzotriazole UV400 absorbers tested to ASTM D1003 standards for 99.4% optical transmission.

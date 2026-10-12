@@ -124,6 +124,9 @@ const sandbox = {
 sandbox.window = sandbox;
 vm.createContext(sandbox);
 
+const cfConfigCode = fs.readFileSync(path.join(ROOT, 'cloudflare-config.js'), 'utf8');
+vm.runInContext(cfConfigCode, sandbox);
+
 const bridgeCode = fs.readFileSync(path.join(ROOT, 'store-bridge.js'), 'utf8');
 vm.runInContext(bridgeCode, sandbox);
 
@@ -993,6 +996,121 @@ test('Decisions 2, 3 & 4: 2-Step Auth vs Checkout Address, 1-Click Google/Apple 
   assert.ok(indexHtml.includes('grid-cols-1 sm:grid-cols-3'), '#checkout-modal address & PIN row must stack on 320px mobile via grid-cols-1 sm:grid-cols-3');
 });
 
+test('SEO, GEO & AEO Production Readiness: robots.txt, sitemap.xml, llms.txt, llms-full.txt, index.html head & JSON-LD @graph, dynamic route/product/variant SEO updates, and custom domain swap', () => {
+  // 1. Verify static SEO & GEO files exist in both root and public/ and contain required directives
+  for (const relPath of ['robots.txt', 'public/robots.txt']) {
+    const robotsTxt = fs.readFileSync(path.join(ROOT, relPath), 'utf8');
+    assert.ok(robotsTxt.includes('User-agent: *'), `${relPath} must include User-agent: *`);
+    assert.ok(robotsTxt.includes('User-agent: GPTBot'), `${relPath} must explicitly allow GPTBot for GEO`);
+    assert.ok(robotsTxt.includes('User-agent: OAI-SearchBot'), `${relPath} must explicitly allow OAI-SearchBot for GEO`);
+    assert.ok(robotsTxt.includes('User-agent: ClaudeBot'), `${relPath} must explicitly allow ClaudeBot for GEO`);
+    assert.ok(robotsTxt.includes('User-agent: PerplexityBot'), `${relPath} must explicitly allow PerplexityBot for GEO`);
+    assert.ok(robotsTxt.includes('User-agent: Google-Extended'), `${relPath} must explicitly allow Google-Extended for GEO`);
+    assert.ok(robotsTxt.includes('Sitemap: https://vistara-krafts.vercel.app/sitemap.xml'), `${relPath} must reference https://vistara-krafts.vercel.app/sitemap.xml`);
+  }
+
+  const coreProducts = Store.getProducts().filter(p => !String(p.id).startsWith('ram-lotus-drop-') && !String(p.id).startsWith('test-'));
+  assert.strictEqual(coreProducts.length, 12, 'Core catalogue must have 12 products');
+
+  for (const relPath of ['sitemap.xml', 'public/sitemap.xml']) {
+    const sitemapXml = fs.readFileSync(path.join(ROOT, relPath), 'utf8');
+    assert.ok(sitemapXml.startsWith('<?xml version="1.0" encoding="UTF-8"?>'), `${relPath} must be valid XML`);
+    assert.ok(sitemapXml.includes('<loc>https://vistara-krafts.vercel.app/</loc>'), `${relPath} must include root canonical URL`);
+    assert.ok(sitemapXml.includes('hreflang="en-IN"'), `${relPath} must include hreflang="en-IN" alternate links`);
+    for (const prod of coreProducts) {
+      assert.ok(
+        sitemapXml.includes(`<loc>https://vistara-krafts.vercel.app/#/product/${prod.id}</loc>`),
+        `${relPath} must include product URL for ${prod.id}`
+      );
+    }
+    assert.ok(sitemapXml.includes('<loc>https://vistara-krafts.vercel.app/llms.txt</loc>'), `${relPath} must index /llms.txt`);
+    assert.ok(sitemapXml.includes('<loc>https://vistara-krafts.vercel.app/llms-full.txt</loc>'), `${relPath} must index /llms-full.txt`);
+  }
+
+  for (const relPath of ['llms.txt', 'public/llms.txt', 'llms-full.txt', 'public/llms-full.txt']) {
+    const llmsContent = fs.readFileSync(path.join(ROOT, relPath), 'utf8');
+    assert.ok(llmsContent.includes('Vistāra Krafts'), `${relPath} must include brand identity Vistāra Krafts`);
+    assert.ok(llmsContent.includes('@resin.art.memories'), `${relPath} must include Instagram handle @resin.art.memories`);
+    assert.ok(llmsContent.includes('https://vistara-krafts.vercel.app'), `${relPath} must reference https://vistara-krafts.vercel.app`);
+    assert.ok(llmsContent.includes('https://vistarakrafts.in'), `${relPath} must document future custom domain https://vistarakrafts.in`);
+    for (const prod of coreProducts) {
+      assert.ok(llmsContent.includes(prod.sku), `${relPath} must include SKU ${prod.sku}`);
+    }
+  }
+
+  // 2. Verify index.html <head> SEO, Geo-Targeting (Bengaluru/Pan-India), OpenGraph, Twitter Card, and initial JSON-LD @graph
+  const indexHtml = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8');
+  assert.ok(indexHtml.includes('lang="en-IN"'), 'index.html must declare lang="en-IN"');
+  assert.ok(indexHtml.includes('name="geo.region" content="IN-KA"'), 'index.html must include geo.region="IN-KA"');
+  assert.ok(indexHtml.includes('name="geo.placename" content="Bengaluru, Karnataka, India"'), 'index.html must include geo.placename="Bengaluru, Karnataka, India"');
+  assert.ok(indexHtml.includes('name="geo.position" content="12.9716;77.5946"'), 'index.html must include geo.position="12.9716;77.5946"');
+  assert.ok(indexHtml.includes('name="ICBM" content="12.9716, 77.5946"'), 'index.html must include ICBM="12.9716, 77.5946"');
+  assert.ok(indexHtml.includes('rel="canonical" href="https://vistara-krafts.vercel.app/"'), 'index.html must include canonical link to https://vistara-krafts.vercel.app/');
+  assert.ok(indexHtml.includes('hreflang="en-IN"'), 'index.html must include hreflang="en-IN" link');
+  assert.ok(indexHtml.includes('rel="alternate" type="text/plain" href="/llms.txt"'), 'index.html must link to /llms.txt for AI/LLM discovery');
+  assert.ok(indexHtml.includes('rel="alternate" type="text/plain" href="/llms-full.txt"'), 'index.html must link to /llms-full.txt for AI/LLM discovery');
+  assert.ok(indexHtml.includes('property="og:locale" content="en_IN"'), 'index.html must include og:locale="en_IN"');
+  assert.ok(indexHtml.includes('name="twitter:card" content="summary_large_image"'), 'index.html must include twitter:card="summary_large_image"');
+
+  const jsonLdMatch = indexHtml.match(/<script\s+id="vistara-schema-jsonld"[^>]*>([\s\S]*?)<\/script>/i);
+  assert.ok(jsonLdMatch, 'index.html must contain <script id="vistara-schema-jsonld" type="application/ld+json">');
+  const staticSchema = JSON.parse(jsonLdMatch[1]);
+  assert.strictEqual(staticSchema['@context'], 'https://schema.org', 'Static JSON-LD must have @context="https://schema.org"');
+  assert.ok(Array.isArray(staticSchema['@graph']), 'Static JSON-LD must contain @graph array');
+  const graphTypes = JSON.stringify(staticSchema['@graph']);
+  for (const requiredType of ['Organization', 'OnlineStore', 'LocalBusiness', 'WebSite', 'BreadcrumbList', 'ItemList', 'Product', 'FAQPage', 'HowTo']) {
+    assert.ok(graphTypes.includes(requiredType), `Static JSON-LD @graph must include ${requiredType}`);
+  }
+  const catalogListNode = staticSchema['@graph'].find(n => n['@type'] === 'ItemList');
+  assert.ok(catalogListNode, 'Static JSON-LD @graph must include ItemList node');
+  assert.strictEqual(catalogListNode.itemListElement.length, 12, 'Static JSON-LD ItemList must contain all 12 products');
+
+  // 3. Verify Store.getSeoConfig() and dynamic per-route / per-product / per-variant SEO updates in app.js
+  const seoCfg = Store.getSeoConfig();
+  assert.strictEqual(seoCfg.siteUrl, 'https://vistara-krafts.vercel.app');
+  assert.strictEqual(seoCfg.futureCustomDomain, 'https://vistarakrafts.in');
+  assert.strictEqual(seoCfg.geo.region, 'IN-KA');
+
+  sandbox.window.navigateTo('product', 'ram-keep-001');
+  const pdpSeo1 = sandbox.window.getActiveSeoSnapshot();
+  assert.strictEqual(pdpSeo1.route, 'product');
+  assert.strictEqual(pdpSeo1.productId, 'ram-keep-001');
+  assert.strictEqual(pdpSeo1.canonicalUrl, 'https://vistara-krafts.vercel.app/#/product/ram-keep-001');
+  assert.strictEqual(pdpSeo1.ogType, 'product');
+  assert.ok(mockDocument.title.includes('Eternal Varmala & Bridal Bouquet Time-Capsule Block'), 'Document title must dynamically update to active product name');
+  assert.strictEqual(mockDocument.getElementById('link-canonical').href, 'https://vistara-krafts.vercel.app/#/product/ram-keep-001');
+
+  // Select variant index 2 (16" Gallery Mantel Frame + Coasters (2x) at ₹6,999) and verify dynamic price & title update
+  sandbox.window.selectPdpVariant(2);
+  const pdpSeoVariant2 = sandbox.window.getActiveSeoSnapshot();
+  assert.strictEqual(pdpSeoVariant2.priceAmount, '6999', 'Selecting PDP variant must dynamically update og:price:amount and schema Offer price');
+  assert.strictEqual(mockDocument.getElementById('og-price-amount').content, '6999');
+  const dynamicGraphStr = mockDocument.getElementById('vistara-schema-jsonld').textContent;
+  const dynamicGraphObj = JSON.parse(dynamicGraphStr);
+  const activeProdSchema = dynamicGraphObj['@graph'].find(n => n['@id'] && n['@id'].endsWith('#active-product'));
+  assert.ok(activeProdSchema, 'Product route JSON-LD @graph must include dedicated #active-product node');
+  assert.strictEqual(activeProdSchema.offers.price, '6999', 'Active product JSON-LD Offer price must match selected variant');
+
+  // Navigate to utility view (#/cart) and verify robots becomes noindex, follow
+  sandbox.window.navigateTo('cart');
+  assert.strictEqual(mockDocument.getElementById('meta-robots').content, 'noindex, follow', 'Utility route #/cart must set robots to noindex, follow');
+
+  // 4. Verify runtime custom domain swap via window.VISTARA_SITE_URL = 'https://vistarakrafts.in'
+  sandbox.window.VISTARA_SITE_URL = 'https://vistarakrafts.in';
+  sandbox.window.navigateTo('custom-studio');
+  const swappedSeo = sandbox.window.getActiveSeoSnapshot();
+  assert.strictEqual(swappedSeo.siteUrl, 'https://vistarakrafts.in', 'Setting window.VISTARA_SITE_URL must swap active siteUrl without refactoring');
+  assert.strictEqual(swappedSeo.canonicalUrl, 'https://vistarakrafts.in/#/custom-studio');
+  assert.strictEqual(mockDocument.getElementById('link-canonical').href, 'https://vistarakrafts.in/#/custom-studio');
+  const swappedGraph = JSON.parse(mockDocument.getElementById('vistara-schema-jsonld').textContent);
+  assert.strictEqual(swappedGraph['@graph'][0]['@id'], 'https://vistarakrafts.in/#organization');
+
+  // Reset back to default Vercel domain and #/home
+  delete sandbox.window.VISTARA_SITE_URL;
+  sandbox.window.navigateTo('home');
+  assert.strictEqual(mockDocument.getElementById('link-canonical').href, 'https://vistara-krafts.vercel.app/');
+});
+
 // Async test for Cloudflare Pages Function (functions/api/[[route]].js) against real SQLite with PRAGMA foreign_keys = ON
 try {
   const { DatabaseSync } = await import('node:sqlite');
@@ -1033,10 +1151,39 @@ try {
     return { status: res.status, headers: res.headers, data };
   }
 
-  // 1. Health endpoint & COOP header
+  // 1. Health endpoint, COOP header & SEO/Sitemap/LLMs endpoints
   const health = await callWorker('/health', 'GET');
   assert.strictEqual(health.status, 200);
   assert.strictEqual(health.headers.get('Cross-Origin-Opener-Policy'), 'same-origin-allow-popups');
+
+  const seoApi = await callWorker('/seo', 'GET');
+  assert.strictEqual(seoApi.status, 200);
+  assert.strictEqual(seoApi.data.ok, true);
+  assert.strictEqual(seoApi.data.siteUrl, 'https://vistara-krafts.vercel.app');
+  assert.strictEqual(seoApi.data.futureCustomDomain, 'https://vistarakrafts.in');
+  assert.strictEqual(seoApi.data.productsCount, 12);
+
+  const seoCustomDomain = await callWorker('/seo?domain=https://vistarakrafts.in', 'GET');
+  assert.strictEqual(seoCustomDomain.status, 200);
+  assert.strictEqual(seoCustomDomain.data.siteUrl, 'https://vistarakrafts.in');
+  assert.strictEqual(seoCustomDomain.data.sitemapUrl, 'https://vistarakrafts.in/sitemap.xml');
+
+  const sitemapRes = await onRequest({
+    request: new Request('https://vistarakrafts.com/api/sitemap.xml', { method: 'GET' }),
+    env
+  });
+  assert.strictEqual(sitemapRes.status, 200);
+  assert.ok((sitemapRes.headers.get('Content-Type') || '').includes('application/xml'));
+  const sitemapText = await sitemapRes.text();
+  assert.ok(sitemapText.includes('<loc>https://vistara-krafts.vercel.app/#/product/ram-keep-001</loc>'));
+
+  const llmsRes = await onRequest({
+    request: new Request('https://vistarakrafts.com/api/llms.txt', { method: 'GET' }),
+    env
+  });
+  assert.strictEqual(llmsRes.status, 200);
+  const llmsText = await llmsRes.text();
+  assert.ok(llmsText.includes('Vistāra Krafts'));
 
   // 2. First-time user login on /auth/login without upfront shipping address
   const login1 = await callWorker('/auth/login', 'POST', {
@@ -1181,6 +1328,8 @@ if (chromeExe) {
       '.css': 'text/css; charset=utf-8',
       '.js': 'application/javascript; charset=utf-8',
       '.json': 'application/json; charset=utf-8',
+      '.xml': 'application/xml; charset=utf-8',
+      '.txt': 'text/plain; charset=utf-8',
       '.jpg': 'image/jpeg',
       '.jpeg': 'image/jpeg',
       '.png': 'image/png',
@@ -1322,6 +1471,49 @@ if (chromeExe) {
     assert.strictEqual(freshState.isAuthenticated, false, 'Headless Chrome: Initial visitor must be in Guest Mode');
     assert.strictEqual(freshState.cartBadgesHidden, true, 'Headless Chrome: .js-cart-badge must have display:none when 0');
     assert.strictEqual(freshState.wishlistBadgesHidden, true, 'Headless Chrome: .js-wishlist-badge must have display:none when 0');
+
+    // 1b. Verify SEO, GEO, and AEO endpoints & dynamic DOM head updates in real Headless Chrome
+    const chromeSeoAudit = await cdpEval(`(async () => {
+      const [robotsRes, sitemapRes, llmsRes, llmsFullRes, apiSeoRes] = await Promise.all([
+        fetch('/robots.txt'),
+        fetch('/sitemap.xml'),
+        fetch('/llms.txt'),
+        fetch('/llms-full.txt'),
+        fetch('/api/seo')
+      ]);
+      const apiSeoJson = await apiSeoRes.json();
+
+      window.navigateTo('product', 'ram-keep-001');
+      window.selectPdpVariant(1);
+      const pdpTitle = document.title;
+      const pdpCanonical = document.getElementById('link-canonical')?.getAttribute('href');
+      const pdpOgPrice = document.getElementById('og-price-amount')?.getAttribute('content');
+      const pdpSchema = JSON.parse(document.getElementById('vistara-schema-jsonld').textContent);
+
+      window.navigateTo('home');
+      return {
+        robotsStatus: robotsRes.status,
+        sitemapStatus: sitemapRes.status,
+        llmsStatus: llmsRes.status,
+        llmsFullStatus: llmsFullRes.status,
+        apiSeoOk: apiSeoJson.ok,
+        apiSeoSiteUrl: apiSeoJson.siteUrl,
+        pdpTitle,
+        pdpCanonical,
+        pdpOgPrice,
+        pdpGraphCount: pdpSchema['@graph'].length
+      };
+    })()`);
+    assert.strictEqual(chromeSeoAudit.robotsStatus, 200, 'Headless Chrome: /robots.txt must return 200 OK');
+    assert.strictEqual(chromeSeoAudit.sitemapStatus, 200, 'Headless Chrome: /sitemap.xml must return 200 OK');
+    assert.strictEqual(chromeSeoAudit.llmsStatus, 200, 'Headless Chrome: /llms.txt must return 200 OK');
+    assert.strictEqual(chromeSeoAudit.llmsFullStatus, 200, 'Headless Chrome: /llms-full.txt must return 200 OK');
+    assert.strictEqual(chromeSeoAudit.apiSeoOk, true, 'Headless Chrome: /api/seo must return ok:true');
+    assert.strictEqual(chromeSeoAudit.apiSeoSiteUrl, 'https://vistara-krafts.vercel.app');
+    assert.ok(chromeSeoAudit.pdpTitle.includes('Eternal Varmala'), 'Headless Chrome: PDP title must include product name');
+    assert.strictEqual(chromeSeoAudit.pdpCanonical, 'https://vistara-krafts.vercel.app/#/product/ram-keep-001');
+    assert.strictEqual(chromeSeoAudit.pdpOgPrice, '4499');
+    assert.ok(chromeSeoAudit.pdpGraphCount >= 7, 'Headless Chrome: PDP JSON-LD @graph must contain at least 7 structured nodes');
 
     // 2. Verify full E2E user journey in real Chrome:
     // Guest wishlist -> Add to bag -> Checkout Gate -> 1-Click Google OAuth Chooser -> Step 2 Checkout Address -> Order Placement -> Logout -> Apple OAuth Chooser
