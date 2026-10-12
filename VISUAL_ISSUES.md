@@ -332,3 +332,51 @@
 - **Fix Applied**: Implemented all above customer-facing domain features across `index.html`, `store-bridge.js`, and `app.js`, and verified with automated tests in `verify-storefront.mjs`.
 - **Status**: **Fixed & Verified**
 
+---
+
+### `VIS-031` — Mobile Viewport Crushing on `#/catalog` Sticky Filter Bar & `#/product/:id` Sticky Bottom Bar + Missing Inline PDP Conversion Actions
+- **Page / Route**: `#/catalog`, `#/product/:id` (`app.js`, `index.html`)
+- **Viewport(s)**: `320×568` – `375×667` (Mobile), `1024px+` (Desktop)
+- **Severity**: High
+- **Description**:
+  1. On `#/catalog`, the multi-row search/filter/sort bar had `sticky top-[92px]` unconditionally on mobile (`< 768px`), wrapping into 3–4 rows (`~210px` tall) and combining with the `94px` header and `64px` bottom tab bar to block `> 55%` (`368px`) of a `375×667` mobile screen.
+  2. On `#/product/:id`, there were no inline Add to Bag / Buy Now buttons inside the right product column, and placing 4 controls (Wishlist `48px` + Qty `122px` + Add to Bag + Buy Now `95px`) in the mobile sticky bottom bar crushed `#pdp-add-to-cart-btn` to `~62px` wide (`"A..."`).
+  3. On `#/product/:id`, scrolling to the bottom of the page allowed the sticky bottom PDP action bar to overlap the footer copyright row.
+- **Fix Applied**: Changed the `#/catalog` filter bar to `md:sticky md:top-[93px]` so mobile viewports scroll freely; added an inline Primary Conversion Actions card (Qty + Add to Studio Bag + Wishlist + Express Buy Now) inside the PDP right column; hid the duplicate wishlist icon below `sm` in the sticky bottom PDP bar (`hidden sm:flex`) so `#pdp-add-to-cart-btn` and `#pdp-buy-now-btn` have generous horizontal space on mobile; and increased `index.html` footer bottom padding to `pb-36 lg:pb-24`.
+- **Status**: **Fixed & Verified**
+
+---
+
+### `VIS-032` — Route Scroll-to-Top Reset on `hashchange` & Category Navigation + Standalone Stitch `*/code.html` Scrollbar/Height Fixes
+- **Page / Route**: All Routes (`app.js`), All 11 `*/code.html` Standalone Stitch Screens
+- **Viewport(s)**: All Viewports
+- **Severity**: High
+- **Description**:
+  1. `renderActiveView({ resetScroll: true })` lacked an `else if (!preserveScroll)` branch to call `window.scrollTo(0, 0)` after mounting a new route's DOM, and `window.navigateTo` called `window.scrollTo` before async `hashchange` rendered the new view.
+  2. 10 of the 11 standalone Stitch `*/code.html` files still had `<html class="h-full"` and global `::-webkit-scrollbar { display: none; }` / `body { overscroll-behavior: none; }`.
+- **Fix Applied**: Added synchronous `handleRouteChange(true)` in `window.navigateTo()`, included `AppState.catalogCategory` in `nextRouteKey`, added `else if (!preserveScroll) { window.scrollTo(0, 0); }` in `renderActiveView()`, and stripped `class="h-full"` and global `::-webkit-scrollbar { display: none; }` from all 11 standalone Stitch `*/code.html` files.
+- **Status**: **Fixed & Verified**
+
+---
+
+### `VIS-033` — Patron Profile `defaultAddress` / `memberTier` Initial Load Sync, Checkout Modal Profile Pre-Fill, & `relatedCategories` Project Filtering
+- **Page / Route**: `#/account`, `#checkout-modal`, `#/home`, `#/catalog` (`store-bridge.js`, `app.js`)
+- **Viewport(s)**: All Viewports
+- **Severity**: High
+- **Description**:
+  1. `Store.getPatronProfile()` in `store-bridge.js` returned `address` and `tier`, while `renderAccountView()` in `app.js` read `profile.defaultAddress` and `profile.memberTier`, rendering a blank default dispatch address (`📍 Default Dispatch: `) on initial load and not pre-filling `#checkout-modal`.
+  2. Clicking "Botanical Coasters" (`casting`) or "Geode Wall Art" (`pigments`) on `#/home` filtered out the featured Botanical Coasters (`ram-keep-004`) and Geode Wall Art (`ram-keep-003`) keepsakes because `getFilteredCatalogProducts()` only checked `p.category` and `p.subCategory`.
+- **Fix Applied**: Normalized `defaultAddress`/`address` and `memberTier`/`tier` in `Store.getPatronProfile()` and `Store.savePatronProfile()`; pre-filled `#chk-name`, `#chk-phone`, and `#chk-address` in `openCheckoutModal()` from `Store.getPatronProfile()`; and added `relatedCategories` matching to `DEFAULT_PRODUCTS` and `getFilteredCatalogProducts()`.
+- **Status**: **Fixed & Verified**
+
+---
+
+### `VIS-034` — Residual Owner/Admin Text in `window.simulateExternalAdminPush()` & Live `Store.subscribe()` Re-Rendering (`store-bridge.js`, `app.js`)
+- **Page / Route**: Programmatic Bridge (`store-bridge.js`, `app.js`)
+- **Viewport(s)**: All Viewports
+- **Severity**: High
+- **Description**: Calling `window.simulateExternalAdminPush()` injected `"Pushed Live from External Admin Host Panel"`, `"Host Live Drop"`, `"Admin Host Live Push"`, and `"Admin Host Push Received!"` into customer-visible product cards, social posts, and toast notifications; and `app.js` had not registered a `Store.subscribe()` listener for live `BroadcastChannel` / `postMessage` updates or `ADMIN_UPDATE_ORDER_STATUS` order stage pushes.
+- **Fix Applied**: Replaced all owner/admin strings in `window.simulateExternalAdminPush()` with customer-facing studio strings, added `payload.order` (`ADMIN_UPDATE_ORDER_STATUS`) handling to `Store.receiveAdminPush()` in `store-bridge.js`, and subscribed `app.js` via `Store.subscribe()` so external bridge events automatically re-render the active view and badges.
+- **Status**: **Fixed & Verified**
+
+

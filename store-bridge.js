@@ -63,6 +63,7 @@
       subtitle: 'Museum-Grade 50mm Deep Optical Cast with 24K Gold Leaf & Custom Brass Calligraphy',
       category: 'keepsakes',
       subCategory: 'floral_preservation',
+      relatedCategories: ['deep_pour'],
       badge: 'IG Viral Keepsake',
       price: 4499,
       regularPrice: 5499,
@@ -154,6 +155,7 @@
       subtitle: 'Hand-poured Multi-Layer Lacing Foam Waves over Seasoned Burma Teak',
       category: 'keepsakes',
       subCategory: 'home_decor',
+      relatedCategories: ['doming'],
       badge: 'Hand-Poured Art',
       price: 2199,
       regularPrice: 2799,
@@ -242,6 +244,7 @@
       subtitle: 'Encrusted with Raw Clear Quartz Crystals, Metallic Bronze & Rose-Gold Leaf',
       category: 'keepsakes',
       subCategory: 'wall_art',
+      relatedCategories: ['pigments'],
       badge: 'Collector Edition',
       price: 3899,
       regularPrice: 4699,
@@ -374,6 +377,7 @@
       subtitle: 'Real Pressed Delphiniums & Gold Foil Electroplated Rim in Heat-Resistant Resin',
       category: 'keepsakes',
       subCategory: 'home_decor',
+      relatedCategories: ['casting', 'molds'],
       badge: 'Gift Favorite',
       price: 1399,
       regularPrice: 1799,
@@ -1285,19 +1289,37 @@
     },
 
     getPatronProfile() {
-      return safeRead(STORAGE_KEYS.PATRON_PROFILE, {
+      const profile = safeRead(STORAGE_KEYS.PATRON_PROFILE, {
         name: 'Aanya Verma',
         email: 'aanya.verma@atelier.in',
         phone: '+91 98765 43210',
         address: '100 Feet Road, Indiranagar, Bengaluru 560001',
+        defaultAddress: '100 Feet Road, Indiranagar, Bengaluru 560001',
         eventDate: '2026-11-18',
         tier: 'Gold Atelier Member',
+        memberTier: 'Gold Atelier Member',
         loyaltyPoints: 1250
       });
+      const resolvedAddress = profile.defaultAddress || profile.address || '100 Feet Road, Indiranagar, Bengaluru 560001';
+      const resolvedTier = profile.memberTier || profile.tier || 'Gold Atelier Member';
+      return {
+        ...profile,
+        address: resolvedAddress,
+        defaultAddress: resolvedAddress,
+        tier: resolvedTier,
+        memberTier: resolvedTier
+      };
     },
 
     savePatronProfile(updates = {}) {
-      const next = { ...this.getPatronProfile(), ...updates };
+      const current = this.getPatronProfile();
+      const next = { ...current, ...updates };
+      const resolvedAddress = updates.defaultAddress || updates.address || next.defaultAddress || next.address || '100 Feet Road, Indiranagar, Bengaluru 560001';
+      const resolvedTier = updates.memberTier || updates.tier || next.memberTier || next.tier || 'Gold Atelier Member';
+      next.address = resolvedAddress;
+      next.defaultAddress = resolvedAddress;
+      next.tier = resolvedTier;
+      next.memberTier = resolvedTier;
       safeWrite(STORAGE_KEYS.PATRON_PROFILE, next);
       this.notify('patron_profile_updated', next);
       return next;
@@ -1409,7 +1431,7 @@
       return { success: true, order: newOrder };
     },
 
-    // External Admin Host Push Receiver (for the separate Host Admin website)
+    // External Studio Bridge Receiver (for the separate Owner/Admin website)
     receiveAdminPush(payload) {
       if (!payload || typeof payload !== 'object') return { ok: false, error: 'Invalid payload' };
       const log = safeRead(STORAGE_KEYS.HOST_PUSH_LOG, []);
@@ -1417,7 +1439,7 @@
         id: 'push_' + Date.now(),
         timestamp: new Date().toLocaleTimeString(),
         type: payload.type || payload.action || 'CATALOG_AND_SOCIAL_SYNC',
-        summary: payload.summary || 'External Admin Host pushed update'
+        summary: payload.summary || 'Studio catalogue & order state updated'
       };
 
       const targetProduct = payload.product || (payload.action === 'ADMIN_UPSERT_PRODUCT' ? payload.payload : null);
@@ -1441,6 +1463,18 @@
           products[idx] = { ...products[idx], ...payload.payload };
           safeWrite(STORAGE_KEYS.PRODUCTS, products);
         }
+      }
+
+      const targetOrder = payload.order || (payload.action === 'ADMIN_UPDATE_ORDER_STATUS' ? payload.payload : null);
+      if (targetOrder && targetOrder.orderId) {
+        const orders = this.getOrders().slice();
+        const idx = orders.findIndex(o => o.orderId === targetOrder.orderId);
+        if (idx > -1) {
+          orders[idx] = { ...orders[idx], ...targetOrder };
+        } else {
+          orders.unshift(targetOrder);
+        }
+        safeWrite(STORAGE_KEYS.ORDERS, orders);
       }
 
       const targetPost = payload.socialPost || (payload.action === 'ADMIN_PUSH_SOCIAL_POST' ? payload.payload : null);

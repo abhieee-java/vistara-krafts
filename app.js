@@ -215,10 +215,8 @@
 
     if (window.location.hash !== targetHash) {
       window.location.hash = targetHash;
-    } else {
-      handleRouteChange();
     }
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    handleRouteChange(true);
   };
 
   function parseHash() {
@@ -229,7 +227,7 @@
     return { route, param };
   }
 
-  function handleRouteChange() {
+  function handleRouteChange(forceResetScroll = false) {
     const { route, param } = parseHash();
     const validRoutes = ['home', 'catalog', 'product', 'social', 'custom-studio', 'wishlist', 'cart', 'account'];
     AppState.currentRoute = validRoutes.includes(route) ? route : 'home';
@@ -246,8 +244,11 @@
       Store.recordRecentlyViewed(AppState.currentProductId);
     }
 
-    const nextRouteKey = `${AppState.currentRoute}:${AppState.currentRoute === 'product' ? AppState.currentProductId : ''}`;
-    const routeChanged = nextRouteKey !== lastRenderedRouteKey;
+    const nextRouteKey = `${AppState.currentRoute}:${AppState.currentRoute === 'product' ? AppState.currentProductId : AppState.currentRoute === 'catalog' ? AppState.catalogCategory : ''}`;
+    const routeChanged = Boolean(forceResetScroll === true) || nextRouteKey !== lastRenderedRouteKey;
+    if (nextRouteKey === lastRenderedRouteKey && forceResetScroll !== true) {
+      return;
+    }
     lastRenderedRouteKey = nextRouteKey;
 
     renderActiveView({ resetScroll: routeChanged });
@@ -600,7 +601,7 @@
               <h2 class="font-headline-sm text-xl sm:text-2xl text-primary font-bold tracking-tight">Explore by Memory &amp; Craft Project</h2>
             </div>
             <button type="button" onclick="window.navigateTo('catalog', 'all')" class="min-h-[44px] px-2 font-label-sm text-xs text-secondary font-semibold inline-flex items-center gap-0.5 hover:underline cursor-pointer shrink-0">
-              <span>View All 12 Series</span>
+              <span>View All ${Store.getProducts().length} Series</span>
               <span class="material-symbols-outlined text-sm" aria-hidden="true">chevron_right</span>
             </button>
           </div>
@@ -684,7 +685,7 @@
             <div class="flex flex-wrap items-center gap-2">
               <button type="button" onclick="window.navigateTo('catalog', 'keepsakes')" class="min-h-[44px] px-4 py-2 rounded-full bg-[#ffe4de] text-[#9e3322] font-label-sm text-xs font-bold hover:opacity-90 inline-flex items-center cursor-pointer">Preserved Keepsakes</button>
               <button type="button" onclick="window.navigateTo('catalog', 'casting')" class="min-h-[44px] px-4 py-2 rounded-full bg-surface-container-high text-primary font-label-sm text-xs font-semibold hover:bg-secondary-container inline-flex items-center cursor-pointer">Epoxy Kits</button>
-              <button type="button" onclick="window.navigateTo('catalog', 'all')" class="min-h-[44px] px-4 py-2 rounded-full bg-primary text-on-primary font-label-sm text-xs font-semibold inline-flex items-center cursor-pointer">All (12)</button>
+              <button type="button" onclick="window.navigateTo('catalog', 'all')" class="min-h-[44px] px-4 py-2 rounded-full bg-primary text-on-primary font-label-sm text-xs font-semibold inline-flex items-center cursor-pointer">All (${Store.getProducts().length})</button>
             </div>
           </div>
 
@@ -1007,7 +1008,11 @@
     let list = [...Store.getProducts()];
 
     if (AppState.catalogCategory && AppState.catalogCategory !== 'all') {
-      list = list.filter(p => p.category === AppState.catalogCategory || p.subCategory === AppState.catalogCategory);
+      list = list.filter(p =>
+        p.category === AppState.catalogCategory ||
+        p.subCategory === AppState.catalogCategory ||
+        (Array.isArray(p.relatedCategories) && p.relatedCategories.includes(AppState.catalogCategory))
+      );
     }
 
     if (AppState.catalogRatioFilter && AppState.catalogRatioFilter !== 'all') {
@@ -1049,7 +1054,7 @@
     const filtered = getFilteredCatalogProducts();
     const visible = filtered.slice(0, AppState.catalogVisibleCount);
     const categories = [
-      { id: 'all', label: 'All (12)' },
+      { id: 'all', label: `All (${Store.getProducts().length})` },
       { id: 'keepsakes', label: '✨ Floral & Art Keepsakes' },
       { id: 'casting', label: 'Casting 3:1' },
       { id: 'deep_pour', label: 'Deep Pour 2:1' },
@@ -1092,8 +1097,8 @@
           `).join('')}
         </div>
 
-        <!-- Sticky Search, Filter & Sort Controls Bar -->
-        <div class="sticky top-[92px] z-30 bg-surface/95 backdrop-blur-md py-3 border-y border-[#e4e0d8] flex flex-col gap-2.5">
+        <!-- Sticky Search, Filter & Sort Controls Bar (Sticky on md+ desktop/tablet so mobile viewports aren't crushed) -->
+        <div class="md:sticky md:top-[93px] z-30 bg-surface/95 backdrop-blur-md py-3 border-y border-[#e4e0d8] flex flex-col gap-2.5">
           <div class="flex flex-wrap items-center justify-between gap-2.5">
             <!-- Instant Search Input -->
             <div class="relative flex-1 min-w-[200px]">
@@ -1370,6 +1375,32 @@
               <input id="pdp-custom-note" type="text" value="${esc(AppState.pdpCustomNote)}" oninput="window.setPdpCustomNote(this.value)" placeholder="${product.isCustomizable ? 'e.g. Aarav & Meera • 12 Oct 2026 • Gold Foil Calligraphy' : 'e.g. Include printed ASTM Certificate of Analysis with shipment'}" class="w-full h-12 px-3 rounded-lg bg-white border border-[#e4e0d8] text-xs text-primary">
             </div>
 
+            <!-- Inline Primary Conversion Actions (Desktop & Mobile) -->
+            <div class="p-4 rounded-xl bg-white border border-[#e4e0d8] shadow-xs flex flex-col gap-2.5">
+              <div class="flex items-center gap-2">
+                <div class="h-12 bg-surface-container-low rounded-xl flex items-center px-1 shrink-0 border border-[#e4e0d8]">
+                  <button type="button" aria-label="Decrease quantity" onclick="window.changePdpQty(-1)" class="w-11 h-11 flex items-center justify-center text-primary font-bold cursor-pointer">
+                    <span class="material-symbols-outlined text-base" aria-hidden="true">remove</span>
+                  </button>
+                  <span class="w-7 text-center font-spec-numeral text-sm text-primary font-bold">${AppState.pdpQty}</span>
+                  <button type="button" aria-label="Increase quantity" onclick="window.changePdpQty(1)" class="w-11 h-11 flex items-center justify-center text-primary font-bold cursor-pointer">
+                    <span class="material-symbols-outlined text-base" aria-hidden="true">add</span>
+                  </button>
+                </div>
+                <button type="button" onclick="window.addPdpToCart()" class="btn-shimmer min-w-0 flex-1 h-12 px-4 rounded-xl bg-primary hover:bg-primary-container text-on-primary font-title-md text-xs sm:text-sm font-bold flex items-center justify-center gap-2 shadow-sm cursor-pointer">
+                  <span class="material-symbols-outlined text-lg shrink-0" aria-hidden="true">shopping_bag</span>
+                  <span class="truncate">Add to Studio Bag • ${formatINR(totalCtaPrice)}</span>
+                </button>
+                <button type="button" aria-label="Save to Wishlist" onclick="window.handleWishlistToggle(event, '${esc(product.id)}')" class="w-12 h-12 rounded-xl bg-surface-container-low border border-[#e4e0d8] flex items-center justify-center ${isFav ? 'text-[#9e3322]' : 'text-primary'} shrink-0 cursor-pointer">
+                  <span class="material-symbols-outlined text-xl" style="font-variation-settings: 'FILL' ${isFav ? 1 : 0};" aria-hidden="true">${isFav ? 'favorite' : 'favorite_border'}</span>
+                </button>
+              </div>
+              <button type="button" onclick="window.buyNowPdp()" class="w-full h-12 px-4 rounded-xl bg-[#9e3322] hover:opacity-95 text-white font-title-md text-xs sm:text-sm font-bold flex items-center justify-center gap-2 shadow-sm cursor-pointer">
+                <span class="material-symbols-outlined text-lg shrink-0" aria-hidden="true">bolt</span>
+                <span>Express Buy Now (UPI / Card / COD)</span>
+              </button>
+            </div>
+
             <!-- Tiered Studio Volume Pricing -->
             <div class="p-4 rounded-xl bg-surface-container-high flex flex-col gap-2">
               <div class="flex items-center justify-between">
@@ -1568,14 +1599,14 @@
         <!-- Sticky Bottom PDP Action Bar (aligned with lg:hidden mobile bottom nav) -->
         <aside class="fixed bottom-16 lg:bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-lg border-t border-[#e4e0d8] px-3 sm:px-8 py-2.5 shadow-lg">
           <div class="max-w-7xl mx-auto flex items-center gap-2 sm:gap-3">
-            <button type="button" aria-label="Save to Wishlist" onclick="window.handleWishlistToggle(event, '${esc(product.id)}')" class="w-12 h-12 rounded-xl bg-surface-container-low flex items-center justify-center ${isFav ? 'text-[#9e3322]' : 'text-primary'} shrink-0 cursor-pointer">
+            <button type="button" aria-label="Save to Wishlist" onclick="window.handleWishlistToggle(event, '${esc(product.id)}')" class="hidden sm:flex w-12 h-12 rounded-xl bg-surface-container-low items-center justify-center ${isFav ? 'text-[#9e3322]' : 'text-primary'} shrink-0 cursor-pointer">
               <span class="material-symbols-outlined text-2xl" style="font-variation-settings: 'FILL' ${isFav ? 1 : 0};" aria-hidden="true">${isFav ? 'favorite' : 'favorite_border'}</span>
             </button>
-            <div class="h-12 bg-surface-container-low rounded-xl flex items-center px-1 shrink-0 border border-[#e4e0d8]">
+            <div class="h-12 bg-surface-container-low rounded-xl flex items-center px-0.5 sm:px-1 shrink-0 border border-[#e4e0d8]">
               <button type="button" aria-label="Decrease quantity" onclick="window.changePdpQty(-1)" class="w-11 h-11 flex items-center justify-center text-primary font-bold cursor-pointer">
                 <span class="material-symbols-outlined text-base" aria-hidden="true">remove</span>
               </button>
-              <span id="pdp-qty-val" class="w-6 sm:w-8 text-center font-spec-numeral text-sm text-primary font-bold">${AppState.pdpQty}</span>
+              <span id="pdp-qty-val" class="w-5 sm:w-8 text-center font-spec-numeral text-sm text-primary font-bold">${AppState.pdpQty}</span>
               <button type="button" aria-label="Increase quantity" onclick="window.changePdpQty(1)" class="w-11 h-11 flex items-center justify-center text-primary font-bold cursor-pointer">
                 <span class="material-symbols-outlined text-base" aria-hidden="true">add</span>
               </button>
@@ -2515,6 +2546,12 @@
       } catch (_e) {
         window.scrollTo(0, prevScrollY);
       }
+    } else if (!preserveScroll) {
+      try {
+        window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+      } catch (_e) {
+        window.scrollTo(0, 0);
+      }
     }
   }
 
@@ -3293,6 +3330,14 @@
       window.showToast('Your Studio Bag is Empty');
       return;
     }
+    const profile = Store.getPatronProfile();
+    const nameEl = document.getElementById('chk-name');
+    const phoneEl = document.getElementById('chk-phone');
+    const addrEl = document.getElementById('chk-address');
+    if (nameEl && profile.name) nameEl.value = profile.name;
+    if (phoneEl && profile.phone) phoneEl.value = profile.phone;
+    if (addrEl && (profile.defaultAddress || profile.address)) addrEl.value = profile.defaultAddress || profile.address;
+
     const modal = document.getElementById('checkout-modal');
     const amountEl = document.getElementById('checkout-modal-payable');
     if (amountEl) amountEl.textContent = formatINR(summary.payable);
@@ -3302,12 +3347,14 @@
 
   window.submitCheckoutOrder = function (ev) {
     ev.preventDefault();
-    const name = document.getElementById('chk-name')?.value.trim() || 'Studio Patron';
-    const phone = document.getElementById('chk-phone')?.value.trim() || '+91 98765 43210';
-    const address = document.getElementById('chk-address')?.value.trim() || 'Bengaluru 560001';
+    const profile = Store.getPatronProfile();
+    const name = document.getElementById('chk-name')?.value.trim() || profile.name || 'Studio Patron';
+    const phone = document.getElementById('chk-phone')?.value.trim() || profile.phone || '+91 98765 43210';
+    const address = document.getElementById('chk-address')?.value.trim() || profile.defaultAddress || 'Bengaluru 560001';
     const paymentMethod = document.getElementById('chk-payment')?.value || 'UPI Instant (GPay / PhonePe)';
     const giftWrap = Boolean(document.getElementById('chk-gift-wrap')?.checked);
 
+    Store.savePatronProfile({ name, phone, defaultAddress: address });
     const res = Store.placeOrder({ name, phone, address, paymentMethod, giftWrap });
     document.getElementById('checkout-modal')?.classList.add('hidden');
     syncBodyModalLock();
@@ -3319,21 +3366,22 @@
     }
   };
 
-  // Simulate External Admin Host Push
+  // Programmatic Bridge Live Catalog / Social Drop Helper (Zero owner/admin UI strings)
   window.simulateExternalAdminPush = function () {
-    const newId = 'ram-host-drop-' + Math.floor(100 + Math.random() * 899);
+    const newId = 'ram-lotus-drop-' + Math.floor(100 + Math.random() * 899);
     Store.receiveAdminPush({
-      type: 'ADMIN_HOST_LIVE_DROP',
-      summary: `Host Panel pushed "Rose-Gold Anniversary Lotus Clock (${newId})" + New Reel`,
+      type: 'STUDIO_LIVE_DROP',
+      summary: `Studio Edition "Rose-Gold Anniversary Lotus Clock (${newId})" + New Reel`,
       product: {
         id: newId,
         sku: 'RAM-LOTUS-' + Math.floor(10 + Math.random() * 89),
-        name: '24K Rose-Gold Preserved Lotus & Pearl Wall Clock (Host Drop)',
+        name: '24K Rose-Gold Preserved Lotus & Pearl Wall Clock (Atelier Edition)',
         shortName: 'Rose-Gold Lotus Clock',
-        subtitle: 'Pushed Live from External Admin Host Panel • Real Preserved Pink Lotus in 3:1 Crystal Resin',
+        subtitle: 'Limited Atelier Edition • Real Preserved Pink Lotus in 3:1 Crystal Resin',
         category: 'keepsakes',
         subCategory: 'floral_preservation',
-        badge: 'Host Live Drop',
+        relatedCategories: ['casting', 'deep_pour'],
+        badge: 'New Studio Edition',
         price: 3499,
         regularPrice: 4299,
         unitPriceLabel: '16" Brass Sweep',
@@ -3364,16 +3412,16 @@
         }
       },
       socialPost: {
-        id: 'post-host-' + Date.now(),
+        id: 'post-studio-' + Date.now(),
         handle: '@resin.art.memories',
-        authorName: 'Admin Host Live Push',
+        authorName: 'Resin Art Memories Atelier',
         avatar: Store.IMAGES.avatarPatron,
-        location: 'Synced from Host Admin Panel',
+        location: 'Bengaluru Preservation Lab',
         timeAgo: 'Just now',
         tag: 'BridalVarmala',
-        badge: 'New Host Drop',
+        badge: 'New Studio Reel',
         image: Store.IMAGES.jewelryBezel,
-        caption: '✨ LIVE DROP FROM STUDIO HOST: Just finished curing this 24K Rose-Gold Lotus & Bridal Pearl keepsake! Available immediately in the catalogue.',
+        caption: '✨ NEW ATELIER EDITION: Just finished curing this 24K Rose-Gold Lotus & Bridal Pearl keepsake clock! Available immediately in our studio catalogue.',
         likes: 128,
         saved: false,
         liked: true,
@@ -3382,8 +3430,18 @@
       }
     });
     renderActiveView();
-    window.showToast('Admin Host Push Received!', 'New product & shoppable post synced to storefront');
+    window.showToast('New Atelier Edition Live!', 'Rose-Gold Lotus Clock added to catalogue & community feed');
   };
+
+  // Subscribe to StorefrontBridge programmatic events so external cross-tab / postMessage updates re-render live
+  if (Store && typeof Store.subscribe === 'function') {
+    Store.subscribe((event) => {
+      if (event === 'admin_push_received' || event === 'catalog_reset') {
+        renderActiveView();
+        updateGlobalBadges();
+      }
+    });
+  }
 
   // Global Escape key listener + Keyboard Tab Focus Trap inside active modals
   document.addEventListener('keydown', (ev) => {
