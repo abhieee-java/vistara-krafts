@@ -407,16 +407,37 @@
 
   function parseHash() {
     const raw = (window.location.hash || '#/home').replace(/^#\/?/, '');
-    const parts = raw.split('/');
+    const qIdx = raw.indexOf('?');
+    const pathPart = qIdx >= 0 ? raw.slice(0, qIdx) : raw;
+    const queryPart = qIdx >= 0 ? raw.slice(qIdx + 1) : '';
+    const parts = (pathPart || '').split('/');
     const route = parts[0] || 'home';
     const param = parts[1] || null;
-    return { route, param };
+    const queryParams = {};
+    if (queryPart) {
+      queryPart.split('&').forEach(pair => {
+        if (!pair) return;
+        const eqIdx = pair.indexOf('=');
+        const k = eqIdx >= 0 ? pair.slice(0, eqIdx) : pair;
+        const v = eqIdx >= 0 ? pair.slice(eqIdx + 1) : '';
+        try {
+          queryParams[decodeURIComponent(k.replace(/\+/g, ' '))] = decodeURIComponent(v.replace(/\+/g, ' '));
+        } catch (_e) {
+          queryParams[k] = v;
+        }
+      });
+    }
+    return { route, param, queryParams };
   }
 
   function handleRouteChange(forceResetScroll = false) {
-    const { route, param } = parseHash();
+    const { route, param, queryParams } = parseHash();
     const validRoutes = ['home', 'catalog', 'product', 'social', 'custom-studio', 'wishlist', 'cart', 'account'];
     AppState.currentRoute = validRoutes.includes(route) ? route : 'home';
+
+    if (AppState.currentRoute === 'catalog' && queryParams && Object.prototype.hasOwnProperty.call(queryParams, 'q')) {
+      AppState.catalogSearch = queryParams.q || '';
+    }
 
     if (AppState.currentRoute === 'product' && param) {
       AppState.currentProductId = param;
@@ -430,7 +451,7 @@
       Store.recordRecentlyViewed(AppState.currentProductId);
     }
 
-    const nextRouteKey = `${AppState.currentRoute}:${AppState.currentRoute === 'product' ? AppState.currentProductId : AppState.currentRoute === 'catalog' ? AppState.catalogCategory : ''}`;
+    const nextRouteKey = `${AppState.currentRoute}:${AppState.currentRoute === 'product' ? AppState.currentProductId : AppState.currentRoute === 'catalog' ? `${AppState.catalogCategory}:${AppState.catalogSearch}` : ''}`;
     const routeChanged = Boolean(forceResetScroll === true) || nextRouteKey !== lastRenderedRouteKey;
     if (nextRouteKey === lastRenderedRouteKey && forceResetScroll !== true) {
       return;
@@ -1435,7 +1456,7 @@
           <ol class="flex items-center gap-1 overflow-x-auto no-scrollbar whitespace-nowrap">
             <li><button type="button" onclick="window.navigateTo('home')" class="min-h-[44px] min-w-[44px] px-2 inline-flex items-center justify-center hover:text-primary cursor-pointer">Home</button></li>
             <li>/</li>
-            <li><button type="button" onclick="window.navigateTo('catalog', '${esc(product.category)}')" class="min-h-[44px] min-w-[44px] px-2 inline-flex items-center justify-center hover:text-primary capitalize cursor-pointer">${esc(product.category.replace('_', ' '))}</button></li>
+            <li><button type="button" onclick="window.navigateTo('catalog', '${esc(product.category || 'keepsakes')}')" class="min-h-[44px] min-w-[44px] px-2 inline-flex items-center justify-center hover:text-primary capitalize cursor-pointer">${esc(String(product.category || 'keepsakes').replace(/_/g, ' '))}</button></li>
             <li>/</li>
             <li class="text-primary font-bold truncate pl-1">${esc(product.shortName || product.name)}</li>
           </ol>
@@ -1452,7 +1473,7 @@
             <div class="relative w-full aspect-square rounded-2xl overflow-hidden bg-white border border-[#e4e0d8] shadow-sm group">
               <img id="pdp-main-img" src="${esc(activeImg)}" alt="${esc(product.name)}" class="w-full h-full object-cover transition-all duration-300">
               <div class="absolute top-3.5 left-3.5 flex flex-col gap-1.5 items-start">
-                <span class="bg-secondary text-on-secondary px-3 py-1 rounded-full font-label-sm text-[11px] tracking-wider uppercase font-bold shadow-xs">${esc(product.badge)}</span>
+                <span class="bg-secondary text-on-secondary px-3 py-1 rounded-full font-label-sm text-[11px] tracking-wider uppercase font-bold shadow-xs">${esc(product.badge || 'Studio Edition')}</span>
                 <span class="bg-primary/90 text-on-primary px-3 py-1 rounded-full font-label-sm text-[11px] flex items-center gap-1 shadow-xs">
                   <span class="material-symbols-outlined text-xs text-secondary-fixed" aria-hidden="true">verified</span>
                   Optical Grade
@@ -1483,15 +1504,15 @@
             <div>
               <span class="font-label-sm text-secondary uppercase tracking-widest text-[11px] font-bold">Archival Formula &amp; Studio Edition</span>
               <h1 class="font-headline-lg text-2xl sm:text-3xl text-primary font-bold mt-0.5">${esc(product.name)}</h1>
-              <p class="text-xs sm:text-sm text-on-surface-variant italic mt-1">${esc(product.subtitle)}</p>
+              <p class="text-xs sm:text-sm text-on-surface-variant italic mt-1">${esc(product.subtitle || 'Museum-Grade Optical Epoxy & Handcrafted Keepsake Edition')}</p>
 
               <!-- Ratings & Badges -->
               <div class="flex items-center flex-wrap gap-2 mt-3">
                 <div class="flex items-center gap-1.5 bg-surface-container-high px-3 min-h-[44px] rounded-full text-xs">
                   <span class="material-symbols-outlined text-secondary text-sm" style="font-variation-settings: 'FILL' 1;" aria-hidden="true">star</span>
-                  <span class="font-spec-numeral font-bold text-primary">${product.rating.toFixed(1)}</span>
+                  <span class="font-spec-numeral font-bold text-primary">${Number(product.rating || 4.9).toFixed(1)}</span>
                   <span class="text-outline">•</span>
-                  <button type="button" onclick="window.scrollToSection('pdp-reviews')" class="min-h-[44px] inline-flex items-center text-on-surface-variant underline cursor-pointer">${product.reviewsCount} verified reviews</button>
+                  <button type="button" onclick="window.scrollToSection('pdp-reviews')" class="min-h-[44px] inline-flex items-center text-on-surface-variant underline cursor-pointer">${Number(product.reviewsCount || 24)} verified reviews</button>
                 </div>
                 <span class="flex items-center gap-1 text-[#266b4e] text-xs bg-[#e8f5e9] px-3 min-h-[44px] rounded-full font-semibold">
                   <span class="material-symbols-outlined text-xs" aria-hidden="true">water_drop</span>
@@ -1508,7 +1529,7 @@
                   <span id="pdp-display-regular" class="font-spec-numeral text-sm line-through text-outline">${formatINR(regularPrice)}</span>
                   ${discountPct > 0 ? `<span id="pdp-display-discount" class="font-spec-numeral text-xs font-bold bg-[#ffe4de] text-[#9e3322] px-2.5 py-0.5 rounded-full">${discountPct}% OFF</span>` : ''}
                 </div>
-                <span id="pdp-display-unit" class="font-spec-numeral text-xs text-primary font-semibold bg-surface-container-highest px-2.5 py-1 rounded-lg">${esc(activeVariant.unitPrice)}</span>
+                <span id="pdp-display-unit" class="font-spec-numeral text-xs text-primary font-semibold bg-surface-container-highest px-2.5 py-1 rounded-lg">${esc(activeVariant.unitPrice || product.unitPriceLabel || 'Standard Edition')}</span>
               </div>
               <div class="flex items-center justify-between gap-2 text-xs text-on-surface-variant pt-1">
                 <span>Inclusive of all GST taxes (18% B2B Input Credit eligible)</span>
@@ -1536,12 +1557,12 @@
                             <p class="font-title-md text-sm font-bold ${isSelected ? 'text-white' : 'text-primary'} break-words">${esc(v.label)}</p>
                             ${v.popular ? `<span class="px-2 py-0.5 rounded bg-secondary-fixed text-on-secondary-fixed text-[10px] font-bold uppercase shrink-0">Most Popular</span>` : ''}
                           </div>
-                          <p class="text-xs ${isSelected ? 'text-white/85' : 'text-on-surface-variant'} break-words">${esc(v.desc)}</p>
+                          <p class="text-xs ${isSelected ? 'text-white/85' : 'text-on-surface-variant'} break-words">${esc(v.desc || '')}</p>
                         </div>
                       </div>
                       <div class="text-left min-[420px]:text-right shrink-0 min-[420px]:pl-2 flex min-[420px]:flex-col items-baseline min-[420px]:items-end gap-2 min-[420px]:gap-0">
                         <p class="font-spec-numeral text-base font-bold ${isSelected ? 'text-white' : 'text-primary'}">${formatINR(v.price)}</p>
-                        <span class="font-spec-numeral text-[11px] ${isSelected ? 'text-secondary-fixed' : 'text-on-surface-variant'}">${esc(v.unitPrice)}</span>
+                        <span class="font-spec-numeral text-[11px] ${isSelected ? 'text-secondary-fixed' : 'text-on-surface-variant'}">${esc(v.unitPrice || '')}</span>
                       </div>
                     </button>
                   `;
@@ -1623,15 +1644,15 @@
               </div>
               <div class="rounded-xl overflow-hidden border border-[#e4e0d8] bg-white text-xs">
                 ${Object.entries({
-                  'Mix Ratio / Structure': product.specs.mixRatioWeight,
-                  'Volume Ratio': product.specs.mixRatioVolume,
-                  'Working Pot Life': product.specs.workingPotLife,
-                  'Demold Duration': product.specs.demoldDuration,
-                  'Full Glass Cure': product.specs.fullGlassCure,
-                  'Dynamic Viscosity': product.specs.dynamicViscosity,
-                  'Max Single Pour Depth': product.specs.maxDepth,
-                  'Shore D Hardness': product.specs.hardness,
-                  'UV Stability Rating': product.specs.uvStability
+                  'Mix Ratio / Structure': (product.specs && product.specs.mixRatioWeight) || `${product.ratio || '3:1'} by Weight`,
+                  'Volume Ratio': (product.specs && product.specs.mixRatioVolume) || '2.6 : 1',
+                  'Working Pot Life': (product.specs && product.specs.workingPotLife) || product.potLife || '45 Minutes',
+                  'Demold Duration': (product.specs && product.specs.demoldDuration) || '24 Hours',
+                  'Full Glass Cure': (product.specs && product.specs.fullGlassCure) || product.cureTime || '48 – 72 Hours',
+                  'Dynamic Viscosity': (product.specs && product.specs.dynamicViscosity) || '650 mPa·s (Optical Grade)',
+                  'Max Single Pour Depth': (product.specs && product.specs.maxDepth) || product.pourDepth || '20mm',
+                  'Shore D Hardness': (product.specs && product.specs.hardness) || '83D Scratch-Shield',
+                  'UV Stability Rating': (product.specs && product.specs.uvStability) || 'HALS + UV400 Stabilized'
                 }).map(([k, v], i) => `
                   <div class="flex flex-wrap sm:flex-nowrap items-center justify-between gap-2 p-3 ${i % 2 === 0 ? 'bg-surface-container-low' : 'bg-white'} min-w-0">
                     <span class="font-medium text-on-surface-variant break-words">${esc(k)}</span>
@@ -2771,6 +2792,7 @@
         longitude: seoCfg.geo.longitude || 77.5946
       },
       areaServed: [
+        'IN',
         { '@type': 'Country', name: 'India' },
         { '@type': 'City', name: 'Bengaluru' },
         { '@type': 'City', name: 'Mumbai' },
@@ -2782,6 +2804,15 @@
         { '@type': 'City', name: 'Ahmedabad' },
         { '@type': 'City', name: 'Jaipur' }
       ],
+      hasMerchantReturnPolicy: {
+        '@type': 'MerchantReturnPolicy',
+        '@id': `${siteUrl}/#return-policy`,
+        applicableCountry: 'IN',
+        returnPolicyCategory: 'https://schema.org/MerchantReturnFiniteReturnWindow',
+        merchantReturnDays: 7,
+        returnMethod: 'https://schema.org/ReturnByMail',
+        returnFees: 'https://schema.org/FreeReturn'
+      },
       sameAs: [
         'https://www.instagram.com/resin.art.memories?utm_source=qr',
         'https://www.instagram.com/resin.art.memories',
@@ -2832,17 +2863,32 @@
       }))
     };
 
+    const normalizeImageUrl = (rawImg) => {
+      const str = String(rawImg || '').trim();
+      if (!str) return `${siteUrl}/vistara-krafts-logo.jpg`;
+      if (/^https?:\/\//i.test(str) || str.startsWith('data:')) return str;
+      return `${siteUrl}/${str.replace(/^\/+/, '')}`;
+    };
+
     const mapProductToSchema = (prod, isPrimaryActive) => {
-      const specsList = [];
-      if (prod.specs && typeof prod.specs === 'object') {
-        Object.entries(prod.specs).forEach(([k, v]) => {
+      const specsObj = (prod.specs && typeof prod.specs === 'object') ? prod.specs : {};
+      const specsList = [
+        { '@type': 'PropertyValue', name: 'Mix Ratio by Weight', value: String(specsObj.mixRatioWeight || prod.ratio || 'Custom Studio') },
+        { '@type': 'PropertyValue', name: 'Dynamic Viscosity', value: String(specsObj.viscosity || prod.viscosity || 'Studio Tuned') },
+        { '@type': 'PropertyValue', name: 'Max Single Pour Depth', value: String(specsObj.maxDepth || prod.pourDepth || 'Up to 50mm') },
+        { '@type': 'PropertyValue', name: 'Full Glass Cure', value: String(specsObj.fullCure || prod.cureTime || '24 hrs') },
+        { '@type': 'PropertyValue', name: 'HSN Code', value: String(specsObj.hsnCode || '39073010 (18% GST)') }
+      ];
+      Object.entries(specsObj).forEach(([k, v]) => {
+        if (!['mixRatioWeight', 'viscosity', 'maxDepth', 'fullCure', 'hsnCode'].includes(k)) {
           specsList.push({
             '@type': 'PropertyValue',
             name: k,
             value: String(v)
           });
-        });
-      }
+        }
+      });
+
       const prodReviews = (AppState.reviews && AppState.reviews[prod.id]) || [];
       const schemaReviews = prodReviews.length > 0
         ? prodReviews.map(r => ({
@@ -2860,18 +2906,21 @@
             }
           ];
 
-      const selectedPrice = (isPrimaryActive && activeVariant && activeVariant.price) ? activeVariant.price : prod.price;
+      const selectedPrice = Number((isPrimaryActive && activeVariant && activeVariant.price) ? activeVariant.price : (prod.price || 1299));
+      const shippingFeeValue = selectedPrice >= 1499 ? '0' : '99';
+      const skuVal = prod.sku || `VK-${String(prod.id).toUpperCase()}`;
 
       const productSchema = {
         '@type': 'Product',
         '@id': `${siteUrl}/#/product/${prod.id}${isPrimaryActive ? '#active-product' : '#product'}`,
-        sku: prod.sku,
-        mpn: prod.sku,
+        productID: prod.id,
+        sku: skuVal,
+        mpn: skuVal,
         name: isPrimaryActive && activeVariant ? `${prod.name} (${activeVariant.label})` : prod.name,
-        description: prod.subtitle,
-        image: prod.image,
+        description: prod.subtitle || `${prod.name} — Handcrafted by Vistāra Krafts × Resin Art Memories (@resin.art.memories).`,
+        image: normalizeImageUrl(prod.image),
         url: `${siteUrl}/#/product/${prod.id}`,
-        category: prod.category,
+        category: prod.category || 'keepsakes',
         brand: {
           '@type': 'Brand',
           name: String(prod.id).startsWith('ram-')
@@ -2886,7 +2935,18 @@
           priceValidUntil: '2027-12-31',
           itemCondition: 'https://schema.org/NewCondition',
           availability: prod.inStock !== false ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock',
-          seller: { '@id': `${siteUrl}/#organization` }
+          seller: { '@id': `${siteUrl}/#organization` },
+          hasMerchantReturnPolicy: { '@id': `${siteUrl}/#return-policy` },
+          shippingDetails: {
+            '@type': 'OfferShippingDetails',
+            shippingRate: { '@type': 'MonetaryAmount', value: shippingFeeValue, currency: 'INR' },
+            shippingDestination: { '@type': 'DefinedRegion', addressCountry: 'IN' },
+            deliveryTime: {
+              '@type': 'ShippingDeliveryTime',
+              handlingTime: { '@type': 'QuantitativeValue', minValue: 0, maxValue: 1, unitCode: 'DAY' },
+              transitTime: { '@type': 'QuantitativeValue', minValue: 2, maxValue: 5, unitCode: 'DAY' }
+            }
+          }
         },
         aggregateRating: {
           '@type': 'AggregateRating',
@@ -2895,12 +2955,10 @@
           bestRating: '5',
           worstRating: '1'
         },
-        review: schemaReviews
+        review: schemaReviews,
+        additionalProperty: specsList
       };
 
-      if (specsList.length > 0) {
-        productSchema.additionalProperty = specsList;
-      }
       return productSchema;
     };
 
@@ -2942,16 +3000,33 @@
           name: 'Which epoxy resin is best for deep river tables vs coasters and ocean trays?',
           acceptedAnswer: {
             '@type': 'Answer',
-            text: 'Use River Flow 2:1 Deep Pour Epoxy (SKU: VK-EPX-201-3KG) for pours between 20mm and 50mm such as live-edge river tables and bridal floral blocks. Use UltraClear 3:1 Casting Resin (SKU: VK-EPX-301-12K) for 5mm to 20mm casts, and ProCoat 1:1 Art Doming Resin (SKU: VK-DOM-101-1K) for high-gloss surface coats and ocean wave lacing.'
+            text: 'Use River Flow 2:1 Deep Pour Epoxy (SKU: VK-EPX-201-3KG) for pours between 20mm and 50mm such as live-edge river tables and bridal floral blocks. Use UltraClear 3:1 Casting Resin (SKU: VK-EPX-301-12K) for 5mm to 20mm casts, and High-Gloss 1:1 Art & Doming Resin (SKU: VK-HG-11-500) for high-gloss surface coats and ocean wave lacing.'
+          }
+        },
+        {
+          '@type': 'Question',
+          name: 'Does Vistāra Krafts epoxy resin turn yellow in Indian sunlight and humidity?',
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: 'No. Every Vistāra Krafts epoxy resin formulation is engineered with dual HALS (Hindered Amine Light Stabilizers) and benzotriazole UV absorbers, plus tropical moisture-resistant cycloaliphatic hardeners rated for up to 85% relative humidity in Indian coastal and monsoon climates.'
+          }
+        },
+        {
+          '@type': 'Question',
+          name: 'Do you provide GST tax invoices, Cash on Delivery (COD), and express shipping in India?',
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: 'Yes. Every order includes an official 18% GST Tax Invoice (HSN 39073010 for epoxy resins) for B2B input tax credit. Orders above ₹1,499 qualify for free express shipping via BlueDart and Delhivery across 28,000+ Indian PIN codes, with UPI, Card, and Cash on Delivery (COD) available.'
           }
         }
       ]
     };
 
-    const howToNode = {
+    const howToVarmalaNode = {
       '@type': 'HowTo',
       '@id': `${siteUrl}/#howto-varmala-preservation`,
       name: 'How to Preserve a Wedding Varmala or Bridal Bouquet in Museum-Grade Epoxy Resin',
+      description: '5-stage archival floral preservation protocol by Vistāra Krafts × @resin.art.memories.',
       totalTime: 'P21D',
       estimatedCost: { '@type': 'MonetaryAmount', currency: 'INR', value: '2999' },
       step: [
@@ -2963,11 +3038,35 @@
       ]
     };
 
+    const howToMixingNode = {
+      '@type': 'HowTo',
+      '@id': `${siteUrl}/#howto-epoxy-mixing`,
+      name: 'How to Measure, Mix, and Pour 3:1 & 2:1 Crystal Epoxy Resin Without Bubbles',
+      description: 'Studio protocol for achieving glass-clear, bubble-free epoxy resin casts in Indian ambient temperatures (24°C–30°C).',
+      totalTime: 'PT45M',
+      estimatedCost: { '@type': 'MonetaryAmount', currency: 'INR', value: '1299' },
+      supply: [
+        { '@type': 'HowToSupply', name: 'Vistāra Krafts UltraClear 3:1 or River Flow 2:1 Epoxy Resin Kit' },
+        { '@type': 'HowToSupply', name: 'Chameleon Aurora Mica Pigment or Ocean Paste' }
+      ],
+      tool: [
+        { '@type': 'HowToTool', name: 'Digital Precision Gram Scale (0.1g accuracy)' },
+        { '@type': 'HowToTool', name: 'Silicone Mixing Spatula & Graduated Cup' },
+        { '@type': 'HowToTool', name: 'Butane Micro-Torch or Heat Gun' }
+      ],
+      step: [
+        { '@type': 'HowToStep', position: 1, name: 'Weigh Part A & Part B on Digital Gram Scale', text: 'Tare your mixing cup on a digital scale. Pour 3 parts Part A Resin to 1 part Part B Hardener by weight (or 2:1 for Deep Pour) — never measure weight-ratio systems by volume.' },
+        { '@type': 'HowToStep', position: 2, name: 'Slow Fold Mixing for 4 Minutes', text: 'Stir slowly in one direction for 3 to 4 minutes, scraping the cup walls and bottom stick to eliminate unmixed striations without whipping air into the resin.' },
+        { '@type': 'HowToStep', position: 3, name: '5-Minute Degas Rest & Pour', text: 'Let the mixed cup sit for 5 minutes so micro-bubbles rise, then pour in a thin laminar stream into your levelled silicone mold.' },
+        { '@type': 'HowToStep', position: 4, name: 'Surface Torch Pass & Dust Cover', text: 'Pass a warm heat gun or micro-torch 15cm above the surface for 2 seconds to pop surface tension bubbles, then cover with a dust dome for 24–72 hours.' }
+      ]
+    };
+
     const graph = [orgNode, websiteNode, webPageNode, breadcrumbNode];
     if (activeProduct) {
       graph.push(mapProductToSchema(activeProduct, true));
     }
-    graph.push(itemListNode, faqNode, howToNode);
+    graph.push(itemListNode, faqNode, howToVarmalaNode, howToMixingNode);
 
     return {
       '@context': 'https://schema.org',
@@ -3002,6 +3101,13 @@
     const siteUrl = String(window.VISTARA_SITE_URL || seoCfg.siteUrl || 'https://vistara-krafts.vercel.app').replace(/\/+$/, '');
     seoCfg.siteUrl = siteUrl;
 
+    const toAbsImageUrl = (rawImg) => {
+      const str = String(rawImg || '').trim();
+      if (!str) return `${siteUrl}/vistara-krafts-logo.jpg`;
+      if (/^https?:\/\//i.test(str) || str.startsWith('data:')) return str;
+      return `${siteUrl}/${str.replace(/^\/+/, '')}`;
+    };
+
     const route = AppState.currentRoute || 'home';
     let routeMeta = {
       route,
@@ -3029,21 +3135,34 @@
       if (activeProduct) {
         activeVariant = (activeProduct.variants && activeProduct.variants[AppState.selectedVariantIdx]) ||
           (activeProduct.variants && activeProduct.variants[0]) ||
-          { label: 'Standard Edition', price: activeProduct.price, regularPrice: activeProduct.regularPrice };
+          { label: 'Standard Edition', price: activeProduct.price || 1299, regularPrice: activeProduct.regularPrice || activeProduct.price || 1299 };
         const priceNum = Number(activeVariant.price || activeProduct.price || 1299);
         const canonicalUrl = `${siteUrl}/#/product/${activeProduct.id}`;
+        const prodName = activeProduct.name || 'Vistāra Krafts Studio Edition';
+        const prodShort = activeProduct.shortName || prodName;
+        const prodSku = activeProduct.sku || `VK-${String(activeProduct.id).toUpperCase()}`;
+        const prodSubtitle = activeProduct.subtitle || `${prodName} — Handcrafted by Vistāra Krafts × Resin Art Memories (@resin.art.memories)`;
+        const prodRatio = activeProduct.ratio || 'Custom Studio';
+        const prodDepth = activeProduct.pourDepth || 'Up to 50mm';
+        const prodCure = activeProduct.cureTime || '24 hrs';
+        const prodPotLife = activeProduct.potLife || '45 mins';
+        const prodRating = activeProduct.rating || 4.9;
+        const prodReviewsCount = activeProduct.reviewsCount || 120;
+        const prodCategory = activeProduct.category || 'keepsakes';
+        const varLabel = activeVariant.label || 'Standard Edition';
+
         routeMeta = {
           route: 'product',
           productId: activeProduct.id,
-          sku: activeProduct.sku,
-          variantLabel: activeVariant.label,
-          title: `${activeProduct.name} (${activeVariant.label} — ₹${priceNum.toLocaleString('en-IN')}) | Vistāra Krafts (@resin.art.memories)`,
-          description: `${activeProduct.subtitle}. SKU: ${activeProduct.sku}. Mix Ratio: ${activeProduct.ratio}, Max Pour Depth: ${activeProduct.pourDepth}, Cure Time: ${activeProduct.cureTime}, Pot Life: ${activeProduct.potLife}. Rated ${activeProduct.rating}/5 (${activeProduct.reviewsCount} reviews). Pan-India Express Delivery.`,
-          keywords: `${activeProduct.name}, ${activeProduct.shortName || activeProduct.name}, ${activeProduct.sku}, ${activeVariant.label}, ${activeProduct.category} epoxy resin India, Vistara Krafts, @resin.art.memories`,
+          sku: prodSku,
+          variantLabel: varLabel,
+          title: `${prodName} (${varLabel} — ₹${priceNum.toLocaleString('en-IN')}) | Vistāra Krafts (@resin.art.memories)`,
+          description: `${prodSubtitle}. SKU: ${prodSku}. Mix Ratio: ${prodRatio}, Max Pour Depth: ${prodDepth}, Cure Time: ${prodCure}, Pot Life: ${prodPotLife}. Rated ${prodRating}/5 (${prodReviewsCount} reviews). Pan-India Express Delivery.`,
+          keywords: `${prodName}, ${prodShort}, ${prodSku}, ${varLabel}, ${prodCategory} epoxy resin India, Vistara Krafts, @resin.art.memories`,
           robots: 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1',
           canonicalUrl,
           ogType: 'product',
-          ogImage: activeProduct.image || `${siteUrl}/vistara-krafts-logo.jpg`,
+          ogImage: toAbsImageUrl(activeProduct.image),
           priceAmount: String(priceNum),
           priceCurrency: 'INR',
           availability: activeProduct.inStock !== false ? 'instock' : 'oos',
@@ -3051,7 +3170,7 @@
           breadcrumbs: [
             { name: 'Vistāra Krafts Studio Home', url: `${siteUrl}/` },
             { name: 'Epoxy & Keepsake Catalogue', url: `${siteUrl}/#/catalog` },
-            { name: activeProduct.shortName || activeProduct.name, url: canonicalUrl }
+            { name: prodShort, url: canonicalUrl }
           ]
         };
       }
@@ -3126,6 +3245,7 @@
     setMetaTagValue('meta-keywords', routeMeta.keywords);
     setMetaTagValue('meta-robots', routeMeta.robots);
     setMetaTagValue('meta-googlebot', routeMeta.robots);
+    setMetaTagValue('meta-bingbot', routeMeta.robots);
 
     setLinkTagHref('link-canonical', routeMeta.canonicalUrl);
     setLinkTagHref('link-hreflang-in', routeMeta.canonicalUrl);
@@ -3476,8 +3596,8 @@
     AppState.selectedVariantIdx = idx;
     renderActiveView();
     const prod = Store.getProductById(AppState.currentProductId);
-    const v = prod.variants[idx];
-    if (v) window.showToast(`Selected ${v.label}`, `${formatINR(v.price)} • ${v.unitPrice}`);
+    const v = prod && prod.variants && prod.variants[idx];
+    if (v) window.showToast(`Selected ${v.label}`, `${formatINR(v.price)} • ${v.unitPrice || 'Studio Edition'}`);
   };
 
   window.setPdpCustomNote = function (val) {

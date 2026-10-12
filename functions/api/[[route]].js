@@ -282,7 +282,7 @@ export async function onRequest(context) {
       });
     }
 
-    if ((path === 'seo' || path === 'sitemap.xml' || path === 'llms.txt') && request.method === 'GET') {
+    if ((path === 'seo' || path === 'sitemap.xml' || path === 'llms.txt' || path === 'llms-full.txt') && request.method === 'GET') {
       const domainParam = url.searchParams.get('domain');
       const siteOrigin = String(
         domainParam ||
@@ -299,12 +299,12 @@ export async function onRequest(context) {
         'ram-keep-002',
         'vk-epx-201',
         'ram-keep-003',
-        'vk-res-003',
-        'vk-res-004',
-        'vk-uv-100',
+        'vk-uv-hard',
         'vk-pig-cham',
-        'vk-pig-ocean',
+        'ram-keep-004',
+        'vk-res-003',
         'vk-mld-geo',
+        'vk-res-006',
         'potry-sienna-01'
       ];
 
@@ -319,8 +319,11 @@ export async function onRequest(context) {
           `${siteOrigin}/llms.txt`,
           `${siteOrigin}/llms-full.txt`
         ];
-        const xmlBody = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls
-          .map(u => `  <url><loc>${u}</loc><changefreq>weekly</changefreq><priority>0.9</priority></url>`)
+        const xmlBody = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">\n${urls
+          .map(
+            u =>
+              `  <url><loc>${u}</loc><changefreq>weekly</changefreq><priority>0.9</priority><xhtml:link rel="alternate" hreflang="en-IN" href="${u}" /><xhtml:link rel="alternate" hreflang="x-default" href="${u}" /></url>`
+          )
           .join('\n')}\n</urlset>`;
         return new Response(xmlBody, {
           status: 200,
@@ -331,7 +334,7 @@ export async function onRequest(context) {
         });
       }
 
-      if (path === 'llms.txt') {
+      if (path === 'llms.txt' || path === 'llms-full.txt') {
         const llmsBody = [
           '# Vistāra Krafts × Resin Art Memories (@resin.art.memories)',
           `> Official E-Commerce Storefront: ${siteOrigin}`,
@@ -363,6 +366,7 @@ export async function onRequest(context) {
         llmsTxtUrl: `${siteOrigin}/llms.txt`,
         llmsFullTxtUrl: `${siteOrigin}/llms-full.txt`,
         productsCount: productIds.length,
+        productIds,
         geo: {
           country: 'IN',
           countryName: 'India',

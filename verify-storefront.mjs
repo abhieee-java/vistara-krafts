@@ -1064,6 +1064,10 @@ test('SEO, GEO & AEO Production Readiness: robots.txt, sitemap.xml, llms.txt, ll
   const catalogListNode = staticSchema['@graph'].find(n => n['@type'] === 'ItemList');
   assert.ok(catalogListNode, 'Static JSON-LD @graph must include ItemList node');
   assert.strictEqual(catalogListNode.itemListElement.length, 12, 'Static JSON-LD ItemList must contain all 12 products');
+  for (const listEl of catalogListNode.itemListElement) {
+    assert.ok(listEl.item.offers.shippingDetails, `Static JSON-LD Product ${listEl.item.productID} must include OfferShippingDetails`);
+    assert.ok(listEl.item.offers.hasMerchantReturnPolicy, `Static JSON-LD Product ${listEl.item.productID} must include hasMerchantReturnPolicy`);
+  }
 
   // 3. Verify Store.getSeoConfig() and dynamic per-route / per-product / per-variant SEO updates in app.js
   const seoCfg = Store.getSeoConfig();
@@ -1079,6 +1083,7 @@ test('SEO, GEO & AEO Production Readiness: robots.txt, sitemap.xml, llms.txt, ll
   assert.strictEqual(pdpSeo1.ogType, 'product');
   assert.ok(mockDocument.title.includes('Eternal Varmala & Bridal Bouquet Time-Capsule Block'), 'Document title must dynamically update to active product name');
   assert.strictEqual(mockDocument.getElementById('link-canonical').href, 'https://vistara-krafts.vercel.app/#/product/ram-keep-001');
+  assert.strictEqual(mockDocument.getElementById('twitter-url').content, 'https://vistara-krafts.vercel.app/#/product/ram-keep-001');
 
   // Select variant index 2 (16" Gallery Mantel Frame + Coasters (2x) at ₹6,999) and verify dynamic price & title update
   sandbox.window.selectPdpVariant(2);
@@ -1086,14 +1091,58 @@ test('SEO, GEO & AEO Production Readiness: robots.txt, sitemap.xml, llms.txt, ll
   assert.strictEqual(pdpSeoVariant2.priceAmount, '6999', 'Selecting PDP variant must dynamically update og:price:amount and schema Offer price');
   assert.strictEqual(mockDocument.getElementById('og-price-amount').content, '6999');
   const dynamicGraphStr = mockDocument.getElementById('vistara-schema-jsonld').textContent;
+  assert.ok(!dynamicGraphStr.includes('VK-DOM-101-1K'), 'Dynamic JSON-LD must not reference non-existent SKU VK-DOM-101-1K');
+  assert.ok(dynamicGraphStr.includes('VK-HG-11-500'), 'Dynamic JSON-LD FAQPage must reference real SKU VK-HG-11-500');
   const dynamicGraphObj = JSON.parse(dynamicGraphStr);
+  const activeOrgSchema = dynamicGraphObj['@graph'].find(n => Array.isArray(n['@type']) && n['@type'].includes('Organization'));
+  assert.ok(activeOrgSchema.areaServed.includes('IN'), 'Dynamic Organization schema must include "IN" in areaServed');
+  assert.ok(activeOrgSchema.hasMerchantReturnPolicy, 'Dynamic Organization schema must retain hasMerchantReturnPolicy');
+  const howToNodes = dynamicGraphObj['@graph'].filter(n => n['@type'] === 'HowTo');
+  assert.strictEqual(howToNodes.length, 2, 'Dynamic JSON-LD @graph must retain both HowTo nodes (#howto-varmala-preservation and #howto-epoxy-mixing)');
   const activeProdSchema = dynamicGraphObj['@graph'].find(n => n['@id'] && n['@id'].endsWith('#active-product'));
   assert.ok(activeProdSchema, 'Product route JSON-LD @graph must include dedicated #active-product node');
   assert.strictEqual(activeProdSchema.offers.price, '6999', 'Active product JSON-LD Offer price must match selected variant');
+  assert.ok(activeProdSchema.offers.shippingDetails, 'Dynamic Product Offer must include OfferShippingDetails');
+  assert.ok(activeProdSchema.offers.hasMerchantReturnPolicy, 'Dynamic Product Offer must include hasMerchantReturnPolicy');
+  assert.ok(
+    activeProdSchema.additionalProperty.some(p => p.name === 'HSN Code' && p.value.includes('39073010')),
+    'Dynamic Product additionalProperty must include HSN Code 39073010'
+  );
 
-  // Navigate to utility view (#/cart) and verify robots becomes noindex, follow
+  // Navigate to utility view (#/cart) and verify robots, googlebot, and bingbot all become noindex, follow
   sandbox.window.navigateTo('cart');
   assert.strictEqual(mockDocument.getElementById('meta-robots').content, 'noindex, follow', 'Utility route #/cart must set robots to noindex, follow');
+  assert.strictEqual(mockDocument.getElementById('meta-googlebot').content, 'noindex, follow', 'Utility route #/cart must set googlebot to noindex, follow');
+  assert.strictEqual(mockDocument.getElementById('meta-bingbot').content, 'noindex, follow', 'Utility route #/cart must set bingbot to noindex, follow');
+
+  // Verify WebSite SearchAction URL template (#/catalog?q=varmala) routes to catalog and populates catalogSearch
+  sandbox.window.location.hash = '#/catalog?q=varmala';
+  (windowListeners['hashchange'] || []).forEach(fn => fn());
+  const searchRouteSeo = sandbox.window.getActiveSeoSnapshot();
+  assert.strictEqual(searchRouteSeo.route, 'catalog', 'SearchAction hash #/catalog?q=varmala must route to catalog');
+  assert.ok(
+    mockDocument.getElementById('app-view-root').innerHTML.includes('value="varmala"'),
+    'SearchAction query parameter ?q=varmala must populate catalog search input'
+  );
+  sandbox.window.setCatalogSearch('');
+
+  // Verify minimal Studio-pushed product renders PDP and SEO metadata without throwing or outputting "undefined"
+  Store.receiveStudioPush({
+    action: 'STUDIO_UPSERT_PRODUCT',
+    payload: { id: 'ram-minimal-seo-test', name: 'Minimal Lotus Keepsake', price: 2499 }
+  });
+  sandbox.window.navigateTo('product', 'ram-minimal-seo-test');
+  sandbox.window.selectPdpVariant(0);
+  const minimalPdpSeo = sandbox.window.getActiveSeoSnapshot();
+  assert.strictEqual(minimalPdpSeo.productId, 'ram-minimal-seo-test');
+  assert.ok(!minimalPdpSeo.title.includes('undefined'), 'Minimal studio product title must never contain "undefined"');
+  assert.ok(!minimalPdpSeo.description.includes('undefined'), 'Minimal studio product description must never contain "undefined"');
+  assert.ok(!minimalPdpSeo.keywords.includes('undefined'), 'Minimal studio product keywords must never contain "undefined"');
+  assert.ok(minimalPdpSeo.ogImage.startsWith('https://'), 'Minimal studio product ogImage must be normalized to an absolute https:// URL');
+  Store.receiveStudioPush({
+    action: 'STUDIO_DELETE_PRODUCT',
+    payload: { id: 'ram-minimal-seo-test' }
+  });
 
   // 4. Verify runtime custom domain swap via window.VISTARA_SITE_URL = 'https://vistarakrafts.in'
   sandbox.window.VISTARA_SITE_URL = 'https://vistarakrafts.in';
@@ -1175,7 +1224,15 @@ try {
   assert.strictEqual(sitemapRes.status, 200);
   assert.ok((sitemapRes.headers.get('Content-Type') || '').includes('application/xml'));
   const sitemapText = await sitemapRes.text();
-  assert.ok(sitemapText.includes('<loc>https://vistara-krafts.vercel.app/#/product/ram-keep-001</loc>'));
+  const realCatalogIds = [
+    'ram-keep-001', 'vk-epx-301', 'ram-keep-002', 'vk-epx-201',
+    'ram-keep-003', 'vk-uv-hard', 'vk-pig-cham', 'ram-keep-004',
+    'vk-res-003', 'vk-mld-geo', 'vk-res-006', 'potry-sienna-01'
+  ];
+  for (const pid of realCatalogIds) {
+    assert.ok(sitemapText.includes(`<loc>https://vistara-krafts.vercel.app/#/product/${pid}</loc>`), `/api/sitemap.xml must include real product ID ${pid}`);
+  }
+  assert.ok(!sitemapText.includes('vk-res-004') && !sitemapText.includes('vk-uv-100') && !sitemapText.includes('vk-pig-ocean'), '/api/sitemap.xml must not include hallucinated product IDs');
 
   const llmsRes = await onRequest({
     request: new Request('https://vistarakrafts.com/api/llms.txt', { method: 'GET' }),
@@ -1184,6 +1241,9 @@ try {
   assert.strictEqual(llmsRes.status, 200);
   const llmsText = await llmsRes.text();
   assert.ok(llmsText.includes('Vistāra Krafts'));
+  for (const pid of realCatalogIds) {
+    assert.ok(llmsText.includes(`/#/product/${pid}`), `/api/llms.txt must include real product ID ${pid}`);
+  }
 
   // 2. First-time user login on /auth/login without upfront shipping address
   const login1 = await callWorker('/auth/login', 'POST', {

@@ -10,8 +10,8 @@
   <meta name="author" content="Vistāra Krafts Studio &amp; Chemical Atelier (@resin.art.memories)">
   <meta name="publisher" content="Vistāra Krafts Studio &amp; Chemical Atelier">
   <meta id="meta-robots" name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
-  <meta name="googlebot" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
-  <meta name="bingbot" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+  <meta id="meta-googlebot" name="googlebot" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+  <meta id="meta-bingbot" name="bingbot" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
   <meta name="theme-color" content="#031a38">
   <meta name="application-name" content="Vistāra Krafts">
   <meta name="apple-mobile-web-app-title" content="Vistāra Krafts">
@@ -55,6 +55,7 @@
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:site" content="@resin.art.memories">
   <meta name="twitter:creator" content="@resin.art.memories">
+  <meta id="twitter-url" name="twitter:url" content="https://vistara-krafts.vercel.app/">
   <meta id="twitter-title" name="twitter:title" content="Vistāra Krafts — Bespoke Varmala Preservation &amp; Optical Epoxy Storefront">
   <meta id="twitter-description" name="twitter:description" content="Official Vistāra Krafts (@resin.art.memories) E-Commerce Storefront in India. Preserved wedding varmalas, ocean resin art, and optical 3:1 &amp; 2:1 epoxy systems.">
   <meta id="twitter-image" name="twitter:image" content="https://vistara-krafts.vercel.app/vistara-krafts-logo.jpg">
@@ -269,6 +270,7 @@
             "@id": "https://vistara-krafts.vercel.app/#/product/ram-keep-002",
             "productID": "ram-keep-002",
             "sku": "RAM-OCN-TRY-01",
+            "mpn": "RAM-OCN-TRY-01",
             "name": "Maldives Ocean Wave Teak Charcuterie & Vanity Tray",
             "description": "Hand-poured Multi-Layer Lacing Foam Waves over Seasoned Burma Teak",
             "category": "keepsakes",
@@ -281,8 +283,14 @@
               "price": "2199",
               "priceValidUntil": "2027-12-31",
               "availability": "https://schema.org/InStock",
+              "itemCondition": "https://schema.org/NewCondition",
               "seller": { "@id": "https://vistara-krafts.vercel.app/#organization" },
-              "hasMerchantReturnPolicy": { "@id": "https://vistara-krafts.vercel.app/#return-policy" }
+              "hasMerchantReturnPolicy": { "@id": "https://vistara-krafts.vercel.app/#return-policy" },
+              "shippingDetails": {
+                "@type": "OfferShippingDetails",
+                "shippingRate": { "@type": "MonetaryAmount", "value": "0", "currency": "INR" },
+                "shippingDestination": { "@type": "DefinedRegion", "addressCountry": "IN" }
+              }
             },
             "aggregateRating": { "@type": "AggregateRating", "ratingValue": "4.9", "reviewCount": "215", "bestRating": "5", "worstRating": "1" },
             "additionalProperty": [
@@ -301,6 +309,7 @@
             "@id": "https://vistara-krafts.vercel.app/#/product/vk-epx-201",
             "productID": "vk-epx-201",
             "sku": "VK-EPX-201-3KG",
+            "mpn": "VK-EPX-201-3KG",
             "name": "River Flow 2:1 Deep Pour River Table Epoxy",
             "description": "Ultra-Slow Exotherm Formula for 50mm Single-Pass Casts & Floral Blocks",
             "category": "deep_pour",
@@ -313,8 +322,14 @@
               "price": "2850",
               "priceValidUntil": "2027-12-31",
               "availability": "https://schema.org/InStock",
+              "itemCondition": "https://schema.org/NewCondition",
               "seller": { "@id": "https://vistara-krafts.vercel.app/#organization" },
-              "hasMerchantReturnPolicy": { "@id": "https://vistara-krafts.vercel.app/#return-policy" }
+              "hasMerchantReturnPolicy": { "@id": "https://vistara-krafts.vercel.app/#return-policy" },
+              "shippingDetails": {
+                "@type": "OfferShippingDetails",
+                "shippingRate": { "@type": "MonetaryAmount", "value": "0", "currency": "INR" },
+                "shippingDestination": { "@type": "DefinedRegion", "addressCountry": "IN" }
+              }
             },
             "aggregateRating": { "@type": "AggregateRating", "ratingValue": "4.8", "reviewCount": "188", "bestRating": "5", "worstRating": "1" },
             "additionalProperty": [
@@ -334,6 +349,7 @@
             "@id": "https://vistara-krafts.vercel.app/#/product/ram-keep-003",
             "productID": "ram-keep-003",
             "sku": "RAM-GEO-CLK-18",
+            "mpn": "RAM-GEO-CLK-18",
             "name": "Royal Champagne & Quartz Geode Statement Wall Art",
             "description": "Encrusted with Raw Clear Quartz Crystals, Metallic Bronze & Rose-Gold Leaf",
             "category": "keepsakes",
@@ -346,7 +362,14 @@
               "price": "3899",
               "priceValidUntil": "2027-12-31",
               "availability": "https://schema.org/InStock",
-              "seller": { "@id": "https://vistara-krafts.vercel.app/#organization" }
+              "itemCondition": "https://schema.org/NewCondition",
+              "seller": { "@id": "https://vistara-krafts.vercel.app/#organization" },
+              "hasMerchantReturnPolicy": { "@id": "https://vistara-krafts.vercel.app/#return-policy" },
+              "shippingDetails": {
+                "@type": "OfferShippingDetails",
+                "shippingRate": { "@type": "MonetaryAmount", "value": "0", "currency": "INR" },
+                "shippingDestination": { "@type": "DefinedRegion", "addressCountry": "IN" }
+              }
             },
             "aggregateRating": { "@type": "AggregateRating", "ratingValue": "5.0", "reviewCount": "129", "bestRating": "5", "worstRating": "1" },
             "additionalProperty": [
@@ -365,6 +388,7 @@
             "@id": "https://vistara-krafts.vercel.app/#/product/vk-uv-hard",
             "productID": "vk-uv-hard",
             "sku": "VK-UV-HRD-200G",
+            "mpn": "VK-UV-HRD-200G",
             "name": "Jewelry Glass Optical UV Resin (Hard Type 365nm)",
             "description": "Zero-Mix Instant Curing Formula for Pressed Flower Pendants & Bezel Charms",
             "category": "uv_resin",
@@ -377,7 +401,14 @@
               "price": "649",
               "priceValidUntil": "2027-12-31",
               "availability": "https://schema.org/InStock",
-              "seller": { "@id": "https://vistara-krafts.vercel.app/#organization" }
+              "itemCondition": "https://schema.org/NewCondition",
+              "seller": { "@id": "https://vistara-krafts.vercel.app/#organization" },
+              "hasMerchantReturnPolicy": { "@id": "https://vistara-krafts.vercel.app/#return-policy" },
+              "shippingDetails": {
+                "@type": "OfferShippingDetails",
+                "shippingRate": { "@type": "MonetaryAmount", "value": "99", "currency": "INR" },
+                "shippingDestination": { "@type": "DefinedRegion", "addressCountry": "IN" }
+              }
             },
             "aggregateRating": { "@type": "AggregateRating", "ratingValue": "4.9", "reviewCount": "420", "bestRating": "5", "worstRating": "1" },
             "additionalProperty": [
@@ -396,6 +427,7 @@
             "@id": "https://vistara-krafts.vercel.app/#/product/vk-pig-cham",
             "productID": "vk-pig-cham",
             "sku": "VK-MICA-CHAM-12",
+            "mpn": "VK-MICA-CHAM-12",
             "name": "Metallic Chameleon Mica Powder Set (12 Shades)",
             "description": "Cosmetic-Grade Dichroic Color-Shifting Mineral Pigments in Apothecary Jars",
             "category": "pigments",
@@ -408,7 +440,14 @@
               "price": "899",
               "priceValidUntil": "2027-12-31",
               "availability": "https://schema.org/InStock",
-              "seller": { "@id": "https://vistara-krafts.vercel.app/#organization" }
+              "itemCondition": "https://schema.org/NewCondition",
+              "seller": { "@id": "https://vistara-krafts.vercel.app/#organization" },
+              "hasMerchantReturnPolicy": { "@id": "https://vistara-krafts.vercel.app/#return-policy" },
+              "shippingDetails": {
+                "@type": "OfferShippingDetails",
+                "shippingRate": { "@type": "MonetaryAmount", "value": "99", "currency": "INR" },
+                "shippingDestination": { "@type": "DefinedRegion", "addressCountry": "IN" }
+              }
             },
             "aggregateRating": { "@type": "AggregateRating", "ratingValue": "4.9", "reviewCount": "164", "bestRating": "5", "worstRating": "1" },
             "additionalProperty": [
@@ -426,6 +465,7 @@
             "@id": "https://vistara-krafts.vercel.app/#/product/ram-keep-004",
             "productID": "ram-keep-004",
             "sku": "RAM-CST-FLR-04",
+            "mpn": "RAM-CST-FLR-04",
             "name": "Petrified Botanical & Brass Edge Coaster Set (Set of 4)",
             "description": "Real Pressed Delphiniums & Gold Foil Electroplated Rim in Heat-Resistant Resin",
             "category": "keepsakes",
@@ -438,7 +478,14 @@
               "price": "1399",
               "priceValidUntil": "2027-12-31",
               "availability": "https://schema.org/InStock",
-              "seller": { "@id": "https://vistara-krafts.vercel.app/#organization" }
+              "itemCondition": "https://schema.org/NewCondition",
+              "seller": { "@id": "https://vistara-krafts.vercel.app/#organization" },
+              "hasMerchantReturnPolicy": { "@id": "https://vistara-krafts.vercel.app/#return-policy" },
+              "shippingDetails": {
+                "@type": "OfferShippingDetails",
+                "shippingRate": { "@type": "MonetaryAmount", "value": "99", "currency": "INR" },
+                "shippingDestination": { "@type": "DefinedRegion", "addressCountry": "IN" }
+              }
             },
             "aggregateRating": { "@type": "AggregateRating", "ratingValue": "4.9", "reviewCount": "276", "bestRating": "5", "worstRating": "1" },
             "additionalProperty": [
@@ -457,6 +504,7 @@
             "@id": "https://vistara-krafts.vercel.app/#/product/vk-res-003",
             "productID": "vk-res-003",
             "sku": "VK-HG-11-500",
+            "mpn": "VK-HG-11-500",
             "name": "High-Gloss Doming & Topcoat Epoxy 1:1",
             "description": "High-Viscosity Self-Leveling Glass Coat for Nameplates, Trays & Canvas Art",
             "category": "doming",
@@ -469,7 +517,14 @@
               "price": "799",
               "priceValidUntil": "2027-12-31",
               "availability": "https://schema.org/InStock",
-              "seller": { "@id": "https://vistara-krafts.vercel.app/#organization" }
+              "itemCondition": "https://schema.org/NewCondition",
+              "seller": { "@id": "https://vistara-krafts.vercel.app/#organization" },
+              "hasMerchantReturnPolicy": { "@id": "https://vistara-krafts.vercel.app/#return-policy" },
+              "shippingDetails": {
+                "@type": "OfferShippingDetails",
+                "shippingRate": { "@type": "MonetaryAmount", "value": "99", "currency": "INR" },
+                "shippingDestination": { "@type": "DefinedRegion", "addressCountry": "IN" }
+              }
             },
             "aggregateRating": { "@type": "AggregateRating", "ratingValue": "5.0", "reviewCount": "64", "bestRating": "5", "worstRating": "1" },
             "additionalProperty": [
@@ -488,6 +543,7 @@
             "@id": "https://vistara-krafts.vercel.app/#/product/vk-mld-geo",
             "productID": "vk-mld-geo",
             "sku": "VK-MLD-GEO-04",
+            "mpn": "VK-MLD-GEO-04",
             "name": "Platinum Silicone Geode Coaster & Tray Mold Set",
             "description": "Tear-Resistant Mirror-Interior Platinum Silicone for 80+ Effortless Demolds",
             "category": "molds",
@@ -500,7 +556,14 @@
               "price": "449",
               "priceValidUntil": "2027-12-31",
               "availability": "https://schema.org/InStock",
-              "seller": { "@id": "https://vistara-krafts.vercel.app/#organization" }
+              "itemCondition": "https://schema.org/NewCondition",
+              "seller": { "@id": "https://vistara-krafts.vercel.app/#organization" },
+              "hasMerchantReturnPolicy": { "@id": "https://vistara-krafts.vercel.app/#return-policy" },
+              "shippingDetails": {
+                "@type": "OfferShippingDetails",
+                "shippingRate": { "@type": "MonetaryAmount", "value": "99", "currency": "INR" },
+                "shippingDestination": { "@type": "DefinedRegion", "addressCountry": "IN" }
+              }
             },
             "aggregateRating": { "@type": "AggregateRating", "ratingValue": "4.8", "reviewCount": "152", "bestRating": "5", "worstRating": "1" },
             "additionalProperty": [
@@ -517,6 +580,7 @@
             "@id": "https://vistara-krafts.vercel.app/#/product/vk-res-006",
             "productID": "vk-res-006",
             "sku": "VK-EB-31-1000",
+            "mpn": "VK-EB-31-1000",
             "name": "EcoBio 3:1 Botanical Bio-Based Casting Resin",
             "description": "42% Plant-Derived Carbon Content • Zero VOC & Ultra-Gentle for Home Studios",
             "category": "bio_based",
@@ -529,7 +593,14 @@
               "price": "1450",
               "priceValidUntil": "2027-12-31",
               "availability": "https://schema.org/InStock",
-              "seller": { "@id": "https://vistara-krafts.vercel.app/#organization" }
+              "itemCondition": "https://schema.org/NewCondition",
+              "seller": { "@id": "https://vistara-krafts.vercel.app/#organization" },
+              "hasMerchantReturnPolicy": { "@id": "https://vistara-krafts.vercel.app/#return-policy" },
+              "shippingDetails": {
+                "@type": "OfferShippingDetails",
+                "shippingRate": { "@type": "MonetaryAmount", "value": "99", "currency": "INR" },
+                "shippingDestination": { "@type": "DefinedRegion", "addressCountry": "IN" }
+              }
             },
             "aggregateRating": { "@type": "AggregateRating", "ratingValue": "4.7", "reviewCount": "73", "bestRating": "5", "worstRating": "1" },
             "additionalProperty": [
@@ -548,6 +619,7 @@
             "@id": "https://vistara-krafts.vercel.app/#/product/potry-sienna-01",
             "productID": "potry-sienna-01",
             "sku": "PTR-SN-1200",
+            "mpn": "PTR-SN-1200",
             "name": "Sienna Ridged Stoneware & Resin-Glazed Vessel",
             "description": "Wheel-Thrown Iron Stoneware Paired with Food-Safe Vitreous Mineral Glaze",
             "category": "ceramics",
@@ -560,7 +632,14 @@
               "price": "2499",
               "priceValidUntil": "2027-12-31",
               "availability": "https://schema.org/InStock",
-              "seller": { "@id": "https://vistara-krafts.vercel.app/#organization" }
+              "itemCondition": "https://schema.org/NewCondition",
+              "seller": { "@id": "https://vistara-krafts.vercel.app/#organization" },
+              "hasMerchantReturnPolicy": { "@id": "https://vistara-krafts.vercel.app/#return-policy" },
+              "shippingDetails": {
+                "@type": "OfferShippingDetails",
+                "shippingRate": { "@type": "MonetaryAmount", "value": "0", "currency": "INR" },
+                "shippingDestination": { "@type": "DefinedRegion", "addressCountry": "IN" }
+              }
             },
             "aggregateRating": { "@type": "AggregateRating", "ratingValue": "4.9", "reviewCount": "94", "bestRating": "5", "worstRating": "1" },
             "additionalProperty": [

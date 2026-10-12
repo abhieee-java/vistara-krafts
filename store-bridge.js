@@ -1744,13 +1744,67 @@
       const targetProduct = payload.product || (payload.action === 'STUDIO_UPSERT_PRODUCT' || payload.action === 'ADMIN_UPSERT_PRODUCT' ? payload.payload : null);
       if (targetProduct && targetProduct.id) {
         const products = this.getProducts().slice();
+        const existingIdx = products.findIndex(p => p.id === targetProduct.id);
+        const existingProd = existingIdx > -1 ? products[existingIdx] : {};
+        const basePrice = Number(targetProduct.price ?? existingProd.price ?? 1299);
+        const baseRegPrice = Number(targetProduct.regularPrice ?? existingProd.regularPrice ?? Math.round(basePrice * 1.2));
+        const defaultImg = targetProduct.image || (targetProduct.images && targetProduct.images[0]) || existingProd.image || IMAGES.ultraclearMain;
+        const rawSpecs = { ...(existingProd.specs || {}), ...(targetProduct.specs || {}) };
+        const resolvedCat = targetProduct.category || existingProd.category || 'keepsakes';
+        const defaultHsn = resolvedCat === 'ceramics' ? '69120010' : (resolvedCat === 'pigments' ? '32064990' : (resolvedCat === 'molds' ? '39269099' : '39073010'));
         const normalizedProd = {
+          ...existingProd,
           ...targetProduct,
-          image: targetProduct.image || (targetProduct.images && targetProduct.images[0]) || IMAGES.ultraclearMain,
-          gallery: targetProduct.gallery || targetProduct.images || [IMAGES.ultraclearMain]
+          sku: targetProduct.sku || existingProd.sku || ('VK-' + String(targetProduct.id).toUpperCase().replace(/[^A-Z0-9-]+/g, '-')),
+          name: targetProduct.name || existingProd.name || 'Vistāra Krafts Studio Edition',
+          shortName: targetProduct.shortName || existingProd.shortName || targetProduct.name || 'Studio Edition',
+          subtitle: targetProduct.subtitle || existingProd.subtitle || 'Museum-Grade Optical Epoxy & Handcrafted Keepsake Edition',
+          category: resolvedCat,
+          subCategory: targetProduct.subCategory || existingProd.subCategory || 'studio_edition',
+          badge: targetProduct.badge || existingProd.badge || 'Studio Edition',
+          price: basePrice,
+          regularPrice: baseRegPrice,
+          unitPriceLabel: targetProduct.unitPriceLabel || existingProd.unitPriceLabel || 'Studio Edition',
+          ratio: targetProduct.ratio || existingProd.ratio || '3:1',
+          viscosity: targetProduct.viscosity || existingProd.viscosity || 'low',
+          pourDepth: targetProduct.pourDepth || existingProd.pourDepth || '20mm',
+          cureTime: targetProduct.cureTime || existingProd.cureTime || '24h',
+          potLife: targetProduct.potLife || existingProd.potLife || '45m',
+          rating: Number(targetProduct.rating ?? existingProd.rating ?? 4.9),
+          reviewsCount: Number(targetProduct.reviewsCount ?? existingProd.reviewsCount ?? 24),
+          inStock: targetProduct.inStock !== undefined ? Boolean(targetProduct.inStock) : (existingProd.inStock !== undefined ? Boolean(existingProd.inStock) : true),
+          isCustomizable: Boolean(targetProduct.isCustomizable ?? existingProd.isCustomizable ?? false),
+          image: defaultImg,
+          gallery: targetProduct.gallery || targetProduct.images || existingProd.gallery || [defaultImg],
+          variants: Array.isArray(targetProduct.variants) && targetProduct.variants.length > 0
+            ? targetProduct.variants
+            : (Array.isArray(existingProd.variants) && existingProd.variants.length > 0
+              ? existingProd.variants
+              : [
+                  {
+                    id: String(targetProduct.id) + '-std',
+                    label: 'Standard Studio Edition',
+                    desc: targetProduct.subtitle || 'Optical-grade studio edition',
+                    price: basePrice,
+                    regularPrice: baseRegPrice,
+                    unitPrice: targetProduct.unitPriceLabel || 'Standard Edition',
+                    popular: true
+                  }
+                ]),
+          specs: {
+            mixRatioWeight: rawSpecs.mixRatioWeight || (targetProduct.ratio ? `${targetProduct.ratio} by Weight` : '3 : 1 (Resin : Hardener)'),
+            mixRatioVolume: rawSpecs.mixRatioVolume || '2.6 : 1',
+            workingPotLife: rawSpecs.workingPotLife || (targetProduct.potLife || '45 Minutes'),
+            demoldDuration: rawSpecs.demoldDuration || '24 Hours',
+            fullGlassCure: rawSpecs.fullGlassCure || (targetProduct.cureTime || '48 – 72 Hours'),
+            dynamicViscosity: rawSpecs.dynamicViscosity || '650 mPa·s (Optical Grade)',
+            maxDepth: rawSpecs.maxDepth || (targetProduct.pourDepth || '20mm'),
+            hardness: rawSpecs.hardness || '83D Scratch-Shield',
+            uvStability: rawSpecs.uvStability || 'HALS + UV400 Stabilized',
+            hsnCode: rawSpecs.hsnCode || defaultHsn
+          }
         };
-        const idx = products.findIndex(p => p.id === normalizedProd.id);
-        if (idx > -1) products[idx] = { ...products[idx], ...normalizedProd };
+        if (existingIdx > -1) products[existingIdx] = normalizedProd;
         else products.unshift(normalizedProd);
         safeWrite(STORAGE_KEYS.PRODUCTS, products);
       }
@@ -1814,6 +1868,7 @@
         'https://vistara-krafts.vercel.app'
       ).replace(/\/+$/, '');
       const futureCustomDomain = String(
+        global.VISTARA_CUSTOM_DOMAIN ||
         seoCfg.futureCustomDomain ||
         (cfCfg.brand && cfCfg.brand.futureCustomDomain) ||
         'https://vistarakrafts.in'
@@ -1821,15 +1876,15 @@
       return {
         siteUrl,
         futureCustomDomain,
-        defaultTitle: seoCfg.defaultTitle || 'Vistāra Krafts (@resin.art.memories) | UltraClear Epoxy Resin Systems & Bridal Varmala Preservation Studio India',
-        defaultDescription: seoCfg.defaultDescription || 'Official Vistāra Krafts × Resin Art Memories (@resin.art.memories) Storefront. Shop ASTM D-4236 Certified Non-Yellowing 3:1 Casting Epoxy, 2:1 Deep Pour River Table Resin, UV Resin, Chameleon Mica Pigments, and Commission Museum-Grade Bridal Varmala & Bouquet Preservation Blocks across India.',
-        defaultKeywords: seoCfg.defaultKeywords || 'Vistara Krafts, Resin Art Memories, @resin.art.memories, bridal varmala preservation India, wedding garland resin block Bengaluru, epoxy resin kit India, 3:1 casting epoxy resin, 2:1 deep pour river table epoxy, UV resin India, non yellowing HALS epoxy, silicone geode molds, Potry sienna stoneware',
+        defaultTitle: seoCfg.defaultTitle || 'Vistāra Krafts — Bespoke Varmala Preservation & Optical Epoxy Storefront',
+        defaultDescription: seoCfg.defaultDescription || 'Official Vistāra Krafts (@resin.art.memories) E-Commerce Storefront in India. Preserved wedding varmalas in 50mm crystal blocks, ocean resin art, and ISO-9001 optical 3:1 & 2:1 epoxy systems with Pan-India express delivery.',
+        defaultKeywords: seoCfg.defaultKeywords || 'Vistara Krafts, Vistāra Krafts, resin.art.memories, bridal varmala preservation India, wedding garland preservation in resin, 3:1 casting epoxy resin India, 2:1 deep pour river table epoxy, 1:1 doming epoxy, UV resin jewelry India, ocean wave resin tray, quartz geode wall art, epoxy pour calculator, HALS UV non-yellowing epoxy, HSN 39073010',
         locale: seoCfg.locale || 'en_IN',
         language: seoCfg.language || 'en-IN',
         currency: seoCfg.currency || 'INR',
-        twitterHandle: seoCfg.twitterHandle || '@resin_art_mem',
+        twitterHandle: seoCfg.twitterHandle || '@resin.art.memories',
         instagramHandle: '@resin.art.memories',
-        instagramUrl: 'https://www.instagram.com/resin.art.memories?utm_source=qr',
+        instagramUrl: seoCfg.instagramUrl || 'https://www.instagram.com/resin.art.memories',
         llmsTxtUrl: `${siteUrl}${seoCfg.llmsTxtPath || '/llms.txt'}`,
         llmsFullTxtUrl: `${siteUrl}${seoCfg.llmsFullTxtPath || '/llms-full.txt'}`,
         sitemapUrl: `${siteUrl}${seoCfg.sitemapPath || '/sitemap.xml'}`,
@@ -1843,7 +1898,7 @@
           longitude: 77.5946,
           position: '12.9716;77.5946',
           icbm: '12.9716, 77.5946',
-          areaServed: ['India', 'Bengaluru', 'Mumbai', 'Delhi NCR', 'Hyderabad', 'Chennai', 'Pune', 'Kolkata', 'Ahmedabad', 'Jaipur']
+          areaServed: ['IN', 'Bengaluru', 'Mumbai', 'New Delhi', 'Hyderabad', 'Chennai', 'Pune', 'Jaipur', 'Kolkata', 'Udaipur', 'Goa']
         }
       };
     },
