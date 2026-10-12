@@ -110,6 +110,70 @@ function getKv(env) {
   return (env && (env.VISTARA_SESSIONS || env.SESSIONS_KV)) || null;
 }
 
+const initializedDbs = new WeakSet();
+
+async function ensureD1Schema(db) {
+  if (!db || typeof db.prepare !== 'function' || initializedDbs.has(db)) return;
+  initializedDbs.add(db);
+  const ddlStatements = [
+    `CREATE TABLE IF NOT EXISTS users (
+      id TEXT PRIMARY KEY,
+      email TEXT UNIQUE NOT NULL,
+      name TEXT NOT NULL,
+      phone TEXT DEFAULT '',
+      address TEXT NOT NULL DEFAULT '',
+      pincode TEXT DEFAULT '',
+      provider TEXT NOT NULL DEFAULT 'email',
+      provider_sub TEXT DEFAULT '',
+      password_hash TEXT DEFAULT '',
+      password_salt TEXT DEFAULT '',
+      wishlist_json TEXT NOT NULL DEFAULT '[]',
+      member_tier TEXT DEFAULT 'Verified Vistāra Patron',
+      loyalty_points INTEGER DEFAULT 250,
+      created_at TEXT DEFAULT (datetime('now')),
+      updated_at TEXT DEFAULT (datetime('now'))
+    )`,
+    `CREATE TABLE IF NOT EXISTS sessions (
+      token_hash TEXT PRIMARY KEY,
+      user_id TEXT NOT NULL,
+      provider TEXT NOT NULL DEFAULT 'email',
+      created_at TEXT DEFAULT (datetime('now')),
+      expires_at TEXT NOT NULL
+    )`,
+    `CREATE TABLE IF NOT EXISTS orders (
+      order_id TEXT PRIMARY KEY,
+      user_id TEXT NOT NULL,
+      customer_name TEXT NOT NULL,
+      customer_email TEXT NOT NULL,
+      phone TEXT NOT NULL,
+      address TEXT NOT NULL,
+      pincode TEXT DEFAULT '',
+      subtotal INTEGER NOT NULL,
+      discount INTEGER DEFAULT 0,
+      gst_amount REAL DEFAULT 0,
+      total INTEGER NOT NULL,
+      payment_method TEXT NOT NULL,
+      gift_wrap INTEGER DEFAULT 1,
+      mockup_approved INTEGER DEFAULT 0,
+      status TEXT NOT NULL DEFAULT 'Order Confirmed • Studio Batch Allocated',
+      stage_index INTEGER DEFAULT 1,
+      items_json TEXT NOT NULL,
+      courier TEXT DEFAULT 'BlueDart Priority Air • AWB Pending',
+      created_at TEXT DEFAULT (datetime('now'))
+    )`,
+    `ALTER TABLE users ADD COLUMN pincode TEXT DEFAULT ''`,
+    `ALTER TABLE users ADD COLUMN wishlist_json TEXT NOT NULL DEFAULT '[]'`,
+    `ALTER TABLE orders ADD COLUMN pincode TEXT DEFAULT ''`
+  ];
+  for (const sql of ddlStatements) {
+    try {
+      await db.prepare(sql).run();
+    } catch (_e) {
+      // Ignore duplicate column or mock DB no-op errors
+    }
+  }
+}
+
 function deriveNameFromEmail(email) {
   const local = String(email || '').split('@')[0] || 'Patron';
   return local
@@ -200,6 +264,10 @@ export async function onRequest(context) {
   const db = getDb(env);
   const kv = getKv(env);
 
+  if (db) {
+    await ensureD1Schema(db);
+  }
+
   try {
     if (path === 'health' && request.method === 'GET') {
       return jsonResponse({
@@ -255,9 +323,12 @@ export async function onRequest(context) {
 
       const salt = crypto.randomUUID().replace(/-/g, '').slice(0, 16);
       const passwordHash = await hashPasswordPBKDF2(password, salt);
-      let existingUser = edgeMemoryUsers.get(email) || null;
-      if (!existingUser && db) {
+      let existingUser = null;
+      if (db) {
         existingUser = await db.prepare(`SELECT * FROM users WHERE email = ?`).bind(email).first();
+      }
+      if (!existingUser && edgeMemoryUsers.has(email)) {
+        existingUser = edgeMemoryUsers.get(email);
       }
       const userId = (existingUser && existingUser.id) || ('usr_' + crypto.randomUUID().replace(/-/g, '').slice(0, 12));
       const existingWishlist = existingUser ? parseWishlistJson(existingUser.wishlist || existingUser.wishlist_json) : [];
@@ -494,9 +565,12 @@ export async function onRequest(context) {
         }, 400);
       }
 
-      let existingUser = edgeMemoryUsers.get(email) || null;
-      if (!existingUser && db) {
+      let existingUser = null;
+      if (db) {
         existingUser = await db.prepare(`SELECT * FROM users WHERE email = ?`).bind(email).first();
+      }
+      if (!existingUser && edgeMemoryUsers.has(email)) {
+        existingUser = edgeMemoryUsers.get(email);
       }
       const existingWl = existingUser ? parseWishlistJson(existingUser.wishlist || existingUser.wishlist_json) : [];
       const mergedWishlist = Array.from(new Set([...existingWl, ...incomingWishlist]));
@@ -578,10 +652,10 @@ export async function onRequest(context) {
       );
     }
 
-    if (path === 'auth/me' && request.method === 'GET') {
+    if ((path === 'auth/me' || path === 'auth/session') && request.method === 'GET') {
       const user = await getAuthenticatedUser(request, env);
       if (!user) return jsonResponse({ ok: false, authenticated: false }, 401);
-      return jsonResponse({ ok: true, authenticated: true, user });
+      return jsonResponse({ ok: true, authenticated: true, user, session: user });
     }
 
     if (path === 'auth/profile' && request.method === 'PUT') {
@@ -737,8 +811,8 @@ export async function onRequest(context) {
         createdAt: new Date().toISOString()
       };
 
-      if (db) {
-        if (orderRecord.address || orderRecord.phone) {
+      if (orderRecord.address || orderRecord.phone || orderRecord.pincode) {
+        if (db) {
           await db.prepare(
             `UPDATE users SET name = ?, phone = ?, address = ?, pincode = ?, updated_at = datetime('now') WHERE id = ?`
           ).bind(
@@ -749,6 +823,15 @@ export async function onRequest(context) {
             user.id
           ).run();
         }
+        const memUser = edgeMemoryUsers.get(user.email) || { ...user };
+        memUser.name = orderRecord.customerName || memUser.name;
+        memUser.phone = orderRecord.phone || memUser.phone || '';
+        memUser.address = orderRecord.address || memUser.address || '';
+        memUser.pincode = orderRecord.pincode || memUser.pincode || '';
+        edgeMemoryUsers.set(user.email, memUser);
+      }
+
+      if (db) {
         await db.prepare(
           `INSERT INTO orders (
              order_id, user_id, customer_name, customer_email, phone, address, pincode,

@@ -88,6 +88,10 @@ body.modal-open {
   overflow: hidden !important;
 }
 
+.hidden {
+  display: none !important;
+}
+
 /* Accessible 2px Focus Ring with Offset (Brand Antique Brass) */
 a:focus-visible,
 button:focus-visible,

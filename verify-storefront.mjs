@@ -941,15 +941,65 @@ test('Decisions 2, 3 & 4: 2-Step Auth vs Checkout Address, 1-Click Google/Apple 
     assert.ok(html.includes('Vistāra Krafts'), `${rel} must display full brand name Vistāra Krafts`);
     assert.ok(!html.includes('AB6AXuD537p9b2_G4jP69zL_fO81pL2v4b1T6qY2n8R5m3X0w9K1s7V2c4F6d8J0h2L'), `${rel} must not use old external placeholder logo URL`);
   }
+
+  // 9. Regression tests for Bugs 1, 2, 3 & 5:
+  // - Logout must clear #cf-auth-email, #cf-auth-password, #cf-auth-name, #cf-auth-phone AND reset Store.getPatronProfile() to clean Guest Mode defaults
+  sandbox.window.handlePatronLogout();
+  assert.strictEqual(mockDocument.getElementById('cf-auth-email').value, '', 'Logout must clear #cf-auth-email');
+  assert.strictEqual(mockDocument.getElementById('cf-auth-password').value, '', 'Logout must clear #cf-auth-password');
+  assert.strictEqual(mockDocument.getElementById('cf-auth-name').value, '', 'Logout must clear #cf-auth-name');
+  assert.strictEqual(mockDocument.getElementById('cf-auth-phone').value, '', 'Logout must clear #cf-auth-phone');
+  const guestProfAfterLogout = Store.getPatronProfile();
+  assert.strictEqual(guestProfAfterLogout.name, 'Vistāra Studio Guest', 'Logout must reset Patron Profile name to Vistāra Studio Guest');
+  assert.strictEqual(guestProfAfterLogout.email, '', 'Logout must clear Patron Profile email in Guest Mode');
+  assert.strictEqual(guestProfAfterLogout.phone, '', 'Logout must clear Patron Profile phone in Guest Mode');
+  assert.strictEqual(guestProfAfterLogout.address, '', 'Logout must clear Patron Profile address in Guest Mode');
+  assert.strictEqual(guestProfAfterLogout.defaultAddress, '', 'Logout must clear Patron Profile defaultAddress in Guest Mode');
+
+  // - Clicking "Continue with Google" or "Continue with Apple" must ALWAYS open #cf-oauth-chooser-sheet even if #cf-auth-email has text
+  mockDocument.getElementById('cf-auth-email').value = 'typed.in.form@example.com';
+  mockDocument.getElementById('cf-oauth-chooser-sheet').classList.add('hidden');
+  sandbox.window.startCloudflareOAuth('apple');
+  assert.strictEqual(
+    mockDocument.getElementById('cf-oauth-chooser-sheet').classList.contains('hidden'),
+    false,
+    'Clicking Continue with Apple must open #cf-oauth-chooser-sheet even when #cf-auth-email has text'
+  );
+  assert.strictEqual(Store.isAuthenticated(), false, 'startCloudflareOAuth must wait for user selection in chooser sheet');
+  mockDocument.getElementById('cf-auth-email').value = '';
+  sandbox.window.closeOAuthChooser();
+
+  // - Verify repeat order with modified PIN does not duplicate "- PIN" suffix
+  sandbox.window.completeOAuthChooserAccount('google', 'devika.menon@vistara.in', 'Devika Menon');
+  Store.addToCart('vk-epx-301', 'kit-1200g', 1);
+  const repeatOrder = Store.placeOrder({
+    name: 'Devika Menon',
+    phone: '+91 98200 55443',
+    address: Store.getAuthSession().address,
+    pincode: '400021'
+  });
+  assert.strictEqual(repeatOrder.success, true);
+  assert.strictEqual(
+    repeatOrder.order.address,
+    '7 Marine Drive, Churchgate, Mumbai - 400021',
+    'Updating PIN at checkout must replace trailing PIN rather than duplicating "- PIN"'
+  );
+  sandbox.window.handlePatronLogout();
+
+  // - Verify DEFAULT_WISHLIST = [] constant exists in store-bridge.js and .hidden { display: none !important; } in styles.css
+  assert.ok(bridgeCode.includes('const DEFAULT_WISHLIST = []'), 'store-bridge.js must define const DEFAULT_WISHLIST = []');
+  const stylesCssContent = fs.readFileSync(path.join(ROOT, 'styles.css'), 'utf8');
+  assert.ok(stylesCssContent.includes('.hidden {') && stylesCssContent.includes('display: none !important'), 'styles.css must enforce .hidden { display: none !important; }');
+  assert.ok(indexHtml.includes('grid-cols-1 sm:grid-cols-3'), '#checkout-modal address & PIN row must stack on 320px mobile via grid-cols-1 sm:grid-cols-3');
 });
 
 // Async test for Cloudflare Pages Function (functions/api/[[route]].js) against real SQLite with PRAGMA foreign_keys = ON
 try {
   const { DatabaseSync } = await import('node:sqlite');
   const { onRequest } = await import('./functions/api/[[route]].js');
+  // Test against a blank SQLite DB (without manually running schema.sql first) to verify ensureD1Schema auto-initializes tables!
   const sqlite = new DatabaseSync(':memory:');
   sqlite.exec('PRAGMA foreign_keys = ON;');
-  sqlite.exec(fs.readFileSync(path.join(ROOT, 'cloudflare/schema.sql'), 'utf8'));
 
   const d1Mock = {
     prepare(sql) {
@@ -996,6 +1046,14 @@ try {
   assert.strictEqual(login1.status, 200, 'First-time /auth/login without upfront shipping address must succeed with 200 OK');
   assert.ok(login1.headers.get('Set-Cookie').includes('HttpOnly'), '/auth/login must set HttpOnly session cookie');
 
+  // Verify both GET /auth/me and GET /auth/session work
+  const meCheck = await callWorker('/auth/me', 'GET', null, login1.data.token);
+  assert.strictEqual(meCheck.status, 200, 'GET /auth/me must return 200 OK');
+  assert.strictEqual(meCheck.data.authenticated, true);
+  const sessionCheck = await callWorker('/auth/session', 'GET', null, login1.data.token);
+  assert.strictEqual(sessionCheck.status, 200, 'GET /auth/session must return 200 OK');
+  assert.strictEqual(sessionCheck.data.authenticated, true);
+
   // 3. Duplicate email registration on /auth/register (resolves canonical users.id -> no FK error)
   const reg1 = await callWorker('/auth/register', 'POST', {
     email: 'dup.reg@vistara.in',
@@ -1038,14 +1096,14 @@ try {
   assert.strictEqual(profUpdate.status, 200, 'PUT /auth/profile must return 200 OK');
   assert.strictEqual(profUpdate.data.user.name, 'Rohan Mehta Atelier');
 
-  // 6. POST /orders & GET /orders persist and retrieve orders in D1
+  // 6. POST /orders & GET /orders persist and retrieve orders in D1 AND update user address in both D1 and edgeMemoryUsers
   const postOrd = await callWorker('/orders', 'POST', {
     orderId: 'VK-2026-9901',
     customerName: 'Rohan Mehta Atelier',
     customerEmail: 'dup.reg@vistara.in',
     phone: '+91 98201 99999',
-    address: '88 Worli Sea Face, Mumbai - 400030',
-    pincode: '400030',
+    address: '99 Cuffe Parade, Mumbai - 400005',
+    pincode: '400005',
     subtotal: 2598,
     discount: 150,
     gstAmount: 373.42,
@@ -1055,6 +1113,14 @@ try {
     items: [{ productId: 'vk-epx-301', name: 'UltraClear 3:1 Casting Resin', qty: 2, price: 1299 }]
   }, googleAuth.data.token);
   assert.strictEqual(postOrd.status, 200, 'POST /orders must persist order in D1 and return 200 OK');
+
+  // Verify subsequent Google login without address preserves the address saved during POST /orders
+  const googleReauth = await callWorker('/auth/google', 'POST', {
+    email: 'dup.reg@vistara.in',
+    name: 'Rohan Mehta Atelier'
+  });
+  assert.strictEqual(googleReauth.data.user.address, '99 Cuffe Parade, Mumbai - 400005', 'POST /orders must persist delivery address to user profile in D1 and edgeMemoryUsers');
+  assert.strictEqual(googleReauth.data.user.pincode, '400005', 'POST /orders must persist PIN code to user profile in D1 and edgeMemoryUsers');
 
   const getOrds = await callWorker('/orders?email=dup.reg@vistara.in', 'GET', null, googleAuth.data.token);
   assert.strictEqual(getOrds.status, 200, 'GET /orders must return 200 OK');
@@ -1069,8 +1135,342 @@ try {
   failed++;
 }
 
+// Real Headless Chrome E2E & Multi-Viewport Layout Verification (320px, 375px, 1280px)
+const chromeCandidates = [
+  'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe',
+  'C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe',
+  '/usr/bin/google-chrome',
+  '/usr/bin/chromium-browser',
+  '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
+];
+const chromeExe = chromeCandidates.find(p => fs.existsSync(p));
+
+if (chromeExe) {
+  try {
+    const http = await import('node:http');
+    const os = await import('node:os');
+    const { spawn } = await import('node:child_process');
+    const { DatabaseSync } = await import('node:sqlite');
+    const { onRequest } = await import('./functions/api/[[route]].js');
+
+    const e2eSqlite = new DatabaseSync(':memory:');
+    e2eSqlite.exec('PRAGMA foreign_keys = ON;');
+    const e2eD1 = {
+      prepare(sql) {
+        return {
+          _args: [],
+          bind(...args) { this._args = args; return this; },
+          async run() { return e2eSqlite.prepare(sql).run(...this._args); },
+          async first() { return e2eSqlite.prepare(sql).get(...this._args) || null; },
+          async all() { return { results: e2eSqlite.prepare(sql).all(...this._args) }; }
+        };
+      }
+    };
+    const e2eKvMap = new Map();
+    const e2eEnv = {
+      DB: e2eD1,
+      SESSIONS_KV: {
+        async put(k, v) { e2eKvMap.set(k, v); },
+        async get(k) { return e2eKvMap.get(k) || null; },
+        async delete(k) { e2eKvMap.delete(k); }
+      }
+    };
+
+    const mimeTypes = {
+      '.html': 'text/html; charset=utf-8',
+      '.css': 'text/css; charset=utf-8',
+      '.js': 'application/javascript; charset=utf-8',
+      '.json': 'application/json; charset=utf-8',
+      '.jpg': 'image/jpeg',
+      '.jpeg': 'image/jpeg',
+      '.png': 'image/png',
+      '.svg': 'image/svg+xml'
+    };
+
+    const server = http.createServer(async (req, res) => {
+      try {
+        const u = new URL(req.url, 'http://127.0.0.1');
+        if (u.pathname.startsWith('/api/')) {
+          const chunks = [];
+          for await (const c of req) chunks.push(c);
+          const bodyBuf = Buffer.concat(chunks);
+          const headers = new Headers();
+          for (const [k, v] of Object.entries(req.headers)) {
+            if (v) headers.set(k, Array.isArray(v) ? v.join(', ') : v);
+          }
+          const cfReq = new Request(`http://127.0.0.1${u.pathname}${u.search}`, {
+            method: req.method,
+            headers,
+            body: ['GET', 'HEAD'].includes(req.method) ? undefined : bodyBuf
+          });
+          const cfRes = await onRequest({ request: cfReq, env: e2eEnv });
+          res.statusCode = cfRes.status;
+          cfRes.headers.forEach((v, k) => res.setHeader(k, v));
+          res.end(Buffer.from(await cfRes.arrayBuffer()));
+          return;
+        }
+        let filePath = path.join(ROOT, u.pathname === '/' ? 'index.html' : decodeURIComponent(u.pathname));
+        if (!fs.existsSync(filePath) || fs.statSync(filePath).isDirectory()) {
+          filePath = path.join(ROOT, 'index.html');
+        }
+        const ext = path.extname(filePath).toLowerCase();
+        res.setHeader('Content-Type', mimeTypes[ext] || 'application/octet-stream');
+        res.end(fs.readFileSync(filePath));
+      } catch (e) {
+        res.statusCode = 500;
+        res.end(e.message);
+      }
+    });
+
+    await new Promise(resolve => server.listen(0, '127.0.0.1', resolve));
+    const port = server.address().port;
+    const userDataDir = fs.mkdtempSync(path.join(os.tmpdir(), 'vk-chrome-e2e-'));
+
+    const chromeProc = spawn(chromeExe, [
+      '--headless=new',
+      '--disable-gpu',
+      '--no-first-run',
+      '--no-default-browser-check',
+      `--user-data-dir=${userDataDir}`,
+      '--remote-debugging-port=0',
+      '--window-size=1280,800',
+      `http://127.0.0.1:${port}/`
+    ], { stdio: ['ignore', 'pipe', 'pipe'] });
+
+    const wsUrl = await new Promise((resolve, reject) => {
+      const timeout = setTimeout(() => reject(new Error('Timed out waiting for Chrome DevTools')), 15000);
+      let stderr = '';
+      chromeProc.stderr.on('data', chunk => {
+        stderr += chunk.toString();
+        const m = stderr.match(/DevTools listening on (ws:\/\/[^\s]+)/);
+        if (m) {
+          clearTimeout(timeout);
+          resolve(m[1]);
+        }
+      });
+    });
+
+    const browserPort = new URL(wsUrl).port;
+    let targets = [];
+    for (let i = 0; i < 20; i++) {
+      const r = await fetch(`http://127.0.0.1:${browserPort}/json/list`);
+      targets = await r.json();
+      if (targets.find(t => t.type === 'page')) break;
+      await new Promise(r => setTimeout(r, 150));
+    }
+    const pageTarget = targets.find(t => t.type === 'page');
+    const ws = new WebSocket(pageTarget.webSocketDebuggerUrl);
+    await new Promise((resolve, reject) => {
+      ws.addEventListener('open', resolve);
+      ws.addEventListener('error', reject);
+    });
+
+    let msgId = 0;
+    const pending = new Map();
+    const consoleErrors = [];
+    ws.addEventListener('message', ev => {
+      const data = JSON.parse(ev.data);
+      if (data.method === 'Runtime.exceptionThrown') {
+        consoleErrors.push(data.params.exceptionDetails?.text || 'Uncaught exception');
+      }
+      if (data.id && pending.has(data.id)) {
+        const { resolve, reject } = pending.get(data.id);
+        pending.delete(data.id);
+        if (data.error) reject(new Error(data.error.message));
+        else resolve(data.result);
+      }
+    });
+
+    function cdpSend(method, params = {}) {
+      const id = ++msgId;
+      ws.send(JSON.stringify({ id, method, params }));
+      return new Promise((resolve, reject) => pending.set(id, { resolve, reject }));
+    }
+
+    async function cdpEval(expression) {
+      const res = await cdpSend('Runtime.evaluate', {
+        expression,
+        awaitPromise: true,
+        returnByValue: true
+      });
+      if (res.exceptionDetails) {
+        throw new Error(`CDP Eval Error: ${res.exceptionDetails.text} ${res.exceptionDetails.exception?.description || ''}`);
+      }
+      return res.result.value;
+    }
+
+    await cdpSend('Runtime.enable');
+    await cdpSend('Page.enable');
+    for (let i = 0; i < 50; i++) {
+      const ready = await cdpEval(`Boolean(window.StorefrontBridge && typeof window.openCheckoutModal === 'function')`);
+      if (ready) break;
+      await new Promise(r => setTimeout(r, 150));
+    }
+
+    // 1. Verify fresh initial state in real Chrome
+    const freshState = await cdpEval(`(() => ({
+      cartCount: window.StorefrontBridge.getCartSummary().itemsCount,
+      wishlistCount: window.StorefrontBridge.getWishlist().length,
+      ordersCount: window.StorefrontBridge.getOrders().length,
+      isAuthenticated: window.StorefrontBridge.isAuthenticated(),
+      cartBadgesHidden: Array.from(document.querySelectorAll('.js-cart-badge')).every(b => getComputedStyle(b).display === 'none'),
+      wishlistBadgesHidden: Array.from(document.querySelectorAll('.js-wishlist-badge')).every(b => getComputedStyle(b).display === 'none')
+    }))()`);
+    assert.strictEqual(freshState.cartCount, 0, 'Headless Chrome: Initial cart count must be 0');
+    assert.strictEqual(freshState.wishlistCount, 0, 'Headless Chrome: Initial wishlist count must be 0');
+    assert.strictEqual(freshState.ordersCount, 0, 'Headless Chrome: Initial orders count must be 0');
+    assert.strictEqual(freshState.isAuthenticated, false, 'Headless Chrome: Initial visitor must be in Guest Mode');
+    assert.strictEqual(freshState.cartBadgesHidden, true, 'Headless Chrome: .js-cart-badge must have display:none when 0');
+    assert.strictEqual(freshState.wishlistBadgesHidden, true, 'Headless Chrome: .js-wishlist-badge must have display:none when 0');
+
+    // 2. Verify full E2E user journey in real Chrome:
+    // Guest wishlist -> Add to bag -> Checkout Gate -> 1-Click Google OAuth Chooser -> Step 2 Checkout Address -> Order Placement -> Logout -> Apple OAuth Chooser
+    const e2eResult = await cdpEval(`(async () => {
+      window.VistaraStore.toggleWishlist('ram-keep-001');
+      window.VistaraStore.addToCart('vk-epx-301', 'kit-1200g', 1);
+      window.openCheckoutModal();
+      const gateOpenedAuthModal = !document.getElementById('cloudflare-auth-modal').classList.contains('hidden') &&
+                                  document.getElementById('checkout-modal').classList.contains('hidden');
+
+      window.startCloudflareOAuth('google');
+      const googleChooserVisible = getComputedStyle(document.getElementById('cf-oauth-chooser-sheet')).display !== 'none';
+      const firstChooserBtn = document.querySelector('#cf-oauth-chooser-accounts button');
+      firstChooserBtn.click();
+      await new Promise(r => setTimeout(r, 120));
+
+      const step2OpenedCheckoutModal = !document.getElementById('checkout-modal').classList.contains('hidden') &&
+                                       document.getElementById('cloudflare-auth-modal').classList.contains('hidden');
+      const mergedWishlistCount = window.VistaraStore.getWishlist().length;
+
+      document.getElementById('chk-phone').value = '+91 98450 12345';
+      document.getElementById('chk-address').value = '108 MG Road, Bengaluru';
+      document.getElementById('chk-pincode').value = '560001';
+      window.submitCheckoutOrder(new Event('submit', { cancelable: true }));
+      await new Promise(r => setTimeout(r, 150));
+
+      const ordersAfterCheckout = window.VistaraStore.getOrders();
+      const savedAddressInProfile = window.VistaraStore.getAuthSession().address;
+
+      window.handlePatronLogout();
+      const guestWishlistAfterLogout = window.VistaraStore.getWishlist().length;
+      const guestProfileNameAfterLogout = window.VistaraStore.getPatronProfile().name;
+      const guestProfileAddrAfterLogout = window.VistaraStore.getPatronProfile().address;
+
+      window.openCloudflareAuthModal(false);
+      window.startCloudflareOAuth('apple');
+      const appleChooserVisible = getComputedStyle(document.getElementById('cf-oauth-chooser-sheet')).display !== 'none';
+      window.closeModalById('cloudflare-auth-modal');
+
+      return {
+        gateOpenedAuthModal,
+        googleChooserVisible,
+        step2OpenedCheckoutModal,
+        mergedWishlistCount,
+        ordersCount: ordersAfterCheckout.length,
+        savedAddressInProfile,
+        guestWishlistAfterLogout,
+        guestProfileNameAfterLogout,
+        guestProfileAddrAfterLogout,
+        appleChooserVisible
+      };
+    })()`);
+
+    assert.strictEqual(e2eResult.gateOpenedAuthModal, true, 'Headless Chrome: Guest checkout must open #cloudflare-auth-modal');
+    assert.strictEqual(e2eResult.googleChooserVisible, true, 'Headless Chrome: Clicking Continue with Google must display #cf-oauth-chooser-sheet');
+    assert.strictEqual(e2eResult.step2OpenedCheckoutModal, true, 'Headless Chrome: 1-Click Google login must advance to Step 2 #checkout-modal');
+    assert.strictEqual(e2eResult.mergedWishlistCount, 1, 'Headless Chrome: Guest wishlist must merge into authenticated session');
+    assert.strictEqual(e2eResult.ordersCount, 1, 'Headless Chrome: Submitting Step 2 checkout must create order');
+    assert.strictEqual(e2eResult.savedAddressInProfile, '108 MG Road, Bengaluru - 560001', 'Headless Chrome: Checkout address & PIN must persist to user profile');
+    assert.strictEqual(e2eResult.guestWishlistAfterLogout, 0, 'Headless Chrome: Logout must reset guest wishlist to 0');
+    assert.strictEqual(e2eResult.guestProfileNameAfterLogout, 'Vistāra Studio Guest', 'Headless Chrome: Logout must reset guest profile name');
+    assert.strictEqual(e2eResult.guestProfileAddrAfterLogout, '', 'Headless Chrome: Logout must clear guest profile address');
+    assert.strictEqual(e2eResult.appleChooserVisible, true, 'Headless Chrome: Clicking Continue with Apple after logout must display #cf-oauth-chooser-sheet');
+
+    // 3. Verify zero horizontal overflow across all 8 SPA routes and modals at 320x568, 375x812, and 1280x800
+    for (const vp of [{ width: 320, height: 568 }, { width: 375, height: 812 }, { width: 1280, height: 800 }]) {
+      await cdpSend('Emulation.setDeviceMetricsOverride', {
+        width: vp.width,
+        height: vp.height,
+        deviceScaleFactor: 2,
+        mobile: vp.width < 768
+      });
+      for (const route of ['home', 'catalog', 'product', 'social', 'custom-studio', 'wishlist', 'cart', 'account']) {
+        const metrics = await cdpEval(`(async () => {
+          window.navigateTo('${route}', ${route === 'product' ? "'ram-keep-001'" : 'null'});
+          await new Promise(r => setTimeout(r, 40));
+          return {
+            innerWidth: window.innerWidth,
+            scrollWidth: document.documentElement.scrollWidth
+          };
+        })()`);
+        assert.ok(
+          metrics.scrollWidth <= metrics.innerWidth,
+          `Headless Chrome: Route #/${route} at ${vp.width}px has horizontal overflow (${metrics.scrollWidth} > ${metrics.innerWidth})`
+        );
+      }
+    }
+
+    // 4. Verify 320x568 modal & drawer bounding boxes (touch targets >= 44px, stacked PIN field, zero horizontal bleed)
+    await cdpSend('Emulation.setDeviceMetricsOverride', {
+      width: 320,
+      height: 568,
+      deviceScaleFactor: 2,
+      mobile: true
+    });
+    const modalRects320 = await cdpEval(`(async () => {
+      window.openCloudflareAuthModal(false);
+      window.startCloudflareOAuth('google');
+      await new Promise(r => setTimeout(r, 40));
+      const authBtns = Array.from(document.querySelectorAll('#cloudflare-auth-modal button, #cloudflare-auth-modal input:not([type="hidden"])'))
+        .filter(el => el.offsetParent !== null)
+        .map(el => ({ id: el.id || el.textContent.trim().slice(0, 20), h: Math.round(el.getBoundingClientRect().height), right: Math.round(el.getBoundingClientRect().right) }));
+      window.completeOAuthChooserAccount('google', 'aarav.mehta@gmail.com', 'Aarav Mehta');
+      window.StorefrontBridge.addToCart('vk-epx-301', 'kit-1200g', 1);
+      window.openCheckoutModal();
+      await new Promise(r => setTimeout(r, 40));
+      const pinRect = document.getElementById('chk-pincode').getBoundingClientRect();
+      const addrRect = document.getElementById('chk-address').getBoundingClientRect();
+      window.closeModalById('checkout-modal');
+      window.openAccountBarModal();
+      await new Promise(r => setTimeout(r, 40));
+      const barBtns = Array.from(document.querySelectorAll('#account-bar-modal button, #account-bar-modal input'))
+        .filter(el => el.offsetParent !== null)
+        .map(el => ({ id: el.id || el.textContent.trim().slice(0, 20), h: Math.round(el.getBoundingClientRect().height), right: Math.round(el.getBoundingClientRect().right) }));
+      window.closeModalById('account-bar-modal');
+      return {
+        authBtns,
+        barBtns,
+        pinWidth: Math.round(pinRect.width),
+        addrWidth: Math.round(addrRect.width),
+        pinHeight: Math.round(pinRect.height)
+      };
+    })()`);
+    assert.ok(modalRects320.pinWidth >= 240 && modalRects320.pinWidth === modalRects320.addrWidth, `Headless Chrome: #chk-pincode must stack full-width at 320px (got ${modalRects320.pinWidth}px vs ${modalRects320.addrWidth}px)`);
+    assert.ok(modalRects320.pinHeight >= 44, `Headless Chrome: #chk-pincode height must be >= 44px (got ${modalRects320.pinHeight}px)`);
+    for (const item of [...modalRects320.authBtns, ...modalRects320.barBtns]) {
+      assert.ok(item.h >= 44, `Headless Chrome: Modal control "${item.id}" must have height >= 44px (got ${item.h}px)`);
+      assert.ok(item.right <= 320, `Headless Chrome: Modal control "${item.id}" must not overflow 320px viewport (right=${item.right}px)`);
+    }
+
+    assert.strictEqual(consoleErrors.length, 0, `Headless Chrome must have 0 uncaught runtime exceptions (got: ${consoleErrors.join('; ')})`);
+
+    ws.close();
+    chromeProc.kill();
+    server.close();
+    try { fs.rmSync(userDataDir, { recursive: true, force: true }); } catch (_e) { /* ignore */ }
+
+    console.log('✅ PASS: Real Headless Chrome E2E & Multi-Viewport Layout Verification (320px, 375px, 1280px)');
+    passed++;
+  } catch (err) {
+    console.error('❌ FAIL: Real Headless Chrome E2E verification');
+    console.error('   ', err.message);
+    failed++;
+  }
+}
+
 console.log(`\n========================================`);
 console.log(`Verification Summary: ${passed} passed, ${failed} failed`);
 console.log(`========================================`);
 if (failed > 0) process.exit(1);
+
 

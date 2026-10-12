@@ -202,16 +202,16 @@
           <p class="text-[10px] text-on-surface-variant truncate">🚚 ${esc(ord.courier || 'BlueDart Air Priority')}</p>
           <div class="flex flex-wrap items-center gap-1.5 pt-1">
             ${!ord.mockupApproved ? `
-              <button type="button" onclick="window.handleApproveOrderMockup('${esc(ord.orderId)}')" class="flex-1 min-h-[36px] px-2.5 py-1 rounded-lg bg-[#9e3322] text-white text-[11px] font-bold cursor-pointer">
+              <button type="button" onclick="window.handleApproveOrderMockup('${esc(ord.orderId)}')" class="flex-1 min-h-[44px] px-2.5 py-1.5 rounded-lg bg-[#9e3322] text-white text-[11px] font-bold cursor-pointer">
                 Approve Pre-Pour Layout
               </button>
             ` : `
-              <span class="px-2 py-1 rounded-lg bg-emerald-50 text-emerald-800 border border-emerald-200 text-[10px] font-bold">✓ Layout Approved</span>
+              <span class="min-h-[44px] px-2.5 py-1.5 rounded-lg bg-emerald-50 text-emerald-800 border border-emerald-200 text-[10px] font-bold inline-flex items-center">✓ Layout Approved</span>
             `}
-            <button type="button" onclick="window.openOrderInvoiceModal('${esc(ord.orderId)}')" class="min-h-[36px] px-2.5 py-1 rounded-lg bg-white border border-[#e4e0d8] text-primary text-[11px] font-semibold cursor-pointer">
+            <button type="button" onclick="window.openOrderInvoiceModal('${esc(ord.orderId)}')" class="min-h-[44px] px-2.5 py-1.5 rounded-lg bg-white border border-[#e4e0d8] text-primary text-[11px] font-semibold cursor-pointer">
               GST Invoice
             </button>
-            <button type="button" onclick="window.closeModalById('account-bar-modal'); window.handleReorder('${esc(ord.orderId)}');" class="min-h-[36px] px-2.5 py-1 rounded-lg bg-white border border-[#e4e0d8] text-primary text-[11px] font-semibold cursor-pointer">
+            <button type="button" onclick="window.closeModalById('account-bar-modal'); window.handleReorder('${esc(ord.orderId)}');" class="min-h-[44px] px-2.5 py-1.5 rounded-lg bg-white border border-[#e4e0d8] text-primary text-[11px] font-semibold cursor-pointer">
               Reorder
             </button>
           </div>
@@ -269,11 +269,11 @@
               ${auth.email ? `<p class="text-[11px] text-on-surface-variant truncate">${esc(auth.email)}</p>` : ''}
               ${addrText ? `<p class="text-[11px] text-on-surface-variant line-clamp-2 mt-1">📍 ${esc(addrText)}</p>` : ''}
             </div>
-            <button type="button" onclick="window.closeModalById('mobile-menu-drawer'); window.openAccountBarModal();" class="px-2.5 py-1.5 rounded-lg bg-white border border-[#e4e0d8] text-[11px] font-bold text-primary shrink-0 cursor-pointer">Edit</button>
+            <button type="button" onclick="window.closeModalById('mobile-menu-drawer'); window.openAccountBarModal();" class="min-h-[44px] min-w-[44px] px-2.5 py-1.5 rounded-lg bg-white border border-[#e4e0d8] text-[11px] font-bold text-primary shrink-0 cursor-pointer">Edit</button>
           </div>
           <div class="flex items-center gap-2 pt-1 border-t border-[#e4e0d8]">
-            <button type="button" onclick="window.closeModalById('mobile-menu-drawer'); window.openAccountBarModal();" class="flex-1 min-h-[38px] px-2.5 py-1.5 rounded-lg bg-primary text-white text-[11px] font-bold cursor-pointer">Orders &amp; Address</button>
-            <button type="button" onclick="window.handlePatronLogout()" class="min-h-[38px] px-3 py-1.5 rounded-lg bg-white border border-[#e4e0d8] text-[#9e3322] text-[11px] font-bold cursor-pointer">Sign Out</button>
+            <button type="button" onclick="window.closeModalById('mobile-menu-drawer'); window.openAccountBarModal();" class="flex-1 min-h-[44px] px-2.5 py-1.5 rounded-lg bg-primary text-white text-[11px] font-bold cursor-pointer">Orders &amp; Address</button>
+            <button type="button" onclick="window.handlePatronLogout()" class="min-h-[44px] px-3 py-1.5 rounded-lg bg-white border border-[#e4e0d8] text-[#9e3322] text-[11px] font-bold cursor-pointer">Sign Out</button>
           </div>
         `;
       } else {
@@ -283,7 +283,7 @@
             <span class="text-[10px] px-2 py-0.5 rounded-full bg-[#ffe4de] text-[#9e3322] font-bold">Sign In to Order</span>
           </div>
           <p class="text-[11px] text-on-surface-variant leading-snug">Browse keepsakes &amp; calculate epoxy pours freely. Sign in with Google, Apple, or Email to sync your wishlist and place an order.</p>
-          <button type="button" onclick="window.closeModalById('mobile-menu-drawer'); window.openCloudflareAuthModal(false);" class="w-full min-h-[42px] px-3 py-2 rounded-xl bg-primary text-white text-xs font-bold flex items-center justify-center gap-1.5 cursor-pointer">
+          <button type="button" onclick="window.closeModalById('mobile-menu-drawer'); window.openCloudflareAuthModal(false);" class="w-full min-h-[44px] px-3 py-2 rounded-xl bg-primary text-white text-xs font-bold flex items-center justify-center gap-1.5 cursor-pointer">
             <span class="material-symbols-outlined text-base" aria-hidden="true">login</span>
             <span>Sign In (Google / Apple / Email)</span>
           </button>
@@ -306,7 +306,7 @@
           <div class="p-3.5 rounded-xl bg-white border border-[#e4e0d8] space-y-2">
             <div class="flex items-center justify-between gap-2">
               <span class="px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200 text-[10px] font-bold uppercase">${esc(providerBadge)} VERIFIED</span>
-              <button type="button" onclick="window.handlePatronLogout()" class="text-xs font-bold text-[#9e3322] hover:underline cursor-pointer">Sign Out</button>
+              <button type="button" onclick="window.handlePatronLogout()" class="min-h-[44px] px-2 flex items-center text-xs font-bold text-[#9e3322] hover:underline cursor-pointer">Sign Out</button>
             </div>
             <p class="text-sm font-bold text-primary break-words">${esc(curName)}</p>
             <p class="text-xs text-on-surface-variant break-words">${esc(curEmail)}${curPhone ? ' • ' + esc(curPhone) : ''}</p>
@@ -320,21 +320,21 @@
             <h4 class="text-xs font-bold text-primary uppercase tracking-wider">Update Account &amp; Delivery Address</h4>
             <div>
               <label for="bar-prof-name" class="text-[11px] font-semibold text-primary block mb-0.5">Full Name *</label>
-              <input id="bar-prof-name" type="text" required value="${esc(curName)}" class="w-full h-10 px-2.5 rounded-lg bg-surface-container-low border border-[#e4e0d8] text-xs text-primary">
+              <input id="bar-prof-name" type="text" required value="${esc(curName)}" class="w-full h-11 px-2.5 rounded-lg bg-surface-container-low border border-[#e4e0d8] text-xs text-primary">
             </div>
             <div>
               <label for="bar-prof-phone" class="text-[11px] font-semibold text-primary block mb-0.5">Mobile / WhatsApp *</label>
-              <input id="bar-prof-phone" type="tel" required value="${esc(curPhone)}" placeholder="+91 98765 43210" class="w-full h-10 px-2.5 rounded-lg bg-surface-container-low border border-[#e4e0d8] text-xs text-primary">
+              <input id="bar-prof-phone" type="tel" required value="${esc(curPhone)}" placeholder="+91 98765 43210" class="w-full h-11 px-2.5 rounded-lg bg-surface-container-low border border-[#e4e0d8] text-xs text-primary">
             </div>
             <div>
               <label for="bar-prof-email" class="text-[11px] font-semibold text-primary block mb-0.5">Email Address *</label>
-              <input id="bar-prof-email" type="email" required value="${esc(curEmail)}" class="w-full h-10 px-2.5 rounded-lg bg-surface-container-low border border-[#e4e0d8] text-xs text-primary">
+              <input id="bar-prof-email" type="email" required value="${esc(curEmail)}" class="w-full h-11 px-2.5 rounded-lg bg-surface-container-low border border-[#e4e0d8] text-xs text-primary">
             </div>
             <div>
               <label for="bar-prof-address" class="text-[11px] font-semibold text-primary block mb-0.5">Shipping Street Address &amp; PIN *</label>
-              <input id="bar-prof-address" type="text" required value="${esc(curAddr)}" placeholder="Flat / House No., Street, City &amp; 6-Digit PIN" class="w-full h-10 px-2.5 rounded-lg bg-surface-container-low border border-[#e4e0d8] text-xs text-primary">
+              <input id="bar-prof-address" type="text" required value="${esc(curAddr)}" placeholder="Flat / House No., Street, City &amp; 6-Digit PIN" class="w-full h-11 px-2.5 rounded-lg bg-surface-container-low border border-[#e4e0d8] text-xs text-primary">
             </div>
-            <button type="submit" class="w-full min-h-[42px] py-2 rounded-xl bg-primary text-white text-xs font-bold cursor-pointer">Save Account Details</button>
+            <button type="submit" class="w-full min-h-[44px] py-2 rounded-xl bg-primary text-white text-xs font-bold cursor-pointer">Save Account Details</button>
           </form>
 
           <div class="p-3.5 rounded-xl bg-white border border-[#e4e0d8] space-y-2.5">
@@ -357,7 +357,7 @@
             <p class="text-xs text-on-surface-variant leading-relaxed">
               You can browse all <strong>Vistāra Krafts</strong> keepsakes, save items to your wishlist, and build your bag freely. Sign in with 1 click when you are ready to place an order.
             </p>
-            <button type="button" onclick="window.closeModalById('account-bar-modal'); window.openCloudflareAuthModal(false);" class="btn-shimmer w-full min-h-[46px] py-2.5 rounded-xl bg-primary text-white text-xs font-bold flex items-center justify-center gap-2 shadow-sm cursor-pointer">
+            <button type="button" onclick="window.closeModalById('account-bar-modal'); window.openCloudflareAuthModal(false);" class="btn-shimmer w-full min-h-[48px] py-2.5 rounded-xl bg-primary text-white text-xs font-bold flex items-center justify-center gap-2 shadow-sm cursor-pointer">
               <span class="material-symbols-outlined text-base" aria-hidden="true">login</span>
               <span>Sign In / Create Account</span>
             </button>
@@ -3464,14 +3464,36 @@
 
   // Authentication Controllers (Step 1: 1-Click Google, Apple, or Email Sign-In / Create Account)
   let gisInitialized = false;
+  let appleSdkInitialized = false;
   let lastGisCredential = '';
   let activeOAuthChooserProvider = 'google';
 
+  function isPlaceholderClientId(clientId) {
+    const val = String(clientId || '').trim();
+    if (!val) return true;
+    const upper = val.toUpperCase();
+    return (
+      upper.startsWith('YOUR_') ||
+      upper.startsWith('DEV_') ||
+      upper.startsWith('CLIENT_') ||
+      upper.startsWith('REPLACE_WITH_') ||
+      upper.includes('REPLACE_WITH_REAL_CLIENT_ID')
+    );
+  }
+
+  function getOAuthProviderConfig(provider) {
+    const root = window.VistaraCloudflareConfig || {};
+    if (provider === 'apple') {
+      return (root.oauth && root.oauth.apple) || root.appleOAuth || null;
+    }
+    return (root.oauth && root.oauth.google) || root.googleOAuth || null;
+  }
+
   function initGoogleIdentityServicesIfConfigured() {
     try {
-      const cfg = window.VistaraCloudflareConfig && window.VistaraCloudflareConfig.googleOAuth;
-      if (!cfg || !cfg.enabled || !cfg.clientId || String(cfg.clientId).startsWith('YOUR_')) {
-        return;
+      const cfg = getOAuthProviderConfig('google');
+      if (!cfg || cfg.enabled === false || isPlaceholderClientId(cfg.clientId)) {
+        return false;
       }
       if (!document.getElementById('vk-google-gis-script')) {
         const script = document.createElement('script');
@@ -3484,7 +3506,10 @@
       } else if (window.google && window.google.accounts && window.google.accounts.id) {
         setupGoogleGisClient(cfg.clientId);
       }
-    } catch (_e) { /* ignore */ }
+      return true;
+    } catch (_e) {
+      return false;
+    }
   }
 
   function setupGoogleGisClient(clientId) {
@@ -3521,6 +3546,39 @@
         shape: 'pill',
         width: 280
       });
+    }
+  }
+
+  function initAppleSignInIfConfigured() {
+    try {
+      const cfg = getOAuthProviderConfig('apple');
+      if (!cfg || cfg.enabled === false || isPlaceholderClientId(cfg.clientId)) {
+        return false;
+      }
+      const setupAppleClient = () => {
+        if (appleSdkInitialized || !(window.AppleID && window.AppleID.auth)) return;
+        appleSdkInitialized = true;
+        window.AppleID.auth.init({
+          clientId: cfg.clientId,
+          scope: cfg.scope || 'name email',
+          redirectURI: cfg.redirectURI || window.location.origin,
+          usePopup: true
+        });
+      };
+      if (!document.getElementById('vk-apple-auth-script') && !(window.AppleID && window.AppleID.auth)) {
+        const script = document.createElement('script');
+        script.id = 'vk-apple-auth-script';
+        script.src = 'https://appleid.cdn-apple.com/appleauth/static/jsapi/appleid/1/en_US/appleid.auth.js';
+        script.async = true;
+        script.defer = true;
+        script.onload = setupAppleClient;
+        document.head.appendChild(script);
+      } else if (window.AppleID && window.AppleID.auth) {
+        setupAppleClient();
+      }
+      return true;
+    } catch (_e) {
+      return false;
     }
   }
 
@@ -3639,6 +3697,7 @@
     window.closeOAuthChooser();
     window.setEmailAuthTab('signin');
     initGoogleIdentityServicesIfConfigured();
+    initAppleSignInIfConfigured();
 
     const bannerEl = document.getElementById('cloudflare-auth-reason-banner');
     if (bannerEl) {
@@ -3665,18 +3724,32 @@
     }
 
     if (cleanProvider === 'google') {
-      initGoogleIdentityServicesIfConfigured();
+      const hasProdGoogle = initGoogleIdentityServicesIfConfigured();
+      if (hasProdGoogle && window.google && window.google.accounts && window.google.accounts.id && typeof window.google.accounts.id.prompt === 'function') {
+        try { window.google.accounts.id.prompt(); } catch (_e) { /* continue to chooser */ }
+      }
+    } else if (cleanProvider === 'apple') {
+      const hasProdApple = initAppleSignInIfConfigured();
+      if (hasProdApple && window.AppleID && window.AppleID.auth && typeof window.AppleID.auth.signIn === 'function') {
+        try {
+          window.AppleID.auth.signIn().then((res) => {
+            if (res && res.authorization && res.authorization.id_token) {
+              lastGisCredential = res.authorization.id_token;
+              const parts = res.authorization.id_token.split('.');
+              const payload = parts.length > 1 ? JSON.parse(atob(parts[1].replace(/-/g, '+').replace(/_/g, '/'))) : {};
+              const userObj = res.user || {};
+              const fullName = userObj.name ? `${userObj.name.firstName || ''} ${userObj.name.lastName || ''}`.trim() : '';
+              const email = userObj.email || payload.email || '';
+              if (email) {
+                window.completeOAuthChooserAccount('apple', email, fullName);
+              }
+            }
+          }).catch(() => { /* fall back to interactive account chooser */ });
+        } catch (_e) { /* fall back to interactive account chooser */ }
+      }
     }
 
-    // If the user already typed their email into the form or custom chooser input, sign in immediately with 1 click
-    const typedEmail = document.getElementById('cf-auth-email')?.value.trim() || '';
-    const typedName = document.getElementById('cf-auth-name')?.value.trim() || '';
-    if (typedEmail && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(typedEmail)) {
-      window.completeOAuthChooserAccount(cleanProvider, typedEmail, typedName);
-      return;
-    }
-
-    // Otherwise open the interactive 1-click Google / Apple Account Chooser sheet
+    // Open the interactive 1-click Google / Apple Account Chooser sheet
     activeOAuthChooserProvider = cleanProvider;
     const sheet = document.getElementById('cf-oauth-chooser-sheet');
     const titleEl = document.getElementById('cf-oauth-chooser-title');
@@ -3693,7 +3766,7 @@
       customEmailEl.placeholder = isApple ? 'you@icloud.com' : 'you@gmail.com';
     }
 
-    const chooserAccounts = isApple
+    const defaultAccounts = isApple
       ? [
           { name: 'Aarav Mehta', email: 'aarav.mehta@icloud.com', badge: 'Apple ID • Hide My Email Supported' },
           { name: 'Meera Kapoor', email: 'meera.kapoor@icloud.com', badge: 'iCloud Keychain Verified' }
@@ -3702,6 +3775,29 @@
           { name: 'Aarav Mehta', email: 'aarav.mehta@gmail.com', badge: 'Google Account' },
           { name: 'Meera Kapoor', email: 'meera.kapoor@gmail.com', badge: 'Google Workspace' }
         ];
+
+    let savedAccounts = [];
+    try {
+      const rawUsers = localStorage.getItem('ram_vk_cf_users_v2');
+      if (rawUsers) {
+        const parsed = JSON.parse(rawUsers) || {};
+        savedAccounts = Object.values(parsed)
+          .filter(u => u && u.email && (!u.provider || u.provider === cleanProvider))
+          .map(u => ({
+            name: u.name || u.email.split('@')[0],
+            email: u.email,
+            badge: isApple ? 'Saved Apple ID' : 'Saved Google Account'
+          }));
+      }
+    } catch (_e) { /* ignore */ }
+
+    const seenEmails = new Set();
+    const chooserAccounts = [...savedAccounts, ...defaultAccounts].filter(acc => {
+      const key = String(acc.email || '').toLowerCase();
+      if (!key || seenEmails.has(key)) return false;
+      seenEmails.add(key);
+      return true;
+    });
 
     if (accountsContainer) {
       accountsContainer.innerHTML = chooserAccounts.map(acc => `
@@ -3780,17 +3876,26 @@
     Store.logoutPatron();
     AppState.pendingCheckoutAfterAuth = false;
     lastGisCredential = '';
+    window.closeOAuthChooser();
     document.getElementById('account-bar-modal')?.classList.add('hidden');
     document.getElementById('mobile-menu-drawer')?.classList.add('hidden');
-    // Clear checkout inputs so no stale customer details remain after sign-out
-    const nameEl = document.getElementById('chk-name');
-    const phoneEl = document.getElementById('chk-phone');
-    const addrEl = document.getElementById('chk-address');
-    const pinEl = document.getElementById('chk-pincode');
-    if (nameEl) nameEl.value = '';
-    if (phoneEl) phoneEl.value = '';
-    if (addrEl) addrEl.value = '';
-    if (pinEl) pinEl.value = '';
+    // Clear checkout & auth modal inputs so no stale customer details remain after sign-out
+    const inputIdsToClear = [
+      'chk-name',
+      'chk-phone',
+      'chk-address',
+      'chk-pincode',
+      'cf-auth-email',
+      'cf-auth-password',
+      'cf-auth-name',
+      'cf-auth-phone',
+      'cf-oauth-custom-email',
+      'cf-oauth-custom-name'
+    ];
+    inputIdsToClear.forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.value = '';
+    });
     syncBodyModalLock();
     updateGlobalBadges();
     renderActiveView();

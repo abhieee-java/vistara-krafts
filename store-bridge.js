@@ -823,7 +823,9 @@
     }
   }
 
-  // Initialize default cart and orders as empty arrays for new visitors
+  // Initialize default wishlist, cart, and orders as empty arrays for new visitors
+  const DEFAULT_WISHLIST = [];
+
   const DEFAULT_CART = [];
 
   const DEFAULT_ORDERS = [];
@@ -1209,7 +1211,7 @@
     },
 
     getWishlist() {
-      return safeRead(STORAGE_KEYS.WISHLIST, []);
+      return safeRead(STORAGE_KEYS.WISHLIST, DEFAULT_WISHLIST);
     },
 
     isWishlisted(productId) {
@@ -1362,7 +1364,10 @@
       if (resolvedPin && /^[1-9][0-9]{5}$/.test(resolvedPin)) {
         this.verifyPincode(resolvedPin);
       }
-      const fullAddress = (address && resolvedPin && !address.includes(resolvedPin)) ? `${address} - ${resolvedPin}` : address;
+      const cleanAddrBase = address ? address.replace(/\s*-\s*[1-9][0-9]{5}\s*$/, '').trim() : '';
+      const fullAddress = (cleanAddrBase && resolvedPin && !cleanAddrBase.includes(resolvedPin))
+        ? `${cleanAddrBase} - ${resolvedPin}`
+        : address;
 
       // Merge any guest wishlist items into the authenticated user's wishlist
       const guestWishlist = this.getWishlist();
@@ -1445,13 +1450,28 @@
         safeWrite(STORAGE_KEYS.REGISTERED_USERS, registeredUsers);
       }
 
+      const guestDefaultProfile = {
+        name: 'Vistāra Studio Guest',
+        email: '',
+        phone: '',
+        address: '',
+        defaultAddress: '',
+        pincode: '',
+        eventDate: '2026-11-18',
+        tier: 'Gold Atelier Member',
+        memberTier: 'Gold Atelier Member',
+        loyaltyPoints: 250
+      };
+
       safeWrite(STORAGE_KEYS.AUTH_SESSION, null);
       safeWrite(STORAGE_KEYS.WISHLIST, []);
+      safeWrite(STORAGE_KEYS.PATRON_PROFILE, guestDefaultProfile);
       callCloudflareEdge('/auth/logout', 'POST');
       edgeSessionToken = '';
 
       this.notify('wishlist_updated', { count: 0, wishlist: [] });
       this.notify('auth_updated', null);
+      this.notify('patron_profile_updated', guestDefaultProfile);
       return { ok: true };
     },
 
@@ -1495,9 +1515,17 @@
       const resolvedAddress = updates.defaultAddress !== undefined
         ? updates.defaultAddress
         : (updates.address !== undefined ? updates.address : (next.defaultAddress || next.address || ''));
+      const pinMatch = resolvedAddress ? String(resolvedAddress).match(/\b([1-9][0-9]{5})\b/) : null;
+      const resolvedPin = updates.pincode !== undefined
+        ? String(updates.pincode || '').trim()
+        : (pinMatch ? pinMatch[1] : (next.pincode || ''));
+      if (resolvedPin && /^[1-9][0-9]{5}$/.test(resolvedPin)) {
+        this.verifyPincode(resolvedPin);
+      }
       const resolvedTier = updates.memberTier || updates.tier || next.memberTier || next.tier || 'Gold Atelier Member';
       next.address = resolvedAddress;
       next.defaultAddress = resolvedAddress;
+      next.pincode = resolvedPin;
       next.tier = resolvedTier;
       next.memberTier = resolvedTier;
       safeWrite(STORAGE_KEYS.PATRON_PROFILE, next);
@@ -1511,6 +1539,7 @@
           email: next.email || (existingAuth && existingAuth.email) || 'patron@vistarakrafts.in',
           address: resolvedAddress,
           defaultAddress: resolvedAddress,
+          pincode: resolvedPin,
           provider: next.provider || (existingAuth && existingAuth.provider) || 'email',
           authenticated: true
         };
@@ -1527,7 +1556,7 @@
           name: sessionObj.name,
           phone: sessionObj.phone || '',
           address: resolvedAddress,
-          pincode: sessionObj.pincode || '',
+          pincode: resolvedPin,
           wishlist: this.getWishlist()
         });
         this.notify('auth_updated', sessionObj);
@@ -1652,8 +1681,9 @@
       if (resolvedPin && /^[1-9][0-9]{5}$/.test(resolvedPin)) {
         this.verifyPincode(resolvedPin);
       }
-      const customerAddress = (resolvedPin && !rawAddress.includes(resolvedPin))
-        ? `${rawAddress} - ${resolvedPin}`
+      const cleanAddressBase = rawAddress.replace(/\s*-\s*[1-9][0-9]{5}\s*$/, '').trim();
+      const customerAddress = (resolvedPin && !cleanAddressBase.includes(resolvedPin))
+        ? `${cleanAddressBase} - ${resolvedPin}`
         : rawAddress;
 
       // Save shipping address to patron profile for future 1-click checkouts
@@ -1805,4 +1835,5 @@
 
   global.ResinStore = Store;
   global.StorefrontBridge = Store;
+  global.VistaraStore = Store;
 })(window);
