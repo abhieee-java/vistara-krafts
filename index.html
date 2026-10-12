@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html class="h-full" lang="en">
+<html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -105,7 +105,7 @@
           <span><span class="hidden 2xl:inline">@resin.art.memories </span>Social Feed</span>
         </button>
         <button type="button" data-nav-route="account" onclick="window.navigateTo('account')" class="desktop-nav-item h-full px-1.5 text-[11px] xl:text-xs uppercase tracking-wider flex items-center gap-1 whitespace-nowrap cursor-pointer">
-          <span>Orders<span class="hidden xl:inline"> &amp; Host Sync</span></span>
+          <span>Track Orders<span class="hidden xl:inline"> &amp; Account</span></span>
         </button>
       </nav>
 
@@ -147,7 +147,7 @@
         <div class="flex flex-col gap-2.5">
           <span class="font-headline-sm text-xl text-primary font-bold">Resin Art Memories</span>
           <p class="text-xs text-on-surface-variant leading-relaxed">
-            India’s premier floral memory preservation studio &amp; Vistāra Krafts optical epoxy supplier. Ready for Supabase, Cloudflare R2 &amp; external Admin Host sync.
+            India’s premier bridal varmala &amp; floral memory preservation atelier and Vistāra Krafts ISO-9001 optical epoxy supplier. Handcrafted to hold your moments in crystal glass forever.
           </p>
           <a href="https://www.instagram.com/resin.art.memories?utm_source=qr" target="_blank" rel="noopener noreferrer" class="min-h-[44px] text-xs font-bold text-[#9e3322] hover:underline inline-flex items-center gap-1 mt-1">
             <span>Instagram: @resin.art.memories</span>
@@ -168,7 +168,7 @@
           <button type="button" onclick="window.navigateTo('social')" class="min-h-[44px] py-1.5 text-left text-on-surface-variant hover:text-primary flex items-center cursor-pointer">@resin.art.memories Reels Feed</button>
           <button type="button" onclick="window.openTdsModal('tds')" class="min-h-[44px] py-1.5 text-left text-on-surface-variant hover:text-primary flex items-center cursor-pointer">ASTM Technical Data Sheets (TDS)</button>
           <button type="button" onclick="window.openTdsModal('sds')" class="min-h-[44px] py-1.5 text-left text-on-surface-variant hover:text-primary flex items-center cursor-pointer">ISO 11014 Safety Certificates</button>
-          <button type="button" onclick="window.navigateTo('account')" class="min-h-[44px] py-1.5 text-left text-on-surface-variant hover:text-primary flex items-center cursor-pointer">Track Preservation Stage &amp; Host Sync</button>
+          <button type="button" onclick="window.navigateTo('account')" class="min-h-[44px] py-1.5 text-left text-on-surface-variant hover:text-primary flex items-center cursor-pointer">Track Varmala &amp; Order Status</button>
         </div>
 
         <div class="flex flex-col gap-2.5 text-xs">
@@ -184,7 +184,7 @@
 
       <div class="pt-6 border-t border-[#e4e0d8] flex flex-wrap items-center justify-between gap-3 text-xs text-on-surface-variant">
         <span>© 2026 Resin Art Memories (@resin.art.memories) × Vistāra Krafts Studio. All rights reserved.</span>
-        <span class="font-spec-numeral">60/30/10 High-RT Design • Supabase + Cloudflare R2 Ready</span>
+        <span class="font-spec-numeral">ISO 9001:2015 Certified • 100% Encrypted Razorpay Checkout • Insured Pan-India Air Transit</span>
       </div>
     </div>
   </footer>
@@ -259,8 +259,8 @@
             <span class="material-symbols-outlined text-base" aria-hidden="true">bookmarks</span>
           </button>
           <button type="button" onclick="window.navigateTo('account'); window.closeModalById('mobile-menu-drawer');" class="min-h-[44px] p-3 rounded-xl text-left text-sm font-semibold text-primary hover:bg-surface-container flex items-center justify-between cursor-pointer">
-            <span>Orders &amp; Admin Host Sync</span>
-            <span class="material-symbols-outlined text-base" aria-hidden="true">sync</span>
+            <span>Track Orders &amp; My Account</span>
+            <span class="material-symbols-outlined text-base" aria-hidden="true">local_shipping</span>
           </button>
         </div>
       </div>
@@ -438,10 +438,17 @@
         <label for="chk-payment" class="text-[11px] font-bold text-primary block mb-1">Select Payment Method</label>
         <select id="chk-payment" aria-label="Select Payment Method" class="w-full h-12 px-3 rounded-lg bg-surface-container-low border border-[#e4e0d8] text-xs">
           <option value="UPI Instant (GPay / PhonePe / Paytm)">UPI Instant (GPay / PhonePe / Paytm)</option>
-          <option value="Credit / Debit Card (Visa / Mastercard / RuPay)">Credit / Debit Card</option>
+          <option value="Credit / Debit Card (Visa / Mastercard / RuPay)">Credit / Debit Card (Visa / Mastercard / RuPay)</option>
+          <option value="No-Cost 3-Month EMI (Zero Interest Split Pay)">No-Cost 3-Month EMI (Zero Interest Split Pay)</option>
           <option value="NetBanking / Corporate B2B NEFT">NetBanking / B2B Corporate</option>
           <option value="Cash on Delivery (BlueDart COD)">Cash on Delivery (COD)</option>
         </select>
+      </div>
+      <div class="shrink-0">
+        <label for="chk-gift-wrap" class="min-h-[44px] px-3 py-2 rounded-lg bg-[#fdf6f3] border border-[#9e3322]/25 flex items-center justify-between gap-2 cursor-pointer">
+          <span class="text-xs font-semibold text-primary">🎁 Add Complimentary Silk Potli &amp; Wax-Sealed Gift Note</span>
+          <input id="chk-gift-wrap" type="checkbox" checked aria-label="Add Complimentary Silk Potli and Wax-Sealed Gift Note" class="w-5 h-5 accent-primary shrink-0">
+        </label>
       </div>
       <div class="p-3 rounded-xl bg-surface-container-low flex items-center justify-between gap-2 shrink-0">
         <span class="text-xs font-semibold text-primary">Total Amount Payable (incl. 18% GST)</span>

@@ -35,20 +35,31 @@
 
 html {
   scroll-behavior: smooth;
+  scroll-padding-top: 104px;
   background-color: var(--surface-60-canvas);
   color: var(--structure-30-ink);
   -webkit-tap-highlight-color: transparent;
+  overflow-x: hidden;
+  overflow-x: clip;
+  --scrollbar-thumb: #b9b2a6;
+  --scrollbar-track: var(--surface-60-canvas);
+  scrollbar-width: thin;
+  scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
 }
 
 body {
   margin: 0;
   padding: 0;
+  min-height: 100vh;
+  min-height: 100dvh;
   background-color: var(--surface-60-canvas);
   color: var(--structure-30-ink);
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
   overflow-x: hidden;
+  overflow-x: clip;
 }
 
+html.modal-open,
 body.modal-open {
   overflow: hidden !important;
 }
@@ -137,29 +148,33 @@ textarea:disabled {
   cursor: not-allowed;
 }
 
-/* Hide scrollbars on horizontal rails while keeping scrollability */
+/* Hide scrollbars on horizontal rails while keeping smooth touch/trackpad scrollability */
 .no-scrollbar::-webkit-scrollbar {
   display: none;
 }
 .no-scrollbar {
   -ms-overflow-style: none;
   scrollbar-width: none;
+  overscroll-behavior-x: contain;
+  -webkit-overflow-scrolling: touch;
 }
 
-/* Subtle Custom Scrollbar for Desktop */
-::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
-}
-::-webkit-scrollbar-track {
-  background: var(--surface-60-canvas);
-}
-::-webkit-scrollbar-thumb {
-  background: #c8c2b8;
-  border-radius: 999px;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: var(--accent-10-brass);
+/* Legacy fallback for WebKit/Blink browsers per Modern Web Guidance */
+@supports not (scrollbar-color: auto) {
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  ::-webkit-scrollbar-track {
+    background: var(--scrollbar-track);
+  }
+  ::-webkit-scrollbar-thumb {
+    background: var(--scrollbar-thumb);
+    border-radius: 999px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--accent-10-brass);
+  }
 }
 
 /* Instagram Story Ring Gradient (High-RT 10% Accent) */

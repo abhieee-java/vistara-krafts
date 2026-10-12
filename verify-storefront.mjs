@@ -62,6 +62,9 @@ function makeMockElement(id = '') {
 }
 
 const mockDocument = {
+  body: makeMockElement('body'),
+  documentElement: makeMockElement('html'),
+  contains: () => true,
   getElementById: (id) => {
     if (!elementsById.has(id)) makeMockElement(id);
     return elementsById.get(id);
@@ -79,7 +82,14 @@ const sandbox = {
   localStorage: mockLocalStorage,
   location: { hash: '#/home', href: 'http://localhost/index.html#/home' },
   navigator: { clipboard: { writeText: async () => {} } },
-  scrollTo: () => {},
+  scrollY: 0,
+  scrollTo: (xOrObj, y) => {
+    if (typeof xOrObj === 'object' && xOrObj !== null) {
+      sandbox.scrollY = Number(xOrObj.top) || 0;
+    } else {
+      sandbox.scrollY = Number(y) || 0;
+    }
+  },
   console,
   setTimeout,
   clearTimeout,
@@ -229,7 +239,7 @@ test('Social feed engine toggles likes, adds comments, and rejects empty comment
   assert.strictEqual(validComment.comments[validComment.comments.length - 1].text, 'Obsessed with the gold leaf detailing!');
 });
 
-test('SPA Router in app.js renders all 7 customer routes and interactive modals cleanly', () => {
+test('SPA Router in app.js renders all 7 customer routes, enforces zero owner/admin UI leakage, and keeps programmatic bridge intact', () => {
   // First test empty cart view
   sandbox.window.navigateTo('cart', null);
   (windowListeners['hashchange'] || []).forEach(fn => fn());
@@ -248,7 +258,15 @@ test('SPA Router in app.js renders all 7 customer routes and interactive modals 
     ['custom-studio', null, 'Custom Memory'],
     ['wishlist', null, 'Saved'],
     ['cart', null, 'Invoice Summary'],
-    ['account', null, 'Admin Host']
+    ['account', null, 'Studio Account &amp; Order Tracker']
+  ];
+
+  const forbiddenOwnerTerms = [
+    'Admin Host',
+    'Supabase Database Adapter',
+    'Cloudflare R2 Object Storage',
+    'Simulate Admin Host Push',
+    'Stitch Design System Screens'
   ];
 
   for (const [route, param, expectedSubstring] of routes) {
@@ -256,9 +274,12 @@ test('SPA Router in app.js renders all 7 customer routes and interactive modals 
     (windowListeners['hashchange'] || []).forEach(fn => fn());
     const rendered = mockDocument.getElementById('app-view-root').innerHTML;
     assert.ok(rendered.includes(expectedSubstring), `Route #/${route} did not render "${expectedSubstring}"`);
+    for (const term of forbiddenOwnerTerms) {
+      assert.ok(!rendered.includes(term), `Customer route #/${route} must not expose owner/admin UI text "${term}"`);
+    }
   }
 
-  // Test interactive modals & live Admin Host push simulation
+  // Test interactive modals & programmatic Admin Host bridge (kept in code for future owner site)
   sandbox.window.openStoryModal(0);
   assert.ok(mockDocument.getElementById('story-modal-title').textContent.includes('Varmala'));
   sandbox.window.openTdsModal('tds');
@@ -533,9 +554,94 @@ test('Visual QA & Accessibility Polish: 2-font limit, WCAG AA tokens, modal scro
   assert.ok(visualIssuesMd.includes('Fixed & Verified'), 'VISUAL_ISSUES.md must record Fixed & Verified status');
 });
 
+test('Customer E-Commerce Domain Features, Strict Owner UI Separation & Viewport Scroll Fixes', () => {
+  const indexHtml = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8');
+  const stylesCss = fs.readFileSync(path.join(ROOT, 'styles.css'), 'utf8');
+
+  // 1. Verify index.html has zero visible owner/admin/Supabase/Cloudflare UI strings
+  assert.ok(!indexHtml.includes('Host Sync'), 'index.html must not expose Host Sync button in customer nav');
+  assert.ok(!indexHtml.includes('Admin Host'), 'index.html must not expose Admin Host link in customer drawer/footer');
+  assert.ok(!indexHtml.includes('Supabase &amp; Cloudflare R2 Ready'), 'index.html footer must not expose backend infrastructure labels');
+
+  // 2. Verify viewport & scroll fixes in index.html, styles.css, and app.js
+  assert.ok(!/<html[^>]*class="[^"]*h-full/i.test(indexHtml), 'index.html <html> must not have class="h-full" trapping body scroll');
+  assert.ok(stylesCss.includes('scroll-padding-top: 104px'), 'styles.css must set scroll-padding-top for sticky header clearance');
+  assert.ok(stylesCss.includes('overflow-x: clip'), 'styles.css must use overflow-x: clip to prevent nested scroll container trapping');
+  assert.ok(stylesCss.includes('scrollbar-width: thin'), 'styles.css must configure modern scrollbar-width: thin');
+  assert.ok(!appCode.includes('href="#pdp-reviews"'), 'app.js PDP must not use <a href="#pdp-reviews"> which hijacks SPA location.hash');
+  assert.ok(appCode.includes("window.scrollToSection('pdp-reviews')"), 'app.js PDP must use window.scrollToSection for review anchor scrolling');
+
+  // Verify in-place re-render preserves window.scrollY while route change resets scrollY to 0
+  sandbox.window.navigateTo('product', 'ram-keep-001');
+  sandbox.location.hash = '#/product/ram-keep-001';
+  (windowListeners['hashchange'] || []).forEach(fn => fn());
+  sandbox.scrollY = 480;
+  sandbox.window.changePdpQty(1);
+  assert.strictEqual(sandbox.scrollY, 480, 'In-place PDP quantity update must preserve window.scrollY');
+
+  // 3. Verify Recently Viewed products tracking & Express Buy Now on PDP
+  sandbox.window.navigateTo('product', 'vk-epx-301');
+  sandbox.location.hash = '#/product/vk-epx-301';
+  (windowListeners['hashchange'] || []).forEach(fn => fn());
+  const recent = Store.getRecentlyViewedProducts('vk-epx-301', 4);
+  assert.ok(recent.length > 0 && recent.some(p => p.id === 'ram-keep-001'), 'Recently viewed products must include previously visited ram-keep-001');
+  const pdpHtml = mockDocument.getElementById('app-view-root').innerHTML;
+  assert.ok(pdpHtml.includes('id="pdp-buy-now-btn"'), 'PDP must render Express Buy Now button');
+  assert.ok(pdpHtml.includes('Recently Viewed &amp; Curated For You'), 'PDP must render Recently Viewed section');
+
+  // 4. Verify Custom Studio 5-shape options, Secondary Keepsake add-ons, Pickup Slot booking & Flower Care Protocol
+  sandbox.window.navigateTo('custom-studio', null);
+  sandbox.location.hash = '#/custom-studio';
+  (windowListeners['hashchange'] || []).forEach(fn => fn());
+  sandbox.window.updateCustomBuilder('shape', '14" Mughal Arch Block', 5299);
+  sandbox.window.updateCustomBuilder('secondaryKeepsake', 'Matching Resin Ring Platter', 899);
+  sandbox.window.updateCustomBuilderSchedule('pickupSlot', 'Afternoon Slot (2:00 PM – 6:00 PM)');
+  const studioHtml = mockDocument.getElementById('app-view-root').innerHTML;
+  assert.ok(studioHtml.includes('14&quot; Mughal Arch Block') || studioHtml.includes('14" Mughal Arch Block'), 'Custom Studio must support 14" Mughal Arch Block');
+  assert.ok(studioHtml.includes('Matching Resin Ring Platter'), 'Custom Studio must support Secondary Keepsake Add-ons');
+  assert.ok(studioHtml.includes('Essential Post-Wedding Flower Care Protocol'), 'Custom Studio must display Bridal Flower Care Protocol');
+
+  // 5. Verify Patron Profile editing, Order Lookup, Pre-Pour Layout Mockup Approval, GST Invoice modal & Reorder
+  sandbox.window.navigateTo('account', null);
+  sandbox.location.hash = '#/account';
+  (windowListeners['hashchange'] || []).forEach(fn => fn());
+  sandbox.window.toggleAccountProfileEdit();
+  let accHtml = mockDocument.getElementById('app-view-root').innerHTML;
+  assert.ok(accHtml.includes('id="account-profile-form"'), 'Account view must toggle Patron Profile edit form');
+
+  mockDocument.getElementById('acc-prof-name').value = 'Meera & Aarav Kapoor';
+  mockDocument.getElementById('acc-prof-phone').value = '+91 98111 22334';
+  mockDocument.getElementById('acc-prof-email').value = 'meera.kapoor@bride.in';
+  mockDocument.getElementById('acc-prof-address').value = '42 Defence Colony, New Delhi 110024';
+  sandbox.window.saveAccountProfile({ preventDefault: () => {} });
+  assert.strictEqual(Store.getPatronProfile().name, 'Meera & Aarav Kapoor');
+
+  // Approve pre-pour layout mockup for default order RAM-2025-8841
+  assert.strictEqual(Store.getOrders().find(o => o.orderId === 'RAM-2025-8841').mockupApproved, false);
+  sandbox.window.handleApproveOrderMockup('RAM-2025-8841');
+  const approvedOrd = Store.getOrders().find(o => o.orderId === 'RAM-2025-8841');
+  assert.strictEqual(approvedOrd.mockupApproved, true);
+  assert.ok(approvedOrd.stageIndex >= 3, 'Approving pre-pour layout must advance order stageIndex');
+
+  // Open GST Tax Invoice Modal for RAM-2025-8841
+  sandbox.window.openOrderInvoiceModal('RAM-2025-8841');
+  assert.ok(mockDocument.getElementById('tds-modal-title').textContent.includes('GST Tax Invoice — Order #RAM-2025-8841'));
+  assert.ok(mockDocument.getElementById('tds-modal-body').innerHTML.includes('HSN: 39073010'));
+
+  // Order lookup filter
+  sandbox.window.setAccountOrderSearch('BlueDart');
+  accHtml = mockDocument.getElementById('app-view-root').innerHTML;
+  assert.ok(accHtml.includes('RAM-2025-8841'));
+  sandbox.window.setAccountOrderSearch('NON_EXISTENT_ORDER_999');
+  accHtml = mockDocument.getElementById('app-view-root').innerHTML;
+  assert.ok(accHtml.includes('No Matching Orders Found'));
+  sandbox.window.setAccountOrderSearch('');
+});
+
 console.log(`\n========================================`);
 console.log(`Verification Summary: ${passed} passed, ${failed} failed`);
 console.log(`========================================`);
 if (failed > 0) process.exit(1);
+
 
 

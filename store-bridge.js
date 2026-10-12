@@ -18,6 +18,8 @@
     COUPON: 'ram_vk_coupon_v1',
     GST_INFO: 'ram_vk_gst_v1',
     QUIZ_PREF: 'ram_vk_quiz_pref_v1',
+    PATRON_PROFILE: 'ram_vk_patron_profile_v1',
+    RECENTLY_VIEWED: 'ram_vk_recently_viewed_v1',
     HOST_PUSH_LOG: 'ram_vk_host_push_log_v1'
   };
 
@@ -854,10 +856,19 @@
       orderId: 'RAM-2025-8841',
       date: '10 Oct 2026',
       total: 4499,
+      subtotal: 4499,
+      discount: 0,
+      gstAmount: 686.29,
+      paymentMethod: 'UPI Instant (GPay / PhonePe / Paytm)',
+      customerName: 'Aanya Verma',
+      phone: '+91 98765 43210',
+      address: '100 Feet Road, Indiranagar, Bengaluru 560001',
+      giftWrap: true,
+      mockupApproved: false,
       status: 'Deep Cast Pour (Stage 4 of 5)',
       stageIndex: 3,
       stages: ['Order Confirmed', 'Flowers Received at Studio', 'Silica Dehydration (7d)', 'Deep Optical Cast Pour', 'Diamond Polish & Dispatch'],
-      items: [{ name: 'Eternal Varmala & Bridal Bouquet Time-Capsule Block (12")', qty: 1, price: 4499 }],
+      items: [{ productId: 'ram-keep-001', name: 'Eternal Varmala & Bridal Bouquet Time-Capsule Block (12")', qty: 1, price: 4499 }],
       courier: 'BlueDart Air Priority • AWB #BD99412048'
     }
   ];
@@ -1273,8 +1284,91 @@
       return next;
     },
 
+    getPatronProfile() {
+      return safeRead(STORAGE_KEYS.PATRON_PROFILE, {
+        name: 'Aanya Verma',
+        email: 'aanya.verma@atelier.in',
+        phone: '+91 98765 43210',
+        address: '100 Feet Road, Indiranagar, Bengaluru 560001',
+        eventDate: '2026-11-18',
+        tier: 'Gold Atelier Member',
+        loyaltyPoints: 1250
+      });
+    },
+
+    savePatronProfile(updates = {}) {
+      const next = { ...this.getPatronProfile(), ...updates };
+      safeWrite(STORAGE_KEYS.PATRON_PROFILE, next);
+      this.notify('patron_profile_updated', next);
+      return next;
+    },
+
+    recordRecentlyViewed(productId) {
+      if (!productId) return [];
+      const prod = this.getProductById(productId);
+      const resolvedId = prod ? prod.id : productId;
+      const current = safeRead(STORAGE_KEYS.RECENTLY_VIEWED, ['ram-keep-001', 'vk-epx-301', 'ram-keep-002', 'vk-epx-201']);
+      const list = Array.isArray(current) ? current.filter(id => id !== resolvedId) : [];
+      list.unshift(resolvedId);
+      const trimmed = list.slice(0, 6);
+      safeWrite(STORAGE_KEYS.RECENTLY_VIEWED, trimmed);
+      return trimmed;
+    },
+
+    getRecentlyViewedProducts(excludeId = null, limit = 4) {
+      const ids = safeRead(STORAGE_KEYS.RECENTLY_VIEWED, ['ram-keep-001', 'vk-epx-301', 'ram-keep-002', 'vk-epx-201']);
+      const all = this.getProducts();
+      const matched = [];
+      (Array.isArray(ids) ? ids : []).forEach(id => {
+        if (excludeId && id === excludeId) return;
+        const p = all.find(item => item.id === id);
+        if (p && !matched.some(m => m.id === p.id)) matched.push(p);
+      });
+      if (matched.length < limit) {
+        all.forEach(p => {
+          if (matched.length < limit && p.id !== excludeId && !matched.some(m => m.id === p.id)) {
+            matched.push(p);
+          }
+        });
+      }
+      return matched.slice(0, limit);
+    },
+
     getOrders() {
       return safeRead(STORAGE_KEYS.ORDERS, DEFAULT_ORDERS);
+    },
+
+    findOrder(query) {
+      const orders = this.getOrders();
+      const q = String(query || '').trim().toLowerCase();
+      if (!q) return orders;
+      return orders.filter(o =>
+        String(o.orderId || '').toLowerCase().includes(q) ||
+        String(o.status || '').toLowerCase().includes(q) ||
+        String(o.courier || '').toLowerCase().includes(q) ||
+        String(o.phone || '').toLowerCase().includes(q) ||
+        String(o.customerName || '').toLowerCase().includes(q) ||
+        (Array.isArray(o.items) && o.items.some(it => String(it.name || '').toLowerCase().includes(q)))
+      );
+    },
+
+    approveOrderMockup(orderId) {
+      const orders = this.getOrders().map(o => {
+        if (o.orderId === orderId) {
+          const nextStage = Math.min((o.stages ? o.stages.length - 1 : 4), Math.max(o.stageIndex || 1, 3));
+          return {
+            ...o,
+            mockupApproved: true,
+            stageIndex: nextStage,
+            status: 'Floral Layout Approved • Deep Cast Pour in Progress'
+          };
+        }
+        return o;
+      });
+      safeWrite(STORAGE_KEYS.ORDERS, orders);
+      const updated = orders.find(o => o.orderId === orderId) || null;
+      this.notify('order_updated', updated);
+      return updated;
     },
 
     placeOrder(checkoutDetails = {}) {
@@ -1294,10 +1388,13 @@
         customerName: checkoutDetails.name || 'Studio Patron',
         phone: checkoutDetails.phone || '+91 98765 43210',
         address: checkoutDetails.address || 'Indiranagar, Bengaluru 560001',
+        giftWrap: checkoutDetails.giftWrap !== undefined ? Boolean(checkoutDetails.giftWrap) : true,
+        mockupApproved: false,
         status: 'Order Confirmed • Studio Batch Allocated',
         stageIndex: 1,
         stages: ['Order Confirmed', 'Flowers / Materials Prepped', 'Silica & Vacuum Degassing', 'Deep Optical Cast Pour', 'Diamond Polish & Dispatch'],
         items: summary.cart.map(i => ({
+          productId: i.productId || 'vk-epx-301',
           name: `${i.name} (${i.variantLabel})`,
           qty: i.qty,
           price: i.price,

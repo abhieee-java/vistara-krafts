@@ -298,3 +298,37 @@
 - **Description**: `#story-modal-img` and `#lightbox-img` in `index.html` were initialized with `src=""`. In HTML5, an empty `src=""` attribute resolves to the document URL (`index.html`), causing the browser to fetch and attempt to decode `index.html` as an image (`img.complete === true && img.naturalWidth === 0`) on every page load before those modals are opened.
 - **Fix Applied**: Replaced `src=""` on `#story-modal-img` and `#lightbox-img` with a valid 1×1 transparent SVG data URI (`data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1' height='1'/%3E`).
 - **Status**: **Fixed & Verified** (`0` broken images across all 112 viewport × route combinations in 2 consecutive passes)
+
+---
+
+### `VIS-028` — Nested Scroll Container Trap (`<html class="h-full">` + `body { overflow-x: hidden }`), PDP Review Anchor Hash Hijacking, & In-Place Re-Render Scroll Jumps
+- **Page / Route**: Global (`index.html`, `styles.css`, `app.js`), `#/product/:id`
+- **Viewport(s)**: All Viewports (`320px` – `1920px`)
+- **Severity**: High
+- **Description**:
+  1. `<html class="h-full">` paired with `body { overflow-x: hidden }` caused browsers to treat `body` as a bounded nested scroll container, interfering with `position: sticky` headers/sidebars and smooth scrolling.
+  2. Clicking `<a href="#pdp-reviews">` on `#/product/:id` mutated `window.location.hash` to `#pdp-reviews`, which is not a valid SPA route and caused the `hashchange` listener to redirect the customer back to `#/home`.
+  3. Calling `renderActiveView()` on in-place state updates (e.g., changing PDP quantity/variant, toggling wishlist, filtering catalog) reset scroll position when `root.innerHTML` was replaced.
+- **Fix Applied**: Removed `class="h-full"` from `<html>` in `index.html`; updated `html, body` in `styles.css` with `overflow-x: clip` (with `hidden` fallback), `scroll-padding-top: 104px`, `min-height: 100dvh`, and `modern-web-guidance` compliant `scrollbar-width: thin`; replaced `<a href="#pdp-reviews">` with `<button type="button" onclick="window.scrollToSection('pdp-reviews')">`; and updated `renderActiveView()` to preserve `window.scrollY` on in-place re-renders while resetting scroll to top only on actual route transitions.
+- **Status**: **Fixed & Verified**
+
+---
+
+### `VIS-029` — Owner/Admin/Host-Sync/Supabase/Cloudflare Console UI Exposed on Customer Storefront
+- **Page / Route**: `index.html` (Header, Mobile Drawer, Footer), `#/home`, `#/account` (`app.js`)
+- **Viewport(s)**: All Viewports
+- **Severity**: High
+- **Description**: Visible owner/admin UI controls (`Host Sync`, `Admin Host & Supabase Status`, `Simulate Admin Host Push`, `Supabase Database Adapter`, `Cloudflare R2 Object Storage`, and developer `Stitch Design System Screens` links) were mixed into the customer-facing storefront.
+- **Fix Applied**: Removed all visible owner/admin/Supabase/Cloudflare UI elements from `index.html` and `app.js` customer views while preserving the underlying `Store.receiveAdminPush`, `BroadcastChannel`, and `Store.backendConfig` bridge in `store-bridge.js` and `app.js` for future owner-website integration.
+- **Status**: **Fixed & Verified**
+
+---
+
+### `VIS-030` — Domain-Specific Resin Art & Bridal Varmala Preservation E-Commerce Feature Completeness
+- **Page / Route**: `#/home`, `#/product/:id`, `#/custom-studio`, `#/account`, `#checkout-modal` (`index.html`, `store-bridge.js`, `app.js`)
+- **Viewport(s)**: All Viewports
+- **Severity**: Medium
+- **Description**: Benchmarked against leading Indian & global resin art and bridal varmala preservation storefronts, customers needed: (a) a clear 5-stage varmala preservation workflow & post-wedding flower packing rules, (b) an epoxy system comparison matrix (3:1 vs 2:1 vs 1:1) & FAQ accordion, (c) Express Buy Now and Recently Viewed products on PDP, (d) Hexagon/Mughal Arch vessel shapes, Spare-Petal Secondary Keepsake add-ons, and Pickup Slot booking in Custom Studio, and (e) Patron Profile editing, Order Lookup, Pre-Pour Digital Floral Layout Mockup Approval, and a GST Tax Invoice modal viewer in `#/account`.
+- **Fix Applied**: Implemented all above customer-facing domain features across `index.html`, `store-bridge.js`, and `app.js`, and verified with automated tests in `verify-storefront.mjs`.
+- **Status**: **Fixed & Verified**
+

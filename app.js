@@ -32,9 +32,15 @@
       sourceAddon: 0,
       metallic: '24K Gold Leaf + Champagne Rim',
       metallicAddon: 350,
+      secondaryKeepsake: 'None (Main Keepsake Only)',
+      secondaryAddon: 0,
+      eventDate: '2026-11-18',
+      pickupSlot: 'Morning Slot (9:00 AM – 1:00 PM)',
       engraving: 'Aarav & Meera • 12.10.2026',
       ledBase: true
     },
+    orderSearchQuery: '',
+    editingAccountProfile: false,
     calcShape: 'rect', // 'rect' | 'circle'
     calcLength: 20,
     calcWidth: 20,
@@ -91,6 +97,9 @@
       return el && !el.classList.contains('hidden');
     }) || null;
     const anyOpen = Boolean(openModalId);
+    if (document.documentElement && document.documentElement.classList) {
+      document.documentElement.classList.toggle('modal-open', anyOpen);
+    }
     document.body.classList.toggle('modal-open', anyOpen);
 
     if (openModalId && openModalId !== lastActiveModalId) {
@@ -129,6 +138,13 @@
     if (el) {
       el.classList.add('hidden');
       syncBodyModalLock();
+    }
+  };
+
+  window.scrollToSection = function (sectionId) {
+    const el = document.getElementById(sectionId);
+    if (el && typeof el.scrollIntoView === 'function') {
+      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
   };
 
@@ -174,6 +190,8 @@
       el.textContent = pinInfo.pin;
     });
   }
+
+  let lastRenderedRouteKey = '';
 
   // Route Navigation
   window.navigateTo = function (route, param = null) {
@@ -224,7 +242,15 @@
       }
     }
 
-    renderActiveView();
+    if (AppState.currentRoute === 'product' && typeof Store.recordRecentlyViewed === 'function') {
+      Store.recordRecentlyViewed(AppState.currentProductId);
+    }
+
+    const nextRouteKey = `${AppState.currentRoute}:${AppState.currentRoute === 'product' ? AppState.currentProductId : ''}`;
+    const routeChanged = nextRouteKey !== lastRenderedRouteKey;
+    lastRenderedRouteKey = nextRouteKey;
+
+    renderActiveView({ resetScroll: routeChanged });
     updateNavHighlight();
     updateGlobalBadges();
     syncBodyModalLock();
@@ -497,7 +523,7 @@
                 <h2 class="font-headline-sm text-lg sm:text-xl text-primary font-bold mt-0.5">What are you creating or preserving today?</h2>
                 <p class="text-xs text-on-surface-variant">Tap your goal below and we’ll curate the exact formula or bespoke keepsake for you:</p>
               </div>
-              <span class="px-2.5 py-1 rounded-full bg-secondary-container/50 text-on-secondary-container font-spec-numeral text-[11px] font-bold shrink-0">60/30/10 UX</span>
+              <span class="px-2.5 py-1 rounded-full bg-secondary-container/50 text-on-secondary-container font-spec-numeral text-[11px] font-bold shrink-0">30-Sec Studio Matcher</span>
             </div>
 
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5" id="persona-quiz-options">
@@ -810,30 +836,120 @@
                 <span>View Wholesale Slab &amp; COA Sheet</span>
               </button>
               <button type="button" onclick="window.navigateTo('account')" class="min-h-[44px] px-4 rounded-xl bg-white/10 hover:bg-white/20 text-white font-label-md text-xs font-semibold flex items-center gap-1.5 cursor-pointer">
-                <span class="material-symbols-outlined text-base" aria-hidden="true">sync</span>
-                <span>Host Admin &amp; Supabase Status</span>
+                <span class="material-symbols-outlined text-base" aria-hidden="true">receipt_long</span>
+                <span>Track Studio Orders &amp; GST Invoices</span>
               </button>
             </div>
           </div>
         </section>
 
-        <!-- Direct Stitch Screen Archive Explorer (Links to every screen in the extracted zip) -->
-        <section class="px-4 sm:px-8 py-6 bg-surface-container-low border-t border-[#e4e0d8]">
-          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-3">
+        <!-- 5-Stage Bridal Varmala & Bouquet Preservation Ritual -->
+        <section class="px-4 sm:px-8 py-8 bg-surface-container-low border-t border-[#e4e0d8] flex flex-col gap-5">
+          <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-2">
             <div>
-              <span class="font-label-sm text-[10px] uppercase tracking-widest text-secondary font-bold">Stitch Design System Screens (All Verified &amp; Repaired)</span>
-              <h2 class="font-headline-sm text-base text-primary font-bold">Direct Screen Flows in Workspace</h2>
+              <span class="font-label-sm text-[11px] uppercase tracking-widest text-[#9e3322] font-bold">From Wedding Mandap to Forever Heirloom</span>
+              <h2 class="font-headline-sm text-2xl text-primary font-bold">How Our 5-Stage Varmala &amp; Bouquet Preservation Works</h2>
+              <p class="text-xs sm:text-sm text-on-surface-variant mt-0.5">Every garland is treated in our climate-controlled cryo-silica lab before multi-layer 50mm optical casting.</p>
             </div>
-            <span class="text-xs text-on-surface-variant">Every static Stitch screen below has also been debugged &amp; linked:</span>
+            <button type="button" onclick="window.navigateTo('custom-studio')" class="self-start sm:self-auto min-h-[44px] px-4 py-2 rounded-xl bg-primary text-white text-xs font-bold flex items-center gap-1.5 cursor-pointer shrink-0">
+              <span class="material-symbols-outlined text-sm text-[#ffd79b]" aria-hidden="true">event_available</span>
+              <span>Book Your Preservation Slot</span>
+            </button>
           </div>
-          <div class="flex flex-wrap gap-2">
-            <a href="./vist_ra_krafts_home_storefront/code.html" class="min-h-[44px] px-3.5 py-2 inline-flex items-center rounded-lg bg-white border border-[#e4e0d8] text-xs font-medium text-primary hover:border-secondary">Vistāra Home Storefront</a>
-            <a href="./vist_ra_krafts_resin_catalog_filters/code.html" class="min-h-[44px] px-3.5 py-2 inline-flex items-center rounded-lg bg-white border border-[#e4e0d8] text-xs font-medium text-primary hover:border-secondary">Vistāra Catalog &amp; Filters</a>
-            <a href="./vist_ra_krafts_ultraclear_3_1_pdp/code.html" class="min-h-[44px] px-3.5 py-2 inline-flex items-center rounded-lg bg-white border border-[#e4e0d8] text-xs font-medium text-primary hover:border-secondary">UltraClear 3:1 PDP</a>
-            <a href="./vist_ra_krafts_cart_checkout/code.html" class="min-h-[44px] px-3.5 py-2 inline-flex items-center rounded-lg bg-white border border-[#e4e0d8] text-xs font-medium text-primary hover:border-secondary">Vistāra Cart &amp; Checkout</a>
-            <a href="./potry_storefront_discovery_interactive/code.html" class="min-h-[44px] px-3.5 py-2 inline-flex items-center rounded-lg bg-white border border-[#e4e0d8] text-xs font-medium text-primary hover:border-secondary">POTRY Interactive Storefront</a>
-            <a href="./potry_sienna_ridged_pitcher_interactive_pdp/code.html" class="min-h-[44px] px-3.5 py-2 inline-flex items-center rounded-lg bg-white border border-[#e4e0d8] text-xs font-medium text-primary hover:border-secondary">POTRY Sienna Pitcher PDP</a>
-            <a href="./potry_navigation_drawer/code.html" class="min-h-[44px] px-3.5 py-2 inline-flex items-center rounded-lg bg-white border border-[#e4e0d8] text-xs font-medium text-primary hover:border-secondary">POTRY Navigation Overlay</a>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3.5">
+            ${[
+              { step: '01', icon: 'local_shipping', title: '24h Doorstep Pickup', desc: 'Book your slot & our courier picks up your fresh or dried varmala in a breathable moisture-lock box.' },
+              { step: '02', icon: 'ac_unit', title: 'Cryo-Silica Drying', desc: '10–14 days in grade-A floral silica crystals to lock natural rose, orchid & marigold pigments.' },
+              { step: '03', icon: 'fact_check', title: 'Mockup Approval', desc: 'We arrange your petals & calligraphy and share a digital layout preview for your 1-click approval.' },
+              { step: '04', icon: 'layers', title: '50mm Optical Pour', desc: '4 vacuum-degassed pours using Vistāra 2:1 Deep Pour epoxy fortified with HALS UV400 armor.' },
+              { step: '05', icon: 'diamond', title: 'Diamond Buff & Return', desc: 'Polished to 85D mirror glass and shipped back via insured BlueDart Air in a velvet gift trunk.' }
+            ].map(st => `
+              <div class="ram-card p-4 bg-white flex flex-col justify-between gap-2">
+                <div class="flex items-center justify-between">
+                  <span class="font-spec-numeral text-xs font-bold px-2.5 py-0.5 rounded-full bg-[#ffe4de] text-[#9e3322]">Stage ${st.step}</span>
+                  <span class="material-symbols-outlined text-xl text-secondary" aria-hidden="true">${st.icon}</span>
+                </div>
+                <div>
+                  <h3 class="font-title-md text-sm font-bold text-primary mt-1">${st.title}</h3>
+                  <p class="text-xs text-on-surface-variant leading-relaxed mt-1">${st.desc}</p>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        </section>
+
+        <!-- Vistāra Krafts Epoxy Formulation Comparison Matrix -->
+        <section class="px-4 sm:px-8 py-8 bg-surface border-t border-[#e4e0d8] flex flex-col gap-4">
+          <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-2">
+            <div>
+              <span class="font-label-sm text-[11px] uppercase tracking-widest text-secondary font-bold">ISO 9001 Chemical Architecture</span>
+              <h2 class="font-headline-sm text-2xl text-primary font-bold">Choose the Right Vistāra Epoxy System</h2>
+            </div>
+            <span class="text-xs text-on-surface-variant">All systems 100% reactive solids • Zero VOC • HALS UV-Stabilized</span>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
+            ${[
+              { id: 'vk-epx-301', ratio: '3:1 by Weight', name: 'UltraClear 3:1 Casting', depth: 'Up to 20mm', cure: '24 Hours', bestFor: 'Coasters, Trays, Clock Faces & Sealing Petals', price: 'From ₹549' },
+              { id: 'vk-epx-201', ratio: '2:1 by Weight', name: 'River Flow 2:1 Deep Pour', depth: 'Up to 50mm', cure: '48–72 Hours', bestFor: 'Bridal Varmala Blocks & Live-Edge River Tables', price: 'From ₹2,850' },
+              { id: 'vk-res-003', ratio: '1:1 Equal Part', name: 'High-Gloss 1:1 Doming', depth: '6mm Topcoat', cure: '12 Hours', bestFor: 'Ocean Wave Lacing Cells, Canvas Art & Nameplates', price: 'From ₹799' },
+              { id: 'vk-uv-hard', ratio: '1-Part UV LED', name: 'Optical UV Hard Resin', depth: '5mm / Layer', cure: '90 Seconds', bestFor: 'Pressed Petal Pendants, Bezel Charms & Earrings', price: 'From ₹379' }
+            ].map(sys => `
+              <div class="ram-card p-4 bg-white flex flex-col justify-between gap-3">
+                <div class="flex flex-col gap-1.5">
+                  <div class="flex items-center justify-between gap-2">
+                    <span class="px-2.5 py-0.5 rounded bg-primary text-white font-spec-numeral text-[11px] font-bold">${sys.ratio}</span>
+                    <span class="font-spec-numeral text-xs font-bold text-secondary">${sys.price}</span>
+                  </div>
+                  <h3 class="font-title-md text-sm font-bold text-primary mt-1">${sys.name}</h3>
+                  <p class="text-xs text-on-surface-variant">${sys.bestFor}</p>
+                  <div class="flex flex-wrap gap-1.5 pt-1 text-[11px] font-spec-numeral">
+                    <span class="px-2 py-0.5 rounded bg-surface-container-low text-primary">Pour: ${sys.depth}</span>
+                    <span class="px-2 py-0.5 rounded bg-surface-container-low text-primary">Cure: ${sys.cure}</span>
+                  </div>
+                </div>
+                <button type="button" onclick="window.navigateTo('product', '${sys.id}')" class="w-full min-h-[44px] py-2 rounded-xl bg-surface-container-high hover:bg-primary hover:text-white text-primary text-xs font-bold transition-colors cursor-pointer">
+                  Inspect Formula &amp; Kits →
+                </button>
+              </div>
+            `).join('')}
+          </div>
+        </section>
+
+        <!-- Frequently Asked Questions (Bridal Preservation & Resin Care) -->
+        <section class="px-4 sm:px-8 py-8 bg-surface-container-low border-t border-[#e4e0d8] flex flex-col gap-4">
+          <div>
+            <span class="font-label-sm text-[11px] uppercase tracking-widest text-[#9e3322] font-bold">Atelier Patron Care &amp; Technical FAQ</span>
+            <h2 class="font-headline-sm text-2xl text-primary font-bold">Frequently Asked Questions</h2>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+            ${[
+              {
+                q: 'Do I need to dry my wedding varmala before sending it to the studio?',
+                a: 'No! Please send your garlands fresh within 24 to 72 hours of your ceremony. Never freeze flowers or spray water/perfume on petals. Wrap only the cut stem ends in a slightly damp tissue, place inside a breathable cardboard box, and book our 24h doorstep pickup.'
+              },
+              {
+                q: 'How long does the complete varmala preservation process take?',
+                a: 'A 50mm heirloom floral block takes 14 to 21 days from flower receipt: 10 days of cryo-silica dehydration, digital layout mockup approval on your Account/WhatsApp, 4 sequential vacuum-degassed pours, and diamond buffing.'
+              },
+              {
+                q: 'Will my flowers change color inside the resin block?',
+                a: 'Our silica-gel cryo dehydration retains up to 95% of natural floral structure. Deep red roses often mature into a rich burgundy velvet, and white blooms develop a warm champagne-ivory tone. You approve the dried petal layout before we pour!'
+              },
+              {
+                q: 'How do you prevent epoxy yellowing in Indian summer temperatures?',
+                a: 'All Vistāra Krafts formulations are fortified with dual HALS (Hindered Amine Light Stabilizers) and UV400 absorbers tested per ASTM D1003. Keep finished resin art indoors away from direct harsh afternoon sunlight for decades of crystal clarity.'
+              }
+            ].map(faq => `
+              <details class="ram-card bg-white p-4 group">
+                <summary class="min-h-[44px] flex items-center justify-between gap-3 cursor-pointer list-none font-title-md text-xs sm:text-sm font-bold text-primary">
+                  <span>${faq.q}</span>
+                  <span class="material-symbols-outlined text-secondary shrink-0" aria-hidden="true">expand_more</span>
+                </summary>
+                <p class="text-xs text-on-surface-variant leading-relaxed pt-2.5 mt-2 border-t border-surface-container">${faq.a}</p>
+              </details>
+            `).join('')}
           </div>
         </section>
       </div>
@@ -1184,7 +1300,7 @@
                   <span class="material-symbols-outlined text-secondary text-sm" style="font-variation-settings: 'FILL' 1;" aria-hidden="true">star</span>
                   <span class="font-spec-numeral font-bold text-primary">${product.rating.toFixed(1)}</span>
                   <span class="text-outline">•</span>
-                  <a href="#pdp-reviews" class="min-h-[44px] inline-flex items-center text-on-surface-variant underline">${product.reviewsCount} verified reviews</a>
+                  <button type="button" onclick="window.scrollToSection('pdp-reviews')" class="min-h-[44px] inline-flex items-center text-on-surface-variant underline cursor-pointer">${product.reviewsCount} verified reviews</button>
                 </div>
                 <span class="flex items-center gap-1 text-[#266b4e] text-xs bg-[#e8f5e9] px-3 min-h-[44px] rounded-full font-semibold">
                   <span class="material-symbols-outlined text-xs" aria-hidden="true">water_drop</span>
@@ -1435,6 +1551,20 @@
           </div>
         </section>
 
+        <!-- Recently Viewed & Curated Recommendations -->
+        <section class="px-4 sm:px-8 pt-8 flex flex-col gap-4">
+          <div class="flex items-center justify-between border-t border-[#e4e0d8] pt-6">
+            <div>
+              <span class="font-label-sm text-xs uppercase tracking-wider text-[#9e3322] font-bold">Continue Exploring</span>
+              <h2 class="font-headline-sm text-xl text-primary font-bold">Recently Viewed &amp; Curated For You</h2>
+            </div>
+            <button type="button" onclick="window.navigateTo('catalog', 'all')" class="min-h-[44px] px-3 text-xs font-bold text-secondary hover:underline cursor-pointer">Full Catalogue →</button>
+          </div>
+          <div class="grid grid-cols-1 min-[360px]:grid-cols-2 md:grid-cols-4 gap-4">
+            ${Store.getRecentlyViewedProducts(product.id, 4).map(p => renderProductCard(p, false)).join('')}
+          </div>
+        </section>
+
         <!-- Sticky Bottom PDP Action Bar (aligned with lg:hidden mobile bottom nav) -->
         <aside class="fixed bottom-16 lg:bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-lg border-t border-[#e4e0d8] px-3 sm:px-8 py-2.5 shadow-lg">
           <div class="max-w-7xl mx-auto flex items-center gap-2 sm:gap-3">
@@ -1453,6 +1583,10 @@
             <button type="button" id="pdp-add-to-cart-btn" onclick="window.addPdpToCart()" class="btn-shimmer min-w-0 flex-1 h-12 px-3 sm:px-5 rounded-xl bg-primary hover:bg-primary-container text-on-primary font-title-md text-xs sm:text-sm font-bold flex items-center justify-center gap-1.5 sm:gap-2 shadow-md active:scale-[0.99] transition-all whitespace-nowrap cursor-pointer">
               <span class="material-symbols-outlined text-lg sm:text-xl shrink-0" aria-hidden="true">shopping_bag</span>
               <span id="pdp-cta-label" class="truncate">Add to Studio Bag • ${formatINR(totalCtaPrice)}</span>
+            </button>
+            <button type="button" id="pdp-buy-now-btn" onclick="window.buyNowPdp()" class="h-12 px-3 sm:px-5 rounded-xl bg-[#9e3322] hover:opacity-95 text-white font-title-md text-xs sm:text-sm font-bold flex items-center justify-center gap-1.5 shadow-md shrink-0 cursor-pointer whitespace-nowrap">
+              <span class="material-symbols-outlined text-lg shrink-0" aria-hidden="true">bolt</span>
+              <span>Buy Now</span>
             </button>
           </div>
         </aside>
@@ -1611,7 +1745,8 @@
   function renderCustomStudioView() {
     const b = AppState.customBuilder;
     const ledCost = b.ledBase ? 499 : 0;
-    const totalCustomPrice = b.shapePrice + b.sourceAddon + b.metallicAddon + ledCost;
+    const secondaryCost = Number(b.secondaryAddon) || 0;
+    const totalCustomPrice = b.shapePrice + b.sourceAddon + b.metallicAddon + secondaryCost + ledCost;
 
     const calcRes = Store.calculateResinNeeded({
       shape: AppState.calcShape,
@@ -1633,7 +1768,7 @@
           <p class="text-xs sm:text-sm text-on-surface-variant">Design your one-of-a-kind wedding/anniversary floral block OR calculate exact resin ratios for your own DIY moulds.</p>
         </div>
 
-        <!-- Part A: Interactive 4-Step Custom Keepsake Configurator -->
+        <!-- Part A: Interactive 5-Step Custom Keepsake Configurator -->
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
           <div class="lg:col-span-7 ram-card p-5 sm:p-6 flex flex-col gap-5 bg-white">
             <div class="flex flex-wrap items-center justify-between gap-2 border-b border-surface-container pb-3">
@@ -1647,7 +1782,9 @@
               <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
                 ${[
                   { label: '8" Romantic Cube', price: 2999, desc: '8–12 Roses • 50mm deep' },
+                  { label: '10" Royal Hexagon Frame', price: 3899, desc: 'Half Garland • 45mm deep' },
                   { label: '12" Royal Heirloom Block', price: 4499, desc: 'Full Varmala • 50mm deep' },
+                  { label: '14" Mughal Arch Block', price: 5299, desc: 'Jaimala + Wedding Invite' },
                   { label: '16" Gallery Mantel Frame', price: 6999, desc: 'Dual Garlands + 2 Coasters' }
                 ].map(item => `
                   <button type="button" onclick="window.updateCustomBuilder('shape', '${esc(item.label)}', ${item.price})" class="p-3 rounded-xl border text-left transition-all cursor-pointer ${b.shape === item.label ? 'bg-primary text-white border-primary shadow-sm' : 'bg-surface-container-low text-primary border-[#e4e0d8]'}">
@@ -1692,8 +1829,37 @@
               </div>
             </div>
 
-            <!-- Step 4: Calligraphy Engraving & Warm LED Pedestal -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <!-- Step 4: Complementary Keepsake Add-ons (Spare Petals) -->
+            <div>
+              <span class="text-xs font-bold text-primary uppercase tracking-wider block mb-2">Step 4: Complementary Spare-Petal Add-Ons</span>
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+                ${[
+                  { label: 'None (Main Keepsake Only)', addon: 0 },
+                  { label: 'Matching Resin Ring Platter', addon: 899 },
+                  { label: '2x Preserved Petal Bookmarks', addon: 599 }
+                ].map(sec => `
+                  <button type="button" onclick="window.updateCustomBuilder('secondaryKeepsake', '${esc(sec.label)}', ${sec.addon})" class="p-3 rounded-xl border text-left transition-all cursor-pointer ${b.secondaryKeepsake === sec.label ? 'border-primary bg-surface-container-high font-bold' : 'border-[#e4e0d8] bg-white'}">
+                    <p class="text-xs text-primary">${esc(sec.label)}</p>
+                    <p class="font-spec-numeral text-[11px] text-secondary mt-1">${sec.addon === 0 ? 'No extra charge' : '+ ' + formatINR(sec.addon)}</p>
+                  </button>
+                `).join('')}
+              </div>
+            </div>
+
+            <!-- Step 5: Event Date, Pickup Slot, Calligraphy Engraving & Warm LED Pedestal -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1 border-t border-surface-container">
+              <div>
+                <label class="text-xs font-bold text-primary block mb-1" for="custom-event-date">Wedding / Event Date</label>
+                <input id="custom-event-date" type="date" value="${esc(b.eventDate || '2026-11-18')}" onchange="window.updateCustomBuilderSchedule('eventDate', this.value)" class="w-full h-12 px-3 rounded-lg bg-surface-container-low border border-[#e4e0d8] font-spec-numeral text-xs text-primary">
+              </div>
+              <div>
+                <label class="text-xs font-bold text-primary block mb-1" for="custom-pickup-slot">Preferred Doorstep Pickup Window</label>
+                <select id="custom-pickup-slot" onchange="window.updateCustomBuilderSchedule('pickupSlot', this.value)" class="w-full h-12 px-3 rounded-lg bg-surface-container-low border border-[#e4e0d8] text-xs font-semibold text-primary">
+                  <option value="Morning Slot (9:00 AM – 1:00 PM)" ${b.pickupSlot === 'Morning Slot (9:00 AM – 1:00 PM)' ? 'selected' : ''}>Morning Slot (9:00 AM – 1:00 PM)</option>
+                  <option value="Afternoon Slot (2:00 PM – 6:00 PM)" ${b.pickupSlot === 'Afternoon Slot (2:00 PM – 6:00 PM)' ? 'selected' : ''}>Afternoon Slot (2:00 PM – 6:00 PM)</option>
+                  <option value="Self-Ship via Air Courier (Reimbursed)" ${b.pickupSlot === 'Self-Ship via Air Courier (Reimbursed)' ? 'selected' : ''}>Self-Ship via Air Courier (Reimbursed)</option>
+                </select>
+              </div>
               <div>
                 <label class="text-xs font-bold text-primary block mb-1" for="custom-engraving-input">Custom Names / Date Calligraphy</label>
                 <input id="custom-engraving-input" type="text" value="${esc(b.engraving)}" oninput="window.updateCustomBuilderText(this.value)" placeholder="e.g. Aarav & Meera • 12.10.2026" class="w-full h-12 px-3 rounded-lg bg-surface-container-low border border-[#e4e0d8] text-xs text-primary">
@@ -1703,6 +1869,20 @@
                   <span class="text-xs font-semibold text-primary">Warm Teak LED Light Base (+₹499)</span>
                   <input type="checkbox" ${b.ledBase ? 'checked' : ''} onchange="window.updateCustomBuilderLed(this.checked)" class="w-5 h-5 accent-primary shrink-0">
                 </label>
+              </div>
+            </div>
+
+            <!-- Bridal Flower Care & Packing Rules Box -->
+            <div class="p-4 rounded-xl bg-[#fdf6f3] border border-[#9e3322]/25 flex flex-col gap-2">
+              <div class="flex items-center gap-2">
+                <span class="material-symbols-outlined text-[#9e3322] text-base" aria-hidden="true">verified_user</span>
+                <h3 class="text-xs font-bold text-primary uppercase tracking-wider">Essential Post-Wedding Flower Care Protocol</h3>
+              </div>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-[11px] text-on-surface-variant">
+                <p><strong>1. Never Freeze:</strong> Store garlands in the normal refrigerator crisper (4°C–8°C), never in the deep freezer.</p>
+                <p><strong>2. No Water/Perfume Spray:</strong> Keep petals dry; wrap only the cut stems in a slightly damp tissue.</p>
+                <p><strong>3. Breathable Carton:</strong> Pack loosely in newspaper or cotton inside a sturdy box—avoid sealed plastic bags.</p>
+                <p><strong>4. Pre-Pour Approval:</strong> We WhatsApp &amp; upload your digital floral arrangement mockup before pouring resin.</p>
               </div>
             </div>
           </div>
@@ -1723,6 +1903,8 @@
               <div class="flex justify-between gap-2"><span class="text-white/75">Architecture:</span><span class="font-semibold text-right">${esc(b.shape)}</span></div>
               <div class="flex justify-between gap-2"><span class="text-white/75">Floral Source:</span><span class="font-semibold truncate max-w-[200px] text-right">${esc(b.flowerSource)}</span></div>
               <div class="flex justify-between gap-2"><span class="text-white/75">Inclusions:</span><span class="font-semibold text-right">${esc(b.metallic)}</span></div>
+              <div class="flex justify-between gap-2"><span class="text-white/75">Add-On Piece:</span><span class="font-semibold text-right">${esc(b.secondaryKeepsake || 'None')}</span></div>
+              <div class="flex justify-between gap-2"><span class="text-white/75">Pickup Schedule:</span><span class="font-semibold text-right">${esc(b.eventDate)} • ${esc((b.pickupSlot || '').split(' ')[0])}</span></div>
               <div class="flex justify-between gap-2"><span class="text-white/75">Teak LED Stand:</span><span class="font-semibold text-right">${b.ledBase ? 'Yes (+₹499)' : 'No'}</span></div>
             </div>
             <div class="flex items-baseline justify-between">
@@ -2086,47 +2268,105 @@
   }
 
   // =========================================================================
-  // 8. ACCOUNT, ORDER TRACKER & SUPABASE / CLOUDFLARE / HOST-PUSH CONSOLE
+  // 8. CUSTOMER ACCOUNT, ORDER TRACKER, MOCKUP APPROVAL & CARE VAULT
   // =========================================================================
   function renderAccountView() {
-    const orders = Store.getOrders();
-    const pushLogs = Store.getHostPushLog();
-    const cfg = Store.backendConfig;
+    const allOrders = Store.getOrders();
+    const filteredOrders = Store.findOrder(AppState.orderSearchQuery);
+    const profile = Store.getPatronProfile();
+    const gstInfo = Store.getGstInfo();
 
     return `
       <div class="route-view-enter flex flex-col w-full max-w-7xl mx-auto px-4 sm:px-8 py-6 gap-6">
         <!-- Patron Profile Banner -->
-        <div class="ram-card p-5 bg-white flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-          <div class="flex items-center gap-4">
-            <img src="${esc(Store.IMAGES.avatarPatron)}" alt="Patron Profile" class="w-16 h-16 rounded-full object-cover ring-2 ring-secondary shrink-0">
-            <div>
-              <span class="px-2.5 py-0.5 rounded-full bg-secondary-container/60 text-on-secondary-container text-[10px] font-bold uppercase">Atelier Patron #4820</span>
-              <h1 class="font-headline-sm text-xl sm:text-2xl text-primary font-bold mt-0.5">Studio Account &amp; Order Tracking</h1>
-              <p class="text-xs text-on-surface-variant">Connected to @resin.art.memories • GSTIN: ${esc(Store.getGstInfo().gstin)}</p>
+        <div class="ram-card p-5 bg-white flex flex-col gap-4">
+          <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div class="flex items-center gap-4 min-w-0">
+              <img src="${esc(Store.IMAGES.avatarPatron)}" alt="Patron Profile" class="w-16 h-16 rounded-full object-cover ring-2 ring-secondary shrink-0">
+              <div class="min-w-0">
+                <div class="flex flex-wrap items-center gap-2">
+                  <span class="px-2.5 py-0.5 rounded-full bg-secondary-container/60 text-on-secondary-container text-[10px] font-bold uppercase">${esc(profile.memberTier || 'Atelier Patron #4820')}</span>
+                  <span class="px-2.5 py-0.5 rounded-full bg-[#e8f5e9] text-[#266b4e] font-spec-numeral text-[10px] font-bold">${Number(profile.loyaltyPoints || 640)} Krafts Credits</span>
+                </div>
+                <h1 class="font-headline-sm text-xl sm:text-2xl text-primary font-bold mt-0.5 truncate">${esc(profile.name)} — Studio Account &amp; Order Tracker</h1>
+                <p class="text-xs text-on-surface-variant truncate">${esc(profile.phone)} • ${esc(profile.email)} • GSTIN: ${esc(gstInfo.gstin)}</p>
+                <p class="text-[11px] text-on-surface-variant truncate mt-0.5">📍 Default Dispatch: ${esc(profile.defaultAddress)}</p>
+              </div>
+            </div>
+            <div class="flex flex-wrap items-center gap-2 shrink-0">
+              <button type="button" id="account-edit-profile-btn" onclick="window.toggleAccountProfileEdit()" class="min-h-[44px] px-4 py-2.5 rounded-xl bg-surface-container-low hover:bg-surface-container-high border border-[#e4e0d8] text-primary text-xs font-bold flex items-center gap-1.5 cursor-pointer">
+                <span class="material-symbols-outlined text-base text-secondary" aria-hidden="true">edit</span>
+                <span>${AppState.editingAccountProfile ? 'Close Profile Editor' : 'Edit Profile & Address'}</span>
+              </button>
+              <button type="button" onclick="window.navigateTo('custom-studio')" class="min-h-[44px] px-4 py-2.5 rounded-xl bg-[#9e3322] hover:opacity-95 text-white text-xs font-bold flex items-center gap-1.5 shadow-xs cursor-pointer">
+                <span class="material-symbols-outlined text-base" aria-hidden="true">local_florist</span>
+                <span>New Varmala Booking</span>
+              </button>
             </div>
           </div>
-          <div class="flex items-center gap-2">
-            <button type="button" onclick="window.simulateExternalAdminPush()" class="min-h-[44px] px-4 py-2.5 rounded-xl bg-[#9e3322] text-white text-xs font-bold flex items-center gap-1.5 shadow-xs cursor-pointer">
-              <span class="material-symbols-outlined text-base" aria-hidden="true">bolt</span>
-              <span>Simulate Admin Host Push</span>
-            </button>
-          </div>
+
+          ${AppState.editingAccountProfile ? `
+            <form id="account-profile-form" onsubmit="window.saveAccountProfile(event)" class="pt-4 border-t border-surface-container grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <label for="acc-prof-name" class="text-xs font-bold text-primary block mb-1">Full Name</label>
+                <input id="acc-prof-name" type="text" required value="${esc(profile.name)}" class="w-full h-12 px-3 rounded-lg bg-surface-container-low border border-[#e4e0d8] text-xs text-primary">
+              </div>
+              <div>
+                <label for="acc-prof-phone" class="text-xs font-bold text-primary block mb-1">WhatsApp / Mobile Number</label>
+                <input id="acc-prof-phone" type="tel" required value="${esc(profile.phone)}" class="w-full h-12 px-3 rounded-lg bg-surface-container-low border border-[#e4e0d8] font-spec-numeral text-xs text-primary">
+              </div>
+              <div>
+                <label for="acc-prof-email" class="text-xs font-bold text-primary block mb-1">Email Address (for COA &amp; GST Invoices)</label>
+                <input id="acc-prof-email" type="email" required value="${esc(profile.email)}" class="w-full h-12 px-3 rounded-lg bg-surface-container-low border border-[#e4e0d8] text-xs text-primary">
+              </div>
+              <div>
+                <label for="acc-prof-address" class="text-xs font-bold text-primary block mb-1">Default Delivery &amp; Flower Pickup Address</label>
+                <input id="acc-prof-address" type="text" required value="${esc(profile.defaultAddress)}" class="w-full h-12 px-3 rounded-lg bg-surface-container-low border border-[#e4e0d8] text-xs text-primary">
+              </div>
+              <div class="sm:col-span-2 flex justify-end gap-2 pt-1">
+                <button type="submit" class="min-h-[48px] px-5 py-2.5 rounded-xl bg-primary text-white text-xs font-bold cursor-pointer">Save Patron Details</button>
+              </div>
+            </form>
+          ` : ''}
         </div>
 
         <!-- Live Orders & 5-Stage Floral Preservation Tracker -->
         <div class="flex flex-col gap-4">
-          <h2 class="font-headline-sm text-xl text-primary font-bold">Active Orders &amp; Preservation Timeline (${orders.length})</h2>
-          ${orders.map(ord => `
-            <div class="ram-card p-5 bg-white flex flex-col gap-4">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div>
+              <span class="font-label-sm text-xs uppercase tracking-wider text-secondary font-bold">Real-Time Atelier Telemetry</span>
+              <h2 class="font-headline-sm text-xl text-primary font-bold">Active Orders &amp; Varmala Preservation Timeline (${filteredOrders.length} of ${allOrders.length})</h2>
+            </div>
+            <div class="w-full sm:w-80">
+              <label for="account-order-search" class="sr-only">Search orders by Order ID, item, or courier</label>
+              <div class="relative flex items-center">
+                <span class="material-symbols-outlined text-base text-outline absolute left-3 pointer-events-none" aria-hidden="true">search</span>
+                <input id="account-order-search" type="search" value="${esc(AppState.orderSearchQuery)}" oninput="window.setAccountOrderSearch(this.value)" placeholder="Filter by Order #VK, item, or courier..." class="w-full h-12 pl-9 pr-3 rounded-xl bg-white border border-[#e4e0d8] text-xs text-primary">
+              </div>
+            </div>
+          </div>
+
+          ${filteredOrders.length === 0 ? `
+            <div class="ram-card p-8 bg-white text-center flex flex-col items-center gap-2">
+              <span class="material-symbols-outlined text-3xl text-secondary" aria-hidden="true">inventory_2</span>
+              <h3 class="font-headline-sm text-lg text-primary font-bold">No Matching Orders Found</h3>
+              <p class="text-xs text-on-surface-variant">Try clearing your order search filter or place a new order from the catalogue.</p>
+              <button type="button" onclick="window.setAccountOrderSearch('')" class="min-h-[44px] px-4 py-2 rounded-lg bg-primary text-white text-xs font-bold mt-1 cursor-pointer">Show All Orders</button>
+            </div>
+          ` : filteredOrders.map(ord => `
+            <div class="ram-card p-5 bg-white flex flex-col gap-4" data-order-id="${esc(ord.orderId)}">
               <div class="flex flex-wrap items-center justify-between gap-2 border-b border-surface-container pb-3">
                 <div>
-                  <span class="font-spec-numeral text-xs font-bold text-secondary">ORDER #${esc(ord.orderId)}</span>
+                  <div class="flex flex-wrap items-center gap-2">
+                    <span class="font-spec-numeral text-xs font-bold text-secondary">ORDER #${esc(ord.orderId)}</span>
+                    ${ord.giftWrap ? `<span class="px-2 py-0.5 rounded-full bg-[#fdf6f3] border border-[#9e3322]/30 text-[#9e3322] text-[10px] font-bold">🎁 Silk Potli Gift Wrap</span>` : ''}
+                  </div>
                   <h3 class="text-sm font-bold text-primary mt-0.5">${esc(ord.status)}</h3>
-                  <p class="text-xs text-on-surface-variant">Placed on ${esc(ord.date)} • ${esc(ord.courier)}</p>
+                  <p class="text-xs text-on-surface-variant">Placed on ${esc(ord.date)} • ${esc(ord.courier)} • ${esc(ord.paymentMethod || 'UPI Instant')}</p>
                 </div>
                 <div class="text-right">
                   <span class="font-spec-numeral text-lg font-bold text-primary">${formatINR(ord.total)}</span>
-                  <span class="block text-[11px] text-[#266b4e] font-semibold">GST Invoice Ready</span>
+                  <span class="block text-[11px] text-[#266b4e] font-semibold">18% GST Invoice Ready</span>
                 </div>
               </div>
 
@@ -2143,62 +2383,88 @@
                 }).join('')}
               </div>
 
-              <div class="text-xs text-on-surface-variant flex flex-wrap gap-3 pt-1">
-                ${(ord.items || []).map(it => `<span class="px-2.5 py-1 rounded bg-surface-container-low text-primary font-medium">${it.qty}× ${esc(it.name)}</span>`).join('')}
+              <!-- Pre-Pour Digital Layout Mockup Approval Banner -->
+              <div class="p-3.5 rounded-xl ${ord.mockupApproved ? 'bg-[#e8f5e9] border border-[#266b4e]/30' : 'bg-[#fdf6f3] border border-[#9e3322]/30'} flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div class="flex items-start gap-2.5">
+                  <span class="material-symbols-outlined text-lg ${ord.mockupApproved ? 'text-[#266b4e]' : 'text-[#9e3322]'} shrink-0 mt-0.5" aria-hidden="true">${ord.mockupApproved ? 'verified' : 'photo_library'}</span>
+                  <div>
+                    <p class="text-xs font-bold text-primary">
+                      ${ord.mockupApproved
+                        ? 'Pre-Pour Floral Arrangement & Batch Spec Approved'
+                        : 'Action Available: Pre-Pour Digital Floral Layout & Batch Verification'}
+                    </p>
+                    <p class="text-[11px] text-on-surface-variant">
+                      ${ord.mockupApproved
+                        ? 'Your layout approval is locked in. Our senior resin artist has initiated the multi-layer optical pour.'
+                        : 'Confirm your floral petal positioning and calligraphy proof so our studio can proceed to the final crystal resin pour.'}
+                    </p>
+                  </div>
+                </div>
+                ${ord.mockupApproved ? `
+                  <span class="px-3 py-1.5 rounded-lg bg-white text-[#266b4e] text-xs font-bold shrink-0 self-start sm:self-center">✓ Layout Approved</span>
+                ` : `
+                  <button type="button" onclick="window.handleApproveOrderMockup('${esc(ord.orderId)}')" class="min-h-[44px] px-4 py-2 rounded-lg bg-[#9e3322] hover:opacity-95 text-white text-xs font-bold shrink-0 self-start sm:self-center cursor-pointer">
+                    Approve Pre-Pour Layout
+                  </button>
+                `}
+              </div>
+
+              <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-1">
+                <div class="text-xs text-on-surface-variant flex flex-wrap gap-2">
+                  ${(ord.items || []).map(it => `<span class="px-2.5 py-1 rounded bg-surface-container-low text-primary font-medium">${it.qty}× ${esc(it.name)}</span>`).join('')}
+                </div>
+                <div class="flex flex-wrap items-center gap-2 shrink-0">
+                  <button type="button" onclick="window.openOrderInvoiceModal('${esc(ord.orderId)}')" class="min-h-[44px] px-3.5 py-2 rounded-lg bg-surface-container-low hover:bg-surface-container-high border border-[#e4e0d8] text-primary text-xs font-bold flex items-center gap-1.5 cursor-pointer">
+                    <span class="material-symbols-outlined text-sm text-secondary" aria-hidden="true">receipt_long</span>
+                    <span>View GST Tax Invoice</span>
+                  </button>
+                  <button type="button" onclick="window.handleReorder('${esc(ord.orderId)}')" class="min-h-[44px] px-3.5 py-2 rounded-lg bg-primary text-white text-xs font-bold flex items-center gap-1.5 cursor-pointer">
+                    <span class="material-symbols-outlined text-sm" aria-hidden="true">replay</span>
+                    <span>Reorder to Bag</span>
+                  </button>
+                </div>
               </div>
             </div>
           `).join('')}
         </div>
 
-        <!-- Architecture & External Admin Host / Supabase / Cloudflare Storage Bridge -->
+        <!-- Customer Bridal Flower Packing & Resin Care Vault -->
         <div class="ram-card p-5 bg-surface-container-low border border-[#e4e0d8] flex flex-col gap-4">
           <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
             <div>
-              <span class="font-label-sm text-[11px] uppercase tracking-widest text-secondary font-bold">Ready-to-Connect Cloud &amp; Host Architecture</span>
-              <h2 class="font-headline-sm text-lg text-primary font-bold">External Admin Host, Supabase &amp; Cloudflare R2 Bridge</h2>
-              <p class="text-xs text-on-surface-variant">As requested: the separate Admin Panel host website pushes catalog &amp; social updates directly to this customer storefront.</p>
+              <span class="font-label-sm text-[11px] uppercase tracking-widest text-[#9e3322] font-bold">Atelier Patron Care Handbook</span>
+              <h2 class="font-headline-sm text-lg text-primary font-bold">Bridal Varmala Packing &amp; Heirloom Care Guide</h2>
+              <p class="text-xs text-on-surface-variant">Follow these studio guidelines to keep your wedding flowers vibrant before pickup and your cured resin crystal-clear for decades.</p>
             </div>
-            <span class="px-3 py-1 rounded-full bg-[#e8f5e9] text-[#266b4e] text-xs font-bold self-start whitespace-nowrap">● Bridge Active</span>
+            <span class="px-3 py-1 rounded-full bg-[#e8f5e9] text-[#266b4e] text-xs font-bold self-start whitespace-nowrap">✓ Museum Preservation Standard</span>
           </div>
 
           <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div class="p-4 rounded-xl bg-white border border-[#e4e0d8] flex flex-col gap-1.5">
               <div class="flex items-center justify-between">
-                <span class="text-xs font-bold text-primary">1. External Admin Host Receiver</span>
-                <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-emerald-100 text-emerald-800">Listening</span>
+                <span class="text-xs font-bold text-primary">1. Pre-Pickup Flower Storage</span>
+                <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-[#ffe4de] text-[#9e3322]">First 48 Hours</span>
               </div>
-              <p class="text-[11px] text-on-surface-variant">Channel: <code class="text-primary font-mono break-all">${esc(cfg.adminHostBridge.channelName)}</code></p>
-              <p class="text-[11px] text-on-surface-variant">Receives live product drops, pricing changes &amp; IG reels from your separate Admin Host domain via <code class="font-mono">postMessage</code> / Webhook.</p>
+              <p class="text-[11px] text-on-surface-variant">Place your varmala or bouquet in the normal refrigerator section (4°C–8°C). Never freeze petals, as ice crystals bruise floral pigments.</p>
+              <p class="text-[11px] text-on-surface-variant">Wrap only the cut stems in a lightly damp tissue and keep petals completely dry.</p>
             </div>
 
             <div class="p-4 rounded-xl bg-white border border-[#e4e0d8] flex flex-col gap-1.5">
               <div class="flex items-center justify-between">
-                <span class="text-xs font-bold text-primary">2. Supabase Database Adapter</span>
-                <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-secondary-container text-on-secondary-container">Schema Staged</span>
+                <span class="text-xs font-bold text-primary">2. Breathable Transit Carton</span>
+                <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-secondary-container text-on-secondary-container">Air Pickup Ready</span>
               </div>
-              <p class="text-[11px] text-on-surface-variant">Tables: <code class="text-primary font-mono">products, social_posts, orders, reviews</code></p>
-              <p class="text-[11px] text-on-surface-variant">Set <code class="font-mono">window.SUPABASE_URL</code> &amp; <code class="font-mono">window.SUPABASE_ANON_KEY</code> to switch from local replica to live Postgres.</p>
+              <p class="text-[11px] text-on-surface-variant">Line a corrugated cardboard box with plain newspaper or soft cotton cloth. Avoid airtight plastic bags which trap moisture and cause mould in transit.</p>
+              <p class="text-[11px] text-on-surface-variant">Include your wedding invite card, rings, or auspicious threads in a labelled paper envelope inside the box.</p>
             </div>
 
             <div class="p-4 rounded-xl bg-white border border-[#e4e0d8] flex flex-col gap-1.5">
               <div class="flex items-center justify-between">
-                <span class="text-xs font-bold text-primary">3. Cloudflare R2 Object Storage</span>
-                <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-secondary-container text-on-secondary-container">CDN Ready</span>
+                <span class="text-xs font-bold text-primary">3. Long-Term Resin Heirloom Care</span>
+                <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-emerald-100 text-emerald-800">10+ Year Clarity</span>
               </div>
-              <p class="text-[11px] text-on-surface-variant">Bucket: <code class="text-primary font-mono break-all">${esc(cfg.cloudflare.r2BucketUrl)}</code></p>
-              <p class="text-[11px] text-on-surface-variant">Handles high-res 4K resin videos, bridal flower upload photos, and PDF COA certificates.</p>
-            </div>
-          </div>
-
-          <div class="p-3.5 rounded-xl bg-white border border-[#e4e0d8]">
-            <p class="text-xs font-bold text-primary mb-2">Recent Admin Host Sync Events:</p>
-            <div class="space-y-1 max-h-28 overflow-y-auto">
-              ${pushLogs.map(l => `
-                <div class="text-[11px] flex flex-wrap items-center justify-between gap-2 text-on-surface-variant border-b border-surface-container py-1">
-                  <span><strong class="text-primary">[${esc(l.type)}]</strong> ${esc(l.summary)}</span>
-                  <span class="font-spec-numeral">${esc(l.timestamp)}</span>
-                </div>
-              `).join('')}
+              <p class="text-[11px] text-on-surface-variant">Wipe your cured resin block or ocean board with a soft microfiber cloth and mild soap water. Never use acetone, alcohol, or abrasive scrubbers.</p>
+              <p class="text-[11px] text-on-surface-variant">Display indoors away from direct harsh afternoon window sunlight to preserve botanical colour saturation.</p>
             </div>
           </div>
         </div>
@@ -2209,9 +2475,11 @@
   // =========================================================================
   // MAIN VIEW MOUNT & INTERACTION HANDLERS
   // =========================================================================
-  function renderActiveView() {
+  function renderActiveView(options) {
     const root = document.getElementById('app-view-root');
     if (!root) return;
+    const preserveScroll = !options || !options.resetScroll;
+    const prevScrollY = preserveScroll ? window.scrollY : 0;
 
     switch (AppState.currentRoute) {
       case 'catalog':
@@ -2239,6 +2507,14 @@
       default:
         root.innerHTML = renderHomeView();
         break;
+    }
+
+    if (preserveScroll && prevScrollY > 0) {
+      try {
+        window.scrollTo({ top: prevScrollY, left: 0, behavior: 'instant' });
+      } catch (_e) {
+        window.scrollTo(0, prevScrollY);
+      }
     }
   }
 
@@ -2435,8 +2711,8 @@
     renderActiveView();
     const input = document.getElementById('catalog-search-input');
     if (input) {
-      input.focus();
-      input.setSelectionRange(input.value.length, input.value.length);
+      if (typeof input.focus === 'function') input.focus();
+      if (typeof input.setSelectionRange === 'function') input.setSelectionRange(input.value.length, input.value.length);
     }
   };
 
@@ -2530,6 +2806,12 @@
     });
     updateGlobalBadges();
     window.showToast(`Added ${AppState.pdpQty} × ${prod.shortName || prod.name} to Bag`, `${v.label} • Ready for checkout`);
+  };
+
+  window.buyNowPdp = function () {
+    window.addPdpToCart();
+    window.navigateTo('cart');
+    window.openCheckoutModal();
   };
 
   window.addStudioBundle = function () {
@@ -2626,8 +2908,18 @@
     } else if (field === 'metallic') {
       AppState.customBuilder.metallic = label;
       AppState.customBuilder.metallicAddon = Number(priceVal);
+    } else if (field === 'secondaryKeepsake') {
+      AppState.customBuilder.secondaryKeepsake = label;
+      AppState.customBuilder.secondaryAddon = Number(priceVal);
     }
     renderActiveView();
+  };
+
+  window.updateCustomBuilderSchedule = function (field, val) {
+    if (field === 'eventDate' || field === 'pickupSlot') {
+      AppState.customBuilder[field] = val;
+      renderActiveView();
+    }
   };
 
   window.updateCustomBuilderText = function (val) {
@@ -2643,20 +2935,22 @@
 
   window.addCustomCommissionToCart = function () {
     const b = AppState.customBuilder;
-    const total = b.shapePrice + b.sourceAddon + b.metallicAddon + (b.ledBase ? 499 : 0);
+    const secondaryCost = Number(b.secondaryAddon) || 0;
+    const total = b.shapePrice + b.sourceAddon + b.metallicAddon + secondaryCost + (b.ledBase ? 499 : 0);
+    const addonSuffix = b.secondaryKeepsake && !b.secondaryKeepsake.startsWith('None') ? ` + ${b.secondaryKeepsake}` : '';
     Store.addToCart({
       productId: 'ram-keep-001',
       sku: 'RAM-CUSTOM-KEEP',
       name: `Custom Preserved Keepsake (${b.shape})`,
-      variantLabel: `${b.metallic}${b.ledBase ? ' + Warm LED Stand' : ''}`,
+      variantLabel: `${b.metallic}${addonSuffix}${b.ledBase ? ' + Warm LED Stand' : ''}`,
       price: total,
       regularPrice: total + 1000,
       qty: 1,
       image: Store.IMAGES.floralCube,
-      customNote: `${b.engraving} | Source: ${b.flowerSource}`
+      customNote: `${b.engraving} | Source: ${b.flowerSource} | Pickup: ${b.eventDate} (${b.pickupSlot})`
     });
     updateGlobalBadges();
-    window.showToast('Custom Keepsake Added to Bag!', `${formatINR(total)} • Doorstep pickup instructions included`);
+    window.showToast('Custom Keepsake Added to Bag!', `${formatINR(total)} • Doorstep pickup slot reserved`);
     window.navigateTo('cart');
   };
 
@@ -2882,6 +3176,116 @@
     window.showToast('Your Memory is Live!', 'Published to @resin.art.memories community feed');
   };
 
+  // Customer Account, Order Lookup, Mockup Approval & GST Invoice Handlers
+  window.toggleAccountProfileEdit = function () {
+    AppState.editingAccountProfile = !AppState.editingAccountProfile;
+    renderActiveView();
+  };
+
+  window.saveAccountProfile = function (ev) {
+    if (ev) ev.preventDefault();
+    const name = document.getElementById('acc-prof-name')?.value.trim() || 'Ananya Singhania';
+    const phone = document.getElementById('acc-prof-phone')?.value.trim() || '+91 98201 44810';
+    const email = document.getElementById('acc-prof-email')?.value.trim() || 'ananya@studiopatron.in';
+    const defaultAddress = document.getElementById('acc-prof-address')?.value.trim() || 'Bengaluru, KA 560001';
+    Store.savePatronProfile({ name, phone, email, defaultAddress });
+    AppState.editingAccountProfile = false;
+    renderActiveView();
+    window.showToast('Patron Profile Saved!', `${name} • Dispatch address updated`);
+  };
+
+  window.setAccountOrderSearch = function (val) {
+    AppState.orderSearchQuery = val;
+    renderActiveView();
+    const input = document.getElementById('account-order-search');
+    if (input) {
+      if (typeof input.focus === 'function') input.focus();
+      if (typeof input.setSelectionRange === 'function') input.setSelectionRange(input.value.length, input.value.length);
+    }
+  };
+
+  window.handleApproveOrderMockup = function (orderId) {
+    const updated = Store.approveOrderMockup(orderId);
+    renderActiveView();
+    if (updated) {
+      window.showToast(`Order #${orderId} Layout Approved! ✨`, 'Moved to Stage 4: Multi-Layer Crystal Resin Pour');
+    }
+  };
+
+  window.openOrderInvoiceModal = function (orderId) {
+    const ord = Store.getOrders().find(o => o.orderId === orderId);
+    if (!ord) return;
+    const gstInfo = Store.getGstInfo();
+    const modal = document.getElementById('tds-spec-modal');
+    const title = document.getElementById('tds-modal-title');
+    const body = document.getElementById('tds-modal-body');
+    if (!modal || !title || !body) return;
+
+    const gstAmt = Number(ord.gstAmount) || Number((ord.total * (18 / 118)).toFixed(2));
+    title.textContent = `GST Tax Invoice — Order #${ord.orderId}`;
+    body.innerHTML = `
+      <div class="flex flex-col gap-3 text-xs text-primary">
+        <div class="flex flex-wrap justify-between gap-2 p-3 rounded-lg bg-surface-container-low border border-[#e4e0d8]">
+          <div>
+            <p class="font-bold">Vistāra Krafts Chemical &amp; Keepsake Atelier</p>
+            <p class="text-[11px] text-on-surface-variant">Supplier GSTIN: 29AABCV4820K1Z5 • HSN: 39073010</p>
+          </div>
+          <div class="text-right">
+            <p class="font-spec-numeral font-bold">Date: ${esc(ord.date)}</p>
+            <p class="text-[11px] text-on-surface-variant">Buyer GSTIN: ${esc(gstInfo.gstin || 'Unregistered B2C')}</p>
+          </div>
+        </div>
+        <div class="border border-[#e4e0d8] rounded-lg overflow-hidden">
+          <div class="flex justify-between p-2.5 bg-surface-container-low font-bold">
+            <span>Item Description</span>
+            <span>Amount</span>
+          </div>
+          ${(ord.items || []).map(it => `
+            <div class="flex justify-between p-2.5 border-t border-surface-container">
+              <span>${it.qty}× ${esc(it.name)}</span>
+              <span class="font-spec-numeral font-semibold">${formatINR((it.price || ord.total) * (it.qty || 1))}</span>
+            </div>
+          `).join('')}
+          <div class="flex justify-between p-2.5 border-t border-surface-container bg-surface-container-low/50 text-on-surface-variant">
+            <span>Included IGST / CGST+SGST (18%)</span>
+            <span class="font-spec-numeral">₹${gstAmt.toFixed(2)}</span>
+          </div>
+          <div class="flex justify-between p-2.5 border-t border-[#e4e0d8] bg-surface-container-low font-bold text-sm">
+            <span>Total Paid (${esc(ord.paymentMethod || 'UPI Instant')})</span>
+            <span class="font-spec-numeral text-secondary">${formatINR(ord.total)}</span>
+          </div>
+        </div>
+        <p class="text-[11px] text-on-surface-variant">Shipped to: <strong>${esc(ord.customerName || 'Ananya Singhania')}</strong> — ${esc(ord.address || 'Bengaluru, KA 560001')} (${esc(ord.courier)})</p>
+      </div>
+    `;
+    modal.classList.remove('hidden');
+    syncBodyModalLock();
+  };
+
+  window.handleReorder = function (orderId) {
+    const ord = Store.getOrders().find(o => o.orderId === orderId);
+    if (!ord || !ord.items) return;
+    const catalog = Store.getProducts();
+    ord.items.forEach(it => {
+      const match = catalog.find(p => p.id === it.productId || p.name === it.name || p.shortName === it.name) || catalog[0];
+      if (match) {
+        Store.addToCart({
+          productId: match.id,
+          sku: match.sku,
+          name: match.name,
+          variantLabel: (match.variants && match.variants[0] ? match.variants[0].label : 'Standard Edition'),
+          price: it.price || match.price,
+          regularPrice: match.regularPrice,
+          qty: it.qty || 1,
+          image: match.image
+        });
+      }
+    });
+    updateGlobalBadges();
+    window.showToast(`Reordered #${orderId} Items to Studio Bag!`);
+    window.navigateTo('cart');
+  };
+
   // Checkout Modal
   window.openCheckoutModal = function () {
     const summary = Store.getCartSummary();
@@ -2902,8 +3306,9 @@
     const phone = document.getElementById('chk-phone')?.value.trim() || '+91 98765 43210';
     const address = document.getElementById('chk-address')?.value.trim() || 'Bengaluru 560001';
     const paymentMethod = document.getElementById('chk-payment')?.value || 'UPI Instant (GPay / PhonePe)';
+    const giftWrap = Boolean(document.getElementById('chk-gift-wrap')?.checked);
 
-    const res = Store.placeOrder({ name, phone, address, paymentMethod });
+    const res = Store.placeOrder({ name, phone, address, paymentMethod, giftWrap });
     document.getElementById('checkout-modal')?.classList.add('hidden');
     syncBodyModalLock();
     updateGlobalBadges();
