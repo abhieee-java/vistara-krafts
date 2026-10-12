@@ -36,7 +36,7 @@
       secondaryAddon: 0,
       eventDate: '2026-11-18',
       pickupSlot: 'Morning Slot (9:00 AM – 1:00 PM)',
-      engraving: 'Aarav & Meera • 12.10.2026',
+      engraving: '',
       ledBase: true
     },
     orderSearchQuery: '',
@@ -175,6 +175,51 @@
     }, 2800);
   };
 
+  function renderBarOrdersHtml(orders) {
+    if (!Array.isArray(orders) || orders.length === 0) {
+      return `<p class="text-xs text-on-surface-variant">No studio orders placed yet.</p>`;
+    }
+    return orders.map(ord => {
+      const stages = ord.stages || ['Order Confirmed', 'Materials Prepped', 'Silica Dehydration', 'Deep Cast Pour', 'Polish & Dispatch'];
+      const stageIdx = Number(ord.stageIndex ?? 1);
+      return `
+        <div class="p-3 rounded-xl bg-surface-container-low border border-[#e4e0d8] space-y-2">
+          <div class="flex items-center justify-between gap-2">
+            <div>
+              <span class="font-spec-numeral text-xs font-bold text-primary">#${esc(ord.orderId)}</span>
+              <span class="text-[10px] text-on-surface-variant block">${esc(ord.date || 'Active Batch')} • ${formatINR(ord.total)}</span>
+            </div>
+            <span class="px-2 py-0.5 rounded-full bg-secondary-container/50 text-on-secondary-container text-[10px] font-bold truncate max-w-[165px]">${esc(ord.status)}</span>
+          </div>
+          <div class="grid grid-cols-5 gap-1 pt-0.5">
+            ${stages.map((st, idx) => `
+              <div class="flex flex-col gap-0.5">
+                <div class="h-1.5 rounded-full ${idx <= stageIdx ? 'bg-emerald-700' : 'bg-[#e4e0d8]'}"></div>
+                <span class="text-[9px] leading-tight truncate ${idx <= stageIdx ? 'font-bold text-primary' : 'text-on-surface-variant'}">${idx + 1}. ${esc(st.split(' ')[0])}</span>
+              </div>
+            `).join('')}
+          </div>
+          <p class="text-[10px] text-on-surface-variant truncate">🚚 ${esc(ord.courier || 'BlueDart Air Priority')}</p>
+          <div class="flex flex-wrap items-center gap-1.5 pt-1">
+            ${!ord.mockupApproved ? `
+              <button type="button" onclick="window.handleApproveOrderMockup('${esc(ord.orderId)}')" class="flex-1 min-h-[36px] px-2.5 py-1 rounded-lg bg-[#9e3322] text-white text-[11px] font-bold cursor-pointer">
+                Approve Pre-Pour Layout
+              </button>
+            ` : `
+              <span class="px-2 py-1 rounded-lg bg-emerald-50 text-emerald-800 border border-emerald-200 text-[10px] font-bold">✓ Layout Approved</span>
+            `}
+            <button type="button" onclick="window.openOrderInvoiceModal('${esc(ord.orderId)}')" class="min-h-[36px] px-2.5 py-1 rounded-lg bg-white border border-[#e4e0d8] text-primary text-[11px] font-semibold cursor-pointer">
+              GST Invoice
+            </button>
+            <button type="button" onclick="window.closeModalById('account-bar-modal'); window.handleReorder('${esc(ord.orderId)}');" class="min-h-[36px] px-2.5 py-1 rounded-lg bg-white border border-[#e4e0d8] text-primary text-[11px] font-semibold cursor-pointer">
+              Reorder
+            </button>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
   // Sync Header, Bottom Nav Badges & Top-Bar Account Drawer Slots
   function updateGlobalBadges() {
     const summary = Store.getCartSummary();
@@ -227,7 +272,7 @@
             <button type="button" onclick="window.closeModalById('mobile-menu-drawer'); window.openAccountBarModal();" class="px-2.5 py-1.5 rounded-lg bg-white border border-[#e4e0d8] text-[11px] font-bold text-primary shrink-0 cursor-pointer">Edit</button>
           </div>
           <div class="flex items-center gap-2 pt-1 border-t border-[#e4e0d8]">
-            <button type="button" onclick="window.closeModalById('mobile-menu-drawer'); window.navigateTo('account');" class="flex-1 min-h-[38px] px-2.5 py-1.5 rounded-lg bg-primary text-white text-[11px] font-bold cursor-pointer">Track Orders</button>
+            <button type="button" onclick="window.closeModalById('mobile-menu-drawer'); window.openAccountBarModal();" class="flex-1 min-h-[38px] px-2.5 py-1.5 rounded-lg bg-primary text-white text-[11px] font-bold cursor-pointer">Orders &amp; Address</button>
             <button type="button" onclick="window.handlePatronLogout()" class="min-h-[38px] px-3 py-1.5 rounded-lg bg-white border border-[#e4e0d8] text-[#9e3322] text-[11px] font-bold cursor-pointer">Sign Out</button>
           </div>
         `;
@@ -249,13 +294,13 @@
     // Update Top-Bar Account & Shipping Popup Drawer (#account-bar-modal-body)
     const barModalBody = document.getElementById('account-bar-modal-body');
     if (barModalBody) {
+      const orders = Store.getOrders();
       if (isAuth) {
         const providerBadge = String(auth.provider || 'email').toUpperCase();
         const curName = auth.name || profile.name || '';
         const curPhone = auth.phone || profile.phone || '';
         const curEmail = auth.email || profile.email || '';
         const curAddr = auth.address || profile.defaultAddress || '';
-        const ordersCount = Store.getOrders().length;
 
         barModalBody.innerHTML = `
           <div class="p-3.5 rounded-xl bg-white border border-[#e4e0d8] space-y-2">
@@ -292,10 +337,15 @@
             <button type="submit" class="w-full min-h-[42px] py-2 rounded-xl bg-primary text-white text-xs font-bold cursor-pointer">Save Account Details</button>
           </form>
 
-          <button type="button" onclick="window.closeModalById('account-bar-modal'); window.navigateTo('account');" class="w-full min-h-[44px] px-3.5 py-2.5 rounded-xl bg-surface-container-low hover:bg-surface-container-high border border-[#e4e0d8] text-primary text-xs font-bold flex items-center justify-between cursor-pointer">
-            <span>Active Studio Orders (${ordersCount})</span>
-            <span class="material-symbols-outlined text-base" aria-hidden="true">arrow_forward</span>
-          </button>
+          <div class="p-3.5 rounded-xl bg-white border border-[#e4e0d8] space-y-2.5">
+            <div class="flex items-center justify-between gap-2">
+              <h4 class="text-xs font-bold text-primary uppercase tracking-wider">Live Order Tracker (${orders.length})</h4>
+              <span class="text-[10px] font-spec-numeral text-secondary">5-Stage Telemetry</span>
+            </div>
+            <div id="bar-account-orders-list" class="space-y-2.5">
+              ${renderBarOrdersHtml(orders)}
+            </div>
+          </div>
         `;
       } else {
         barModalBody.innerHTML = `
@@ -311,6 +361,16 @@
               <span class="material-symbols-outlined text-base" aria-hidden="true">login</span>
               <span>Sign In / Register to Order</span>
             </button>
+          </div>
+
+          <div class="p-3.5 rounded-xl bg-white border border-[#e4e0d8] space-y-2.5">
+            <div class="flex items-center justify-between gap-2">
+              <h4 class="text-xs font-bold text-primary uppercase tracking-wider">Studio Batch Tracker (${orders.length})</h4>
+              <span class="text-[10px] font-spec-numeral text-secondary">Inside Bar View</span>
+            </div>
+            <div id="bar-account-orders-list" class="space-y-2.5">
+              ${renderBarOrdersHtml(orders)}
+            </div>
           </div>
         `;
       }
@@ -516,8 +576,8 @@
     return `
       <div class="route-view-enter flex flex-col w-full max-w-7xl mx-auto">
         <!-- Shoppable Instagram Stories Rail (@resin.art.memories) -->
-        <section class="px-4 sm:px-8 pt-4 pb-3 bg-surface border-b border-[#e4e0d8]/70">
-          <div class="flex items-center justify-between mb-2">
+        <section class="px-3.5 sm:px-8 pt-2.5 sm:pt-4 pb-2.5 sm:pb-3 bg-surface border-b border-[#e4e0d8]/70">
+          <div class="flex items-center justify-between mb-1.5 sm:mb-2">
             <div class="flex items-center gap-2">
               <span class="w-2 h-2 rounded-full bg-[#9e3322] animate-pulse"></span>
               <span class="font-label-sm text-xs uppercase tracking-wider text-primary font-bold">Live from @resin.art.memories</span>
@@ -542,7 +602,7 @@
         </section>
 
         <!-- Editorial Hero Section (60/30/10 High-RT Architecture) -->
-        <section class="relative px-4 sm:px-8 py-6 sm:py-10 bg-gradient-to-br from-[#faf8f5] via-[#fdf6f3] to-[#f3f1ec] overflow-hidden border-b border-[#e4e0d8]">
+        <section class="relative px-3.5 sm:px-8 py-4 sm:py-10 bg-gradient-to-br from-[#faf8f5] via-[#fdf6f3] to-[#f3f1ec] overflow-hidden border-b border-[#e4e0d8]">
           <div aria-hidden="true" class="absolute inset-0 pointer-events-none opacity-[0.04]">
             <svg class="w-full h-full" xmlns="http://www.w3.org/2000/svg">
               <defs>
@@ -3403,6 +3463,118 @@
   };
 
   // Cloudflare Edge Authentication Controllers (Google, Apple, Email + Password + Shipping Address)
+  let gisInitialized = false;
+  let lastGisCredential = '';
+
+  function initGoogleIdentityServicesIfConfigured() {
+    try {
+      const cfg = window.VistaraCloudflareConfig && window.VistaraCloudflareConfig.googleOAuth;
+      if (!cfg || !cfg.enabled || !cfg.clientId || String(cfg.clientId).startsWith('YOUR_')) {
+        return;
+      }
+      if (!document.getElementById('vk-google-gis-script')) {
+        const script = document.createElement('script');
+        script.id = 'vk-google-gis-script';
+        script.src = 'https://accounts.google.com/gsi/client';
+        script.async = true;
+        script.defer = true;
+        script.onload = () => setupGoogleGisClient(cfg.clientId);
+        document.head.appendChild(script);
+      } else if (window.google && window.google.accounts && window.google.accounts.id) {
+        setupGoogleGisClient(cfg.clientId);
+      }
+    } catch (_e) { /* ignore */ }
+  }
+
+  function setupGoogleGisClient(clientId) {
+    if (gisInitialized || !(window.google && window.google.accounts && window.google.accounts.id)) return;
+    gisInitialized = true;
+    window.google.accounts.id.initialize({
+      client_id: clientId,
+      context: 'signin',
+      ux_mode: 'popup',
+      auto_select: false,
+      itp_support: true,
+      callback: (response) => {
+        if (response && response.credential) {
+          lastGisCredential = response.credential;
+          try {
+            const parts = response.credential.split('.');
+            const payload = JSON.parse(atob(parts[1].replace(/-/g, '+').replace(/_/g, '/')));
+            const emailEl = document.getElementById('cf-auth-email');
+            const nameEl = document.getElementById('cf-auth-name');
+            if (emailEl && payload.email) {
+              emailEl.value = payload.email;
+              window.onAuthEmailInput(payload.email);
+            }
+            if (nameEl && payload.name && !nameEl.value) nameEl.value = payload.name;
+          } catch (_e) { /* ignore */ }
+          window.startCloudflareOAuth('google');
+        }
+      }
+    });
+    const slot = document.getElementById('cf-google-gis-button-slot');
+    if (slot) {
+      slot.classList.remove('hidden');
+      slot.classList.add('flex');
+      window.google.accounts.id.renderButton(slot, {
+        theme: 'outline',
+        size: 'large',
+        text: 'continue_with',
+        shape: 'pill',
+        width: 280
+      });
+    }
+  }
+
+  function applyAuthProviderModeUI(provider) {
+    const cleanProvider = ['google', 'apple', 'email'].includes(provider) ? provider : 'email';
+    const provInput = document.getElementById('cf-auth-provider');
+    if (provInput) provInput.value = cleanProvider;
+
+    const emailWrap = document.getElementById('cf-auth-email-wrap');
+    const passWrap = document.getElementById('cf-auth-password-wrap');
+    const passInput = document.getElementById('cf-auth-password');
+    const googleBtn = document.getElementById('cf-oauth-google-btn');
+    const appleBtn = document.getElementById('cf-oauth-apple-btn');
+    const emailBtn = document.getElementById('cf-oauth-email-btn');
+    const submitBtn = document.getElementById('cf-auth-submit-btn');
+
+    [googleBtn, appleBtn, emailBtn].forEach(btn => {
+      if (btn) btn.classList.remove('ring-2', 'ring-secondary', 'ring-offset-1');
+    });
+
+    if (cleanProvider === 'email') {
+      if (emailBtn) emailBtn.classList.add('ring-2', 'ring-secondary', 'ring-offset-1');
+      if (passWrap) passWrap.classList.remove('hidden');
+      if (passInput) passInput.required = true;
+      if (emailWrap) emailWrap.classList.remove('min-[350px]:col-span-2');
+      if (submitBtn) submitBtn.textContent = 'Sign In & Save Shipping Address';
+    } else {
+      if (cleanProvider === 'google' && googleBtn) googleBtn.classList.add('ring-2', 'ring-secondary', 'ring-offset-1');
+      if (cleanProvider === 'apple' && appleBtn) appleBtn.classList.add('ring-2', 'ring-secondary', 'ring-offset-1');
+      if (passWrap) passWrap.classList.add('hidden');
+      if (passInput) passInput.required = false;
+      if (emailWrap) emailWrap.classList.add('min-[350px]:col-span-2');
+      const label = cleanProvider === 'apple' ? 'Apple ID' : 'Google';
+      if (submitBtn) submitBtn.textContent = `Continue with ${label} & Save Shipping Address`;
+    }
+  }
+
+  window.onAuthEmailInput = function (emailInput) {
+    if (typeof Store.lookupSavedPatronByEmail !== 'function') return;
+    const saved = Store.lookupSavedPatronByEmail(emailInput);
+    if (!saved) return;
+    const nameEl = document.getElementById('cf-auth-name');
+    const phoneEl = document.getElementById('cf-auth-phone');
+    const addrEl = document.getElementById('cf-auth-address');
+    const pinEl = document.getElementById('cf-auth-pincode');
+    if (nameEl && !nameEl.value && saved.name) nameEl.value = saved.name;
+    if (phoneEl && !phoneEl.value && saved.phone) phoneEl.value = saved.phone;
+    if (addrEl && !addrEl.value && saved.address) addrEl.value = saved.address;
+    if (pinEl && !pinEl.value && saved.pincode) pinEl.value = saved.pincode;
+  };
+
   window.openCloudflareAuthModal = function (fromCheckout = false) {
     AppState.pendingCheckoutAfterAuth = Boolean(fromCheckout);
     const errEl = document.getElementById('cf-auth-error');
@@ -3410,12 +3582,8 @@
       errEl.textContent = '';
       errEl.classList.add('hidden');
     }
-    const provInput = document.getElementById('cf-auth-provider');
-    if (provInput) provInput.value = 'email';
-    const passWrap = document.getElementById('cf-auth-password-wrap');
-    const passInput = document.getElementById('cf-auth-password');
-    if (passWrap) passWrap.classList.remove('hidden');
-    if (passInput) passInput.required = true;
+    applyAuthProviderModeUI('email');
+    initGoogleIdentityServicesIfConfigured();
 
     const bannerEl = document.getElementById('cloudflare-auth-reason-banner');
     if (bannerEl) {
@@ -3430,21 +3598,29 @@
   };
 
   window.startCloudflareOAuth = function (provider) {
-    const cleanProvider = provider === 'apple' ? 'apple' : 'google';
-    const provInput = document.getElementById('cf-auth-provider');
-    if (provInput) provInput.value = cleanProvider;
+    const cleanProvider = ['google', 'apple', 'email'].includes(provider) ? provider : 'google';
+    applyAuthProviderModeUI(cleanProvider);
 
-    const passWrap = document.getElementById('cf-auth-password-wrap');
-    const passInput = document.getElementById('cf-auth-password');
-    if (passWrap) passWrap.classList.add('hidden');
-    if (passInput) passInput.required = false;
+    if (cleanProvider === 'email') {
+      const bannerEl = document.getElementById('cloudflare-auth-reason-banner');
+      if (bannerEl) {
+        bannerEl.innerHTML = '✉️ <strong>Email &amp; Password Mode:</strong> Enter your <strong>Email, Password, Name, Mobile &amp; Shipping Address</strong> below.';
+      }
+      const emailEl = document.getElementById('cf-auth-email');
+      if (emailEl && typeof emailEl.focus === 'function') emailEl.focus();
+      return;
+    }
+
+    if (cleanProvider === 'google') {
+      initGoogleIdentityServicesIfConfigured();
+    }
 
     const label = cleanProvider === 'apple' ? 'Apple ID' : 'Google';
     const emailVal = document.getElementById('cf-auth-email')?.value.trim() || '';
+    if (emailVal) window.onAuthEmailInput(emailVal);
     const nameVal = document.getElementById('cf-auth-name')?.value.trim() || '';
     const phoneVal = document.getElementById('cf-auth-phone')?.value.trim() || '';
     const addrVal = document.getElementById('cf-auth-address')?.value.trim() || '';
-    const pinVal = document.getElementById('cf-auth-pincode')?.value.trim() || '';
 
     // If the user has already filled in their email, name, phone, and shipping address, complete OAuth login immediately
     if (emailVal && nameVal && phoneVal && addrVal) {
@@ -3456,10 +3632,6 @@
     const bannerEl = document.getElementById('cloudflare-auth-reason-banner');
     if (bannerEl) {
       bannerEl.innerHTML = `✅ <strong>${esc(label)} Identity Selected:</strong> No password needed — please enter your <strong>Email, Name, Mobile &amp; Shipping Address</strong> below to complete ${esc(label)} sign-in.`;
-    }
-    const submitBtn = document.getElementById('cf-auth-submit-btn');
-    if (submitBtn) {
-      submitBtn.textContent = `Continue with ${label} & Save Shipping Address`;
     }
     const firstEmpty = !emailVal
       ? document.getElementById('cf-auth-email')
@@ -3481,7 +3653,16 @@
     const pincode = document.getElementById('cf-auth-pincode')?.value.trim() || '';
 
     const errEl = document.getElementById('cf-auth-error');
-    const res = Store.loginPatron({ provider, email, password, name, phone, address, pincode });
+    const res = Store.loginPatron({
+      provider,
+      email,
+      password,
+      name,
+      phone,
+      address,
+      pincode,
+      credential: lastGisCredential
+    });
 
     if (!res.valid) {
       if (errEl) {
@@ -3495,17 +3676,6 @@
     if (errEl) {
       errEl.textContent = '';
       errEl.classList.add('hidden');
-    }
-
-    // Sync with Cloudflare Pages Function (/api/auth/oauth or /api/auth/register) when running on Cloudflare Workers edge
-    if (typeof fetch === 'function' && window.VistaraCloudflareConfig) {
-      const apiBase = window.VistaraCloudflareConfig.auth?.workerEndpoint || '/api';
-      const endpoint = provider === 'email' ? `${apiBase}/auth/register` : `${apiBase}/auth/oauth`;
-      fetch(endpoint, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ provider, email, password, name, phone, address, pincode })
-      }).catch(() => {});
     }
 
     document.getElementById('cloudflare-auth-modal')?.classList.add('hidden');
@@ -3525,6 +3695,7 @@
   window.handlePatronLogout = function () {
     Store.logoutPatron();
     AppState.pendingCheckoutAfterAuth = false;
+    lastGisCredential = '';
     document.getElementById('account-bar-modal')?.classList.add('hidden');
     document.getElementById('mobile-menu-drawer')?.classList.add('hidden');
     // Clear checkout inputs so no stale customer details remain after sign-out
@@ -3552,6 +3723,7 @@
 
   window.handleApproveOrderMockup = function (orderId) {
     const updated = Store.approveOrderMockup(orderId);
+    updateGlobalBadges();
     renderActiveView();
     if (updated) {
       window.showToast(`Order #${orderId} Layout Approved! ✨`, 'Moved to Stage 4: Multi-Layer Crystal Resin Pour');
@@ -3601,7 +3773,7 @@
             <span class="font-spec-numeral text-secondary">${formatINR(ord.total)}</span>
           </div>
         </div>
-        <p class="text-[11px] text-on-surface-variant">Shipped to: <strong>${esc(ord.customerName || 'Ananya Singhania')}</strong> — ${esc(ord.address || 'Bengaluru, KA 560001')} (${esc(ord.courier)})</p>
+        <p class="text-[11px] text-on-surface-variant">Shipped to: <strong>${esc(ord.customerName || 'Verified Studio Patron')}</strong> — ${esc(ord.address || 'Bengaluru, KA 560001')} (${esc(ord.courier)})</p>
       </div>
     `;
     modal.classList.remove('hidden');

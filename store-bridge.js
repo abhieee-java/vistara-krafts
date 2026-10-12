@@ -866,9 +866,9 @@
       discount: 0,
       gstAmount: 686.29,
       paymentMethod: 'UPI Instant (GPay / PhonePe / Paytm)',
-      customerName: 'Aanya Verma',
-      phone: '+91 98765 43210',
-      address: '100 Feet Road, Indiranagar, Bengaluru 560001',
+      customerName: 'Vistāra Studio Sample Order',
+      phone: 'Verified at Checkout',
+      address: 'Shipping address assigned upon Patron Sign-In',
       giftWrap: true,
       mockupApproved: false,
       status: 'Deep Cast Pour (Stage 4 of 5)',
@@ -888,9 +888,10 @@
       tables: ['products', 'product_variants', 'social_posts', 'orders', 'custom_commissions', 'reviews']
     },
     cloudflare: {
-      r2BucketUrl: global.CLOUDFLARE_R2_URL || 'https://media.resinartmemories.in',
-      accountId: 'cf_r2_resin_memories_vault',
-      status: 'staged_cdn_passthrough'
+      apiBaseUrl: (global.VistaraCloudflareConfig && global.VistaraCloudflareConfig.apiBaseUrl) || '/api',
+      r2BucketUrl: global.CLOUDFLARE_R2_URL || 'https://media.vistarakrafts.com',
+      accountId: 'cf_d1_kv_r2_vistara_krafts',
+      status: 'cloudflare_edge_ready'
     },
     adminHostBridge: {
       channelName: 'resin_art_memories_admin_push',
@@ -899,6 +900,37 @@
       status: 'listening_realtime'
     }
   };
+
+  let edgeSessionToken = '';
+
+  function hashSecretLocal(str) {
+    let h = 2166136261;
+    const s = String(str || '');
+    for (let i = 0; i < s.length; i++) {
+      h ^= s.charCodeAt(i);
+      h = Math.imul(h, 16777619);
+    }
+    return 'vk_h_' + (h >>> 0).toString(16);
+  }
+
+  function callCloudflareEdge(path, method = 'GET', body = null) {
+    try {
+      if (typeof global.fetch !== 'function') return Promise.resolve(null);
+      const base = ((global.VistaraCloudflareConfig && global.VistaraCloudflareConfig.apiBaseUrl) || '/api').replace(/\/$/, '');
+      const headers = { 'Content-Type': 'application/json' };
+      if (edgeSessionToken) {
+        headers['Authorization'] = 'Bearer ' + edgeSessionToken;
+      }
+      return global.fetch(base + path, {
+        method,
+        headers,
+        credentials: 'same-origin',
+        body: body ? JSON.stringify(body) : undefined
+      }).then(res => res.json().catch(() => null)).catch(() => null);
+    } catch (_e) {
+      return Promise.resolve(null);
+    }
+  }
 
   const listeners = new Set();
 
@@ -1302,6 +1334,13 @@
       return Boolean(this.getAuthSession());
     },
 
+    lookupSavedPatronByEmail(emailInput) {
+      const email = String(emailInput || '').trim().toLowerCase();
+      if (!email) return null;
+      const registeredUsers = safeRead(STORAGE_KEYS.REGISTERED_USERS, {}) || {};
+      return registeredUsers[email] || null;
+    },
+
     loginPatron(payload = {}) {
       const provider = ['google', 'apple', 'email'].includes(payload.provider) ? payload.provider : 'email';
       const email = String(payload.email || '').trim().toLowerCase();
@@ -1310,6 +1349,7 @@
       let phone = String(payload.phone || '').trim();
       let address = String(payload.address || payload.defaultAddress || '').trim();
       const pincode = String(payload.pincode || '').trim();
+      const credential = payload.credential ? String(payload.credential) : '';
 
       if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
         const msg = 'Please enter a valid email address.';
@@ -1322,6 +1362,11 @@
       if (provider === 'email') {
         if (!password || password.length < 6) {
           const msg = 'Password must be at least 6 characters.';
+          return { ok: false, valid: false, error: msg, message: msg };
+        }
+        const candidateVerifier = hashSecretLocal(password);
+        if (existingUser && existingUser.passwordVerifier && existingUser.passwordVerifier !== candidateVerifier) {
+          const msg = 'Incorrect password for this email account.';
           return { ok: false, valid: false, error: msg, message: msg };
         }
         if (existingUser && existingUser.password && existingUser.password !== password) {
@@ -1355,7 +1400,7 @@
       }
       const fullAddress = (pincode && !address.includes(pincode)) ? `${address} - ${pincode}` : address;
 
-      const sessionToken = 'vk_cf_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2, 8);
+      edgeSessionToken = 'vk_cf_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2, 8);
       const userRecord = {
         id: (existingUser && existingUser.id) || ('usr_' + Date.now().toString(36)),
         email,
@@ -1365,12 +1410,13 @@
         defaultAddress: fullAddress,
         pincode: resolvedPin,
         provider,
-        password: provider === 'email' ? password : (existingUser ? existingUser.password : ''),
+        passwordVerifier: provider === 'email'
+          ? hashSecretLocal(password)
+          : (existingUser ? existingUser.passwordVerifier : ''),
         memberTier: 'Gold Atelier Member',
         tier: 'Gold Atelier Member',
         loyaltyPoints: (existingUser && existingUser.loyaltyPoints) || 250,
         authenticated: true,
-        token: sessionToken,
         authenticatedAt: new Date().toISOString()
       };
 
@@ -1379,21 +1425,28 @@
       safeWrite(STORAGE_KEYS.AUTH_SESSION, userRecord);
       safeWrite(STORAGE_KEYS.PATRON_PROFILE, userRecord);
 
-      // Sync asynchronously with Cloudflare Pages Function if running on Cloudflare Edge
-      try {
-        if (typeof global.fetch === 'function') {
-          const endpoint = provider === 'email' ? '/api/auth/login' : '/api/auth/oauth';
-          global.fetch(endpoint, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ provider, email, password, name, phone, address: fullAddress, pincode: resolvedPin })
-          }).catch(() => {});
+      // Sync with Cloudflare Pages Function / Worker (D1 + KV + HttpOnly cookie)
+      const endpoint = provider === 'email'
+        ? (existingUser ? '/auth/login' : '/auth/register')
+        : '/auth/oauth';
+      callCloudflareEdge(endpoint, 'POST', {
+        provider,
+        email,
+        password,
+        name,
+        phone,
+        address: fullAddress,
+        pincode: resolvedPin,
+        credential
+      }).then(data => {
+        if (data && data.ok && data.token) {
+          edgeSessionToken = data.token;
         }
-      } catch (_e) { /* offline / static host fallback */ }
+      });
 
       this.notify('auth_updated', userRecord);
       this.notify('patron_profile_updated', userRecord);
-      return { ok: true, valid: true, user: userRecord, session: userRecord, token: sessionToken };
+      return { ok: true, valid: true, user: userRecord, session: userRecord, token: edgeSessionToken };
     },
 
     logoutPatron() {
@@ -1405,11 +1458,8 @@
       } catch (_e) { /* ignore */ }
 
       safeWrite(STORAGE_KEYS.AUTH_SESSION, null);
-      try {
-        if (typeof global.fetch === 'function') {
-          global.fetch('/api/auth/logout', { method: 'POST' }).catch(() => {});
-        }
-      } catch (_e) { /* ignore */ }
+      callCloudflareEdge('/auth/logout', 'POST');
+      edgeSessionToken = '';
 
       this.notify('auth_updated', null);
       return { ok: true };
@@ -1459,7 +1509,7 @@
       next.memberTier = resolvedTier;
       safeWrite(STORAGE_KEYS.PATRON_PROFILE, next);
 
-      // If explicit patron identity & address were saved, synchronize authenticated session state
+      // If explicit patron identity & address were saved, synchronize authenticated session state & D1
       if (updates.name && (updates.defaultAddress || updates.address)) {
         const sessionObj = {
           ...(this.getAuthSession() || {}),
@@ -1471,6 +1521,20 @@
           authenticated: true
         };
         safeWrite(STORAGE_KEYS.AUTH_SESSION, sessionObj);
+        if (sessionObj.email) {
+          const registeredUsers = safeRead(STORAGE_KEYS.REGISTERED_USERS, {}) || {};
+          registeredUsers[sessionObj.email.toLowerCase()] = {
+            ...(registeredUsers[sessionObj.email.toLowerCase()] || {}),
+            ...sessionObj
+          };
+          safeWrite(STORAGE_KEYS.REGISTERED_USERS, registeredUsers);
+        }
+        callCloudflareEdge('/auth/profile', 'PUT', {
+          name: sessionObj.name,
+          phone: sessionObj.phone || '',
+          address: resolvedAddress,
+          pincode: sessionObj.pincode || ''
+        });
         this.notify('auth_updated', sessionObj);
       }
 
@@ -1510,7 +1574,20 @@
     },
 
     getOrders() {
-      return safeRead(STORAGE_KEYS.ORDERS, DEFAULT_ORDERS);
+      const list = safeRead(STORAGE_KEYS.ORDERS, DEFAULT_ORDERS);
+      const auth = this.getAuthSession();
+      if (!auth) return list;
+      return list.map(o => {
+        if (o.customerName === 'Vistāra Studio Sample Order') {
+          return {
+            ...o,
+            customerName: auth.name || o.customerName,
+            phone: auth.phone || o.phone,
+            address: auth.address || o.address
+          };
+        }
+        return o;
+      });
     },
 
     findOrder(query) {
@@ -1542,6 +1619,9 @@
       });
       safeWrite(STORAGE_KEYS.ORDERS, orders);
       const updated = orders.find(o => o.orderId === orderId) || null;
+      if (updated) {
+        callCloudflareEdge('/orders', 'POST', updated);
+      }
       this.notify('order_updated', updated);
       return updated;
     },
@@ -1592,6 +1672,7 @@
       };
       const orders = [newOrder, ...this.getOrders()];
       safeWrite(STORAGE_KEYS.ORDERS, orders);
+      callCloudflareEdge('/orders', 'POST', newOrder);
       this.clearCart();
       this.notify('order_placed', newOrder);
       return { success: true, order: newOrder };

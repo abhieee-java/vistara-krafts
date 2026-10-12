@@ -21,7 +21,8 @@ const CORS_HEADERS = {
   'Content-Type': 'application/json; charset=utf-8',
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-  'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-CF-Turnstile-Token'
+  'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-CF-Turnstile-Token',
+  'Cross-Origin-Opener-Policy': 'same-origin-allow-popups'
 };
 
 function jsonResponse(data, status = 200, extraHeaders = {}) {
@@ -29,6 +30,20 @@ function jsonResponse(data, status = 200, extraHeaders = {}) {
     status,
     headers: { ...CORS_HEADERS, ...extraHeaders }
   });
+}
+
+function decodeJwtPayload(jwt) {
+  try {
+    if (!jwt || typeof jwt !== 'string') return null;
+    const parts = jwt.split('.');
+    if (parts.length < 2) return null;
+    const base64 = parts[1].replace(/-/g, '+').replace(/_/g, '/');
+    const padded = base64 + '='.repeat((4 - (base64.length % 4)) % 4);
+    const jsonStr = atob(padded);
+    return JSON.parse(jsonStr);
+  } catch (_err) {
+    return null;
+  }
 }
 
 async function sha256Hex(input) {
@@ -96,7 +111,7 @@ async function getAuthenticatedUser(request, env) {
     const row = await env.VISTARA_DB.prepare(
       `SELECT u.id, u.email, u.name, u.phone, u.address, u.pincode, u.provider, u.member_tier, u.loyalty_points
        FROM sessions s JOIN users u ON s.user_id = u.id
-       WHERE s.token_hash = ?1 AND s.expires_at > datetime('now')`
+       WHERE s.token_hash = ? AND datetime(s.expires_at) > datetime('now')`
     ).bind(tokenHash).first();
     if (row) return row;
   }
@@ -115,7 +130,7 @@ async function createSessionForUser(user, env) {
 
   if (env && env.VISTARA_DB) {
     await env.VISTARA_DB.prepare(
-      `INSERT INTO sessions (token_hash, user_id, provider, expires_at) VALUES (?1, ?2, ?3, ?4)`
+      `INSERT INTO sessions (token_hash, user_id, provider, expires_at) VALUES (?, ?, ?, ?)`
     ).bind(tokenHash, user.id, user.provider || 'email', expiresAtIso).run();
   }
   if (env && env.VISTARA_SESSIONS) {
@@ -131,6 +146,12 @@ async function createSessionForUser(user, env) {
   });
 
   return rawToken;
+}
+
+function sessionCookieHeader(token) {
+  return {
+    'Set-Cookie': `vk_cf_session=${token}; Path=/; HttpOnly; SameSite=Lax; Max-Age=2592000`
+  };
 }
 
 export async function onRequest(context) {
@@ -186,7 +207,8 @@ export async function onRequest(context) {
 
       const salt = crypto.randomUUID().replace(/-/g, '').slice(0, 16);
       const passwordHash = await hashPasswordPBKDF2(password, salt);
-      const userId = 'usr_' + crypto.randomUUID().replace(/-/g, '').slice(0, 12);
+      const existingMem = edgeMemoryUsers.get(email);
+      const userId = (existingMem && existingMem.id) || ('usr_' + crypto.randomUUID().replace(/-/g, '').slice(0, 12));
 
       const userRecord = {
         id: userId,
@@ -205,7 +227,7 @@ export async function onRequest(context) {
       if (env && env.VISTARA_DB) {
         await env.VISTARA_DB.prepare(
           `INSERT INTO users (id, email, name, phone, address, pincode, provider, password_hash, password_salt)
-           VALUES (?1, ?2, ?3, ?4, ?5, ?6, 'email', ?7, ?8)
+           VALUES (?, ?, ?, ?, ?, ?, 'email', ?, ?)
            ON CONFLICT(email) DO UPDATE SET
              name = excluded.name,
              phone = excluded.phone,
@@ -215,6 +237,15 @@ export async function onRequest(context) {
              password_salt = excluded.password_salt,
              updated_at = datetime('now')`
         ).bind(userId, email, name, phone, address, pincode, passwordHash, salt).run();
+
+        const canonical = await env.VISTARA_DB.prepare(
+          `SELECT id, member_tier, loyalty_points FROM users WHERE email = ?`
+        ).bind(email).first();
+        if (canonical && canonical.id) {
+          userRecord.id = canonical.id;
+          userRecord.member_tier = canonical.member_tier || userRecord.member_tier;
+          userRecord.loyalty_points = canonical.loyalty_points ?? userRecord.loyalty_points;
+        }
       }
       edgeMemoryUsers.set(email, userRecord);
 
@@ -235,7 +266,7 @@ export async function onRequest(context) {
           }
         },
         200,
-        { 'Set-Cookie': `vk_cf_session=${token}; Path=/; HttpOnly; SameSite=Lax; Max-Age=2592000` }
+        sessionCookieHeader(token)
       );
     }
 
@@ -246,6 +277,7 @@ export async function onRequest(context) {
       const address = String(body.address || '').trim();
       const phone = String(body.phone || '').trim();
       const name = String(body.name || '').trim();
+      const pincode = String(body.pincode || '').trim();
 
       if (!email || !password) {
         return jsonResponse({ ok: false, error: 'Email and password are required.' }, 400);
@@ -253,7 +285,7 @@ export async function onRequest(context) {
 
       let stored = null;
       if (env && env.VISTARA_DB) {
-        stored = await env.VISTARA_DB.prepare(`SELECT * FROM users WHERE email = ?1`).bind(email).first();
+        stored = await env.VISTARA_DB.prepare(`SELECT * FROM users WHERE email = ?`).bind(email).first();
       }
       if (!stored && edgeMemoryUsers.has(email)) {
         stored = edgeMemoryUsers.get(email);
@@ -267,8 +299,38 @@ export async function onRequest(context) {
         if (address) stored.address = address;
         if (phone) stored.phone = phone;
         if (name) stored.name = name;
+        if (pincode) stored.pincode = pincode;
+
+        if (env && env.VISTARA_DB) {
+          await env.VISTARA_DB.prepare(
+            `INSERT INTO users (id, email, name, phone, address, pincode, provider, password_hash, password_salt)
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+             ON CONFLICT(email) DO UPDATE SET
+               name = excluded.name,
+               phone = excluded.phone,
+               address = excluded.address,
+               pincode = excluded.pincode,
+               updated_at = datetime('now')`
+          ).bind(
+            stored.id,
+            stored.email,
+            stored.name,
+            stored.phone,
+            stored.address,
+            stored.pincode || '',
+            stored.provider || 'email',
+            stored.password_hash,
+            stored.password_salt
+          ).run();
+
+          const canonical = await env.VISTARA_DB.prepare(`SELECT id FROM users WHERE email = ?`).bind(email).first();
+          if (canonical && canonical.id) stored.id = canonical.id;
+        }
+        edgeMemoryUsers.set(email, stored);
       } else {
-        if (!address || !phone) {
+        const effectiveAddress = address || (stored && stored.address) || '';
+        const effectivePhone = phone || (stored && stored.phone) || '';
+        if (!effectiveAddress || !effectivePhone) {
           return jsonResponse({
             ok: false,
             error: 'First-time login requires your Mobile Number and Shipping Address so nothing is assumed.'
@@ -277,45 +339,79 @@ export async function onRequest(context) {
         const salt = crypto.randomUUID().replace(/-/g, '').slice(0, 16);
         const passwordHash = await hashPasswordPBKDF2(password, salt);
         stored = {
-          id: 'usr_' + crypto.randomUUID().replace(/-/g, '').slice(0, 12),
+          id: (stored && stored.id) || ('usr_' + crypto.randomUUID().replace(/-/g, '').slice(0, 12)),
           email,
-          name: name || email.split('@')[0],
-          phone,
-          address,
-          pincode: String(body.pincode || '').trim(),
+          name: name || (stored && stored.name) || email.split('@')[0],
+          phone: effectivePhone,
+          address: effectiveAddress,
+          pincode: pincode || (stored && stored.pincode) || '',
           provider: 'email',
           password_hash: passwordHash,
           password_salt: salt,
           member_tier: 'Verified Vistāra Patron',
           loyalty_points: 250
         };
+
+        if (env && env.VISTARA_DB) {
+          await env.VISTARA_DB.prepare(
+            `INSERT INTO users (id, email, name, phone, address, pincode, provider, password_hash, password_salt)
+             VALUES (?, ?, ?, ?, ?, ?, 'email', ?, ?)
+             ON CONFLICT(email) DO UPDATE SET
+               name = excluded.name,
+               phone = excluded.phone,
+               address = excluded.address,
+               pincode = excluded.pincode,
+               password_hash = excluded.password_hash,
+               password_salt = excluded.password_salt,
+               updated_at = datetime('now')`
+          ).bind(
+            stored.id,
+            stored.email,
+            stored.name,
+            stored.phone,
+            stored.address,
+            stored.pincode,
+            stored.password_hash,
+            stored.password_salt
+          ).run();
+
+          const canonical = await env.VISTARA_DB.prepare(`SELECT id FROM users WHERE email = ?`).bind(email).first();
+          if (canonical && canonical.id) stored.id = canonical.id;
+        }
         edgeMemoryUsers.set(email, stored);
       }
 
       const token = await createSessionForUser(stored, env);
-      return jsonResponse({
-        ok: true,
-        token,
-        user: {
-          id: stored.id,
-          email: stored.email,
-          name: stored.name,
-          phone: stored.phone,
-          address: stored.address,
-          pincode: stored.pincode || '',
-          provider: stored.provider || 'email',
-          memberTier: stored.member_tier || 'Verified Vistāra Patron'
-        }
-      });
+      return jsonResponse(
+        {
+          ok: true,
+          token,
+          user: {
+            id: stored.id,
+            email: stored.email,
+            name: stored.name,
+            phone: stored.phone,
+            address: stored.address,
+            pincode: stored.pincode || '',
+            provider: stored.provider || 'email',
+            memberTier: stored.member_tier || 'Verified Vistāra Patron'
+          }
+        },
+        200,
+        sessionCookieHeader(token)
+      );
     }
 
     if (path === 'auth/oauth' && request.method === 'POST') {
       const body = await request.json();
       const provider = body.provider === 'apple' ? 'apple' : 'google';
-      const email = String(body.email || '').trim().toLowerCase();
-      const name = String(body.name || '').trim();
+      const jwtClaims = body.credential ? decodeJwtPayload(body.credential) : null;
+      const email = String(body.email || (jwtClaims && jwtClaims.email) || '').trim().toLowerCase();
+      const name = String(body.name || (jwtClaims && jwtClaims.name) || '').trim();
       const phone = String(body.phone || '').trim();
       const address = String(body.address || '').trim();
+      const pincode = String(body.pincode || '').trim();
+      const oauthSub = String(body.sub || (jwtClaims && jwtClaims.sub) || '').trim();
 
       if (!email || !address || !phone) {
         return jsonResponse({
@@ -324,48 +420,73 @@ export async function onRequest(context) {
         }, 400);
       }
 
+      const existingMem = edgeMemoryUsers.get(email);
       const userRecord = {
-        id: 'usr_' + crypto.randomUUID().replace(/-/g, '').slice(0, 12),
+        id: (existingMem && existingMem.id) || ('usr_' + crypto.randomUUID().replace(/-/g, '').slice(0, 12)),
         email,
         name: name || email.split('@')[0],
         phone,
         address,
-        pincode: String(body.pincode || '').trim(),
+        pincode,
         provider,
+        provider_sub: oauthSub,
         member_tier: 'Verified Vistāra Patron',
         loyalty_points: 250
       };
-      edgeMemoryUsers.set(email, userRecord);
 
       if (env && env.VISTARA_DB) {
         await env.VISTARA_DB.prepare(
-          `INSERT INTO users (id, email, name, phone, address, pincode, provider)
-           VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7)
+          `INSERT INTO users (id, email, name, phone, address, pincode, provider, provider_sub)
+           VALUES (?, ?, ?, ?, ?, ?, ?, ?)
            ON CONFLICT(email) DO UPDATE SET
              name = excluded.name,
              phone = excluded.phone,
              address = excluded.address,
              pincode = excluded.pincode,
              provider = excluded.provider,
+             provider_sub = CASE WHEN excluded.provider_sub != '' THEN excluded.provider_sub ELSE users.provider_sub END,
              updated_at = datetime('now')`
-        ).bind(userRecord.id, email, userRecord.name, phone, address, userRecord.pincode, provider).run();
+        ).bind(
+          userRecord.id,
+          email,
+          userRecord.name,
+          phone,
+          address,
+          userRecord.pincode,
+          provider,
+          userRecord.provider_sub
+        ).run();
+
+        const canonical = await env.VISTARA_DB.prepare(
+          `SELECT id, member_tier, loyalty_points FROM users WHERE email = ?`
+        ).bind(email).first();
+        if (canonical && canonical.id) {
+          userRecord.id = canonical.id;
+          userRecord.member_tier = canonical.member_tier || userRecord.member_tier;
+          userRecord.loyalty_points = canonical.loyalty_points ?? userRecord.loyalty_points;
+        }
       }
+      edgeMemoryUsers.set(email, userRecord);
 
       const token = await createSessionForUser(userRecord, env);
-      return jsonResponse({
-        ok: true,
-        token,
-        user: {
-          id: userRecord.id,
-          email: userRecord.email,
-          name: userRecord.name,
-          phone: userRecord.phone,
-          address: userRecord.address,
-          pincode: userRecord.pincode,
-          provider,
-          memberTier: userRecord.member_tier
-        }
-      });
+      return jsonResponse(
+        {
+          ok: true,
+          token,
+          user: {
+            id: userRecord.id,
+            email: userRecord.email,
+            name: userRecord.name,
+            phone: userRecord.phone,
+            address: userRecord.address,
+            pincode: userRecord.pincode,
+            provider,
+            memberTier: userRecord.member_tier
+          }
+        },
+        200,
+        sessionCookieHeader(token)
+      );
     }
 
     if (path === 'auth/me' && request.method === 'GET') {
@@ -374,13 +495,59 @@ export async function onRequest(context) {
       return jsonResponse({ ok: true, authenticated: true, user });
     }
 
+    if (path === 'auth/profile' && request.method === 'PUT') {
+      const user = await getAuthenticatedUser(request, env);
+      if (!user) {
+        return jsonResponse({ ok: false, error: 'Authentication required to update profile.' }, 401);
+      }
+      const body = await request.json();
+      const name = String(body.name ?? user.name ?? '').trim();
+      const phone = String(body.phone ?? user.phone ?? '').trim();
+      const address = String(body.address ?? user.address ?? '').trim();
+      const pincode = String(body.pincode ?? user.pincode ?? '').trim();
+
+      if (!name || !phone || !address) {
+        return jsonResponse({
+          ok: false,
+          error: 'Full Name, Mobile Number, and Complete Shipping Address are required.'
+        }, 400);
+      }
+
+      if (env && env.VISTARA_DB) {
+        await env.VISTARA_DB.prepare(
+          `UPDATE users SET name = ?, phone = ?, address = ?, pincode = ?, updated_at = datetime('now') WHERE id = ?`
+        ).bind(name, phone, address, pincode, user.id).run();
+      }
+
+      const memUser = edgeMemoryUsers.get(user.email) || { ...user };
+      memUser.name = name;
+      memUser.phone = phone;
+      memUser.address = address;
+      memUser.pincode = pincode;
+      edgeMemoryUsers.set(user.email, memUser);
+
+      return jsonResponse({
+        ok: true,
+        user: {
+          id: user.id,
+          email: user.email,
+          name,
+          phone,
+          address,
+          pincode,
+          provider: user.provider || 'email',
+          memberTier: user.member_tier || 'Verified Vistāra Patron'
+        }
+      });
+    }
+
     if (path === 'auth/logout' && request.method === 'POST') {
       const rawToken = getBearerToken(request);
       if (rawToken) {
         const tokenHash = await sha256Hex(rawToken);
         edgeMemorySessions.delete(tokenHash);
         if (env && env.VISTARA_DB) {
-          await env.VISTARA_DB.prepare(`DELETE FROM sessions WHERE token_hash = ?1`).bind(tokenHash).run();
+          await env.VISTARA_DB.prepare(`DELETE FROM sessions WHERE token_hash = ?`).bind(tokenHash).run();
         }
         if (env && env.VISTARA_SESSIONS) {
           await env.VISTARA_SESSIONS.delete(tokenHash);
@@ -391,6 +558,58 @@ export async function onRequest(context) {
         200,
         { 'Set-Cookie': 'vk_cf_session=; Path=/; HttpOnly; SameSite=Lax; Max-Age=0' }
       );
+    }
+
+    if (path === 'orders' && request.method === 'GET') {
+      const user = await getAuthenticatedUser(request, env);
+      if (!user) {
+        return jsonResponse({ ok: false, error: 'Authentication required to fetch orders.' }, 401);
+      }
+
+      const ordersById = new Map();
+      if (env && env.VISTARA_DB) {
+        const res = await env.VISTARA_DB.prepare(
+          `SELECT * FROM orders WHERE user_id = ? OR customer_email = ? ORDER BY created_at DESC`
+        ).bind(user.id, user.email).all();
+        const rows = (res && res.results) || [];
+        for (const row of rows) {
+          let parsedItems = [];
+          try {
+            parsedItems = JSON.parse(row.items_json || '[]');
+          } catch (_e) {
+            parsedItems = [];
+          }
+          ordersById.set(row.order_id, {
+            orderId: row.order_id,
+            userId: row.user_id,
+            customerName: row.customer_name,
+            customerEmail: row.customer_email,
+            phone: row.phone,
+            address: row.address,
+            pincode: row.pincode || '',
+            total: Number(row.total || 0),
+            subtotal: Number(row.subtotal || 0),
+            discount: Number(row.discount || 0),
+            gstAmount: Number(row.gst_amount || 0),
+            paymentMethod: row.payment_method,
+            giftWrap: Boolean(row.gift_wrap),
+            mockupApproved: Boolean(row.mockup_approved),
+            status: row.status,
+            stageIndex: Number(row.stage_index ?? 1),
+            courier: row.courier || 'BlueDart Priority Air • AWB Pending',
+            items: parsedItems,
+            createdAt: row.created_at
+          });
+        }
+      }
+
+      for (const [id, ord] of edgeMemoryOrders.entries()) {
+        if ((ord.userId === user.id || ord.customerEmail === user.email) && !ordersById.has(id)) {
+          ordersById.set(id, ord);
+        }
+      }
+
+      return jsonResponse({ ok: true, orders: Array.from(ordersById.values()) });
     }
 
     if (path === 'orders' && request.method === 'POST') {
@@ -407,17 +626,54 @@ export async function onRequest(context) {
         customerEmail: user.email,
         phone: body.phone || user.phone,
         address: body.address || user.address,
-        total: Number(body.total || 0),
-        subtotal: Number(body.subtotal || 0),
-        discount: Number(body.discount || 0),
+        pincode: String(body.pincode || user.pincode || '').trim(),
+        total: Math.round(Number(body.total || 0)),
+        subtotal: Math.round(Number(body.subtotal || 0)),
+        discount: Math.round(Number(body.discount || 0)),
         gstAmount: Number(body.gstAmount || 0),
         paymentMethod: body.paymentMethod || 'UPI Instant',
         giftWrap: Boolean(body.giftWrap),
-        status: 'Order Confirmed • Studio Batch Allocated',
-        stageIndex: 1,
-        items: body.items || [],
+        mockupApproved: Boolean(body.mockupApproved || body.layoutApproved),
+        status: body.status || 'Order Confirmed • Studio Batch Allocated',
+        stageIndex: Number(body.stageIndex ?? 1),
+        courier: body.courier || 'BlueDart Priority Air • AWB Allocated',
+        items: Array.isArray(body.items) ? body.items : [],
         createdAt: new Date().toISOString()
       };
+
+      if (env && env.VISTARA_DB) {
+        await env.VISTARA_DB.prepare(
+          `INSERT INTO orders (
+             order_id, user_id, customer_name, customer_email, phone, address, pincode,
+             subtotal, discount, gst_amount, total, payment_method, gift_wrap,
+             mockup_approved, status, stage_index, items_json, courier
+           ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+           ON CONFLICT(order_id) DO UPDATE SET
+             status = excluded.status,
+             stage_index = excluded.stage_index,
+             mockup_approved = excluded.mockup_approved`
+        ).bind(
+          orderRecord.orderId,
+          orderRecord.userId,
+          orderRecord.customerName,
+          orderRecord.customerEmail,
+          orderRecord.phone,
+          orderRecord.address,
+          orderRecord.pincode,
+          orderRecord.subtotal,
+          orderRecord.discount,
+          orderRecord.gstAmount,
+          orderRecord.total,
+          orderRecord.paymentMethod,
+          orderRecord.giftWrap ? 1 : 0,
+          orderRecord.mockupApproved ? 1 : 0,
+          orderRecord.status,
+          orderRecord.stageIndex,
+          JSON.stringify(orderRecord.items),
+          orderRecord.courier
+        ).run();
+      }
+
       edgeMemoryOrders.set(orderId, orderRecord);
       return jsonResponse({ ok: true, order: orderRecord });
     }

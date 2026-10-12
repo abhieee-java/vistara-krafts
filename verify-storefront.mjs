@@ -841,13 +841,193 @@ test('Vistāra Krafts Brand Identity, Official VK Logo, Cloudflare Edge Auth Fra
   sandbox.window.submitCheckoutOrder({ preventDefault: () => {} });
   assert.strictEqual(Store.getOrders().length, orderCountBefore + 1, 'Authenticated customer must be able to place order');
   assert.strictEqual(Store.getOrders()[0].customerName, 'Arjun Singhania');
+
+  // 7. Verify Top-Bar Account Modal (#account-bar-modal) includes live 5-Stage Order Tracker, Pre-Pour Approval & GST Invoice popups
+  sandbox.window.openAccountBarModal();
+  const barModalHtml = mockDocument.getElementById('account-bar-modal-body').innerHTML;
+  assert.ok(barModalHtml.includes('id="bar-account-orders-list"'), 'Top-bar account modal must render in-bar order tracker (#bar-account-orders-list)');
+  assert.ok(barModalHtml.includes('openOrderInvoiceModal('), 'Top-bar account modal must provide GST Invoice popup button');
+  assert.ok(barModalHtml.includes('Arjun Singhania'), 'Top-bar account modal must display authenticated customer name');
+
+  // 8. Verify 3-way provider selector & returning email address auto-fill in #cloudflare-auth-modal
+  const indexHtmlContent = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8');
+  assert.ok(indexHtmlContent.includes('id="cf-oauth-google-btn"'), '#cloudflare-auth-modal must include Google provider button');
+  assert.ok(indexHtmlContent.includes('id="cf-oauth-apple-btn"'), '#cloudflare-auth-modal must include Apple provider button');
+  assert.ok(indexHtmlContent.includes('id="cf-oauth-email-btn"'), '#cloudflare-auth-modal must include Email provider button');
+
+  sandbox.window.startCloudflareOAuth('google');
+  assert.strictEqual(mockDocument.getElementById('cf-auth-password-wrap').classList.contains('hidden'), true, 'Google provider mode must hide password wrap');
+  assert.strictEqual(mockDocument.getElementById('cf-auth-email-wrap').classList.contains('min-[350px]:col-span-2'), true, 'Google provider mode must expand email field to span 2 columns');
+
+  sandbox.window.startCloudflareOAuth('email');
+  assert.strictEqual(mockDocument.getElementById('cf-auth-password-wrap').classList.contains('hidden'), false, 'Email provider mode must show password wrap');
+
+  // Clear inputs and test onAuthEmailInput for returning user vs unknown email
+  mockDocument.getElementById('cf-auth-name').value = '';
+  mockDocument.getElementById('cf-auth-phone').value = '';
+  mockDocument.getElementById('cf-auth-address').value = '';
+  sandbox.window.onAuthEmailInput('unknown.new.patron@example.com');
+  assert.strictEqual(mockDocument.getElementById('cf-auth-name').value, '', 'Unknown email must not pre-fill any name');
+  sandbox.window.onAuthEmailInput('kavya.nair@vistara.in');
+  assert.strictEqual(mockDocument.getElementById('cf-auth-name').value, 'Kavya Nair', 'Returning registered email must auto-fill saved recipient name');
+  assert.ok(mockDocument.getElementById('cf-auth-address').value.includes('18 Lavelle Road'), 'Returning registered email must auto-fill saved shipping address');
+
+  // 9. Verify zero plaintext passwords or bearer tokens stored in localStorage & zero fake customer defaults in codebase
+  assert.strictEqual(mockLocalStorage.getItem('vk_cf_auth_token'), null, 'Bearer session token must never be stored in localStorage');
+  const regRaw = mockLocalStorage.getItem('ram_vk_cf_users_v1') || '{}';
+  assert.ok(!regRaw.includes('Vistara#2026'), 'Plaintext password must never be stored in localStorage');
+  assert.ok(regRaw.includes('passwordVerifier'), 'Registered user record must store hashed passwordVerifier');
+  assert.ok(!bridgeCode.includes('Aanya Verma'), 'store-bridge.js must not hardcode fake customer name Aanya Verma');
+  assert.ok(!bridgeCode.includes('100 Feet Road, Indiranagar'), 'store-bridge.js must not hardcode fake street address 100 Feet Road, Indiranagar');
+  assert.ok(!appCode.includes('Ananya Singhania'), 'app.js must not hardcode fake fallback name Ananya Singhania');
+
+  // 10. Verify all 5 standalone vist_ra_krafts_* screens use official ../vistara-krafts-logo.jpg and Vistāra Krafts brand name
+  const vkScreens = [
+    'vist_ra_krafts_home_storefront/code.html',
+    'vist_ra_krafts_cart_checkout/code.html',
+    'vist_ra_krafts_ultraclear_3_1_pdp/code.html',
+    'vist_ra_krafts_resin_catalog_filters/code.html',
+    'vist_ra_krafts_e_commerce_flow/code.html'
+  ];
+  for (const rel of vkScreens) {
+    const html = fs.readFileSync(path.join(ROOT, rel), 'utf8');
+    assert.ok(html.includes('../vistara-krafts-logo.jpg'), `${rel} must use official ../vistara-krafts-logo.jpg`);
+    assert.ok(html.includes('Vistāra Krafts'), `${rel} must display full brand name Vistāra Krafts`);
+    assert.ok(!html.includes('AB6AXuD537p9b2_G4jP69zL_fO81pL2v4b1T6qY2n8R5m3X0w9K1s7V2c4F6d8J0h2L'), `${rel} must not use old external placeholder logo URL`);
+  }
 });
+
+// Async test for Cloudflare Pages Function (functions/api/[[route]].js) against real SQLite with PRAGMA foreign_keys = ON
+try {
+  const { DatabaseSync } = await import('node:sqlite');
+  const { onRequest } = await import('./functions/api/[[route]].js');
+  const sqlite = new DatabaseSync(':memory:');
+  sqlite.exec('PRAGMA foreign_keys = ON;');
+  sqlite.exec(fs.readFileSync(path.join(ROOT, 'cloudflare/schema.sql'), 'utf8'));
+
+  const d1Mock = {
+    prepare(sql) {
+      return {
+        _args: [],
+        bind(...args) { this._args = args; return this; },
+        async run() { return sqlite.prepare(sql).run(...this._args); },
+        async first() { return sqlite.prepare(sql).get(...this._args) || null; },
+        async all() { return { results: sqlite.prepare(sql).all(...this._args) }; }
+      };
+    }
+  };
+  const kvMap = new Map();
+  const kvMock = {
+    async put(k, v) { kvMap.set(k, v); },
+    async get(k) { return kvMap.get(k) || null; },
+    async delete(k) { kvMap.delete(k); }
+  };
+  const env = { DB: d1Mock, SESSIONS_KV: kvMock };
+
+  async function callWorker(p, method = 'GET', body = null, token = '') {
+    const headers = { 'Content-Type': 'application/json' };
+    if (token) headers['Authorization'] = `Bearer ${token}`;
+    const req = new Request(`https://vistarakrafts.com/api${p}`, {
+      method,
+      headers,
+      body: body ? JSON.stringify(body) : undefined
+    });
+    const res = await onRequest({ request: req, env });
+    const data = await res.json();
+    return { status: res.status, headers: res.headers, data };
+  }
+
+  // 1. Health endpoint & COOP header
+  const health = await callWorker('/health', 'GET');
+  assert.strictEqual(health.status, 200);
+  assert.strictEqual(health.headers.get('Cross-Origin-Opener-Policy'), 'same-origin-allow-popups');
+
+  // 2. First-time user login on /auth/login (upserts user into D1 before session insert -> no FK error)
+  const login1 = await callWorker('/auth/login', 'POST', {
+    email: 'first.login@vistara.in',
+    password: 'Password#123',
+    name: 'Nandini Rao',
+    phone: '+91 98450 11223',
+    address: '21 MG Road, Bengaluru',
+    pincode: '560001'
+  });
+  assert.strictEqual(login1.status, 200, 'First-time /auth/login must succeed with 200 OK');
+  assert.ok(login1.headers.get('Set-Cookie').includes('HttpOnly'), '/auth/login must set HttpOnly session cookie');
+
+  // 3. Duplicate email registration on /auth/register (resolves canonical users.id -> no FK error)
+  const reg1 = await callWorker('/auth/register', 'POST', {
+    email: 'dup.reg@vistara.in',
+    password: 'Password#123',
+    name: 'Rohan Mehta',
+    phone: '+91 98201 33445',
+    address: '10 Bandra West, Mumbai',
+    pincode: '400050'
+  });
+  assert.strictEqual(reg1.status, 200);
+  const reg2 = await callWorker('/auth/register', 'POST', {
+    email: 'dup.reg@vistara.in',
+    password: 'Password#123',
+    name: 'Rohan Mehta Updated',
+    phone: '+91 98201 33445',
+    address: '12 Juhu Tara Road, Mumbai',
+    pincode: '400049'
+  });
+  assert.strictEqual(reg2.status, 200, 'Second /auth/register for existing email must succeed without D1 foreign key error');
+
+  // 4. Google/Apple OAuth upsert on /auth/oauth twice for same email
+  const oauth1 = await callWorker('/auth/oauth', 'POST', {
+    provider: 'google',
+    email: 'dup.reg@vistara.in',
+    name: 'Rohan Mehta Google',
+    phone: '+91 98201 33445',
+    address: '12 Juhu Tara Road, Mumbai',
+    pincode: '400049'
+  });
+  assert.strictEqual(oauth1.status, 200, '/auth/oauth for existing email must succeed without D1 foreign key error');
+
+  // 5. PUT /auth/profile updates D1 user profile
+  const profUpdate = await callWorker('/auth/profile', 'PUT', {
+    email: 'dup.reg@vistara.in',
+    name: 'Rohan Mehta Atelier',
+    phone: '+91 98201 99999',
+    address: '88 Worli Sea Face, Mumbai - 400030',
+    pincode: '400030'
+  }, oauth1.data.token);
+  assert.strictEqual(profUpdate.status, 200, 'PUT /auth/profile must return 200 OK');
+  assert.strictEqual(profUpdate.data.user.name, 'Rohan Mehta Atelier');
+
+  // 6. POST /orders & GET /orders persist and retrieve orders in D1
+  const postOrd = await callWorker('/orders', 'POST', {
+    orderId: 'VK-2026-9901',
+    customerName: 'Rohan Mehta Atelier',
+    customerEmail: 'dup.reg@vistara.in',
+    phone: '+91 98201 99999',
+    address: '88 Worli Sea Face, Mumbai - 400030',
+    pincode: '400030',
+    subtotal: 2598,
+    discount: 150,
+    gstAmount: 373.42,
+    total: 2448,
+    paymentMethod: 'UPI Instant',
+    giftWrap: true,
+    items: [{ productId: 'vk-epx-301', name: 'UltraClear 3:1 Casting Resin', qty: 2, price: 1299 }]
+  }, oauth1.data.token);
+  assert.strictEqual(postOrd.status, 200, 'POST /orders must persist order in D1 and return 200 OK');
+
+  const getOrds = await callWorker('/orders?email=dup.reg@vistara.in', 'GET', null, oauth1.data.token);
+  assert.strictEqual(getOrds.status, 200, 'GET /orders must return 200 OK');
+  assert.strictEqual(getOrds.data.orders.length, 1);
+  assert.strictEqual(getOrds.data.orders[0].orderId, 'VK-2026-9901');
+
+  console.log('✅ PASS: Cloudflare Pages Function (functions/api/[[route]].js) passes real SQLite/D1 foreign-key, Auth, Profile & Order persistence tests');
+  passed++;
+} catch (err) {
+  console.error('❌ FAIL: Cloudflare Pages Function D1/SQLite integration test');
+  console.error('   ', err.message);
+  failed++;
+}
 
 console.log(`\n========================================`);
 console.log(`Verification Summary: ${passed} passed, ${failed} failed`);
 console.log(`========================================`);
 if (failed > 0) process.exit(1);
-
-
-
-
