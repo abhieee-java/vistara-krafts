@@ -71,10 +71,15 @@ body {
   position: relative;
 }
 
-#app-view-root, main {
+#app-view-root, main, header, footer, aside, section {
   max-width: 100%;
   width: 100%;
   overflow-x: clip;
+  min-width: 0;
+}
+
+nav {
+  max-width: 100%;
   min-width: 0;
 }
 
@@ -142,18 +147,18 @@ h1, h2, h3, h4, h5, h6, .font-serif-editorial, .font-serif {
   word-break: break-word;
 }
 
-/* Fluid Display Headings via clamp() (R3.4 & T-330) */
-.font-headline-lg {
+/* Fluid Display Headings via clamp() (R3.4 & T-330) — :where() allows Tailwind responsive text-* overrides */
+:where(.font-headline-lg) {
   font-size: clamp(1.5rem, 1.25rem + 1.25vw, 2.75rem);
   line-height: 1.15;
 }
 
-.font-headline-md {
+:where(.font-headline-md) {
   font-size: clamp(1.25rem, 1.1rem + 0.8vw, 2.125rem);
   line-height: 1.2;
 }
 
-.font-headline-sm {
+:where(.font-headline-sm) {
   font-size: clamp(1.0625rem, 0.95rem + 0.5vw, 1.625rem);
   line-height: 1.25;
 }

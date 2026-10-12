@@ -731,10 +731,123 @@ test('Mobile Viewport Overflow Audit & Section 2 Design Tokens Compliance (320px
   });
 });
 
+test('Vistāra Krafts Brand Identity, Official VK Logo, Cloudflare Edge Auth Framework, Guest Browsing & Login-Gated Checkout', () => {
+  // 1. Verify official VK logo asset exists & is wired into index.html and store-bridge.js
+  const logoPath = path.join(ROOT, 'vistara-krafts-logo.jpg');
+  assert.ok(fs.existsSync(logoPath), 'vistara-krafts-logo.jpg must exist in project root');
+  assert.ok(fs.statSync(logoPath).size > 5000, 'vistara-krafts-logo.jpg must be a valid image file');
+  assert.strictEqual(Store.IMAGES.logoVistara, './vistara-krafts-logo.jpg');
+
+  const indexHtml = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8');
+  assert.ok(indexHtml.includes('./vistara-krafts-logo.jpg'), 'index.html must display official ./vistara-krafts-logo.jpg');
+  assert.ok(indexHtml.includes('id="cloudflare-auth-modal"'), 'index.html must include #cloudflare-auth-modal');
+  assert.ok(indexHtml.includes('id="account-bar-modal"'), 'index.html must include top-bar #account-bar-modal');
+  assert.ok(indexHtml.includes('./cloudflare-config.js'), 'index.html must load ./cloudflare-config.js');
+
+  // Verify checkout modal inputs in index.html have zero hardcoded fake customer values
+  assert.ok(indexHtml.includes('id="chk-name" type="text" required aria-label="Full Recipient Name" value=""'), '#chk-name must have empty default value=""');
+  assert.ok(indexHtml.includes('id="chk-phone" type="tel" required aria-label="WhatsApp or Mobile Number for Tracking" value=""'), '#chk-phone must have empty default value=""');
+  assert.ok(indexHtml.includes('id="chk-address" type="text" required aria-label="Complete Street Address and PIN" value=""'), '#chk-address must have empty default value=""');
+
+  // 2. Verify Cloudflare Full-Stack Framework files exist
+  ['cloudflare-config.js', 'wrangler.toml', 'cloudflare/schema.sql', 'functions/api/[[route]].js', 'CLOUDFLARE_SETUP.md'].forEach(rel => {
+    assert.ok(fs.existsSync(path.join(ROOT, rel)), `Cloudflare framework file ${rel} must exist`);
+  });
+
+  // 3. Test Guest Mode (unauthenticated): can browse & add to bag, but CANNOT place order or open checkout modal without logging in
+  sandbox.window.handlePatronLogout();
+  assert.strictEqual(Store.isAuthenticated(), false, 'Patron must be unauthenticated after logout');
+  assert.strictEqual(mockDocument.getElementById('chk-name').value, '', 'Logout must clear #chk-name');
+  assert.strictEqual(mockDocument.getElementById('chk-phone').value, '', 'Logout must clear #chk-phone');
+  assert.strictEqual(mockDocument.getElementById('chk-address').value, '', 'Logout must clear #chk-address');
+
+  Store.clearCart();
+  Store.addToCart('vk-epx-301', 'kit-1200g', 1);
+  assert.strictEqual(Store.getCartSummary().itemsCount, 1, 'Guest must be able to add items to bag without logging in');
+
+  const blockedOrder = Store.placeOrder({ name: 'Test', phone: '9999999999', address: 'Bengaluru 560001' });
+  assert.strictEqual(blockedOrder.success, false, 'Unauthenticated Store.placeOrder must be rejected');
+  assert.strictEqual(blockedOrder.requiresAuth, true, 'Unauthenticated Store.placeOrder must set requiresAuth: true');
+
+  mockDocument.getElementById('checkout-modal').classList.add('hidden');
+  mockDocument.getElementById('cloudflare-auth-modal').classList.add('hidden');
+  sandbox.window.openCheckoutModal();
+  assert.strictEqual(
+    mockDocument.getElementById('checkout-modal').classList.contains('hidden'),
+    true,
+    'Guest clicking Checkout must NOT open #checkout-modal'
+  );
+  assert.strictEqual(
+    mockDocument.getElementById('cloudflare-auth-modal').classList.contains('hidden'),
+    false,
+    'Guest clicking Checkout must open #cloudflare-auth-modal'
+  );
+
+  // 4. Test validation: loginPatron must never assume customer values before customer enters them
+  assert.strictEqual(Store.loginPatron({ provider: 'email', email: 'test@vk.in', password: 'secret' }).valid, false, 'Must reject login missing name/phone/address');
+  assert.strictEqual(Store.loginPatron({ provider: 'google', email: 'test@vk.in', name: 'Riya' }).valid, false, 'Must reject Google login missing phone/address');
+  assert.strictEqual(Store.loginPatron({ provider: 'apple', email: 'test@vk.in', name: 'Riya', phone: '+91 98000 11111' }).valid, false, 'Must reject Apple login missing shipping address');
+
+  // 5. Test completing Email + Password + Shipping Address login from Checkout gate -> auto-opens #checkout-modal with customer's entered details
+  mockDocument.getElementById('cf-auth-provider').value = 'email';
+  mockDocument.getElementById('cf-auth-email').value = 'kavya.nair@vistara.in';
+  mockDocument.getElementById('cf-auth-password').value = 'Vistara#2026';
+  mockDocument.getElementById('cf-auth-name').value = 'Kavya Nair';
+  mockDocument.getElementById('cf-auth-phone').value = '+91 98450 12345';
+  mockDocument.getElementById('cf-auth-address').value = '18 Lavelle Road, Bengaluru';
+  mockDocument.getElementById('cf-auth-pincode').value = '560001';
+
+  sandbox.window.submitCloudflareAuthForm({ preventDefault: () => {} });
+  assert.strictEqual(Store.isAuthenticated(), true, 'Customer must be authenticated after valid submitCloudflareAuthForm');
+  assert.strictEqual(
+    mockDocument.getElementById('cloudflare-auth-modal').classList.contains('hidden'),
+    true,
+    '#cloudflare-auth-modal must close after login'
+  );
+  assert.strictEqual(
+    mockDocument.getElementById('checkout-modal').classList.contains('hidden'),
+    false,
+    '#checkout-modal must automatically open after completing checkout-triggered login'
+  );
+  assert.strictEqual(mockDocument.getElementById('chk-name').value, 'Kavya Nair');
+  assert.strictEqual(mockDocument.getElementById('chk-phone').value, '+91 98450 12345');
+  assert.ok(mockDocument.getElementById('chk-address').value.includes('18 Lavelle Road, Bengaluru'));
+
+  // 6. Test Google & Apple OAuth login flows + Order Placement
+  const googleRes = Store.loginPatron({
+    provider: 'google',
+    email: 'devika.google@gmail.com',
+    name: 'Devika Menon',
+    phone: '+91 98200 55443',
+    address: '7 Marine Drive, Mumbai',
+    pincode: '400001'
+  });
+  assert.strictEqual(googleRes.valid, true, 'Google login with shipping address must succeed');
+  assert.strictEqual(Store.getAuthSession().provider, 'google');
+
+  const appleRes = Store.loginPatron({
+    provider: 'apple',
+    email: 'arjun.apple@icloud.com',
+    name: 'Arjun Singhania',
+    phone: '+91 98111 77889',
+    address: '9 Sardar Patel Marg, New Delhi',
+    pincode: '110001'
+  });
+  assert.strictEqual(appleRes.valid, true, 'Apple login with shipping address must succeed');
+  assert.strictEqual(Store.getAuthSession().provider, 'apple');
+
+  const orderCountBefore = Store.getOrders().length;
+  sandbox.window.openCheckoutModal();
+  sandbox.window.submitCheckoutOrder({ preventDefault: () => {} });
+  assert.strictEqual(Store.getOrders().length, orderCountBefore + 1, 'Authenticated customer must be able to place order');
+  assert.strictEqual(Store.getOrders()[0].customerName, 'Arjun Singhania');
+});
+
 console.log(`\n========================================`);
 console.log(`Verification Summary: ${passed} passed, ${failed} failed`);
 console.log(`========================================`);
 if (failed > 0) process.exit(1);
+
 
 
 

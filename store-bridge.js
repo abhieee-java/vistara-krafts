@@ -19,13 +19,15 @@
     GST_INFO: 'ram_vk_gst_v1',
     QUIZ_PREF: 'ram_vk_quiz_pref_v1',
     PATRON_PROFILE: 'ram_vk_patron_profile_v1',
+    AUTH_SESSION: 'ram_vk_cf_auth_v1',
+    REGISTERED_USERS: 'ram_vk_cf_users_v1',
     RECENTLY_VIEWED: 'ram_vk_recently_viewed_v1',
     STUDIO_SYNC_LOG: 'ram_vk_studio_sync_v1'
   };
 
   // Verified studio & product photography from the Stitch archive
   const IMAGES = {
-    logoVistara: 'https://lh3.googleusercontent.com/aida/AEtjO1XwbkteHjhFQi2vrA9Q0AwFl6bgZQDb_jrAypU8osoK2jatxpyuNMMYKgfoBCoOiiB6jFCjw3mtHHBe1NkE1hFOema8o-BFjtzFNZ9L7WB60y9lqMWADNSqqStnv00rvJBcxud5MxrBcTKFBwqzL5aS-8R0yKlBdXawPwlpNFzi_xQ8Cl8k4ViWaV2I8clzCHBXn9JbL0jn_qtNv7D-JIBC31lwBX5KSO0Wyd0rjwQA-OHixGekj2xVdN8L',
+    logoVistara: './vistara-krafts-logo.jpg',
     logoPotry: 'https://lh3.googleusercontent.com/aida/AEtjO1UL_yv7CTSIh8DKMJSJyoEYV6KxkBv-vKrFle0GDCkSpaAqW6NgAOHRFgnmdA8w4H2gwXZOcRM-pCA3X5qDVsa1CQTVwxmaMPMsdc2iRpZlnIY37B_Odr_E0inLU4jSiTjX-EQA0Agmjtt1KTwPei-xB5SFz-_Vz8FO8ZaxhrSn_qoOWRpZzE0n60032HCsmPdzpGhw6WMTp64N4O1PkEPVu-x-tvp-wjJtQkxP3sXTtaDy59arIJ3cDp2L',
     avatarPatron: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBEfH5pmgXdOI0mnnN25k9DHn4iZNDO6wW_YERKWNba2tdwUuopMefjulnjWQYyOtpO5PbWkiW9CmteZIRsPaPSZtGU_1WhgAGSj2NWg7e-8uCvKEkCHAWRLBPtIQYKdVhEDObJsA5letw3AbZTj1f26XSfoItEh4s-fkfu0rzR5lKs8brHwg-aa_t4YvHAzr7zuSxFyPvlwlBRY3wtWrTwqKk9Bpf3wOErpjYhoS0BYtQqpSjFGEvDig',
     floralCube: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBXW-CtxPaQNBpLYiDkZiAh_3HctPzR3wSCDa6iBBPevbe8OYTRQh3MBrygeRClgewcRXZmXbGFcwCAJ8voXhr1Gis32c3Xd7f9MpmY8HuxABgInUPnavbPeSPIZtwzwMcmwPtXzx7Z63sTUGuH0-iZ0MPSphmGmleYJW3_njEtUfcbKOPB1icNTEcuIPrr9seRXtiWbBpXV0TUCSnKGRmIqqDcgv5vapJcyIzP8GkKndOeGidcCWTJWg',
@@ -1288,19 +1290,154 @@
       return next;
     },
 
+    getAuthSession() {
+      const session = safeRead(STORAGE_KEYS.AUTH_SESSION, null);
+      if (session && typeof session === 'object' && session.authenticated && session.email && session.address) {
+        return session;
+      }
+      return null;
+    },
+
+    isAuthenticated() {
+      return Boolean(this.getAuthSession());
+    },
+
+    loginPatron(payload = {}) {
+      const provider = ['google', 'apple', 'email'].includes(payload.provider) ? payload.provider : 'email';
+      const email = String(payload.email || '').trim().toLowerCase();
+      const password = String(payload.password || '');
+      let name = String(payload.name || '').trim();
+      let phone = String(payload.phone || '').trim();
+      let address = String(payload.address || payload.defaultAddress || '').trim();
+      const pincode = String(payload.pincode || '').trim();
+
+      if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        const msg = 'Please enter a valid email address.';
+        return { ok: false, valid: false, error: msg, message: msg };
+      }
+
+      const registeredUsers = safeRead(STORAGE_KEYS.REGISTERED_USERS, {}) || {};
+      const existingUser = registeredUsers[email] || null;
+
+      if (provider === 'email') {
+        if (!password || password.length < 6) {
+          const msg = 'Password must be at least 6 characters.';
+          return { ok: false, valid: false, error: msg, message: msg };
+        }
+        if (existingUser && existingUser.password && existingUser.password !== password) {
+          const msg = 'Incorrect password for this email account.';
+          return { ok: false, valid: false, error: msg, message: msg };
+        }
+      }
+
+      // Use previously saved user details only if this exact user already registered them earlier
+      if (!name && existingUser && existingUser.name) name = existingUser.name;
+      if (!phone && existingUser && existingUser.phone) phone = existingUser.phone;
+      if (!address && existingUser && existingUser.address) address = existingUser.address;
+
+      if (!name) {
+        const msg = 'Please enter your full recipient name.';
+        return { ok: false, valid: false, requiresAddress: true, error: msg, message: msg };
+      }
+      if (!phone) {
+        const msg = 'Please provide your Mobile / WhatsApp number for order dispatch.';
+        return { ok: false, valid: false, requiresAddress: true, error: msg, message: msg };
+      }
+      if (!address) {
+        const msg = 'Please provide your complete shipping address & PIN code.';
+        return { ok: false, valid: false, requiresAddress: true, error: msg, message: msg };
+      }
+
+      const pinMatch = address.match(/\b([1-9][0-9]{5})\b/);
+      const resolvedPin = pincode || (pinMatch ? pinMatch[1] : '');
+      if (resolvedPin && /^[1-9][0-9]{5}$/.test(resolvedPin)) {
+        this.verifyPincode(resolvedPin);
+      }
+      const fullAddress = (pincode && !address.includes(pincode)) ? `${address} - ${pincode}` : address;
+
+      const sessionToken = 'vk_cf_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2, 8);
+      const userRecord = {
+        id: (existingUser && existingUser.id) || ('usr_' + Date.now().toString(36)),
+        email,
+        name,
+        phone,
+        address: fullAddress,
+        defaultAddress: fullAddress,
+        pincode: resolvedPin,
+        provider,
+        password: provider === 'email' ? password : (existingUser ? existingUser.password : ''),
+        memberTier: 'Gold Atelier Member',
+        tier: 'Gold Atelier Member',
+        loyaltyPoints: (existingUser && existingUser.loyaltyPoints) || 250,
+        authenticated: true,
+        token: sessionToken,
+        authenticatedAt: new Date().toISOString()
+      };
+
+      registeredUsers[email] = userRecord;
+      safeWrite(STORAGE_KEYS.REGISTERED_USERS, registeredUsers);
+      safeWrite(STORAGE_KEYS.AUTH_SESSION, userRecord);
+      safeWrite(STORAGE_KEYS.PATRON_PROFILE, userRecord);
+
+      // Sync asynchronously with Cloudflare Pages Function if running on Cloudflare Edge
+      try {
+        if (typeof global.fetch === 'function') {
+          const endpoint = provider === 'email' ? '/api/auth/login' : '/api/auth/oauth';
+          global.fetch(endpoint, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ provider, email, password, name, phone, address: fullAddress, pincode: resolvedPin })
+          }).catch(() => {});
+        }
+      } catch (_e) { /* offline / static host fallback */ }
+
+      this.notify('auth_updated', userRecord);
+      this.notify('patron_profile_updated', userRecord);
+      return { ok: true, valid: true, user: userRecord, session: userRecord, token: sessionToken };
+    },
+
+    logoutPatron() {
+      // Per sign-in-with-google-web skill: disable automatic One Tap re-selection on sign-out
+      try {
+        if (global.google && global.google.accounts && global.google.accounts.id && typeof global.google.accounts.id.disableAutoSelect === 'function') {
+          global.google.accounts.id.disableAutoSelect();
+        }
+      } catch (_e) { /* ignore */ }
+
+      safeWrite(STORAGE_KEYS.AUTH_SESSION, null);
+      try {
+        if (typeof global.fetch === 'function') {
+          global.fetch('/api/auth/logout', { method: 'POST' }).catch(() => {});
+        }
+      } catch (_e) { /* ignore */ }
+
+      this.notify('auth_updated', null);
+      return { ok: true };
+    },
+
     getPatronProfile() {
+      const authSession = this.getAuthSession();
+      if (authSession) {
+        return {
+          ...authSession,
+          address: authSession.address,
+          defaultAddress: authSession.address,
+          tier: authSession.memberTier || 'Verified Vistāra Patron',
+          memberTier: authSession.memberTier || 'Verified Vistāra Patron'
+        };
+      }
       const profile = safeRead(STORAGE_KEYS.PATRON_PROFILE, {
-        name: 'Aanya Verma',
-        email: 'aanya.verma@atelier.in',
-        phone: '+91 98765 43210',
-        address: '100 Feet Road, Indiranagar, Bengaluru 560001',
-        defaultAddress: '100 Feet Road, Indiranagar, Bengaluru 560001',
+        name: 'Vistāra Studio Guest',
+        email: '',
+        phone: '',
+        address: 'Bengaluru Studio Hub 560001',
+        defaultAddress: 'Bengaluru Studio Hub 560001',
         eventDate: '2026-11-18',
         tier: 'Gold Atelier Member',
         memberTier: 'Gold Atelier Member',
-        loyaltyPoints: 1250
+        loyaltyPoints: 250
       });
-      const resolvedAddress = profile.defaultAddress || profile.address || '100 Feet Road, Indiranagar, Bengaluru 560001';
+      const resolvedAddress = profile.defaultAddress || profile.address || 'Bengaluru Studio Hub 560001';
       const resolvedTier = profile.memberTier || profile.tier || 'Gold Atelier Member';
       return {
         ...profile,
@@ -1314,13 +1451,29 @@
     savePatronProfile(updates = {}) {
       const current = this.getPatronProfile();
       const next = { ...current, ...updates };
-      const resolvedAddress = updates.defaultAddress || updates.address || next.defaultAddress || next.address || '100 Feet Road, Indiranagar, Bengaluru 560001';
+      const resolvedAddress = updates.defaultAddress || updates.address || next.defaultAddress || next.address || 'Bengaluru Studio Hub 560001';
       const resolvedTier = updates.memberTier || updates.tier || next.memberTier || next.tier || 'Gold Atelier Member';
       next.address = resolvedAddress;
       next.defaultAddress = resolvedAddress;
       next.tier = resolvedTier;
       next.memberTier = resolvedTier;
       safeWrite(STORAGE_KEYS.PATRON_PROFILE, next);
+
+      // If explicit patron identity & address were saved, synchronize authenticated session state
+      if (updates.name && (updates.defaultAddress || updates.address)) {
+        const sessionObj = {
+          ...(this.getAuthSession() || {}),
+          ...next,
+          email: next.email || 'patron@vistarakrafts.in',
+          address: resolvedAddress,
+          defaultAddress: resolvedAddress,
+          provider: next.provider || 'email',
+          authenticated: true
+        };
+        safeWrite(STORAGE_KEYS.AUTH_SESSION, sessionObj);
+        this.notify('auth_updated', sessionObj);
+      }
+
       this.notify('patron_profile_updated', next);
       return next;
     },
@@ -1398,6 +1551,19 @@
       if (summary.itemsCount === 0) {
         return { success: false, message: 'Your Studio Bag is empty.' };
       }
+      const authSession = this.getAuthSession();
+      const customerName = String(checkoutDetails.name || (authSession && authSession.name) || '').trim();
+      const customerPhone = String(checkoutDetails.phone || (authSession && authSession.phone) || '').trim();
+      const customerAddress = String(checkoutDetails.address || (authSession && authSession.address) || '').trim();
+
+      if (!authSession || !customerName || !customerPhone || !customerAddress) {
+        return {
+          success: false,
+          requiresAuth: true,
+          message: 'Please sign in and provide your shipping address to place your order.'
+        };
+      }
+
       const orderId = 'RAM-2026-' + Math.floor(1000 + Math.random() * 9000);
       const newOrder = {
         orderId,
@@ -1407,9 +1573,9 @@
         discount: summary.couponDiscount,
         gstAmount: summary.gstAmount,
         paymentMethod: checkoutDetails.paymentMethod || 'UPI / Razorpay Instant',
-        customerName: checkoutDetails.name || 'Studio Patron',
-        phone: checkoutDetails.phone || '+91 98765 43210',
-        address: checkoutDetails.address || 'Indiranagar, Bengaluru 560001',
+        customerName: customerName || 'Verified Patron',
+        phone: customerPhone,
+        address: customerAddress,
         giftWrap: checkoutDetails.giftWrap !== undefined ? Boolean(checkoutDetails.giftWrap) : true,
         mockupApproved: false,
         status: 'Order Confirmed • Studio Batch Allocated',

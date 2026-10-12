@@ -41,6 +41,7 @@
     },
     orderSearchQuery: '',
     editingAccountProfile: false,
+    pendingCheckoutAfterAuth: false,
     calcShape: 'rect', // 'rect' | 'circle'
     calcLength: 20,
     calcWidth: 20,
@@ -84,7 +85,9 @@
     'tds-spec-modal',
     'share-memory-modal',
     'checkout-modal',
-    'global-pincode-modal'
+    'global-pincode-modal',
+    'cloudflare-auth-modal',
+    'account-bar-modal'
   ];
 
   let lastActiveModalId = null;
@@ -172,11 +175,14 @@
     }, 2800);
   };
 
-  // Sync Header & Bottom Nav Badges
+  // Sync Header, Bottom Nav Badges & Top-Bar Account Drawer Slots
   function updateGlobalBadges() {
     const summary = Store.getCartSummary();
     const wishlist = Store.getWishlist();
     const pinInfo = Store.getPincodeInfo();
+    const isAuth = typeof Store.isAuthenticated === 'function' ? Store.isAuthenticated() : false;
+    const auth = (typeof Store.getAuthSession === 'function' && Store.getAuthSession()) || {};
+    const profile = Store.getPatronProfile();
 
     document.querySelectorAll('.js-cart-badge').forEach(el => {
       el.textContent = summary.itemsCount;
@@ -189,6 +195,126 @@
     document.querySelectorAll('.js-header-pin').forEach(el => {
       el.textContent = pinInfo.pin;
     });
+
+    // Update Top-Bar Account Button Label & Status Dot
+    const barLabel = document.getElementById('header-account-bar-label');
+    const barDot = document.getElementById('header-account-bar-dot');
+    const displayName = (auth.name || (isAuth ? profile.name : '') || '').trim();
+    if (barLabel) {
+      barLabel.textContent = isAuth && displayName ? displayName.split(' ')[0] : 'Sign In';
+    }
+    if (barDot) {
+      barDot.classList.toggle('hidden', !isAuth);
+    }
+
+    // Update Slide-Over Navigation Bar Account Card (#bar-drawer-account-slot)
+    const drawerSlot = document.getElementById('bar-drawer-account-slot');
+    if (drawerSlot) {
+      if (isAuth) {
+        const providerBadge = String(auth.provider || 'email').toUpperCase();
+        const addrText = auth.address || profile.defaultAddress || '';
+        drawerSlot.innerHTML = `
+          <div class="flex items-start justify-between gap-2">
+            <div class="min-w-0">
+              <div class="flex items-center gap-1.5">
+                <span class="w-2 h-2 rounded-full bg-emerald-600 shrink-0"></span>
+                <span class="text-[10px] font-bold uppercase tracking-wider text-emerald-800">${esc(providerBadge)} VERIFIED</span>
+              </div>
+              <p class="text-xs font-bold text-primary truncate mt-0.5">${esc(displayName || auth.email || 'Signed-In Patron')}</p>
+              ${auth.email ? `<p class="text-[11px] text-on-surface-variant truncate">${esc(auth.email)}</p>` : ''}
+              ${addrText ? `<p class="text-[11px] text-on-surface-variant line-clamp-2 mt-1">📍 ${esc(addrText)}</p>` : ''}
+            </div>
+            <button type="button" onclick="window.closeModalById('mobile-menu-drawer'); window.openAccountBarModal();" class="px-2.5 py-1.5 rounded-lg bg-white border border-[#e4e0d8] text-[11px] font-bold text-primary shrink-0 cursor-pointer">Edit</button>
+          </div>
+          <div class="flex items-center gap-2 pt-1 border-t border-[#e4e0d8]">
+            <button type="button" onclick="window.closeModalById('mobile-menu-drawer'); window.navigateTo('account');" class="flex-1 min-h-[38px] px-2.5 py-1.5 rounded-lg bg-primary text-white text-[11px] font-bold cursor-pointer">Track Orders</button>
+            <button type="button" onclick="window.handlePatronLogout()" class="min-h-[38px] px-3 py-1.5 rounded-lg bg-white border border-[#e4e0d8] text-[#9e3322] text-[11px] font-bold cursor-pointer">Sign Out</button>
+          </div>
+        `;
+      } else {
+        drawerSlot.innerHTML = `
+          <div class="flex items-center justify-between gap-2">
+            <span class="text-[10px] uppercase tracking-wider font-bold text-secondary">Guest Session</span>
+            <span class="text-[10px] px-2 py-0.5 rounded-full bg-[#ffe4de] text-[#9e3322] font-bold">Login Required to Order</span>
+          </div>
+          <p class="text-[11px] text-on-surface-variant leading-snug">Browse keepsakes &amp; calculate epoxy pours freely. Sign in with Google, Apple, or Email &amp; Address to place an order.</p>
+          <button type="button" onclick="window.closeModalById('mobile-menu-drawer'); window.openCloudflareAuthModal(false);" class="w-full min-h-[42px] px-3 py-2 rounded-xl bg-primary text-white text-xs font-bold flex items-center justify-center gap-1.5 cursor-pointer">
+            <span class="material-symbols-outlined text-base" aria-hidden="true">login</span>
+            <span>Sign In (Google / Apple / Email)</span>
+          </button>
+        `;
+      }
+    }
+
+    // Update Top-Bar Account & Shipping Popup Drawer (#account-bar-modal-body)
+    const barModalBody = document.getElementById('account-bar-modal-body');
+    if (barModalBody) {
+      if (isAuth) {
+        const providerBadge = String(auth.provider || 'email').toUpperCase();
+        const curName = auth.name || profile.name || '';
+        const curPhone = auth.phone || profile.phone || '';
+        const curEmail = auth.email || profile.email || '';
+        const curAddr = auth.address || profile.defaultAddress || '';
+        const ordersCount = Store.getOrders().length;
+
+        barModalBody.innerHTML = `
+          <div class="p-3.5 rounded-xl bg-white border border-[#e4e0d8] space-y-2">
+            <div class="flex items-center justify-between gap-2">
+              <span class="px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200 text-[10px] font-bold uppercase">${esc(providerBadge)} SESSION ACTIVE</span>
+              <button type="button" onclick="window.handlePatronLogout()" class="text-xs font-bold text-[#9e3322] hover:underline cursor-pointer">Sign Out</button>
+            </div>
+            <p class="text-sm font-bold text-primary break-words">${esc(curName)}</p>
+            <p class="text-xs text-on-surface-variant break-words">${esc(curEmail)}${curPhone ? ' • ' + esc(curPhone) : ''}</p>
+            <p class="text-xs text-primary bg-surface-container-low p-2.5 rounded-lg border border-[#e4e0d8] break-words">
+              <strong class="block text-[10px] uppercase tracking-wider text-secondary mb-0.5">Saved Dispatch Address</strong>
+              ${esc(curAddr)}
+            </p>
+          </div>
+
+          <form onsubmit="window.saveBarAccountDetails(event)" class="p-3.5 rounded-xl bg-white border border-[#e4e0d8] space-y-2.5">
+            <h4 class="text-xs font-bold text-primary uppercase tracking-wider">Update Account &amp; Shipping</h4>
+            <div>
+              <label for="bar-prof-name" class="text-[11px] font-semibold text-primary block mb-0.5">Full Name *</label>
+              <input id="bar-prof-name" type="text" required value="${esc(curName)}" class="w-full h-10 px-2.5 rounded-lg bg-surface-container-low border border-[#e4e0d8] text-xs text-primary">
+            </div>
+            <div>
+              <label for="bar-prof-phone" class="text-[11px] font-semibold text-primary block mb-0.5">Mobile / WhatsApp *</label>
+              <input id="bar-prof-phone" type="tel" required value="${esc(curPhone)}" class="w-full h-10 px-2.5 rounded-lg bg-surface-container-low border border-[#e4e0d8] text-xs text-primary">
+            </div>
+            <div>
+              <label for="bar-prof-email" class="text-[11px] font-semibold text-primary block mb-0.5">Email Address *</label>
+              <input id="bar-prof-email" type="email" required value="${esc(curEmail)}" class="w-full h-10 px-2.5 rounded-lg bg-surface-container-low border border-[#e4e0d8] text-xs text-primary">
+            </div>
+            <div>
+              <label for="bar-prof-address" class="text-[11px] font-semibold text-primary block mb-0.5">Shipping Street Address &amp; PIN *</label>
+              <input id="bar-prof-address" type="text" required value="${esc(curAddr)}" class="w-full h-10 px-2.5 rounded-lg bg-surface-container-low border border-[#e4e0d8] text-xs text-primary">
+            </div>
+            <button type="submit" class="w-full min-h-[42px] py-2 rounded-xl bg-primary text-white text-xs font-bold cursor-pointer">Save Account Details</button>
+          </form>
+
+          <button type="button" onclick="window.closeModalById('account-bar-modal'); window.navigateTo('account');" class="w-full min-h-[44px] px-3.5 py-2.5 rounded-xl bg-surface-container-low hover:bg-surface-container-high border border-[#e4e0d8] text-primary text-xs font-bold flex items-center justify-between cursor-pointer">
+            <span>Active Studio Orders (${ordersCount})</span>
+            <span class="material-symbols-outlined text-base" aria-hidden="true">arrow_forward</span>
+          </button>
+        `;
+      } else {
+        barModalBody.innerHTML = `
+          <div class="p-4 rounded-xl bg-white border border-[#e4e0d8] space-y-3">
+            <div class="flex items-center justify-between gap-2">
+              <span class="px-2.5 py-0.5 rounded-full bg-surface-container-high text-primary text-[10px] font-bold uppercase">Guest Mode</span>
+              <span class="text-[11px] text-secondary font-semibold">Cloudflare Edge</span>
+            </div>
+            <p class="text-xs text-on-surface-variant leading-relaxed">
+              You can browse all <strong>Vistāra Krafts</strong> keepsakes, use the epoxy calculator, and build your bag without logging in. Sign in when you are ready to place an order.
+            </p>
+            <button type="button" onclick="window.closeModalById('account-bar-modal'); window.openCloudflareAuthModal(false);" class="btn-shimmer w-full min-h-[46px] py-2.5 rounded-xl bg-primary text-white text-xs font-bold flex items-center justify-center gap-2 shadow-sm cursor-pointer">
+              <span class="material-symbols-outlined text-base" aria-hidden="true">login</span>
+              <span>Sign In / Register to Order</span>
+            </button>
+          </div>
+        `;
+      }
+    }
   }
 
   let lastRenderedRouteKey = '';
@@ -429,12 +555,12 @@
             </svg>
           </div>
 
-          <div class="relative grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+          <div class="relative grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-center">
             <!-- Hero Left Column (7 cols) -->
-            <div class="lg:col-span-7 flex flex-col items-start gap-4">
-              <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#ffe4de] text-[#9e3322] border border-[#9e3322]/20 shadow-2xs">
-                <span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;" aria-hidden="true">favorite</span>
-                <span class="font-label-sm text-xs uppercase tracking-wider font-bold">Resin Art Memories × Vistāra Krafts Studio</span>
+            <div class="lg:col-span-7 flex flex-col items-start gap-3.5 min-w-0">
+              <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white text-primary border border-[#b08d57]/40 shadow-2xs max-w-full">
+                <img src="${esc(Store.IMAGES.logoVistara)}" alt="Vistāra Krafts VK Monogram" class="w-5 h-5 rounded-sm object-cover shrink-0">
+                <span class="font-label-sm text-[11px] uppercase tracking-wider font-bold truncate">Vistāra Krafts • Epoxy &amp; Keepsake Atelier</span>
               </div>
 
               <h1 class="font-headline-lg text-2xl min-[360px]:text-3xl sm:text-5xl text-primary font-bold tracking-tight leading-[1.14] break-words">
@@ -442,7 +568,7 @@
               </h1>
 
               <p class="font-body-lg text-xs min-[360px]:text-sm sm:text-base text-on-surface-variant max-w-xl leading-relaxed break-words">
-                From preserving wedding varmalas &amp; anniversary roses in museum-grade 50mm blocks to supplying India’s purest 3:1 &amp; 2:1 optical epoxy systems. Crafted to flirt with light for decades.
+                From preserving wedding varmalas &amp; anniversary roses in museum-grade 50mm blocks to supplying India’s purest 3:1 &amp; 2:1 optical epoxy systems by <strong>Vistāra Krafts</strong>.
               </p>
 
               <!-- Primary & Secondary Conversion CTAs -->
@@ -458,9 +584,9 @@
               </div>
 
               <!-- Trust & Optical Clarity Bar -->
-              <div class="w-full mt-2 grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3">
+              <div class="w-full mt-1 grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3">
                 <div class="rounded-xl bg-white/90 border border-[#e4e0d8] p-3 flex items-center gap-3 shadow-2xs min-w-0">
-                  <img src="${esc(Store.IMAGES.floralCube)}" alt="Preserved Bridal Roses" class="w-12 h-12 rounded-lg object-cover shrink-0">
+                  <img src="${esc(Store.IMAGES.floralCube)}" alt="Preserved Bridal Roses" class="w-11 h-11 rounded-lg object-cover shrink-0">
                   <div class="min-w-0 flex-1">
                     <div class="flex items-center gap-1 text-[#9e3322] font-label-sm text-[11px] uppercase font-bold truncate">
                       <span class="material-symbols-outlined text-sm shrink-0" aria-hidden="true">local_florist</span>
@@ -470,7 +596,7 @@
                   </div>
                 </div>
                 <div class="rounded-xl bg-white/90 border border-[#e4e0d8] p-3 flex items-center gap-3 shadow-2xs min-w-0">
-                  <img src="${esc(Store.IMAGES.ultraclearThumb2)}" alt="Optical Clarity Test Disc" class="w-12 h-12 rounded-lg object-cover shrink-0">
+                  <img src="${esc(Store.IMAGES.ultraclearThumb2)}" alt="Optical Clarity Test Disc" class="w-11 h-11 rounded-lg object-cover shrink-0">
                   <div class="min-w-0 flex-1">
                     <div class="flex items-center gap-1 text-secondary font-label-sm text-[11px] uppercase font-bold truncate">
                       <span class="material-symbols-outlined text-sm shrink-0" aria-hidden="true">verified</span>
@@ -2306,25 +2432,41 @@
     const filteredOrders = Store.findOrder(AppState.orderSearchQuery);
     const profile = Store.getPatronProfile();
     const gstInfo = Store.getGstInfo();
+    const isAuth = typeof Store.isAuthenticated === 'function' ? Store.isAuthenticated() : false;
+    const auth = (typeof Store.getAuthSession === 'function' && Store.getAuthSession()) || {};
 
     return `
       <div class="route-view-enter flex flex-col w-full max-w-7xl mx-auto px-4 sm:px-8 py-6 gap-6">
-        <!-- Patron Profile Banner -->
+        <!-- Patron Profile & Cloudflare Identity Banner -->
         <div class="ram-card p-5 bg-white flex flex-col gap-4">
           <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 min-w-0">
             <div class="flex items-center gap-3 sm:gap-4 min-w-0 flex-1">
-              <img src="${esc(Store.IMAGES.avatarPatron)}" alt="Patron Profile" class="w-14 h-14 sm:w-16 sm:h-16 rounded-full object-cover ring-2 ring-secondary shrink-0">
+              <img src="${esc(Store.IMAGES.logoVistara)}" alt="Vistāra Krafts Patron Emblem" class="w-14 h-14 sm:w-16 sm:h-16 rounded-xl object-cover ring-2 ring-secondary shrink-0">
               <div class="min-w-0 flex-1">
                 <div class="flex flex-wrap items-center gap-1.5 sm:gap-2">
                   <span class="px-2.5 py-0.5 rounded-full bg-secondary-container/60 text-on-secondary-container text-[10px] font-bold uppercase truncate">${esc(profile.memberTier || 'Atelier Patron #4820')}</span>
-                  <span class="px-2.5 py-0.5 rounded-full bg-[#e8f5e9] text-[#266b4e] font-spec-numeral text-[10px] font-bold shrink-0">${Number(profile.loyaltyPoints || 640)} Krafts Credits</span>
+                  <span class="px-2.5 py-0.5 rounded-full ${isAuth ? 'bg-[#e8f5e9] text-[#266b4e]' : 'bg-[#ffe4de] text-[#9e3322]'} font-spec-numeral text-[10px] font-bold shrink-0">
+                    ${isAuth ? `Verified (${esc(String(auth.provider || 'email').toUpperCase())})` : 'Guest Session • Login Required to Order'}
+                  </span>
+                  <span class="px-2.5 py-0.5 rounded-full bg-surface-container-high text-primary font-spec-numeral text-[10px] font-bold shrink-0">${Number(profile.loyaltyPoints || 640)} Krafts Credits</span>
                 </div>
-                <h1 class="font-headline-sm text-base sm:text-2xl text-primary font-bold mt-0.5 break-words">${esc(profile.name)} — Studio Account &amp; Order Tracker</h1>
-                <p class="text-xs text-on-surface-variant break-words">${esc(profile.phone)} • ${esc(profile.email)} • GSTIN: ${esc(gstInfo.gstin)}</p>
-                <p class="text-[11px] text-on-surface-variant break-words mt-0.5">📍 Default Dispatch: ${esc(profile.defaultAddress)}</p>
+                <h1 class="font-headline-sm text-base sm:text-2xl text-primary font-bold mt-0.5 break-words">${esc(isAuth && auth.name ? auth.name : profile.name)} — Studio Account &amp; Order Tracker</h1>
+                <p class="text-xs text-on-surface-variant break-words">${esc(isAuth && auth.phone ? auth.phone : profile.phone)} • ${esc(isAuth && auth.email ? auth.email : profile.email)} • GSTIN: ${esc(gstInfo.gstin)}</p>
+                <p class="text-[11px] text-on-surface-variant break-words mt-0.5">📍 Default Dispatch: ${esc(isAuth && auth.address ? auth.address : profile.defaultAddress)}</p>
               </div>
             </div>
-            <div class="flex flex-col min-[380px]:flex-row items-stretch min-[380px]:items-center gap-2 w-full sm:w-auto shrink-0">
+            <div class="flex flex-col min-[380px]:flex-row flex-wrap items-stretch min-[380px]:items-center gap-2 w-full sm:w-auto shrink-0">
+              ${isAuth ? `
+                <button type="button" onclick="window.handlePatronLogout()" class="min-h-[44px] px-3.5 py-2.5 rounded-xl bg-white hover:bg-[#fdf6f3] border border-[#9e3322]/30 text-[#9e3322] text-xs font-bold flex items-center justify-center gap-1.5 cursor-pointer">
+                  <span class="material-symbols-outlined text-base" aria-hidden="true">logout</span>
+                  <span>Sign Out</span>
+                </button>
+              ` : `
+                <button type="button" onclick="window.openCloudflareAuthModal(false)" class="min-h-[44px] px-3.5 py-2.5 rounded-xl bg-primary hover:bg-primary-container text-white text-xs font-bold flex items-center justify-center gap-1.5 cursor-pointer">
+                  <span class="material-symbols-outlined text-base" aria-hidden="true">login</span>
+                  <span>Sign In (Google / Apple / Email)</span>
+                </button>
+              `}
               <button type="button" id="account-edit-profile-btn" onclick="window.toggleAccountProfileEdit()" class="flex-1 min-[380px]:flex-initial min-h-[44px] px-3.5 sm:px-4 py-2.5 rounded-xl bg-surface-container-low hover:bg-surface-container-high border border-[#e4e0d8] text-primary text-xs font-bold flex items-center justify-center gap-1.5 cursor-pointer">
                 <span class="material-symbols-outlined text-base text-secondary" aria-hidden="true">edit</span>
                 <span>${AppState.editingAccountProfile ? 'Close Editor' : 'Edit Profile & Address'}</span>
@@ -2340,19 +2482,19 @@
             <form id="account-profile-form" onsubmit="window.saveAccountProfile(event)" class="pt-4 border-t border-surface-container grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
                 <label for="acc-prof-name" class="text-xs font-bold text-primary block mb-1">Full Name</label>
-                <input id="acc-prof-name" type="text" required value="${esc(profile.name)}" class="w-full h-12 px-3 rounded-lg bg-surface-container-low border border-[#e4e0d8] text-xs text-primary">
+                <input id="acc-prof-name" type="text" required value="${esc(isAuth ? (auth.name || profile.name) : '')}" placeholder="Enter your full name" class="w-full h-12 px-3 rounded-lg bg-surface-container-low border border-[#e4e0d8] text-xs text-primary">
               </div>
               <div>
                 <label for="acc-prof-phone" class="text-xs font-bold text-primary block mb-1">WhatsApp / Mobile Number</label>
-                <input id="acc-prof-phone" type="tel" required value="${esc(profile.phone)}" class="w-full h-12 px-3 rounded-lg bg-surface-container-low border border-[#e4e0d8] font-spec-numeral text-xs text-primary">
+                <input id="acc-prof-phone" type="tel" required value="${esc(isAuth ? (auth.phone || profile.phone) : '')}" placeholder="+91 98765 43210" class="w-full h-12 px-3 rounded-lg bg-surface-container-low border border-[#e4e0d8] font-spec-numeral text-xs text-primary">
               </div>
               <div>
                 <label for="acc-prof-email" class="text-xs font-bold text-primary block mb-1">Email Address (for COA &amp; GST Invoices)</label>
-                <input id="acc-prof-email" type="email" required value="${esc(profile.email)}" class="w-full h-12 px-3 rounded-lg bg-surface-container-low border border-[#e4e0d8] text-xs text-primary">
+                <input id="acc-prof-email" type="email" required value="${esc(isAuth ? (auth.email || profile.email) : '')}" placeholder="you@example.com" class="w-full h-12 px-3 rounded-lg bg-surface-container-low border border-[#e4e0d8] text-xs text-primary">
               </div>
               <div>
                 <label for="acc-prof-address" class="text-xs font-bold text-primary block mb-1">Default Delivery &amp; Flower Pickup Address</label>
-                <input id="acc-prof-address" type="text" required value="${esc(profile.defaultAddress)}" class="w-full h-12 px-3 rounded-lg bg-surface-container-low border border-[#e4e0d8] text-xs text-primary">
+                <input id="acc-prof-address" type="text" required value="${esc(isAuth ? (auth.address || profile.defaultAddress) : '')}" placeholder="Street address, City &amp; 6-digit PIN" class="w-full h-12 px-3 rounded-lg bg-surface-container-low border border-[#e4e0d8] text-xs text-primary">
               </div>
               <div class="sm:col-span-2 flex justify-end gap-2 pt-1">
                 <button type="submit" class="min-h-[48px] px-5 py-2.5 rounded-xl bg-primary text-white text-xs font-bold cursor-pointer">Save Patron Details</button>
@@ -3221,14 +3363,181 @@
 
   window.saveAccountProfile = function (ev) {
     if (ev) ev.preventDefault();
-    const name = document.getElementById('acc-prof-name')?.value.trim() || 'Ananya Singhania';
-    const phone = document.getElementById('acc-prof-phone')?.value.trim() || '+91 98201 44810';
-    const email = document.getElementById('acc-prof-email')?.value.trim() || 'ananya@studiopatron.in';
-    const defaultAddress = document.getElementById('acc-prof-address')?.value.trim() || 'Bengaluru, KA 560001';
+    const name = document.getElementById('acc-prof-name')?.value.trim() || '';
+    const phone = document.getElementById('acc-prof-phone')?.value.trim() || '';
+    const email = document.getElementById('acc-prof-email')?.value.trim() || '';
+    const defaultAddress = document.getElementById('acc-prof-address')?.value.trim() || '';
+    if (!name || !defaultAddress) {
+      window.showToast('Missing Details', 'Please enter your full name and delivery address.');
+      return;
+    }
     Store.savePatronProfile({ name, phone, email, defaultAddress });
     AppState.editingAccountProfile = false;
+    updateGlobalBadges();
     renderActiveView();
     window.showToast('Patron Profile Saved!', `${name} • Dispatch address updated`);
+  };
+
+  // Top-Bar Account & Saved Shipping Popup Drawer Controllers
+  window.openAccountBarModal = function () {
+    updateGlobalBadges();
+    const modal = document.getElementById('account-bar-modal');
+    if (modal) modal.classList.remove('hidden');
+    syncBodyModalLock();
+  };
+
+  window.saveBarAccountDetails = function (ev) {
+    if (ev) ev.preventDefault();
+    const name = document.getElementById('bar-prof-name')?.value.trim() || '';
+    const phone = document.getElementById('bar-prof-phone')?.value.trim() || '';
+    const email = document.getElementById('bar-prof-email')?.value.trim() || '';
+    const defaultAddress = document.getElementById('bar-prof-address')?.value.trim() || '';
+    if (!name || !defaultAddress) {
+      window.showToast('Missing Details', 'Please enter your full name and shipping address.');
+      return;
+    }
+    Store.savePatronProfile({ name, phone, email, defaultAddress });
+    updateGlobalBadges();
+    renderActiveView();
+    window.showToast('Account & Shipping Updated!', `${name} • Saved to session`);
+  };
+
+  // Cloudflare Edge Authentication Controllers (Google, Apple, Email + Password + Shipping Address)
+  window.openCloudflareAuthModal = function (fromCheckout = false) {
+    AppState.pendingCheckoutAfterAuth = Boolean(fromCheckout);
+    const errEl = document.getElementById('cf-auth-error');
+    if (errEl) {
+      errEl.textContent = '';
+      errEl.classList.add('hidden');
+    }
+    const provInput = document.getElementById('cf-auth-provider');
+    if (provInput) provInput.value = 'email';
+    const passWrap = document.getElementById('cf-auth-password-wrap');
+    const passInput = document.getElementById('cf-auth-password');
+    if (passWrap) passWrap.classList.remove('hidden');
+    if (passInput) passInput.required = true;
+
+    const bannerEl = document.getElementById('cloudflare-auth-reason-banner');
+    if (bannerEl) {
+      bannerEl.innerHTML = fromCheckout
+        ? '🔒 <strong>Login Required to Place Order:</strong> Sign in with <strong>Google</strong>, <strong>Apple</strong>, or your <strong>Email, Password &amp; Shipping Address</strong> to authorize checkout.'
+        : 'Sign in with <strong>Google</strong>, <strong>Apple</strong>, or your <strong>Email &amp; Shipping Address</strong> to place orders and track dispatches.';
+    }
+
+    const modal = document.getElementById('cloudflare-auth-modal');
+    if (modal) modal.classList.remove('hidden');
+    syncBodyModalLock();
+  };
+
+  window.startCloudflareOAuth = function (provider) {
+    const cleanProvider = provider === 'apple' ? 'apple' : 'google';
+    const provInput = document.getElementById('cf-auth-provider');
+    if (provInput) provInput.value = cleanProvider;
+
+    const passWrap = document.getElementById('cf-auth-password-wrap');
+    const passInput = document.getElementById('cf-auth-password');
+    if (passWrap) passWrap.classList.add('hidden');
+    if (passInput) passInput.required = false;
+
+    const label = cleanProvider === 'apple' ? 'Apple ID' : 'Google';
+    const emailVal = document.getElementById('cf-auth-email')?.value.trim() || '';
+    const nameVal = document.getElementById('cf-auth-name')?.value.trim() || '';
+    const phoneVal = document.getElementById('cf-auth-phone')?.value.trim() || '';
+    const addrVal = document.getElementById('cf-auth-address')?.value.trim() || '';
+    const pinVal = document.getElementById('cf-auth-pincode')?.value.trim() || '';
+
+    // If the user has already filled in their email, name, phone, and shipping address, complete OAuth login immediately
+    if (emailVal && nameVal && phoneVal && addrVal) {
+      window.submitCloudflareAuthForm({ preventDefault: () => {} });
+      return;
+    }
+
+    // Never assume customer values before they enter them: prompt user to complete their shipping fields for Google/Apple login
+    const bannerEl = document.getElementById('cloudflare-auth-reason-banner');
+    if (bannerEl) {
+      bannerEl.innerHTML = `✅ <strong>${esc(label)} Identity Selected:</strong> No password needed — please enter your <strong>Email, Name, Mobile &amp; Shipping Address</strong> below to complete ${esc(label)} sign-in.`;
+    }
+    const submitBtn = document.getElementById('cf-auth-submit-btn');
+    if (submitBtn) {
+      submitBtn.textContent = `Continue with ${label} & Save Shipping Address`;
+    }
+    const firstEmpty = !emailVal
+      ? document.getElementById('cf-auth-email')
+      : (!nameVal ? document.getElementById('cf-auth-name') : (!phoneVal ? document.getElementById('cf-auth-phone') : document.getElementById('cf-auth-address')));
+    if (firstEmpty && typeof firstEmpty.focus === 'function') {
+      firstEmpty.focus();
+    }
+    window.showToast(`${label} Selected`, `Enter your email & shipping address to finish signing in`);
+  };
+
+  window.submitCloudflareAuthForm = function (ev) {
+    if (ev && typeof ev.preventDefault === 'function') ev.preventDefault();
+    const provider = document.getElementById('cf-auth-provider')?.value || 'email';
+    const email = document.getElementById('cf-auth-email')?.value.trim() || '';
+    const password = document.getElementById('cf-auth-password')?.value || '';
+    const name = document.getElementById('cf-auth-name')?.value.trim() || '';
+    const phone = document.getElementById('cf-auth-phone')?.value.trim() || '';
+    const address = document.getElementById('cf-auth-address')?.value.trim() || '';
+    const pincode = document.getElementById('cf-auth-pincode')?.value.trim() || '';
+
+    const errEl = document.getElementById('cf-auth-error');
+    const res = Store.loginPatron({ provider, email, password, name, phone, address, pincode });
+
+    if (!res.valid) {
+      if (errEl) {
+        errEl.textContent = res.message;
+        errEl.classList.remove('hidden');
+      }
+      window.showToast('Sign-In Notice', res.message);
+      return;
+    }
+
+    if (errEl) {
+      errEl.textContent = '';
+      errEl.classList.add('hidden');
+    }
+
+    // Sync with Cloudflare Pages Function (/api/auth/oauth or /api/auth/register) when running on Cloudflare Workers edge
+    if (typeof fetch === 'function' && window.VistaraCloudflareConfig) {
+      const apiBase = window.VistaraCloudflareConfig.auth?.workerEndpoint || '/api';
+      const endpoint = provider === 'email' ? `${apiBase}/auth/register` : `${apiBase}/auth/oauth`;
+      fetch(endpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ provider, email, password, name, phone, address, pincode })
+      }).catch(() => {});
+    }
+
+    document.getElementById('cloudflare-auth-modal')?.classList.add('hidden');
+    syncBodyModalLock();
+    updateGlobalBadges();
+    renderActiveView();
+
+    const shouldOpenCheckout = AppState.pendingCheckoutAfterAuth;
+    AppState.pendingCheckoutAfterAuth = false;
+
+    window.showToast(`Signed in as ${res.session.name}`, `Verified via ${provider.toUpperCase()} • Shipping saved`);
+    if (shouldOpenCheckout) {
+      window.openCheckoutModal();
+    }
+  };
+
+  window.handlePatronLogout = function () {
+    Store.logoutPatron();
+    AppState.pendingCheckoutAfterAuth = false;
+    document.getElementById('account-bar-modal')?.classList.add('hidden');
+    document.getElementById('mobile-menu-drawer')?.classList.add('hidden');
+    // Clear checkout inputs so no stale customer details remain after sign-out
+    const nameEl = document.getElementById('chk-name');
+    const phoneEl = document.getElementById('chk-phone');
+    const addrEl = document.getElementById('chk-address');
+    if (nameEl) nameEl.value = '';
+    if (phoneEl) phoneEl.value = '';
+    if (addrEl) addrEl.value = '';
+    syncBodyModalLock();
+    updateGlobalBadges();
+    renderActiveView();
+    window.showToast('Signed Out', 'You are now browsing in Guest Mode');
   };
 
   window.setAccountOrderSearch = function (val) {
@@ -3323,20 +3632,31 @@
     window.navigateTo('cart');
   };
 
-  // Checkout Modal
+  // Checkout Modal (Gated behind Cloudflare Authentication — Guest users must sign in before ordering)
   window.openCheckoutModal = function () {
     const summary = Store.getCartSummary();
     if (summary.itemsCount === 0) {
       window.showToast('Your Studio Bag is Empty');
       return;
     }
+
+    if (typeof Store.isAuthenticated === 'function' && !Store.isAuthenticated()) {
+      window.openCloudflareAuthModal(true);
+      window.showToast('Sign In Required to Place Order', 'Sign in with Google, Apple, or Email & Shipping Address');
+      return;
+    }
+
+    const auth = (typeof Store.getAuthSession === 'function' && Store.getAuthSession()) || {};
     const profile = Store.getPatronProfile();
     const nameEl = document.getElementById('chk-name');
     const phoneEl = document.getElementById('chk-phone');
     const addrEl = document.getElementById('chk-address');
-    if (nameEl && profile.name) nameEl.value = profile.name;
-    if (phoneEl && profile.phone) phoneEl.value = profile.phone;
-    if (addrEl && (profile.defaultAddress || profile.address)) addrEl.value = profile.defaultAddress || profile.address;
+    const resolvedName = auth.name || profile.name || '';
+    const resolvedPhone = auth.phone || profile.phone || '';
+    const resolvedAddr = auth.address || profile.defaultAddress || profile.address || '';
+    if (nameEl) nameEl.value = resolvedName;
+    if (phoneEl) phoneEl.value = resolvedPhone;
+    if (addrEl) addrEl.value = resolvedAddr;
 
     const modal = document.getElementById('checkout-modal');
     const amountEl = document.getElementById('checkout-modal-payable');
@@ -3347,12 +3667,25 @@
 
   window.submitCheckoutOrder = function (ev) {
     ev.preventDefault();
+    if (typeof Store.isAuthenticated === 'function' && !Store.isAuthenticated()) {
+      document.getElementById('checkout-modal')?.classList.add('hidden');
+      window.openCloudflareAuthModal(true);
+      window.showToast('Sign In Required', 'Please sign in before placing an order');
+      return;
+    }
+
+    const auth = (typeof Store.getAuthSession === 'function' && Store.getAuthSession()) || {};
     const profile = Store.getPatronProfile();
-    const name = document.getElementById('chk-name')?.value.trim() || profile.name || 'Studio Patron';
-    const phone = document.getElementById('chk-phone')?.value.trim() || profile.phone || '+91 98765 43210';
-    const address = document.getElementById('chk-address')?.value.trim() || profile.defaultAddress || 'Bengaluru 560001';
+    const name = document.getElementById('chk-name')?.value.trim() || auth.name || profile.name || '';
+    const phone = document.getElementById('chk-phone')?.value.trim() || auth.phone || profile.phone || '';
+    const address = document.getElementById('chk-address')?.value.trim() || auth.address || profile.defaultAddress || '';
     const paymentMethod = document.getElementById('chk-payment')?.value || 'UPI Instant (GPay / PhonePe)';
     const giftWrap = Boolean(document.getElementById('chk-gift-wrap')?.checked);
+
+    if (!name || !phone || !address) {
+      window.showToast('Shipping Details Required', 'Please enter your recipient name, mobile number, and delivery address.');
+      return;
+    }
 
     Store.savePatronProfile({ name, phone, defaultAddress: address });
     const res = Store.placeOrder({ name, phone, address, paymentMethod, giftWrap });
@@ -3363,6 +3696,9 @@
     if (res.success) {
       window.showToast(`Order ${res.order.orderId} Confirmed! 🎉`, `Total Paid: ${formatINR(res.order.total)} via ${paymentMethod}`);
       window.navigateTo('account');
+    } else if (res.requiresAuth) {
+      window.openCloudflareAuthModal(true);
+      window.showToast('Sign In Required', res.message || 'Please sign in to place your order.');
     }
   };
 
