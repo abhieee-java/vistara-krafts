@@ -346,32 +346,32 @@
             </div>
           </div>
           <div class="flex items-center justify-between gap-1 mb-1">
-            <div class="flex items-center gap-1">
-              <span class="material-symbols-outlined text-secondary text-sm" style="font-variation-settings: 'FILL' 1;" aria-hidden="true">star</span>
+            <div class="flex items-center gap-1 min-w-0">
+              <span class="material-symbols-outlined text-secondary text-sm shrink-0" style="font-variation-settings: 'FILL' 1;" aria-hidden="true">star</span>
               <span class="font-spec-numeral text-xs text-primary font-semibold">${p.rating.toFixed(1)}</span>
-              <span class="font-spec-numeral text-[11px] text-outline">(${p.reviewsCount})</span>
+              <span class="font-spec-numeral text-[11px] text-outline truncate">(${p.reviewsCount})</span>
             </div>
-            ${discountPct > 0 ? `<span class="font-spec-numeral text-[10px] font-bold px-1.5 py-0.5 rounded bg-[#ffe4de] text-[#9e3322]">${discountPct}% OFF</span>` : ''}
+            ${discountPct > 0 ? `<span class="font-spec-numeral text-[10px] font-bold px-1.5 py-0.5 rounded bg-[#ffe4de] text-[#9e3322] shrink-0">${discountPct}% OFF</span>` : ''}
           </div>
-          <h2 class="font-title-md text-[14px] sm:text-[15px] leading-snug text-primary font-semibold line-clamp-2 min-h-[2.5rem] cursor-pointer hover:text-secondary transition-colors" onclick="window.navigateTo('product', '${esc(p.id)}')">
+          <h2 class="font-title-md text-[13px] min-[360px]:text-[14px] sm:text-[15px] leading-snug text-primary font-semibold line-clamp-2 min-h-[2.4rem] cursor-pointer hover:text-secondary transition-colors break-words" onclick="window.navigateTo('product', '${esc(p.id)}')">
             ${esc(p.shortName || p.name)}
           </h2>
           <div class="flex flex-wrap gap-1 mt-1.5">
-            <span class="px-1.5 py-0.5 rounded bg-surface-container-high text-on-surface-variant font-label-sm text-[10px]">${esc(p.unitPriceLabel)}</span>
-            <span class="px-1.5 py-0.5 rounded bg-secondary-container/40 text-on-secondary-container font-label-sm text-[10px]">${p.isCustomizable ? '✨ Personalizable' : 'Lab Certified'}</span>
+            <span class="px-1.5 py-0.5 rounded bg-surface-container-high text-on-surface-variant font-label-sm text-[10px] truncate max-w-full">${esc(p.unitPriceLabel)}</span>
+            <span class="px-1.5 py-0.5 rounded bg-secondary-container/40 text-on-secondary-container font-label-sm text-[10px] shrink-0">${p.isCustomizable ? '✨ Personalizable' : 'Lab Certified'}</span>
           </div>
         </div>
         <div class="pt-2.5 mt-2 border-t border-surface-container flex flex-col gap-1.5">
-          <div class="flex items-center justify-between">
-            <div class="flex items-baseline gap-1.5">
-              <span class="font-spec-numeral text-base sm:text-lg text-primary font-bold">${formatINR(p.price)}</span>
-              <span class="font-spec-numeral text-[11px] text-outline line-through">${formatINR(p.regularPrice)}</span>
+          <div class="flex items-center justify-between gap-1 flex-wrap">
+            <div class="flex items-baseline gap-1.5 min-w-0 flex-wrap">
+              <span class="font-spec-numeral text-sm min-[360px]:text-base sm:text-lg text-primary font-bold">${formatINR(p.price)}</span>
+              <span class="font-spec-numeral text-[10px] min-[360px]:text-[11px] text-outline line-through">${formatINR(p.regularPrice)}</span>
             </div>
-            <button type="button" onclick="window.navigateTo('product', '${esc(p.id)}')" class="min-h-[44px] px-2 inline-flex items-center text-xs font-semibold text-secondary hover:underline cursor-pointer">Details</button>
+            <button type="button" onclick="window.navigateTo('product', '${esc(p.id)}')" class="min-h-[44px] px-1.5 sm:px-2 inline-flex items-center text-xs font-semibold text-secondary hover:underline cursor-pointer shrink-0">Details</button>
           </div>
           <button type="button" onclick="window.handleQuickAdd(this, '${esc(p.id)}')" class="w-full h-11 rounded-xl bg-primary hover:bg-primary-container text-on-primary font-label-md text-xs font-semibold flex items-center justify-center gap-1.5 active:scale-[0.98] transition-all shadow-xs cursor-pointer">
-            <span class="material-symbols-outlined text-base" aria-hidden="true">add_shopping_cart</span>
-            <span>Quick Add</span>
+            <span class="material-symbols-outlined text-base shrink-0" aria-hidden="true">add_shopping_cart</span>
+            <span class="truncate">Quick Add</span>
           </button>
         </div>
       </article>
@@ -437,70 +437,70 @@
                 <span class="font-label-sm text-xs uppercase tracking-wider font-bold">Resin Art Memories × Vistāra Krafts Studio</span>
               </div>
 
-              <h1 class="font-headline-lg text-3xl sm:text-5xl text-primary font-bold tracking-tight leading-[1.12]">
+              <h1 class="font-headline-lg text-2xl min-[360px]:text-3xl sm:text-5xl text-primary font-bold tracking-tight leading-[1.14] break-words">
                 Hold Your Most Intimate Memories in <span class="italic text-[#9e3322] font-serif">Liquid Glass</span>.
               </h1>
 
-              <p class="font-body-lg text-sm sm:text-base text-on-surface-variant max-w-xl leading-relaxed">
+              <p class="font-body-lg text-xs min-[360px]:text-sm sm:text-base text-on-surface-variant max-w-xl leading-relaxed break-words">
                 From preserving wedding varmalas &amp; anniversary roses in museum-grade 50mm blocks to supplying India’s purest 3:1 &amp; 2:1 optical epoxy systems. Crafted to flirt with light for decades.
               </p>
 
               <!-- Primary & Secondary Conversion CTAs -->
-              <div class="flex flex-col sm:flex-row w-full sm:w-auto gap-3 pt-1">
-                <button type="button" onclick="window.navigateTo('catalog', 'all')" class="btn-shimmer h-12 px-7 rounded-xl bg-primary hover:bg-primary-container text-on-primary font-title-md text-sm font-semibold flex items-center justify-center gap-2 shadow-md active:scale-[0.98] transition-all cursor-pointer">
+              <div class="flex flex-col sm:flex-row w-full sm:w-auto gap-2.5 sm:gap-3 pt-1">
+                <button type="button" onclick="window.navigateTo('catalog', 'all')" class="btn-shimmer min-h-[48px] w-full sm:w-auto px-4 sm:px-6 rounded-xl bg-primary hover:bg-primary-container text-on-primary font-title-md text-xs sm:text-sm font-semibold flex items-center justify-center gap-2 shadow-md active:scale-[0.98] transition-all cursor-pointer">
                   <span>Shop Keepsakes &amp; Epoxy Kits</span>
                   <span class="material-symbols-outlined text-lg" aria-hidden="true">arrow_forward</span>
                 </button>
-                <button type="button" onclick="window.navigateTo('custom-studio')" class="h-12 px-6 rounded-xl bg-white hover:bg-[#fdf6f3] text-primary border border-[#b08d57] font-title-md text-sm font-semibold flex items-center justify-center gap-2 shadow-xs active:scale-[0.98] transition-all cursor-pointer">
+                <button type="button" onclick="window.navigateTo('custom-studio')" class="min-h-[48px] w-full sm:w-auto px-4 sm:px-6 rounded-xl bg-white hover:bg-[#fdf6f3] text-primary border border-[#b08d57] font-title-md text-xs sm:text-sm font-semibold flex items-center justify-center gap-2 shadow-xs active:scale-[0.98] transition-all cursor-pointer">
                   <span class="material-symbols-outlined text-lg text-[#9e3322]" aria-hidden="true">auto_awesome</span>
-                  <span>Custom Floral Preservation &amp; Calculator</span>
+                  <span class="truncate">Custom Keepsake &amp; Calculator</span>
                 </button>
               </div>
 
               <!-- Trust & Optical Clarity Bar -->
-              <div class="w-full mt-2 grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <div class="rounded-xl bg-white/90 border border-[#e4e0d8] p-3 flex items-center gap-3 shadow-2xs">
+              <div class="w-full mt-2 grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3">
+                <div class="rounded-xl bg-white/90 border border-[#e4e0d8] p-3 flex items-center gap-3 shadow-2xs min-w-0">
                   <img src="${esc(Store.IMAGES.floralCube)}" alt="Preserved Bridal Roses" class="w-12 h-12 rounded-lg object-cover shrink-0">
-                  <div class="min-w-0">
-                    <div class="flex items-center gap-1 text-[#9e3322] font-label-sm text-[11px] uppercase font-bold">
-                      <span class="material-symbols-outlined text-sm" aria-hidden="true">local_florist</span>
-                      <span>Pan-India Varmala Pickup</span>
+                  <div class="min-w-0 flex-1">
+                    <div class="flex items-center gap-1 text-[#9e3322] font-label-sm text-[11px] uppercase font-bold truncate">
+                      <span class="material-symbols-outlined text-sm shrink-0" aria-hidden="true">local_florist</span>
+                      <span class="truncate">Pan-India Varmala Pickup</span>
                     </div>
-                    <p class="text-xs text-on-surface truncate">Doorstep flower pickup in 24h across 19,000+ PINs</p>
+                    <p class="text-xs text-on-surface leading-tight mt-0.5 break-words">Doorstep flower pickup in 24h across 19,000+ PINs</p>
                   </div>
                 </div>
-                <div class="rounded-xl bg-white/90 border border-[#e4e0d8] p-3 flex items-center gap-3 shadow-2xs">
+                <div class="rounded-xl bg-white/90 border border-[#e4e0d8] p-3 flex items-center gap-3 shadow-2xs min-w-0">
                   <img src="${esc(Store.IMAGES.ultraclearThumb2)}" alt="Optical Clarity Test Disc" class="w-12 h-12 rounded-lg object-cover shrink-0">
-                  <div class="min-w-0">
-                    <div class="flex items-center gap-1 text-secondary font-label-sm text-[11px] uppercase font-bold">
-                      <span class="material-symbols-outlined text-sm" aria-hidden="true">verified</span>
-                      <span>99.4% Optical Transmission</span>
+                  <div class="min-w-0 flex-1">
+                    <div class="flex items-center gap-1 text-secondary font-label-sm text-[11px] uppercase font-bold truncate">
+                      <span class="material-symbols-outlined text-sm shrink-0" aria-hidden="true">verified</span>
+                      <span class="truncate">99.4% Optical Transmission</span>
                     </div>
-                    <p class="text-xs text-on-surface truncate">ASTM D1003 HALS UV-shielded non-yellowing resin</p>
+                    <p class="text-xs text-on-surface leading-tight mt-0.5 break-words">ASTM D1003 HALS UV-shielded non-yellowing resin</p>
                   </div>
                 </div>
               </div>
             </div>
 
             <!-- Hero Right Showcase Card (5 cols) -->
-            <div class="lg:col-span-5">
+            <div class="lg:col-span-5 min-w-0">
               <div class="relative rounded-2xl overflow-hidden shadow-xl border border-[#b08d57]/40 bg-primary group cursor-pointer" onclick="window.navigateTo('product', 'ram-keep-001')">
                 <div class="aspect-[4/4] sm:aspect-[4/3] lg:aspect-[4/4] w-full overflow-hidden">
                   <img src="${esc(Store.IMAGES.floralCube)}" alt="Bridal Bouquet Preserved in Crystal Clear Resin" class="w-full h-full object-cover object-center scale-[1.22] group-hover:scale-[1.26] transition-transform duration-700">
                 </div>
-                <div class="absolute inset-x-0 bottom-0 bg-primary/90 bg-gradient-to-t from-primary via-primary/95 to-primary/70 flex flex-col justify-end p-5 text-white">
-                  <div class="flex items-center justify-between gap-2 mb-1">
+                <div class="absolute inset-x-0 bottom-0 bg-primary/90 bg-gradient-to-t from-primary via-primary/95 to-primary/70 flex flex-col justify-end p-4 sm:p-5 text-white">
+                  <div class="flex items-center justify-between gap-2 mb-1 flex-wrap">
                     <span class="px-2.5 py-0.5 rounded-full bg-[#9e3322] text-white text-[10px] font-bold uppercase tracking-wider truncate">Most Loved on @resin.art.memories</span>
                     <span class="font-spec-numeral text-xs bg-black/50 backdrop-blur-xs px-2.5 py-0.5 rounded-full shrink-0">★ 5.0 (418)</span>
                   </div>
-                  <h2 class="font-headline-sm text-xl sm:text-2xl font-bold">Eternal Varmala &amp; Rose Keepsake Block</h2>
-                  <p class="text-xs text-white/90 mt-1">Includes silica-gel cryo-drying, 24K gold leaf &amp; couple name engraving</p>
-                  <div class="mt-3 pt-3 border-t border-white/15 flex items-center justify-between">
-                    <div>
-                      <span class="font-spec-numeral text-xl font-bold text-[#ffd79b]">₹4,499</span>
-                      <span class="font-spec-numeral text-xs line-through text-white/80 ml-1.5">₹5,499</span>
+                  <h2 class="font-headline-sm text-lg sm:text-2xl font-bold break-words">Eternal Varmala &amp; Rose Keepsake Block</h2>
+                  <p class="text-xs text-white/90 mt-1 break-words">Includes silica-gel cryo-drying, 24K gold leaf &amp; couple name engraving</p>
+                  <div class="mt-3 pt-3 border-t border-white/15 flex flex-wrap items-center justify-between gap-2">
+                    <div class="flex items-baseline gap-1.5">
+                      <span class="font-spec-numeral text-lg sm:text-xl font-bold text-[#ffd79b]">₹4,499</span>
+                      <span class="font-spec-numeral text-xs line-through text-white/80">₹5,499</span>
                     </div>
-                    <span class="inline-flex items-center gap-1 min-h-[44px] text-xs font-semibold bg-white text-primary px-3.5 py-2 rounded-lg">
+                    <span class="inline-flex items-center gap-1 min-h-[44px] text-xs font-semibold bg-white text-primary px-3 py-2 rounded-lg shrink-0">
                       <span>Customize Piece</span>
                       <span class="material-symbols-outlined text-sm" aria-hidden="true">arrow_forward</span>
                     </span>
@@ -576,7 +576,7 @@
               </p>
             </div>
 
-            <form class="flex gap-2" onsubmit="event.preventDefault(); window.submitHomePincode();">
+            <form class="flex flex-col sm:flex-row gap-2" onsubmit="event.preventDefault(); window.submitHomePincode();">
               <label for="home-pincode-input" class="sr-only">Enter 6-digit PIN code</label>
               <input id="home-pincode-input" type="text" maxlength="6" aria-label="Enter 6-digit PIN code" value="${esc(pinInfo.pin)}" placeholder="Enter 6-digit PIN (e.g. 560001)" class="min-w-0 flex-1 h-12 px-3.5 rounded-lg bg-surface-container-low border border-[#e4e0d8] font-spec-numeral text-sm text-primary">
               <button type="submit" class="h-12 px-5 rounded-lg bg-primary hover:bg-primary-container text-on-primary font-label-md text-xs font-semibold shrink-0 active:scale-95 transition-transform cursor-pointer">
@@ -782,22 +782,22 @@
               <span class="material-symbols-outlined text-secondary text-3xl" aria-hidden="true">calculate</span>
             </div>
 
-            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 bg-surface-container-low p-3.5 rounded-xl">
+            <div class="grid grid-cols-1 min-[360px]:grid-cols-2 sm:grid-cols-4 gap-2.5 bg-surface-container-low p-3 sm:p-3.5 rounded-xl">
               <div>
                 <label class="font-label-sm text-[11px] text-on-surface-variant block mb-1" for="home-calc-len">Length (cm)</label>
-                <input id="home-calc-len" type="number" min="1" max="500" value="${AppState.calcLength}" class="w-full h-12 px-2.5 bg-white rounded-lg border border-[#e4e0d8] font-spec-numeral text-sm text-primary">
+                <input id="home-calc-len" type="number" min="1" max="500" value="${AppState.calcLength}" class="w-full min-w-0 h-12 px-2.5 bg-white rounded-lg border border-[#e4e0d8] font-spec-numeral text-sm text-primary">
               </div>
               <div>
                 <label class="font-label-sm text-[11px] text-on-surface-variant block mb-1" for="home-calc-wid">Width (cm)</label>
-                <input id="home-calc-wid" type="number" min="1" max="500" value="${AppState.calcWidth}" class="w-full h-12 px-2.5 bg-white rounded-lg border border-[#e4e0d8] font-spec-numeral text-sm text-primary">
+                <input id="home-calc-wid" type="number" min="1" max="500" value="${AppState.calcWidth}" class="w-full min-w-0 h-12 px-2.5 bg-white rounded-lg border border-[#e4e0d8] font-spec-numeral text-sm text-primary">
               </div>
               <div>
                 <label class="font-label-sm text-[11px] text-on-surface-variant block mb-1" for="home-calc-dep">Depth (cm)</label>
-                <input id="home-calc-dep" type="number" min="0.1" max="10" step="0.5" value="${AppState.calcDepth}" class="w-full h-12 px-2.5 bg-white rounded-lg border border-[#e4e0d8] font-spec-numeral text-sm text-primary">
+                <input id="home-calc-dep" type="number" min="0.1" max="10" step="0.5" value="${AppState.calcDepth}" class="w-full min-w-0 h-12 px-2.5 bg-white rounded-lg border border-[#e4e0d8] font-spec-numeral text-sm text-primary">
               </div>
               <div>
                 <label class="font-label-sm text-[11px] text-on-surface-variant block mb-1" for="home-calc-sys">Ratio System</label>
-                <select id="home-calc-sys" class="w-full h-12 px-2 bg-white rounded-lg border border-[#e4e0d8] font-label-sm text-xs text-primary">
+                <select id="home-calc-sys" class="w-full min-w-0 h-12 px-2 bg-white rounded-lg border border-[#e4e0d8] font-label-sm text-xs text-primary">
                   <option value="3:1" ${AppState.calcSystem === '3:1' ? 'selected' : ''}>3:1 UltraClear</option>
                   <option value="2:1" ${AppState.calcSystem === '2:1' ? 'selected' : ''}>2:1 Deep Pour</option>
                   <option value="1:1" ${AppState.calcSystem === '1:1' ? 'selected' : ''}>1:1 Doming</option>
@@ -805,10 +805,10 @@
               </div>
             </div>
 
-            <div class="flex flex-col sm:flex-row items-center justify-between gap-3 p-3.5 rounded-xl bg-surface-container-low border border-[#e4e0d8]">
-              <div>
+            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 p-3.5 rounded-xl bg-surface-container-low border border-[#e4e0d8] min-w-0">
+              <div class="min-w-0 flex-1">
                 <span class="text-xs text-on-surface-variant block">Recommended Batch Weight (1.1 g/cm³ density):</span>
-                <span id="home-calc-output" class="font-spec-numeral text-sm sm:text-base font-bold text-primary block mt-0.5">
+                <span id="home-calc-output" class="font-spec-numeral text-xs sm:text-base font-bold text-primary block mt-0.5 break-words">
                   ~660g total (Part A: 495g + Part B: 165g)
                 </span>
               </div>
@@ -1098,10 +1098,10 @@
         </div>
 
         <!-- Sticky Search, Filter & Sort Controls Bar (Sticky on md+ desktop/tablet so mobile viewports aren't crushed) -->
-        <div class="md:sticky md:top-[93px] z-30 bg-surface/95 backdrop-blur-md py-3 border-y border-[#e4e0d8] flex flex-col gap-2.5">
-          <div class="flex flex-wrap items-center justify-between gap-2.5">
+        <div class="md:sticky md:top-[93px] z-30 bg-surface/95 backdrop-blur-md py-3 border-y border-[#e4e0d8] flex flex-col gap-2.5 max-w-full">
+          <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2.5">
             <!-- Instant Search Input -->
-            <div class="relative flex-1 min-w-[200px]">
+            <div class="relative w-full sm:flex-1 min-w-0">
               <label for="catalog-search-input" class="sr-only">Search catalogue products</label>
               <span class="material-symbols-outlined text-on-surface-variant text-lg absolute left-3 top-3.5 pointer-events-none" aria-hidden="true">search</span>
               <input id="catalog-search-input" type="text" aria-label="Search catalogue products" value="${esc(AppState.catalogSearch)}" oninput="window.setCatalogSearch(this.value)" placeholder="Search varmala block, 3:1 resin, ocean tray, mica, mold..." class="w-full h-12 pl-9 pr-10 rounded-xl bg-white border border-[#e4e0d8] text-xs sm:text-sm text-primary">
@@ -1112,16 +1112,16 @@
               ` : ''}
             </div>
 
-            <div class="flex flex-wrap items-center gap-2">
+            <div class="flex flex-wrap items-center gap-2 w-full sm:w-auto">
               <!-- Filter Drawer Trigger -->
-              <button type="button" onclick="window.toggleCatalogFilterDrawer(true)" class="h-12 px-4 rounded-xl bg-primary text-on-primary font-label-sm text-xs font-semibold flex items-center gap-1.5 shadow-xs cursor-pointer">
+              <button type="button" onclick="window.toggleCatalogFilterDrawer(true)" class="flex-1 sm:flex-initial h-12 px-3 sm:px-4 rounded-xl bg-primary text-on-primary font-label-sm text-xs font-semibold flex items-center justify-center gap-1.5 shadow-xs cursor-pointer">
                 <span class="material-symbols-outlined text-base" aria-hidden="true">tune</span>
                 <span>Specs Filter</span>
               </button>
 
               <!-- Sort Select -->
               <label for="catalog-sort-select" class="sr-only">Sort products</label>
-              <select id="catalog-sort-select" aria-label="Sort products" onchange="window.setCatalogSort(this.value)" class="h-12 px-3 rounded-xl bg-white border border-[#e4e0d8] font-label-sm text-xs text-primary cursor-pointer">
+              <select id="catalog-sort-select" aria-label="Sort products" onchange="window.setCatalogSort(this.value)" class="flex-1 sm:flex-initial h-12 px-2.5 sm:px-3 rounded-xl bg-white border border-[#e4e0d8] font-label-sm text-xs text-primary cursor-pointer">
                 <option value="popular" ${AppState.catalogSort === 'popular' ? 'selected' : ''}>Sort: Popularity</option>
                 <option value="price_asc" ${AppState.catalogSort === 'price_asc' ? 'selected' : ''}>Price: Low to High</option>
                 <option value="price_desc" ${AppState.catalogSort === 'price_desc' ? 'selected' : ''}>Price: High to Low</option>
@@ -1130,7 +1130,7 @@
               </select>
 
               <!-- Grid / List Switcher -->
-              <div class="flex items-center bg-surface-container-low p-0.5 rounded-xl border border-[#e4e0d8]">
+              <div class="flex items-center bg-surface-container-low p-0.5 rounded-xl border border-[#e4e0d8] shrink-0">
                 <button type="button" aria-label="Grid View" onclick="window.setCatalogView('grid')" class="w-11 h-11 rounded-lg flex items-center justify-center ${AppState.catalogView === 'grid' ? 'bg-white text-primary shadow-2xs' : 'text-on-surface-variant'} cursor-pointer">
                   <span class="material-symbols-outlined text-lg" aria-hidden="true">grid_view</span>
                 </button>
@@ -1142,8 +1142,8 @@
           </div>
 
           <!-- Active Filter Summary Row -->
-          <div class="flex items-center justify-between gap-2 text-xs text-on-surface-variant">
-            <div class="flex items-center gap-1.5 flex-wrap">
+          <div class="flex flex-wrap items-center justify-between gap-2 text-xs text-on-surface-variant">
+            <div class="flex items-center gap-1.5 flex-wrap min-w-0">
               ${AppState.catalogCategory !== 'all' ? `
                 <button type="button" onclick="window.setCatalogCategory('all')" class="min-h-[44px] inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-surface-container-high text-primary font-medium cursor-pointer">
                   <span>Category: ${esc(AppState.catalogCategory)}</span>
@@ -1342,18 +1342,18 @@
                 ${variants.map((v, idx) => {
                   const isSelected = idx === AppState.selectedVariantIdx;
                   return `
-                    <button type="button" onclick="window.selectPdpVariant(${idx})" class="p-3.5 rounded-xl border text-left flex items-center justify-between transition-all cursor-pointer ${isSelected ? 'bg-primary text-on-primary border-primary shadow-md' : 'bg-white text-primary border-[#e4e0d8] hover:bg-surface-container-low'}">
-                      <div class="flex items-center gap-3 min-w-0">
-                        <span class="material-symbols-outlined text-xl ${isSelected ? 'text-secondary-fixed' : 'text-secondary'}" aria-hidden="true">workspace_premium</span>
-                        <div class="min-w-0">
-                          <div class="flex items-center gap-2 flex-wrap">
-                            <p class="font-title-md text-sm font-bold ${isSelected ? 'text-white' : 'text-primary'}">${esc(v.label)}</p>
-                            ${v.popular ? `<span class="px-2 py-0.5 rounded bg-secondary-fixed text-on-secondary-fixed text-[10px] font-bold uppercase">Most Popular</span>` : ''}
+                    <button type="button" onclick="window.selectPdpVariant(${idx})" class="p-3.5 rounded-xl border text-left flex flex-col min-[420px]:flex-row min-[420px]:items-center justify-between gap-2.5 transition-all cursor-pointer ${isSelected ? 'bg-primary text-on-primary border-primary shadow-md' : 'bg-white text-primary border-[#e4e0d8] hover:bg-surface-container-low'}">
+                      <div class="flex items-center gap-2.5 min-w-0 flex-1">
+                        <span class="material-symbols-outlined text-xl ${isSelected ? 'text-secondary-fixed' : 'text-secondary'} shrink-0" aria-hidden="true">workspace_premium</span>
+                        <div class="min-w-0 flex-1">
+                          <div class="flex items-center gap-1.5 flex-wrap">
+                            <p class="font-title-md text-sm font-bold ${isSelected ? 'text-white' : 'text-primary'} break-words">${esc(v.label)}</p>
+                            ${v.popular ? `<span class="px-2 py-0.5 rounded bg-secondary-fixed text-on-secondary-fixed text-[10px] font-bold uppercase shrink-0">Most Popular</span>` : ''}
                           </div>
-                          <p class="text-xs ${isSelected ? 'text-white/85' : 'text-on-surface-variant'}">${esc(v.desc)}</p>
+                          <p class="text-xs ${isSelected ? 'text-white/85' : 'text-on-surface-variant'} break-words">${esc(v.desc)}</p>
                         </div>
                       </div>
-                      <div class="text-right shrink-0 pl-2">
+                      <div class="text-left min-[420px]:text-right shrink-0 min-[420px]:pl-2 flex min-[420px]:flex-col items-baseline min-[420px]:items-end gap-2 min-[420px]:gap-0">
                         <p class="font-spec-numeral text-base font-bold ${isSelected ? 'text-white' : 'text-primary'}">${formatINR(v.price)}</p>
                         <span class="font-spec-numeral text-[11px] ${isSelected ? 'text-secondary-fixed' : 'text-on-surface-variant'}">${esc(v.unitPrice)}</span>
                       </div>
@@ -1376,8 +1376,8 @@
             </div>
 
             <!-- Inline Primary Conversion Actions (Desktop & Mobile) -->
-            <div class="p-4 rounded-xl bg-white border border-[#e4e0d8] shadow-xs flex flex-col gap-2.5">
-              <div class="flex items-center gap-2">
+            <div class="p-3.5 sm:p-4 rounded-xl bg-white border border-[#e4e0d8] shadow-xs flex flex-col gap-2.5">
+              <div class="flex flex-wrap sm:flex-nowrap items-center gap-2">
                 <div class="h-12 bg-surface-container-low rounded-xl flex items-center px-1 shrink-0 border border-[#e4e0d8]">
                   <button type="button" aria-label="Decrease quantity" onclick="window.changePdpQty(-1)" class="w-11 h-11 flex items-center justify-center text-primary font-bold cursor-pointer">
                     <span class="material-symbols-outlined text-base" aria-hidden="true">remove</span>
@@ -1387,7 +1387,7 @@
                     <span class="material-symbols-outlined text-base" aria-hidden="true">add</span>
                   </button>
                 </div>
-                <button type="button" onclick="window.addPdpToCart()" class="btn-shimmer min-w-0 flex-1 h-12 px-4 rounded-xl bg-primary hover:bg-primary-container text-on-primary font-title-md text-xs sm:text-sm font-bold flex items-center justify-center gap-2 shadow-sm cursor-pointer">
+                <button type="button" onclick="window.addPdpToCart()" class="btn-shimmer min-w-0 flex-1 h-12 px-3 sm:px-4 rounded-xl bg-primary hover:bg-primary-container text-on-primary font-title-md text-xs sm:text-sm font-bold flex items-center justify-center gap-1.5 shadow-sm cursor-pointer">
                   <span class="material-symbols-outlined text-lg shrink-0" aria-hidden="true">shopping_bag</span>
                   <span class="truncate">Add to Studio Bag • ${formatINR(totalCtaPrice)}</span>
                 </button>
@@ -1447,9 +1447,9 @@
                   'Shore D Hardness': product.specs.hardness,
                   'UV Stability Rating': product.specs.uvStability
                 }).map(([k, v], i) => `
-                  <div class="flex items-center justify-between p-3 ${i % 2 === 0 ? 'bg-surface-container-low' : 'bg-white'}">
-                    <span class="font-medium text-on-surface-variant">${esc(k)}</span>
-                    <span class="font-spec-numeral font-bold text-primary text-right">${esc(v)}</span>
+                  <div class="flex flex-wrap sm:flex-nowrap items-center justify-between gap-2 p-3 ${i % 2 === 0 ? 'bg-surface-container-low' : 'bg-white'} min-w-0">
+                    <span class="font-medium text-on-surface-variant break-words">${esc(k)}</span>
+                    <span class="font-spec-numeral font-bold text-primary text-left sm:text-right break-words">${esc(v)}</span>
                   </div>
                 `).join('')}
               </div>
@@ -1597,12 +1597,12 @@
         </section>
 
         <!-- Sticky Bottom PDP Action Bar (aligned with lg:hidden mobile bottom nav) -->
-        <aside class="fixed bottom-16 lg:bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-lg border-t border-[#e4e0d8] px-3 sm:px-8 py-2.5 shadow-lg">
-          <div class="max-w-7xl mx-auto flex items-center gap-2 sm:gap-3">
+        <aside class="fixed bottom-16 lg:bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-lg border-t border-[#e4e0d8] px-2.5 sm:px-8 py-2.5 shadow-lg max-w-full">
+          <div class="max-w-7xl mx-auto flex items-center gap-1.5 sm:gap-3">
             <button type="button" aria-label="Save to Wishlist" onclick="window.handleWishlistToggle(event, '${esc(product.id)}')" class="hidden sm:flex w-12 h-12 rounded-xl bg-surface-container-low items-center justify-center ${isFav ? 'text-[#9e3322]' : 'text-primary'} shrink-0 cursor-pointer">
               <span class="material-symbols-outlined text-2xl" style="font-variation-settings: 'FILL' ${isFav ? 1 : 0};" aria-hidden="true">${isFav ? 'favorite' : 'favorite_border'}</span>
             </button>
-            <div class="h-12 bg-surface-container-low rounded-xl flex items-center px-0.5 sm:px-1 shrink-0 border border-[#e4e0d8]">
+            <div class="hidden min-[420px]:flex h-12 bg-surface-container-low rounded-xl items-center px-0.5 sm:px-1 shrink-0 border border-[#e4e0d8]">
               <button type="button" aria-label="Decrease quantity" onclick="window.changePdpQty(-1)" class="w-11 h-11 flex items-center justify-center text-primary font-bold cursor-pointer">
                 <span class="material-symbols-outlined text-base" aria-hidden="true">remove</span>
               </button>
@@ -1611,12 +1611,12 @@
                 <span class="material-symbols-outlined text-base" aria-hidden="true">add</span>
               </button>
             </div>
-            <button type="button" id="pdp-add-to-cart-btn" onclick="window.addPdpToCart()" class="btn-shimmer min-w-0 flex-1 h-12 px-3 sm:px-5 rounded-xl bg-primary hover:bg-primary-container text-on-primary font-title-md text-xs sm:text-sm font-bold flex items-center justify-center gap-1.5 sm:gap-2 shadow-md active:scale-[0.99] transition-all whitespace-nowrap cursor-pointer">
-              <span class="material-symbols-outlined text-lg sm:text-xl shrink-0" aria-hidden="true">shopping_bag</span>
-              <span id="pdp-cta-label" class="truncate">Add to Studio Bag • ${formatINR(totalCtaPrice)}</span>
+            <button type="button" id="pdp-add-to-cart-btn" onclick="window.addPdpToCart()" class="btn-shimmer min-w-0 flex-1 h-12 px-2.5 sm:px-5 rounded-xl bg-primary hover:bg-primary-container text-on-primary font-title-md text-xs sm:text-sm font-bold flex items-center justify-center gap-1.5 sm:gap-2 shadow-md active:scale-[0.99] transition-all cursor-pointer">
+              <span class="material-symbols-outlined text-base sm:text-xl shrink-0" aria-hidden="true">shopping_bag</span>
+              <span id="pdp-cta-label" class="truncate">Add to Bag • ${formatINR(totalCtaPrice)}</span>
             </button>
-            <button type="button" id="pdp-buy-now-btn" onclick="window.buyNowPdp()" class="h-12 px-3 sm:px-5 rounded-xl bg-[#9e3322] hover:opacity-95 text-white font-title-md text-xs sm:text-sm font-bold flex items-center justify-center gap-1.5 shadow-md shrink-0 cursor-pointer whitespace-nowrap">
-              <span class="material-symbols-outlined text-lg shrink-0" aria-hidden="true">bolt</span>
+            <button type="button" id="pdp-buy-now-btn" onclick="window.buyNowPdp()" class="h-12 px-3 sm:px-5 rounded-xl bg-[#9e3322] hover:opacity-95 text-white font-title-md text-xs sm:text-sm font-bold flex items-center justify-center gap-1 shadow-md shrink-0 cursor-pointer whitespace-nowrap">
+              <span class="material-symbols-outlined text-base sm:text-lg shrink-0" aria-hidden="true">bolt</span>
               <span>Buy Now</span>
             </button>
           </div>
@@ -1972,29 +1972,29 @@
 
           <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
             <div class="lg:col-span-7 flex flex-col gap-4">
-              <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+              <div class="grid grid-cols-1 min-[360px]:grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-3">
                 ${AppState.calcShape === 'circle' ? `
-                  <div class="col-span-2">
+                  <div class="col-span-1 min-[360px]:col-span-2">
                     <label class="text-xs font-bold text-primary block mb-1" for="studio-calc-diam">Mould Diameter Ø (cm)</label>
-                    <input id="studio-calc-diam" type="number" min="0.5" step="0.5" value="${AppState.calcDiameter}" class="w-full h-12 px-3 rounded-lg bg-surface-container-low border border-[#e4e0d8] font-spec-numeral text-sm text-primary">
+                    <input id="studio-calc-diam" type="number" min="0.5" step="0.5" value="${AppState.calcDiameter}" class="w-full min-w-0 h-12 px-3 rounded-lg bg-surface-container-low border border-[#e4e0d8] font-spec-numeral text-sm text-primary">
                   </div>
                 ` : `
                   <div>
                     <label class="text-xs font-bold text-primary block mb-1" for="studio-calc-len">Length (cm)</label>
-                    <input id="studio-calc-len" type="number" min="0.5" step="0.5" value="${AppState.calcLength}" class="w-full h-12 px-3 rounded-lg bg-surface-container-low border border-[#e4e0d8] font-spec-numeral text-sm text-primary">
+                    <input id="studio-calc-len" type="number" min="0.5" step="0.5" value="${AppState.calcLength}" class="w-full min-w-0 h-12 px-3 rounded-lg bg-surface-container-low border border-[#e4e0d8] font-spec-numeral text-sm text-primary">
                   </div>
                   <div>
                     <label class="text-xs font-bold text-primary block mb-1" for="studio-calc-wid">Width (cm)</label>
-                    <input id="studio-calc-wid" type="number" min="0.5" step="0.5" value="${AppState.calcWidth}" class="w-full h-12 px-3 rounded-lg bg-surface-container-low border border-[#e4e0d8] font-spec-numeral text-sm text-primary">
+                    <input id="studio-calc-wid" type="number" min="0.5" step="0.5" value="${AppState.calcWidth}" class="w-full min-w-0 h-12 px-3 rounded-lg bg-surface-container-low border border-[#e4e0d8] font-spec-numeral text-sm text-primary">
                   </div>
                 `}
                 <div>
                   <label class="text-xs font-bold text-primary block mb-1" for="studio-calc-dep">Pour Depth (cm)</label>
-                  <input id="studio-calc-dep" type="number" min="0.1" step="0.1" value="${AppState.calcDepth}" class="w-full h-12 px-3 rounded-lg bg-surface-container-low border border-[#e4e0d8] font-spec-numeral text-sm text-primary">
+                  <input id="studio-calc-dep" type="number" min="0.1" step="0.1" value="${AppState.calcDepth}" class="w-full min-w-0 h-12 px-3 rounded-lg bg-surface-container-low border border-[#e4e0d8] font-spec-numeral text-sm text-primary">
                 </div>
                 <div>
                   <label class="text-xs font-bold text-primary block mb-1" for="studio-calc-sys">Ratio System</label>
-                  <select id="studio-calc-sys" class="w-full h-12 px-2.5 rounded-lg bg-surface-container-low border border-[#e4e0d8] font-spec-numeral text-xs font-bold text-primary">
+                  <select id="studio-calc-sys" class="w-full min-w-0 h-12 px-2.5 rounded-lg bg-surface-container-low border border-[#e4e0d8] font-spec-numeral text-xs font-bold text-primary">
                     <option value="3:1" ${AppState.calcSystem === '3:1' ? 'selected' : ''}>3:1 Casting</option>
                     <option value="2:1" ${AppState.calcSystem === '2:1' ? 'selected' : ''}>2:1 Deep Pour</option>
                     <option value="1:1" ${AppState.calcSystem === '1:1' ? 'selected' : ''}>1:1 Doming</option>
@@ -2008,18 +2008,18 @@
               </button>
             </div>
 
-            <div class="lg:col-span-5 p-4 rounded-xl bg-surface-container-low border border-[#e4e0d8] flex flex-col gap-3">
-              <div class="flex items-center justify-between">
+            <div class="lg:col-span-5 p-4 rounded-xl bg-surface-container-low border border-[#e4e0d8] flex flex-col gap-3 min-w-0">
+              <div class="flex items-center justify-between gap-2 flex-wrap">
                 <span class="text-xs font-bold uppercase tracking-wider text-secondary">Formulation Output</span>
                 <span class="font-spec-numeral text-xs font-bold text-primary">${esc(AppState.calcSystem)} by Weight</span>
               </div>
-              <p id="studio-calc-result" class="font-spec-numeral text-base sm:text-lg font-bold text-primary">
+              <p id="studio-calc-result" class="font-spec-numeral text-sm sm:text-base font-bold text-primary break-words">
                 ${calcRes.valid
                   ? `~${calcRes.totalGrams}g total (Part A: ${calcRes.partAGrams}g + Part B: ${calcRes.partBGrams}g)`
                   : 'Please enter positive dimensions (> 0 cm) to calculate resin mass.'}
               </p>
-              <div class="flex items-center justify-between pt-2 border-t border-[#e4e0d8] gap-2">
-                <div class="min-w-0">
+              <div class="flex flex-wrap sm:flex-nowrap items-center justify-between pt-2 border-t border-[#e4e0d8] gap-2">
+                <div class="min-w-0 flex-1">
                   <span class="text-[11px] text-on-surface-variant block">Recommended Kit:</span>
                   <span class="text-xs font-bold text-primary truncate block">${esc(recommendedProd ? recommendedProd.name : 'UltraClear 3:1 Casting Resin')}</span>
                 </div>
@@ -2143,24 +2143,24 @@
                 const effectiveUnit = Store.getEffectiveUnitPrice(item);
                 const isTierDiscounted = effectiveUnit < item.price;
                 return `
-                <div class="ram-card p-4 bg-white flex flex-col gap-3 min-w-0" data-cart-item-id="${esc(item.cartItemId)}">
-                  <div class="flex gap-3 sm:gap-4">
-                    <img src="${esc(item.image)}" alt="${esc(item.name)}" onclick="window.navigateTo('product', '${esc(item.productId)}')" class="w-20 h-20 sm:w-24 sm:h-24 rounded-xl object-cover bg-surface-container shrink-0 cursor-pointer border border-[#e4e0d8]">
+                <div class="ram-card p-3 sm:p-4 bg-white flex flex-col gap-3 min-w-0" data-cart-item-id="${esc(item.cartItemId)}">
+                  <div class="flex gap-2.5 sm:gap-4 min-w-0">
+                    <img src="${esc(item.image)}" alt="${esc(item.name)}" onclick="window.navigateTo('product', '${esc(item.productId)}')" class="w-16 h-16 sm:w-24 sm:h-24 rounded-xl object-cover bg-surface-container shrink-0 cursor-pointer border border-[#e4e0d8]">
                     <div class="flex-1 min-w-0 flex flex-col justify-between">
                       <div>
-                        <div class="flex items-start justify-between gap-2">
-                          <h2 onclick="window.navigateTo('product', '${esc(item.productId)}')" class="font-title-md text-sm sm:text-base text-primary font-bold line-clamp-2 cursor-pointer hover:text-secondary">${esc(item.name)}</h2>
+                        <div class="flex items-start justify-between gap-1.5">
+                          <h2 onclick="window.navigateTo('product', '${esc(item.productId)}')" class="font-title-md text-xs min-[360px]:text-sm sm:text-base text-primary font-bold line-clamp-2 cursor-pointer hover:text-secondary break-words">${esc(item.name)}</h2>
                           <button type="button" aria-label="Remove item" onclick="window.handleCartRemove('${esc(item.cartItemId)}')" class="w-11 h-11 rounded-lg text-on-surface-variant hover:text-error hover:bg-surface-container-low flex items-center justify-center shrink-0 cursor-pointer">
                             <span class="material-symbols-outlined text-lg" aria-hidden="true">close</span>
                           </button>
                         </div>
-                        <p class="text-xs text-on-surface-variant">${esc(item.variantLabel)} • SKU: ${esc(item.sku)}</p>
+                        <p class="text-xs text-on-surface-variant break-words">${esc(item.variantLabel)} • SKU: ${esc(item.sku)}</p>
                         ${item.customNote ? `<p class="text-[11px] text-[#9e3322] font-medium mt-1 break-anywhere">✨ Note: “${esc(item.customNote)}”</p>` : ''}
                       </div>
-                      <div class="flex flex-wrap items-baseline gap-2 mt-2">
-                        <span class="font-spec-numeral text-base font-bold text-primary" data-line-total="${effectiveUnit * item.qty}">${formatINR(effectiveUnit * item.qty)}</span>
-                        <span class="font-spec-numeral text-xs text-outline">(${formatINR(effectiveUnit)} / unit)</span>
-                        ${isTierDiscounted ? `<span class="px-2 py-0.5 rounded-full bg-secondary-container/60 text-secondary font-label-sm text-[10px] font-bold">Volume Tier Applied (was ${formatINR(item.price)}/u)</span>` : ''}
+                      <div class="flex flex-wrap items-baseline gap-1.5 sm:gap-2 mt-2">
+                        <span class="font-spec-numeral text-sm sm:text-base font-bold text-primary" data-line-total="${effectiveUnit * item.qty}">${formatINR(effectiveUnit * item.qty)}</span>
+                        <span class="font-spec-numeral text-[11px] sm:text-xs text-outline">(${formatINR(effectiveUnit)} / unit)</span>
+                        ${isTierDiscounted ? `<span class="px-2 py-0.5 rounded-full bg-secondary-container/60 text-secondary font-label-sm text-[10px] font-bold">Volume Tier Applied</span>` : ''}
                       </div>
                     </div>
                   </div>
@@ -2170,7 +2170,7 @@
                       <button type="button" aria-label="Decrease quantity" onclick="window.handleCartQty('${esc(item.cartItemId)}', -1)" class="w-11 h-11 rounded-md bg-white text-primary flex items-center justify-center font-bold hover:bg-surface-container cursor-pointer">
                         <span class="material-symbols-outlined text-sm" aria-hidden="true">remove</span>
                       </button>
-                      <span class="font-spec-numeral text-xs font-bold px-3.5 text-primary">${item.qty}</span>
+                      <span class="font-spec-numeral text-xs font-bold px-3 text-primary">${item.qty}</span>
                       <button type="button" aria-label="Increase quantity" onclick="window.handleCartQty('${esc(item.cartItemId)}', 1)" class="w-11 h-11 rounded-md bg-white text-primary flex items-center justify-center font-bold hover:bg-surface-container cursor-pointer">
                         <span class="material-symbols-outlined text-sm" aria-hidden="true">add</span>
                       </button>
@@ -2184,29 +2184,29 @@
               `;}).join('')}
 
               <!-- Pincode Dispatch Indicator Card -->
-              <div class="ram-card p-4 bg-white flex items-center justify-between gap-3">
-                <div class="flex items-center gap-3 min-w-0">
+              <div class="ram-card p-3.5 sm:p-4 bg-white flex flex-col min-[380px]:flex-row items-start min-[380px]:items-center justify-between gap-3 min-w-0">
+                <div class="flex items-center gap-3 min-w-0 flex-1">
                   <div class="w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center shrink-0">
                     <span class="material-symbols-outlined text-xl" aria-hidden="true">pin_drop</span>
                   </div>
-                  <div class="min-w-0">
-                    <p class="text-xs sm:text-sm font-bold text-primary">Delivering to PIN ${esc(pinInfo.pin)} (${esc(pinInfo.city)})</p>
-                    <p class="text-xs text-on-surface-variant">${esc(pinInfo.courier)} • Guaranteed in ${esc(pinInfo.days)}</p>
+                  <div class="min-w-0 flex-1">
+                    <p class="text-xs sm:text-sm font-bold text-primary truncate">Delivering to PIN ${esc(pinInfo.pin)} (${esc(pinInfo.city)})</p>
+                    <p class="text-xs text-on-surface-variant truncate">${esc(pinInfo.courier)} • Guaranteed in ${esc(pinInfo.days)}</p>
                   </div>
                 </div>
                 <button type="button" onclick="window.promptChangePincode()" class="min-h-[44px] px-3 rounded-lg text-xs font-bold text-secondary underline whitespace-nowrap shrink-0 cursor-pointer">Change PIN</button>
               </div>
 
               <!-- B2B GST Input Tax Credit (18%) Box -->
-              <div class="ram-card p-4 bg-white flex flex-col gap-3">
+              <div class="ram-card p-4 bg-white flex flex-col gap-3 min-w-0">
                 <label class="flex items-start gap-3 cursor-pointer min-h-[44px]">
                   <input type="checkbox" ${gstInfo.enabled ? 'checked' : ''} onchange="window.toggleGstClaim(this.checked)" class="mt-1 w-5 h-5 accent-primary rounded shrink-0">
-                  <div class="flex-1">
-                    <span class="text-sm font-bold text-primary flex items-center gap-1.5">
+                  <div class="flex-1 min-w-0">
+                    <span class="text-sm font-bold text-primary flex items-center gap-1.5 flex-wrap">
                       <span>Claim GST Input Tax Credit (18% ITC)</span>
                       <span class="material-symbols-outlined text-sm text-secondary" aria-hidden="true">verified_user</span>
                     </span>
-                    <p class="text-xs text-on-surface-variant">Receive an automated B2B tax invoice with HSN 39073010 for registered studios.</p>
+                    <p class="text-xs text-on-surface-variant break-words">Receive an automated B2B tax invoice with HSN 39073010 for registered studios.</p>
                   </div>
                 </label>
                 <div id="cart-gst-fields" class="${gstInfo.enabled ? 'grid' : 'hidden'} grid-cols-1 sm:grid-cols-2 gap-3 pt-2 border-t border-surface-container">
@@ -2223,11 +2223,11 @@
             </div>
 
             <!-- Right Column: Voucher + Single Unified Invoice Summary (5 cols) -->
-            <div class="lg:col-span-5 flex flex-col gap-4 sticky top-24">
+            <div class="lg:col-span-5 flex flex-col gap-4 sticky top-24 min-w-0">
               <!-- Voucher Box -->
-              <div class="ram-card p-4 bg-white flex flex-col gap-2.5">
+              <div class="ram-card p-4 bg-white flex flex-col gap-2.5 min-w-0">
                 <label for="cart-coupon-input" class="text-sm font-bold text-primary">Studio Voucher or Instagram Promo Code</label>
-                <form class="flex gap-2" onsubmit="event.preventDefault(); window.handleApplyCoupon();">
+                <form class="flex flex-col min-[360px]:flex-row gap-2" onsubmit="event.preventDefault(); window.handleApplyCoupon();">
                   <input id="cart-coupon-input" type="text" value="${esc(summary.couponCode || summary.savedCouponCode)}" placeholder="Enter code (e.g. KRAFTFIRST)" class="flex-1 min-w-0 h-12 px-3 rounded-lg bg-surface-container-low border border-[#e4e0d8] font-spec-numeral text-sm uppercase text-primary">
                   <button type="submit" class="px-5 h-12 rounded-lg bg-primary text-white text-xs font-bold shrink-0 cursor-pointer">APPLY</button>
                 </form>
@@ -2311,27 +2311,27 @@
       <div class="route-view-enter flex flex-col w-full max-w-7xl mx-auto px-4 sm:px-8 py-6 gap-6">
         <!-- Patron Profile Banner -->
         <div class="ram-card p-5 bg-white flex flex-col gap-4">
-          <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-            <div class="flex items-center gap-4 min-w-0">
-              <img src="${esc(Store.IMAGES.avatarPatron)}" alt="Patron Profile" class="w-16 h-16 rounded-full object-cover ring-2 ring-secondary shrink-0">
-              <div class="min-w-0">
-                <div class="flex flex-wrap items-center gap-2">
-                  <span class="px-2.5 py-0.5 rounded-full bg-secondary-container/60 text-on-secondary-container text-[10px] font-bold uppercase">${esc(profile.memberTier || 'Atelier Patron #4820')}</span>
-                  <span class="px-2.5 py-0.5 rounded-full bg-[#e8f5e9] text-[#266b4e] font-spec-numeral text-[10px] font-bold">${Number(profile.loyaltyPoints || 640)} Krafts Credits</span>
+          <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 min-w-0">
+            <div class="flex items-center gap-3 sm:gap-4 min-w-0 flex-1">
+              <img src="${esc(Store.IMAGES.avatarPatron)}" alt="Patron Profile" class="w-14 h-14 sm:w-16 sm:h-16 rounded-full object-cover ring-2 ring-secondary shrink-0">
+              <div class="min-w-0 flex-1">
+                <div class="flex flex-wrap items-center gap-1.5 sm:gap-2">
+                  <span class="px-2.5 py-0.5 rounded-full bg-secondary-container/60 text-on-secondary-container text-[10px] font-bold uppercase truncate">${esc(profile.memberTier || 'Atelier Patron #4820')}</span>
+                  <span class="px-2.5 py-0.5 rounded-full bg-[#e8f5e9] text-[#266b4e] font-spec-numeral text-[10px] font-bold shrink-0">${Number(profile.loyaltyPoints || 640)} Krafts Credits</span>
                 </div>
-                <h1 class="font-headline-sm text-xl sm:text-2xl text-primary font-bold mt-0.5 truncate">${esc(profile.name)} — Studio Account &amp; Order Tracker</h1>
-                <p class="text-xs text-on-surface-variant truncate">${esc(profile.phone)} • ${esc(profile.email)} • GSTIN: ${esc(gstInfo.gstin)}</p>
-                <p class="text-[11px] text-on-surface-variant truncate mt-0.5">📍 Default Dispatch: ${esc(profile.defaultAddress)}</p>
+                <h1 class="font-headline-sm text-base sm:text-2xl text-primary font-bold mt-0.5 break-words">${esc(profile.name)} — Studio Account &amp; Order Tracker</h1>
+                <p class="text-xs text-on-surface-variant break-words">${esc(profile.phone)} • ${esc(profile.email)} • GSTIN: ${esc(gstInfo.gstin)}</p>
+                <p class="text-[11px] text-on-surface-variant break-words mt-0.5">📍 Default Dispatch: ${esc(profile.defaultAddress)}</p>
               </div>
             </div>
-            <div class="flex flex-wrap items-center gap-2 shrink-0">
-              <button type="button" id="account-edit-profile-btn" onclick="window.toggleAccountProfileEdit()" class="min-h-[44px] px-4 py-2.5 rounded-xl bg-surface-container-low hover:bg-surface-container-high border border-[#e4e0d8] text-primary text-xs font-bold flex items-center gap-1.5 cursor-pointer">
+            <div class="flex flex-col min-[380px]:flex-row items-stretch min-[380px]:items-center gap-2 w-full sm:w-auto shrink-0">
+              <button type="button" id="account-edit-profile-btn" onclick="window.toggleAccountProfileEdit()" class="flex-1 min-[380px]:flex-initial min-h-[44px] px-3.5 sm:px-4 py-2.5 rounded-xl bg-surface-container-low hover:bg-surface-container-high border border-[#e4e0d8] text-primary text-xs font-bold flex items-center justify-center gap-1.5 cursor-pointer">
                 <span class="material-symbols-outlined text-base text-secondary" aria-hidden="true">edit</span>
-                <span>${AppState.editingAccountProfile ? 'Close Profile Editor' : 'Edit Profile & Address'}</span>
+                <span>${AppState.editingAccountProfile ? 'Close Editor' : 'Edit Profile & Address'}</span>
               </button>
-              <button type="button" onclick="window.navigateTo('custom-studio')" class="min-h-[44px] px-4 py-2.5 rounded-xl bg-[#9e3322] hover:opacity-95 text-white text-xs font-bold flex items-center gap-1.5 shadow-xs cursor-pointer">
+              <button type="button" onclick="window.navigateTo('custom-studio')" class="flex-1 min-[380px]:flex-initial min-h-[44px] px-4 py-2.5 rounded-xl bg-[#9e3322] hover:opacity-95 text-white text-xs font-bold flex items-center justify-center gap-1.5 shadow-xs cursor-pointer">
                 <span class="material-symbols-outlined text-base" aria-hidden="true">local_florist</span>
-                <span>New Varmala Booking</span>
+                <span>New Booking</span>
               </button>
             </div>
           </div>
@@ -3367,9 +3367,9 @@
   };
 
   // Programmatic Bridge Live Catalog / Social Drop Helper (Zero owner/admin UI strings)
-  window.simulateExternalAdminPush = function () {
+  window.simulateExternalStudioPush = function () {
     const newId = 'ram-lotus-drop-' + Math.floor(100 + Math.random() * 899);
-    Store.receiveAdminPush({
+    Store.receiveStudioPush({
       type: 'STUDIO_LIVE_DROP',
       summary: `Studio Edition "Rose-Gold Anniversary Lotus Clock (${newId})" + New Reel`,
       product: {
@@ -3433,10 +3433,12 @@
     window.showToast('New Atelier Edition Live!', 'Rose-Gold Lotus Clock added to catalogue & community feed');
   };
 
+  window.simulateExternalAdminPush = window.simulateExternalStudioPush;
+
   // Subscribe to StorefrontBridge programmatic events so external cross-tab / postMessage updates re-render live
   if (Store && typeof Store.subscribe === 'function') {
     Store.subscribe((event) => {
-      if (event === 'admin_push_received' || event === 'catalog_reset') {
+      if (event === 'studio_push_received' || event === 'admin_push_received' || event === 'catalog_reset') {
         renderActiveView();
         updateGlobalBadges();
       }

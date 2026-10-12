@@ -20,7 +20,7 @@
     QUIZ_PREF: 'ram_vk_quiz_pref_v1',
     PATRON_PROFILE: 'ram_vk_patron_profile_v1',
     RECENTLY_VIEWED: 'ram_vk_recently_viewed_v1',
-    HOST_PUSH_LOG: 'ram_vk_host_push_log_v1'
+    STUDIO_SYNC_LOG: 'ram_vk_studio_sync_v1'
   };
 
   // Verified studio & product photography from the Stitch archive
@@ -1431,10 +1431,10 @@
       return { success: true, order: newOrder };
     },
 
-    // External Studio Bridge Receiver (for the separate Owner/Admin website)
-    receiveAdminPush(payload) {
+    // External Studio Bridge Receiver for Live Catalogue Drops & Customer Order Updates
+    receiveStudioPush(payload) {
       if (!payload || typeof payload !== 'object') return { ok: false, error: 'Invalid payload' };
-      const log = safeRead(STORAGE_KEYS.HOST_PUSH_LOG, []);
+      const log = safeRead(STORAGE_KEYS.STUDIO_SYNC_LOG, []);
       const entry = {
         id: 'push_' + Date.now(),
         timestamp: new Date().toLocaleTimeString(),
@@ -1442,7 +1442,7 @@
         summary: payload.summary || 'Studio catalogue & order state updated'
       };
 
-      const targetProduct = payload.product || (payload.action === 'ADMIN_UPSERT_PRODUCT' ? payload.payload : null);
+      const targetProduct = payload.product || (payload.action === 'STUDIO_UPSERT_PRODUCT' || payload.action === 'ADMIN_UPSERT_PRODUCT' ? payload.payload : null);
       if (targetProduct && targetProduct.id) {
         const products = this.getProducts().slice();
         const normalizedProd = {
@@ -1456,7 +1456,7 @@
         safeWrite(STORAGE_KEYS.PRODUCTS, products);
       }
 
-      if (payload.action === 'ADMIN_UPDATE_PRICE_STOCK' && payload.payload && payload.payload.id) {
+      if ((payload.action === 'STUDIO_UPDATE_PRICE_STOCK' || payload.action === 'ADMIN_UPDATE_PRICE_STOCK') && payload.payload && payload.payload.id) {
         const products = this.getProducts().slice();
         const idx = products.findIndex(p => p.id === payload.payload.id);
         if (idx > -1) {
@@ -1465,7 +1465,7 @@
         }
       }
 
-      const targetOrder = payload.order || (payload.action === 'ADMIN_UPDATE_ORDER_STATUS' ? payload.payload : null);
+      const targetOrder = payload.order || (payload.action === 'STUDIO_UPDATE_ORDER_STATUS' || payload.action === 'ADMIN_UPDATE_ORDER_STATUS' ? payload.payload : null);
       if (targetOrder && targetOrder.orderId) {
         const orders = this.getOrders().slice();
         const idx = orders.findIndex(o => o.orderId === targetOrder.orderId);
@@ -1477,7 +1477,7 @@
         safeWrite(STORAGE_KEYS.ORDERS, orders);
       }
 
-      const targetPost = payload.socialPost || (payload.action === 'ADMIN_PUSH_SOCIAL_POST' ? payload.payload : null);
+      const targetPost = payload.socialPost || (payload.action === 'STUDIO_PUSH_SOCIAL_POST' || payload.action === 'ADMIN_PUSH_SOCIAL_POST' ? payload.payload : null);
       if (targetPost) {
         const posts = this.getSocialPosts().slice();
         posts.unshift(targetPost);
@@ -1485,16 +1485,24 @@
       }
 
       log.unshift(entry);
-      safeWrite(STORAGE_KEYS.HOST_PUSH_LOG, log.slice(0, 20));
-      backendConfig.adminHostBridge.lastSync = new Date().toISOString();
-      this.notify('admin_push_received', { entry, payload });
+      safeWrite(STORAGE_KEYS.STUDIO_SYNC_LOG, log.slice(0, 20));
+      this.notify('studio_push_received', { entry, payload });
       return { ok: true, entry };
     },
 
-    getHostPushLog() {
-      return safeRead(STORAGE_KEYS.HOST_PUSH_LOG, [
-        { id: 'push_init', timestamp: 'Just now', type: 'HOST_BRIDGE_READY', summary: 'Listening for Admin Host pushes & Supabase Realtime' }
+    // Backward compatibility alias for receiveStudioPush
+    receiveAdminPush(payload) {
+      return this.receiveStudioPush(payload);
+    },
+
+    getStudioSyncLog() {
+      return safeRead(STORAGE_KEYS.STUDIO_SYNC_LOG, [
+        { id: 'push_init', timestamp: 'Just now', type: 'STUDIO_SYNC_READY', summary: 'Listening for Studio catalogue updates & Realtime drops' }
       ]);
+    },
+
+    getHostPushLog() {
+      return this.getStudioSyncLog();
     },
 
     subscribe(fn) {
@@ -1509,17 +1517,17 @@
     }
   };
 
-  // Setup Cross-Window / BroadcastChannel Listener for External Admin Host Panel
+  // Setup Cross-Window / BroadcastChannel Listener for Live Studio Drops
   try {
     if (typeof BroadcastChannel !== 'undefined') {
-      const channel = new BroadcastChannel(backendConfig.adminHostBridge.channelName);
+      const channel = new BroadcastChannel('RAM_STUDIO_LIVE_DROP_CHANNEL');
       channel.onmessage = (ev) => {
-        if (ev && ev.data) Store.receiveAdminPush(ev.data);
+        if (ev && ev.data) Store.receiveStudioPush(ev.data);
       };
     }
     global.addEventListener('message', (ev) => {
-      if (ev && ev.data && ev.data.source === 'RAM_ADMIN_HOST') {
-        Store.receiveAdminPush(ev.data.payload);
+      if (ev && ev.data && (ev.data.source === 'RAM_STUDIO_BRIDGE' || ev.data.source === 'RAM_ADMIN_HOST')) {
+        Store.receiveStudioPush(ev.data.payload);
       }
     });
   } catch (e) {

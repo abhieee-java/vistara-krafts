@@ -1,0 +1,15 @@
+{
+  "name": "resin-art-memories-vistara-krafts",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite --port 3000 --host",
+    "build": "vite build",
+    "preview": "vite preview --port 3000",
+    "lint": "echo 'No lint specified'"
+  },
+  "devDependencies": {
+    "vite": "^5.4.11"
+  }
+}

@@ -59,31 +59,32 @@
       }
     };
   </script>
+  <link rel="stylesheet" href="./tokens.css">
   <link rel="stylesheet" href="./styles.css">
 </head>
 <body class="bg-surface text-on-surface flex flex-col min-h-screen">
 
   <!-- Top Pan-India Logistics & @resin.art.memories Social Ribbon -->
-  <header class="sticky top-0 w-full z-40 bg-surface/95 backdrop-blur-xl border-b border-[#e4e0d8] shadow-2xs">
+  <header class="sticky top-0 w-full z-40 bg-surface/95 backdrop-blur-xl border-b border-[#e4e0d8] shadow-2xs max-w-full overflow-x-clip">
     <aside aria-label="Studio Highlights" class="bg-tertiary text-on-tertiary px-3 sm:px-4 py-1.5 text-center text-[11px] font-label-sm tracking-wide flex items-center justify-start sm:justify-center gap-2 overflow-x-auto no-scrollbar whitespace-nowrap">
       <span class="w-1.5 h-1.5 rounded-full bg-[#ffdeae] animate-pulse shrink-0"></span>
       <span><strong>@resin.art.memories</strong> × <strong>Vistāra Studio</strong> • 24h Bridal Varmala Pickup • Free Express Shipping above ₹1,499 • 18% GST ITC</span>
       <span class="w-1.5 h-1.5 rounded-full bg-secondary-fixed shrink-0"></span>
     </aside>
 
-    <div class="max-w-7xl mx-auto h-16 px-2.5 sm:px-6 lg:px-8 flex items-center justify-between gap-2">
+    <div class="max-w-7xl mx-auto h-16 px-2 sm:px-6 lg:px-8 flex items-center justify-between gap-1 sm:gap-2 max-w-full">
       <!-- Brand Identity -->
-      <div class="flex items-center gap-1.5 sm:gap-2.5 shrink-0 min-w-0">
+      <div class="flex items-center gap-1 sm:gap-2 shrink min-w-0 overflow-hidden">
         <button type="button" aria-label="Open Navigation Menu" onclick="window.openModalById('mobile-menu-drawer')" class="lg:hidden w-11 h-11 rounded-lg flex items-center justify-center text-primary hover:bg-surface-container shrink-0 cursor-pointer">
           <span class="material-symbols-outlined text-2xl" aria-hidden="true">menu</span>
         </button>
-        <a href="#/home" class="flex items-center gap-2 sm:gap-2.5 group shrink-0 min-h-[44px] py-1">
+        <a href="#/home" class="flex items-center gap-1.5 sm:gap-2.5 group shrink min-w-0 min-h-[44px] py-1 overflow-hidden">
           <span class="w-8 h-8 sm:w-9 sm:h-9 rounded-lg overflow-hidden shrink-0 border border-[#e4e0d8] bg-primary flex items-center justify-center shadow-2xs">
             <img src="https://lh3.googleusercontent.com/aida/AEtjO1XwbkteHjhFQi2vrA9Q0AwFl6bgZQDb_jrAypU8osoK2jatxpyuNMMYKgfoBCoOiiB6jFCjw3mtHHBe1NkE1hFOema8o-BFjtzFNZ9L7WB60y9lqMWADNSqqStnv00rvJBcxud5MxrBcTKFBwqzL5aS-8R0yKlBdXawPwlpNFzi_xQ8Cl8k4ViWaV2I8clzCHBXn9JbL0jn_qtNv7D-JIBC31lwBX5KSO0Wyd0rjwQA-OHixGekj2xVdN8L" alt="Resin Art Memories × Vistāra Logo" class="w-full h-full object-cover object-left">
           </span>
-          <div class="flex flex-col">
-            <span class="font-headline-sm text-[13px] min-[375px]:text-sm sm:text-base xl:text-lg text-primary font-bold tracking-tight leading-tight whitespace-nowrap">Resin Art Memories</span>
-            <span class="text-[9px] sm:text-[10px] uppercase tracking-wider sm:tracking-widest text-[#9e3322] font-bold leading-tight whitespace-nowrap">× Vistāra Krafts Studio</span>
+          <div class="flex flex-col min-w-0 shrink overflow-hidden">
+            <span class="font-headline-sm text-xs min-[360px]:text-sm sm:text-base xl:text-lg text-primary font-bold tracking-tight leading-tight truncate">Resin Art Memories</span>
+            <span class="text-[8px] min-[360px]:text-[9px] sm:text-[10px] uppercase tracking-wider text-[#9e3322] font-bold leading-tight truncate">× Vistāra Krafts Studio</span>
           </div>
         </a>
       </div>
@@ -110,27 +111,27 @@
       </nav>
 
       <!-- Right Action Icons -->
-      <div class="flex items-center gap-0.5 sm:gap-1.5 shrink-0">
-        <button type="button" onclick="window.promptChangePincode()" class="hidden sm:flex lg:hidden xl:flex items-center gap-1 min-h-[44px] px-2.5 rounded-lg bg-surface-container-low border border-[#e4e0d8] text-xs font-spec-numeral text-primary hover:border-secondary cursor-pointer" title="Change Delivery PIN" aria-label="Change Delivery PIN 560001">
+      <div class="flex items-center gap-0.5 sm:gap-1.5 shrink-0 flex-nowrap">
+        <button type="button" onclick="window.promptChangePincode()" class="hidden sm:flex lg:hidden xl:flex items-center gap-1 min-h-[44px] px-2.5 rounded-lg bg-surface-container-low border border-[#e4e0d8] text-xs font-spec-numeral text-primary hover:border-secondary cursor-pointer shrink-0" title="Change Delivery PIN" aria-label="Change Delivery PIN 560001">
           <span class="material-symbols-outlined text-sm text-secondary" aria-hidden="true">location_on</span>
           <span class="js-header-pin font-semibold">560001</span>
         </button>
 
-        <button type="button" aria-label="Search Catalogue" onclick="window.navigateTo('catalog', 'all'); setTimeout(() => document.getElementById('catalog-search-input')?.focus(), 120);" class="hidden min-[360px]:flex w-11 h-11 rounded-lg items-center justify-center text-primary hover:bg-surface-container cursor-pointer">
+        <button type="button" aria-label="Search Catalogue" onclick="window.navigateTo('catalog', 'all'); setTimeout(() => document.getElementById('catalog-search-input')?.focus(), 120);" class="hidden min-[380px]:flex w-11 h-11 rounded-lg items-center justify-center text-primary hover:bg-surface-container cursor-pointer shrink-0">
           <span class="material-symbols-outlined text-[22px]" aria-hidden="true">search</span>
         </button>
 
-        <button type="button" aria-label="Saved Wishlist" onclick="window.navigateTo('wishlist')" class="relative w-11 h-11 rounded-lg flex items-center justify-center text-primary hover:bg-surface-container cursor-pointer">
+        <button type="button" aria-label="Saved Wishlist" onclick="window.navigateTo('wishlist')" class="relative w-11 h-11 rounded-lg flex items-center justify-center text-primary hover:bg-surface-container cursor-pointer shrink-0">
           <span class="material-symbols-outlined text-[22px]" aria-hidden="true">favorite</span>
           <span class="js-wishlist-badge absolute top-1.5 right-1.5 min-w-[16px] h-4 px-1 bg-[#9e3322] text-white rounded-full font-spec-numeral text-[10px] font-bold flex items-center justify-center">3</span>
         </button>
 
-        <button type="button" aria-label="View Studio Bag" onclick="window.navigateTo('cart')" class="relative w-11 h-11 rounded-lg flex items-center justify-center text-primary hover:bg-surface-container cursor-pointer">
+        <button type="button" aria-label="View Studio Bag" onclick="window.navigateTo('cart')" class="relative w-11 h-11 rounded-lg flex items-center justify-center text-primary hover:bg-surface-container cursor-pointer shrink-0">
           <span class="material-symbols-outlined text-[22px]" aria-hidden="true">shopping_bag</span>
           <span class="js-cart-badge absolute top-1.5 right-1.5 min-w-[16px] h-4 px-1 bg-primary text-on-primary rounded-full font-spec-numeral text-[10px] font-bold flex items-center justify-center">2</span>
         </button>
 
-        <button type="button" aria-label="Patron Account" onclick="window.navigateTo('account')" class="hidden min-[480px]:flex w-11 h-11 rounded-lg items-center justify-center cursor-pointer">
+        <button type="button" aria-label="Patron Account" onclick="window.navigateTo('account')" class="hidden min-[480px]:flex w-11 h-11 rounded-lg items-center justify-center cursor-pointer shrink-0">
           <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuBEfH5pmgXdOI0mnnN25k9DHn4iZNDO6wW_YERKWNba2tdwUuopMefjulnjWQYyOtpO5PbWkiW9CmteZIRsPaPSZtGU_1WhgAGSj2NWg7e-8uCvKEkCHAWRLBPtIQYKdVhEDObJsA5letw3AbZTj1f26XSfoItEh4s-fkfu0rzR5lKs8brHwg-aa_t4YvHAzr7zuSxFyPvlwlBRY3wtWrTwqKk9Bpf3wOErpjYhoS0BYtQqpSjFGEvDig" alt="Patron Profile" class="w-8 h-8 rounded-full object-cover ring-1 ring-secondary">
         </button>
       </div>
@@ -174,7 +175,7 @@
         <div class="flex flex-col gap-2.5 text-xs">
           <h2 class="font-headline-sm text-sm font-bold text-primary uppercase tracking-wider">Join the Atelier Circle</h2>
           <p class="text-on-surface-variant">Get ₹150 off with code <strong>KRAFTFIRST</strong> and early access to bridal preservation slots.</p>
-          <form class="flex gap-1.5 w-full" onsubmit="event.preventDefault(); window.showToast('Subscribed to Atelier Notes!', 'Welcome code KRAFTFIRST unlocked');">
+          <form class="flex flex-col min-[380px]:flex-row gap-1.5 w-full" onsubmit="event.preventDefault(); window.showToast('Subscribed to Atelier Notes!', 'Welcome code KRAFTFIRST unlocked');">
             <label for="footer-newsletter-email" class="sr-only">Email address for Atelier Circle newsletter</label>
             <input id="footer-newsletter-email" type="email" required placeholder="Your email address" aria-label="Email address for Atelier Circle newsletter" class="min-w-0 flex-1 h-12 px-3 rounded-xl bg-white border border-[#e4e0d8] text-xs">
             <button type="submit" class="px-4 h-12 min-w-[60px] rounded-xl bg-primary text-white text-xs font-semibold cursor-pointer shrink-0">Join</button>
@@ -183,34 +184,34 @@
       </div>
 
       <div class="pt-6 border-t border-[#e4e0d8] flex flex-wrap items-center justify-between gap-3 text-xs text-on-surface-variant">
-        <span>© 2026 Resin Art Memories (@resin.art.memories) × Vistāra Krafts Studio. All rights reserved.</span>
-        <span class="font-spec-numeral">ISO 9001:2015 Certified • 100% Encrypted Razorpay Checkout • Insured Pan-India Air Transit</span>
+        <span class="break-words">© 2026 Resin Art Memories (@resin.art.memories) × Vistāra Krafts Studio. All rights reserved.</span>
+        <span class="font-spec-numeral break-words">ISO 9001:2015 Certified • 100% Encrypted Razorpay Checkout • Insured Pan-India Air Transit</span>
       </div>
     </div>
   </footer>
 
   <!-- Mobile Fixed Bottom Tab Navigation Bar -->
-  <nav aria-label="Mobile Bottom Navigation" class="lg:hidden fixed bottom-0 inset-x-0 z-40 pb-safe bg-white/95 backdrop-blur-xl border-t border-[#e4e0d8] shadow-[0_-2px_12px_rgba(3,26,56,0.06)]">
-    <div class="flex justify-around items-center h-16 px-1">
-      <button type="button" data-nav-route="home" onclick="window.navigateTo('home')" class="bottom-tab-item flex flex-col items-center justify-center min-w-[56px] h-12 text-primary font-bold cursor-pointer">
+  <nav aria-label="Mobile Bottom Navigation" class="lg:hidden fixed bottom-0 inset-x-0 z-40 pb-safe bg-white/95 backdrop-blur-xl border-t border-[#e4e0d8] shadow-[0_-2px_12px_rgba(3,26,56,0.06)] max-w-full overflow-x-clip">
+    <div class="flex justify-around items-center h-16 px-1 max-w-full">
+      <button type="button" data-nav-route="home" onclick="window.navigateTo('home')" class="bottom-tab-item flex-1 min-w-0 max-w-[72px] flex flex-col items-center justify-center h-12 text-primary font-bold cursor-pointer">
         <span class="material-symbols-outlined text-[22px]" aria-hidden="true">storefront</span>
-        <span class="text-[10px] mt-0.5">Home</span>
+        <span class="text-[10px] mt-0.5 truncate max-w-full px-0.5">Home</span>
       </button>
-      <button type="button" data-nav-route="catalog" onclick="window.navigateTo('catalog', 'all')" class="bottom-tab-item flex flex-col items-center justify-center min-w-[56px] h-12 text-on-surface-variant cursor-pointer">
+      <button type="button" data-nav-route="catalog" onclick="window.navigateTo('catalog', 'all')" class="bottom-tab-item flex-1 min-w-0 max-w-[72px] flex flex-col items-center justify-center h-12 text-on-surface-variant cursor-pointer">
         <span class="material-symbols-outlined text-[22px]" aria-hidden="true">grid_view</span>
-        <span class="text-[10px] mt-0.5">Catalogue</span>
+        <span class="text-[10px] mt-0.5 truncate max-w-full px-0.5">Catalogue</span>
       </button>
-      <button type="button" data-nav-route="custom-studio" onclick="window.navigateTo('custom-studio')" class="bottom-tab-item flex flex-col items-center justify-center min-w-[56px] h-12 text-on-surface-variant cursor-pointer">
+      <button type="button" data-nav-route="custom-studio" onclick="window.navigateTo('custom-studio')" class="bottom-tab-item flex-1 min-w-0 max-w-[72px] flex flex-col items-center justify-center h-12 text-on-surface-variant cursor-pointer">
         <span class="material-symbols-outlined text-[22px] text-[#9e3322]" aria-hidden="true">auto_awesome</span>
-        <span class="text-[10px] mt-0.5">Custom</span>
+        <span class="text-[10px] mt-0.5 truncate max-w-full px-0.5">Custom</span>
       </button>
-      <button type="button" data-nav-route="social" onclick="window.navigateTo('social')" class="bottom-tab-item flex flex-col items-center justify-center min-w-[56px] h-12 text-on-surface-variant cursor-pointer">
+      <button type="button" data-nav-route="social" onclick="window.navigateTo('social')" class="bottom-tab-item flex-1 min-w-0 max-w-[72px] flex flex-col items-center justify-center h-12 text-on-surface-variant cursor-pointer">
         <span class="material-symbols-outlined text-[22px]" aria-hidden="true">photo_camera</span>
-        <span class="text-[10px] mt-0.5">Social IG</span>
+        <span class="text-[10px] mt-0.5 truncate max-w-full px-0.5">Social IG</span>
       </button>
-      <button type="button" data-nav-route="cart" onclick="window.navigateTo('cart')" class="bottom-tab-item relative flex flex-col items-center justify-center min-w-[56px] h-12 text-on-surface-variant cursor-pointer">
+      <button type="button" data-nav-route="cart" onclick="window.navigateTo('cart')" class="bottom-tab-item relative flex-1 min-w-0 max-w-[72px] flex flex-col items-center justify-center h-12 text-on-surface-variant cursor-pointer">
         <span class="material-symbols-outlined text-[22px]" aria-hidden="true">shopping_bag</span>
-        <span class="text-[10px] mt-0.5">Bag</span>
+        <span class="text-[10px] mt-0.5 truncate max-w-full px-0.5">Bag</span>
       </button>
     </div>
   </nav>
@@ -274,7 +275,7 @@
 
   <!-- 2. Technical Filter Drawer -->
   <div id="global-filter-drawer" role="dialog" aria-modal="true" aria-labelledby="filter-drawer-title" class="fixed inset-0 z-50 bg-primary/50 backdrop-blur-xs hidden flex items-end sm:items-center justify-center p-0 sm:p-4" onclick="window.toggleCatalogFilterDrawer(false)">
-    <div class="w-full max-w-lg bg-surface rounded-t-2xl sm:rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90dvh]" onclick="event.stopPropagation()">
+    <div class="w-full max-w-lg max-w-[calc(100vw-24px)] bg-surface rounded-t-2xl sm:rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90dvh]" onclick="event.stopPropagation()">
       <div class="p-4 bg-surface-container-low flex items-center justify-between gap-2 border-b border-[#e4e0d8] shrink-0">
         <div class="flex items-center gap-2 min-w-0">
           <span class="material-symbols-outlined text-secondary shrink-0" aria-hidden="true">tune</span>
@@ -284,10 +285,10 @@
           <span class="material-symbols-outlined text-lg" aria-hidden="true">close</span>
         </button>
       </div>
-      <div class="p-5 overflow-y-auto space-y-5">
+      <div class="p-4 sm:p-5 overflow-y-auto space-y-5">
         <div>
           <span class="block text-xs font-bold text-primary uppercase tracking-wider mb-2">Mix Ratio by Weight / System</span>
-          <div class="grid grid-cols-5 gap-2">
+          <div class="grid grid-cols-3 min-[380px]:grid-cols-5 gap-1.5 sm:gap-2">
             <button type="button" onclick="window.setCatalogRatio('all')" class="min-h-[44px] py-2 rounded-lg bg-primary text-white text-xs font-semibold cursor-pointer">All</button>
             <button type="button" onclick="window.setCatalogRatio('3:1')" class="min-h-[44px] py-2 rounded-lg bg-surface-container-high text-primary font-spec-numeral text-xs font-bold cursor-pointer">3:1</button>
             <button type="button" onclick="window.setCatalogRatio('2:1')" class="min-h-[44px] py-2 rounded-lg bg-surface-container-high text-primary font-spec-numeral text-xs font-bold cursor-pointer">2:1</button>
@@ -312,7 +313,7 @@
 
   <!-- 3. Instagram Story Viewer Modal -->
   <div id="story-viewer-modal" role="dialog" aria-modal="true" aria-labelledby="story-modal-title" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden flex items-center justify-center p-3 sm:p-4" onclick="window.closeStoryModal()">
-    <div class="relative w-full max-w-sm max-h-[90dvh] overflow-y-auto rounded-2xl bg-primary text-white shadow-2xl border border-white/15 flex flex-col" onclick="event.stopPropagation()">
+    <div class="relative w-full max-w-sm max-w-[calc(100vw-24px)] max-h-[90dvh] overflow-y-auto rounded-2xl bg-primary text-white shadow-2xl border border-white/15 flex flex-col" onclick="event.stopPropagation()">
       <div class="p-3 flex items-center justify-between gap-2 bg-black/40 shrink-0">
         <div class="flex items-center gap-2 min-w-0">
           <span class="w-2.5 h-2.5 rounded-full bg-[#ffdeae] shrink-0"></span>
@@ -337,7 +338,7 @@
 
   <!-- 4. Lightbox Image Zoom Modal -->
   <div id="lightbox-modal" role="dialog" aria-modal="true" aria-labelledby="lightbox-caption" class="fixed inset-0 z-50 bg-black/85 hidden flex flex-col items-center justify-center p-3 sm:p-4" onclick="window.closeModalById('lightbox-modal')">
-    <div class="max-w-2xl w-full max-h-[90dvh] overflow-y-auto bg-white rounded-2xl shadow-2xl flex flex-col" onclick="event.stopPropagation()">
+    <div class="max-w-2xl w-full max-w-[calc(100vw-24px)] max-h-[90dvh] overflow-y-auto bg-white rounded-2xl shadow-2xl flex flex-col" onclick="event.stopPropagation()">
       <div class="p-3 bg-surface-container-low flex items-center justify-between gap-2 shrink-0">
         <span id="lightbox-caption" class="text-xs font-bold text-primary truncate min-w-0"></span>
         <button type="button" aria-label="Close Image Zoom" onclick="window.closeModalById('lightbox-modal')" class="w-11 h-11 rounded-full bg-white flex items-center justify-center shrink-0 cursor-pointer">
@@ -350,7 +351,7 @@
 
   <!-- 5. TDS / SDS / Wholesale Spec Sheet Modal -->
   <div id="tds-spec-modal" role="dialog" aria-modal="true" aria-labelledby="tds-modal-title" class="fixed inset-0 z-50 bg-primary/50 backdrop-blur-xs hidden flex items-center justify-center p-3 sm:p-4" onclick="window.closeModalById('tds-spec-modal')">
-    <div class="w-full max-w-md max-h-[90dvh] overflow-y-auto bg-white rounded-2xl p-5 shadow-2xl flex flex-col gap-4" onclick="event.stopPropagation()">
+    <div class="w-full max-w-md max-w-[calc(100vw-24px)] max-h-[90dvh] overflow-y-auto bg-white rounded-2xl p-4 sm:p-5 shadow-2xl flex flex-col gap-4" onclick="event.stopPropagation()">
       <div class="flex items-center justify-between gap-2 border-b border-surface-container pb-3 shrink-0">
         <h3 id="tds-modal-title" class="font-headline-sm text-base text-primary font-bold min-w-0">Technical Documentation</h3>
         <button type="button" aria-label="Close Documentation Modal" onclick="window.closeModalById('tds-spec-modal')" class="w-11 h-11 rounded-full bg-surface-container-low flex items-center justify-center shrink-0 cursor-pointer">
@@ -364,7 +365,7 @@
 
   <!-- 6. Share Your Resin Memory Modal -->
   <div id="share-memory-modal" role="dialog" aria-modal="true" aria-labelledby="share-memory-title" class="fixed inset-0 z-50 bg-primary/50 backdrop-blur-xs hidden flex items-center justify-center p-3 sm:p-4" onclick="window.closeModalById('share-memory-modal')">
-    <form onsubmit="window.submitShareMemoryForm(event)" class="w-full max-w-md max-h-[90dvh] overflow-y-auto bg-white rounded-2xl p-5 shadow-2xl flex flex-col gap-3" onclick="event.stopPropagation()">
+    <form onsubmit="window.submitShareMemoryForm(event)" class="w-full max-w-md max-w-[calc(100vw-24px)] max-h-[90dvh] overflow-y-auto bg-white rounded-2xl p-4 sm:p-5 shadow-2xl flex flex-col gap-3" onclick="event.stopPropagation()">
       <div class="flex items-center justify-between gap-2 border-b border-surface-container pb-2.5 shrink-0">
         <div class="min-w-0">
           <span class="text-[10px] uppercase tracking-wider text-[#9e3322] font-bold block">@resin.art.memories Community</span>
@@ -412,7 +413,7 @@
 
   <!-- 7. Multi-Step Razorpay Checkout Modal -->
   <div id="checkout-modal" role="dialog" aria-modal="true" aria-labelledby="checkout-modal-title" class="fixed inset-0 z-50 bg-primary/60 backdrop-blur-xs hidden flex items-center justify-center p-3 sm:p-4" onclick="window.closeModalById('checkout-modal')">
-    <form onsubmit="window.submitCheckoutOrder(event)" class="w-full max-w-md max-h-[90dvh] overflow-y-auto bg-white rounded-2xl p-5 shadow-2xl flex flex-col gap-3" onclick="event.stopPropagation()">
+    <form onsubmit="window.submitCheckoutOrder(event)" class="w-full max-w-md max-w-[calc(100vw-24px)] max-h-[90dvh] overflow-y-auto bg-white rounded-2xl p-4 sm:p-5 shadow-2xl flex flex-col gap-3" onclick="event.stopPropagation()">
       <div class="flex items-center justify-between gap-2 border-b border-surface-container pb-2.5 shrink-0">
         <div class="min-w-0">
           <span class="text-[10px] uppercase tracking-wider text-secondary font-bold block">Razorpay Verified Checkout</span>
@@ -460,7 +461,7 @@
 
   <!-- 8. Change Pincode Modal -->
   <div id="global-pincode-modal" role="dialog" aria-modal="true" aria-labelledby="pincode-modal-title" class="fixed inset-0 z-50 bg-primary/50 backdrop-blur-xs hidden flex items-center justify-center p-3 sm:p-4" onclick="window.closeModalById('global-pincode-modal')">
-    <div class="w-full max-w-sm max-h-[90dvh] overflow-y-auto bg-white rounded-2xl p-5 shadow-2xl flex flex-col gap-3.5" onclick="event.stopPropagation()">
+    <div class="w-full max-w-sm max-w-[calc(100vw-24px)] max-h-[90dvh] overflow-y-auto bg-white rounded-2xl p-4 sm:p-5 shadow-2xl flex flex-col gap-3.5" onclick="event.stopPropagation()">
       <div class="flex items-center justify-between gap-2 shrink-0">
         <h3 id="pincode-modal-title" class="font-headline-sm text-base text-primary font-bold min-w-0">Verify Indian PIN Code</h3>
         <button type="button" aria-label="Close PIN Code Modal" onclick="window.closeModalById('global-pincode-modal')" class="w-11 h-11 rounded-full bg-surface-container-low flex items-center justify-center shrink-0 cursor-pointer">

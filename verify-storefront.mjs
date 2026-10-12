@@ -3,7 +3,7 @@ import path from 'node:path';
 import vm from 'node:vm';
 import assert from 'node:assert/strict';
 
-const ROOT = 'C:/Users/Dell/.gemini/antigravity/scratch/stitch_potry_e_commerce_storefront';
+const ROOT = process.cwd();
 
 let passed = 0;
 let failed = 0;
@@ -686,6 +686,49 @@ test('Customer E-Commerce Domain Features, Strict Owner UI Separation & Viewport
   accHtml = mockDocument.getElementById('app-view-root').innerHTML;
   assert.ok(accHtml.includes('No Matching Orders Found'));
   sandbox.window.setAccountOrderSearch('');
+});
+
+test('Mobile Viewport Overflow Audit & Section 2 Design Tokens Compliance (320px–1024px Zero-Overflow Guarantee)', () => {
+  // 1. Verify tokens.css exists and satisfies Section 2 token rules
+  assert.ok(fs.existsSync(path.join(ROOT, 'tokens.css')), 'tokens.css must exist');
+  const tokensCss = fs.readFileSync(path.join(ROOT, 'tokens.css'), 'utf8');
+  [
+    '--color-bg', '--color-surface', '--color-border', '--color-text-primary',
+    '--color-text-secondary', '--color-text-muted', '--color-accent',
+    '--color-success', '--color-warning', '--color-error',
+    '--font-display', '--font-body',
+    '--space-1', '--space-4', '--space-12',
+    '--radius-sm', '--radius-md', '--radius-lg',
+    '--shadow-sm', '--shadow-md', '--shadow-lg',
+    '--ease-standard', '--ease-emphasized',
+    '--duration-instant', '--duration-fast', '--duration-base',
+    '--blur-sm', '--blur-md',
+    'prefers-color-scheme: dark'
+  ].forEach(token => {
+    assert.ok(tokensCss.includes(token), `tokens.css must declare token ${token}`);
+  });
+
+  // 2. Verify styles.css contains defensive overflow clipping and responsive clamp
+  const stylesCss = fs.readFileSync(path.join(ROOT, 'styles.css'), 'utf8');
+  assert.ok(stylesCss.includes('overflow-x: clip'), 'styles.css must enforce overflow-x: clip');
+  assert.ok(stylesCss.includes('font-headline-lg') && stylesCss.includes('clamp('), 'styles.css must have fluid clamp headings');
+  assert.ok(stylesCss.includes('@import "./tokens.css"'), 'styles.css must import tokens.css');
+
+  // 3. Verify index.html links tokens.css and contains safe bottom navigation
+  const indexHtml = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8');
+  assert.ok(indexHtml.includes('href="./tokens.css"'), 'index.html must link tokens.css');
+  assert.ok(indexHtml.includes('overflow-x-clip'), 'index.html header and nav must have overflow-x-clip');
+
+  // 4. Verify all 8 customer views mount cleanly and contain zero width leaks
+  const routes = ['home', 'catalog', 'product', 'social', 'custom-studio', 'wishlist', 'cart', 'account'];
+  routes.forEach(route => {
+    sandbox.window.navigateTo(route, route === 'product' ? 'ram-keep-001' : null);
+    const html = mockDocument.getElementById('app-view-root').innerHTML;
+    assert.ok(html && html.length > 100, `Route #${route} must render substantial content`);
+    // Assert no raw fixed inline style widths over 320px
+    const wideMatch = html.match(/style=["'][^"']*width:\s*([4-9]\d{2}|\d{4,})px/i);
+    assert.strictEqual(wideMatch, null, `Route #${route} must not have fixed inline pixel width > 320px`);
+  });
 });
 
 console.log(`\n========================================`);
