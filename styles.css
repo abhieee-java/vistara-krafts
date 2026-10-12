@@ -111,7 +111,30 @@ h1, h2, h3, .font-serif-editorial, .font-serif {
 }
 
 p {
-  max-width: 68ch;
+  max-width: 65ch;
+  text-wrap: pretty;
+  overflow-wrap: break-word;
+}
+
+.break-anywhere {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.pb-safe {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+.pt-safe {
+  padding-top: env(safe-area-inset-top, 0px);
+}
+
+button:disabled,
+input:disabled,
+select:disabled,
+textarea:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
 }
 
 /* Hide scrollbars on horizontal rails while keeping scrollability */

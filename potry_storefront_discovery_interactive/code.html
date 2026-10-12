@@ -7,7 +7,7 @@
 <title>Shop Discover — POTRY</title>
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&amp;family=amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <script id="tailwind-config">
@@ -71,18 +71,18 @@
             full: "0.75rem"
           },
           fontFamily: {
-            "body-lg": ["Plus Jakarta Sans"],
-            "price-lg": ["Plus Jakarta Sans"],
+            "body-lg": ["Work Sans"],
+            "price-lg": ["Work Sans"],
             "headline-md": ["Playfair Display"],
-            "body-md": ["Plus Jakarta Sans"],
-            "price-sm": ["Plus Jakarta Sans"],
+            "body-md": ["Work Sans"],
+            "price-sm": ["Work Sans"],
             "headline-lg": ["Playfair Display"],
             "display-hero-mobile": ["Playfair Display"],
-            "label-md": ["Plus Jakarta Sans"],
+            "label-md": ["Work Sans"],
             "headline-lg-mobile": ["Playfair Display"],
             "headline-sm": ["Playfair Display"],
-            "label-caps": ["Plus Jakarta Sans"],
-            "body-sm": ["Plus Jakarta Sans"],
+            "label-caps": ["Work Sans"],
+            "body-sm": ["Work Sans"],
             "display-hero": ["Playfair Display"]
           }
         }
@@ -114,6 +114,8 @@
       animation: pulseBadge 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
     }
   </style>
+<link rel="stylesheet" href="../styles.css">
+<style id="stitch-qa-fixes">button, [role="button"], input:not([type="checkbox"]):not([type="radio"]), select { min-height: 44px; min-width: 44px; flex-shrink: 0; } a { min-height: 44px; min-width: 44px; display: inline-flex; align-items: center; } label:has(input[type="checkbox"]), label:has(input[type="radio"]) { min-height: 44px; display: inline-flex; align-items: center; } input[type="checkbox"], input[type="radio"] { width: 20px; height: 20px; }</style>
 </head>
 <body class="bg-surface font-body-md text-on-surface flex flex-col min-h-screen relative antialiased selection:bg-secondary-fixed selection:text-secondary">
 <!-- TOP HEADER (Fixed with proper z-index) -->
@@ -125,11 +127,11 @@
 <div class="flex items-center gap-0.5 shrink-0">
 <!-- Hamburger Menu Button -->
 <button aria-label="Open Navigation Menu" class="w-11 h-11 flex items-center justify-center text-on-surface hover:text-secondary active:scale-95 transition-all" id="menu-btn" onclick="toggleNavDrawer(true)" type="button">
-<span class="material-symbols-outlined text-[24px]">menu</span>
+<span class="material-symbols-outlined text-[24px]" aria-hidden="true">menu</span>
 </button>
 <!-- Search Button -->
 <button aria-label="Search Catalogue" class="w-11 h-11 flex items-center justify-center text-on-surface hover:text-secondary active:scale-95 transition-all" id="search-btn" onclick="toggleSearchModal(true)" type="button">
-<span class="material-symbols-outlined text-[23px]">search</span>
+<span class="material-symbols-outlined text-[23px]" aria-hidden="true">search</span>
 </button>
 </div>
 <!-- Wordmark Logo -->
@@ -142,17 +144,17 @@
 <!-- Action Icons -->
 <div class="flex items-center justify-end gap-1 shrink-0">
 <button aria-label="Deliver to Postal Code" class="hidden sm:flex items-center gap-1 h-8 px-2.5 rounded-lg bg-surface-container text-on-surface-variant hover:text-primary transition-colors text-xs font-semibold" onclick="openPostalModal()" type="button">
-<span class="material-symbols-outlined text-[15px]">location_on</span>
+<span class="material-symbols-outlined text-[15px]" aria-hidden="true">location_on</span>
 <span id="header-pin-display">10012</span>
 </button>
 <!-- Wishlist Icon with Dynamic Badge -->
 <button aria-label="Wishlist" class="relative w-11 h-11 flex items-center justify-center text-on-surface hover:text-secondary active:scale-95 transition-all" onclick="switchTab('wishlist')" type="button">
-<span class="material-symbols-outlined text-[23px]">favorite</span>
+<span class="material-symbols-outlined text-[23px]" aria-hidden="true">favorite</span>
 <span class="absolute top-2 right-1.5 min-w-[16px] h-4 px-1 bg-secondary text-on-secondary rounded-full font-label-caps text-[9px] leading-4 text-center font-bold shadow-sm transition-transform" id="wishlist-badge">2</span>
 </button>
 <!-- Bag Icon with Dynamic Counter -->
 <button aria-label="Shopping Bag" class="relative w-11 h-11 flex items-center justify-center text-on-surface hover:text-secondary active:scale-95 transition-all" onclick="openMiniCart()" type="button">
-<span class="material-symbols-outlined text-[23px]">local_mall</span>
+<span class="material-symbols-outlined text-[23px]" aria-hidden="true">local_mall</span>
 <span class="absolute top-2 right-1.5 min-w-[16px] h-4 px-1 bg-primary text-on-primary rounded-full font-label-caps text-[9px] leading-4 text-center font-bold shadow-sm transition-transform" id="cart-badge">3</span>
 </button>
 <!-- Profile Avatar -->
@@ -167,7 +169,7 @@
 <!-- Hyperlocal Delivery Selector Banner -->
 <section class="px-4 py-3 bg-surface-container-low flex items-center justify-between gap-3 shadow-xs border-b border-surface-container">
 <div class="flex items-center gap-2.5 min-w-0 cursor-pointer" onclick="openPostalModal()">
-<span class="material-symbols-outlined text-secondary text-[21px] shrink-0" style="font-variation-settings: 'FILL' 1;">local_shipping</span>
+<span class="material-symbols-outlined text-secondary text-[21px] shrink-0" style="font-variation-settings: 'FILL' 1;" aria-hidden="true">local_shipping</span>
 <div class="flex flex-col min-w-0">
 <div class="flex items-center gap-1.5 flex-wrap">
 <span class="font-label-caps text-[10px] uppercase tracking-wider text-secondary font-bold">Local Courier</span>
@@ -193,7 +195,7 @@
 <div class="flex flex-col gap-2.5 sm:flex-row">
 <button class="w-full sm:w-auto h-12 px-6 bg-primary-container text-on-primary rounded-lg font-label-md text-xs uppercase tracking-wider flex items-center justify-center gap-2 hover:bg-secondary active:scale-[0.98] transition-all shadow-md font-semibold" onclick="scrollToSeries()" type="button">
 <span>Explore Studio Arrivals</span>
-<span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+<span class="material-symbols-outlined text-[18px]" aria-hidden="true">arrow_forward</span>
 </button>
 <button class="w-full sm:w-auto h-12 px-5 bg-surface-container-lowest/95 backdrop-blur text-primary rounded-lg font-label-md text-xs uppercase tracking-wider flex items-center justify-center hover:bg-white active:scale-[0.98] transition-all shadow-sm font-semibold" onclick="togglePaletteDrawer(true)" type="button">
               View Glaze Palette
@@ -296,7 +298,7 @@
             </span>
 <!-- Interactive Wishlist Heart -->
 <button aria-label="Toggle Sienna Pitcher Wishlist" class="wishlist-btn absolute top-2 right-2 w-8 h-8 rounded-full bg-surface-container-lowest/90 backdrop-blur flex items-center justify-center text-on-surface hover:text-secondary active:scale-90 transition-all shadow-xs" onclick="toggleWishlistItem(this, 'Sienna Ridged Pitcher')" type="button">
-<span class="material-symbols-outlined text-[18px]">favorite</span>
+<span class="material-symbols-outlined text-[18px]" aria-hidden="true">favorite</span>
 </button>
 </div>
 <div class="flex flex-col gap-1 flex-1">
@@ -306,7 +308,7 @@
 </div>
 <h3 class="font-headline-sm text-[15px] leading-snug text-primary font-medium line-clamp-1">Sienna Ridged Pitcher</h3>
 <div class="flex items-center gap-1 text-[#C48427]">
-<span class="material-symbols-outlined text-[13px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[13px]" style="font-variation-settings: 'FILL' 1;" aria-hidden="true">star</span>
 <span class="font-body-sm text-[11px] font-semibold text-on-surface">4.9</span>
 <span class="font-body-sm text-[10px] text-on-surface-variant">(28)</span>
 </div>
@@ -314,7 +316,7 @@
 <span class="font-price-sm text-sm text-primary font-bold">$68.00</span>
 <!-- Interactive Add Button -->
 <button aria-label="Add Sienna Ridged Pitcher" class="cart-add-btn w-9 h-9 rounded-lg bg-primary text-on-primary flex items-center justify-center hover:bg-secondary active:scale-90 transition-all shadow-xs" onclick="addToCart('Sienna Ridged Pitcher', 68, this)" type="button">
-<span class="material-symbols-outlined text-[18px]">add</span>
+<span class="material-symbols-outlined text-[18px]" aria-hidden="true">add</span>
 </button>
 </div>
 </div>
@@ -327,7 +329,7 @@
               Low Stock (4)
             </span>
 <button aria-label="Toggle Kuro Dinner Plates Wishlist" class="wishlist-btn absolute top-2 right-2 w-8 h-8 rounded-full bg-surface-container-lowest/90 backdrop-blur flex items-center justify-center text-on-surface hover:text-secondary active:scale-90 transition-all shadow-xs" onclick="toggleWishlistItem(this, 'Kuro Dinner Plates (4)')" type="button">
-<span class="material-symbols-outlined text-[18px]">favorite</span>
+<span class="material-symbols-outlined text-[18px]" aria-hidden="true">favorite</span>
 </button>
 </div>
 <div class="flex flex-col gap-1 flex-1">
@@ -337,14 +339,14 @@
 </div>
 <h3 class="font-headline-sm text-[15px] leading-snug text-primary font-medium line-clamp-1">Kuro Dinner Plates (4)</h3>
 <div class="flex items-center gap-1 text-[#C48427]">
-<span class="material-symbols-outlined text-[13px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[13px]" style="font-variation-settings: 'FILL' 1;" aria-hidden="true">star</span>
 <span class="font-body-sm text-[11px] font-semibold text-on-surface">5.0</span>
 <span class="font-body-sm text-[10px] text-on-surface-variant">(42)</span>
 </div>
 <div class="mt-auto pt-2 flex items-center justify-between">
 <span class="font-price-sm text-sm text-primary font-bold">$142.00</span>
 <button aria-label="Add Kuro Dinner Plates" class="cart-add-btn w-9 h-9 rounded-lg bg-primary text-on-primary flex items-center justify-center hover:bg-secondary active:scale-90 transition-all shadow-xs" onclick="addToCart('Kuro Dinner Plates (4)', 142, this)" type="button">
-<span class="material-symbols-outlined text-[18px]">add</span>
+<span class="material-symbols-outlined text-[18px]" aria-hidden="true">add</span>
 </button>
 </div>
 </div>
@@ -354,7 +356,7 @@
 <div class="relative w-full aspect-[4/5] rounded-lg overflow-hidden bg-surface-container-low mb-2.5 group">
 <img alt="Oatmeal Fluted Mug" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD1lTd43BTsQQK-U7EYFGMztrDnkTAVC5j92lhf5XkpSAHm1T_w98l3PR4D0CsfQoHR1lfx1a8xJyu3LqOWoiwnaVA4RA6ZD2qQYMYKq0P-zld6ypnuozqi4n4qLkFNyRgWXKhSwc7DNtynBSZ6pfld3sPvP3fHaeKXrW5_xbMzjx1W1-rnHTfRRgorKzTCOEWX5YuGwIou375K3W9dm0FTGBaZSP58NGq2DFPJc-pZIhrcsV_B7Btg7g"/>
 <button aria-label="Toggle Oatmeal Fluted Mug Wishlist" class="wishlist-btn active-fav absolute top-2 right-2 w-8 h-8 rounded-full bg-surface-container-lowest/90 backdrop-blur flex items-center justify-center text-secondary active:scale-90 transition-all shadow-xs" onclick="toggleWishlistItem(this, 'Oatmeal Fluted Mug')" type="button">
-<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">favorite</span>
+<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;" aria-hidden="true">favorite</span>
 </button>
 </div>
 <div class="flex flex-col gap-1 flex-1">
@@ -364,14 +366,14 @@
 </div>
 <h3 class="font-headline-sm text-[15px] leading-snug text-primary font-medium line-clamp-1">Oatmeal Fluted Mug</h3>
 <div class="flex items-center gap-1 text-[#C48427]">
-<span class="material-symbols-outlined text-[13px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[13px]" style="font-variation-settings: 'FILL' 1;" aria-hidden="true">star</span>
 <span class="font-body-sm text-[11px] font-semibold text-on-surface">4.8</span>
 <span class="font-body-sm text-[10px] text-on-surface-variant">(91)</span>
 </div>
 <div class="mt-auto pt-2 flex items-center justify-between">
 <span class="font-price-sm text-sm text-primary font-bold">$36.00</span>
 <button aria-label="Add Oatmeal Fluted Mug" class="cart-add-btn w-9 h-9 rounded-lg bg-primary text-on-primary flex items-center justify-center hover:bg-secondary active:scale-90 transition-all shadow-xs" onclick="addToCart('Oatmeal Fluted Mug', 36, this)" type="button">
-<span class="material-symbols-outlined text-[18px]">add</span>
+<span class="material-symbols-outlined text-[18px]" aria-hidden="true">add</span>
 </button>
 </div>
 </div>
@@ -381,7 +383,7 @@
 <div class="relative w-full aspect-[4/5] rounded-lg overflow-hidden bg-surface-container-low mb-2.5 group">
 <img alt="Terracotta Ikebana" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAMZQ25zZmrDf3qDttxvUCP1M50TxRb8qtcZ41ypBAdcopX41Xh5HzCBxhQ5t5w2X2qLtMHBPXZZn7AOW4q6fiKCb-SgzoYSfAqN5096v09qMu5SZ7YLQ8li3huivX6b4fGjT_eFELZhYbI-TfeYEugW4Ub0mYqzO_9hXfxG4jLXaVKDPEbjpPBLiMYNNeU2NtFI84WBXxC6WWrQtji1TpBqYFDKqzXS-gbPimtYTiP2k7998Ipn-0Nww"/>
 <button aria-label="Toggle Terracotta Ikebana Wishlist" class="wishlist-btn active-fav absolute top-2 right-2 w-8 h-8 rounded-full bg-surface-container-lowest/90 backdrop-blur flex items-center justify-center text-secondary active:scale-90 transition-all shadow-xs" onclick="toggleWishlistItem(this, 'Terracotta Ikebana')" type="button">
-<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">favorite</span>
+<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;" aria-hidden="true">favorite</span>
 </button>
 </div>
 <div class="flex flex-col gap-1 flex-1">
@@ -391,14 +393,14 @@
 </div>
 <h3 class="font-headline-sm text-[15px] leading-snug text-primary font-medium line-clamp-1">Terracotta Ikebana</h3>
 <div class="flex items-center gap-1 text-[#C48427]">
-<span class="material-symbols-outlined text-[13px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[13px]" style="font-variation-settings: 'FILL' 1;" aria-hidden="true">star</span>
 <span class="font-body-sm text-[11px] font-semibold text-on-surface">4.9</span>
 <span class="font-body-sm text-[10px] text-on-surface-variant">(17)</span>
 </div>
 <div class="mt-auto pt-2 flex items-center justify-between">
 <span class="font-price-sm text-sm text-primary font-bold">$88.00</span>
 <button aria-label="Add Terracotta Ikebana" class="cart-add-btn w-9 h-9 rounded-lg bg-primary text-on-primary flex items-center justify-center hover:bg-secondary active:scale-90 transition-all shadow-xs" onclick="addToCart('Terracotta Ikebana', 88, this)" type="button">
-<span class="material-symbols-outlined text-[18px]">add</span>
+<span class="material-symbols-outlined text-[18px]" aria-hidden="true">add</span>
 </button>
 </div>
 </div>
@@ -410,7 +412,7 @@
 <div class="bg-surface-container-low rounded-xl p-4 flex flex-col gap-4 shadow-xs border border-surface-container">
 <div class="flex items-start gap-3">
 <div class="w-9 h-9 rounded-lg bg-surface-container-lowest flex items-center justify-center text-secondary shrink-0 shadow-xs">
-<span class="material-symbols-outlined text-[20px]">storefront</span>
+<span class="material-symbols-outlined text-[20px]" aria-hidden="true">storefront</span>
 </div>
 <div class="flex flex-col">
 <h4 class="font-label-md text-xs font-bold text-primary">Studio Click &amp; Collect in 2 hrs</h4>
@@ -419,7 +421,7 @@
 </div>
 <div class="flex items-start gap-3">
 <div class="w-9 h-9 rounded-lg bg-surface-container-lowest flex items-center justify-center text-secondary shrink-0 shadow-xs">
-<span class="material-symbols-outlined text-[20px]">recycling</span>
+<span class="material-symbols-outlined text-[20px]" aria-hidden="true">recycling</span>
 </div>
 <div class="flex flex-col">
 <h4 class="font-label-md text-xs font-bold text-primary">100% Recyclable Pulp Packaging</h4>
@@ -428,7 +430,7 @@
 </div>
 <div class="flex items-start gap-3">
 <div class="w-9 h-9 rounded-lg bg-surface-container-lowest flex items-center justify-center text-secondary shrink-0 shadow-xs">
-<span class="material-symbols-outlined text-[20px]">verified</span>
+<span class="material-symbols-outlined text-[20px]" aria-hidden="true">verified</span>
 </div>
 <div class="flex flex-col">
 <h4 class="font-label-md text-xs font-bold text-primary">Lifetime Craftsmanship Guarantee</h4>
@@ -451,13 +453,13 @@
 </div>
 <div class="absolute inset-0 bg-primary/25 flex items-center justify-center" id="video-play-btn-wrap">
 <button aria-label="Play Studio Process Film" class="w-14 h-14 rounded-full bg-surface-container-lowest/90 backdrop-blur text-primary flex items-center justify-center shadow-lg group-hover:scale-110 active:scale-95 transition-all" type="button">
-<span class="material-symbols-outlined text-[30px] translate-x-0.5 text-primary">play_arrow</span>
+<span class="material-symbols-outlined text-[30px] translate-x-0.5 text-primary" aria-hidden="true">play_arrow</span>
 </button>
 </div>
 </div>
 <div class="p-5 bg-surface-container-lowest rounded-xl flex flex-col gap-3 shadow-xs border border-surface-container">
 <div class="flex items-center gap-2 text-secondary">
-<span class="material-symbols-outlined text-[18px]">local_fire_department</span>
+<span class="material-symbols-outlined text-[18px]" aria-hidden="true">local_fire_department</span>
 <span class="font-label-caps text-[10px] uppercase tracking-wider font-bold">Provenance &amp; Process</span>
 </div>
 <h3 class="font-headline-sm text-lg text-primary font-serif leading-snug">Every vessel carries the touch of the potter’s wheel and wood-fired kiln variations.</h3>
@@ -466,7 +468,7 @@
         </p>
 <button class="inline-flex items-center gap-1.5 text-secondary font-label-md text-xs uppercase font-bold tracking-wider hover:text-primary transition-colors pt-1 text-left w-fit" onclick="toggleNavDrawer(true)" type="button">
 <span>Read our Studio Journal</span>
-<span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+<span class="material-symbols-outlined text-[16px]" aria-hidden="true">arrow_forward</span>
 </button>
 </div>
 </section>
@@ -474,7 +476,7 @@
 <section class="px-4 pb-4">
 <div class="bg-primary-container text-on-primary rounded-2xl p-6 flex flex-col gap-4 shadow-sm border border-surface-container">
 <div class="flex items-center gap-2 text-secondary-fixed">
-<span class="material-symbols-outlined text-[20px]">mark_email_unread</span>
+<span class="material-symbols-outlined text-[20px]" aria-hidden="true">mark_email_unread</span>
 <span class="font-label-caps text-[11px] uppercase tracking-wider font-bold">Studio Circle</span>
 </div>
 <div class="flex flex-col gap-1.5">
@@ -485,13 +487,13 @@
 </div>
 <form class="flex flex-col gap-2.5 pt-1" onsubmit="handleNewsletterSubmit(event, 'circle-input', 'newsletter-confirm')">
 <div class="relative flex items-center">
-<input class="w-full h-12 pl-4 pr-24 rounded-lg bg-surface-container-lowest text-on-surface font-body-sm text-xs placeholder:text-outline focus:outline-none focus:ring-1 focus:ring-secondary" id="circle-input" placeholder="Your preferred email address" required="" type="email"/>
+<input class="w-full h-12 pl-4 pr-24 rounded-lg bg-surface-container-lowest text-on-surface font-body-sm text-xs placeholder:text-outline focus:outline-none focus:ring-1 focus:ring-secondary" id="circle-input" placeholder="Your preferred email address" required="" type="email"/ aria-label="Your preferred email address">
 <button class="absolute right-1.5 h-9 px-4 rounded bg-primary text-on-primary font-label-caps text-[10px] uppercase tracking-wider hover:bg-secondary active:scale-95 transition-all font-bold" type="submit">
               Join
             </button>
 </div>
 <p class="font-body-sm text-[12px] text-tertiary-fixed hidden flex items-center gap-1.5 pt-1" id="newsletter-confirm">
-<span class="material-symbols-outlined text-[16px] text-[#A5D6A7]">check_circle</span>
+<span class="material-symbols-outlined text-[16px] text-[#A5D6A7]" aria-hidden="true">check_circle</span>
 <span>Welcome to the Studio Circle. Check your inbox for allocation notes.</span>
 </p>
 </form>
@@ -504,12 +506,12 @@
 <h3 class="font-headline-sm text-lg text-primary font-serif">Studio Notes &amp; Editions</h3>
 <p class="font-body-sm text-xs text-on-surface-variant">Receive quiet announcements on small batch kiln unearthings and archival studio collections.</p>
 <form class="flex flex-col gap-2 mt-2" onsubmit="handleNewsletterSubmit(event, 'footer-email', 'footer-confirm')">
-<input class="w-full h-11 px-4 rounded-lg bg-surface-container-lowest text-on-surface font-body-sm text-xs outline-none focus:ring-1 focus:ring-secondary border border-surface-container placeholder:text-outline" id="footer-email" placeholder="Enter your email address" required="" type="email"/>
+<input class="w-full h-11 px-4 rounded-lg bg-surface-container-lowest text-on-surface font-body-sm text-xs outline-none focus:ring-1 focus:ring-secondary border border-surface-container placeholder:text-outline" id="footer-email" placeholder="Enter your email address" required="" type="email"/ aria-label="Enter your email address">
 <button class="w-full h-11 px-5 rounded-lg bg-primary text-on-primary font-label-md text-xs uppercase tracking-wider hover:bg-secondary active:scale-[0.98] transition-all font-semibold" type="submit">
               Subscribe to Notes
             </button>
 <p class="text-xs text-[#2E7D32] hidden flex items-center justify-center gap-1 pt-1 font-medium" id="footer-confirm">
-<span class="material-symbols-outlined text-[15px]">check_circle</span>
+<span class="material-symbols-outlined text-[15px]" aria-hidden="true">check_circle</span>
               Thank you for subscribing to Studio Notes.
             </p>
 </form>
@@ -546,27 +548,27 @@
 <div class="flex justify-around items-center h-16 px-2">
 <!-- Tab 1: Discover -->
 <button class="nav-tab flex flex-col items-center justify-center gap-0.5 min-w-[56px] h-12 transition-all text-primary font-bold active:scale-95" id="nav-discover" onclick="switchTab('discover')">
-<span class="material-symbols-outlined text-[21px]" style="font-variation-settings: 'FILL' 1;">explore</span>
+<span class="material-symbols-outlined text-[21px]" style="font-variation-settings: 'FILL' 1;" aria-hidden="true">explore</span>
 <span class="font-label-caps text-[10px] tracking-tight uppercase">Discover</span>
 </button>
 <!-- Tab 2: Collections -->
 <button class="nav-tab flex flex-col items-center justify-center gap-0.5 min-w-[56px] h-12 text-on-surface-variant hover:text-on-surface transition-all active:scale-95" id="nav-collections" onclick="switchTab('collections')">
-<span class="material-symbols-outlined text-[21px]">grid_view</span>
+<span class="material-symbols-outlined text-[21px]" aria-hidden="true">grid_view</span>
 <span class="font-label-caps text-[10px] tracking-tight uppercase">Collections</span>
 </button>
 <!-- Tab 3: Search -->
 <button class="nav-tab flex flex-col items-center justify-center gap-0.5 min-w-[56px] h-12 text-on-surface-variant hover:text-on-surface transition-all active:scale-95" id="nav-search" onclick="switchTab('search')">
-<span class="material-symbols-outlined text-[21px]">search</span>
+<span class="material-symbols-outlined text-[21px]" aria-hidden="true">search</span>
 <span class="font-label-caps text-[10px] tracking-tight uppercase">Search</span>
 </button>
 <!-- Tab 4: Wishlist -->
 <button class="nav-tab flex flex-col items-center justify-center gap-0.5 min-w-[56px] h-12 text-on-surface-variant hover:text-on-surface transition-all active:scale-95 relative" id="nav-wishlist" onclick="switchTab('wishlist')">
-<span class="material-symbols-outlined text-[21px]">favorite</span>
+<span class="material-symbols-outlined text-[21px]" aria-hidden="true">favorite</span>
 <span class="font-label-caps text-[10px] tracking-tight uppercase">Wishlist</span>
 </button>
 <!-- Tab 5: Account -->
 <button class="nav-tab flex flex-col items-center justify-center gap-0.5 min-w-[56px] h-12 text-on-surface-variant hover:text-on-surface transition-all active:scale-95" id="nav-account" onclick="switchTab('account')">
-<span class="material-symbols-outlined text-[21px]">person</span>
+<span class="material-symbols-outlined text-[21px]" aria-hidden="true">person</span>
 <span class="font-label-caps text-[10px] tracking-tight uppercase">Account</span>
 </button>
 </div>
@@ -584,7 +586,7 @@
 <span class="font-label-caps text-[10px] uppercase bg-surface-container px-2 py-0.5 rounded text-on-surface-variant">Studio</span>
 </div>
 <button class="w-9 h-9 rounded-full flex items-center justify-center text-on-surface hover:bg-surface-container active:scale-90 transition-all" onclick="toggleNavDrawer(false)" type="button">
-<span class="material-symbols-outlined text-[20px]">close</span>
+<span class="material-symbols-outlined text-[20px]" aria-hidden="true">close</span>
 </button>
 </div>
 <!-- Drawer Links -->
@@ -609,15 +611,15 @@
 <div class="my-3 border-t border-surface-container"></div>
 <span class="font-label-caps text-[10px] uppercase tracking-widest text-secondary font-bold px-3 py-1">Archival</span>
 <button class="flex items-center gap-3 p-3 rounded-lg text-left hover:bg-surface-container transition-colors text-on-surface" onclick="togglePaletteDrawer(true); toggleNavDrawer(false);" type="button">
-<span class="material-symbols-outlined text-[18px] text-secondary">palette</span>
+<span class="material-symbols-outlined text-[18px] text-secondary" aria-hidden="true">palette</span>
 <span class="font-body-md text-sm font-medium">Glaze Library &amp; Clays</span>
 </button>
 <button class="flex items-center gap-3 p-3 rounded-lg text-left hover:bg-surface-container transition-colors text-on-surface" onclick="openPostalModal(); toggleNavDrawer(false);" type="button">
-<span class="material-symbols-outlined text-[18px] text-secondary">location_on</span>
+<span class="material-symbols-outlined text-[18px] text-secondary" aria-hidden="true">location_on</span>
 <span class="font-body-md text-sm font-medium">Local Dispatch PIN</span>
 </button>
 <button class="flex items-center gap-3 p-3 rounded-lg text-left hover:bg-surface-container transition-colors text-on-surface" onclick="openMiniCart(); toggleNavDrawer(false);" type="button">
-<span class="material-symbols-outlined text-[18px] text-secondary">local_mall</span>
+<span class="material-symbols-outlined text-[18px] text-secondary" aria-hidden="true">local_mall</span>
 <span class="font-body-md text-sm font-medium">Studio Bag (<span id="drawer-cart-count">3</span> items)</span>
 </button>
 </div>
@@ -632,10 +634,10 @@
 <div class="fixed inset-0 z-50 bg-primary/50 backdrop-blur-xs hidden flex items-start justify-center p-3 pt-12" id="search-modal" onclick="toggleSearchModal(false)">
 <div class="w-full max-w-md bg-surface-bright rounded-2xl p-4 shadow-2xl flex flex-col gap-3" onclick="event.stopPropagation()">
 <div class="flex items-center gap-2 border-b border-surface-container pb-3">
-<span class="material-symbols-outlined text-secondary text-[22px]">search</span>
-<input class="flex-1 bg-transparent border-none text-sm text-primary placeholder:text-outline focus:outline-none" id="search-input" oninput="handleSearchFilter(this.value)" placeholder="Search vessels, pitchers, mugs, glazes..." type="text"/>
+<span class="material-symbols-outlined text-secondary text-[22px]" aria-hidden="true">search</span>
+<input class="flex-1 bg-transparent border-none text-sm text-primary placeholder:text-outline focus:outline-none" id="search-input" oninput="handleSearchFilter(this.value)" placeholder="Search vessels, pitchers, mugs, glazes..." type="text"/ aria-label="Search vessels, pitchers, mugs, glazes...">
 <button class="w-8 h-8 rounded-full flex items-center justify-center text-outline hover:text-primary" onclick="toggleSearchModal(false)" type="button">
-<span class="material-symbols-outlined text-[20px]">close</span>
+<span class="material-symbols-outlined text-[20px]" aria-hidden="true">close</span>
 </button>
 </div>
 <!-- Instant Suggestions -->
@@ -665,16 +667,16 @@
 <div class="w-full max-w-sm bg-surface-bright rounded-2xl p-5 flex flex-col gap-4 shadow-2xl border border-surface-container" onclick="event.stopPropagation()">
 <div class="flex items-center justify-between">
 <div class="flex items-center gap-2">
-<span class="material-symbols-outlined text-secondary text-[20px]">location_on</span>
+<span class="material-symbols-outlined text-secondary text-[20px]" aria-hidden="true">location_on</span>
 <h3 class="font-headline-sm text-base text-primary font-serif font-bold">Local Dispatch PIN</h3>
 </div>
 <button class="w-8 h-8 rounded-full flex items-center justify-center text-on-surface hover:bg-surface-container transition-colors" onclick="closePostalModal()" type="button">
-<span class="material-symbols-outlined text-[20px]">close</span>
+<span class="material-symbols-outlined text-[20px]" aria-hidden="true">close</span>
 </button>
 </div>
 <p class="font-body-sm text-xs text-on-surface-variant leading-relaxed">Enter your zipcode to verify same-day local studio messenger availability.</p>
 <div class="flex gap-2">
-<input class="flex-1 h-11 px-3 rounded-lg bg-surface-container text-on-surface font-body-md text-xs focus:outline-none focus:ring-1 focus:ring-secondary border border-surface-variant" id="postal-input" placeholder="e.g. 10012, 11201, 90210" type="text" value="10012"/>
+<input class="flex-1 h-11 px-3 rounded-lg bg-surface-container text-on-surface font-body-md text-xs focus:outline-none focus:ring-1 focus:ring-secondary border border-surface-variant" id="postal-input" placeholder="e.g. 10012, 11201, 90210" type="text" value="10012"/ aria-label="e.g. 10012, 11201, 90210">
 <button class="h-11 px-4 bg-primary text-on-primary rounded-lg font-label-md text-xs uppercase tracking-wider hover:bg-secondary active:scale-95 transition-all font-semibold" onclick="updatePostalCode()" type="button">
           Save
         </button>
@@ -690,7 +692,7 @@
 <h3 class="font-headline-sm text-lg text-primary font-serif font-bold">Studio Glaze Library</h3>
 </div>
 <button class="w-8 h-8 rounded-full flex items-center justify-center text-on-surface hover:bg-surface-container" onclick="togglePaletteDrawer(false)" type="button">
-<span class="material-symbols-outlined text-[20px]">close</span>
+<span class="material-symbols-outlined text-[20px]" aria-hidden="true">close</span>
 </button>
 </div>
 <div class="flex flex-col gap-2.5">
@@ -733,11 +735,11 @@
 <div class="w-full max-w-sm bg-surface-bright rounded-2xl p-5 flex flex-col gap-4 shadow-2xl border border-surface-container" onclick="event.stopPropagation()">
 <div class="flex items-center justify-between border-b border-surface-container pb-3">
 <div class="flex items-center gap-2">
-<span class="material-symbols-outlined text-secondary text-[20px]">local_mall</span>
+<span class="material-symbols-outlined text-secondary text-[20px]" aria-hidden="true">local_mall</span>
 <h3 class="font-headline-sm text-base text-primary font-serif font-bold">Studio Bag (<span id="cart-modal-count">3</span>)</h3>
 </div>
 <button class="w-8 h-8 rounded-full flex items-center justify-center text-on-surface hover:bg-surface-container" onclick="toggleCartDrawer(false)" type="button">
-<span class="material-symbols-outlined text-[20px]">close</span>
+<span class="material-symbols-outlined text-[20px]" aria-hidden="true">close</span>
 </button>
 </div>
 <div class="flex flex-col gap-2 max-h-56 overflow-y-auto" id="cart-items-preview">
@@ -767,7 +769,7 @@
 <!-- TOAST NOTIFICATION -->
 <div class="fixed top-20 inset-x-4 z-50 pointer-events-none transform -translate-y-8 opacity-0 transition-all duration-300 flex justify-center" id="cart-toast">
 <div class="bg-primary text-on-primary px-4 py-2.5 rounded-xl shadow-xl flex items-center gap-2 max-w-sm pointer-events-auto border border-surface-container">
-<span class="material-symbols-outlined text-[18px] text-secondary-fixed">check_circle</span>
+<span class="material-symbols-outlined text-[18px] text-secondary-fixed" aria-hidden="true">check_circle</span>
 <span class="font-body-sm text-xs truncate font-medium" id="toast-text">Added to Studio Bag</span>
 </div>
 </div>
@@ -940,7 +942,7 @@
 
       // Button feedback
       const originalHtml = btn.innerHTML;
-      btn.innerHTML = '<span class="material-symbols-outlined text-[18px] text-green-400">check</span>';
+      btn.innerHTML = '<span class="material-symbols-outlined text-[18px] text-green-400" aria-hidden="true">check</span>';
       btn.classList.add('bg-secondary');
       
       // Append to cart modal

@@ -484,7 +484,7 @@ test('Visual QA & Accessibility Polish: 2-font limit, WCAG AA tokens, modal scro
   assert.strictEqual(Store.getProductById('vk-dom-101').id, 'vk-res-003');
   assert.strictEqual(Store.getProductById('vk-res-003').id, 'vk-res-003');
 
-  // 5. All 12 HTML screens free of user-scalable=no and missing img alt attributes
+  // 5. All 12 HTML screens free of user-scalable=no, #74777e, Plus Jakarta Sans, unhidden material-symbols-outlined, and missing img alt attributes
   const allHtmlFiles = [
     'index.html',
     'vist_ra_krafts_ultraclear_3_1_pdp/code.html',
@@ -503,14 +503,30 @@ test('Visual QA & Accessibility Polish: 2-font limit, WCAG AA tokens, modal scro
     const html = fs.readFileSync(path.join(ROOT, rel), 'utf8');
     assert.ok(!/user-scalable\s*=\s*no/i.test(html), `${rel} must not block pinch-to-zoom with user-scalable=no`);
     assert.ok(/<title>[^<]+<\/title>/i.test(html), `${rel} must have a non-empty <title>`);
+    assert.ok(!/#74777e/i.test(html), `${rel} must not use non-AA #74777e outline token`);
+    assert.ok(!/Plus(\+|\s)Jakarta(\+|\s)Sans/i.test(html), `${rel} must not load third font family Plus Jakarta Sans`);
+    const iconSpans = html.match(/<span[^>]*class="[^"]*material-symbols-outlined[^"]*"[^>]*>/gi) || [];
+    for (const spanTag of iconSpans) {
+      assert.ok(/aria-hidden\s*=\s*["']true["']/i.test(spanTag), `${rel} has .material-symbols-outlined missing aria-hidden="true": ${spanTag}`);
+    }
     const imgs = html.match(/<img\b[^>]*>/gi) || [];
     for (const imgTag of imgs) {
       assert.ok(/(?:^|\s)alt\s*=/i.test(imgTag), `${rel} has <img> missing alt attribute: ${imgTag.slice(0, 80)}`);
+      assert.ok(!/(?:^|\s)src\s*=\s*["']\s*["']/i.test(imgTag), `${rel} has <img> with empty src="" attribute: ${imgTag.slice(0, 80)}`);
     }
   }
 
-  // 6. VISUAL_ISSUES.md documents VIS-001 through VIS-017 as Fixed & Verified
-  for (let i = 1; i <= 17; i++) {
+  // 6. Verify 0 unhidden .material-symbols-outlined icons in app.js, 65ch measure, break-anywhere, Tab focus trap, and VIS-001 through VIS-027
+  const appIconSpans = appCode.match(/<span[^>]*class="[^"]*material-symbols-outlined[^"]*"[^>]*>/gi) || [];
+  for (const spanTag of appIconSpans) {
+    assert.ok(/aria-hidden\s*=\s*["']true["']/i.test(spanTag), `app.js has .material-symbols-outlined missing aria-hidden="true": ${spanTag}`);
+  }
+  assert.ok(stylesCss.includes('max-width: 65ch'), 'styles.css must enforce 65ch paragraph measure limit');
+  assert.ok(stylesCss.includes('.break-anywhere'), 'styles.css must define .break-anywhere overflow protection');
+  assert.ok(appCode.includes("ev.key === 'Tab'"), 'app.js must trap Tab focus inside active modals');
+  assert.ok(appCode.includes('dataset.origHtml'), 'app.js handleQuickAdd must debounce rapid double-clicks via dataset.origHtml');
+
+  for (let i = 1; i <= 27; i++) {
     const code = 'VIS-' + String(i).padStart(3, '0');
     assert.ok(visualIssuesMd.includes(code), `VISUAL_ISSUES.md missing ${code}`);
   }
@@ -521,4 +537,5 @@ console.log(`\n========================================`);
 console.log(`Verification Summary: ${passed} passed, ${failed} failed`);
 console.log(`========================================`);
 if (failed > 0) process.exit(1);
+
 
