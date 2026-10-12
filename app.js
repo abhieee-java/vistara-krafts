@@ -1,0 +1,2869 @@
+/**
+ * Resin Art Memories (@resin.art.memories) × Vistāra Krafts Studio
+ * Complete Customer Social E-Commerce Application Controller
+ */
+(function () {
+  'use strict';
+
+  const Store = window.ResinStore;
+
+  const AppState = {
+    currentRoute: 'home',
+    currentProductId: 'vk-epx-301',
+    selectedVariantIdx: 1,
+    pdpQty: 1,
+    pdpGalleryIdx: 0,
+    pdpCustomNote: '',
+    catalogCategory: 'all',
+    catalogSearch: '',
+    catalogSort: 'popular',
+    catalogView: 'grid', // 'grid' | 'list'
+    catalogRatioFilter: 'all',
+    catalogMaxPrice: 12000,
+    catalogVisibleCount: 8,
+    socialTagFilter: 'all',
+    quizStep: 0,
+    quizAnswers: {},
+    quizCompleted: false,
+    customBuilder: {
+      shape: '12" Royal Heirloom Block',
+      shapePrice: 4499,
+      flowerSource: 'Fresh Wedding Varmala (Free Doorstep Pickup)',
+      sourceAddon: 0,
+      metallic: '24K Gold Leaf + Champagne Rim',
+      metallicAddon: 350,
+      engraving: 'Aarav & Meera • 12.10.2026',
+      ledBase: true
+    },
+    calcShape: 'rect', // 'rect' | 'circle'
+    calcLength: 20,
+    calcWidth: 20,
+    calcDiameter: 25,
+    calcDepth: 1.5,
+    calcSystem: '3:1',
+    activeStoryIdx: null,
+    storyTimer: null,
+    reviews: {
+      'vk-epx-301': [
+        { author: ' Diya Sharma • Jaipur Resin Studio', rating: 5, date: '2 days ago', verified: true, text: 'Zero micro-bubbles even in 32°C weather! Used the 1.2kg kit for 3 bridal varmala blocks and the optical clarity is like liquid diamond.' },
+        { author: 'Rohan Kulkarni • Pune Woodworks', rating: 5, date: '1 week ago', verified: true, text: 'The 3:1 weight ratio is super forgiving when weighed on a digital kitchen scale. Hardens to a rock-solid 82D finish without any amine blush.' }
+      ],
+      'ram-keep-001': [
+        { author: 'Ananya & Kabir • Udaipur Wedding', rating: 5, date: '3 days ago', verified: true, text: 'BlueDart picked up our wedding garlands the next morning and 2 weeks later we received the most breathtaking 12-inch floral block with gold calligraphy!' }
+      ]
+    }
+  };
+
+  // Utility: Escape HTML to prevent XSS on user inputs
+  function esc(str) {
+    return String(str ?? '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
+  function formatINR(num) {
+    const val = Math.round(Number(num) || 0);
+    return '₹' + val.toLocaleString('en-IN');
+  }
+
+  // Toast Notification System
+  let toastTimer = null;
+  window.showToast = function (message, subtitle = '') {
+    const container = document.getElementById('global-toast');
+    const titleEl = document.getElementById('global-toast-title');
+    const subEl = document.getElementById('global-toast-sub');
+    if (!container || !titleEl) return;
+
+    titleEl.textContent = message;
+    if (subEl) {
+      subEl.textContent = subtitle;
+      subEl.classList.toggle('hidden', !subtitle);
+    }
+
+    container.classList.remove('opacity-0', 'pointer-events-none', '-translate-y-4');
+    container.classList.add('opacity-100', 'translate-y-0');
+
+    if (toastTimer) clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => {
+      container.classList.remove('opacity-100', 'translate-y-0');
+      container.classList.add('opacity-0', 'pointer-events-none', '-translate-y-4');
+    }, 2800);
+  };
+
+  // Sync Header & Bottom Nav Badges
+  function updateGlobalBadges() {
+    const summary = Store.getCartSummary();
+    const wishlist = Store.getWishlist();
+    const pinInfo = Store.getPincodeInfo();
+
+    document.querySelectorAll('.js-cart-badge').forEach(el => {
+      el.textContent = summary.itemsCount;
+      el.classList.toggle('hidden', summary.itemsCount === 0);
+    });
+    document.querySelectorAll('.js-wishlist-badge').forEach(el => {
+      el.textContent = wishlist.length;
+      el.classList.toggle('hidden', wishlist.length === 0);
+    });
+    document.querySelectorAll('.js-header-pin').forEach(el => {
+      el.textContent = pinInfo.pin;
+    });
+  }
+
+  // Route Navigation
+  window.navigateTo = function (route, param = null) {
+    let targetHash = '#/' + route;
+    if (route === 'product' && param) {
+      AppState.currentProductId = param;
+      AppState.selectedVariantIdx = 0;
+      const prod = Store.getProductById(param);
+      if (prod && prod.variants) {
+        const popIdx = prod.variants.findIndex(v => v.popular);
+        AppState.selectedVariantIdx = popIdx > -1 ? popIdx : 0;
+      }
+      AppState.pdpQty = 1;
+      AppState.pdpGalleryIdx = 0;
+      AppState.pdpCustomNote = '';
+      targetHash = '#/product/' + param;
+    } else if (route === 'catalog' && param) {
+      AppState.catalogCategory = param;
+      targetHash = '#/catalog';
+    }
+
+    if (window.location.hash !== targetHash) {
+      window.location.hash = targetHash;
+    } else {
+      handleRouteChange();
+    }
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  function parseHash() {
+    const raw = (window.location.hash || '#/home').replace(/^#\/?/, '');
+    const parts = raw.split('/');
+    const route = parts[0] || 'home';
+    const param = parts[1] || null;
+    return { route, param };
+  }
+
+  function handleRouteChange() {
+    const { route, param } = parseHash();
+    const validRoutes = ['home', 'catalog', 'product', 'social', 'custom-studio', 'wishlist', 'cart', 'account'];
+    AppState.currentRoute = validRoutes.includes(route) ? route : 'home';
+
+    if (AppState.currentRoute === 'product' && param) {
+      AppState.currentProductId = param;
+      const prod = Store.getProductById(param);
+      if (prod && prod.variants && AppState.selectedVariantIdx >= prod.variants.length) {
+        AppState.selectedVariantIdx = 0;
+      }
+    }
+
+    renderActiveView();
+    updateNavHighlight();
+    updateGlobalBadges();
+  }
+
+  function updateNavHighlight() {
+    const active = AppState.currentRoute;
+    document.querySelectorAll('[data-nav-route]').forEach(btn => {
+      const r = btn.getAttribute('data-nav-route');
+      const isCurrent = (r === active) || (active === 'product' && r === 'catalog');
+      if (btn.classList.contains('bottom-tab-item')) {
+        btn.classList.toggle('text-primary', isCurrent);
+        btn.classList.toggle('font-bold', isCurrent);
+        btn.classList.toggle('text-on-surface-variant', !isCurrent);
+        const icon = btn.querySelector('.material-symbols-outlined');
+        if (icon) icon.style.fontVariationSettings = isCurrent ? "'FILL' 1" : "'FILL' 0";
+      } else if (btn.classList.contains('desktop-nav-item')) {
+        btn.classList.toggle('text-primary', isCurrent);
+        btn.classList.toggle('border-b-2', isCurrent);
+        btn.classList.toggle('border-secondary', isCurrent);
+        btn.classList.toggle('font-semibold', isCurrent);
+        btn.classList.toggle('text-on-surface-variant', !isCurrent);
+      }
+    });
+  }
+
+  // Reusable Product Card Renderer
+  function renderProductCard(p, isListView = false) {
+    const isFav = Store.isWishlisted(p.id);
+    const discountPct = p.regularPrice > p.price ? Math.round(((p.regularPrice - p.price) / p.regularPrice) * 100) : 0;
+
+    if (isListView) {
+      return `
+        <article class="ram-card p-3.5 flex flex-row gap-4 items-center group" data-product-id="${esc(p.id)}">
+          <div class="relative w-28 h-28 sm:w-36 sm:h-36 rounded-xl bg-surface-container-low overflow-hidden shrink-0 cursor-pointer" onclick="window.navigateTo('product', '${esc(p.id)}')">
+            <img src="${esc(p.image)}" alt="${esc(p.name)}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" loading="lazy">
+            <span class="absolute top-2 left-2 px-2 py-0.5 rounded-full bg-primary text-on-primary text-[10px] font-semibold uppercase">${esc(p.badge)}</span>
+          </div>
+          <div class="flex-1 min-w-0 flex flex-col justify-between gap-2">
+            <div>
+              <div class="flex items-center justify-between gap-2">
+                <div class="flex items-center gap-1 text-xs text-secondary">
+                  <span class="material-symbols-outlined text-[14px]" style="font-variation-settings: 'FILL' 1;">star</span>
+                  <span class="font-spec-numeral font-bold text-primary">${p.rating.toFixed(1)}</span>
+                  <span class="text-outline font-spec-numeral">(${p.reviewsCount})</span>
+                </div>
+                <button type="button" aria-label="Toggle Wishlist" onclick="window.handleWishlistToggle(event, '${esc(p.id)}')" class="w-8 h-8 rounded-full bg-surface-container-low flex items-center justify-center ${isFav ? 'text-[#c85a48]' : 'text-primary'} hover:scale-110 transition-transform">
+                  <span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' ${isFav ? 1 : 0};">${isFav ? 'favorite' : 'favorite_border'}</span>
+                </button>
+              </div>
+              <h3 class="font-headline-sm text-base text-primary font-semibold cursor-pointer hover:text-secondary transition-colors line-clamp-1" onclick="window.navigateTo('product', '${esc(p.id)}')">${esc(p.name)}</h3>
+              <p class="text-xs text-on-surface-variant line-clamp-2 mt-0.5">${esc(p.subtitle)}</p>
+              <div class="flex flex-wrap gap-1.5 mt-2">
+                <span class="px-2 py-0.5 rounded bg-surface-container-high text-primary font-spec-numeral text-[11px]">Ratio: ${esc(p.ratio)}</span>
+                <span class="px-2 py-0.5 rounded bg-secondary-container/40 text-on-secondary-container font-spec-numeral text-[11px]">Depth: ${esc(p.pourDepth)}</span>
+                <span class="px-2 py-0.5 rounded bg-surface-container-high text-on-surface-variant font-spec-numeral text-[11px]">${esc(p.unitPriceLabel)}</span>
+              </div>
+            </div>
+            <div class="flex items-center justify-between pt-2 border-t border-surface-container">
+              <div class="flex items-baseline gap-2">
+                <span class="font-spec-numeral text-lg font-bold text-primary">${formatINR(p.price)}</span>
+                <span class="font-spec-numeral text-xs text-outline line-through">${formatINR(p.regularPrice)}</span>
+                ${discountPct > 0 ? `<span class="text-[11px] font-bold text-[#c85a48]">${discountPct}% OFF</span>` : ''}
+              </div>
+              <div class="flex items-center gap-2">
+                <button type="button" onclick="window.navigateTo('product', '${esc(p.id)}')" class="px-3 py-2 rounded-lg border border-primary text-primary text-xs font-semibold hover:bg-surface-container-high transition-colors">Specs</button>
+                <button type="button" onclick="window.handleQuickAdd(this, '${esc(p.id)}')" class="px-4 py-2 rounded-lg bg-primary text-on-primary text-xs font-semibold flex items-center gap-1 hover:bg-primary-container active:scale-95 transition-all">
+                  <span class="material-symbols-outlined text-sm">add_shopping_cart</span>
+                  <span>Quick Add</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </article>
+      `;
+    }
+
+    return `
+      <article class="ram-card p-2.5 sm:p-3 flex flex-col justify-between relative group h-full" data-product-id="${esc(p.id)}" data-price="${p.price}" data-ratio="${esc(p.ratio)}">
+        <button type="button" aria-label="Save to Wishlist" onclick="window.handleWishlistToggle(event, '${esc(p.id)}')" class=" absolute top-4 right-4 z-10 w-8 h-8 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center ${isFav ? 'text-[#c85a48]' : 'text-primary'} shadow-sm hover:scale-110 active:scale-90 transition-transform">
+          <span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' ${isFav ? 1 : 0};">${isFav ? 'favorite' : 'favorite_border'}</span>
+        </button>
+        <div>
+          <div class="relative w-full aspect-square rounded-xl bg-surface-container-low overflow-hidden mb-2.5 cursor-pointer" onclick="window.navigateTo('product', '${esc(p.id)}')">
+            <img src="${esc(p.image)}" alt="${esc(p.name)}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" loading="lazy">
+            <div class="absolute top-2.5 left-2.5 flex flex-col gap-1">
+              <span class="px-2.5 py-0.5 rounded-full bg-primary/90 backdrop-blur-xs text-on-primary font-label-sm text-[10px] uppercase font-semibold tracking-wider shadow-xs">${esc(p.badge)}</span>
+            </div>
+            <div class="absolute bottom-0 inset-x-0 bg-gradient-to-t from-primary/80 via-primary/30 to-transparent px-2.5 py-1.5 flex items-center justify-between text-[11px] font-spec-numeral text-white">
+              <span>${p.category === 'keepsakes' ? 'Custom Keepsake' : 'Ratio ' + esc(p.ratio)}</span>
+              <span>Depth ${esc(p.pourDepth)}</span>
+            </div>
+          </div>
+          <div class="flex items-center justify-between gap-1 mb-1">
+            <div class="flex items-center gap-1">
+              <span class="material-symbols-outlined text-secondary text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+              <span class="font-spec-numeral text-xs text-primary font-semibold">${p.rating.toFixed(1)}</span>
+              <span class="font-spec-numeral text-[11px] text-outline">(${p.reviewsCount})</span>
+            </div>
+            ${discountPct > 0 ? `<span class="font-spec-numeral text-[10px] font-bold px-1.5 py-0.5 rounded bg-[#ffe4de] text-[#c85a48]">${discountPct}% OFF</span>` : ''}
+          </div>
+          <h3 class="font-title-md text-[14px] sm:text-[15px] leading-snug text-primary font-semibold line-clamp-2 min-h-[2.5rem] cursor-pointer hover:text-secondary transition-colors" onclick="window.navigateTo('product', '${esc(p.id)}')">
+            ${esc(p.shortName || p.name)}
+          </h3>
+          <div class="flex flex-wrap gap-1 mt-1.5">
+            <span class="px-1.5 py-0.5 rounded bg-surface-container-high text-on-surface-variant font-label-sm text-[10px]">${esc(p.unitPriceLabel)}</span>
+            <span class="px-1.5 py-0.5 rounded bg-secondary-container/40 text-on-secondary-container font-label-sm text-[10px]">${p.isCustomizable ? '✨ Personalizable' : 'Lab Certified'}</span>
+          </div>
+        </div>
+        <div class="pt-2.5 mt-2 border-t border-surface-container flex flex-col gap-2">
+          <div class="flex items-baseline justify-between">
+            <div class="flex items-baseline gap-1.5">
+              <span class="font-spec-numeral text-base sm:text-lg text-primary font-bold">${formatINR(p.price)}</span>
+              <span class="font-spec-numeral text-[11px] text-outline line-through">${formatINR(p.regularPrice)}</span>
+            </div>
+            <button type="button" onclick="window.navigateTo('product', '${esc(p.id)}')" class="text-[11px] font-semibold text-secondary hover:underline">Details</button>
+          </div>
+          <button type="button" onclick="window.handleQuickAdd(this, '${esc(p.id)}')" class="w-full h-9 sm:h-10 rounded-lg bg-primary hover:bg-primary-container text-on-primary font-label-md text-xs font-semibold flex items-center justify-center gap-1.5 active:scale-[0.98] transition-all shadow-xs">
+            <span class="material-symbols-outlined text-base">add_shopping_cart</span>
+            <span>Quick Add</span>
+          </button>
+        </div>
+      </article>
+    `;
+  }
+
+  // =========================================================================
+  // 1. HOME / DISCOVER VIEW
+  // =========================================================================
+  function renderHomeView() {
+    const products = Store.getProducts();
+    const featuredProducts = products.slice(0, 8);
+    const pinInfo = Store.getPincodeInfo();
+    const socialPosts = Store.getSocialPosts().slice(0, 3);
+
+    return `
+      <div class="route-view-enter flex flex-col w-full max-w-7xl mx-auto">
+        <!-- Shoppable Instagram Stories Rail (@resin.art.memories) -->
+        <section class="px-4 sm:px-8 pt-4 pb-3 bg-surface border-b border-[#e4e0d8]/70">
+          <div class="flex items-center justify-between mb-2.5">
+            <div class="flex items-center gap-2">
+              <span class="w-2 h-2 rounded-full bg-[#c85a48] animate-pulse"></span>
+              <span class="font-label-sm text-xs uppercase tracking-wider text-primary font-bold">Live from @resin.art.memories</span>
+            </div>
+            <a href="https://www.instagram.com/resin.art.memories?utm_source=qr" target="_blank" rel="noopener noreferrer" class="text-xs font-semibold text-[#c85a48] hover:underline flex items-center gap-1">
+              <span>Open Instagram</span>
+              <span class="material-symbols-outlined text-sm">open_in_new</span>
+            </a>
+          </div>
+          <div class="flex items-center gap-4 overflow-x-auto no-scrollbar pb-1">
+            ${Store.DEFAULT_STORIES.map((st, idx) => `
+              <button type="button" onclick="window.openStoryModal(${idx})" class="flex flex-col items-center gap-1.5 shrink-0 group cursor-pointer">
+                <div class="story-ring w-16 h-16 sm:w-20 sm:h-20">
+                  <div class="w-full h-full rounded-full overflow-hidden border-2 border-surface bg-surface-container">
+                    <img src="${esc(st.image)}" alt="${esc(st.title)}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300">
+                  </div>
+                </div>
+                <span class="font-label-sm text-[11px] text-primary font-semibold tracking-tight">${esc(st.title)}</span>
+              </button>
+            `).join('')}
+          </div>
+        </section>
+
+        <!-- Editorial Hero Section (60/30/10 High-RT Architecture) -->
+        <section class="relative px-4 sm:px-8 py-6 sm:py-10 bg-gradient-to-br from-[#faf8f5] via-[#fdf6f3] to-[#f3f1ec] overflow-hidden border-b border-[#e4e0d8]">
+          <div aria-hidden="true" class="absolute inset-0 pointer-events-none opacity-[0.04]">
+            <svg class="w-full h-full" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <pattern id="hero-deco" width="48" height="48" patternTransform="rotate(45)" patternUnits="userSpaceOnUse">
+                  <line x1="0" y1="0" x2="0" y2="48" stroke="#031a38" stroke-width="1.5"></line>
+                  <circle cx="24" cy="24" r="1.5" fill="#b08d57"></circle>
+                </pattern>
+              </defs>
+              <rect width="100%" height="100%" fill="url(#hero-deco)"></rect>
+            </svg>
+          </div>
+
+          <div class="relative grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+            <!-- Hero Left Column (7 cols) -->
+            <div class="lg:col-span-7 flex flex-col items-start gap-4">
+              <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#ffe4de] text-[#9e3828] border border-[#c85a48]/20 shadow-2xs">
+                <span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">favorite</span>
+                <span class="font-label-sm text-xs uppercase tracking-wider font-bold">Resin Art Memories × Vistāra Krafts Studio</span>
+              </div>
+
+              <h1 class="font-headline-lg text-3xl sm:text-5xl text-primary font-bold tracking-tight leading-[1.12]">
+                Hold Your Most Intimate Memories in <span class="italic text-[#c85a48] font-serif">Liquid Glass</span>.
+              </h1>
+
+              <p class="font-body-lg text-sm sm:text-base text-on-surface-variant max-w-xl leading-relaxed">
+                From preserving wedding varmalas &amp; anniversary roses in museum-grade 50mm blocks to supplying India’s purest 3:1 &amp; 2:1 optical epoxy systems. Crafted to flirt with light for decades.
+              </p>
+
+              <!-- Primary & Secondary Conversion CTAs -->
+              <div class="flex flex-col sm:flex-row w-full sm:w-auto gap-3 pt-1">
+                <button type="button" onclick="window.navigateTo('catalog', 'all')" class="btn-shimmer h-12 px-7 rounded-xl bg-primary hover:bg-primary-container text-on-primary font-title-md text-sm font-semibold flex items-center justify-center gap-2 shadow-md active:scale-[0.98] transition-all cursor-pointer">
+                  <span>Shop Keepsakes &amp; Epoxy Kits</span>
+                  <span class="material-symbols-outlined text-lg">arrow_forward</span>
+                </button>
+                <button type="button" onclick="window.navigateTo('custom-studio')" class="h-12 px-6 rounded-xl bg-white hover:bg-[#fdf6f3] text-primary border border-[#b08d57] font-title-md text-sm font-semibold flex items-center justify-center gap-2 shadow-xs active:scale-[0.98] transition-all cursor-pointer">
+                  <span class="material-symbols-outlined text-lg text-[#c85a48]">auto_awesome</span>
+                  <span>Custom Floral Preservation &amp; Calculator</span>
+                </button>
+              </div>
+
+              <!-- Trust & Optical Clarity Bar -->
+              <div class="w-full mt-2 grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div class="rounded-xl bg-white/90 border border-[#e4e0d8] p-3 flex items-center gap-3 shadow-2xs">
+                  <img src="${esc(Store.IMAGES.floralCube)}" alt="Preserved Bridal Roses" class="w-12 h-12 rounded-lg object-cover shrink-0">
+                  <div class="min-w-0">
+                    <div class="flex items-center gap-1 text-[#c85a48] font-label-sm text-[11px] uppercase font-bold">
+                      <span class="material-symbols-outlined text-sm">local_florist</span>
+                      <span>Pan-India Varmala Pickup</span>
+                    </div>
+                    <p class="text-xs text-on-surface truncate">Doorstep flower pickup in 24h across 19,000+ PINs</p>
+                  </div>
+                </div>
+                <div class="rounded-xl bg-white/90 border border-[#e4e0d8] p-3 flex items-center gap-3 shadow-2xs">
+                  <img src="${esc(Store.IMAGES.ultraclearThumb2)}" alt="Optical Clarity Test Disc" class="w-12 h-12 rounded-lg object-cover shrink-0">
+                  <div class="min-w-0">
+                    <div class="flex items-center gap-1 text-secondary font-label-sm text-[11px] uppercase font-bold">
+                      <span class="material-symbols-outlined text-sm">verified</span>
+                      <span>99.4% Optical Transmission</span>
+                    </div>
+                    <p class="text-xs text-on-surface truncate">ASTM D1003 HALS UV-shielded non-yellowing resin</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Hero Right Showcase Card (5 cols) -->
+            <div class="lg:col-span-5">
+              <div class="relative rounded-2xl overflow-hidden shadow-xl border border-[#b08d57]/40 bg-primary group cursor-pointer" onclick="window.navigateTo('product', 'ram-keep-001')">
+                <div class="aspect-[4/4] sm:aspect-[4/3] lg:aspect-[4/4] w-full overflow-hidden">
+                  <img src="${esc(Store.IMAGES.floralCube)}" alt="Bridal Bouquet Preserved in Crystal Clear Resin" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+                </div>
+                <div class="absolute inset-0 bg-gradient-to-t from-primary/90 via-primary/25 to-transparent flex flex-col justify-end p-5 text-white">
+                  <div class="flex items-center justify-between gap-2 mb-1">
+                    <span class="px-2.5 py-0.5 rounded-full bg-[#c85a48] text-white text-[10px] font-bold uppercase tracking-wider">Most Loved on @resin.art.memories</span>
+                    <span class="font-spec-numeral text-xs bg-black/40 backdrop-blur-xs px-2.5 py-0.5 rounded-full">★ 5.0 (418)</span>
+                  </div>
+                  <h2 class="font-headline-sm text-xl sm:text-2xl font-bold">Eternal Varmala &amp; Rose Keepsake Block</h2>
+                  <p class="text-xs text-white/85 mt-1">Includes silica-gel cryo-drying, 24K gold leaf &amp; couple name engraving</p>
+                  <div class="mt-3 pt-3 border-t border-white/15 flex items-center justify-between">
+                    <div>
+                      <span class="font-spec-numeral text-xl font-bold text-[#ffd79b]">₹4,499</span>
+                      <span class="font-spec-numeral text-xs line-through text-white/60 ml-1.5">₹5,499</span>
+                    </div>
+                    <span class="inline-flex items-center gap-1 text-xs font-semibold bg-white text-primary px-3.5 py-2 rounded-lg">
+                      <span>Customize Piece</span>
+                      <span class="material-symbols-outlined text-sm">arrow_forward</span>
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- First-User Research & Interactive 30-Second Persona Matcher + Pincode Checker -->
+        <section class="px-4 sm:px-8 py-6 grid grid-cols-1 lg:grid-cols-12 gap-5 bg-surface-container-low border-b border-[#e4e0d8]">
+          <!-- Left: Guided Discovery Quiz (7 cols) -->
+          <div class="lg:col-span-7 ram-card p-5 flex flex-col justify-between gap-4 bg-gradient-to-r from-white to-[#fdf6f3]">
+            <div class="flex items-start justify-between gap-2">
+              <div>
+                <div class="flex items-center gap-1.5 text-[#c85a48] font-label-sm text-[11px] uppercase tracking-wider font-bold">
+                  <span class="material-symbols-outlined text-base">psychology</span>
+                  <span>First-User Research Guided Matcher</span>
+                </div>
+                <h2 class="font-headline-sm text-lg sm:text-xl text-primary font-bold mt-0.5">What are you creating or preserving today?</h2>
+                <p class="text-xs text-on-surface-variant">Tap your goal below and we’ll curate the exact formula or bespoke keepsake for you:</p>
+              </div>
+              <span class="px-2.5 py-1 rounded-full bg-secondary-container/50 text-on-secondary-container font-spec-numeral text-[11px] font-bold shrink-0">60/30/10 UX</span>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5" id="persona-quiz-options">
+              <button type="button" onclick="window.selectPersonaGoal('preserve')" class="p-3 rounded-xl border ${AppState.quizAnswers.goal === 'preserve' ? 'border-[#c85a48] bg-[#ffe4de]/50 ring-2 ring-[#c85a48]/30' : 'border-[#e4e0d8] bg-white'} text-left hover:border-secondary transition-all cursor-pointer">
+                <div class="flex items-center justify-between mb-1">
+                  <span class="material-symbols-outlined text-[#c85a48]">local_florist</span>
+                  <span class="text-[10px] font-bold uppercase text-secondary">Bride / Gift</span>
+                </div>
+                <p class="font-title-md text-xs font-bold text-primary">Preserve My Flowers</p>
+                <p class="text-[11px] text-on-surface-variant mt-0.5">Wedding varmala, bouquet or memorial block</p>
+              </button>
+
+              <button type="button" onclick="window.selectPersonaGoal('decor')" class="p-3 rounded-xl border ${AppState.quizAnswers.goal === 'decor' ? 'border-[#c85a48] bg-[#ffe4de]/50 ring-2 ring-[#c85a48]/30' : 'border-[#e4e0d8] bg-white'} text-left hover:border-secondary transition-all cursor-pointer">
+                <div class="flex items-center justify-between mb-1">
+                  <span class="material-symbols-outlined text-secondary">diamond</span>
+                  <span class="text-[10px] font-bold uppercase text-secondary">Collector</span>
+                </div>
+                <p class="font-title-md text-xs font-bold text-primary">Buy Ready Resin Art</p>
+                <p class="text-[11px] text-on-surface-variant mt-0.5">Ocean trays, geode wall art &amp; brass coasters</p>
+              </button>
+
+              <button type="button" onclick="window.selectPersonaGoal('diy')" class="p-3 rounded-xl border ${AppState.quizAnswers.goal === 'diy' ? 'border-[#c85a48] bg-[#ffe4de]/50 ring-2 ring-[#c85a48]/30' : 'border-[#e4e0d8] bg-white'} text-left hover:border-secondary transition-all cursor-pointer">
+                <div class="flex items-center justify-between mb-1">
+                  <span class="material-symbols-outlined text-primary">science</span>
+                  <span class="text-[10px] font-bold uppercase text-secondary">Resin Artist</span>
+                </div>
+                <p class="font-title-md text-xs font-bold text-primary">DIY Epoxy &amp; Molds</p>
+                <p class="text-[11px] text-on-surface-variant mt-0.5">3:1 &amp; 2:1 resin kits, mica &amp; silicone molds</p>
+              </button>
+            </div>
+
+            <div id="persona-recommendation-box" class="${AppState.quizAnswers.goal ? '' : 'hidden'} p-3 rounded-xl bg-primary text-on-primary flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+              ${renderPersonaRecommendation()}
+            </div>
+          </div>
+
+          <!-- Right: Live Pan-India Transit & Floral Pickup Checker (5 cols) -->
+          <div class="lg:col-span-5 ram-card p-5 flex flex-col justify-between gap-3 bg-white">
+            <div>
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                  <span class="material-symbols-outlined text-primary text-xl">local_shipping</span>
+                  <h3 class="font-title-md text-base text-primary font-bold">Pan-India Transit &amp; Pickup Check</h3>
+                </div>
+                <span class="font-label-sm text-[11px] text-secondary px-2.5 py-0.5 rounded-full bg-secondary-container/40 font-semibold">Air &amp; Surface Cargo</span>
+              </div>
+              <p class="text-xs text-on-surface-variant mt-1">
+                Verify expedited courier dispatch &amp; 24-hour bridal flower pickup via BlueDart, Delhivery &amp; DTDC:
+              </p>
+            </div>
+
+            <form class="flex gap-2" onsubmit="event.preventDefault(); window.submitHomePincode();">
+              <input id="home-pincode-input" type="text" maxlength="6" value="${esc(pinInfo.pin)}" placeholder="Enter 6-digit PIN (e.g. 560001)" class="flex-1 h-11 px-3.5 rounded-lg bg-surface-container-low border border-[#e4e0d8] font-spec-numeral text-sm text-primary focus:outline-none focus:border-primary">
+              <button type="submit" class="h-11 px-5 rounded-lg bg-primary hover:bg-primary-container text-on-primary font-label-md text-xs font-semibold shrink-0 active:scale-95 transition-transform cursor-pointer">
+                Verify PIN
+              </button>
+            </form>
+
+            <div id="home-pincode-result" class="p-3 rounded-lg bg-surface-container-low flex items-start gap-2 text-xs">
+              <span class="material-symbols-outlined text-base text-[#266b4e] shrink-0 mt-0.5">check_circle</span>
+              <span id="home-pincode-msg" class="text-primary leading-relaxed">
+                <strong>PIN ${esc(pinInfo.pin)} (${esc(pinInfo.city)})</strong> — Express Delivery in <strong>${esc(pinInfo.days)}</strong> via ${esc(pinInfo.courier)}. Doorstep Floral Pickup &amp; COD active.
+              </span>
+            </div>
+          </div>
+        </section>
+
+        <!-- Explore by Craft & Memory Project Rail -->
+        <section class="py-7 px-4 sm:px-8 bg-surface flex flex-col gap-4">
+          <div class="flex items-end justify-between">
+            <div>
+              <span class="font-label-sm text-[11px] uppercase tracking-widest text-secondary font-bold">Curated Mediums</span>
+              <h2 class="font-headline-sm text-xl sm:text-2xl text-primary font-bold tracking-tight">Explore by Memory &amp; Craft Project</h2>
+            </div>
+            <button type="button" onclick="window.navigateTo('catalog', 'all')" class="font-label-sm text-xs text-secondary font-semibold flex items-center gap-0.5 hover:underline cursor-pointer">
+              <span>View All 12 Series</span>
+              <span class="material-symbols-outlined text-sm">chevron_right</span>
+            </button>
+          </div>
+
+          <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+            <button type="button" onclick="window.navigateTo('catalog', 'keepsakes')" class="ram-card p-2.5 text-left flex flex-col gap-2 group cursor-pointer">
+              <div class="w-full h-28 rounded-lg overflow-hidden bg-surface-container">
+                <img src="${esc(Store.IMAGES.floralCube)}" alt="Preserved Florals" class="w-full h-full object-cover group-hover:scale-105 transition-transform">
+              </div>
+              <div>
+                <span class="font-title-md text-xs font-bold text-primary block truncate">Bridal Varmala</span>
+                <span class="font-label-sm text-[11px] text-[#c85a48] block">50mm Deep Cast</span>
+              </div>
+            </button>
+
+            <button type="button" onclick="window.navigateTo('catalog', 'casting')" class="ram-card p-2.5 text-left flex flex-col gap-2 group cursor-pointer">
+              <div class="w-full h-28 rounded-lg overflow-hidden bg-surface-container">
+                <img src="${esc(Store.IMAGES.coasterSet)}" alt="Coaster Sets" class="w-full h-full object-cover group-hover:scale-105 transition-transform">
+              </div>
+              <div>
+                <span class="font-title-md text-xs font-bold text-primary block truncate">Botanical Coasters</span>
+                <span class="font-label-sm text-[11px] text-on-surface-variant block">Heat-Shield 3:1</span>
+              </div>
+            </button>
+
+            <button type="button" onclick="window.navigateTo('catalog', 'keepsakes')" class="ram-card p-2.5 text-left flex flex-col gap-2 group cursor-pointer">
+              <div class="w-full h-28 rounded-lg overflow-hidden bg-surface-container">
+                <img src="${esc(Store.IMAGES.oceanWave)}" alt="Ocean & Wave Art" class="w-full h-full object-cover group-hover:scale-105 transition-transform">
+              </div>
+              <div>
+                <span class="font-title-md text-xs font-bold text-primary block truncate">Ocean &amp; Wave Art</span>
+                <span class="font-label-sm text-[11px] text-on-surface-variant block">High Viscosity 1:1</span>
+              </div>
+            </button>
+
+            <button type="button" onclick="window.navigateTo('catalog', 'pigments')" class="ram-card p-2.5 text-left flex flex-col gap-2 group cursor-pointer">
+              <div class="w-full h-28 rounded-lg overflow-hidden bg-surface-container">
+                <img src="${esc(Store.IMAGES.geodeCanvas)}" alt="Geode Canvas" class="w-full h-full object-cover group-hover:scale-105 transition-transform">
+              </div>
+              <div>
+                <span class="font-title-md text-xs font-bold text-primary block truncate">Geode Wall Art</span>
+                <span class="font-label-sm text-[11px] text-on-surface-variant block">Quartz &amp; Mica</span>
+              </div>
+            </button>
+
+            <button type="button" onclick="window.navigateTo('catalog', 'deep_pour')" class="ram-card p-2.5 text-left flex flex-col gap-2 group cursor-pointer">
+              <div class="w-full h-28 rounded-lg overflow-hidden bg-surface-container">
+                <img src="${esc(Store.IMAGES.riverTable)}" alt="Deep Cast Tables" class="w-full h-full object-cover group-hover:scale-105 transition-transform">
+              </div>
+              <div>
+                <span class="font-title-md text-xs font-bold text-primary block truncate">Deep River Tables</span>
+                <span class="font-label-sm text-[11px] text-on-surface-variant block">Ultra Slow 2:1 Pour</span>
+              </div>
+            </button>
+
+            <button type="button" onclick="window.navigateTo('catalog', 'uv_resin')" class="ram-card p-2.5 text-left flex flex-col gap-2 group cursor-pointer">
+              <div class="w-full h-28 rounded-lg overflow-hidden bg-surface-container">
+                <img src="${esc(Store.IMAGES.jewelryBezel)}" alt="Jewelry & Bezels" class="w-full h-full object-cover group-hover:scale-105 transition-transform">
+              </div>
+              <div>
+                <span class="font-title-md text-xs font-bold text-primary block truncate">Jewelry &amp; Bezels</span>
+                <span class="font-label-sm text-[11px] text-on-surface-variant block">90s Hard UV Cure</span>
+              </div>
+            </button>
+          </div>
+        </section>
+
+        <!-- Decorative Art Deco Divider -->
+        <div class="px-8"><div class="deco-divider"><span class="deco-diamond"></span></div></div>
+
+        <!-- Bestselling Keepsakes & Archival Resin Systems Grid -->
+        <section class="px-4 sm:px-8 py-7 bg-surface flex flex-col gap-5" id="home-catalogue">
+          <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-2">
+            <div>
+              <div class="inline-flex items-center gap-1.5 text-secondary font-label-sm text-xs uppercase tracking-wider mb-1 font-bold">
+                <span class="material-symbols-outlined text-sm">diamond</span>
+                <span>Archival Craft &amp; Keepsake Series</span>
+              </div>
+              <h2 class="font-headline-sm text-2xl sm:text-3xl text-primary font-bold tracking-tight">Bestselling Keepsakes &amp; Chemical Systems</h2>
+            </div>
+            <div class="flex items-center gap-2">
+              <button type="button" onclick="window.navigateTo('catalog', 'keepsakes')" class="px-3.5 py-1.5 rounded-full bg-[#ffe4de] text-[#9e3828] font-label-sm text-xs font-bold hover:opacity-90 cursor-pointer">Preserved Keepsakes</button>
+              <button type="button" onclick="window.navigateTo('catalog', 'casting')" class="px-3.5 py-1.5 rounded-full bg-surface-container-high text-primary font-label-sm text-xs font-semibold hover:bg-secondary-container cursor-pointer">Epoxy Kits</button>
+              <button type="button" onclick="window.navigateTo('catalog', 'all')" class="px-3.5 py-1.5 rounded-full bg-primary text-on-primary font-label-sm text-xs font-semibold cursor-pointer">All (12)</button>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3.5 sm:gap-5">
+            ${featuredProducts.map(p => renderProductCard(p, false)).join('')}
+          </div>
+        </section>
+
+        <!-- Social Commerce Teaser Strip (@resin.art.memories) -->
+        <section class="px-4 sm:px-8 py-8 bg-[#fdf6f3] border-y border-[#e4e0d8] flex flex-col gap-5">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div>
+              <div class="inline-flex items-center gap-1.5 text-[#c85a48] font-label-sm text-xs uppercase tracking-wider font-bold">
+                <span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">favorite</span>
+                <span>Social Commerce Community • @resin.art.memories</span>
+              </div>
+              <h2 class="font-headline-sm text-2xl text-primary font-bold">Shop Directly from Our Studio Reels &amp; Client Diaries</h2>
+            </div>
+            <button type="button" onclick="window.navigateTo('social')" class="self-start sm:self-auto px-5 py-2.5 rounded-xl bg-[#c85a48] text-white font-label-md text-xs font-bold flex items-center gap-1.5 shadow-sm hover:opacity-95 cursor-pointer">
+              <span>Explore Full Social Feed</span>
+              <span class="material-symbols-outlined text-base">arrow_forward</span>
+            </button>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            ${socialPosts.map(post => {
+              const taggedProduct = Store.getProductById(post.productId);
+              return `
+                <div class="ram-card overflow-hidden flex flex-col justify-between bg-white">
+                  <div>
+                    <div class="p-3 flex items-center justify-between border-b border-surface-container">
+                      <div class="flex items-center gap-2">
+                        <img src="${esc(post.avatar)}" alt="${esc(post.handle)}" class="w-8 h-8 rounded-full object-cover ring-2 ring-[#c85a48]">
+                        <div>
+                          <p class="text-xs font-bold text-primary leading-none">${esc(post.handle)}</p>
+                          <p class="text-[10px] text-on-surface-variant mt-0.5">${esc(post.location)}</p>
+                        </div>
+                      </div>
+                      <span class="px-2 py-0.5 rounded-full bg-[#ffe4de] text-[#9e3828] text-[10px] font-bold">#${esc(post.tag)}</span>
+                    </div>
+                    <div class="relative aspect-square bg-surface-container overflow-hidden cursor-pointer" onclick="window.navigateTo('social')">
+                      <img src="${esc(post.image)}" alt="${esc(post.caption)}" class="w-full h-full object-cover hover:scale-105 transition-transform duration-500">
+                      <span class="absolute top-2.5 left-2.5 px-2.5 py-0.5 rounded-full bg-black/60 backdrop-blur-xs text-white text-[10px] font-semibold">${esc(post.badge)}</span>
+                    </div>
+                    <div class="p-3.5">
+                      <div class="flex items-center justify-between mb-2">
+                        <div class="flex items-center gap-3">
+                          <button type="button" onclick="window.handleSocialLike('${esc(post.id)}')" class="flex items-center gap-1 text-xs font-semibold ${post.liked ? 'text-[#c85a48]' : 'text-primary'} cursor-pointer">
+                            <span class="material-symbols-outlined text-lg" style="font-variation-settings: 'FILL' ${post.liked ? 1 : 0};">favorite</span>
+                            <span class="font-spec-numeral">${post.likes.toLocaleString('en-IN')}</span>
+                          </button>
+                          <button type="button" onclick="window.navigateTo('social')" class="flex items-center gap-1 text-xs text-on-surface-variant hover:text-primary cursor-pointer">
+                            <span class="material-symbols-outlined text-lg">chat_bubble</span>
+                            <span class="font-spec-numeral">${post.comments.length}</span>
+                          </button>
+                        </div>
+                        <button type="button" onclick="window.handleSocialSave('${esc(post.id)}')" class="text-primary hover:text-secondary cursor-pointer">
+                          <span class="material-symbols-outlined text-lg" style="font-variation-settings: 'FILL' ${post.saved ? 1 : 0};">bookmark</span>
+                        </button>
+                      </div>
+                      <p class="text-xs text-on-surface line-clamp-2 leading-relaxed">${esc(post.caption)}</p>
+                    </div>
+                  </div>
+                  ${taggedProduct ? `
+                    <div class="px-3.5 py-2.5 bg-surface-container-low border-t border-surface-container flex items-center justify-between gap-2">
+                      <div class="flex items-center gap-2 min-w-0 cursor-pointer" onclick="window.navigateTo('product', '${esc(taggedProduct.id)}')">
+                        <img src="${esc(taggedProduct.image)}" alt="${esc(taggedProduct.shortName)}" class="w-9 h-9 rounded-lg object-cover shrink-0">
+                        <div class="min-w-0">
+                          <p class="text-xs font-bold text-primary truncate">${esc(taggedProduct.shortName)}</p>
+                          <p class="font-spec-numeral text-[11px] text-secondary font-bold">${formatINR(taggedProduct.price)}</p>
+                        </div>
+                      </div>
+                      <button type="button" onclick="window.handleQuickAdd(this, '${esc(taggedProduct.id)}')" class="px-3 py-1.5 rounded-lg bg-primary text-on-primary text-[11px] font-semibold shrink-0 cursor-pointer">
+                        Add to Bag
+                      </button>
+                    </div>
+                  ` : ''}
+                </div>
+              `;
+            }).join('')}
+          </div>
+        </section>
+
+        <!-- Studio Knowledge Hub & Interactive Quick Pour Calculator + Wholesale Banner -->
+        <section class="px-4 sm:px-8 py-8 grid grid-cols-1 lg:grid-cols-12 gap-6 bg-surface">
+          <!-- Interactive Pour Volume Calculator Card (6 cols) -->
+          <div class="lg:col-span-6 ram-card p-5 flex flex-col justify-between gap-4">
+            <div class="flex items-start justify-between gap-3">
+              <div>
+                <span class="font-label-sm text-[11px] text-secondary font-bold uppercase tracking-wider">Studio Knowledge Hub</span>
+                <h3 class="font-headline-sm text-xl text-primary font-bold mt-0.5">Interactive Epoxy Pour &amp; Ratio Calculator</h3>
+                <p class="text-xs text-on-surface-variant mt-1">Calculate exact Part A (Resin) + Part B (Hardener) gram weights for any mould dimension:</p>
+              </div>
+              <span class="material-symbols-outlined text-secondary text-3xl">calculate</span>
+            </div>
+
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 bg-surface-container-low p-3.5 rounded-xl">
+              <div>
+                <label class="font-label-sm text-[11px] text-on-surface-variant block mb-1" for="home-calc-len">Length (cm)</label>
+                <input id="home-calc-len" type="number" min="1" max="500" value="${AppState.calcLength}" class="w-full h-9 px-2.5 bg-white rounded-lg border border-[#e4e0d8] font-spec-numeral text-sm text-primary">
+              </div>
+              <div>
+                <label class="font-label-sm text-[11px] text-on-surface-variant block mb-1" for="home-calc-wid">Width (cm)</label>
+                <input id="home-calc-wid" type="number" min="1" max="500" value="${AppState.calcWidth}" class="w-full h-9 px-2.5 bg-white rounded-lg border border-[#e4e0d8] font-spec-numeral text-sm text-primary">
+              </div>
+              <div>
+                <label class="font-label-sm text-[11px] text-on-surface-variant block mb-1" for="home-calc-dep">Depth (cm)</label>
+                <input id="home-calc-dep" type="number" min="0.1" max="10" step="0.5" value="${AppState.calcDepth}" class="w-full h-9 px-2.5 bg-white rounded-lg border border-[#e4e0d8] font-spec-numeral text-sm text-primary">
+              </div>
+              <div>
+                <label class="font-label-sm text-[11px] text-on-surface-variant block mb-1" for="home-calc-sys">Ratio System</label>
+                <select id="home-calc-sys" class="w-full h-9 px-2 bg-white rounded-lg border border-[#e4e0d8] font-label-sm text-xs text-primary">
+                  <option value="3:1" ${AppState.calcSystem === '3:1' ? 'selected' : ''}>3:1 UltraClear</option>
+                  <option value="2:1" ${AppState.calcSystem === '2:1' ? 'selected' : ''}>2:1 Deep Pour</option>
+                  <option value="1:1" ${AppState.calcSystem === '1:1' ? 'selected' : ''}>1:1 Doming</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="flex flex-col sm:flex-row items-center justify-between gap-3 p-3.5 rounded-xl bg-surface-container-low border border-[#e4e0d8]">
+              <div>
+                <span class="text-xs text-on-surface-variant block">Recommended Batch Weight (1.1 g/cm³ density):</span>
+                <span id="home-calc-output" class="font-spec-numeral text-sm sm:text-base font-bold text-primary block mt-0.5">
+                  ~660g total (Part A: 495g + Part B: 165g)
+                </span>
+              </div>
+              <button type="button" onclick="window.runHomeCalculator()" class="w-full sm:w-auto px-4 py-2.5 rounded-lg bg-primary text-on-primary text-xs font-semibold shrink-0 cursor-pointer">
+                Calculate Grams
+              </button>
+            </div>
+          </div>
+
+          <!-- Studio & Production Wholesale Card (6 cols) -->
+          <div class="lg:col-span-6 rounded-2xl bg-tertiary text-on-tertiary p-6 relative overflow-hidden shadow-md flex flex-col justify-between gap-4">
+            <div aria-hidden="true" class="absolute -right-12 -bottom-12 w-52 h-52 rounded-full bg-secondary/15 pointer-events-none"></div>
+            <div class="relative flex flex-col gap-2">
+              <div class="flex items-center gap-2">
+                <span class="material-symbols-outlined text-secondary-fixed text-2xl">warehouse</span>
+                <span class="font-label-sm text-xs text-secondary-fixed uppercase tracking-wider font-bold">Industrial Craft, Bridal Planners &amp; Furniture Supply</span>
+              </div>
+              <h3 class="font-headline-sm text-2xl text-white font-bold">Studio &amp; Production Wholesale</h3>
+              <p class="text-xs sm:text-sm text-on-tertiary-container leading-relaxed">
+                Tiered pricing from 10kg pails to 200kg drums with official 18% GST Input Tax Credit invoices and Batch Certificate of Analysis (COA) for verified workshops.
+              </p>
+            </div>
+            <div class="relative flex flex-wrap items-center gap-3 pt-2">
+              <button type="button" onclick="window.openTdsModal('wholesale')" class="h-11 px-5 rounded-xl bg-secondary text-on-secondary font-label-md text-xs font-bold flex items-center gap-2 shadow-sm active:scale-95 transition-transform cursor-pointer">
+                <span class="material-symbols-outlined text-lg">download</span>
+                <span>View Wholesale Slab &amp; COA Sheet</span>
+              </button>
+              <button type="button" onclick="window.navigateTo('account')" class="h-11 px-4 rounded-xl bg-white/10 hover:bg-white/20 text-white font-label-md text-xs font-semibold flex items-center gap-1.5 cursor-pointer">
+                <span class="material-symbols-outlined text-base">sync</span>
+                <span>Host Admin &amp; Supabase Status</span>
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <!-- Direct Stitch Screen Archive Explorer (Links to every screen in the extracted zip) -->
+        <section class="px-4 sm:px-8 py-6 bg-surface-container-low border-t border-[#e4e0d8]">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-3">
+            <div>
+              <span class="font-label-sm text-[10px] uppercase tracking-widest text-secondary font-bold">Stitch Design System Screens (All Verified &amp; Repaired)</span>
+              <h3 class="font-headline-sm text-base text-primary font-bold">Direct Screen Flows in Workspace</h3>
+            </div>
+            <span class="text-xs text-on-surface-variant">Every static Stitch screen below has also been debugged &amp; linked:</span>
+          </div>
+          <div class="flex flex-wrap gap-2">
+            <a href="./vist_ra_krafts_home_storefront/code.html" class="px-3 py-1.5 rounded-lg bg-white border border-[#e4e0d8] text-xs font-medium text-primary hover:border-secondary">Vistāra Home Storefront</a>
+            <a href="./vist_ra_krafts_resin_catalog_filters/code.html" class="px-3 py-1.5 rounded-lg bg-white border border-[#e4e0d8] text-xs font-medium text-primary hover:border-secondary">Vistāra Catalog &amp; Filters</a>
+            <a href="./vist_ra_krafts_ultraclear_3_1_pdp/code.html" class="px-3 py-1.5 rounded-lg bg-white border border-[#e4e0d8] text-xs font-medium text-primary hover:border-secondary">UltraClear 3:1 PDP</a>
+            <a href="./vist_ra_krafts_cart_checkout/code.html" class="px-3 py-1.5 rounded-lg bg-white border border-[#e4e0d8] text-xs font-medium text-primary hover:border-secondary">Vistāra Cart &amp; Checkout</a>
+            <a href="./potry_storefront_discovery_interactive/code.html" class="px-3 py-1.5 rounded-lg bg-white border border-[#e4e0d8] text-xs font-medium text-primary hover:border-secondary">POTRY Interactive Storefront</a>
+            <a href="./potry_sienna_ridged_pitcher_interactive_pdp/code.html" class="px-3 py-1.5 rounded-lg bg-white border border-[#e4e0d8] text-xs font-medium text-primary hover:border-secondary">POTRY Sienna Pitcher PDP</a>
+            <a href="./potry_navigation_drawer/code.html" class="px-3 py-1.5 rounded-lg bg-white border border-[#e4e0d8] text-xs font-medium text-primary hover:border-secondary">POTRY Navigation Overlay</a>
+          </div>
+        </section>
+      </div>
+    `;
+  }
+
+  function renderPersonaRecommendation() {
+    const goal = AppState.quizAnswers.goal;
+    if (goal === 'preserve') {
+      return `
+        <div class="flex items-center gap-3">
+          <img src="${esc(Store.IMAGES.floralCube)}" alt="Varmala Block" class="w-12 h-12 rounded-lg object-cover shrink-0">
+          <div>
+            <span class="text-[10px] uppercase tracking-wider text-[#ffd79b] font-bold">98% Match for Brides &amp; Anniversaries</span>
+            <p class="text-xs sm:text-sm font-bold text-white">Eternal Varmala &amp; Bridal Bouquet 12" Time-Capsule Block (₹4,499)</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-2 shrink-0 w-full sm:w-auto">
+          <button type="button" onclick="window.navigateTo('product', 'ram-keep-001')" class="flex-1 sm:flex-initial px-3.5 py-2 rounded-lg bg-[#c85a48] text-white text-xs font-bold cursor-pointer">Customize Now</button>
+        </div>
+      `;
+    }
+    if (goal === 'decor') {
+      return `
+        <div class="flex items-center gap-3">
+          <img src="${esc(Store.IMAGES.oceanWave)}" alt="Ocean Tray" class="w-12 h-12 rounded-lg object-cover shrink-0">
+          <div>
+            <span class="text-[10px] uppercase tracking-wider text-[#ffd79b] font-bold">Top Hand-Poured Home &amp; Gift Piece</span>
+            <p class="text-xs sm:text-sm font-bold text-white">Maldives Ocean Wave Burma Teak Tray &amp; Coasters (₹2,199)</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-2 shrink-0 w-full sm:w-auto">
+          <button type="button" onclick="window.navigateTo('product', 'ram-keep-002')" class="flex-1 sm:flex-initial px-3.5 py-2 rounded-lg bg-secondary text-white text-xs font-bold cursor-pointer">View Piece</button>
+        </div>
+      `;
+    }
+    return `
+      <div class="flex items-center gap-3">
+        <img src="${esc(Store.IMAGES.ultraclearMain)}" alt="UltraClear 3:1" class="w-12 h-12 rounded-lg object-cover shrink-0">
+        <div>
+          <span class="text-[10px] uppercase tracking-wider text-[#ffd79b] font-bold">#1 Studio Formulation</span>
+          <p class="text-xs sm:text-sm font-bold text-white">UltraClear 3:1 Casting Resin 1.2kg Studio Kit (₹1,299)</p>
+        </div>
+      </div>
+      <div class="flex items-center gap-2 shrink-0 w-full sm:w-auto">
+        <button type="button" onclick="window.navigateTo('product', 'vk-epx-301')" class="flex-1 sm:flex-initial px-3.5 py-2 rounded-lg bg-secondary text-white text-xs font-bold cursor-pointer">View Specs</button>
+      </div>
+    `;
+  }
+
+  // =========================================================================
+  // 2. CATALOG & TECHNICAL FILTERS VIEW
+  // =========================================================================
+  function getFilteredCatalogProducts() {
+    let list = [...Store.getProducts()];
+
+    if (AppState.catalogCategory && AppState.catalogCategory !== 'all') {
+      list = list.filter(p => p.category === AppState.catalogCategory || p.subCategory === AppState.catalogCategory);
+    }
+
+    if (AppState.catalogRatioFilter && AppState.catalogRatioFilter !== 'all') {
+      list = list.filter(p => p.ratio === AppState.catalogRatioFilter);
+    }
+
+    if (AppState.catalogMaxPrice) {
+      list = list.filter(p => p.price <= AppState.catalogMaxPrice);
+    }
+
+    if (AppState.catalogSearch.trim()) {
+      const q = AppState.catalogSearch.trim().toLowerCase();
+      list = list.filter(p =>
+        p.name.toLowerCase().includes(q) ||
+        p.subtitle.toLowerCase().includes(q) ||
+        p.category.toLowerCase().includes(q) ||
+        p.badge.toLowerCase().includes(q) ||
+        p.ratio.toLowerCase().includes(q)
+      );
+    }
+
+    if (AppState.catalogSort === 'price_asc') {
+      list.sort((a, b) => a.price - b.price);
+    } else if (AppState.catalogSort === 'price_desc') {
+      list.sort((a, b) => b.price - a.price);
+    } else if (AppState.catalogSort === 'rating') {
+      list.sort((a, b) => b.rating - a.rating || b.reviewsCount - a.reviewsCount);
+    } else if (AppState.catalogSort === 'viscosity') {
+      const order = { low: 1, medium: 2, high: 3 };
+      list.sort((a, b) => (order[a.viscosity] || 2) - (order[b.viscosity] || 2));
+    } else {
+      list.sort((a, b) => b.reviewsCount - a.reviewsCount);
+    }
+
+    return list;
+  }
+
+  function renderCatalogView() {
+    const filtered = getFilteredCatalogProducts();
+    const visible = filtered.slice(0, AppState.catalogVisibleCount);
+    const categories = [
+      { id: 'all', label: 'All (12)' },
+      { id: 'keepsakes', label: '✨ Floral & Art Keepsakes' },
+      { id: 'casting', label: 'Casting 3:1' },
+      { id: 'deep_pour', label: 'Deep Pour 2:1' },
+      { id: 'doming', label: 'Doming 1:1' },
+      { id: 'uv_resin', label: 'UV Jewelry' },
+      { id: 'pigments', label: 'Mica Pigments' },
+      { id: 'molds', label: 'Silicone Molds' },
+      { id: 'ceramics', label: 'Stoneware Vessels' }
+    ];
+
+    return `
+      <div class="route-view-enter flex flex-col w-full max-w-7xl mx-auto px-4 sm:px-8 py-5 gap-4">
+        <!-- Category Header -->
+        <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-3">
+          <div>
+            <div class="flex items-center gap-1.5 text-on-surface-variant font-label-sm text-xs uppercase tracking-wider">
+              <button type="button" onclick="window.navigateTo('home')" class="hover:text-primary cursor-pointer">Home</button>
+              <span class="material-symbols-outlined text-xs">chevron_right</span>
+              <span class="text-secondary font-bold">Storefront Catalogue</span>
+            </div>
+            <h1 class="font-headline-lg text-2xl sm:text-4xl text-primary font-bold tracking-tight mt-1">
+              Keepsake Art &amp; Archival Resin Systems
+            </h1>
+            <p class="text-xs sm:text-sm text-on-surface-variant mt-0.5">
+              Bespoke preserved floral blocks, hand-poured ocean decor, and ISO-certified 3:1, 2:1 &amp; UV epoxy formulations.
+            </p>
+          </div>
+          <div class="flex items-center gap-2 bg-surface-container-low px-3.5 py-2 rounded-xl border border-[#e4e0d8] self-start sm:self-end">
+            <span class="material-symbols-outlined text-secondary text-base">verified</span>
+            <span class="font-label-sm text-xs text-primary font-semibold">Batch 2026-C • ISO 9001 Lab Certified</span>
+          </div>
+        </div>
+
+        <!-- Horizontal Category Pills -->
+        <div class="flex items-center gap-2 overflow-x-auto no-scrollbar py-1">
+          ${categories.map(cat => `
+            <button type="button" onclick="window.setCatalogCategory('${cat.id}')" class="px-4 py-2 rounded-full font-label-sm text-xs whitespace-nowrap transition-all cursor-pointer ${AppState.catalogCategory === cat.id ? 'bg-primary text-on-primary font-bold shadow-xs' : 'bg-surface-container-high text-on-surface-variant hover:bg-secondary-container/50'}">
+              ${esc(cat.label)}
+            </button>
+          `).join('')}
+        </div>
+
+        <!-- Sticky Search, Filter & Sort Controls Bar -->
+        <div class="sticky top-16 z-30 bg-surface/95 backdrop-blur-md py-3 border-y border-[#e4e0d8] flex flex-col gap-2.5">
+          <div class="flex flex-wrap items-center justify-between gap-2.5">
+            <!-- Instant Search Input -->
+            <div class="relative flex-1 min-w-[200px]">
+              <span class="material-symbols-outlined text-on-surface-variant text-lg absolute left-3 top-2.5">search</span>
+              <input id="catalog-search-input" type="text" value="${esc(AppState.catalogSearch)}" oninput="window.setCatalogSearch(this.value)" placeholder="Search varmala block, 3:1 resin, ocean tray, mica, mold..." class="w-full h-10 pl-9 pr-8 rounded-lg bg-white border border-[#e4e0d8] text-xs sm:text-sm text-primary focus:outline-none focus:border-primary">
+              ${AppState.catalogSearch ? `
+                <button type="button" onclick="window.setCatalogSearch('')" class="absolute right-2.5 top-2.5 text-outline hover:text-primary">
+                  <span class="material-symbols-outlined text-base">close</span>
+                </button>
+              ` : ''}
+            </div>
+
+            <div class="flex items-center gap-2">
+              <!-- Filter Drawer Trigger -->
+              <button type="button" onclick="window.toggleCatalogFilterDrawer(true)" class="h-10 px-3.5 rounded-lg bg-primary text-on-primary font-label-sm text-xs font-semibold flex items-center gap-1.5 shadow-xs cursor-pointer">
+                <span class="material-symbols-outlined text-base">tune</span>
+                <span>Specs Filter</span>
+              </button>
+
+              <!-- Sort Select -->
+              <select id="catalog-sort-select" aria-label="Sort products" onchange="window.setCatalogSort(this.value)" class="h-10 px-3 rounded-lg bg-white border border-[#e4e0d8] font-label-sm text-xs text-primary focus:outline-none focus:border-primary cursor-pointer">
+                <option value="popular" ${AppState.catalogSort === 'popular' ? 'selected' : ''}>Sort: Popularity</option>
+                <option value="price_asc" ${AppState.catalogSort === 'price_asc' ? 'selected' : ''}>Price: Low to High</option>
+                <option value="price_desc" ${AppState.catalogSort === 'price_desc' ? 'selected' : ''}>Price: High to Low</option>
+                <option value="rating" ${AppState.catalogSort === 'rating' ? 'selected' : ''}>Highest Rated</option>
+                <option value="viscosity" ${AppState.catalogSort === 'viscosity' ? 'selected' : ''}>Viscosity: Low–High</option>
+              </select>
+
+              <!-- Grid / List Switcher -->
+              <div class="flex items-center bg-surface-container-low p-1 rounded-lg border border-[#e4e0d8]">
+                <button type="button" aria-label="Grid View" onclick="window.setCatalogView('grid')" class="w-8 h-8 rounded flex items-center justify-center ${AppState.catalogView === 'grid' ? 'bg-white text-primary shadow-2xs' : 'text-on-surface-variant'} cursor-pointer">
+                  <span class="material-symbols-outlined text-lg">grid_view</span>
+                </button>
+                <button type="button" aria-label="List View" onclick="window.setCatalogView('list')" class="w-8 h-8 rounded flex items-center justify-center ${AppState.catalogView === 'list' ? 'bg-white text-primary shadow-2xs' : 'text-on-surface-variant'} cursor-pointer">
+                  <span class="material-symbols-outlined text-lg">view_stream</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Active Filter Summary Row -->
+          <div class="flex items-center justify-between text-xs text-on-surface-variant">
+            <div class="flex items-center gap-1.5 flex-wrap">
+              ${AppState.catalogCategory !== 'all' ? `
+                <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-surface-container-high text-primary font-medium">
+                  Category: ${esc(AppState.catalogCategory)}
+                  <button type="button" onclick="window.setCatalogCategory('all')" class="material-symbols-outlined text-xs">close</button>
+                </span>
+              ` : ''}
+              ${AppState.catalogRatioFilter !== 'all' ? `
+                <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-surface-container-high text-primary font-medium">
+                  Ratio: ${esc(AppState.catalogRatioFilter)}
+                  <button type="button" onclick="window.setCatalogRatio('all')" class="material-symbols-outlined text-xs">close</button>
+                </span>
+              ` : ''}
+              ${AppState.catalogMaxPrice < 12000 ? `
+                <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-surface-container-high text-primary font-medium">
+                  Max: ${formatINR(AppState.catalogMaxPrice)}
+                  <button type="button" onclick="window.setCatalogMaxPrice(12000)" class="material-symbols-outlined text-xs">close</button>
+                </span>
+              ` : ''}
+              <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-[#e8f5e9] text-[#266b4e] font-semibold">
+                In Stock • Pan-India Dispatch
+              </span>
+            </div>
+            <span class="font-spec-numeral font-bold text-primary shrink-0">${filtered.length} Products</span>
+          </div>
+        </div>
+
+        <!-- Product Grid or Empty State -->
+        ${filtered.length === 0 ? `
+          <div class="ram-card p-10 text-center flex flex-col items-center gap-3 my-4">
+            <span class="material-symbols-outlined text-4xl text-secondary">search_off</span>
+            <h3 class="font-headline-sm text-xl text-primary font-bold">No matching formulations or keepsakes</h3>
+            <p class="text-xs text-on-surface-variant max-w-sm">Try clearing your active search query or resetting the technical ratio filters.</p>
+            <button type="button" onclick="window.resetCatalogFilters()" class="px-5 py-2.5 rounded-lg bg-primary text-on-primary text-xs font-semibold cursor-pointer">Reset All Filters</button>
+          </div>
+        ` : `
+          <div class="${AppState.catalogView === 'list' ? 'flex flex-col gap-3.5' : 'grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3.5 sm:gap-5'}" id="catalog-product-grid">
+            ${visible.map(p => renderProductCard(p, AppState.catalogView === 'list')).join('')}
+          </div>
+        `}
+
+        <!-- Pagination / Load More Section -->
+        ${filtered.length > visible.length ? `
+          <div class="py-6 flex flex-col items-center gap-3">
+            <p class="text-xs text-on-surface-variant font-spec-numeral">Showing <strong>${visible.length}</strong> of <strong>${filtered.length}</strong> formulations</p>
+            <button type="button" onclick="window.loadMoreCatalog()" class="px-6 py-3 rounded-xl bg-primary text-on-primary font-label-md text-xs font-semibold flex items-center gap-2 shadow-sm cursor-pointer">
+              <span class="material-symbols-outlined text-base">refresh</span>
+              <span>Load Remaining (${filtered.length - visible.length}) Products</span>
+            </button>
+          </div>
+        ` : ''}
+      </div>
+    `;
+  }
+
+  // =========================================================================
+  // 3. PRODUCT DETAIL PAGE (PDP) VIEW
+  // =========================================================================
+  function renderPdpView() {
+    const product = Store.getProductById(AppState.currentProductId);
+    const variants = product.variants || [];
+    const activeVariant = variants[AppState.selectedVariantIdx] || variants[0] || {
+      id: 'default',
+      label: 'Standard Edition',
+      desc: product.subtitle,
+      price: product.price,
+      regularPrice: product.regularPrice,
+      unitPrice: product.unitPriceLabel
+    };
+
+    const currentPrice = activeVariant.price;
+    const regularPrice = activeVariant.regularPrice || currentPrice;
+    const discountPct = regularPrice > currentPrice ? Math.round(((regularPrice - currentPrice) / regularPrice) * 100) : 0;
+
+    // Tiered volume pricing calculation synced with Store.getEffectiveUnitPrice
+    const tier1Price = Store.getEffectiveUnitPrice(currentPrice, 1);
+    const tier2Price = Store.getEffectiveUnitPrice(currentPrice, 3);
+    const tier3Price = Store.getEffectiveUnitPrice(currentPrice, 6);
+    const effectiveUnit = Store.getEffectiveUnitPrice(currentPrice, AppState.pdpQty);
+    const totalCtaPrice = effectiveUnit * AppState.pdpQty;
+
+    const gallery = product.gallery && product.gallery.length ? product.gallery : [product.image];
+    const activeImg = gallery[AppState.pdpGalleryIdx] || gallery[0];
+    const isFav = Store.isWishlisted(product.id);
+    const pinInfo = Store.getPincodeInfo();
+    const prodReviews = AppState.reviews[product.id] || AppState.reviews['vk-epx-301'] || [];
+
+    return `
+      <div class="route-view-enter flex flex-col w-full max-w-7xl mx-auto pb-24">
+        <!-- Logistics & Batch Ribbon -->
+        <div class="bg-primary text-on-primary px-4 sm:px-8 py-2 flex items-center justify-between text-[11px] font-label-sm">
+          <div class="flex items-center gap-1.5">
+            <span class="material-symbols-outlined text-secondary-fixed text-sm">science</span>
+            <span class="font-spec-numeral">SKU: ${esc(product.sku)} • Batch VK-26-C38 Lab Certified</span>
+          </div>
+          <span class="text-secondary-fixed flex items-center gap-1 font-semibold">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 inline-block animate-pulse"></span>
+            Fresh Studio Allocation
+          </span>
+        </div>
+
+        <!-- Breadcrumb -->
+        <nav aria-label="Breadcrumb" class="px-4 sm:px-8 py-2.5 bg-surface-container-low text-on-surface-variant text-xs flex items-center justify-between border-b border-[#e4e0d8]">
+          <ol class="flex items-center gap-1.5 overflow-x-auto whitespace-nowrap">
+            <li><button type="button" onclick="window.navigateTo('home')" class="hover:text-primary cursor-pointer">Home</button></li>
+            <li>/</li>
+            <li><button type="button" onclick="window.navigateTo('catalog', '${esc(product.category)}')" class="hover:text-primary capitalize cursor-pointer">${esc(product.category.replace('_', ' '))}</button></li>
+            <li>/</li>
+            <li class="text-primary font-bold truncate">${esc(product.shortName || product.name)}</li>
+          </ol>
+          <button type="button" onclick="window.shareCurrentProduct('${esc(product.id)}')" class="flex items-center gap-1 text-secondary font-semibold hover:underline shrink-0 cursor-pointer">
+            <span class="material-symbols-outlined text-sm">share</span>
+            <span>Share</span>
+          </button>
+        </nav>
+
+        <!-- Main 2-Column Desktop / Stacked Mobile PDP Layout -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 px-4 sm:px-8 pt-6">
+          <!-- Left Column: Gallery (6 cols) -->
+          <div class="lg:col-span-6 flex flex-col gap-3">
+            <div class="relative w-full aspect-square rounded-2xl overflow-hidden bg-white border border-[#e4e0d8] shadow-sm group">
+              <img id="pdp-main-img" src="${esc(activeImg)}" alt="${esc(product.name)}" class="w-full h-full object-cover transition-all duration-300">
+              <div class="absolute top-3.5 left-3.5 flex flex-col gap-1.5 items-start">
+                <span class="bg-secondary text-on-secondary px-3 py-1 rounded-full font-label-sm text-[11px] tracking-wider uppercase font-bold shadow-xs">${esc(product.badge)}</span>
+                <span class="bg-primary/90 text-on-primary px-3 py-1 rounded-full font-label-sm text-[11px] flex items-center gap-1 shadow-xs">
+                  <span class="material-symbols-outlined text-xs text-secondary-fixed">verified</span>
+                  Optical Grade
+                </span>
+              </div>
+              <div class="absolute bottom-3.5 right-3.5 flex items-center gap-2">
+                <span id="pdp-gallery-counter" class="bg-primary/80 backdrop-blur-md text-on-primary px-3 py-1 rounded-full font-spec-numeral text-xs">
+                  ${AppState.pdpGalleryIdx + 1} of ${gallery.length}
+                </span>
+                <button type="button" aria-label="Zoom Image" onclick="window.openLightbox('${esc(activeImg)}', '${esc(product.name)}')" class="w-9 h-9 rounded-full bg-primary/80 backdrop-blur-md text-on-primary flex items-center justify-center hover:bg-primary cursor-pointer">
+                  <span class="material-symbols-outlined text-lg">zoom_in</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- 4-Angle Thumbnail Selector -->
+            <div class="grid grid-cols-4 gap-2.5">
+              ${gallery.map((imgUrl, idx) => `
+                <button type="button" onclick="window.selectPdpGallery(${idx})" class="aspect-square rounded-xl overflow-hidden border-2 transition-all cursor-pointer ${idx === AppState.pdpGalleryIdx ? 'border-primary ring-2 ring-primary/30 scale-[1.02]' : 'border-[#e4e0d8] opacity-75 hover:opacity-100'}">
+                  <img src="${esc(imgUrl)}" alt="Angle ${idx + 1}" class="w-full h-full object-cover">
+                </button>
+              `).join('')}
+            </div>
+
+            <!-- Frequently Paired Studio Bundle -->
+            <div class="ram-card p-4 bg-surface-container-low mt-2 flex flex-col gap-3">
+              <div class="flex items-center justify-between">
+                <h3 class="font-headline-sm text-base text-primary font-bold">Frequently Paired Studio Bundle</h3>
+                <span class="bg-secondary text-on-secondary font-spec-numeral text-[11px] px-2.5 py-0.5 rounded-full font-bold">Save ₹349</span>
+              </div>
+              <div class="flex items-center justify-between gap-2 py-1 overflow-x-auto">
+                <div class="flex flex-col items-center text-center w-24 shrink-0">
+                  <img src="${esc(Store.IMAGES.ultraclearMain)}" alt="UltraClear 3:1" class="w-16 h-16 rounded-lg object-cover border border-[#e4e0d8] bg-white p-0.5">
+                  <span class="text-[11px] font-semibold text-primary mt-1 truncate w-full">UltraClear 3:1</span>
+                  <span class="font-spec-numeral text-xs text-secondary font-bold">₹1,299</span>
+                </div>
+                <span class="material-symbols-outlined text-secondary">add</span>
+                <div class="flex flex-col items-center text-center w-24 shrink-0">
+                  <img src="${esc(Store.IMAGES.siliconeMold4x)}" alt="Silicone Molds" class="w-16 h-16 rounded-lg object-cover border border-[#e4e0d8] bg-white p-0.5">
+                  <span class="text-[11px] font-semibold text-primary mt-1 truncate w-full">Geode Molds (4x)</span>
+                  <span class="font-spec-numeral text-xs text-secondary font-bold">₹449</span>
+                </div>
+                <span class="material-symbols-outlined text-secondary">add</span>
+                <div class="flex flex-col items-center text-center w-24 shrink-0">
+                  <img src="${esc(Store.IMAGES.oceanMicaJar)}" alt="Chameleon Mica" class="w-16 h-16 rounded-lg object-cover border border-[#e4e0d8] bg-white p-0.5">
+                  <span class="text-[11px] font-semibold text-primary mt-1 truncate w-full">Chameleon Mica</span>
+                  <span class="font-spec-numeral text-xs text-secondary font-bold">₹899</span>
+                </div>
+              </div>
+              <div class="p-3 rounded-xl bg-white border border-[#e4e0d8] flex items-center justify-between">
+                <div>
+                  <div class="flex items-baseline gap-1.5">
+                    <span class="font-spec-numeral text-lg font-bold text-primary">₹2,298</span>
+                    <span class="font-spec-numeral text-xs line-through text-outline">₹2,647</span>
+                  </div>
+                  <p class="text-[11px] text-secondary font-medium">Complete resin + 4x geode molds + 12x mica combo</p>
+                </div>
+                <button type="button" onclick="window.addStudioBundle()" class="px-4 py-2.5 rounded-lg bg-secondary hover:opacity-95 text-on-secondary text-xs font-bold flex items-center gap-1.5 shadow-xs cursor-pointer">
+                  <span class="material-symbols-outlined text-base">shopping_bag</span>
+                  <span>Add 3 Items</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right Column: Specs, Variants & Conversion Controls (6 cols) -->
+          <div class="lg:col-span-6 flex flex-col gap-5">
+            <div>
+              <span class="font-label-sm text-secondary uppercase tracking-widest text-[11px] font-bold">Archival Formula &amp; Studio Edition</span>
+              <h1 class="font-headline-lg text-2xl sm:text-3xl text-primary font-bold mt-0.5">${esc(product.name)}</h1>
+              <p class="text-xs sm:text-sm text-on-surface-variant italic mt-1">${esc(product.subtitle)}</p>
+
+              <!-- Ratings & Badges -->
+              <div class="flex items-center flex-wrap gap-2 mt-3">
+                <div class="flex items-center gap-1.5 bg-surface-container-high px-3 py-1 rounded-full text-xs">
+                  <span class="material-symbols-outlined text-amber-500 text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+                  <span class="font-spec-numeral font-bold text-primary">${product.rating.toFixed(1)}</span>
+                  <span class="text-outline">•</span>
+                  <a href="#pdp-reviews" class="text-on-surface-variant underline">${product.reviewsCount} verified reviews</a>
+                </div>
+                <span class="flex items-center gap-1 text-[#266b4e] text-xs bg-[#e8f5e9] px-2.5 py-1 rounded-full font-semibold">
+                  <span class="material-symbols-outlined text-xs">water_drop</span>
+                  98% Bubble-Free Rating
+                </span>
+              </div>
+            </div>
+
+            <!-- Main Dynamic Price Box -->
+            <div class="p-4 rounded-xl bg-surface-container-low border border-[#e4e0d8] flex flex-col gap-1.5">
+              <div class="flex items-baseline justify-between flex-wrap gap-2">
+                <div class="flex items-baseline gap-2.5">
+                  <span id="pdp-display-price" class="font-spec-numeral text-2xl sm:text-3xl text-primary font-bold">${formatINR(currentPrice)}</span>
+                  <span id="pdp-display-regular" class="font-spec-numeral text-sm line-through text-outline">${formatINR(regularPrice)}</span>
+                  ${discountPct > 0 ? `<span id="pdp-display-discount" class="font-spec-numeral text-xs font-bold bg-[#ffe4de] text-[#c85a48] px-2.5 py-0.5 rounded-full">${discountPct}% OFF</span>` : ''}
+                </div>
+                <span id="pdp-display-unit" class="font-spec-numeral text-xs text-primary font-semibold bg-surface-container-highest px-2.5 py-1 rounded-lg">${esc(activeVariant.unitPrice)}</span>
+              </div>
+              <div class="flex items-center justify-between text-xs text-on-surface-variant pt-1">
+                <span>Inclusive of all GST taxes (18% B2B Input Credit eligible)</span>
+                <span class="text-[#266b4e] font-bold flex items-center gap-0.5">
+                  <span class="material-symbols-outlined text-sm">check_circle</span> In Stock
+                </span>
+              </div>
+            </div>
+
+            <!-- Variant / Kit Selector -->
+            <div class="flex flex-col gap-2">
+              <div class="flex justify-between items-center">
+                <label class="font-title-md text-sm text-primary font-bold">Select Kit / Edition Architecture</label>
+                <span class="font-label-sm text-xs text-secondary font-semibold">Self-Leveling Low Exotherm</span>
+              </div>
+              <div class="grid grid-cols-1 gap-2">
+                ${variants.map((v, idx) => {
+                  const isSelected = idx === AppState.selectedVariantIdx;
+                  return `
+                    <button type="button" onclick="window.selectPdpVariant(${idx})" class="p-3.5 rounded-xl border text-left flex items-center justify-between transition-all cursor-pointer ${isSelected ? 'bg-primary text-on-primary border-primary shadow-md' : 'bg-white text-primary border-[#e4e0d8] hover:bg-surface-container-low'}">
+                      <div class="flex items-center gap-3">
+                        <span class="material-symbols-outlined text-xl ${isSelected ? 'text-secondary-fixed' : 'text-secondary'}">workspace_premium</span>
+                        <div>
+                          <div class="flex items-center gap-2">
+                            <p class="font-title-md text-sm font-bold ${isSelected ? 'text-white' : 'text-primary'}">${esc(v.label)}</p>
+                            ${v.popular ? `<span class="px-2 py-0.5 rounded bg-secondary-fixed text-on-secondary-fixed text-[10px] font-bold uppercase">Most Popular</span>` : ''}
+                          </div>
+                          <p class="text-xs ${isSelected ? 'text-white/80' : 'text-on-surface-variant'}">${esc(v.desc)}</p>
+                        </div>
+                      </div>
+                      <div class="text-right shrink-0 pl-2">
+                        <p class="font-spec-numeral text-base font-bold ${isSelected ? 'text-white' : 'text-primary'}">${formatINR(v.price)}</p>
+                        <span class="font-spec-numeral text-[11px] ${isSelected ? 'text-secondary-fixed' : 'text-on-surface-variant'}">${esc(v.unitPrice)}</span>
+                      </div>
+                    </button>
+                  `;
+                }).join('')}
+              </div>
+            </div>
+
+            <!-- Custom Memory / Engraving Note (Especially for Keepsake items) -->
+            <div class="p-3.5 rounded-xl bg-[#fdf6f3] border border-[#c85a48]/30 flex flex-col gap-2">
+              <div class="flex items-center justify-between">
+                <label for="pdp-custom-note" class="text-xs font-bold text-primary flex items-center gap-1.5">
+                  <span class="material-symbols-outlined text-sm text-[#c85a48]">edit_note</span>
+                  <span>${product.isCustomizable ? 'Personalization / Couple Name & Date Engraving (Free)' : 'Studio Batch Note / COA Request (Optional)'}</span>
+                </label>
+                <span class="text-[10px] font-semibold text-[#c85a48] uppercase">Included</span>
+              </div>
+              <input id="pdp-custom-note" type="text" value="${esc(AppState.pdpCustomNote)}" oninput="window.setPdpCustomNote(this.value)" placeholder="${product.isCustomizable ? 'e.g. Aarav & Meera • 12 Oct 2026 • Gold Foil Calligraphy' : 'e.g. Include printed ASTM Certificate of Analysis with shipment'}" class="w-full h-10 px-3 rounded-lg bg-white border border-[#e4e0d8] text-xs text-primary focus:outline-none focus:border-primary">
+            </div>
+
+            <!-- Tiered Studio Volume Pricing -->
+            <div class="p-4 rounded-xl bg-surface-container-high flex flex-col gap-2">
+              <div class="flex items-center justify-between">
+                <h3 class="text-xs font-bold text-primary flex items-center gap-1.5 uppercase tracking-wider">
+                  <span class="material-symbols-outlined text-secondary text-base">local_offer</span>
+                  <span>Tiered Studio Volume Pricing</span>
+                </h3>
+                <span class="text-[11px] text-secondary font-semibold">Auto-applied in bag</span>
+              </div>
+              <div class="grid grid-cols-3 gap-2 text-center">
+                <div class="p-2.5 rounded-lg ${AppState.pdpQty < 3 ? 'bg-primary text-white shadow-xs' : 'bg-white text-primary'}">
+                  <span class="text-[11px] block opacity-80">1 – 2 Units</span>
+                  <span class="font-spec-numeral text-sm font-bold block mt-0.5">${formatINR(tier1Price)}</span>
+                  <span class="text-[10px] block opacity-75">Standard Rate</span>
+                </div>
+                <div class="p-2.5 rounded-lg ${AppState.pdpQty >= 3 && AppState.pdpQty < 6 ? 'bg-primary text-white shadow-xs' : 'bg-white text-primary'}">
+                  <span class="text-[11px] block opacity-80">3 – 5 Units</span>
+                  <span class="font-spec-numeral text-sm font-bold block mt-0.5">${formatINR(tier2Price)}</span>
+                  <span class="text-[10px] font-bold text-secondary-fixed block">Save 8%</span>
+                </div>
+                <div class="p-2.5 rounded-lg ${AppState.pdpQty >= 6 ? 'bg-primary text-white shadow-xs' : 'bg-white text-primary'}">
+                  <span class="text-[11px] block opacity-80">6+ Units</span>
+                  <span class="font-spec-numeral text-sm font-bold block mt-0.5">${formatINR(tier3Price)}</span>
+                  <span class="text-[10px] font-bold text-secondary-fixed block">Save 16%</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Technical Formulation Specs Matrix -->
+            <div class="flex flex-col gap-2">
+              <div class="flex items-center justify-between">
+                <h2 class="font-headline-sm text-lg text-primary font-bold">Technical Formulation &amp; Material Specs</h2>
+                <span class="font-label-sm text-[11px] uppercase tracking-wider text-outline">Lab Tested 25°C</span>
+              </div>
+              <div class="rounded-xl overflow-hidden border border-[#e4e0d8] bg-white text-xs">
+                ${Object.entries({
+                  'Mix Ratio / Structure': product.specs.mixRatioWeight,
+                  'Volume Ratio': product.specs.mixRatioVolume,
+                  'Working Pot Life': product.specs.workingPotLife,
+                  'Demold Duration': product.specs.demoldDuration,
+                  'Full Glass Cure': product.specs.fullGlassCure,
+                  'Dynamic Viscosity': product.specs.dynamicViscosity,
+                  'Max Single Pour Depth': product.specs.maxDepth,
+                  'Shore D Hardness': product.specs.hardness,
+                  'UV Stability Rating': product.specs.uvStability
+                }).map(([k, v], i) => `
+                  <div class="flex items-center justify-between p-3 ${i % 2 === 0 ? 'bg-surface-container-low' : 'bg-white'}">
+                    <span class="font-medium text-on-surface-variant">${esc(k)}</span>
+                    <span class="font-spec-numeral font-bold text-primary text-right">${esc(v)}</span>
+                  </div>
+                `).join('')}
+              </div>
+
+              <!-- Downloadable TDS & SDS Triggers -->
+              <div class="grid grid-cols-2 gap-2.5 pt-1">
+                <button type="button" onclick="window.openTdsModal('tds')" class="p-3 rounded-xl bg-white border border-[#e4e0d8] hover:border-secondary text-primary flex items-center gap-2.5 text-left cursor-pointer">
+                  <span class="material-symbols-outlined text-secondary text-xl">picture_as_pdf</span>
+                  <div>
+                    <p class="text-xs font-bold">TDS (Spec Sheet)</p>
+                    <p class="text-[10px] text-on-surface-variant">Interactive Lab Data • PDF</p>
+                  </div>
+                </button>
+                <button type="button" onclick="window.openTdsModal('sds')" class="p-3 rounded-xl bg-white border border-[#e4e0d8] hover:border-secondary text-primary flex items-center gap-2.5 text-left cursor-pointer">
+                  <span class="material-symbols-outlined text-secondary text-xl">security</span>
+                  <div>
+                    <p class="text-xs font-bold">SDS (Safety Sheet)</p>
+                    <p class="text-[10px] text-on-surface-variant">ISO 11014 Zero-VOC Cert</p>
+                  </div>
+                </button>
+              </div>
+            </div>
+
+            <!-- Live Indian PIN Code Serviceability Check -->
+            <div class="p-4 rounded-xl bg-surface-container-low border border-[#e4e0d8] flex flex-col gap-2.5">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-bold text-primary flex items-center gap-1.5">
+                  <span class="material-symbols-outlined text-base text-primary">local_shipping</span>
+                  Express Delivery &amp; Pickup Estimation
+                </span>
+                <span class="text-[11px] text-secondary font-semibold">Solvent Safe Sealed</span>
+              </div>
+              <div class="flex gap-2">
+                <input id="pdp-pincode-input" type="text" maxlength="6" value="${esc(pinInfo.pin)}" placeholder="Enter 6-digit PIN code" class="flex-1 h-10 px-3 bg-white rounded-lg border border-[#e4e0d8] font-spec-numeral text-xs text-primary">
+                <button type="button" onclick="window.verifyPdpPincode()" class="px-4 h-10 rounded-lg bg-primary text-on-primary text-xs font-semibold cursor-pointer">Verify</button>
+              </div>
+              <div id="pdp-pincode-result" class="p-2.5 rounded-lg bg-white text-xs text-primary flex items-start gap-2">
+                <span class="material-symbols-outlined text-[#266b4e] text-base shrink-0 mt-0.5">verified_user</span>
+                <span><strong>${esc(pinInfo.pin)} (${esc(pinInfo.city)})</strong> — Delivery in <strong>${esc(pinInfo.days)}</strong> via ${esc(pinInfo.courier)}. Cash on Delivery &amp; UPI supported.</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Reviews Section -->
+        <section id="pdp-reviews" class="px-4 sm:px-8 pt-10 flex flex-col gap-4">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-t border-[#e4e0d8] pt-8">
+            <div>
+              <span class="font-label-sm text-xs uppercase tracking-wider text-secondary font-bold">Verified Studio Patrons</span>
+              <h3 class="font-headline-sm text-xl text-primary font-bold">Artisan &amp; Bride Reviews (${prodReviews.length})</h3>
+            </div>
+            <button type="button" onclick="window.toggleReviewForm()" class="self-start px-4 py-2 rounded-lg border border-primary text-primary text-xs font-bold hover:bg-surface-container-high cursor-pointer">
+              + Write a Studio Review
+            </button>
+          </div>
+
+          <form id="pdp-review-form" onsubmit="event.preventDefault(); window.submitPdpReview('${esc(product.id)}');" class="hidden ram-card p-4 flex flex-col gap-3 bg-surface-container-low">
+            <h4 class="text-xs font-bold text-primary uppercase">Submit Your Experience</h4>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <input id="rev-author" type="text" required placeholder="Your Name & City (e.g.Kavya • Bengaluru)" class="h-10 px-3 rounded-lg bg-white border border-[#e4e0d8] text-xs">
+              <select id="rev-rating" class="h-10 px-3 rounded-lg bg-white border border-[#e4e0d8] text-xs">
+                <option value="5">★★★★★ (5.0 — Flawless Pour / Keepsake)</option>
+                <option value="4">★★★★☆ (4.0 — Very Good)</option>
+              </select>
+            </div>
+            <textarea id="rev-text" rows="2" required placeholder="Share how the clarity, pot life, or floral preservation turned out..." class="p-3 rounded-lg bg-white border border-[#e4e0d8] text-xs"></textarea>
+            <button type="submit" class="self-start px-5 py-2 rounded-lg bg-primary text-on-primary text-xs font-semibold cursor-pointer">Post Verified Review</button>
+          </form>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            ${prodReviews.map(r => `
+              <div class="ram-card p-4 flex flex-col gap-2 bg-white">
+                <div class="flex items-center justify-between">
+                  <span class="text-xs font-bold text-primary">${esc(r.author)}</span>
+                  <span class="text-[11px] text-[#266b4e] font-semibold">✓ Verified Purchase • ${esc(r.date)}</span>
+                </div>
+                <div class="flex items-center text-amber-500 text-xs">${'★'.repeat(r.rating)}</div>
+                <p class="text-xs text-on-surface-variant leading-relaxed">${esc(r.text)}</p>
+              </div>
+            `).join('')}
+          </div>
+        </section>
+
+        <!-- Sticky Bottom PDP Action Bar -->
+        <aside class="fixed bottom-16 md:bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-lg border-t border-[#e4e0d8] px-4 sm:px-8 py-3 shadow-lg">
+          <div class="max-w-5xl mx-auto flex items-center gap-3">
+            <button type="button" aria-label="Save to Wishlist" onclick="window.handleWishlistToggle(event, '${esc(product.id)}')" class="w-12 h-12 rounded-xl bg-surface-container-low flex items-center justify-center ${isFav ? 'text-[#c85a48]' : 'text-primary'} shrink-0 cursor-pointer">
+              <span class="material-symbols-outlined text-2xl" style="font-variation-settings: 'FILL' ${isFav ? 1 : 0};">${isFav ? 'favorite' : 'favorite_border'}</span>
+            </button>
+            <div class="h-12 bg-surface-container-low rounded-xl flex items-center px-2 shrink-0 border border-[#e4e0d8]">
+              <button type="button" aria-label="Decrease quantity" onclick="window.changePdpQty(-1)" class="w-8 h-8 flex items-center justify-center text-primary font-bold cursor-pointer">
+                <span class="material-symbols-outlined text-base">remove</span>
+              </button>
+              <span id="pdp-qty-val" class="w-8 text-center font-spec-numeral text-sm text-primary font-bold">${AppState.pdpQty}</span>
+              <button type="button" aria-label="Increase quantity" onclick="window.changePdpQty(1)" class="w-8 h-8 flex items-center justify-center text-primary font-bold cursor-pointer">
+                <span class="material-symbols-outlined text-base">add</span>
+              </button>
+            </div>
+            <button type="button" id="pdp-add-to-cart-btn" onclick="window.addPdpToCart()" class="btn-shimmer flex-1 h-12 rounded-xl bg-primary hover:bg-primary-container text-on-primary font-title-md text-sm font-bold flex items-center justify-center gap-2 shadow-md active:scale-[0.99] transition-all cursor-pointer">
+              <span class="material-symbols-outlined text-xl">shopping_bag</span>
+              <span id="pdp-cta-label">Add to Studio Bag • ${formatINR(totalCtaPrice)}</span>
+            </button>
+          </div>
+        </aside>
+      </div>
+    `;
+  }
+
+  // =========================================================================
+  // 4. SOCIAL COMMERCE HUB (@resin.art.memories)
+  // =========================================================================
+  function renderSocialView() {
+    const posts = Store.getSocialPosts();
+    const filtered = AppState.socialTagFilter === 'all'
+      ? posts
+      : posts.filter(p => p.tag === AppState.socialTagFilter);
+
+    return `
+      <div class="route-view-enter flex flex-col w-full max-w-6xl mx-auto px-4 sm:px-8 py-6 gap-6">
+        <!-- Official Instagram Profile Header Card -->
+        <div class="ram-card p-6 bg-gradient-to-r from-[#031a38] via-[#1b2f4e] to-[#2c1e21] text-white flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+          <div class="flex items-center gap-4">
+            <div class="story-ring w-20 h-20 sm:w-24 sm:h-24 shrink-0">
+              <img src="${esc(Store.IMAGES.floralCube)}" alt="@resin.art.memories" class="w-full h-full rounded-full object-cover border-2 border-[#031a38]">
+            </div>
+            <div>
+              <div class="flex items-center gap-2 flex-wrap">
+                <h1 class="font-headline-sm text-xl sm:text-2xl font-bold">@resin.art.memories</h1>
+                <span class="px-2.5 py-0.5 rounded-full bg-[#c85a48] text-white text-[10px] font-bold uppercase">Verified Official Storefront</span>
+              </div>
+              <p class="text-xs sm:text-sm text-white/85 mt-1 max-w-xl">
+                🌹 Preserving Wedding Varmalas, Anniversary Roses &amp; Intimate Memories in Museum-Grade Crystal Resin • Powered by Vistāra Krafts Optical Formulations
+              </p>
+              <div class="flex items-center gap-5 mt-3 font-spec-numeral text-xs">
+                <span><strong>642</strong> Creations</span>
+                <span><strong>48.9K</strong> Patrons</span>
+                <span><strong>100%</strong> Custom Hand-Poured</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="flex flex-wrap items-center gap-2.5 w-full md:w-auto">
+            <a href="https://www.instagram.com/resin.art.memories?utm_source=qr" target="_blank" rel="noopener noreferrer" class="flex-1 md:flex-initial px-4 py-2.5 rounded-xl bg-[#c85a48] hover:opacity-95 text-white text-xs font-bold flex items-center justify-center gap-1.5 shadow-sm">
+              <span class="material-symbols-outlined text-base">open_in_new</span>
+              <span>Follow on Instagram</span>
+            </a>
+            <button type="button" onclick="window.openShareMemoryModal()" class="flex-1 md:flex-initial px-4 py-2.5 rounded-xl bg-white text-primary text-xs font-bold flex items-center justify-center gap-1.5 cursor-pointer">
+              <span class="material-symbols-outlined text-base text-[#c85a48]">add_a_photo</span>
+              <span>Post Your Memory</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Filter Pills -->
+        <div class="flex items-center justify-between flex-wrap gap-2">
+          <div class="flex items-center gap-2 overflow-x-auto no-scrollbar">
+            ${[
+              { id: 'all', label: 'All Feed Posts' },
+              { id: 'BridalVarmala', label: '#BridalVarmala' },
+              { id: 'OceanArt', label: '#OceanArt' },
+              { id: 'ResinFormulas', label: '#ResinFormulas' },
+              { id: 'ClientLove', label: '#ClientLove' }
+            ].map(t => `
+              <button type="button" onclick="window.setSocialTagFilter('${t.id}')" class="px-4 py-2 rounded-full text-xs font-semibold transition-all cursor-pointer ${AppState.socialTagFilter === t.id ? 'bg-primary text-white shadow-xs' : 'bg-surface-container-high text-primary hover:bg-secondary-container/50'}">
+                ${esc(t.label)}
+              </button>
+            `).join('')}
+          </div>
+          <span class="text-xs text-on-surface-variant font-spec-numeral">${filtered.length} Shoppable Posts</span>
+        </div>
+
+        <!-- Social Feed Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+          ${filtered.map(post => {
+            const tagged = Store.getProductById(post.productId);
+            return `
+              <article class="ram-card overflow-hidden flex flex-col justify-between bg-white">
+                <div>
+                  <div class="p-3.5 flex items-center justify-between border-b border-surface-container">
+                    <div class="flex items-center gap-2.5">
+                      <img src="${esc(post.avatar)}" alt="${esc(post.authorName)}" class="w-9 h-9 rounded-full object-cover ring-2 ring-[#c85a48]">
+                      <div>
+                        <p class="text-xs font-bold text-primary">${esc(post.authorName)}</p>
+                        <p class="text-[11px] text-on-surface-variant">${esc(post.handle)} • ${esc(post.timeAgo)}</p>
+                      </div>
+                    </div>
+                    <span class="px-2.5 py-0.5 rounded-full bg-surface-container-high text-primary text-[10px] font-bold">#${esc(post.tag)}</span>
+                  </div>
+
+                  <div class="relative aspect-square bg-surface-container overflow-hidden group" ondblclick="window.handleSocialLike('${esc(post.id)}')">
+                    <img src="${esc(post.image)}" alt="${esc(post.caption)}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <span class="absolute top-3 left-3 px-2.5 py-1 rounded-full bg-black/65 backdrop-blur-xs text-white text-[10px] font-semibold">${esc(post.badge)}</span>
+                  </div>
+
+                  <div class="p-4 flex flex-col gap-2.5">
+                    <div class="flex items-center justify-between">
+                      <div class="flex items-center gap-4">
+                        <button type="button" onclick="window.handleSocialLike('${esc(post.id)}')" class="flex items-center gap-1 text-xs font-bold ${post.liked ? 'text-[#c85a48]' : 'text-primary'} cursor-pointer">
+                          <span class="material-symbols-outlined text-xl ${post.liked ? 'animate-heart-pop' : ''}" style="font-variation-settings: 'FILL' ${post.liked ? 1 : 0};">favorite</span>
+                          <span class="font-spec-numeral">${post.likes.toLocaleString('en-IN')}</span>
+                        </button>
+                        <span class="flex items-center gap-1 text-xs text-on-surface-variant font-spec-numeral">
+                          <span class="material-symbols-outlined text-lg">chat_bubble</span>
+                          ${(post.comments || []).length}
+                        </span>
+                      </div>
+                      <button type="button" onclick="window.handleSocialSave('${esc(post.id)}')" class="text-xs font-semibold flex items-center gap-1 ${post.saved ? 'text-secondary' : 'text-on-surface-variant'} cursor-pointer">
+                        <span class="material-symbols-outlined text-lg" style="font-variation-settings: 'FILL' ${post.saved ? 1 : 0};">bookmark</span>
+                        <span>${post.saved ? 'Saved' : 'Save'}</span>
+                      </button>
+                    </div>
+
+                    <p class="text-xs text-on-surface leading-relaxed">${esc(post.caption)}</p>
+
+                    <!-- Comments List -->
+                    <div class="pt-2 border-t border-surface-container flex flex-col gap-1.5 max-h-28 overflow-y-auto">
+                      ${(post.comments || []).map(c => `
+                        <p class="text-[11px] text-on-surface-variant"><strong class="text-primary">${esc(c.user)}</strong> ${esc(c.text)}</p>
+                      `).join('')}
+                    </div>
+
+                    <!-- Add Comment Input -->
+                    <form class="flex gap-1.5 pt-1" onsubmit="event.preventDefault(); window.handleSocialComment('${esc(post.id)}', this);">
+                      <input type="text" name="commentText" required placeholder="Add a comment for @resin.art.memories..." class="flex-1 h-8 px-2.5 rounded-lg bg-surface-container-low border border-[#e4e0d8] text-xs text-primary focus:outline-none">
+                      <button type="submit" class="px-3 h-8 rounded-lg bg-primary text-white text-[11px] font-semibold cursor-pointer">Post</button>
+                    </form>
+                  </div>
+                </div>
+
+                <!-- Tagged Shoppable Product Strip -->
+                ${tagged ? `
+                  <div class="p-3 bg-[#fdf6f3] border-t border-[#e4e0d8] flex items-center justify-between gap-2">
+                    <div class="flex items-center gap-2.5 min-w-0 cursor-pointer" onclick="window.navigateTo('product', '${esc(tagged.id)}')">
+                      <img src="${esc(tagged.image)}" alt="${esc(tagged.shortName)}" class="w-10 h-10 rounded-lg object-cover shrink-0 border border-[#e4e0d8]">
+                      <div class="min-w-0">
+                        <span class="text-[10px] uppercase tracking-wider text-[#c85a48] font-bold block">Tagged in Reel</span>
+                        <p class="text-xs font-bold text-primary truncate">${esc(tagged.shortName)}</p>
+                        <p class="font-spec-numeral text-xs font-bold text-secondary">${formatINR(tagged.price)}</p>
+                      </div>
+                    </div>
+                    <button type="button" onclick="window.handleQuickAdd(this, '${esc(tagged.id)}')" class="px-3.5 py-2 rounded-lg bg-primary text-white text-xs font-semibold shrink-0 cursor-pointer">
+                      Shop Piece
+                    </button>
+                  </div>
+                ` : ''}
+              </article>
+            `;
+          }).join('')}
+        </div>
+      </div>
+    `;
+  }
+
+  // =========================================================================
+  // 5. CUSTOM MEMORY PRESERVATION BUILDER & EPOXY CALCULATOR STUDIO
+  // =========================================================================
+  function renderCustomStudioView() {
+    const b = AppState.customBuilder;
+    const ledCost = b.ledBase ? 499 : 0;
+    const totalCustomPrice = b.shapePrice + b.sourceAddon + b.metallicAddon + ledCost;
+
+    const calcRes = Store.calculateResinNeeded({
+      shape: AppState.calcShape,
+      lengthCm: AppState.calcLength,
+      widthCm: AppState.calcWidth,
+      diameterCm: AppState.calcDiameter,
+      depthCm: AppState.calcDepth,
+      ratioSystem: AppState.calcSystem
+    });
+    const recommendedProdId = AppState.calcSystem === '2:1' ? 'vk-epx-201' : (AppState.calcSystem === '1:1' ? 'vk-dom-101' : 'vk-epx-301');
+    const recommendedProd = Store.getProductById(recommendedProdId);
+
+    return `
+      <div class="route-view-enter flex flex-col w-full max-w-6xl mx-auto px-4 sm:px-8 py-6 gap-8">
+        <!-- Studio Header -->
+        <div class="flex flex-col gap-1">
+          <span class="font-label-sm text-xs uppercase tracking-widest text-[#c85a48] font-bold">Bespoke Atelier &amp; Formulation Lab</span>
+          <h1 class="font-headline-lg text-2xl sm:text-4xl text-primary font-bold">Custom Memory Preservation &amp; Pour Calculator</h1>
+          <p class="text-xs sm:text-sm text-on-surface-variant">Design your one-of-a-kind wedding/anniversary floral block OR calculate exact resin ratios for your own DIY moulds.</p>
+        </div>
+
+        <!-- Part A: Interactive 4-Step Custom Keepsake Configurator -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+          <div class="lg:col-span-7 ram-card p-5 sm:p-6 flex flex-col gap-5 bg-white">
+            <div class="flex items-center justify-between border-b border-surface-container pb-3">
+              <h2 class="font-headline-sm text-xl text-primary font-bold">1. Configure Your Custom Resin Keepsake</h2>
+              <span class="px-2.5 py-1 rounded-full bg-[#ffe4de] text-[#9e3828] text-xs font-bold">Doorstep Flower Pickup</span>
+            </div>
+
+            <!-- Step 1: Vessel Architecture -->
+            <div>
+              <label class="text-xs font-bold text-primary uppercase tracking-wider block mb-2">Step 1: Choose Keepsake Geometry</label>
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+                ${[
+                  { label: '8" Romantic Cube', price: 2999, desc: '8–12 Roses • 50mm deep' },
+                  { label: '12" Royal Heirloom Block', price: 4499, desc: 'Full Varmala • 50mm deep' },
+                  { label: '16" Gallery Mantel Frame', price: 6999, desc: 'Dual Garlands + 2 Coasters' }
+                ].map(item => `
+                  <button type="button" onclick="window.updateCustomBuilder('shape', '${esc(item.label)}', ${item.price})" class="p-3 rounded-xl border text-left transition-all cursor-pointer ${b.shape === item.label ? 'bg-primary text-white border-primary shadow-sm' : 'bg-surface-container-low text-primary border-[#e4e0d8]'}">
+                    <p class="text-xs font-bold">${esc(item.label)}</p>
+                    <p class="text-[11px] opacity-80 mt-0.5">${esc(item.desc)}</p>
+                    <p class="font-spec-numeral text-sm font-bold mt-1.5 ${b.shape === item.label ? 'text-[#ffd79b]' : 'text-secondary'}">${formatINR(item.price)}</p>
+                  </button>
+                `).join('')}
+              </div>
+            </div>
+
+            <!-- Step 2: Flower / Memory Source -->
+            <div>
+              <label class="text-xs font-bold text-primary uppercase tracking-wider block mb-2">Step 2: How Will Your Flowers Reach Our Studio?</label>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                ${[
+                  { label: 'Fresh Wedding Varmala (Free Doorstep Pickup)', addon: 0 },
+                  { label: 'Studio Pre-Sourced Ecuadorian Roses & Orchids', addon: 650 }
+                ].map(src => `
+                  <button type="button" onclick="window.updateCustomBuilder('flowerSource', '${esc(src.label)}', ${src.addon})" class="p-3 rounded-xl border text-left transition-all cursor-pointer ${b.flowerSource === src.label ? 'border-[#c85a48] bg-[#ffe4de]/40 ring-1 ring-[#c85a48]' : 'border-[#e4e0d8] bg-white'}">
+                    <p class="text-xs font-bold text-primary">${esc(src.label)}</p>
+                    <p class="font-spec-numeral text-[11px] text-secondary font-semibold mt-1">${src.addon === 0 ? 'Complimentary Courier Kit' : '+ ' + formatINR(src.addon)}</p>
+                  </button>
+                `).join('')}
+              </div>
+            </div>
+
+            <!-- Step 3: Metallic & Pigment Accents -->
+            <div>
+              <label class="text-xs font-bold text-primary uppercase tracking-wider block mb-2">Step 3: Select Luxury Inclusions</label>
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+                ${[
+                  { label: 'Pure Crystal Clear (Zero Flakes)', addon: 0 },
+                  { label: '24K Gold Leaf + Champagne Rim', addon: 350 },
+                  { label: 'Rose-Gold Foil + Crushed Quartz', addon: 450 }
+                ].map(inc => `
+                  <button type="button" onclick="window.updateCustomBuilder('metallic', '${esc(inc.label)}', ${inc.addon})" class="p-3 rounded-xl border text-left transition-all cursor-pointer ${b.metallic === inc.label ? 'border-secondary bg-secondary-container/30 font-bold' : 'border-[#e4e0d8] bg-white'}">
+                    <p class="text-xs text-primary">${esc(inc.label)}</p>
+                    <p class="font-spec-numeral text-[11px] text-secondary mt-1">${inc.addon === 0 ? 'Included' : '+ ' + formatINR(inc.addon)}</p>
+                  </button>
+                `).join('')}
+              </div>
+            </div>
+
+            <!-- Step 4: Calligraphy Engraving & Warm LED Pedestal -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <label class="text-xs font-bold text-primary block mb-1" for="custom-engraving-input">Custom Names / Date Calligraphy</label>
+                <input id="custom-engraving-input" type="text" value="${esc(b.engraving)}" oninput="window.updateCustomBuilderText(this.value)" placeholder="e.g. Aarav & Meera • 12.10.2026" class="w-full h-10 px-3 rounded-lg bg-surface-container-low border border-[#e4e0d8] text-xs text-primary">
+              </div>
+              <div class="flex items-end">
+                <label class="w-full h-10 px-3 rounded-lg bg-surface-container-low border border-[#e4e0d8] flex items-center justify-between cursor-pointer">
+                  <span class="text-xs font-semibold text-primary">Warm Teak LED Light Base (+₹499)</span>
+                  <input type="checkbox" ${b.ledBase ? 'checked' : ''} onchange="window.updateCustomBuilderLed(this.checked)" class="w-4 h-4 accent-primary">
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <!-- Live Custom Preview & Instant Add to Bag Card (5 cols) -->
+          <div class="lg:col-span-5 ram-card p-5 bg-gradient-to-b from-primary to-[#101d33] text-white flex flex-col gap-4 sticky top-24">
+            <div class="flex items-center justify-between">
+              <span class="text-[11px] uppercase tracking-widest text-[#ffd79b] font-bold">Live Bespoke Preview</span>
+              <span class="px-2 py-0.5 rounded bg-white/10 font-spec-numeral text-[11px]">14-Day Cryo-Cure</span>
+            </div>
+            <div class="relative aspect-[4/3] rounded-xl overflow-hidden border border-white/15">
+              <img src="${esc(Store.IMAGES.floralCube)}" alt="Custom Keepsake Preview" class="w-full h-full object-cover">
+              <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent flex flex-col justify-end p-4">
+                <p id="custom-preview-engraving" class="font-serif italic text-base text-[#ffd79b] text-center tracking-wide">“${esc(b.engraving || 'Your Forever Memory')}”</p>
+              </div>
+            </div>
+            <div class="space-y-1.5 text-xs border-y border-white/15 py-3">
+              <div class="flex justify-between"><span class="text-white/70">Architecture:</span><span class="font-semibold">${esc(b.shape)}</span></div>
+              <div class="flex justify-between"><span class="text-white/70">Floral Source:</span><span class="font-semibold truncate max-w-[200px]">${esc(b.flowerSource)}</span></div>
+              <div class="flex justify-between"><span class="text-white/70">Inclusions:</span><span class="font-semibold">${esc(b.metallic)}</span></div>
+              <div class="flex justify-between"><span class="text-white/70">Teak LED Stand:</span><span class="font-semibold">${b.ledBase ? 'Yes (+₹499)' : 'No'}</span></div>
+            </div>
+            <div class="flex items-baseline justify-between">
+              <div>
+                <span class="text-xs text-white/70 block">Total Commission Estimate</span>
+                <span class="font-spec-numeral text-2xl font-bold text-[#ffd79b]">${formatINR(totalCustomPrice)}</span>
+              </div>
+              <span class="text-[11px] text-emerald-300 font-semibold">Free Air Insured Return</span>
+            </div>
+            <button type="button" onclick="window.addCustomCommissionToCart()" class="btn-shimmer w-full h-12 rounded-xl bg-[#c85a48] hover:opacity-95 text-white font-title-md text-sm font-bold flex items-center justify-center gap-2 shadow-lg cursor-pointer">
+              <span class="material-symbols-outlined text-lg">redeem</span>
+              <span>Book &amp; Add Custom Keepsake to Bag</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Part B: Interactive Epoxy Pour & Ratio Calculator (Rectangular & Circular Moulds) -->
+        <div id="studio-pour-calculator" class="ram-card p-5 sm:p-6 bg-white flex flex-col gap-5">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-surface-container pb-3">
+            <div>
+              <span class="font-label-sm text-[11px] uppercase tracking-widest text-secondary font-bold">Vistāra Krafts Chemical Lab</span>
+              <h2 class="font-headline-sm text-xl text-primary font-bold">2. Interactive Epoxy Pour &amp; Mix Ratio Calculator</h2>
+              <p class="text-xs text-on-surface-variant">Calculate exact Resin (Part A) and Hardener (Part B) weights in grams for Rectangular or Circular moulds (1.10 g/cm³ density).</p>
+            </div>
+            <div class="flex items-center gap-2">
+              <button type="button" id="studio-calc-shape-rect" onclick="window.setStudioCalcShape('rect')" class="px-3 py-1.5 rounded-lg text-xs font-bold border transition-colors cursor-pointer ${AppState.calcShape === 'rect' ? 'bg-primary text-white border-primary' : 'bg-surface-container-low text-primary border-[#e4e0d8]'}">
+                Rectangular (L × W × D)
+              </button>
+              <button type="button" id="studio-calc-shape-circle" onclick="window.setStudioCalcShape('circle')" class="px-3 py-1.5 rounded-lg text-xs font-bold border transition-colors cursor-pointer ${AppState.calcShape === 'circle' ? 'bg-primary text-white border-primary' : 'bg-surface-container-low text-primary border-[#e4e0d8]'}">
+                Circular / Round (Ø × D)
+              </button>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
+            <div class="lg:col-span-7 flex flex-col gap-4">
+              <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                ${AppState.calcShape === 'circle' ? `
+                  <div class="col-span-2">
+                    <label class="text-xs font-bold text-primary block mb-1" for="studio-calc-diam">Mould Diameter Ø (cm)</label>
+                    <input id="studio-calc-diam" type="number" min="0.5" step="0.5" value="${AppState.calcDiameter}" class="w-full h-10 px-3 rounded-lg bg-surface-container-low border border-[#e4e0d8] font-spec-numeral text-sm text-primary">
+                  </div>
+                ` : `
+                  <div>
+                    <label class="text-xs font-bold text-primary block mb-1" for="studio-calc-len">Length (cm)</label>
+                    <input id="studio-calc-len" type="number" min="0.5" step="0.5" value="${AppState.calcLength}" class="w-full h-10 px-3 rounded-lg bg-surface-container-low border border-[#e4e0d8] font-spec-numeral text-sm text-primary">
+                  </div>
+                  <div>
+                    <label class="text-xs font-bold text-primary block mb-1" for="studio-calc-wid">Width (cm)</label>
+                    <input id="studio-calc-wid" type="number" min="0.5" step="0.5" value="${AppState.calcWidth}" class="w-full h-10 px-3 rounded-lg bg-surface-container-low border border-[#e4e0d8] font-spec-numeral text-sm text-primary">
+                  </div>
+                `}
+                <div>
+                  <label class="text-xs font-bold text-primary block mb-1" for="studio-calc-dep">Pour Depth (cm)</label>
+                  <input id="studio-calc-dep" type="number" min="0.1" step="0.1" value="${AppState.calcDepth}" class="w-full h-10 px-3 rounded-lg bg-surface-container-low border border-[#e4e0d8] font-spec-numeral text-sm text-primary">
+                </div>
+                <div>
+                  <label class="text-xs font-bold text-primary block mb-1" for="studio-calc-sys">Ratio System</label>
+                  <select id="studio-calc-sys" class="w-full h-10 px-2.5 rounded-lg bg-surface-container-low border border-[#e4e0d8] font-spec-numeral text-xs font-bold text-primary">
+                    <option value="3:1" ${AppState.calcSystem === '3:1' ? 'selected' : ''}>3:1 Casting</option>
+                    <option value="2:1" ${AppState.calcSystem === '2:1' ? 'selected' : ''}>2:1 Deep Pour</option>
+                    <option value="1:1" ${AppState.calcSystem === '1:1' ? 'selected' : ''}>1:1 Doming</option>
+                  </select>
+                </div>
+              </div>
+
+              <button type="button" id="studio-calc-run-btn" onclick="window.runStudioCalculator()" class="h-11 px-5 rounded-xl bg-primary text-white font-label-md text-xs font-bold flex items-center justify-center gap-2 hover:opacity-95 cursor-pointer">
+                <span class="material-symbols-outlined text-base text-[#ffd79b]">calculate</span>
+                <span>Calculate Exact Resin &amp; Hardener Mass</span>
+              </button>
+            </div>
+
+            <div class="lg:col-span-5 p-4 rounded-xl bg-surface-container-low border border-[#e4e0d8] flex flex-col gap-3">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-bold uppercase tracking-wider text-secondary">Formulation Output</span>
+                <span class="font-spec-numeral text-xs font-bold text-primary">${esc(AppState.calcSystem)} by Weight</span>
+              </div>
+              <p id="studio-calc-result" class="font-spec-numeral text-base sm:text-lg font-bold text-primary">
+                ${calcRes.valid
+                  ? `~${calcRes.totalGrams}g total (Part A: ${calcRes.partAGrams}g + Part B: ${calcRes.partBGrams}g)`
+                  : 'Please enter positive dimensions (> 0 cm) to calculate resin mass.'}
+              </p>
+              <div class="flex items-center justify-between pt-2 border-t border-[#e4e0d8] gap-2">
+                <div class="min-w-0">
+                  <span class="text-[11px] text-on-surface-variant block">Recommended Kit:</span>
+                  <span class="text-xs font-bold text-primary truncate block">${esc(recommendedProd ? recommendedProd.name : 'UltraClear 3:1 Casting Resin')}</span>
+                </div>
+                <button type="button" onclick="window.addRecommendedCalcKitToCart()" class="px-3.5 py-2 rounded-lg bg-secondary text-white text-xs font-bold shrink-0 hover:opacity-95 cursor-pointer flex items-center gap-1">
+                  <span class="material-symbols-outlined text-sm">add_shopping_cart</span>
+                  <span>Add Kit</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  // =========================================================================
+  // 6. SAVED / WISHLIST VIEW
+  // =========================================================================
+  function renderWishlistView() {
+    const wishlistIds = Store.getWishlist();
+    const products = Store.getProducts().filter(p => wishlistIds.includes(p.id));
+    const savedPosts = Store.getSocialPosts().filter(p => p.saved);
+
+    return `
+      <div class="route-view-enter flex flex-col w-full max-w-7xl mx-auto px-4 sm:px-8 py-6 gap-6">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#e4e0d8] pb-4">
+          <div>
+            <span class="font-label-sm text-xs uppercase tracking-widest text-[#c85a48] font-bold">Personal Curation</span>
+            <h1 class="font-headline-lg text-2xl sm:text-3xl text-primary font-bold">Saved Keepsakes &amp; Formulations (${products.length})</h1>
+          </div>
+          ${products.length > 0 ? `
+            <button type="button" onclick="window.moveAllWishlistToCart()" class="px-5 py-2.5 rounded-xl bg-primary text-on-primary text-xs font-bold flex items-center gap-2 self-start sm:self-auto cursor-pointer">
+              <span class="material-symbols-outlined text-base">shopping_bag</span>
+              <span>Add All ${products.length} Saved Items to Bag</span>
+            </button>
+          ` : ''}
+        </div>
+
+        ${products.length === 0 ? `
+          <div class="ram-card p-10 text-center flex flex-col items-center gap-3">
+            <span class="material-symbols-outlined text-4xl text-[#c85a48]">favorite_border</span>
+            <h3 class="font-headline-sm text-xl text-primary font-bold">Your Saved List is Empty</h3>
+            <p class="text-xs text-on-surface-variant max-w-sm">Tap the heart icon on any resin formulation or floral keepsake to bookmark it for your next pour.</p>
+            <button type="button" onclick="window.navigateTo('catalog', 'all')" class="px-5 py-2.5 rounded-xl bg-primary text-on-primary text-xs font-bold cursor-pointer">Explore Catalogue</button>
+          </div>
+        ` : `
+          <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            ${products.map(p => renderProductCard(p, false)).join('')}
+          </div>
+        `}
+
+        ${savedPosts.length > 0 ? `
+          <div class="pt-4 border-t border-[#e4e0d8] flex flex-col gap-3">
+            <h2 class="font-headline-sm text-lg text-primary font-bold">Bookmarked @resin.art.memories Reels (${savedPosts.length})</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              ${savedPosts.map(post => `
+                <div class="ram-card p-3 flex items-center gap-3 bg-white">
+                  <img src="${esc(post.image)}" alt="${esc(post.tag)}" class="w-16 h-16 rounded-lg object-cover shrink-0">
+                  <div class="min-w-0 flex-1">
+                    <p class="text-xs font-bold text-primary truncate">${esc(post.handle)} • #${esc(post.tag)}</p>
+                    <p class="text-[11px] text-on-surface-variant line-clamp-2 mt-0.5">${esc(post.caption)}</p>
+                    <button type="button" onclick="window.navigateTo('social')" class="text-[11px] font-bold text-[#c85a48] mt-1 hover:underline cursor-pointer">View in Feed →</button>
+                  </div>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        ` : ''}
+      </div>
+    `;
+  }
+
+  // =========================================================================
+  // 7. CART & CHECKOUT VIEW (Single Clean Invoice Summary + Working Controls)
+  // =========================================================================
+  function renderCartView() {
+    const summary = Store.getCartSummary();
+    const pinInfo = Store.getPincodeInfo();
+    const gstInfo = Store.getGstInfo();
+
+    return `
+      <div class="route-view-enter flex flex-col w-full max-w-6xl mx-auto px-4 sm:px-8 py-6 pb-28 gap-6">
+        <!-- Free Shipping Progression Strip -->
+        <div class="p-4 rounded-2xl bg-secondary-container text-on-secondary-container shadow-xs flex flex-col gap-2">
+          <div class="flex items-center justify-between text-xs font-semibold">
+            <div class="flex items-center gap-2 text-primary">
+              <span class="material-symbols-outlined text-lg text-secondary" style="font-variation-settings: 'FILL' 1;">local_shipping</span>
+              <span>
+                ${summary.isFreeShipping
+                  ? 'Unlocked! Eligible for <strong>Free Pan-India BlueDart Air Express Delivery</strong>!'
+                  : `Add <strong>${formatINR(summary.amountToFreeShipping)}</strong> more for <strong>Free Pan-India Express Delivery</strong>!`}
+              </span>
+            </div>
+            <span class="font-spec-numeral font-bold text-primary">${formatINR(summary.subtotal)} / ₹1,499</span>
+          </div>
+          <div class="w-full bg-white/70 h-2 rounded-full overflow-hidden">
+            <div class="bg-secondary h-full rounded-full transition-all duration-500" style="width: ${summary.shippingProgress}%;"></div>
+          </div>
+        </div>
+
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="font-label-sm text-xs uppercase tracking-wider text-secondary font-bold">Apothecary Dispatch Batch</p>
+            <h1 class="font-headline-md text-2xl sm:text-3xl text-primary font-bold">Your Studio Bag (${summary.itemsCount})</h1>
+          </div>
+          <span class="font-spec-numeral text-xs px-3 py-1 rounded-full bg-surface-container-high text-primary font-semibold">Batch #VK-4409</span>
+        </div>
+
+        ${summary.cart.length === 0 ? `
+          <div class="ram-card p-10 text-center flex flex-col items-center gap-3 bg-white">
+            <span class="material-symbols-outlined text-4xl text-secondary">shopping_bag</span>
+            <h2 class="font-headline-sm text-xl text-primary font-bold">Your Studio Bag is Empty</h2>
+            <p class="text-xs text-on-surface-variant max-w-sm">Explore our preserved bridal keepsakes, ocean serving boards, or optical 3:1 &amp; 2:1 epoxy systems.</p>
+            <button type="button" onclick="window.navigateTo('catalog', 'all')" class="px-6 py-3 rounded-xl bg-primary text-on-primary text-xs font-bold cursor-pointer">Browse Catalogue</button>
+          </div>
+        ` : `
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+            <!-- Left Column: Cart Line Items (7 cols) -->
+            <div class="lg:col-span-7 flex flex-col gap-4">
+              ${summary.cart.map(item => {
+                const effectiveUnit = Store.getEffectiveUnitPrice(item);
+                const isTierDiscounted = effectiveUnit < item.price;
+                return `
+                <div class="ram-card p-4 bg-white flex flex-col gap-3" data-cart-item-id="${esc(item.cartItemId)}">
+                  <div class="flex gap-4">
+                    <img src="${esc(item.image)}" alt="${esc(item.name)}" onclick="window.navigateTo('product', '${esc(item.productId)}')" class="w-20 h-20 sm:w-24 sm:h-24 rounded-xl object-cover bg-surface-container shrink-0 cursor-pointer border border-[#e4e0d8]">
+                    <div class="flex-1 min-w-0 flex flex-col justify-between">
+                      <div>
+                        <div class="flex items-start justify-between gap-2">
+                          <h3 onclick="window.navigateTo('product', '${esc(item.productId)}')" class="font-title-md text-sm sm:text-base text-primary font-bold truncate cursor-pointer hover:text-secondary">${esc(item.name)}</h3>
+                          <button type="button" aria-label="Remove item" onclick="window.handleCartRemove('${esc(item.cartItemId)}')" class="text-on-surface-variant hover:text-error p-1 cursor-pointer">
+                            <span class="material-symbols-outlined text-lg">close</span>
+                          </button>
+                        </div>
+                        <p class="text-xs text-on-surface-variant">${esc(item.variantLabel)} • SKU: ${esc(item.sku)}</p>
+                        ${item.customNote ? `<p class="text-[11px] text-[#c85a48] font-medium mt-1">✨ Note: “${esc(item.customNote)}”</p>` : ''}
+                      </div>
+                      <div class="flex flex-wrap items-baseline gap-2 mt-2">
+                        <span class="font-spec-numeral text-base font-bold text-primary" data-line-total="${effectiveUnit * item.qty}">${formatINR(effectiveUnit * item.qty)}</span>
+                        <span class="font-spec-numeral text-xs text-outline">(${formatINR(effectiveUnit)} / unit)</span>
+                        ${isTierDiscounted ? `<span class="px-2 py-0.5 rounded-full bg-secondary-container/60 text-secondary font-label-sm text-[10px] font-bold">Volume Tier Applied (was ${formatINR(item.price)}/u)</span>` : ''}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="flex items-center justify-between pt-2 border-t border-surface-container">
+                    <div class="flex items-center bg-surface-container-low rounded-lg p-0.5 border border-[#e4e0d8]">
+                      <button type="button" aria-label="Decrease quantity" onclick="window.handleCartQty('${esc(item.cartItemId)}', -1)" class="w-8 h-8 rounded-md bg-white text-primary flex items-center justify-center font-bold hover:bg-surface-container cursor-pointer">
+                        <span class="material-symbols-outlined text-sm">remove</span>
+                      </button>
+                      <span class="font-spec-numeral text-xs font-bold px-3.5 text-primary">${item.qty}</span>
+                      <button type="button" aria-label="Increase quantity" onclick="window.handleCartQty('${esc(item.cartItemId)}', 1)" class="w-8 h-8 rounded-md bg-white text-primary flex items-center justify-center font-bold hover:bg-surface-container cursor-pointer">
+                        <span class="material-symbols-outlined text-sm">add</span>
+                      </button>
+                    </div>
+                    <button type="button" onclick="window.handleSaveForLater('${esc(item.cartItemId)}', '${esc(item.productId)}')" class="text-xs text-secondary font-semibold hover:underline flex items-center gap-1 cursor-pointer">
+                      <span class="material-symbols-outlined text-sm">bookmark_add</span>
+                      <span>Save for later</span>
+                    </button>
+                  </div>
+                </div>
+              `;}).join('')}
+
+              <!-- Pincode Dispatch Indicator Card -->
+              <div class="ram-card p-4 bg-white flex items-center justify-between gap-3">
+                <div class="flex items-center gap-3">
+                  <div class="w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center shrink-0">
+                    <span class="material-symbols-outlined text-xl">pin_drop</span>
+                  </div>
+                  <div>
+                    <p class="text-xs sm:text-sm font-bold text-primary">Delivering to PIN ${esc(pinInfo.pin)} (${esc(pinInfo.city)})</p>
+                    <p class="text-xs text-on-surface-variant">${esc(pinInfo.courier)} • Guaranteed in ${esc(pinInfo.days)}</p>
+                  </div>
+                </div>
+                <button type="button" onclick="window.promptChangePincode()" class="text-xs font-bold text-secondary underline cursor-pointer">Change PIN</button>
+              </div>
+
+              <!-- B2B GST Input Tax Credit (18%) Box -->
+              <div class="ram-card p-4 bg-white flex flex-col gap-3">
+                <label class="flex items-start gap-3 cursor-pointer">
+                  <input type="checkbox" ${gstInfo.enabled ? 'checked' : ''} onchange="window.toggleGstClaim(this.checked)" class="mt-1 w-4 h-4 accent-primary rounded">
+                  <div class="flex-1">
+                    <span class="text-sm font-bold text-primary flex items-center gap-1.5">
+                      <span>Claim GST Input Tax Credit (18% ITC)</span>
+                      <span class="material-symbols-outlined text-sm text-secondary">verified_user</span>
+                    </span>
+                    <p class="text-xs text-on-surface-variant">Receive an automated B2B tax invoice with HSN 39073010 for registered studios.</p>
+                  </div>
+                </label>
+                <div id="cart-gst-fields" class="${gstInfo.enabled ? 'grid' : 'hidden'} grid-cols-1 sm:grid-cols-2 gap-3 pt-2 border-t border-surface-container">
+                  <div>
+                    <label class="text-[11px] text-on-surface-variant block mb-1">GSTIN (15-Character ID)</label>
+                    <input id="cart-gstin-input" type="text" maxlength="15" value="${esc(gstInfo.gstin)}" onchange="window.saveGstField()" class="w-full h-10 px-3 rounded-lg bg-surface-container-low border border-[#e4e0d8] font-spec-numeral text-xs uppercase text-primary">
+                  </div>
+                  <div>
+                    <label class="text-[11px] text-on-surface-variant block mb-1">Registered Legal Studio / Entity Name</label>
+                    <input id="cart-tradename-input" type="text" value="${esc(gstInfo.tradeName)}" onchange="window.saveGstField()" class="w-full h-10 px-3 rounded-lg bg-surface-container-low border border-[#e4e0d8] text-xs text-primary">
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Right Column: Voucher + Single Unified Invoice Summary (5 cols) -->
+            <div class="lg:col-span-5 flex flex-col gap-4 sticky top-24">
+              <!-- Voucher Box -->
+              <div class="ram-card p-4 bg-white flex flex-col gap-2.5">
+                <label for="cart-coupon-input" class="text-sm font-bold text-primary">Studio Voucher or Instagram Promo Code</label>
+                <div class="flex gap-2">
+                  <input id="cart-coupon-input" type="text" value="${esc(summary.couponCode || summary.savedCouponCode)}" placeholder="Enter code (e.g. KRAFTFIRST)" class="flex-1 h-10 px-3 rounded-lg bg-surface-container-low border border-[#e4e0d8] font-spec-numeral text-xs uppercase text-primary">
+                  <button type="button" onclick="window.handleApplyCoupon()" class="px-5 h-10 rounded-lg bg-primary text-white text-xs font-bold cursor-pointer">APPLY</button>
+                </div>
+                <div class="flex flex-wrap gap-1.5 pt-1">
+                  ${Object.values(Store.COUPONS).map(c => `
+                    <button type="button" onclick="window.quickSelectCoupon('${c.code}')" class="px-2.5 py-1 rounded-md text-[11px] font-spec-numeral font-semibold border transition-colors cursor-pointer ${summary.couponCode === c.code ? 'bg-secondary text-white border-secondary' : 'bg-surface-container-low text-primary border-[#e4e0d8] hover:border-secondary'}">
+                      ${c.code}
+                    </button>
+                  `).join('')}
+                </div>
+                ${summary.couponDiscount > 0 ? `
+                  <div class="flex items-center gap-1.5 text-[#266b4e] text-xs font-semibold pt-1">
+                    <span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+                    <span>Code <strong>${esc(summary.couponCode)}</strong> active — ${formatINR(summary.couponDiscount)} saved!</span>
+                  </div>
+                ` : (summary.couponInvalidReason ? `
+                  <div id="cart-coupon-warning" class="flex items-start gap-1.5 text-[#b57c1e] bg-[#fff5e0] p-2.5 rounded-lg text-xs font-medium mt-1">
+                    <span class="material-symbols-outlined text-sm shrink-0 mt-0.5">info</span>
+                    <span>${esc(summary.couponInvalidReason)}</span>
+                  </div>
+                ` : '')}
+              </div>
+
+              <!-- SINGLE Clean Invoice Summary (Fixed Duplicate Bug from Stitch Raw HTML) -->
+              <div id="order-invoice-summary" class="ram-card p-5 bg-white flex flex-col gap-3">
+                <h2 class="font-headline-sm text-lg text-primary font-bold border-b border-surface-container pb-2">Invoice Summary</h2>
+                <div class="flex justify-between items-center text-xs sm:text-sm text-on-surface-variant">
+                  <span>Cart Subtotal (${summary.itemsCount} items)</span>
+                  <span class="font-spec-numeral font-bold text-primary">${formatINR(summary.subtotal)}</span>
+                </div>
+                ${summary.couponDiscount > 0 ? `
+                  <div class="flex justify-between items-center text-xs sm:text-sm text-[#266b4e] font-medium">
+                    <span>Studio Voucher (${esc(summary.couponCode)})</span>
+                    <span class="font-spec-numeral font-bold">-${formatINR(summary.couponDiscount)}</span>
+                  </div>
+                ` : ''}
+                <div class="flex justify-between items-center text-xs sm:text-sm text-on-surface-variant">
+                  <span>Express Air Logistics</span>
+                  <span class="font-spec-numeral font-bold ${summary.isFreeShipping ? 'text-[#266b4e]' : 'text-primary'}">
+                    ${summary.isFreeShipping ? 'FREE' : formatINR(summary.shippingFee)}
+                  </span>
+                </div>
+                <div class="flex justify-between items-center text-xs text-outline">
+                  <span>Includes ₹${summary.gstAmount.toFixed(2)} GST (18%)</span>
+                  <span>${gstInfo.enabled ? 'Eligible 18% ITC' : 'Tax Inclusive'}</span>
+                </div>
+                <div class="pt-3 mt-1 border-t border-surface-container flex justify-between items-baseline bg-surface-container-low p-3.5 rounded-xl">
+                  <div>
+                    <span class="font-headline-sm text-base text-primary font-bold block">Total Payable</span>
+                    <span class="text-[11px] text-on-surface-variant">Zero hidden charges at dispatch</span>
+                  </div>
+                  <span class="font-spec-numeral text-2xl font-bold text-primary">${formatINR(summary.payable)}</span>
+                </div>
+
+                <button type="button" onclick="window.openCheckoutModal()" class="btn-shimmer w-full h-12 mt-2 rounded-xl bg-primary hover:bg-primary-container text-on-primary font-title-md text-sm font-bold flex items-center justify-center gap-2 shadow-md cursor-pointer">
+                  <span>Proceed to Secure Checkout • ${formatINR(summary.payable)}</span>
+                  <span class="material-symbols-outlined text-lg">arrow_forward</span>
+                </button>
+
+                <p class="text-[11px] text-center text-on-surface-variant pt-1">
+                  🔒 100% Encrypted via <strong>Razorpay Payment Gateway</strong> • UPI, Cards, NetBanking &amp; COD
+                </p>
+              </div>
+            </div>
+          </div>
+        `}
+      </div>
+    `;
+  }
+
+  // =========================================================================
+  // 8. ACCOUNT, ORDER TRACKER & SUPABASE / CLOUDFLARE / HOST-PUSH CONSOLE
+  // =========================================================================
+  function renderAccountView() {
+    const orders = Store.getOrders();
+    const pushLogs = Store.getHostPushLog();
+    const cfg = Store.backendConfig;
+
+    return `
+      <div class="route-view-enter flex flex-col w-full max-w-6xl mx-auto px-4 sm:px-8 py-6 gap-6">
+        <!-- Patron Profile Banner -->
+        <div class="ram-card p-5 bg-white flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div class="flex items-center gap-4">
+            <img src="${esc(Store.IMAGES.avatarPatron)}" alt="Patron Profile" class="w-16 h-16 rounded-full object-cover ring-2 ring-secondary">
+            <div>
+              <span class="px-2.5 py-0.5 rounded-full bg-secondary-container/60 text-on-secondary-container text-[10px] font-bold uppercase">Atelier Patron #4820</span>
+              <h1 class="font-headline-sm text-xl sm:text-2xl text-primary font-bold mt-0.5">Studio Account &amp; Order Tracking</h1>
+              <p class="text-xs text-on-surface-variant">Connected to @resin.art.memories • GSTIN: ${esc(Store.getGstInfo().gstin)}</p>
+            </div>
+          </div>
+          <div class="flex items-center gap-2">
+            <button type="button" onclick="window.simulateExternalAdminPush()" class="px-4 py-2.5 rounded-xl bg-[#c85a48] text-white text-xs font-bold flex items-center gap-1.5 shadow-xs cursor-pointer">
+              <span class="material-symbols-outlined text-base">bolt</span>
+              <span>Simulate Admin Host Push</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Live Orders & 5-Stage Floral Preservation Tracker -->
+        <div class="flex flex-col gap-4">
+          <h2 class="font-headline-sm text-xl text-primary font-bold">Active Orders &amp; Preservation Timeline (${orders.length})</h2>
+          ${orders.map(ord => `
+            <div class="ram-card p-5 bg-white flex flex-col gap-4">
+              <div class="flex flex-wrap items-center justify-between gap-2 border-b border-surface-container pb-3">
+                <div>
+                  <span class="font-spec-numeral text-xs font-bold text-secondary">ORDER #${esc(ord.orderId)}</span>
+                  <h3 class="text-sm font-bold text-primary mt-0.5">${esc(ord.status)}</h3>
+                  <p class="text-xs text-on-surface-variant">Placed on ${esc(ord.date)} • ${esc(ord.courier)}</p>
+                </div>
+                <div class="text-right">
+                  <span class="font-spec-numeral text-lg font-bold text-primary">${formatINR(ord.total)}</span>
+                  <span class="block text-[11px] text-[#266b4e] font-semibold">GST Invoice Ready</span>
+                </div>
+              </div>
+
+              <!-- 5-Stage Progress Stepper -->
+              <div class="grid grid-cols-1 sm:grid-cols-5 gap-2">
+                ${(ord.stages || []).map((st, idx) => {
+                  const done = idx <= (ord.stageIndex || 1);
+                  return `
+                    <div class="p-2.5 rounded-xl border ${done ? 'bg-primary text-white border-primary' : 'bg-surface-container-low text-on-surface-variant border-[#e4e0d8]'} flex items-center gap-2">
+                      <span class="material-symbols-outlined text-base ${done ? 'text-[#ffd79b]' : 'text-outline'}">${done ? 'check_circle' : 'radio_button_unchecked'}</span>
+                      <span class="text-[11px] font-semibold leading-tight">${esc(st)}</span>
+                    </div>
+                  `;
+                }).join('')}
+              </div>
+
+              <div class="text-xs text-on-surface-variant flex flex-wrap gap-3 pt-1">
+                ${(ord.items || []).map(it => `<span class="px-2.5 py-1 rounded bg-surface-container-low text-primary font-medium">${it.qty}× ${esc(it.name)}</span>`).join('')}
+              </div>
+            </div>
+          `).join('')}
+        </div>
+
+        <!-- Architecture & External Admin Host / Supabase / Cloudflare Storage Bridge -->
+        <div class="ram-card p-5 bg-surface-container-low border border-[#e4e0d8] flex flex-col gap-4">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+            <div>
+              <span class="font-label-sm text-[11px] uppercase tracking-widest text-secondary font-bold">Ready-to-Connect Cloud &amp; Host Architecture</span>
+              <h2 class="font-headline-sm text-lg text-primary font-bold">External Admin Host, Supabase &amp; Cloudflare R2 Bridge</h2>
+              <p class="text-xs text-on-surface-variant">As requested: the separate Admin Panel host website pushes catalog &amp; social updates directly to this customer storefront.</p>
+            </div>
+            <span class="px-3 py-1 rounded-full bg-[#e8f5e9] text-[#266b4e] text-xs font-bold self-start">● Bridge Active</span>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="p-4 rounded-xl bg-white border border-[#e4e0d8] flex flex-col gap-1.5">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-bold text-primary">1. External Admin Host Receiver</span>
+                <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-emerald-100 text-emerald-800">Listening</span>
+              </div>
+              <p class="text-[11px] text-on-surface-variant">Channel: <code class="text-primary font-mono">${esc(cfg.adminHostBridge.channelName)}</code></p>
+              <p class="text-[11px] text-on-surface-variant">Receives live product drops, pricing changes &amp; IG reels from your separate Admin Host domain via <code class="font-mono">postMessage</code> / Webhook.</p>
+            </div>
+
+            <div class="p-4 rounded-xl bg-white border border-[#e4e0d8] flex flex-col gap-1.5">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-bold text-primary">2. Supabase Database Adapter</span>
+                <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-secondary-container text-on-secondary-container">Schema Staged</span>
+              </div>
+              <p class="text-[11px] text-on-surface-variant">Tables: <code class="text-primary font-mono">products, social_posts, orders, reviews</code></p>
+              <p class="text-[11px] text-on-surface-variant">Set <code class="font-mono">window.SUPABASE_URL</code> &amp; <code class="font-mono">window.SUPABASE_ANON_KEY</code> to switch from local replica to live Postgres.</p>
+            </div>
+
+            <div class="p-4 rounded-xl bg-white border border-[#e4e0d8] flex flex-col gap-1.5">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-bold text-primary">3. Cloudflare R2 Object Storage</span>
+                <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-secondary-container text-on-secondary-container">CDN Ready</span>
+              </div>
+              <p class="text-[11px] text-on-surface-variant">Bucket: <code class="text-primary font-mono">${esc(cfg.cloudflare.r2BucketUrl)}</code></p>
+              <p class="text-[11px] text-on-surface-variant">Handles high-res 4K resin videos, bridal flower upload photos, and PDF COA certificates.</p>
+            </div>
+          </div>
+
+          <div class="p-3.5 rounded-xl bg-white border border-[#e4e0d8]">
+            <p class="text-xs font-bold text-primary mb-2">Recent Admin Host Sync Events:</p>
+            <div class="space-y-1 max-h-28 overflow-y-auto">
+              ${pushLogs.map(l => `
+                <div class="text-[11px] flex items-center justify-between text-on-surface-variant border-b border-surface-container py-1">
+                  <span><strong class="text-primary">[${esc(l.type)}]</strong> ${esc(l.summary)}</span>
+                  <span class="font-spec-numeral">${esc(l.timestamp)}</span>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  // =========================================================================
+  // MAIN VIEW MOUNT & INTERACTION HANDLERS
+  // =========================================================================
+  function renderActiveView() {
+    const root = document.getElementById('app-view-root');
+    if (!root) return;
+
+    switch (AppState.currentRoute) {
+      case 'catalog':
+        root.innerHTML = renderCatalogView();
+        break;
+      case 'product':
+        root.innerHTML = renderPdpView();
+        break;
+      case 'social':
+        root.innerHTML = renderSocialView();
+        break;
+      case 'custom-studio':
+        root.innerHTML = renderCustomStudioView();
+        break;
+      case 'wishlist':
+        root.innerHTML = renderWishlistView();
+        break;
+      case 'cart':
+        root.innerHTML = renderCartView();
+        break;
+      case 'account':
+        root.innerHTML = renderAccountView();
+        break;
+      case 'home':
+      default:
+        root.innerHTML = renderHomeView();
+        break;
+    }
+  }
+
+  // Interactive Controllers Exposed to Window
+  window.handleQuickAdd = function (btnEl, productId) {
+    const product = Store.getProductById(productId);
+    if (!product) return;
+    Store.addToCart({
+      productId: product.id,
+      name: product.name,
+      variantLabel: product.variants && product.variants[0] ? product.variants[0].label : 'Standard Edition',
+      price: product.price,
+      regularPrice: product.regularPrice,
+      qty: 1,
+      image: product.image,
+      sku: product.sku
+    });
+    updateGlobalBadges();
+    window.showToast(`Added "${product.shortName || product.name}" to Bag`, `${formatINR(product.price)} • View in Studio Bag`);
+
+    if (btnEl) {
+      const orig = btnEl.innerHTML;
+      btnEl.innerHTML = '<span class="material-symbols-outlined text-sm">check</span><span>Added!</span>';
+      btnEl.classList.add('bg-secondary');
+      setTimeout(() => {
+        btnEl.innerHTML = orig;
+        btnEl.classList.remove('bg-secondary');
+      }, 1200);
+    }
+  };
+
+  window.handleWishlistToggle = function (ev, productId) {
+    if (ev) ev.stopPropagation();
+    const res = Store.toggleWishlist(productId);
+    const product = Store.getProductById(productId);
+    updateGlobalBadges();
+    renderActiveView();
+    window.showToast(
+      res.added ? 'Saved to Atelier Wishlist' : 'Removed from Wishlist',
+      product ? product.shortName || product.name : ''
+    );
+  };
+
+  window.selectPersonaGoal = function (goal) {
+    AppState.quizAnswers.goal = goal;
+    renderActiveView();
+  };
+
+  window.submitHomePincode = function () {
+    const input = document.getElementById('home-pincode-input');
+    const msgEl = document.getElementById('home-pincode-msg');
+    if (!input || !msgEl) return;
+    const res = Store.verifyPincode(input.value);
+    updateGlobalBadges();
+    if (!res.valid) {
+      msgEl.innerHTML = `<span class="text-error font-semibold">${esc(res.message)}</span>`;
+      window.showToast('Invalid PIN Code', res.message);
+    } else {
+      msgEl.innerHTML = `<strong>PIN ${esc(res.pin)} (${esc(res.city)})</strong> — Express Delivery in <strong>${esc(res.days)}</strong> via ${esc(res.courier)}. Doorstep Floral Pickup &amp; COD active.`;
+      window.showToast(`PIN ${res.pin} Serviceable!`, `${res.city} • ${res.courier}`);
+    }
+  };
+
+  window.runHomeCalculator = function () {
+    const l = parseFloat(document.getElementById('home-calc-len')?.value);
+    const w = parseFloat(document.getElementById('home-calc-wid')?.value);
+    const d = parseFloat(document.getElementById('home-calc-dep')?.value);
+    const sys = document.getElementById('home-calc-sys')?.value || '3:1';
+
+    const res = Store.calculateResinNeeded({ shape: 'rect', lengthCm: l, widthCm: w, depthCm: d, ratioSystem: sys });
+    const out = document.getElementById('home-calc-output');
+
+    if (!res.valid) {
+      if (out) {
+        out.textContent = 'Please enter positive dimensions (> 0 cm) to calculate resin mass.';
+      }
+      window.showToast('Invalid Dimensions', 'Length, width, and depth must be greater than 0 cm.');
+      return;
+    }
+
+    AppState.calcLength = l;
+    AppState.calcWidth = w;
+    AppState.calcDepth = d;
+    AppState.calcSystem = sys;
+
+    if (out) {
+      out.textContent = `~${res.totalGrams}g total (Part A: ${res.partAGrams}g + Part B: ${res.partBGrams}g) for ${l}×${w}×${d}cm`;
+    }
+    window.showToast(`Calculated: ~${res.totalGrams}g Required`, `Part A: ${res.partAGrams}g Resin + Part B: ${res.partBGrams}g Hardener`);
+  };
+
+  window.setStudioCalcShape = function (shape) {
+    AppState.calcShape = shape === 'circle' ? 'circle' : 'rect';
+    renderActiveView();
+  };
+
+  window.runStudioCalculator = function () {
+    const d = parseFloat(document.getElementById('studio-calc-dep')?.value);
+    const sys = document.getElementById('studio-calc-sys')?.value || AppState.calcSystem || '3:1';
+    let l = AppState.calcLength;
+    let w = AppState.calcWidth;
+    let diam = AppState.calcDiameter;
+
+    if (AppState.calcShape === 'circle') {
+      diam = parseFloat(document.getElementById('studio-calc-diam')?.value);
+    } else {
+      l = parseFloat(document.getElementById('studio-calc-len')?.value);
+      w = parseFloat(document.getElementById('studio-calc-wid')?.value);
+    }
+
+    const res = Store.calculateResinNeeded({
+      shape: AppState.calcShape,
+      lengthCm: l,
+      widthCm: w,
+      diameterCm: diam,
+      depthCm: d,
+      ratioSystem: sys
+    });
+
+    const out = document.getElementById('studio-calc-result');
+    if (!res.valid) {
+      if (out) out.textContent = 'Please enter positive dimensions (> 0 cm) to calculate resin mass.';
+      window.showToast('Invalid Dimensions', 'All mould dimensions must be greater than 0 cm.');
+      return;
+    }
+
+    if (AppState.calcShape === 'circle') {
+      AppState.calcDiameter = diam;
+    } else {
+      AppState.calcLength = l;
+      AppState.calcWidth = w;
+    }
+    AppState.calcDepth = d;
+    AppState.calcSystem = sys;
+
+    renderActiveView();
+    window.showToast(`Calculated: ~${res.totalGrams}g Required`, `Part A: ${res.partAGrams}g + Part B: ${res.partBGrams}g (${sys})`);
+  };
+
+  window.addRecommendedCalcKitToCart = function () {
+    const recommendedProdId = AppState.calcSystem === '2:1' ? 'vk-epx-201' : (AppState.calcSystem === '1:1' ? 'vk-dom-101' : 'vk-epx-301');
+    const prod = Store.getProductById(recommendedProdId);
+    if (!prod) return;
+    Store.addToCart(prod.id, null, 1);
+    updateGlobalBadges();
+    window.showToast(`Added ${prod.shortName || prod.name} to Bag`, 'Recommended for your calculated pour');
+  };
+
+  function syncGlobalFilterDrawerDom() {
+    const drawer = document.getElementById('global-filter-drawer');
+    if (!drawer) return;
+    drawer.querySelectorAll('button[onclick^="window.setCatalogRatio"]').forEach(btn => {
+      const match = (btn.getAttribute('onclick') || '').match(/'([^']+)'/);
+      const btnRatio = match ? match[1] : '';
+      if (btnRatio === AppState.catalogRatioFilter) {
+        btn.className = 'py-2 rounded-lg bg-primary text-white font-spec-numeral text-xs font-semibold cursor-pointer';
+      } else {
+        btn.className = 'py-2 rounded-lg bg-surface-container-low text-primary font-spec-numeral text-xs font-semibold border border-[#e4e0d8] cursor-pointer';
+      }
+    });
+    const rangeInput = drawer.querySelector('input[type="range"]');
+    if (rangeInput) rangeInput.value = String(AppState.catalogMaxPrice);
+    const labelEl = document.getElementById('drawer-price-label');
+    if (labelEl) labelEl.textContent = 'Up to ' + formatINR(AppState.catalogMaxPrice);
+  }
+
+  // Catalog handlers
+  window.setCatalogCategory = function (cat) {
+    AppState.catalogCategory = cat;
+    AppState.catalogVisibleCount = 8;
+    renderActiveView();
+  };
+
+  window.setCatalogSearch = function (val) {
+    AppState.catalogSearch = val;
+    renderActiveView();
+    const input = document.getElementById('catalog-search-input');
+    if (input) {
+      input.focus();
+      input.setSelectionRange(input.value.length, input.value.length);
+    }
+  };
+
+  window.setCatalogSort = function (sortVal) {
+    AppState.catalogSort = sortVal;
+    renderActiveView();
+  };
+
+  window.setCatalogView = function (viewMode) {
+    AppState.catalogView = viewMode;
+    renderActiveView();
+  };
+
+  window.setCatalogRatio = function (ratio) {
+    AppState.catalogRatioFilter = ratio;
+    syncGlobalFilterDrawerDom();
+    renderActiveView();
+  };
+
+  window.setCatalogMaxPrice = function (price) {
+    AppState.catalogMaxPrice = Number(price) || 12000;
+    syncGlobalFilterDrawerDom();
+    renderActiveView();
+  };
+
+  window.resetCatalogFilters = function () {
+    AppState.catalogCategory = 'all';
+    AppState.catalogSearch = '';
+    AppState.catalogSort = 'popular';
+    AppState.catalogRatioFilter = 'all';
+    AppState.catalogMaxPrice = 12000;
+    AppState.catalogVisibleCount = 12;
+    syncGlobalFilterDrawerDom();
+    renderActiveView();
+    window.toggleCatalogFilterDrawer(false);
+  };
+
+  window.loadMoreCatalog = function () {
+    AppState.catalogVisibleCount += 8;
+    renderActiveView();
+  };
+
+  window.toggleCatalogFilterDrawer = function (show) {
+    const drawer = document.getElementById('global-filter-drawer');
+    if (!drawer) return;
+    syncGlobalFilterDrawerDom();
+    drawer.classList.toggle('hidden', !show);
+  };
+
+  // PDP handlers
+  window.selectPdpGallery = function (idx) {
+    AppState.pdpGalleryIdx = idx;
+    renderActiveView();
+  };
+
+  window.selectPdpVariant = function (idx) {
+    AppState.selectedVariantIdx = idx;
+    renderActiveView();
+    const prod = Store.getProductById(AppState.currentProductId);
+    const v = prod.variants[idx];
+    if (v) window.showToast(`Selected ${v.label}`, `${formatINR(v.price)} • ${v.unitPrice}`);
+  };
+
+  window.setPdpCustomNote = function (val) {
+    AppState.pdpCustomNote = val;
+  };
+
+  window.changePdpQty = function (delta) {
+    AppState.pdpQty = Math.max(1, Math.min(50, AppState.pdpQty + delta));
+    renderActiveView();
+  };
+
+  window.addPdpToCart = function () {
+    const prod = Store.getProductById(AppState.currentProductId);
+    const v = (prod.variants && prod.variants[AppState.selectedVariantIdx]) || {
+      label: 'Standard Edition',
+      price: prod.price,
+      regularPrice: prod.regularPrice
+    };
+    Store.addToCart({
+      productId: prod.id,
+      sku: prod.sku,
+      name: prod.name,
+      variantLabel: v.label,
+      price: v.price,
+      regularPrice: v.regularPrice,
+      qty: AppState.pdpQty,
+      image: prod.image,
+      customNote: AppState.pdpCustomNote
+    });
+    updateGlobalBadges();
+    window.showToast(`Added ${AppState.pdpQty} × ${prod.shortName || prod.name} to Bag`, `${v.label} • Ready for checkout`);
+  };
+
+  window.addStudioBundle = function () {
+    Store.addToCart({ productId: 'vk-epx-301', variantLabel: '1.2kg Kit (Bundle)', price: 1149, regularPrice: 1299, qty: 1 });
+    Store.addToCart({ productId: 'vk-mld-geo', variantLabel: 'Set of 4 Geode Molds (Bundle)', price: 399, regularPrice: 449, qty: 1 });
+    Store.addToCart({ productId: 'vk-pig-cham', variantLabel: '12 Shades Mica Set (Bundle)', price: 750, regularPrice: 899, qty: 1 });
+    updateGlobalBadges();
+    window.showToast('Added 3-Piece Studio Bundle to Bag!', 'Saved ₹349 on combo');
+  };
+
+  window.verifyPdpPincode = function () {
+    const val = document.getElementById('pdp-pincode-input')?.value;
+    const res = Store.verifyPincode(val);
+    updateGlobalBadges();
+    const box = document.getElementById('pdp-pincode-result');
+    if (box) {
+      if (!res.valid) {
+        box.innerHTML = `<span class="material-symbols-outlined text-error text-base">error</span><span class="text-error font-semibold">${esc(res.message)}</span>`;
+      } else {
+        box.innerHTML = `<span class="material-symbols-outlined text-[#266b4e] text-base">verified_user</span><span><strong>${esc(res.pin)} (${esc(res.city)})</strong> — Delivery in <strong>${esc(res.days)}</strong> via ${esc(res.courier)}. COD &amp; UPI available.</span>`;
+      }
+    }
+  };
+
+  window.toggleReviewForm = function () {
+    const form = document.getElementById('pdp-review-form');
+    if (form) form.classList.toggle('hidden');
+  };
+
+  window.submitPdpReview = function (productId) {
+    const author = document.getElementById('rev-author')?.value.trim();
+    const rating = parseInt(document.getElementById('rev-rating')?.value || '5', 10);
+    const text = document.getElementById('rev-text')?.value.trim();
+    if (!author || !text) return;
+
+    if (!AppState.reviews[productId]) AppState.reviews[productId] = [];
+    AppState.reviews[productId].unshift({
+      author,
+      rating,
+      date: 'Just now',
+      verified: true,
+      text
+    });
+    renderActiveView();
+    window.showToast('Thank you for your review!', 'Published to verified studio feed');
+  };
+
+  window.shareCurrentProduct = function (productId) {
+    const prod = Store.getProductById(productId);
+    const shareUrl = window.location.href;
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(shareUrl).catch(() => {});
+    }
+    window.showToast('Link Copied to Clipboard!', `${prod.name} (@resin.art.memories)`);
+  };
+
+  // Social Feed Handlers
+  window.setSocialTagFilter = function (tag) {
+    AppState.socialTagFilter = tag;
+    renderActiveView();
+  };
+
+  window.handleSocialLike = function (postId) {
+    const updated = Store.toggleLikePost(postId);
+    renderActiveView();
+    if (updated && updated.liked) {
+      window.showToast('Liked @resin.art.memories Reel ❤️', `${updated.likes.toLocaleString('en-IN')} likes`);
+    }
+  };
+
+  window.handleSocialSave = function (postId) {
+    const updated = Store.toggleSavePost(postId);
+    renderActiveView();
+    window.showToast(updated && updated.saved ? 'Post Saved to Bookmarks' : 'Removed from Bookmarks');
+  };
+
+  window.handleSocialComment = function (postId, formEl) {
+    const input = formEl.querySelector('input[name="commentText"]');
+    if (!input || !input.value.trim()) return;
+    Store.addComment(postId, '@studio.patron', input.value.trim());
+    input.value = '';
+    renderActiveView();
+    window.showToast('Comment Posted!', 'Shared on @resin.art.memories community wall');
+  };
+
+  // Custom Studio Builder Handlers
+  window.updateCustomBuilder = function (field, label, priceVal) {
+    if (field === 'shape') {
+      AppState.customBuilder.shape = label;
+      AppState.customBuilder.shapePrice = Number(priceVal);
+    } else if (field === 'flowerSource') {
+      AppState.customBuilder.flowerSource = label;
+      AppState.customBuilder.sourceAddon = Number(priceVal);
+    } else if (field === 'metallic') {
+      AppState.customBuilder.metallic = label;
+      AppState.customBuilder.metallicAddon = Number(priceVal);
+    }
+    renderActiveView();
+  };
+
+  window.updateCustomBuilderText = function (val) {
+    AppState.customBuilder.engraving = val;
+    const preview = document.getElementById('custom-preview-engraving');
+    if (preview) preview.textContent = `“${val || 'Your Forever Memory'}”`;
+  };
+
+  window.updateCustomBuilderLed = function (checked) {
+    AppState.customBuilder.ledBase = checked;
+    renderActiveView();
+  };
+
+  window.addCustomCommissionToCart = function () {
+    const b = AppState.customBuilder;
+    const total = b.shapePrice + b.sourceAddon + b.metallicAddon + (b.ledBase ? 499 : 0);
+    Store.addToCart({
+      productId: 'ram-keep-001',
+      sku: 'RAM-CUSTOM-KEEP',
+      name: `Custom Preserved Keepsake (${b.shape})`,
+      variantLabel: `${b.metallic}${b.ledBase ? ' + Warm LED Stand' : ''}`,
+      price: total,
+      regularPrice: total + 1000,
+      qty: 1,
+      image: Store.IMAGES.floralCube,
+      customNote: `${b.engraving} | Source: ${b.flowerSource}`
+    });
+    updateGlobalBadges();
+    window.showToast('Custom Keepsake Added to Bag!', `${formatINR(total)} • Doorstep pickup instructions included`);
+    window.navigateTo('cart');
+  };
+
+  // Wishlist Handlers
+  window.moveAllWishlistToCart = function () {
+    const ids = Store.getWishlist();
+    ids.forEach(id => {
+      const p = Store.getProductById(id);
+      if (p) {
+        Store.addToCart({
+          productId: p.id,
+          name: p.name,
+          variantLabel: p.variants && p.variants[0] ? p.variants[0].label : 'Standard Edition',
+          price: p.price,
+          regularPrice: p.regularPrice,
+          qty: 1,
+          image: p.image,
+          sku: p.sku
+        });
+      }
+    });
+    updateGlobalBadges();
+    window.showToast(`Added ${ids.length} Saved Items to Studio Bag!`);
+    window.navigateTo('cart');
+  };
+
+  // Cart & Checkout Handlers
+  window.handleCartQty = function (cartItemId, delta) {
+    Store.updateCartQty(cartItemId, delta, false);
+    updateGlobalBadges();
+    renderActiveView();
+  };
+
+  window.handleCartRemove = function (cartItemId) {
+    Store.removeFromCart(cartItemId);
+    updateGlobalBadges();
+    renderActiveView();
+    window.showToast('Item Removed from Studio Bag');
+  };
+
+  window.handleSaveForLater = function (cartItemId, productId) {
+    if (!Store.isWishlisted(productId)) {
+      Store.toggleWishlist(productId);
+    }
+    Store.removeFromCart(cartItemId);
+    updateGlobalBadges();
+    renderActiveView();
+    window.showToast('Saved for Later', 'Moved item to your Atelier Wishlist');
+  };
+
+  window.handleApplyCoupon = function () {
+    const code = document.getElementById('cart-coupon-input')?.value || '';
+    const res = Store.applyCoupon(code);
+    renderActiveView();
+    window.showToast(res.valid ? 'Voucher Applied!' : 'Voucher Notice', res.message);
+  };
+
+  window.quickSelectCoupon = function (code) {
+    const res = Store.applyCoupon(code);
+    renderActiveView();
+    window.showToast(res.valid ? `Applied ${code}!` : 'Coupon Notice', res.message);
+  };
+
+  window.toggleGstClaim = function (checked) {
+    Store.saveGstInfo({ enabled: checked });
+    renderActiveView();
+  };
+
+  window.saveGstField = function () {
+    const gstin = document.getElementById('cart-gstin-input')?.value.trim().toUpperCase() || '';
+    const tradeName = document.getElementById('cart-tradename-input')?.value.trim() || '';
+    Store.saveGstInfo({ gstin, tradeName });
+    window.showToast('GST Invoice Details Updated', gstin);
+  };
+
+  window.promptChangePincode = function () {
+    const modal = document.getElementById('global-pincode-modal');
+    if (modal) modal.classList.remove('hidden');
+  };
+
+  window.saveModalPincode = function () {
+    const val = document.getElementById('modal-pincode-input')?.value;
+    const res = Store.verifyPincode(val);
+    if (!res.valid) {
+      window.showToast('Invalid PIN Code', res.message);
+      return;
+    }
+    document.getElementById('global-pincode-modal')?.classList.add('hidden');
+    updateGlobalBadges();
+    renderActiveView();
+    window.showToast(`Delivering to PIN ${res.pin}`, `${res.city} • ${res.courier}`);
+  };
+
+  // Story Modal Viewer
+  window.openStoryModal = function (idx) {
+    const st = Store.DEFAULT_STORIES[idx];
+    if (!st) return;
+    AppState.activeStoryIdx = idx;
+    const modal = document.getElementById('story-viewer-modal');
+    const img = document.getElementById('story-modal-img');
+    const title = document.getElementById('story-modal-title');
+    const sub = document.getElementById('story-modal-sub');
+    const cap = document.getElementById('story-modal-caption');
+    const cta = document.getElementById('story-modal-cta');
+    if (!modal) return;
+
+    img.src = st.image;
+    title.textContent = st.title;
+    sub.textContent = st.subtitle;
+    cap.textContent = st.caption;
+    cta.textContent = st.ctaText;
+    cta.onclick = function () {
+      window.closeStoryModal();
+      window.navigateTo('product', st.productId);
+    };
+
+    modal.classList.remove('hidden');
+  };
+
+  window.closeStoryModal = function () {
+    document.getElementById('story-viewer-modal')?.classList.add('hidden');
+  };
+
+  // Lightbox Modal
+  window.openLightbox = function (imgSrc, caption) {
+    const modal = document.getElementById('lightbox-modal');
+    const img = document.getElementById('lightbox-img');
+    const cap = document.getElementById('lightbox-caption');
+    if (!modal || !img) return;
+    img.src = imgSrc;
+    if (cap) cap.textContent = caption || '';
+    modal.classList.remove('hidden');
+  };
+
+  // TDS / SDS / Wholesale Spec Modal
+  window.openTdsModal = function (docType) {
+    const modal = document.getElementById('tds-spec-modal');
+    const title = document.getElementById('tds-modal-title');
+    const body = document.getElementById('tds-modal-body');
+    if (!modal || !title || !body) return;
+
+    if (docType === 'sds') {
+      title.textContent = 'ISO 11014 Material Safety Data Sheet (SDS)';
+      body.innerHTML = `
+        <p class="text-xs text-on-surface-variant"><strong>Formulation:</strong> Vistāra Krafts Zero-VOC Archival Epoxy System (HSN 39073010)</p>
+        <ul class="list-disc pl-5 space-y-1 text-xs text-on-surface mt-2">
+          <li><strong>VOC Content:</strong> 0.0 g/L (100% reactive solids, solvent-free).</li>
+          <li><strong>Flash Point:</strong> &gt; 150°C (Non-flammable air &amp; surface cargo certified).</li>
+          <li><strong>PPE Recommendation:</strong> Nitrile gloves and splash eyewear in studio ventilation.</li>
+          <li><strong>Food Contact Safety:</strong> Complies with FDA 21 CFR 175.300 once fully cured for 72 hours at 25°C.</li>
+        </ul>
+      `;
+    } else if (docType === 'wholesale') {
+      title.textContent = '2026 Studio & B2B Wholesale Slab Pricing';
+      body.innerHTML = `
+        <p class="text-xs text-on-surface-variant">Official GST Input Tax Credit (18%) invoices provided on all studio tiers:</p>
+        <div class="mt-2 border border-[#e4e0d8] rounded-lg overflow-hidden text-xs">
+          <div class="flex justify-between p-2 bg-surface-container-low font-bold"><span>Volume Tier</span><span>Rate per kg (3:1 / 2:1)</span></div>
+          <div class="flex justify-between p-2 border-t border-surface-container"><span>12 kg Commercial Barrel</span><span class="font-spec-numeral font-bold">₹833 / kg</span></div>
+          <div class="flex justify-between p-2 border-t border-surface-container"><span>36 kg Studio Pallet</span><span class="font-spec-numeral font-bold">₹740 / kg</span></div>
+          <div class="flex justify-between p-2 border-t border-surface-container"><span>200 kg Industrial Drum</span><span class="font-spec-numeral font-bold">₹645 / kg</span></div>
+        </div>
+      `;
+    } else {
+      title.textContent = 'Technical Data Sheet (TDS) — Batch #VK-26-C38';
+      body.innerHTML = `
+        <p class="text-xs text-on-surface-variant"><strong>Optical Transmission:</strong> 99.4% per ASTM D1003 • <strong>Shore D Hardness:</strong> 82D–85D</p>
+        <ul class="list-disc pl-5 space-y-1 text-xs text-on-surface mt-2">
+          <li><strong>Weighing Protocol:</strong> Always weigh Part A and Part B on a digital gram scale (3:1 by weight or 2:1 for Deep Pour).</li>
+          <li><strong>Mixing Cadence:</strong> Stir slowly for 3–4 minutes scraping beaker walls and base corners twice.</li>
+          <li><strong>Ambient Cure Window:</strong> Ideal studio temperature 22°C – 30°C with &lt; 65% relative humidity.</li>
+        </ul>
+      `;
+    }
+    modal.classList.remove('hidden');
+  };
+
+  // Share Your Memory Upload Modal
+  window.openShareMemoryModal = function () {
+    document.getElementById('share-memory-modal')?.classList.remove('hidden');
+  };
+
+  window.submitShareMemoryForm = function (ev) {
+    ev.preventDefault();
+    const authorName = document.getElementById('mem-author-name')?.value.trim();
+    const handle = document.getElementById('mem-author-handle')?.value.trim();
+    const tag = document.getElementById('mem-tag')?.value || 'ClientLove';
+    const caption = document.getElementById('mem-caption')?.value.trim();
+    const productId = document.getElementById('mem-product')?.value || 'ram-keep-001';
+
+    Store.addCustomerPost({
+      authorName,
+      handle,
+      tag,
+      caption,
+      productId,
+      image: Store.IMAGES.floralCube
+    });
+    document.getElementById('share-memory-modal')?.classList.add('hidden');
+    window.navigateTo('social');
+    window.showToast('Your Memory is Live!', 'Published to @resin.art.memories community feed');
+  };
+
+  // Checkout Modal
+  window.openCheckoutModal = function () {
+    const summary = Store.getCartSummary();
+    if (summary.itemsCount === 0) {
+      window.showToast('Your Studio Bag is Empty');
+      return;
+    }
+    const modal = document.getElementById('checkout-modal');
+    const amountEl = document.getElementById('checkout-modal-payable');
+    if (amountEl) amountEl.textContent = formatINR(summary.payable);
+    if (modal) modal.classList.remove('hidden');
+  };
+
+  window.submitCheckoutOrder = function (ev) {
+    ev.preventDefault();
+    const name = document.getElementById('chk-name')?.value.trim() || 'Studio Patron';
+    const phone = document.getElementById('chk-phone')?.value.trim() || '+91 98765 43210';
+    const address = document.getElementById('chk-address')?.value.trim() || 'Bengaluru 560001';
+    const paymentMethod = document.getElementById('chk-payment')?.value || 'UPI Instant (GPay / PhonePe)';
+
+    const res = Store.placeOrder({ name, phone, address, paymentMethod });
+    document.getElementById('checkout-modal')?.classList.add('hidden');
+    updateGlobalBadges();
+
+    if (res.success) {
+      window.showToast(`Order ${res.order.orderId} Confirmed! 🎉`, `Total Paid: ${formatINR(res.order.total)} via ${paymentMethod}`);
+      window.navigateTo('account');
+    }
+  };
+
+  // Simulate External Admin Host Push
+  window.simulateExternalAdminPush = function () {
+    const newId = 'ram-host-drop-' + Math.floor(100 + Math.random() * 899);
+    Store.receiveAdminPush({
+      type: 'ADMIN_HOST_LIVE_DROP',
+      summary: `Host Panel pushed "Rose-Gold Anniversary Lotus Clock (${newId})" + New Reel`,
+      product: {
+        id: newId,
+        sku: 'RAM-LOTUS-' + Math.floor(10 + Math.random() * 89),
+        name: '24K Rose-Gold Preserved Lotus & Pearl Wall Clock (Host Drop)',
+        shortName: 'Rose-Gold Lotus Clock',
+        subtitle: 'Pushed Live from External Admin Host Panel • Real Preserved Pink Lotus in 3:1 Crystal Resin',
+        category: 'keepsakes',
+        subCategory: 'floral_preservation',
+        badge: 'Host Live Drop',
+        price: 3499,
+        regularPrice: 4299,
+        unitPriceLabel: '16" Brass Sweep',
+        ratio: '3:1',
+        viscosity: 'low',
+        pourDepth: '20mm',
+        cureTime: '24h',
+        potLife: '45m',
+        rating: 5.0,
+        reviewsCount: 19,
+        inStock: true,
+        isCustomizable: true,
+        image: Store.IMAGES.jewelryBezel,
+        gallery: [Store.IMAGES.jewelryBezel, Store.IMAGES.floralCube, Store.IMAGES.coasterSet, Store.IMAGES.geodeCanvas],
+        variants: [
+          { id: 'lotus-16', label: '16" Lotus Keepsake Clock', desc: 'Silent sweep brass hands + real preserved lotus', price: 3499, regularPrice: 4299, unitPrice: '16 inch', popular: true }
+        ],
+        specs: {
+          mixRatioWeight: '3 : 1 Optical Cast',
+          mixRatioVolume: '2.6 : 1',
+          workingPotLife: '45 Minutes',
+          demoldDuration: '24 Hours',
+          fullGlassCure: '72 Hours',
+          dynamicViscosity: '650 mPa·s',
+          maxDepth: '20mm',
+          hardness: '83D',
+          uvStability: 'HALS 5+ Yrs'
+        }
+      },
+      socialPost: {
+        id: 'post-host-' + Date.now(),
+        handle: '@resin.art.memories',
+        authorName: 'Admin Host Live Push',
+        avatar: Store.IMAGES.avatarPatron,
+        location: 'Synced from Host Admin Panel',
+        timeAgo: 'Just now',
+        tag: 'BridalVarmala',
+        badge: 'New Host Drop',
+        image: Store.IMAGES.jewelryBezel,
+        caption: '✨ LIVE DROP FROM STUDIO HOST: Just finished curing this 24K Rose-Gold Lotus & Bridal Pearl keepsake! Available immediately in the catalogue.',
+        likes: 128,
+        saved: false,
+        liked: true,
+        productId: newId,
+        comments: []
+      }
+    });
+    renderActiveView();
+    window.showToast('Admin Host Push Received!', 'New product & shoppable post synced to storefront');
+  };
+
+  // Initialize on DOMContentLoaded
+  window.addEventListener('hashchange', handleRouteChange);
+  document.addEventListener('DOMContentLoaded', () => {
+    handleRouteChange();
+  });
+})();

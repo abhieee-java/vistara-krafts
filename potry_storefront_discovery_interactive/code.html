@@ -1,0 +1,1077 @@
+<!DOCTYPE html>
+
+<html class="h-full bg-surface" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/>
+<meta content="mobile_tab" name="shell-type"/>
+<title>Shop Discover — POTRY</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "on-primary": "#ffffff",
+            "on-secondary-fixed": "#360f00",
+            "on-tertiary-fixed-variant": "#414a37",
+            "on-primary-container": "#8d8a84",
+            "on-surface": "#1c1c18",
+            "surface-container": "#f0eee8",
+            "surface-tint": "#605e59",
+            "outline": "#79776f",
+            "on-tertiary": "#ffffff",
+            "surface-bright": "#fcf9f3",
+            "on-error-container": "#93000a",
+            "background": "#fcf9f3",
+            "surface-variant": "#e5e2dc",
+            "primary-fixed": "#e6e2db",
+            "on-primary-fixed-variant": "#484742",
+            "on-error": "#ffffff",
+            "surface-container-low": "#f6f3ed",
+            "inverse-on-surface": "#f3f0ea",
+            "on-secondary-fixed-variant": "#71361c",
+            "secondary-fixed": "#ffdbcd",
+            "tertiary-fixed-dim": "#c1cab2",
+            "tertiary-container": "#1d2515",
+            "secondary": "#8e4d31",
+            "error-container": "#ffdad6",
+            "surface-dim": "#dcdad4",
+            "primary-container": "#24231f",
+            "primary": "#0e0d0a",
+            "on-tertiary-container": "#848d78",
+            "on-tertiary-fixed": "#161e0f",
+            "tertiary-fixed": "#dde6cd",
+            "surface-container-highest": "#e5e2dc",
+            "on-secondary-container": "#793c21",
+            "on-secondary": "#ffffff",
+            "surface-container-lowest": "#ffffff",
+            "tertiary": "#080f03",
+            "inverse-primary": "#cac6c0",
+            "on-primary-fixed": "#1c1c18",
+            "on-surface-variant": "#484740",
+            "primary-fixed-dim": "#cac6c0",
+            "secondary-fixed-dim": "#ffb597",
+            "surface-container-high": "#ebe8e2",
+            "secondary-container": "#feaa87",
+            "outline-variant": "#cac6bd",
+            "surface": "#fcf9f3",
+            "inverse-surface": "#31312d",
+            "on-background": "#1c1c18",
+            "error": "#ba1a1a"
+          },
+          borderRadius: {
+            DEFAULT: "0.125rem",
+            lg: "0.25rem",
+            xl: "0.5rem",
+            full: "0.75rem"
+          },
+          fontFamily: {
+            "body-lg": ["Plus Jakarta Sans"],
+            "price-lg": ["Plus Jakarta Sans"],
+            "headline-md": ["Playfair Display"],
+            "body-md": ["Plus Jakarta Sans"],
+            "price-sm": ["Plus Jakarta Sans"],
+            "headline-lg": ["Playfair Display"],
+            "display-hero-mobile": ["Playfair Display"],
+            "label-md": ["Plus Jakarta Sans"],
+            "headline-lg-mobile": ["Playfair Display"],
+            "headline-sm": ["Playfair Display"],
+            "label-caps": ["Plus Jakarta Sans"],
+            "body-sm": ["Plus Jakarta Sans"],
+            "display-hero": ["Playfair Display"]
+          }
+        }
+      }
+    };
+  </script>
+<style>
+    html, body {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      -webkit-overflow-scrolling: touch;
+      overflow-x: hidden;
+      overflow-y: auto;
+      background-color: #fcf9f3;
+      color: #1c1c18;
+    }
+    .pb-safe { padding-bottom: max(16px, env(safe-area-inset-bottom, 16px)); }
+    .pt-safe { padding-top: max(0px, env(safe-area-inset-top, 0px)); }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    @keyframes pulseBadge {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.35); }
+      100% { transform: scale(1); }
+    }
+    .pulse-badge {
+      animation: pulseBadge 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+  </style>
+</head>
+<body class="bg-surface font-body-md text-on-surface flex flex-col min-h-screen relative antialiased selection:bg-secondary-fixed selection:text-secondary">
+<!-- TOP HEADER (Fixed with proper z-index) -->
+<header class="fixed top-0 inset-x-0 z-40 pt-safe bg-surface/95 backdrop-blur-md shadow-[0_1px_8px_rgba(0,0,0,0.03)] border-b border-surface-container">
+<div class="bg-primary-container px-4 py-1.5 text-center flex items-center justify-center">
+<p class="text-on-primary font-label-caps text-[11px] uppercase tracking-wider">Complimentary courier on orders above $120 • Studio hand-packaging</p>
+</div>
+<div class="h-16 px-3 flex items-center justify-between gap-1">
+<div class="flex items-center gap-0.5 shrink-0">
+<!-- Hamburger Menu Button -->
+<button aria-label="Open Navigation Menu" class="w-11 h-11 flex items-center justify-center text-on-surface hover:text-secondary active:scale-95 transition-all" id="menu-btn" onclick="toggleNavDrawer(true)" type="button">
+<span class="material-symbols-outlined text-[24px]">menu</span>
+</button>
+<!-- Search Button -->
+<button aria-label="Search Catalogue" class="w-11 h-11 flex items-center justify-center text-on-surface hover:text-secondary active:scale-95 transition-all" id="search-btn" onclick="toggleSearchModal(true)" type="button">
+<span class="material-symbols-outlined text-[23px]">search</span>
+</button>
+</div>
+<!-- Wordmark Logo -->
+<div class="flex items-center justify-center flex-1 px-1">
+<a class="flex items-center gap-2 group" href="#" onclick="scrollToTop(event)">
+<img alt="POTRY Wordmark Logo" class="h-7 w-auto object-contain transition-transform group-hover:scale-105" src="https://lh3.googleusercontent.com/aida/AEtjO1UL_yv7CTSIh8DKMJSJyoEYV6KxkBv-vKrFle0GDCkSpaAqW6NgAOHRFgnmdA8w4H2gwXZOcRM-pCA3X5qDVsa1CQTVwxmaMPMsdc2iRpZlnIY37B_Odr_E0inLU4jSiTjX-EQA0Agmjtt1KTwPei-xB5SFz-_Vz8FO8ZaxhrSn_qoOWRpZzE0n60032HCsmPdzpGhw6WMTp64N4O1PkEPVu-x-tvp-wjJtQkxP3sXTtaDy59arIJ3cDp2L"/>
+<span class="font-headline-sm text-[19px] tracking-tight text-primary font-serif font-medium hidden xs:inline">POTRY</span>
+</a>
+</div>
+<!-- Action Icons -->
+<div class="flex items-center justify-end gap-1 shrink-0">
+<button aria-label="Deliver to Postal Code" class="hidden sm:flex items-center gap-1 h-8 px-2.5 rounded-lg bg-surface-container text-on-surface-variant hover:text-primary transition-colors text-xs font-semibold" onclick="openPostalModal()" type="button">
+<span class="material-symbols-outlined text-[15px]">location_on</span>
+<span id="header-pin-display">10012</span>
+</button>
+<!-- Wishlist Icon with Dynamic Badge -->
+<button aria-label="Wishlist" class="relative w-11 h-11 flex items-center justify-center text-on-surface hover:text-secondary active:scale-95 transition-all" onclick="switchTab('wishlist')" type="button">
+<span class="material-symbols-outlined text-[23px]">favorite</span>
+<span class="absolute top-2 right-1.5 min-w-[16px] h-4 px-1 bg-secondary text-on-secondary rounded-full font-label-caps text-[9px] leading-4 text-center font-bold shadow-sm transition-transform" id="wishlist-badge">2</span>
+</button>
+<!-- Bag Icon with Dynamic Counter -->
+<button aria-label="Shopping Bag" class="relative w-11 h-11 flex items-center justify-center text-on-surface hover:text-secondary active:scale-95 transition-all" onclick="openMiniCart()" type="button">
+<span class="material-symbols-outlined text-[23px]">local_mall</span>
+<span class="absolute top-2 right-1.5 min-w-[16px] h-4 px-1 bg-primary text-on-primary rounded-full font-label-caps text-[9px] leading-4 text-center font-bold shadow-sm transition-transform" id="cart-badge">3</span>
+</button>
+<!-- Profile Avatar -->
+<button aria-label="Client Profile" class="w-9 h-9 flex items-center justify-center shrink-0 ml-0.5 rounded-full ring-1 ring-surface-variant focus:outline-none" onclick="switchTab('account')" type="button">
+<img alt="Profile" class="w-8 h-8 rounded-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDfPBf4gKkxJy4k7VhNPVLdbU1ZN0tnWmDVag93jtslDzP0bON1UVW8le9JWAPr4hMjPQnhPQDLWOM-5_B0TxNOi4JRBxsk8-rPu56OWL4SA3fO59crCM3c2XwquAsm_L_it1emhMJTMiLFQqLc4HKHBJ9PE09Au5yB0S-rBO1b45LzXGrTEqXfwsueNhHmLpULq3uNIWg-sD4Tu_tg0ewREEn5oNEwMo4XmXvcWUz4hVg3NX3dnFHwMQ"/>
+</button>
+</div>
+</div>
+</header>
+<!-- MAIN SCROLLABLE CONTENT (Never locked or clipped) -->
+<main class="flex-1 flex flex-col w-full pt-[96px] pb-24 bg-surface" id="main-scroll-container">
+<!-- Hyperlocal Delivery Selector Banner -->
+<section class="px-4 py-3 bg-surface-container-low flex items-center justify-between gap-3 shadow-xs border-b border-surface-container">
+<div class="flex items-center gap-2.5 min-w-0 cursor-pointer" onclick="openPostalModal()">
+<span class="material-symbols-outlined text-secondary text-[21px] shrink-0" style="font-variation-settings: 'FILL' 1;">local_shipping</span>
+<div class="flex flex-col min-w-0">
+<div class="flex items-center gap-1.5 flex-wrap">
+<span class="font-label-caps text-[10px] uppercase tracking-wider text-secondary font-bold">Local Courier</span>
+<span class="font-body-sm text-xs text-on-surface truncate">Deliver to <strong id="current-location-text">New York, 10012</strong></span>
+</div>
+<p class="font-body-sm text-[11px] leading-[14px] text-on-surface-variant truncate">Same-day studio dispatch available for select pieces</p>
+</div>
+</div>
+<button class="shrink-0 px-3 py-1.5 bg-surface-container-lowest text-primary rounded-lg font-label-caps text-[11px] uppercase tracking-wider hover:bg-primary hover:text-on-primary transition-all shadow-sm active:scale-95 border border-surface-container" onclick="openPostalModal()" type="button">
+        Change PIN
+      </button>
+</section>
+<!-- Editorial Hero Section -->
+<section class="relative w-full px-4 pt-4 pb-4 flex flex-col gap-5">
+<div class="relative w-full aspect-[4/5] rounded-2xl overflow-hidden shadow-sm">
+<img alt="Handcrafted ceramic vases and stoneware vessels in warm terracotta" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDes2xjr4UeoURbJGkwhJVpkRQsocrLaiAopYLrtQtkbhC2nc7wRw6WIMsXdSK-DR1yCpW6XKWG4x6B9AsKcT2abd_Jyc5FLx5rVj1lXswMfXaPJAZYnTmbyLUar0tZFRubIr_eU96egoDPGxQ0826B0LV1y8ZK2s7HNEuSYtWxLlKvnuJlLkqQ1s_AGVoPnF4gu9gDc8_gAmlerjbDAitHOjptZRqDrB9d-9jryT2Lilxo8YMYq8MDMg"/>
+<div class="absolute inset-0 bg-gradient-to-t from-primary/80 via-primary/30 to-transparent flex flex-col justify-end p-6 text-on-primary">
+<span class="font-label-caps text-[11px] uppercase tracking-widest text-secondary-fixed mb-1.5 font-bold">Small-Batch Studio 04</span>
+<h1 class="font-headline-lg-mobile text-[32px] leading-tight font-serif text-on-primary mb-2">Form, Function &amp; Earth</h1>
+<p class="font-body-md text-sm text-surface-container-low max-w-xs font-normal mb-6 leading-relaxed">
+            Small-batch stoneware wheel-thrown in our local studio. Designed for daily rituals.
+          </p>
+<div class="flex flex-col gap-2.5 sm:flex-row">
+<button class="w-full sm:w-auto h-12 px-6 bg-primary-container text-on-primary rounded-lg font-label-md text-xs uppercase tracking-wider flex items-center justify-center gap-2 hover:bg-secondary active:scale-[0.98] transition-all shadow-md font-semibold" onclick="scrollToSeries()" type="button">
+<span>Explore Studio Arrivals</span>
+<span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+</button>
+<button class="w-full sm:w-auto h-12 px-5 bg-surface-container-lowest/95 backdrop-blur text-primary rounded-lg font-label-md text-xs uppercase tracking-wider flex items-center justify-center hover:bg-white active:scale-[0.98] transition-all shadow-sm font-semibold" onclick="togglePaletteDrawer(true)" type="button">
+              View Glaze Palette
+            </button>
+</div>
+</div>
+</div>
+</section>
+<!-- Curated Category Scroller (Interactive Filter Pills) -->
+<section class="flex flex-col gap-3 py-3" id="curated-series-section">
+<div class="px-4 flex items-baseline justify-between">
+<div>
+<span class="font-label-caps text-[10px] uppercase tracking-wider text-secondary font-bold">Browse Collections</span>
+<h2 class="font-headline-sm text-xl text-primary font-serif">Curated Series</h2>
+</div>
+<button class="font-label-caps text-xs uppercase tracking-wider text-secondary font-bold hover:underline" onclick="showAllCategories()" type="button">
+          View All (32)
+        </button>
+</div>
+<!-- Horizontal scrollable series cards with interactive active states -->
+<div class="flex overflow-x-auto no-scrollbar gap-3 px-4 pb-2 snap-x" id="category-pills-list">
+<!-- Pill 1: All -->
+<button class="category-pill active-pill snap-start shrink-0 px-4 py-2.5 rounded-full bg-primary text-on-primary text-xs font-semibold tracking-wide transition-all shadow-sm" data-category="all" onclick="filterCategory('all', this)" type="button">
+          All Pieces
+        </button>
+<!-- Pill 2: Tableware -->
+<button class="category-pill snap-start shrink-0 px-4 py-2.5 rounded-full bg-surface-container text-on-surface text-xs font-medium tracking-wide transition-all hover:bg-surface-variant" data-category="tableware" onclick="filterCategory('tableware', this)" type="button">
+          Tableware (18)
+        </button>
+<!-- Pill 3: Vases & Vessels -->
+<button class="category-pill snap-start shrink-0 px-4 py-2.5 rounded-full bg-surface-container text-on-surface text-xs font-medium tracking-wide transition-all hover:bg-surface-variant" data-category="vessels" onclick="filterCategory('vessels', this)" type="button">
+          Vases &amp; Vessels (9)
+        </button>
+<!-- Pill 4: Cookware -->
+<button class="category-pill snap-start shrink-0 px-4 py-2.5 rounded-full bg-surface-container text-on-surface text-xs font-medium tracking-wide transition-all hover:bg-surface-variant" data-category="cookware" onclick="filterCategory('cookware', this)" type="button">
+          Bakeware (5)
+        </button>
+<!-- Pill 5: Homeware & Incense -->
+<button class="category-pill snap-start shrink-0 px-4 py-2.5 rounded-full bg-surface-container text-on-surface text-xs font-medium tracking-wide transition-all hover:bg-surface-variant" data-category="homeware" onclick="filterCategory('homeware', this)" type="button">
+          Homeware &amp; Incense (14)
+        </button>
+</div>
+<!-- Visual Collection Preview Cards -->
+<div class="flex overflow-x-auto no-scrollbar gap-3 px-4 pt-1 snap-x">
+<!-- Tableware Card -->
+<div class="snap-start shrink-0 w-[240px] p-3 rounded-xl bg-surface-container-lowest border border-surface-container shadow-xs flex flex-col gap-2.5 group cursor-pointer hover:shadow-md transition-all" onclick="filterCategory('tableware')">
+<div class="relative w-full h-32 rounded-lg overflow-hidden bg-surface-container">
+<img alt="Minimalist stoneware plates and bowls" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCfypgoi9Vj9FvLu7xm5zVgUyScR2rHVIZk6yI6qm0NJEQ5jestdHH2cJuMLnjrOIwd6l02qu0wlIZWN212J9uO0-M7b6M9AtsIY5gvdIBkHEGkCaFzW575_14ofsqxiGnCAuFSS8edNidJZyCGA1YM_Wvtow8aVBm_PI2mBH34uNI7gQgv49AObPurFKVZEFwTTBhcpxD9ddkhh1CuVKZg9Iz8JrSexU1tQblckBCsXVF-cOTDd9N9qw"/>
+<span class="absolute top-2 left-2 px-2 py-0.5 rounded-full bg-surface-container-lowest/90 backdrop-blur font-label-caps text-[10px] uppercase font-bold text-primary">18 Pieces</span>
+</div>
+<div class="flex flex-col">
+<h3 class="font-headline-sm text-[17px] font-serif text-primary">Tableware</h3>
+<p class="font-body-sm text-xs text-on-surface-variant truncate">Dinner plates, pasta bowls, coffee mugs</p>
+</div>
+</div>
+<!-- Vases & Vessels -->
+<div class="snap-start shrink-0 w-[240px] p-3 rounded-xl bg-surface-container-lowest border border-surface-container shadow-xs flex flex-col gap-2.5 group cursor-pointer hover:shadow-md transition-all" onclick="filterCategory('vessels')">
+<div class="relative w-full h-32 rounded-lg overflow-hidden bg-surface-container">
+<img alt="Sculptural terracotta amphora and vessels" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCFbPuyZVeJ7XEqpRBpZ6Aqf4v2yuNNgaeqgnv02VnIiyAVgicA8P0u6evGP8jhP2Ku4opK6CSQrJjeDN0tH5rTjN6LwyxO1b-f0xDxQ40SwLqqkR5uJ92lELBozFfkNHAC80zqmsWqrG58Rf13flNGkRukLtcw655dAO9o9Xr0Pj3xXu_8e0HSvi7jhJdng19c2MxR7Qd64pINs4uSgM2Lxzq_BC_r2R0OvxEiCXT4ShC2dAhmv4tbNw"/>
+<span class="absolute top-2 left-2 px-2 py-0.5 rounded-full bg-surface-container-lowest/90 backdrop-blur font-label-caps text-[10px] uppercase font-bold text-primary">9 Editions</span>
+</div>
+<div class="flex flex-col">
+<h3 class="font-headline-sm text-[17px] font-serif text-primary">Vases &amp; Vessels</h3>
+<p class="font-body-sm text-xs text-on-surface-variant truncate">Ikebana, fluted amphora, carafes</p>
+</div>
+</div>
+<!-- Cookware & Bakeware -->
+<div class="snap-start shrink-0 w-[240px] p-3 rounded-xl bg-surface-container-lowest border border-surface-container shadow-xs flex flex-col gap-2.5 group cursor-pointer hover:shadow-md transition-all" onclick="filterCategory('cookware')">
+<div class="relative w-full h-32 rounded-lg overflow-hidden bg-surface-container">
+<img alt="Handcrafted stoneware baking cloche" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuANVUJp0G0isH8UfGQAfSlPoq2DJFEPT0erv2NneaTQZol-Ep_vnGWhRQ0QuD41Z8p0jhroVdZvi87E2XN4nLhxDXi6ReMU3oKmeMQNCRCDCbcLnpWt-D4kk42DYoI6tRcvUvSn7PI9WOP6spbm8qbkB3YorB4XKIoOLypBmzv6kzT2PL3kXZstw5_yrp991W6_7ko0SP-tfV-S62-hEA_z3_q0vGaejc5zOek9wkAIj1BSfIoFy6VDUA"/>
+<span class="absolute top-2 left-2 px-2 py-0.5 rounded-full bg-surface-container-lowest/90 backdrop-blur font-label-caps text-[10px] uppercase font-bold text-primary">Limited Batch</span>
+</div>
+<div class="flex flex-col">
+<h3 class="font-headline-sm text-[17px] font-serif text-primary">Cookware &amp; Bakeware</h3>
+<p class="font-body-sm text-xs text-on-surface-variant truncate">Unglazed tagines, bread cloches</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Featured Bestsellers Grid -->
+<section class="px-4 py-6 flex flex-col gap-4">
+<div class="flex items-end justify-between">
+<div>
+<span class="font-label-caps text-[10px] uppercase tracking-wider text-secondary font-bold">Studio Favorites</span>
+<h2 class="font-headline-sm text-xl text-primary font-serif">Permanent Edition</h2>
+</div>
+<div class="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-surface-container">
+<span class="w-2 h-2 rounded-full bg-[#2D5A27] animate-pulse"></span>
+<span class="font-label-caps text-[10px] text-on-surface-variant uppercase tracking-wider font-semibold">Kiln Cleared Today</span>
+</div>
+</div>
+<!-- Interactive Grid of Pottery Cards -->
+<div class="grid grid-cols-2 gap-3" id="products-grid">
+<!-- Product Card 1 -->
+<div class="product-item flex flex-col bg-surface-container-lowest rounded-xl p-2.5 shadow-xs border border-surface-container hover:shadow-md transition-all" data-category="vessels" data-name="Sienna Ridged Pitcher" data-price="68">
+<div class="relative w-full aspect-[4/5] rounded-lg overflow-hidden bg-surface-container-low mb-2.5 group">
+<img alt="Sienna Ridged Pitcher" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBsprWlep7LRGPWuHdIks3m63T8JSDINxMsEuKuBDErBMOiL5QqSjykWVtANa5vLVFgwLO2AQJuDAa1fe1lfXNSHAK-iR9wTVX7W_avbiCiwqY3icQ7KiMwaENVMYxoH0dyJQHv8Lb3dUuf1YIzmfD_f-caFU2-y0B7y-M4j1pptSa2ZNE_naMzreLRqerNbOfrRiqGT2sS_sggOjTneCyEImV4ReygqDC4P-RGCALfz1rqo0posqpeIw"/>
+<span class="absolute top-2 left-2 px-2 py-0.5 rounded bg-surface-container-lowest/90 backdrop-blur font-label-caps text-[9px] uppercase text-primary font-bold">
+              Wheel-thrown
+            </span>
+<!-- Interactive Wishlist Heart -->
+<button aria-label="Toggle Sienna Pitcher Wishlist" class="wishlist-btn absolute top-2 right-2 w-8 h-8 rounded-full bg-surface-container-lowest/90 backdrop-blur flex items-center justify-center text-on-surface hover:text-secondary active:scale-90 transition-all shadow-xs" onclick="toggleWishlistItem(this, 'Sienna Ridged Pitcher')" type="button">
+<span class="material-symbols-outlined text-[18px]">favorite</span>
+</button>
+</div>
+<div class="flex flex-col gap-1 flex-1">
+<div class="flex items-center gap-1.5">
+<span class="w-2.5 h-2.5 rounded-full bg-[#D19D5A] shadow-xs"></span>
+<span class="font-label-caps text-[10px] text-on-surface-variant uppercase truncate">Ochre Sand</span>
+</div>
+<h3 class="font-headline-sm text-[15px] leading-snug text-primary font-medium line-clamp-1">Sienna Ridged Pitcher</h3>
+<div class="flex items-center gap-1 text-[#C48427]">
+<span class="material-symbols-outlined text-[13px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="font-body-sm text-[11px] font-semibold text-on-surface">4.9</span>
+<span class="font-body-sm text-[10px] text-on-surface-variant">(28)</span>
+</div>
+<div class="mt-auto pt-2 flex items-center justify-between">
+<span class="font-price-sm text-sm text-primary font-bold">$68.00</span>
+<!-- Interactive Add Button -->
+<button aria-label="Add Sienna Ridged Pitcher" class="cart-add-btn w-9 h-9 rounded-lg bg-primary text-on-primary flex items-center justify-center hover:bg-secondary active:scale-90 transition-all shadow-xs" onclick="addToCart('Sienna Ridged Pitcher', 68, this)" type="button">
+<span class="material-symbols-outlined text-[18px]">add</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Product Card 2 -->
+<div class="product-item flex flex-col bg-surface-container-lowest rounded-xl p-2.5 shadow-xs border border-surface-container hover:shadow-md transition-all" data-category="tableware" data-name="Kuro Dinner Plates (4)" data-price="142">
+<div class="relative w-full aspect-[4/5] rounded-lg overflow-hidden bg-surface-container-low mb-2.5 group">
+<img alt="Kuro Dinner Plates" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC8ggqXqDFvZw8iThx28yg8QaaxVDSTsfLuUxdQus9skXePuDtGp-HuWgqhzRsbEBhHO_avFb8Ah_6fsi0R6IOtK105Q5rakwXN5jOhsQJeYQ4NdafxjbTcfwkGzDEvH1_N092gtHQk89uRe-h-gREmNn0nlZzJAFfxGC_UPhzlMMVC7cNuwOe3gd0uSmDU3381u1K4Se46Irqeq4HsOSaXR6GYPKzomUjhC8FPTaayPLhHPnC-Jl3tzg"/>
+<span class="absolute top-2 left-2 px-2 py-0.5 rounded bg-secondary text-on-secondary font-label-caps text-[9px] uppercase font-bold">
+              Low Stock (4)
+            </span>
+<button aria-label="Toggle Kuro Dinner Plates Wishlist" class="wishlist-btn absolute top-2 right-2 w-8 h-8 rounded-full bg-surface-container-lowest/90 backdrop-blur flex items-center justify-center text-on-surface hover:text-secondary active:scale-90 transition-all shadow-xs" onclick="toggleWishlistItem(this, 'Kuro Dinner Plates (4)')" type="button">
+<span class="material-symbols-outlined text-[18px]">favorite</span>
+</button>
+</div>
+<div class="flex flex-col gap-1 flex-1">
+<div class="flex items-center gap-1.5">
+<span class="w-2.5 h-2.5 rounded-full bg-[#2C2B29] shadow-xs"></span>
+<span class="font-label-caps text-[10px] text-on-surface-variant uppercase truncate">Charcoal Basalt</span>
+</div>
+<h3 class="font-headline-sm text-[15px] leading-snug text-primary font-medium line-clamp-1">Kuro Dinner Plates (4)</h3>
+<div class="flex items-center gap-1 text-[#C48427]">
+<span class="material-symbols-outlined text-[13px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="font-body-sm text-[11px] font-semibold text-on-surface">5.0</span>
+<span class="font-body-sm text-[10px] text-on-surface-variant">(42)</span>
+</div>
+<div class="mt-auto pt-2 flex items-center justify-between">
+<span class="font-price-sm text-sm text-primary font-bold">$142.00</span>
+<button aria-label="Add Kuro Dinner Plates" class="cart-add-btn w-9 h-9 rounded-lg bg-primary text-on-primary flex items-center justify-center hover:bg-secondary active:scale-90 transition-all shadow-xs" onclick="addToCart('Kuro Dinner Plates (4)', 142, this)" type="button">
+<span class="material-symbols-outlined text-[18px]">add</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Product Card 3 -->
+<div class="product-item flex flex-col bg-surface-container-lowest rounded-xl p-2.5 shadow-xs border border-surface-container hover:shadow-md transition-all" data-category="tableware" data-name="Oatmeal Fluted Mug" data-price="36">
+<div class="relative w-full aspect-[4/5] rounded-lg overflow-hidden bg-surface-container-low mb-2.5 group">
+<img alt="Oatmeal Fluted Mug" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD1lTd43BTsQQK-U7EYFGMztrDnkTAVC5j92lhf5XkpSAHm1T_w98l3PR4D0CsfQoHR1lfx1a8xJyu3LqOWoiwnaVA4RA6ZD2qQYMYKq0P-zld6ypnuozqi4n4qLkFNyRgWXKhSwc7DNtynBSZ6pfld3sPvP3fHaeKXrW5_xbMzjx1W1-rnHTfRRgorKzTCOEWX5YuGwIou375K3W9dm0FTGBaZSP58NGq2DFPJc-pZIhrcsV_B7Btg7g"/>
+<button aria-label="Toggle Oatmeal Fluted Mug Wishlist" class="wishlist-btn active-fav absolute top-2 right-2 w-8 h-8 rounded-full bg-surface-container-lowest/90 backdrop-blur flex items-center justify-center text-secondary active:scale-90 transition-all shadow-xs" onclick="toggleWishlistItem(this, 'Oatmeal Fluted Mug')" type="button">
+<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">favorite</span>
+</button>
+</div>
+<div class="flex flex-col gap-1 flex-1">
+<div class="flex items-center gap-1.5">
+<span class="w-2.5 h-2.5 rounded-full bg-[#E5DFC9] shadow-xs"></span>
+<span class="font-label-caps text-[10px] text-on-surface-variant uppercase truncate">Raw Speckle</span>
+</div>
+<h3 class="font-headline-sm text-[15px] leading-snug text-primary font-medium line-clamp-1">Oatmeal Fluted Mug</h3>
+<div class="flex items-center gap-1 text-[#C48427]">
+<span class="material-symbols-outlined text-[13px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="font-body-sm text-[11px] font-semibold text-on-surface">4.8</span>
+<span class="font-body-sm text-[10px] text-on-surface-variant">(91)</span>
+</div>
+<div class="mt-auto pt-2 flex items-center justify-between">
+<span class="font-price-sm text-sm text-primary font-bold">$36.00</span>
+<button aria-label="Add Oatmeal Fluted Mug" class="cart-add-btn w-9 h-9 rounded-lg bg-primary text-on-primary flex items-center justify-center hover:bg-secondary active:scale-90 transition-all shadow-xs" onclick="addToCart('Oatmeal Fluted Mug', 36, this)" type="button">
+<span class="material-symbols-outlined text-[18px]">add</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Product Card 4 -->
+<div class="product-item flex flex-col bg-surface-container-lowest rounded-xl p-2.5 shadow-xs border border-surface-container hover:shadow-md transition-all" data-category="vessels" data-name="Terracotta Ikebana" data-price="88">
+<div class="relative w-full aspect-[4/5] rounded-lg overflow-hidden bg-surface-container-low mb-2.5 group">
+<img alt="Terracotta Ikebana" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAMZQ25zZmrDf3qDttxvUCP1M50TxRb8qtcZ41ypBAdcopX41Xh5HzCBxhQ5t5w2X2qLtMHBPXZZn7AOW4q6fiKCb-SgzoYSfAqN5096v09qMu5SZ7YLQ8li3huivX6b4fGjT_eFELZhYbI-TfeYEugW4Ub0mYqzO_9hXfxG4jLXaVKDPEbjpPBLiMYNNeU2NtFI84WBXxC6WWrQtji1TpBqYFDKqzXS-gbPimtYTiP2k7998Ipn-0Nww"/>
+<button aria-label="Toggle Terracotta Ikebana Wishlist" class="wishlist-btn active-fav absolute top-2 right-2 w-8 h-8 rounded-full bg-surface-container-lowest/90 backdrop-blur flex items-center justify-center text-secondary active:scale-90 transition-all shadow-xs" onclick="toggleWishlistItem(this, 'Terracotta Ikebana')" type="button">
+<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">favorite</span>
+</button>
+</div>
+<div class="flex flex-col gap-1 flex-1">
+<div class="flex items-center gap-1.5">
+<span class="w-2.5 h-2.5 rounded-full bg-[#B86F50] shadow-xs"></span>
+<span class="font-label-caps text-[10px] text-on-surface-variant uppercase truncate">Natural Bisque</span>
+</div>
+<h3 class="font-headline-sm text-[15px] leading-snug text-primary font-medium line-clamp-1">Terracotta Ikebana</h3>
+<div class="flex items-center gap-1 text-[#C48427]">
+<span class="material-symbols-outlined text-[13px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="font-body-sm text-[11px] font-semibold text-on-surface">4.9</span>
+<span class="font-body-sm text-[10px] text-on-surface-variant">(17)</span>
+</div>
+<div class="mt-auto pt-2 flex items-center justify-between">
+<span class="font-price-sm text-sm text-primary font-bold">$88.00</span>
+<button aria-label="Add Terracotta Ikebana" class="cart-add-btn w-9 h-9 rounded-lg bg-primary text-on-primary flex items-center justify-center hover:bg-secondary active:scale-90 transition-all shadow-xs" onclick="addToCart('Terracotta Ikebana', 88, this)" type="button">
+<span class="material-symbols-outlined text-[18px]">add</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Hyperlocal Storefront Service Banner -->
+<section class="px-4 py-2">
+<div class="bg-surface-container-low rounded-xl p-4 flex flex-col gap-4 shadow-xs border border-surface-container">
+<div class="flex items-start gap-3">
+<div class="w-9 h-9 rounded-lg bg-surface-container-lowest flex items-center justify-center text-secondary shrink-0 shadow-xs">
+<span class="material-symbols-outlined text-[20px]">storefront</span>
+</div>
+<div class="flex flex-col">
+<h4 class="font-label-md text-xs font-bold text-primary">Studio Click &amp; Collect in 2 hrs</h4>
+<p class="font-body-sm text-xs text-on-surface-variant leading-relaxed">Pick up directly from our Hudson Street pottery workshop, wrapped in tissue and archival cotton cord.</p>
+</div>
+</div>
+<div class="flex items-start gap-3">
+<div class="w-9 h-9 rounded-lg bg-surface-container-lowest flex items-center justify-center text-secondary shrink-0 shadow-xs">
+<span class="material-symbols-outlined text-[20px]">recycling</span>
+</div>
+<div class="flex flex-col">
+<h4 class="font-label-md text-xs font-bold text-primary">100% Recyclable Pulp Packaging</h4>
+<p class="font-body-sm text-xs text-on-surface-variant leading-relaxed">Every ceramic item is cushioned in molded recycled fiber cradles. Zero single-use plastics or polystyrene.</p>
+</div>
+</div>
+<div class="flex items-start gap-3">
+<div class="w-9 h-9 rounded-lg bg-surface-container-lowest flex items-center justify-center text-secondary shrink-0 shadow-xs">
+<span class="material-symbols-outlined text-[20px]">verified</span>
+</div>
+<div class="flex flex-col">
+<h4 class="font-label-md text-xs font-bold text-primary">Lifetime Craftsmanship Guarantee</h4>
+<p class="font-body-sm text-xs text-on-surface-variant leading-relaxed">High-fired to 1,280°C for exceptional thermal shock resistance. Dishwasher, microwave, and oven safe.</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Studio Craftsmanship Storytelling & Video Card -->
+<section class="px-4 py-6 flex flex-col gap-4">
+<div class="relative w-full rounded-2xl overflow-hidden aspect-[16/10] shadow-sm bg-primary cursor-pointer group" onclick="toggleVideoPlayback()">
+<img alt="Potter centering clay on spinning wheel" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" id="video-still-img" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCeeG1O3iTsG2KHAw0Oa3R8Dup93aA1OVsxgTF4glHiu-q1NnkLZ3L55ziF1caoadrAON7uJuXVY0fVPLgJ200BfvP6UPcdqBAkt44RdE7-0LSYiQNtbVRzxpQYLuQqiExMVNqep6-6DMNppQ9PrluJ9IHUIvDk6-AxDOTUqQQb18bwF18vtGqQJgEJwuW85T5Xx_eYmOOY0397ARdn_SZOzQkfxNf_-xBIWOnKsVWK5kQk2msbqdWwmw"/>
+<!-- Video Active Overlay -->
+<div class="absolute inset-0 bg-primary/40 backdrop-blur-[2px] hidden flex-col items-center justify-center text-center p-4" id="video-playing-overlay">
+<div class="w-12 h-12 rounded-full border-2 border-surface-container flex items-center justify-center animate-spin mb-2">
+<span class="w-3 h-3 bg-secondary rounded-full"></span>
+</div>
+<p class="font-headline-sm text-sm text-white font-serif">Playing: The Wood Kiln Ritual (Hudson Studio)</p>
+<span class="text-[11px] text-surface-container-high font-mono mt-1">Tap anywhere to pause</span>
+</div>
+<div class="absolute inset-0 bg-primary/25 flex items-center justify-center" id="video-play-btn-wrap">
+<button aria-label="Play Studio Process Film" class="w-14 h-14 rounded-full bg-surface-container-lowest/90 backdrop-blur text-primary flex items-center justify-center shadow-lg group-hover:scale-110 active:scale-95 transition-all" type="button">
+<span class="material-symbols-outlined text-[30px] translate-x-0.5 text-primary">play_arrow</span>
+</button>
+</div>
+</div>
+<div class="p-5 bg-surface-container-lowest rounded-xl flex flex-col gap-3 shadow-xs border border-surface-container">
+<div class="flex items-center gap-2 text-secondary">
+<span class="material-symbols-outlined text-[18px]">local_fire_department</span>
+<span class="font-label-caps text-[10px] uppercase tracking-wider font-bold">Provenance &amp; Process</span>
+</div>
+<h3 class="font-headline-sm text-lg text-primary font-serif leading-snug">Every vessel carries the touch of the potter’s wheel and wood-fired kiln variations.</h3>
+<p class="font-body-md text-xs text-on-surface-variant leading-relaxed">
+          We harvest local red clays and glaze each piece with mineral ash formulations. No two items emerge identical—each piece is stamped with the studio potter mark on the unglazed foot ring.
+        </p>
+<button class="inline-flex items-center gap-1.5 text-secondary font-label-md text-xs uppercase font-bold tracking-wider hover:text-primary transition-colors pt-1 text-left w-fit" onclick="toggleNavDrawer(true)" type="button">
+<span>Read our Studio Journal</span>
+<span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+</button>
+</div>
+</section>
+<!-- Newsletter / Join the Studio Circle -->
+<section class="px-4 pb-4">
+<div class="bg-primary-container text-on-primary rounded-2xl p-6 flex flex-col gap-4 shadow-sm border border-surface-container">
+<div class="flex items-center gap-2 text-secondary-fixed">
+<span class="material-symbols-outlined text-[20px]">mark_email_unread</span>
+<span class="font-label-caps text-[11px] uppercase tracking-wider font-bold">Studio Circle</span>
+</div>
+<div class="flex flex-col gap-1.5">
+<h3 class="font-headline-sm text-lg text-on-primary font-serif">Receive private allocations of wood-fired kiln batches.</h3>
+<p class="font-body-sm text-xs text-primary-fixed-dim leading-relaxed">
+            Members receive early access 48 hours before general unearthing. Strictly one email per batch, no promotions.
+          </p>
+</div>
+<form class="flex flex-col gap-2.5 pt-1" onsubmit="handleNewsletterSubmit(event, 'circle-input', 'newsletter-confirm')">
+<div class="relative flex items-center">
+<input class="w-full h-12 pl-4 pr-24 rounded-lg bg-surface-container-lowest text-on-surface font-body-sm text-xs placeholder:text-outline focus:outline-none focus:ring-1 focus:ring-secondary" id="circle-input" placeholder="Your preferred email address" required="" type="email"/>
+<button class="absolute right-1.5 h-9 px-4 rounded bg-primary text-on-primary font-label-caps text-[10px] uppercase tracking-wider hover:bg-secondary active:scale-95 transition-all font-bold" type="submit">
+              Join
+            </button>
+</div>
+<p class="font-body-sm text-[12px] text-tertiary-fixed hidden flex items-center gap-1.5 pt-1" id="newsletter-confirm">
+<span class="material-symbols-outlined text-[16px] text-[#A5D6A7]">check_circle</span>
+<span>Welcome to the Studio Circle. Check your inbox for allocation notes.</span>
+</p>
+</form>
+</div>
+</section>
+<!-- Editorial Footer -->
+<footer class="w-full bg-surface-container-low px-5 pt-10 pb-8 mt-6 border-t border-surface-container">
+<div class="max-w-md mx-auto flex flex-col gap-8">
+<div class="flex flex-col gap-3 text-center">
+<h3 class="font-headline-sm text-lg text-primary font-serif">Studio Notes &amp; Editions</h3>
+<p class="font-body-sm text-xs text-on-surface-variant">Receive quiet announcements on small batch kiln unearthings and archival studio collections.</p>
+<form class="flex flex-col gap-2 mt-2" onsubmit="handleNewsletterSubmit(event, 'footer-email', 'footer-confirm')">
+<input class="w-full h-11 px-4 rounded-lg bg-surface-container-lowest text-on-surface font-body-sm text-xs outline-none focus:ring-1 focus:ring-secondary border border-surface-container placeholder:text-outline" id="footer-email" placeholder="Enter your email address" required="" type="email"/>
+<button class="w-full h-11 px-5 rounded-lg bg-primary text-on-primary font-label-md text-xs uppercase tracking-wider hover:bg-secondary active:scale-[0.98] transition-all font-semibold" type="submit">
+              Subscribe to Notes
+            </button>
+<p class="text-xs text-[#2E7D32] hidden flex items-center justify-center gap-1 pt-1 font-medium" id="footer-confirm">
+<span class="material-symbols-outlined text-[15px]">check_circle</span>
+              Thank you for subscribing to Studio Notes.
+            </p>
+</form>
+</div>
+<div class="grid grid-cols-2 gap-4 py-2 border-y border-surface-container">
+<div class="flex flex-col gap-2">
+<h4 class="font-label-caps text-[10px] uppercase text-on-surface-variant font-bold tracking-widest">Client Care</h4>
+<a class="font-body-sm text-xs text-on-surface hover:text-secondary transition-colors" href="#" onclick="showQuickAlert('Courier dispatch typically takes 2-4 business days.')">Dispatch &amp; Shipping</a>
+<a class="font-body-sm text-xs text-on-surface hover:text-secondary transition-colors" href="#" onclick="showQuickAlert('We accept returns within 30 days of studio receipt.')">Returns &amp; Exchanges</a>
+<a class="font-body-sm text-xs text-on-surface hover:text-secondary transition-colors" href="#" onclick="showQuickAlert('High-fired stoneware is dishwasher and microwave safe.')">Stoneware Care Guide</a>
+</div>
+<div class="flex flex-col gap-2">
+<h4 class="font-label-caps text-[10px] uppercase text-on-surface-variant font-bold tracking-widest">Studio</h4>
+<a class="font-body-sm text-xs text-on-surface hover:text-secondary transition-colors" href="#" onclick="showQuickAlert('Private visits available at 44 Hudson St, New York.')">Private Studio Visits</a>
+<a class="font-body-sm text-xs text-on-surface hover:text-secondary transition-colors" href="#" onclick="showQuickAlert('Contact studio@potryceramics.com for commercial commissions.')">Architectural Inquiries</a>
+<a class="font-body-sm text-xs text-on-surface hover:text-secondary transition-colors" href="#" onclick="showQuickAlert('Find answers regarding wood kilns, food-safe glazes, and delivery.')">Common Questions</a>
+</div>
+</div>
+<div class="flex flex-col items-center gap-3 pt-2">
+<div class="flex items-center gap-3 text-outline flex-wrap justify-center">
+<span class="font-label-caps text-[10px] uppercase tracking-wider">Visa</span>
+<span class="font-label-caps text-[10px] uppercase tracking-wider">Mastercard</span>
+<span class="font-label-caps text-[10px] uppercase tracking-wider">Apple Pay</span>
+<span class="font-label-caps text-[10px] uppercase tracking-wider">UPI</span>
+<span class="font-label-caps text-[10px] uppercase tracking-wider">NetBanking</span>
+</div>
+<p class="font-label-caps text-[10px] text-outline uppercase tracking-wider text-center">© POTRY Studio Ceramica. Hand-thrown in New York.</p>
+</div>
+</div>
+</footer>
+</main>
+<!-- BOTTOM NAVIGATION BAR (Fully interactive with tab switching indicator) -->
+<nav class="fixed bottom-0 inset-x-0 z-40 pb-safe bg-surface/95 backdrop-blur-xl border-t border-surface-container shadow-[0_-2px_12px_rgba(0,0,0,0.03)]" id="bottom-navbar">
+<div class="flex justify-around items-center h-16 px-2">
+<!-- Tab 1: Discover -->
+<button class="nav-tab flex flex-col items-center justify-center gap-0.5 min-w-[56px] h-12 transition-all text-primary font-bold active:scale-95" id="nav-discover" onclick="switchTab('discover')">
+<span class="material-symbols-outlined text-[21px]" style="font-variation-settings: 'FILL' 1;">explore</span>
+<span class="font-label-caps text-[10px] tracking-tight uppercase">Discover</span>
+</button>
+<!-- Tab 2: Collections -->
+<button class="nav-tab flex flex-col items-center justify-center gap-0.5 min-w-[56px] h-12 text-on-surface-variant hover:text-on-surface transition-all active:scale-95" id="nav-collections" onclick="switchTab('collections')">
+<span class="material-symbols-outlined text-[21px]">grid_view</span>
+<span class="font-label-caps text-[10px] tracking-tight uppercase">Collections</span>
+</button>
+<!-- Tab 3: Search -->
+<button class="nav-tab flex flex-col items-center justify-center gap-0.5 min-w-[56px] h-12 text-on-surface-variant hover:text-on-surface transition-all active:scale-95" id="nav-search" onclick="switchTab('search')">
+<span class="material-symbols-outlined text-[21px]">search</span>
+<span class="font-label-caps text-[10px] tracking-tight uppercase">Search</span>
+</button>
+<!-- Tab 4: Wishlist -->
+<button class="nav-tab flex flex-col items-center justify-center gap-0.5 min-w-[56px] h-12 text-on-surface-variant hover:text-on-surface transition-all active:scale-95 relative" id="nav-wishlist" onclick="switchTab('wishlist')">
+<span class="material-symbols-outlined text-[21px]">favorite</span>
+<span class="font-label-caps text-[10px] tracking-tight uppercase">Wishlist</span>
+</button>
+<!-- Tab 5: Account -->
+<button class="nav-tab flex flex-col items-center justify-center gap-0.5 min-w-[56px] h-12 text-on-surface-variant hover:text-on-surface transition-all active:scale-95" id="nav-account" onclick="switchTab('account')">
+<span class="material-symbols-outlined text-[21px]">person</span>
+<span class="font-label-caps text-[10px] tracking-tight uppercase">Account</span>
+</button>
+</div>
+</nav>
+<!-- ============================================== -->
+<!-- MODALS & DRAWERS (No pointer-events blockers) -->
+<!-- ============================================== -->
+<!-- 1. NAVIGATION DRAWER OVERLAY (Slide-in) -->
+<div class="fixed inset-0 z-50 bg-primary/40 backdrop-blur-xs hidden opacity-0 transition-opacity duration-300" id="nav-drawer-backdrop" onclick="toggleNavDrawer(false)">
+<div class="w-[82%] max-w-[340px] h-full bg-surface-bright flex flex-col shadow-2xl transform -translate-x-full transition-transform duration-300 overflow-y-auto" id="nav-drawer" onclick="event.stopPropagation()">
+<!-- Drawer Header -->
+<div class="p-5 border-b border-surface-container flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="font-headline-sm text-lg font-serif font-bold text-primary tracking-tight">POTRY</span>
+<span class="font-label-caps text-[10px] uppercase bg-surface-container px-2 py-0.5 rounded text-on-surface-variant">Studio</span>
+</div>
+<button class="w-9 h-9 rounded-full flex items-center justify-center text-on-surface hover:bg-surface-container active:scale-90 transition-all" onclick="toggleNavDrawer(false)" type="button">
+<span class="material-symbols-outlined text-[20px]">close</span>
+</button>
+</div>
+<!-- Drawer Links -->
+<div class="flex flex-col p-4 gap-1">
+<span class="font-label-caps text-[10px] uppercase tracking-widest text-secondary font-bold px-3 py-1">Series &amp; Objects</span>
+<button class="flex items-center justify-between p-3 rounded-lg text-left hover:bg-surface-container transition-colors text-on-surface" onclick="filterCategory('tableware'); toggleNavDrawer(false);" type="button">
+<span class="font-body-md text-sm font-medium">Tableware &amp; Sets</span>
+<span class="font-label-caps text-xs text-outline">18</span>
+</button>
+<button class="flex items-center justify-between p-3 rounded-lg text-left hover:bg-surface-container transition-colors text-on-surface" onclick="filterCategory('vessels'); toggleNavDrawer(false);" type="button">
+<span class="font-body-md text-sm font-medium">Vases &amp; Ikebana</span>
+<span class="font-label-caps text-xs text-outline">9</span>
+</button>
+<button class="flex items-center justify-between p-3 rounded-lg text-left hover:bg-surface-container transition-colors text-on-surface" onclick="filterCategory('cookware'); toggleNavDrawer(false);" type="button">
+<span class="font-body-md text-sm font-medium">Cookware &amp; Cloches</span>
+<span class="font-label-caps text-xs text-outline">5</span>
+</button>
+<button class="flex items-center justify-between p-3 rounded-lg text-left hover:bg-surface-container transition-colors text-on-surface" onclick="filterCategory('homeware'); toggleNavDrawer(false);" type="button">
+<span class="font-body-md text-sm font-medium">Incense Pedestals</span>
+<span class="font-label-caps text-xs text-outline">14</span>
+</button>
+<div class="my-3 border-t border-surface-container"></div>
+<span class="font-label-caps text-[10px] uppercase tracking-widest text-secondary font-bold px-3 py-1">Archival</span>
+<button class="flex items-center gap-3 p-3 rounded-lg text-left hover:bg-surface-container transition-colors text-on-surface" onclick="togglePaletteDrawer(true); toggleNavDrawer(false);" type="button">
+<span class="material-symbols-outlined text-[18px] text-secondary">palette</span>
+<span class="font-body-md text-sm font-medium">Glaze Library &amp; Clays</span>
+</button>
+<button class="flex items-center gap-3 p-3 rounded-lg text-left hover:bg-surface-container transition-colors text-on-surface" onclick="openPostalModal(); toggleNavDrawer(false);" type="button">
+<span class="material-symbols-outlined text-[18px] text-secondary">location_on</span>
+<span class="font-body-md text-sm font-medium">Local Dispatch PIN</span>
+</button>
+<button class="flex items-center gap-3 p-3 rounded-lg text-left hover:bg-surface-container transition-colors text-on-surface" onclick="openMiniCart(); toggleNavDrawer(false);" type="button">
+<span class="material-symbols-outlined text-[18px] text-secondary">local_mall</span>
+<span class="font-body-md text-sm font-medium">Studio Bag (<span id="drawer-cart-count">3</span> items)</span>
+</button>
+</div>
+<!-- Drawer Footer -->
+<div class="mt-auto p-5 border-t border-surface-container bg-surface-container-low">
+<p class="font-label-caps text-[11px] text-on-surface-variant uppercase tracking-wider mb-2">Hudson Street Studio</p>
+<p class="text-xs text-on-surface-variant leading-relaxed">Wheel throwing sessions every Tuesday &amp; Thursday. Appointments by client request.</p>
+</div>
+</div>
+</div>
+<!-- 2. SEARCH MODAL DROPDOWN (Interactive instant filtering) -->
+<div class="fixed inset-0 z-50 bg-primary/50 backdrop-blur-xs hidden flex items-start justify-center p-3 pt-12" id="search-modal" onclick="toggleSearchModal(false)">
+<div class="w-full max-w-md bg-surface-bright rounded-2xl p-4 shadow-2xl flex flex-col gap-3" onclick="event.stopPropagation()">
+<div class="flex items-center gap-2 border-b border-surface-container pb-3">
+<span class="material-symbols-outlined text-secondary text-[22px]">search</span>
+<input class="flex-1 bg-transparent border-none text-sm text-primary placeholder:text-outline focus:outline-none" id="search-input" oninput="handleSearchFilter(this.value)" placeholder="Search vessels, pitchers, mugs, glazes..." type="text"/>
+<button class="w-8 h-8 rounded-full flex items-center justify-center text-outline hover:text-primary" onclick="toggleSearchModal(false)" type="button">
+<span class="material-symbols-outlined text-[20px]">close</span>
+</button>
+</div>
+<!-- Instant Suggestions -->
+<div class="flex flex-col gap-1.5" id="search-suggestions">
+<span class="font-label-caps text-[10px] uppercase text-outline tracking-wider font-semibold px-1">Curated Suggestions</span>
+<button class="flex items-center justify-between p-2 rounded-lg hover:bg-surface-container text-left text-xs font-medium text-on-surface" onclick="applySearchQuery('Sienna Ridged Pitcher')">
+<span>Sienna Ridged Pitcher — Ochre Sand</span>
+<span class="text-secondary">$68.00</span>
+</button>
+<button class="flex items-center justify-between p-2 rounded-lg hover:bg-surface-container text-left text-xs font-medium text-on-surface" onclick="applySearchQuery('Kuro Dinner Plates')">
+<span>Kuro Dinner Plates (4) — Charcoal</span>
+<span class="text-secondary">$142.00</span>
+</button>
+<button class="flex items-center justify-between p-2 rounded-lg hover:bg-surface-container text-left text-xs font-medium text-on-surface" onclick="applySearchQuery('Oatmeal Fluted Mug')">
+<span>Oatmeal Fluted Mug — Raw Speckle</span>
+<span class="text-secondary">$36.00</span>
+</button>
+<button class="flex items-center justify-between p-2 rounded-lg hover:bg-surface-container text-left text-xs font-medium text-on-surface" onclick="applySearchQuery('Terracotta Ikebana')">
+<span>Terracotta Ikebana — Natural Bisque</span>
+<span class="text-secondary">$88.00</span>
+</button>
+</div>
+</div>
+</div>
+<!-- 3. POSTAL PIN CODE MODAL -->
+<div class="fixed inset-0 z-50 bg-primary/40 backdrop-blur-xs hidden flex items-end sm:items-center justify-center p-3" id="postal-modal" onclick="closePostalModal()">
+<div class="w-full max-w-sm bg-surface-bright rounded-2xl p-5 flex flex-col gap-4 shadow-2xl border border-surface-container" onclick="event.stopPropagation()">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary text-[20px]">location_on</span>
+<h3 class="font-headline-sm text-base text-primary font-serif font-bold">Local Dispatch PIN</h3>
+</div>
+<button class="w-8 h-8 rounded-full flex items-center justify-center text-on-surface hover:bg-surface-container transition-colors" onclick="closePostalModal()" type="button">
+<span class="material-symbols-outlined text-[20px]">close</span>
+</button>
+</div>
+<p class="font-body-sm text-xs text-on-surface-variant leading-relaxed">Enter your zipcode to verify same-day local studio messenger availability.</p>
+<div class="flex gap-2">
+<input class="flex-1 h-11 px-3 rounded-lg bg-surface-container text-on-surface font-body-md text-xs focus:outline-none focus:ring-1 focus:ring-secondary border border-surface-variant" id="postal-input" placeholder="e.g. 10012, 11201, 90210" type="text" value="10012"/>
+<button class="h-11 px-4 bg-primary text-on-primary rounded-lg font-label-md text-xs uppercase tracking-wider hover:bg-secondary active:scale-95 transition-all font-semibold" onclick="updatePostalCode()" type="button">
+          Save
+        </button>
+</div>
+</div>
+</div>
+<!-- 4. GLAZE PALETTE DRAWER -->
+<div class="fixed inset-0 z-50 bg-primary/40 backdrop-blur-xs hidden flex items-end justify-center p-3" id="palette-drawer" onclick="togglePaletteDrawer(false)">
+<div class="w-full max-w-sm bg-surface-bright rounded-2xl p-5 flex flex-col gap-4 shadow-2xl max-h-[80vh] overflow-y-auto border border-surface-container" onclick="event.stopPropagation()">
+<div class="flex items-center justify-between">
+<div>
+<span class="font-label-caps text-[10px] uppercase tracking-wider text-secondary font-bold">Material Guide</span>
+<h3 class="font-headline-sm text-lg text-primary font-serif font-bold">Studio Glaze Library</h3>
+</div>
+<button class="w-8 h-8 rounded-full flex items-center justify-center text-on-surface hover:bg-surface-container" onclick="togglePaletteDrawer(false)" type="button">
+<span class="material-symbols-outlined text-[20px]">close</span>
+</button>
+</div>
+<div class="flex flex-col gap-2.5">
+<div class="p-3 bg-surface-container rounded-xl flex items-center gap-3">
+<span class="w-7 h-7 rounded-full bg-[#D19D5A] shadow-inner shrink-0"></span>
+<div class="flex flex-col">
+<h4 class="font-label-md text-xs font-bold text-primary">Ochre Sand</h4>
+<p class="font-body-sm text-[11px] text-on-surface-variant leading-tight">Wood ash glaze fired in reduction, warm matte texture with gentle iron flecks.</p>
+</div>
+</div>
+<div class="p-3 bg-surface-container rounded-xl flex items-center gap-3">
+<span class="w-7 h-7 rounded-full bg-[#2C2B29] shadow-inner shrink-0"></span>
+<div class="flex flex-col">
+<h4 class="font-label-md text-xs font-bold text-primary">Charcoal Basalt</h4>
+<p class="font-body-sm text-[11px] text-on-surface-variant leading-tight">Volcanic mineral wash yielding an ultra-matte, stone-like tactile grip.</p>
+</div>
+</div>
+<div class="p-3 bg-surface-container rounded-xl flex items-center gap-3">
+<span class="w-7 h-7 rounded-full bg-[#E5DFC9] shadow-inner shrink-0"></span>
+<div class="flex flex-col">
+<h4 class="font-label-md text-xs font-bold text-primary">Raw Speckle</h4>
+<p class="font-body-sm text-[11px] text-on-surface-variant leading-tight">Unbleached porcelain clay base with feldspar crystals showing through satin.</p>
+</div>
+</div>
+<div class="p-3 bg-surface-container rounded-xl flex items-center gap-3">
+<span class="w-7 h-7 rounded-full bg-[#B86F50] shadow-inner shrink-0"></span>
+<div class="flex flex-col">
+<h4 class="font-label-md text-xs font-bold text-primary">Natural Bisque</h4>
+<p class="font-body-sm text-[11px] text-on-surface-variant leading-tight">Unglazed exterior with organic burnishing; vitreous clear slip inner.</p>
+</div>
+</div>
+</div>
+<button class="w-full h-11 bg-primary text-on-primary rounded-lg font-label-md text-xs uppercase tracking-wider font-semibold active:scale-95 transition-all" onclick="togglePaletteDrawer(false)" type="button">
+        Close Glaze Guide
+      </button>
+</div>
+</div>
+<!-- 5. MINI CART SLIDEOUT / MODAL -->
+<div class="fixed inset-0 z-50 bg-primary/40 backdrop-blur-xs hidden flex items-end justify-center p-3" id="cart-drawer" onclick="toggleCartDrawer(false)">
+<div class="w-full max-w-sm bg-surface-bright rounded-2xl p-5 flex flex-col gap-4 shadow-2xl border border-surface-container" onclick="event.stopPropagation()">
+<div class="flex items-center justify-between border-b border-surface-container pb-3">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary text-[20px]">local_mall</span>
+<h3 class="font-headline-sm text-base text-primary font-serif font-bold">Studio Bag (<span id="cart-modal-count">3</span>)</h3>
+</div>
+<button class="w-8 h-8 rounded-full flex items-center justify-center text-on-surface hover:bg-surface-container" onclick="toggleCartDrawer(false)" type="button">
+<span class="material-symbols-outlined text-[20px]">close</span>
+</button>
+</div>
+<div class="flex flex-col gap-2 max-h-56 overflow-y-auto" id="cart-items-preview">
+<!-- Default items -->
+<div class="flex items-center justify-between text-xs py-1.5 border-b border-surface-container">
+<span class="text-on-surface">1x Sienna Ridged Pitcher</span>
+<span class="font-semibold text-primary">$68.00</span>
+</div>
+<div class="flex items-center justify-between text-xs py-1.5 border-b border-surface-container">
+<span class="text-on-surface">1x Oatmeal Fluted Mug</span>
+<span class="font-semibold text-primary">$36.00</span>
+</div>
+<div class="flex items-center justify-between text-xs py-1.5 border-b border-surface-container">
+<span class="text-on-surface">1x Kuro Dinner Plates (4)</span>
+<span class="font-semibold text-primary">$142.00</span>
+</div>
+</div>
+<div class="flex items-center justify-between text-xs font-semibold pt-1">
+<span>Estimated Total</span>
+<span class="text-sm font-bold text-primary" id="cart-subtotal">$246.00</span>
+</div>
+<button class="w-full h-11 bg-primary text-on-primary rounded-lg font-label-md text-xs uppercase tracking-wider font-semibold active:scale-95 hover:bg-secondary transition-all" onclick="showQuickAlert('Proceeding to studio checkout...'); toggleCartDrawer(false);" type="button">
+        Continue to Courier Dispatch
+      </button>
+</div>
+</div>
+<!-- TOAST NOTIFICATION -->
+<div class="fixed top-20 inset-x-4 z-50 pointer-events-none transform -translate-y-8 opacity-0 transition-all duration-300 flex justify-center" id="cart-toast">
+<div class="bg-primary text-on-primary px-4 py-2.5 rounded-xl shadow-xl flex items-center gap-2 max-w-sm pointer-events-auto border border-surface-container">
+<span class="material-symbols-outlined text-[18px] text-secondary-fixed">check_circle</span>
+<span class="font-body-sm text-xs truncate font-medium" id="toast-text">Added to Studio Bag</span>
+</div>
+</div>
+<!-- ============================================== -->
+<!-- JAVASCRIPT CONTROLLERS -->
+<!-- ============================================== -->
+<script src="../store-bridge.js"></script>
+<script>
+    // State variables
+    let cartCount = 3;
+    let wishlistCount = 2;
+    let isVideoPlaying = false;
+
+    // Toast utility
+    function showToast(message) {
+      const toast = document.getElementById('cart-toast');
+      const toastText = document.getElementById('toast-text');
+      toastText.textContent = message;
+      toast.classList.remove('opacity-0', '-translate-y-8');
+      toast.classList.add('opacity-100', 'translate-y-0');
+      setTimeout(() => {
+        toast.classList.remove('opacity-100', 'translate-y-0');
+        toast.classList.add('opacity-0', '-translate-y-8');
+      }, 2300);
+    }
+
+    function showQuickAlert(text) {
+      showToast(text);
+    }
+
+    // Scroll to Top
+    function scrollToTop(e) {
+      if(e) e.preventDefault();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function scrollToSeries() {
+      const el = document.getElementById('curated-series-section');
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }
+
+    // 1. Navigation Drawer Toggle
+    function toggleNavDrawer(show) {
+      const backdrop = document.getElementById('nav-drawer-backdrop');
+      const drawer = document.getElementById('nav-drawer');
+      if (show) {
+        backdrop.classList.remove('hidden');
+        setTimeout(() => {
+          backdrop.classList.remove('opacity-0');
+          backdrop.classList.add('opacity-100');
+          drawer.classList.remove('-translate-x-full');
+          drawer.classList.add('translate-x-0');
+        }, 10);
+      } else {
+        drawer.classList.remove('translate-x-0');
+        drawer.classList.add('-translate-x-full');
+        backdrop.classList.remove('opacity-100');
+        backdrop.classList.add('opacity-0');
+        setTimeout(() => {
+          backdrop.classList.add('hidden');
+        }, 300);
+      }
+    }
+
+    // 2. Search Modal Toggle
+    function toggleSearchModal(show) {
+      const modal = document.getElementById('search-modal');
+      const input = document.getElementById('search-input');
+      if (show) {
+        modal.classList.remove('hidden');
+        setTimeout(() => input.focus(), 100);
+      } else {
+        modal.classList.add('hidden');
+        input.value = '';
+      }
+    }
+
+    function applySearchQuery(query) {
+      toggleSearchModal(false);
+      showToast('Filtering for: ' + query);
+      const items = document.querySelectorAll('.product-item');
+      items.forEach(item => {
+        const name = item.getAttribute('data-name').toLowerCase();
+        if (name.includes(query.toLowerCase())) {
+          item.classList.remove('hidden');
+        } else {
+          item.classList.add('hidden');
+        }
+      });
+      // Scroll to product grid
+      document.getElementById('products-grid').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    function handleSearchFilter(val) {
+      const term = val.toLowerCase().trim();
+      const items = document.querySelectorAll('.product-item');
+      items.forEach(item => {
+        const name = item.getAttribute('data-name').toLowerCase();
+        if (!term || name.includes(term)) {
+          item.classList.remove('hidden');
+        } else {
+          item.classList.add('hidden');
+        }
+      });
+    }
+
+    // 3. Postal Modal
+    function openPostalModal() {
+      document.getElementById('postal-modal').classList.remove('hidden');
+      setTimeout(() => document.getElementById('postal-input').focus(), 100);
+    }
+    function closePostalModal() {
+      document.getElementById('postal-modal').classList.add('hidden');
+    }
+    function updatePostalCode() {
+      const val = document.getElementById('postal-input').value.trim();
+      if (val) {
+        document.getElementById('header-pin-display').textContent = val;
+        document.getElementById('current-location-text').innerHTML = 'Studio Dispatch to <strong>PIN ' + val + '</strong>';
+        closePostalModal();
+        showToast('Courier routed to PIN ' + val);
+      }
+    }
+
+    // 4. Glaze Palette Drawer
+    function togglePaletteDrawer(show) {
+      const drawer = document.getElementById('palette-drawer');
+      if (show) {
+        drawer.classList.remove('hidden');
+      } else {
+        drawer.classList.add('hidden');
+      }
+    }
+
+    // 5. Mini Cart Drawer
+    function openMiniCart() {
+      toggleCartDrawer(true);
+    }
+    function toggleCartDrawer(show) {
+      const cartDrawer = document.getElementById('cart-drawer');
+      if (show) {
+        cartDrawer.classList.remove('hidden');
+      } else {
+        cartDrawer.classList.add('hidden');
+      }
+    }
+
+    // 6. Interactive Add to Cart
+    let cartSubtotalUSD = 246;
+    function addToCart(title, price, btn) {
+      cartCount++;
+      cartSubtotalUSD += Number(price) || 0;
+      const cartBadge = document.getElementById('cart-badge');
+      const drawerCount = document.getElementById('drawer-cart-count');
+      const modalCount = document.getElementById('cart-modal-count');
+      const subtotalEl = document.getElementById('cart-subtotal');
+      
+      cartBadge.textContent = cartCount;
+      if (drawerCount) drawerCount.textContent = cartCount;
+      if (modalCount) modalCount.textContent = cartCount;
+      if (subtotalEl) subtotalEl.textContent = `$${cartSubtotalUSD.toFixed(2)}`;
+      if (window.ResinStore) window.ResinStore.addToCart('potry-sienna-pitcher', title, 1);
+      
+      // Pulse animation
+      cartBadge.classList.remove('pulse-badge');
+      void cartBadge.offsetWidth; // trigger reflow
+      cartBadge.classList.add('pulse-badge');
+
+      // Button feedback
+      const originalHtml = btn.innerHTML;
+      btn.innerHTML = '<span class="material-symbols-outlined text-[18px] text-green-400">check</span>';
+      btn.classList.add('bg-secondary');
+      
+      // Append to cart modal
+      const previewList = document.getElementById('cart-items-preview');
+      if (previewList) {
+        const itemRow = document.createElement('div');
+        itemRow.className = 'flex items-center justify-between text-xs py-1.5 border-b border-surface-container';
+        itemRow.innerHTML = `<span class="text-on-surface">1x ${title}</span><span class="font-semibold text-primary">$${price}.00</span>`;
+        previewList.appendChild(itemRow);
+      }
+
+      showToast(`Added "${title}" to Studio Bag`);
+
+      setTimeout(() => {
+        btn.innerHTML = originalHtml;
+        btn.classList.remove('bg-secondary');
+      }, 1200);
+    }
+
+    // 7. Interactive Wishlist Toggle
+    function toggleWishlistItem(btn, title) {
+      const icon = btn.querySelector('.material-symbols-outlined');
+      const badge = document.getElementById('wishlist-badge');
+      const isFav = btn.classList.contains('active-fav');
+
+      if (isFav) {
+        btn.classList.remove('active-fav', 'text-secondary');
+        btn.classList.add('text-on-surface');
+        icon.style.fontVariationSettings = "'FILL' 0";
+        wishlistCount = Math.max(0, wishlistCount - 1);
+        showToast(`Removed from Wishlist`);
+      } else {
+        btn.classList.add('active-fav', 'text-secondary');
+        btn.classList.remove('text-on-surface');
+        icon.style.fontVariationSettings = "'FILL' 1";
+        wishlistCount++;
+        showToast(`Saved "${title}" to Wishlist`);
+      }
+
+      badge.textContent = wishlistCount;
+      badge.classList.remove('pulse-badge');
+      void badge.offsetWidth;
+      badge.classList.add('pulse-badge');
+    }
+
+    // 8. Category Filter Pills
+    function filterCategory(cat, clickedBtn) {
+      // Highlight pills
+      const pills = document.querySelectorAll('.category-pill');
+      pills.forEach(pill => {
+        if (pill.getAttribute('data-category') === cat) {
+          pill.className = 'category-pill snap-start shrink-0 px-4 py-2.5 rounded-full bg-primary text-on-primary text-xs font-semibold tracking-wide transition-all shadow-sm';
+        } else {
+          pill.className = 'category-pill snap-start shrink-0 px-4 py-2.5 rounded-full bg-surface-container text-on-surface text-xs font-medium tracking-wide transition-all hover:bg-surface-variant';
+        }
+      });
+
+      // Filter products
+      const items = document.querySelectorAll('.product-item');
+      items.forEach(item => {
+        const itemCat = item.getAttribute('data-category');
+        if (cat === 'all' || itemCat === cat) {
+          item.classList.remove('hidden');
+        } else {
+          item.classList.add('hidden');
+        }
+      });
+    }
+
+    function showAllCategories() {
+      filterCategory('all');
+      showToast('Showing all studio collections');
+    }
+
+    // 9. Video Preview Toggle
+    function toggleVideoPlayback() {
+      const overlay = document.getElementById('video-playing-overlay');
+      const playBtnWrap = document.getElementById('video-play-btn-wrap');
+      isVideoPlaying = !isVideoPlaying;
+
+      if (isVideoPlaying) {
+        overlay.classList.remove('hidden');
+        overlay.classList.add('flex');
+        playBtnWrap.classList.add('hidden');
+        showToast('Now playing: Artisanal wheel throwing process');
+      } else {
+        overlay.classList.remove('flex');
+        overlay.classList.add('hidden');
+        playBtnWrap.classList.remove('hidden');
+        showToast('Video paused');
+      }
+    }
+
+    // 10. Newsletter Form Submit
+    function handleNewsletterSubmit(e, inputId, confirmId) {
+      e.preventDefault();
+      const input = document.getElementById(inputId);
+      const confirmEl = document.getElementById(confirmId);
+      if (input && input.value) {
+        confirmEl.classList.remove('hidden');
+        showToast('Subscribed: ' + input.value);
+        input.value = '';
+      }
+    }
+
+    // 11. Bottom Tab Switcher
+    function switchTab(tabId) {
+      const tabs = ['discover', 'collections', 'search', 'wishlist', 'account'];
+      tabs.forEach(t => {
+        const btn = document.getElementById('nav-' + t);
+        const icon = btn.querySelector('.material-symbols-outlined');
+        if (t === tabId) {
+          btn.className = 'nav-tab flex flex-col items-center justify-center gap-0.5 min-w-[56px] h-12 transition-all text-primary font-bold active:scale-95';
+          icon.style.fontVariationSettings = "'FILL' 1";
+        } else {
+          btn.className = 'nav-tab flex flex-col items-center justify-center gap-0.5 min-w-[56px] h-12 text-on-surface-variant hover:text-on-surface transition-all active:scale-95';
+          icon.style.fontVariationSettings = "'FILL' 0";
+        }
+      });
+
+      if (tabId === 'search') {
+        toggleSearchModal(true);
+      } else if (tabId === 'wishlist') {
+        showToast(`Viewing ${wishlistCount} saved objects`);
+      } else if (tabId === 'collections') {
+        scrollToSeries();
+      } else if (tabId === 'account') {
+        showToast('Client Profile: POTRY Studio Patron #4820');
+      } else if (tabId === 'discover') {
+        scrollToTop();
+      }
+    }
+  </script>
+</body></html>

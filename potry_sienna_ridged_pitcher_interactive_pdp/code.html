@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+
+<html class="h-full bg-surface" lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/><meta content="mobile_stack" name="shell-type"/><title>Product Details — POTRY</title><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script><script id="tailwind-config">tailwind.config = { darkMode: 'class', theme: { extend: { 'colors': { 'primary-fixed-dim': '#cac6c0', 'on-error-container': '#93000a', 'surface-container-low': '#f6f3ed', 'secondary-fixed': '#ffdbcd', 'on-primary-container': '#8d8a84', 'on-primary': '#ffffff', 'primary-container': '#24231f', 'on-surface': '#1c1c18', 'tertiary-fixed': '#dde6cd', 'outline-variant': '#cac6bd', 'tertiary': '#080f03', 'tertiary-container': '#1d2515', 'background': '#fcf9f3', 'on-primary-fixed': '#1c1c18', 'on-tertiary-fixed': '#161e0f', 'surface': '#fcf9f3', 'on-secondary': '#ffffff', 'on-secondary-fixed': '#360f00', 'primary': '#0e0d0a', 'on-background': '#1c1c18', 'surface-dim': '#dcdad4', 'inverse-on-surface': '#f3f0ea', 'surface-container-high': '#ebe8e2', 'secondary-fixed-dim': '#ffb597', 'on-tertiary-container': '#848d78', 'surface-tint': '#605e59', 'inverse-surface': '#31312d', 'outline': '#79776f', 'secondary': '#8e4d31', 'on-tertiary-fixed-variant': '#414a37', 'on-secondary-container': '#793c21', 'on-primary-fixed-variant': '#484742', 'surface-bright': '#fcf9f3', 'surface-container': '#f0eee8', 'on-error': '#ffffff', 'inverse-primary': '#cac6c0', 'surface-variant': '#e5e2dc', 'secondary-container': '#feaa87', 'error': '#ba1a1a', 'on-surface-variant': '#484740', 'primary-fixed': '#e6e2db', 'error-container': '#ffdad6', 'on-tertiary': '#ffffff', 'surface-container-highest': '#e5e2dc', 'on-secondary-fixed-variant': '#71361c', 'tertiary-fixed-dim': '#c1cab2', 'surface-container-lowest': '#ffffff' }, 'borderRadius': { 'DEFAULT': '0.125rem', 'lg': '0.25rem', 'xl': '0.5rem', 'full': '0.75rem' }, 'spacing': { 'margin': '3rem', 'margin-mobile': '1.25rem', 'space-sm': '0.5rem', 'space-xl': '2.5rem', 'space-md': '1rem', 'gutter': '1.5rem', 'margin-tablet': '2rem', 'space-lg': '1.5rem', 'space-xs': '0.25rem', 'gutter-mobile': '1rem' }, 'fontFamily': { 'display-hero-mobile': ['Playfair Display'], 'headline-md': ['Playfair Display'], 'body-md': ['Plus Jakarta Sans'], 'price-lg': ['Plus Jakarta Sans'], 'body-sm': ['Plus Jakarta Sans'], 'headline-sm': ['Playfair Display'], 'headline-lg': ['Playfair Display'], 'label-caps': ['Plus Jakarta Sans'], 'label-md': ['Plus Jakarta Sans'], 'headline-lg-mobile': ['Playfair Display'], 'price-sm': ['Plus Jakarta Sans'], 'body-lg': ['Plus Jakarta Sans'], 'display-hero': ['Playfair Display'] }, 'fontSize': { 'display-hero-mobile': ['36px', { 'lineHeight': '44px', 'letterSpacing': '-0.01em', 'fontWeight': '400' }], 'headline-md': ['28px', { 'lineHeight': '36px', 'letterSpacing': '0em', 'fontWeight': '500' }], 'body-md': ['15px', { 'lineHeight': '24px', 'letterSpacing': '0em', 'fontWeight': '400' }], 'price-lg': ['20px', { 'lineHeight': '24px', 'letterSpacing': '-0.02em', 'fontWeight': '600' }], 'body-sm': ['13px', { 'lineHeight': '20px', 'letterSpacing': '0.01em', 'fontWeight': '400' }], 'headline-sm': ['22px', { 'lineHeight': '28px', 'letterSpacing': '0em', 'fontWeight': '600' }], 'headline-lg': ['40px', { 'lineHeight': '48px', 'letterSpacing': '-0.015em', 'fontWeight': '400' }], 'label-caps': ['11px', { 'lineHeight': '16px', 'letterSpacing': '0.08em', 'fontWeight': '600' }], 'label-md': ['14px', { 'lineHeight': '20px', 'letterSpacing': '0em', 'fontWeight': '500' }], 'headline-lg-mobile': ['28px', { 'lineHeight': '36px', 'letterSpacing': '-0.01em', 'fontWeight': '400' }], 'price-sm': ['15px', { 'lineHeight': '20px', 'letterSpacing': '-0.01em', 'fontWeight': '600' }], 'body-lg': ['18px', { 'lineHeight': '28px', 'letterSpacing': '-0.01em', 'fontWeight': '400' }], 'display-hero': ['56px', { 'lineHeight': '64px', 'letterSpacing': '-0.02em', 'fontWeight': '400' }] } } } };</script><style>
+    @layer base {
+      html {
+        scroll-behavior: smooth;
+        height: 100%;
+      }
+      body {
+        margin: 0;
+        padding: 0;
+        background-color: #fcf9f3;
+        color: #1c1c18;
+        min-height: 100%;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+      }
+      .pb-safe {
+        padding-bottom: max(env(safe-area-inset-bottom, 0px), 16px);
+      }
+      .pt-safe {
+        padding-top: env(safe-area-inset-top, 0px);
+      }
+    }
+    ::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+    summary::-webkit-details-marker {
+      display: none;
+    }
+  </style></head><body class="bg-surface font-body-md text-on-surface flex flex-col min-h-screen relative overflow-y-auto selection:bg-secondary-fixed selection:text-on-secondary-fixed">
+<!-- Top Fixed App Header -->
+<header class="fixed top-0 inset-x-0 z-50 pt-safe bg-surface/90 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.04)]"><div class="h-16 px-3 flex items-center justify-between"><div class="flex items-center gap-1.5"><button aria-label="Go Back" class="w-11 h-11 rounded-full flex items-center justify-center text-on-surface hover:text-secondary active:scale-95 transition-all" onclick="handleBack()"><span class="material-symbols-outlined text-[22px]">arrow_back</span></button><a class="flex items-center gap-2 cursor-pointer" data-path="shop-discover" href="#"><img alt="POTRY Wordmark Logo" class="h-7 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/AEtjO1UL_yv7CTSIh8DKMJSJyoEYV6KxkBv-vKrFle0GDCkSpaAqW6NgAOHRFgnmdA8w4H2gwXZOcRM-pCA3X5qDVsa1CQTVwxmaMPMsdc2iRpZlnIY37B_Odr_E0inLU4jSiTjX-EQA0Agmjtt1KTwPei-xB5SFz-_Vz8FO8ZaxhrSn_qoOWRpZzE0n60032HCsmPdzpGhw6WMTp64N4O1PkEPVu-x-tvp-wjJtQkxP3sXTtaDy59arIJ3cDp2L"/><h1 class="font-headline-sm text-headline-sm text-primary font-medium tracking-tight truncate max-w-[170px]">Product Details</h1></a></div><div class="flex items-center gap-1"><a aria-label="Cart" class="relative w-11 h-11 flex items-center justify-center text-on-surface hover:text-secondary active:scale-95 transition-transform" data-path="cart-bag" href="#"><span class="material-symbols-outlined text-[22px]">local_mall</span><span class="absolute top-2 right-2 min-w-[16px] h-[16px] px-1 bg-primary text-on-primary rounded-full font-label-caps text-[9px] leading-[16px] text-center font-bold transition-transform duration-200" id="header-bag-count">3</span></a><a aria-label="Client Profile" class="w-11 h-11 flex items-center justify-center shrink-0 cursor-pointer active:scale-95 transition-transform" data-path="account" href="#"><img alt="Profile" class="w-8 h-8 rounded-full object-cover ring-1 ring-outline-variant" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDfPBf4gKkxJy4k7VhNPVLdbU1ZN0tnWmDVag93jtslDzP0bON1UVW8le9JWAPr4hMjPQnhPQDLWOM-5_B0TxNOi4JRBxsk8-rPu56OWL4SA3fO59crCM3c2XwquAsm_L_it1emhMJTMiLFQqLc4HKHBJ9PE09Au5yB0S-rBO1b45LzXGrTEqXfwsueNhHmLpULq3uNIWg-sD4Tu_tg0ewREEn5oNEwMo4XmXvcWUz4hVg3NX3dnFHwMQ"/></a></div></div></header>
+<!-- Main Scrollable Content Container -->
+<main class="flex-1 flex flex-col relative w-full pt-16 bg-surface"><div class="flex flex-col w-full pb-36">
+<!-- Visual Breadcrumb Header -->
+<div class="px-5 pt-3 pb-2 flex items-center justify-between text-on-surface-variant font-label-caps text-label-caps tracking-widest uppercase">
+<div class="flex items-center gap-1.5 overflow-hidden">
+<span class="hover:text-primary transition-colors cursor-pointer">Tableware</span>
+<span class="text-outline-variant text-[10px]">/</span>
+<span class="text-primary font-bold truncate">Pitchers &amp; Carafes</span>
+</div>
+<div class="flex items-center gap-1 text-secondary font-semibold shrink-0">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
+<span>Batch No. 04</span>
+</div>
+</div>
+<!-- Editorial Product Gallery -->
+<section class="relative w-full px-4 pt-1 pb-3">
+<!-- Main Display Frame with Tactile Depth -->
+<div class="relative w-full aspect-[4/5] rounded-xl overflow-hidden bg-surface-container shadow-sm select-none">
+<img alt="Sienna Ridged Stoneware Pitcher in Ochre Sand" class="w-full h-full object-cover transition-all duration-300 ease-out" data-alt="Close editorial view of a hand-thrown ceramic pitcher in Ochre Sand glaze with tactile horizontal finger ridges, a sculpted sculptural pouring spout, and an ergonomic pulled loop handle. Bathed in soft directional morning window sunlight casting warm terracotta shadows against an ivory linen background, highlighting organic iron specks in the matte feldspathic glaze." id="main-product-image" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC4v5UEoHMPUfjyZvw-pRB5rieXSJVcdqHO5bwDOia0NN0jpnEQZRqGdhiZnBw5FQ2yiK4mTV7_APtHo1HJq94rbc1bRq_Y5OUjiheJZSNo3h9e5XpGNVQsbfnMDtASMIoLWPHI4SVHVtNyZmNRkEzf5-Fggr6BkQ57D-g2NKbtWLpS7Q6OKGh5oWQQfxdadZNLHLGqEfv1F98rtipSdWG3XCVAo73iFagCjml30rbmzqI81c5YxGjoAw"/>
+<!-- Gallery Meta Badges -->
+<div class="absolute top-3.5 left-3.5 flex flex-col gap-1.5 pointer-events-none">
+<span class="px-2.5 py-1 bg-surface/90 backdrop-blur-md rounded-full font-label-caps text-label-caps text-on-surface tracking-wider font-semibold shadow-sm">
+          Wheel-Thrown Studio Edition
+        </span>
+</div>
+<!-- Provenance & Index Pill -->
+<div class="absolute bottom-3.5 inset-x-3.5 flex items-center justify-between pointer-events-none">
+<span class="px-3 py-1 bg-primary-container/85 backdrop-blur-md text-surface-bright rounded-full font-label-caps text-label-caps tracking-wider shadow-sm pointer-events-auto" id="gallery-counter">
+          1 of 4 • Handcrafted in Brooklyn
+        </span>
+<button aria-label="Save to Wishlist" class="w-9 h-9 rounded-full bg-surface/90 backdrop-blur-md text-on-surface flex items-center justify-center shadow-sm pointer-events-auto active:scale-90 transition-transform cursor-pointer" id="favorite-btn" onclick="toggleFavorite()">
+<span class="material-symbols-outlined text-[19px] text-primary transition-colors duration-200" id="favorite-icon">favorite_border</span>
+</button>
+</div>
+</div>
+<!-- Gallery Thumbnail Reel -->
+<div class="flex items-center gap-2.5 mt-3 overflow-x-auto pb-1 px-0.5 no-scrollbar" id="thumbnail-reel">
+<button aria-label="View Angle 1: Full Profile" class="thumb-btn relative shrink-0 w-16 h-20 rounded-lg overflow-hidden bg-surface-container ring-2 ring-primary transition-all duration-200 cursor-pointer" onclick="switchImage(0, 'https://lh3.googleusercontent.com/aida-public/AB6AXuC4v5UEoHMPUfjyZvw-pRB5rieXSJVcdqHO5bwDOia0NN0jpnEQZRqGdhiZnBw5FQ2yiK4mTV7_APtHo1HJq94rbc1bRq_Y5OUjiheJZSNo3h9e5XpGNVQsbfnMDtASMIoLWPHI4SVHVtNyZmNRkEzf5-Fggr6BkQ57D-g2NKbtWLpS7Q6OKGh5oWQQfxdadZNLHLGqEfv1F98rtipSdWG3XCVAo73iFagCjml30rbmzqI81c5YxGjoAw', 'Full profile view of hand-thrown stoneware pitcher with ridged texture in Ochre Sand on natural linen')">
+<img alt="Full profile angle" class="w-full h-full object-cover pointer-events-none" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCvWRXu_R4gdw0gpMM_8iBBbE237dm6m_Dsqdd7yRB_-Uxyr3E0d0o01Xe2iDd9qdpw4plz35_ttQpeISidvRDriMO6vNt2s5L7lgjKh1Hq7CF6eXnsF43xC0g6oHwOKXIa7_CHCi7cpH60RIpoWSOSaIGdAmnuLBVswhjKc5tOOB6RbQu7WfqdI26MeH92s2kYBGUDaSRmh6kmU9_UY6opgoJ6AowL5zPKESu2UDb9_snJxRYIwe_9Aw"/>
+</button>
+<button aria-label="View Angle 2: Spout Detail" class="thumb-btn relative shrink-0 w-16 h-20 rounded-lg overflow-hidden bg-surface-container opacity-60 hover:opacity-100 transition-all duration-200 cursor-pointer" onclick="switchImage(1, 'https://lh3.googleusercontent.com/aida-public/AB6AXuD-EJ1o1ePHpsz_O8r-Ik9eOFMyJRNsgMm96ZbZdCAZqAgrxJBJh3DX6gGdCUR-EJxf8_I--NSskOUfi_iqs_Cv2DYHhk8tdZdXwZcIFuTS3ysh-Jm8cxdO_Ft71jKUjtZdlAcyAam4_RYy3HJRGnGwCXQgLeYUFfQILDID-xUx4HY5MjksU80HKSXfEups8Yafyz1_7HlrqiW8p77Jlogu-213R9fmmPBfq9MmJeSfKD_xCN1Z7TM0Hg', 'Macro detail of the sculpted spout and glaze drips on Sienna Stoneware Pitcher')">
+<img alt="Spout macro detail" class="w-full h-full object-cover pointer-events-none" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD-EJ1o1ePHpsz_O8r-Ik9eOFMyJRNsgMm96ZbZdCAZqAgrxJBJh3DX6gGdCUR-EJxf8_I--NSskOUfi_iqs_Cv2DYHhk8tdZdXwZcIFuTS3ysh-Jm8cxdO_Ft71jKUjtZdlAcyAam4_RYy3HJRGnGwCXQgLeYUFfQILDID-xUx4HY5MjksU80HKSXfEups8Yafyz1_7HlrqiW8p77Jlogu-213R9fmmPBfq9MmJeSfKD_xCN1Z7TM0Hg"/>
+</button>
+<button aria-label="View Angle 3: Table Setting" class="thumb-btn relative shrink-0 w-16 h-20 rounded-lg overflow-hidden bg-surface-container opacity-60 hover:opacity-100 transition-all duration-200 cursor-pointer" onclick="switchImage(2, 'https://lh3.googleusercontent.com/aida-public/AB6AXuBBnNxDST6TF_hJ4W9GT9nTVXG_271qfy4djrhvCFPEM3yQoyNOSKRCpk1BMiTeKP-w_h1rAZgCK_5EO5Ms-8upoZhtGku0aNIF25aENPF4BKBggOHk9yOUqUNLZQm8J1QYAKOnnNYiqzkcjA0DI5STfc4iwQtXb9MMr_u2n_u6bPRPNjNkT9G-jk92O-QxgQrrHYyV3hAIRNqr67zlvUfbqZlS-h98ogVUkxufmiDfT9AX0r-DeUe_xg', 'Tabletop scene with pitcher filled with water and fresh sliced lemon beside ceramic cups')">
+<img alt="Tabletop context" class="w-full h-full object-cover pointer-events-none" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBBnNxDST6TF_hJ4W9GT9nTVXG_271qfy4djrhvCFPEM3yQoyNOSKRCpk1BMiTeKP-w_h1rAZgCK_5EO5Ms-8upoZhtGku0aNIF25aENPF4BKBggOHk9yOUqUNLZQm8J1QYAKOnnNYiqzkcjA0DI5STfc4iwQtXb9MMr_u2n_u6bPRPNjNkT9G-jk92O-QxgQrrHYyV3hAIRNqr67zlvUfbqZlS-h98ogVUkxufmiDfT9AX0r-DeUe_xg"/>
+</button>
+<button aria-label="View Angle 4: Base Maker Stamp" class="thumb-btn relative shrink-0 w-16 h-20 rounded-lg overflow-hidden bg-surface-container opacity-60 hover:opacity-100 transition-all duration-200 cursor-pointer" onclick="switchImage(3, 'https://lh3.googleusercontent.com/aida-public/AB6AXuA-3yjdCvZfDryc1Y0tgNw_J_Pt26rjf0w-jHczKYeSKIeXR-wXkZvoQW2CcbCxBdCc_mJkJo_tkon4isgXwUTWVP1gFoYT4Si1iU9rjmWWi5N0lU8qtjKGuHZG0nOMNXB2RXHoQA4PzC6ROibYI0Od1NGz6hdAr-E9jKpWQ_cWn9eWRtTGDi0ztXVkB98hrjPhRixK06TocWZnBrN0M6GA_XOkWs30yrjAxAksend7s4YoIWNaleHu3w', 'Artisan makers mark hand-stamped onto unglazed stoneware base')">
+<img alt="Maker mark stamp" class="w-full h-full object-cover pointer-events-none" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA-3yjdCvZfDryc1Y0tgNw_J_Pt26rjf0w-jHczKYeSKIeXR-wXkZvoQW2CcbCxBdCc_mJkJo_tkon4isgXwUTWVP1gFoYT4Si1iU9rjmWWi5N0lU8qtjKGuHZG0nOMNXB2RXHoQA4PzC6ROibYI0Od1NGz6hdAr-E9jKpWQ_cWn9eWRtTGDi0ztXVkB98hrjPhRixK06TocWZnBrN0M6GA_XOkWs30yrjAxAksend7s4YoIWNaleHu3w"/>
+</button>
+</div>
+</section>
+<!-- Title, Price & Stock Header -->
+<section class="px-5 pt-3 pb-5 bg-surface flex flex-col gap-3">
+<div class="flex items-start justify-between gap-3">
+<div class="flex flex-col gap-1">
+<span class="font-label-caps text-label-caps text-secondary uppercase font-bold tracking-wider">Potry Signature Vessel</span>
+<h2 class="font-headline-lg-mobile text-headline-lg-mobile text-primary tracking-tight font-medium leading-tight">
+          Sienna Ridged Stoneware Pitcher
+        </h2>
+</div>
+</div>
+<!-- Price & Inventory Banner -->
+<div class="flex items-baseline justify-between pt-1">
+<div class="flex items-baseline gap-2">
+<span class="font-price-lg text-price-lg text-primary font-bold tracking-tight transition-all duration-200" id="header-unit-price">$68.00</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant font-normal">USD • Taxes calculated at checkout</span>
+</div>
+</div>
+<div class="inline-flex items-center gap-2 self-start px-3 py-1.5 rounded-full bg-tertiary-fixed text-on-tertiary-fixed">
+<span class="w-2 h-2 rounded-full bg-[#2D5A27] animate-pulse"></span>
+<span class="font-label-caps text-label-caps tracking-wide font-semibold">In Stock • 7 pieces ready to ship</span>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant leading-relaxed pt-1">
+      Engineered for generous tables and tranquil morning rituals. Wheel-thrown using local iron-rich stoneware with pronounced finger ridges that offer an instinctive, comfortable hold when pouring.
+    </p>
+</section>
+<!-- Interactive Configurator (Glaze & Capacity) -->
+<section class="px-5 py-5 bg-surface-container-low rounded-2xl mx-4 flex flex-col gap-5 shadow-sm">
+<!-- Glaze Selection -->
+<div class="flex flex-col gap-2.5">
+<div class="flex items-center justify-between">
+<span class="font-label-caps text-label-caps text-on-surface font-bold uppercase tracking-wider">Select Mineral Glaze</span>
+<span class="font-body-sm text-body-sm text-secondary font-semibold" id="active-glaze-label">Ochre Sand</span>
+</div>
+<div aria-label="Mineral Glaze Variants" class="grid grid-cols-3 gap-2.5" role="radiogroup">
+<!-- Variant 1: Ochre Sand -->
+<button aria-checked="true" class="glaze-card flex flex-col items-center gap-2 p-2.5 rounded-xl bg-surface shadow-xs transition-all ring-2 ring-primary text-left cursor-pointer" onclick="setGlaze('Ochre Sand', this)" role="radio">
+<div class="w-8 h-8 rounded-full bg-[#D4A373] shadow-inner relative flex items-center justify-center border border-black/10">
+<span class="w-2 h-2 rounded-full bg-primary-container"></span>
+</div>
+<div class="text-center">
+<p class="font-label-md text-label-md text-on-surface font-semibold">Ochre Sand</p>
+<p class="font-body-sm text-[11px] text-on-surface-variant leading-tight">Warm speckled</p>
+</div>
+</button>
+<!-- Variant 2: Charcoal Basalt -->
+<button aria-checked="false" class="glaze-card flex flex-col items-center gap-2 p-2.5 rounded-xl bg-surface-container-high transition-all text-left opacity-80 hover:opacity-100 cursor-pointer" onclick="setGlaze('Basalt', this)" role="radio">
+<div class="w-8 h-8 rounded-full bg-[#2B2B2A] shadow-inner relative flex items-center justify-center border border-black/10"></div>
+<div class="text-center">
+<p class="font-label-md text-label-md text-on-surface font-semibold">Basalt</p>
+<p class="font-body-sm text-[11px] text-on-surface-variant leading-tight">Matte volcanic</p>
+</div>
+</button>
+<!-- Variant 3: Raw Bisque -->
+<button aria-checked="false" class="glaze-card flex flex-col items-center gap-2 p-2.5 rounded-xl bg-surface-container-high transition-all text-left opacity-80 hover:opacity-100 cursor-pointer" onclick="setGlaze('Raw Bisque', this)" role="radio">
+<div class="w-8 h-8 rounded-full bg-[#E5D7C5] shadow-inner relative flex items-center justify-center border border-black/10"></div>
+<div class="text-center">
+<p class="font-label-md text-label-md text-on-surface font-semibold">Raw Bisque</p>
+<p class="font-body-sm text-[11px] text-on-surface-variant leading-tight">Unfinished clay</p>
+</div>
+</button>
+</div>
+</div>
+<!-- Capacity Selection -->
+<div class="flex flex-col gap-2">
+<div class="flex items-center justify-between">
+<span class="font-label-caps text-label-caps text-on-surface font-bold uppercase tracking-wider">Vessel Volume</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant" id="capacity-sublabel">Recommended for 4–6 servings</span>
+</div>
+<div aria-label="Capacity Size" class="grid grid-cols-2 gap-2" role="radiogroup">
+<button aria-checked="true" class="size-pill py-2.5 px-3 rounded-lg bg-surface text-primary font-label-md text-label-md font-semibold ring-2 ring-primary shadow-xs transition-all flex items-center justify-between cursor-pointer" onclick="setSize(this, 68, '1.2L (Standard)')" role="radio">
+<span>1.2L (Standard)</span>
+<span class="text-secondary font-bold">$68</span>
+</button>
+<button aria-checked="false" class="size-pill py-2.5 px-3 rounded-lg bg-surface-container-high text-on-surface-variant font-label-md text-label-md font-medium transition-all flex items-center justify-between cursor-pointer" onclick="setSize(this, 54, '0.8L (Compact)')" role="radio">
+<span>0.8L (Compact)</span>
+<span class="text-on-surface-variant font-semibold">$54</span>
+</button>
+</div>
+</div>
+</section>
+<!-- Hyperlocal Delivery Dispatch Module -->
+<section class="mt-5 mx-4 p-4 rounded-xl bg-surface-container-high flex flex-col gap-3 shadow-xs">
+<div class="flex items-start justify-between">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary text-[20px]">local_shipping</span>
+<span class="font-label-caps text-label-caps text-on-surface font-bold uppercase tracking-wider">Hyperlocal Studio Dispatch</span>
+</div>
+<button class="font-body-sm text-body-sm text-secondary font-semibold hover:underline cursor-pointer" onclick="toggleZipEdit()">Change Zip</button>
+</div>
+<!-- Active Zip Bar -->
+<div class="p-3 bg-surface rounded-lg flex flex-col gap-2">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[16px] text-[#2D5A27]">check_circle</span>
+<span class="font-body-sm text-body-sm text-primary font-bold" id="zip-display">10012 (New York, SoHo)</span>
+</div>
+<span class="px-2 py-0.5 rounded-full bg-secondary-fixed text-on-secondary-fixed font-label-caps text-[10px] font-bold uppercase" id="zip-badge">Same-Day Pick Up</span>
+</div>
+<div class="flex flex-col gap-1 pt-1 font-body-sm text-body-sm text-on-surface-variant">
+<div class="flex items-start gap-1.5">
+<span class="text-secondary font-bold">•</span>
+<span><strong>Next-Day Studio Courier ($6.00):</strong> Arrives by <strong id="delivery-day">Thursday, Oct 24</strong> if ordered within <span class="text-secondary font-bold" id="countdown-timer">02h 44m</span>.</span>
+</div>
+<div class="flex items-start gap-1.5">
+<span class="text-secondary font-bold">•</span>
+<span id="pickup-location-text"><strong>Free Studio Pick-up:</strong> Ready today at 482 Broome St, SoHo Atelier.</span>
+</div>
+</div>
+<!-- Quick Postal Input Drawer -->
+<div class="hidden pt-2 flex items-center gap-2 border-t border-outline-variant/30 mt-1" id="zip-input-box">
+<input class="flex-1 h-9 px-3 rounded bg-surface-container text-primary font-body-sm text-body-sm focus:outline-none focus:ring-1 focus:ring-primary border border-outline-variant/50" id="zip-input-val" placeholder="Enter postal code (e.g. 11201)" type="text" value="10012"/>
+<button class="h-9 px-4 bg-primary text-on-primary rounded font-label-md text-label-md font-semibold active:scale-95 transition-all cursor-pointer" onclick="saveZip()">Update</button>
+</div>
+</div>
+</section>
+<!-- Editorial Maker's Narrative Card -->
+<section class="mt-5 mx-4 p-5 rounded-2xl bg-surface-container-low flex flex-col gap-3 shadow-xs">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary text-[20px]">nature_people</span>
+<span class="font-label-caps text-label-caps text-secondary font-bold uppercase tracking-wider">Studio Provenance</span>
+</div>
+<h3 class="font-headline-sm text-headline-sm text-primary font-medium leading-snug">
+      Slow Craft &amp; Mineral Chemistry
+    </h3>
+<p class="font-body-md text-body-md text-on-surface-variant leading-relaxed">
+      Thrown slowly on an electric Shimpo wheel in our Red Hook kiln house. The pitcher takes shape over three days: thrown on day one, ribbed and fitted with an ergonomic pulled handle on day two, then slow-dried under canvas for a fortnight prior to bisque firing at Cone 06.
+    </p>
+<div class="grid grid-cols-2 gap-3 pt-2">
+<div class="p-3 bg-surface rounded-lg">
+<p class="font-label-caps text-[10px] text-on-surface-variant uppercase font-bold">Firing Method</p>
+<p class="font-body-sm text-body-sm text-primary font-semibold mt-0.5">Cone 10 Reduction (2350°F)</p>
+</div>
+<div class="p-3 bg-surface rounded-lg">
+<p class="font-label-caps text-[10px] text-on-surface-variant uppercase font-bold">Batch Release</p>
+<p class="font-body-sm text-body-sm text-primary font-semibold mt-0.5">Numbered Vessel Series</p>
+</div>
+</div>
+</section>
+<!-- Technical Specifications Accordion -->
+<section class="mt-5 px-4 flex flex-col gap-2">
+<h3 class="px-1 font-label-caps text-label-caps text-on-surface font-bold uppercase tracking-wider mb-1">
+      Vessel Specifications
+    </h3>
+<!-- Accordion Item 1: Dimensions & Weight -->
+<div class="accordion-card bg-surface-container-low rounded-xl overflow-hidden transition-all duration-200">
+<button class="w-full p-4 flex items-center justify-between cursor-pointer select-none text-left" onclick="toggleAccordion(this)">
+<div class="flex items-center gap-2.5">
+<span class="material-symbols-outlined text-[19px] text-primary">straighten</span>
+<span class="font-label-md text-label-md text-primary font-semibold">Dimensions &amp; Capacity</span>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant transition-transform duration-200 chevron rotate-180">expand_more</span>
+</button>
+<div class="accordion-content px-4 pb-4 pt-1 font-body-sm text-body-sm text-on-surface-variant flex flex-col gap-2">
+<div class="flex justify-between py-1 bg-surface/60 px-2.5 rounded">
+<span>Height</span>
+<span class="text-primary font-medium" id="spec-height">21.0 cm (8.25 inches)</span>
+</div>
+<div class="flex justify-between py-1 bg-surface/60 px-2.5 rounded">
+<span>Base Diameter</span>
+<span class="text-primary font-medium">11.4 cm (4.5 inches)</span>
+</div>
+<div class="flex justify-between py-1 bg-surface/60 px-2.5 rounded">
+<span>Dry Weight</span>
+<span class="text-primary font-medium" id="spec-weight">840 grams (approximate)</span>
+</div>
+<div class="flex justify-between py-1 bg-surface/60 px-2.5 rounded">
+<span>Usable Volume</span>
+<span class="text-primary font-medium" id="spec-volume">1,200 ml (40.5 fl oz)</span>
+</div>
+</div>
+</div>
+<!-- Accordion Item 2: Clay Body & Glaze -->
+<div class="accordion-card bg-surface-container-low rounded-xl overflow-hidden transition-all duration-200">
+<button class="w-full p-4 flex items-center justify-between cursor-pointer select-none text-left" onclick="toggleAccordion(this)">
+<div class="flex items-center gap-2.5">
+<span class="material-symbols-outlined text-[19px] text-primary">science</span>
+<span class="font-label-md text-label-md text-primary font-semibold">Clay Body &amp; Mineral Glazes</span>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant transition-transform duration-200 chevron">expand_more</span>
+</button>
+<div class="accordion-content hidden px-4 pb-4 pt-1 font-body-sm text-body-sm text-on-surface-variant leading-relaxed flex flex-col gap-2">
+<p>
+          Formulated using custom Appalachian stoneware with coarse grog for structural integrity and thermal memory. Glazed with a lead-free, food-safe feldspathic formula enriched with iron silicate and wood ash.
+        </p>
+<div class="p-2.5 rounded bg-surface/80 flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary text-[18px]">verified</span>
+<span class="text-[12px] font-medium text-primary">Certified Non-Toxic, 100% Food Safe &amp; Lead Free</span>
+</div>
+</div>
+</div>
+<!-- Accordion Item 3: Care & Maintenance -->
+<div class="accordion-card bg-surface-container-low rounded-xl overflow-hidden transition-all duration-200">
+<button class="w-full p-4 flex items-center justify-between cursor-pointer select-none text-left" onclick="toggleAccordion(this)">
+<div class="flex items-center gap-2.5">
+<span class="material-symbols-outlined text-[19px] text-primary">clean_hands</span>
+<span class="font-label-md text-label-md text-primary font-semibold">Care &amp; Longevity</span>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant transition-transform duration-200 chevron">expand_more</span>
+</button>
+<div class="accordion-content hidden px-4 pb-4 pt-1 font-body-sm text-body-sm text-on-surface-variant leading-relaxed flex flex-col gap-2">
+<p>
+          Dishwasher and microwave safe. For optimal heirloom preservation, hand-washing with gentle biodegradable soap is recommended. Avoid sudden extreme temperature shocks (e.g., pouring boiling water directly into an iced vessel).
+        </p>
+</div>
+</div>
+<!-- Accordion Item 4: Craftsmanship Guarantee -->
+<div class="accordion-card bg-surface-container-low rounded-xl overflow-hidden transition-all duration-200">
+<button class="w-full p-4 flex items-center justify-between cursor-pointer select-none text-left" onclick="toggleAccordion(this)">
+<div class="flex items-center gap-2.5">
+<span class="material-symbols-outlined text-[19px] text-primary">history_edu</span>
+<span class="font-label-md text-label-md text-primary font-semibold">Craft Guarantee &amp; Unique Character</span>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant transition-transform duration-200 chevron">expand_more</span>
+</button>
+<div class="accordion-content hidden px-4 pb-4 pt-1 font-body-sm text-body-sm text-on-surface-variant leading-relaxed">
+<p>
+          Each vessel is wheel-thrown individually. Subtle organic variations in glaze drip, iron spot blooming, and rim contour celebrate the handmade studio journey. No two pieces are ever identical.
+        </p>
+</div>
+</div>
+</section>
+<!-- Complete the Tableware Set / Pairings Carousel -->
+<section class="mt-8 flex flex-col gap-3">
+<div class="px-5 flex items-end justify-between">
+<div>
+<span class="font-label-caps text-label-caps text-secondary uppercase font-bold tracking-wider">Curated Pairings</span>
+<h3 class="font-headline-sm text-headline-sm text-primary font-medium">Complete the Table</h3>
+</div>
+<a class="font-body-sm text-body-sm text-secondary font-semibold hover:underline" href="#">View All Set Pieces</a>
+</div>
+<!-- Horizontal Scroll Carousel -->
+<div class="flex gap-3.5 overflow-x-auto px-4 pb-2 pt-1 no-scrollbar">
+<!-- Paired Card 1 -->
+<div class="shrink-0 w-44 rounded-xl bg-surface-container-lowest overflow-hidden shadow-xs flex flex-col">
+<div class="relative w-full aspect-square bg-surface-container">
+<img alt="Sienna Tumbler Set" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCd12CWYV_8W9UCGi8C5fmU_wcNfamrPS6QEL5SPuDYrVijP0ij5V1MR8ULpknEf94myXWCM_-_JEIoyJBg6_FNRg_gIcnhZUEQtMXmvtFhxl1mRRt8XzCeoYkFJCJ9x_z9GNuf7gyHQ4vkz-dFWCQubLbD9VheWoOhKVgeWn_CV4vfYSnPz02XIMFY4P0TYiLWOVENRAlJH36U_3OzKqJ51bnxIFgc0zF999f7XOy8Ow7LTySQ310oYg"/>
+<span class="absolute bottom-2 left-2 px-2 py-0.5 rounded-full bg-surface/90 font-label-caps text-[9px] font-bold text-primary">Pair of 2</span>
+</div>
+<div class="p-3 flex flex-col justify-between flex-1 gap-2">
+<div>
+<h4 class="font-headline-sm text-[15px] font-medium text-primary leading-snug">Sienna Tumbler Set</h4>
+<p class="font-price-sm text-price-sm text-primary font-semibold mt-0.5">$44.00</p>
+</div>
+<button class="w-full py-1.5 px-2 rounded bg-surface-container-high hover:bg-primary hover:text-on-primary text-primary font-label-caps text-[11px] font-semibold transition-all active:scale-95 flex items-center justify-center gap-1 cursor-pointer" onclick="addPairToBag(this, 'Sienna Tumbler Set', 44)">
+<span class="material-symbols-outlined text-[14px]">add</span>
+<span>Add Pair</span>
+</button>
+</div>
+</div>
+<!-- Paired Card 2 -->
+<div class="shrink-0 w-44 rounded-xl bg-surface-container-lowest overflow-hidden shadow-xs flex flex-col">
+<div class="relative w-full aspect-square bg-surface-container">
+<img alt="Ochre Serving Platter" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD5xPsJhLF30y9rpHLxkZj93YTAmPrImw9lIthhROCoPBaF8lQDN-Q7C2orE4EygilW6rgvvXx8scwc14FD8fBUwyEVmnwKAzhqimQRSubh-OSepHZ1V3jcAJ33tCl2r6E6H8A5iCvIwbf46whXdg3JnlgOYpbfRNSyehRhUNyaOUTrzPgLJCziQpv5eymDk20dqe1VXaxJQ2Cd8MPZviVBGxFxZwM1SYCOvk1xDhSM6fUtlciCUUTwVQ"/>
+<span class="absolute bottom-2 left-2 px-2 py-0.5 rounded-full bg-surface/90 font-label-caps text-[9px] font-bold text-primary">Centerpiece</span>
+</div>
+<div class="p-3 flex flex-col justify-between flex-1 gap-2">
+<div>
+<h4 class="font-headline-sm text-[15px] font-medium text-primary leading-snug">Ochre Serving Platter</h4>
+<p class="font-price-sm text-price-sm text-primary font-semibold mt-0.5">$72.00</p>
+</div>
+<button class="w-full py-1.5 px-2 rounded bg-surface-container-high hover:bg-primary hover:text-on-primary text-primary font-label-caps text-[11px] font-semibold transition-all active:scale-95 flex items-center justify-center gap-1 cursor-pointer" onclick="addPairToBag(this, 'Ochre Serving Platter', 72)">
+<span class="material-symbols-outlined text-[14px]">add</span>
+<span>Add Platter</span>
+</button>
+</div>
+</div>
+<!-- Paired Card 3 -->
+<div class="shrink-0 w-44 rounded-xl bg-surface-container-lowest overflow-hidden shadow-xs flex flex-col">
+<div class="relative w-full aspect-square bg-surface-container">
+<img alt="Raw Bisque Tasting Ramekin Set" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCCRzV-fcYmQOEfhzAsJ9scYPNVfa0jO8DbUjK6e23-RRYHCGbVVgjWz3C6niriJNni-g8t5MyS_bR3GdCPAmHpLGyCFaAbUB0jZx-CPebxG3zlP1m9eI7tuj-7tMyhTtHc_DhUSFa-fhqMQT0sDX1L6A7B7ronbzrnd0YltHrQDWg1gWJ7atfIt7Cvkvv4NyOTlR3t2HkcxGy0WFVyDeDSD6Yzy7ikHl50fHz_1qsNcyRk_O9HwO7vCw"/>
+<span class="absolute bottom-2 left-2 px-2 py-0.5 rounded-full bg-surface/90 font-label-caps text-[9px] font-bold text-primary">Set of 3</span>
+</div>
+<div class="p-3 flex flex-col justify-between flex-1 gap-2">
+<div>
+<h4 class="font-headline-sm text-[15px] font-medium text-primary leading-snug">Bisque Ramekin Set</h4>
+<p class="font-price-sm text-price-sm text-primary font-semibold mt-0.5">$32.00</p>
+</div>
+<button class="w-full py-1.5 px-2 rounded bg-surface-container-high hover:bg-primary hover:text-on-primary text-primary font-label-caps text-[11px] font-semibold transition-all active:scale-95 flex items-center justify-center gap-1 cursor-pointer" onclick="addPairToBag(this, 'Bisque Ramekin Set', 32)">
+<span class="material-symbols-outlined text-[14px]">add</span>
+<span>Add Set</span>
+</button>
+</div>
+</div>
+</div>
+</section>
+</div></main>
+<!-- Sticky Bottom Quick-Buy Bar -->
+<div class="fixed bottom-0 inset-x-0 z-40 bg-surface/95 backdrop-blur-xl shadow-[0_-4px_20px_rgba(0,0,0,0.08)] border-t border-outline-variant/30 px-4 py-3 pb-safe">
+<div class="max-w-md mx-auto flex items-center gap-2.5">
+<!-- Quantity Incrementer -->
+<div class="flex items-center bg-surface-container-high rounded-lg p-1 shrink-0 h-12">
+<button aria-label="Decrease quantity" class="w-8 h-full flex items-center justify-center text-primary hover:text-secondary active:scale-90 transition-all cursor-pointer" onclick="changeQty(-1)">
+<span class="material-symbols-outlined text-[18px]">remove</span>
+</button>
+<span class="w-6 text-center font-price-sm text-price-sm font-semibold text-primary select-none" id="qty-indicator">1</span>
+<button aria-label="Increase quantity" class="w-8 h-full flex items-center justify-center text-primary hover:text-secondary active:scale-90 transition-all cursor-pointer" onclick="changeQty(1)">
+<span class="material-symbols-outlined text-[18px]">add</span>
+</button>
+</div>
+<!-- Add to Bag CTA Button -->
+<button class="flex-1 h-12 bg-primary-container text-on-primary rounded-lg font-label-md text-label-md font-semibold tracking-wide hover:bg-secondary active:scale-[0.98] transition-all flex items-center justify-center gap-2 shadow-sm cursor-pointer" id="add-to-cart-cta" onclick="triggerAddToCart()">
+<span class="material-symbols-outlined text-[19px]" id="cta-icon">local_mall</span>
+<span id="cta-label">Add to Bag — <span id="cta-total-price">$68.00</span></span>
+</button>
+<!-- Wishlist Action -->
+<button aria-label="Add to Wishlist" class="w-12 h-12 rounded-lg bg-surface-container-high text-primary flex items-center justify-center hover:bg-surface-container active:scale-95 transition-transform shrink-0 cursor-pointer" onclick="toggleFavorite()">
+<span class="material-symbols-outlined text-[20px] transition-colors" id="sticky-favorite-icon">favorite_border</span>
+</button>
+</div>
+</div>
+<!-- Mini Cart Toast Notification -->
+<div class="fixed top-20 inset-x-4 z-50 pointer-events-none transition-all duration-300 transform -translate-y-8 opacity-0" id="cart-toast">
+<div class="max-w-sm mx-auto bg-primary text-on-primary px-4 py-3 rounded-xl shadow-xl flex items-center gap-3 pointer-events-auto border border-white/10">
+<span class="material-symbols-outlined text-secondary text-[22px] shrink-0" id="toast-icon">check_circle</span>
+<div class="flex flex-col flex-1 overflow-hidden">
+<span class="font-label-caps text-label-caps font-bold text-surface-bright" id="toast-headline">Vessel Added to Bag</span>
+<span class="font-body-sm text-[12px] opacity-80 truncate" id="toast-details">1 × Sienna Pitcher (Ochre Sand)</span>
+</div>
+</div>
+</div>
+<script src="../store-bridge.js"></script>
+<script>
+  let currentQuantity = 1;
+  let unitPrice = 68.00;
+  let activeGlazeName = "Ochre Sand";
+  let activeSizeName = "1.2L (Standard)";
+  let isFavorited = false;
+  let bagCount = 3;
+  let toastTimeout = null;
+
+  const galleryImages = [
+    {
+      src: "https://lh3.googleusercontent.com/aida-public/AB6AXuC4v5UEoHMPUfjyZvw-pRB5rieXSJVcdqHO5bwDOia0NN0jpnEQZRqGdhiZnBw5FQ2yiK4mTV7_APtHo1HJq94rbc1bRq_Y5OUjiheJZSNo3h9e5XpGNVQsbfnMDtASMIoLWPHI4SVHVtNyZmNRkEzf5-Fggr6BkQ57D-g2NKbtWLpS7Q6OKGh5oWQQfxdadZNLHLGqEfv1F98rtipSdWG3XCVAo73iFagCjml30rbmzqI81c5YxGjoAw",
+      alt: "Full profile view of hand-thrown stoneware pitcher with ridged texture in Ochre Sand on natural linen"
+    },
+    {
+      src: "https://lh3.googleusercontent.com/aida-public/AB6AXuD-EJ1o1ePHpsz_O8r-Ik9eOFMyJRNsgMm96ZbZdCAZqAgrxJBJh3DX6gGdCUR-EJxf8_I--NSskOUfi_iqs_Cv2DYHhk8tdZdXwZcIFuTS3ysh-Jm8cxdO_Ft71jKUjtZdlAcyAam4_RYy3HJRGnGwCXQgLeYUFfQILDID-xUx4HY5MjksU80HKSXfEups8Yafyz1_7HlrqiW8p77Jlogu-213R9fmmPBfq9MmJeSfKD_xCN1Z7TM0Hg",
+      alt: "Macro detail of the sculpted spout and glaze drips on Sienna Stoneware Pitcher"
+    },
+    {
+      src: "https://lh3.googleusercontent.com/aida-public/AB6AXuBBnNxDST6TF_hJ4W9GT9nTVXG_271qfy4djrhvCFPEM3yQoyNOSKRCpk1BMiTeKP-w_h1rAZgCK_5EO5Ms-8upoZhtGku0aNIF25aENPF4BKBggOHk9yOUqUNLZQm8J1QYAKOnnNYiqzkcjA0DI5STfc4iwQtXb9MMr_u2n_u6bPRPNjNkT9G-jk92O-QxgQrrHYyV3hAIRNqr67zlvUfbqZlS-h98ogVUkxufmiDfT9AX0r-DeUe_xg",
+      alt: "Tabletop scene with pitcher filled with water and fresh sliced lemon beside ceramic cups"
+    },
+    {
+      src: "https://lh3.googleusercontent.com/aida-public/AB6AXuA-3yjdCvZfDryc1Y0tgNw_J_Pt26rjf0w-jHczKYeSKIeXR-wXkZvoQW2CcbCxBdCc_mJkJo_tkon4isgXwUTWVP1gFoYT4Si1iU9rjmWWi5N0lU8qtjKGuHZG0nOMNXB2RXHoQA4PzC6ROibYI0Od1NGz6hdAr-E9jKpWQ_cWn9eWRtTGDi0ztXVkB98hrjPhRixK06TocWZnBrN0M6GA_XOkWs30yrjAxAksend7s4YoIWNaleHu3w",
+      alt: "Artisan makers mark hand-stamped onto unglazed stoneware base"
+    }
+  ];
+
+  function handleBack() {
+    if (window.history.length > 1) {
+      window.history.back();
+    } else {
+      window.location.href = '../index.html#/catalog';
+    }
+  }
+
+  function switchImage(index, imgSrc, altText) {
+    const mainImg = document.getElementById('main-product-image');
+    const counter = document.getElementById('gallery-counter');
+    const thumbs = document.querySelectorAll('.thumb-btn');
+
+    mainImg.style.opacity = '0.35';
+    setTimeout(() => {
+      mainImg.src = galleryImages[index].src;
+      mainImg.dataset.alt = galleryImages[index].alt;
+      mainImg.style.opacity = '1';
+    }, 120);
+
+    thumbs.forEach((thumb, i) => {
+      if (i === index) {
+        thumb.classList.add('ring-2', 'ring-primary', 'opacity-100');
+        thumb.classList.remove('opacity-60');
+      } else {
+        thumb.classList.remove('ring-2', 'ring-primary');
+        thumb.classList.add('opacity-60');
+      }
+    });
+
+    counter.textContent = `${index + 1} of 4 • Handcrafted in Brooklyn`;
+  }
+
+  function setGlaze(glazeName, element) {
+    activeGlazeName = glazeName;
+    document.getElementById('active-glaze-label').textContent = glazeName;
+
+    document.querySelectorAll('.glaze-card').forEach(card => {
+      card.classList.remove('ring-2', 'ring-primary', 'bg-surface', 'shadow-xs');
+      card.classList.add('bg-surface-container-high', 'opacity-80');
+      card.setAttribute('aria-checked', 'false');
+    });
+
+    element.classList.remove('bg-surface-container-high', 'opacity-80');
+    element.classList.add('ring-2', 'ring-primary', 'bg-surface', 'shadow-xs');
+    element.setAttribute('aria-checked', 'true');
+  }
+
+  function setSize(element, price, sizeTitle) {
+    activeSizeName = sizeTitle;
+    unitPrice = price;
+    
+    document.querySelectorAll('.size-pill').forEach(pill => {
+      pill.classList.remove('bg-surface', 'text-primary', 'ring-2', 'ring-primary', 'shadow-xs');
+      pill.classList.add('bg-surface-container-high', 'text-on-surface-variant');
+      pill.setAttribute('aria-checked', 'false');
+    });
+
+    element.classList.remove('bg-surface-container-high', 'text-on-surface-variant');
+    element.classList.add('bg-surface', 'text-primary', 'ring-2', 'ring-primary', 'shadow-xs');
+    element.setAttribute('aria-checked', 'true');
+
+    document.getElementById('header-unit-price').textContent = `$${unitPrice.toFixed(2)}`;
+    
+    // Update specs according to volume
+    if (price === 54) {
+      document.getElementById('capacity-sublabel').textContent = 'Recommended for 2–3 servings';
+      document.getElementById('spec-height').textContent = '17.5 cm (6.9 inches)';
+      document.getElementById('spec-weight').textContent = '620 grams (approximate)';
+      document.getElementById('spec-volume').textContent = '800 ml (27.0 fl oz)';
+    } else {
+      document.getElementById('capacity-sublabel').textContent = 'Recommended for 4–6 servings';
+      document.getElementById('spec-height').textContent = '21.0 cm (8.25 inches)';
+      document.getElementById('spec-weight').textContent = '840 grams (approximate)';
+      document.getElementById('spec-volume').textContent = '1,200 ml (40.5 fl oz)';
+    }
+
+    updateTotalDisplay();
+  }
+
+  function changeQty(delta) {
+    const newQty = currentQuantity + delta;
+    if (newQty >= 1 && newQty <= 7) {
+      currentQuantity = newQty;
+      document.getElementById('qty-indicator').textContent = currentQuantity;
+      updateTotalDisplay();
+    }
+  }
+
+  function updateTotalDisplay() {
+    const total = (unitPrice * currentQuantity).toFixed(2);
+    document.getElementById('cta-total-price').textContent = `$${total}`;
+  }
+
+  function toggleZipEdit() {
+    const box = document.getElementById('zip-input-box');
+    box.classList.toggle('hidden');
+    if (!box.classList.contains('hidden')) {
+      document.getElementById('zip-input-val').focus();
+    }
+  }
+
+  function saveZip() {
+    const val = document.getElementById('zip-input-val').value.trim();
+    if (val) {
+      if (val === '11201' || val.toLowerCase().includes('brooklyn')) {
+        document.getElementById('zip-display').textContent = `${val} (Brooklyn, Red Hook Kiln)`;
+        document.getElementById('zip-badge').textContent = 'Kiln Door Pick Up';
+        document.getElementById('pickup-location-text').innerHTML = '<strong>Free Studio Pick-up:</strong> Ready in 1 hour at 185 Van Dyke St, Red Hook Kiln.';
+      } else {
+        document.getElementById('zip-display').textContent = `${val} (Studio Direct Active)`;
+        document.getElementById('zip-badge').textContent = 'Courier Dispatch';
+      }
+      toggleZipEdit();
+      showToast("Dispatch Region Updated", `Courier routing recalculated for ${val}`);
+    }
+  }
+
+  function toggleFavorite() {
+    isFavorited = !isFavorited;
+    const heroIcon = document.getElementById('favorite-icon');
+    const stickyIcon = document.getElementById('sticky-favorite-icon');
+    if (window.ResinStore) window.ResinStore.toggleWishlist('potry-sienna-01');
+    
+    if (isFavorited) {
+      heroIcon.textContent = 'favorite';
+      heroIcon.classList.add('text-secondary');
+      stickyIcon.textContent = 'favorite';
+      stickyIcon.classList.add('text-secondary');
+      showToast("Saved to Wishlist", "Sienna Ridged Stoneware Pitcher added to your saved studio pieces");
+    } else {
+      heroIcon.textContent = 'favorite_border';
+      heroIcon.classList.remove('text-secondary');
+      stickyIcon.textContent = 'favorite_border';
+      stickyIcon.classList.remove('text-secondary');
+      showToast("Removed from Wishlist", "Vessel removed from your studio saved list");
+    }
+  }
+
+  function toggleAccordion(btn) {
+    const card = btn.closest('.accordion-card');
+    const content = card.querySelector('.accordion-content');
+    const chevron = btn.querySelector('.chevron');
+    const isHidden = content.classList.contains('hidden');
+
+    if (isHidden) {
+      content.classList.remove('hidden');
+      chevron.classList.add('rotate-180');
+    } else {
+      content.classList.add('hidden');
+      chevron.classList.remove('rotate-180');
+    }
+  }
+
+  function triggerAddToCart() {
+    const btn = document.getElementById('add-to-cart-cta');
+    const ctaLabel = document.getElementById('cta-label');
+    const ctaIcon = document.getElementById('cta-icon');
+
+    bagCount += currentQuantity;
+    updateBagBadge();
+    if (window.ResinStore) {
+      window.ResinStore.addToCart('potry-sienna-01', unitPrice === 54 ? 'sienna-750ml' : 'sienna-1200ml', currentQuantity, { glaze: activeGlazeName });
+    }
+
+    // Visual button state feedback
+    const originalText = ctaLabel.innerHTML;
+    ctaLabel.innerHTML = `✓ Added ${currentQuantity} to Bag`;
+    ctaIcon.textContent = 'done';
+    btn.classList.add('bg-secondary');
+
+    showToast("Vessel Added to Bag", `${currentQuantity} × Sienna Pitcher (${activeGlazeName}, ${activeSizeName})`);
+
+    setTimeout(() => {
+      ctaLabel.innerHTML = originalText;
+      ctaIcon.textContent = 'local_mall';
+      btn.classList.remove('bg-secondary');
+    }, 1800);
+  }
+
+  function addPairToBag(btn, itemName, price) {
+    const originalHtml = btn.innerHTML;
+    btn.innerHTML = `<span class="material-symbols-outlined text-[14px]">check</span> Added`;
+    btn.classList.add('bg-primary', 'text-on-primary');
+
+    bagCount += 1;
+    updateBagBadge();
+    if (window.ResinStore) window.ResinStore.addToCart('potry-sienna-01', null, 1, { pairing: itemName });
+
+    showToast("Pairing Added to Bag", `1 × ${itemName} ($${price}.00)`);
+
+    setTimeout(() => {
+      btn.innerHTML = originalHtml;
+      btn.classList.remove('bg-primary', 'text-on-primary');
+    }, 2200);
+  }
+
+  function updateBagBadge() {
+    const badge = document.getElementById('header-bag-count');
+    badge.textContent = bagCount;
+    badge.classList.add('scale-125');
+    setTimeout(() => badge.classList.remove('scale-125'), 200);
+  }
+
+  function showToast(headline, detail) {
+    const toast = document.getElementById('cart-toast');
+    document.getElementById('toast-headline').textContent = headline;
+    document.getElementById('toast-details').textContent = detail;
+
+    if (toastTimeout) clearTimeout(toastTimeout);
+
+    toast.classList.remove('-translate-y-8', 'opacity-0');
+    toast.classList.add('translate-y-0', 'opacity-100');
+
+    toastTimeout = setTimeout(() => {
+      toast.classList.add('-translate-y-8', 'opacity-0');
+      toast.classList.remove('translate-y-0', 'opacity-100');
+    }, 3200);
+  }
+</script></body></html>

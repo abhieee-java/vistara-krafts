@@ -1,0 +1,824 @@
+<!DOCTYPE html><html class="h-full" lang="en"><head><meta charset="utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"><meta content="mobile_tab" name="shell-type"><link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,600&amp;family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config={darkMode:"class",theme:{extend:{"colors":{"error-container":"#ffdad6","surface":"#faf9f6","on-surface-variant":"#44474e","surface-container-low":"#f4f3f1","on-tertiary-fixed-variant":"#3b475f","tertiary-container":"#232f46","background":"#faf9f6","secondary-container":"#ffd79b","on-secondary-fixed-variant":"#5d4213","on-secondary-container":"#7a5c2b","surface-dim":"#dbdad7","on-secondary-fixed":"#281800","on-primary-fixed":"#041b3a","outline":"#74777e","on-tertiary-fixed":"#0e1b31","surface-tint":"#4c5f81","surface-container-highest":"#e3e2e0","on-primary":"#ffffff","surface-variant":"#e3e2e0","inverse-on-surface":"#f1f1ee","primary-container":"#1b2f4e","on-error":"#ffffff","on-primary-fixed-variant":"#344767","surface-container-lowest":"#ffffff","secondary-fixed":"#ffdeae","secondary":"#775928","inverse-primary":"#b4c7ee","error":"#ba1a1a","on-error-container":"#93000a","tertiary":"#0d1a30","surface-container":"#efeeeb","primary":"#031a38","secondary-fixed-dim":"#e8c086","on-tertiary-container":"#8a97b2","outline-variant":"#c4c6ce","surface-bright":"#faf9f6","tertiary-fixed":"#d7e3ff","on-surface":"#1a1c1a","inverse-surface":"#2f312f","on-background":"#1a1c1a","on-tertiary":"#ffffff","surface-container-high":"#e9e8e5","primary-fixed-dim":"#b4c7ee","on-primary-container":"#8497bc","on-secondary":"#ffffff","primary-fixed":"#d6e3ff","tertiary-fixed-dim":"#bac7e4"},"borderRadius":{"DEFAULT":"0.25rem","lg":"0.5rem","xl":"0.75rem","full":"9999px"},"spacing":{"space-md":"1rem","space-xl":"2.5rem","margin":"2rem","gutter":"1.5rem","space-xs":"0.25rem","space-lg":"1.5rem","space-sm":"0.5rem"},"fontFamily":{"display-lg":["Playfair Display"],"spec-numeral":["Inter"],"body-lg":["Inter"],"label-sm":["Inter"],"label-md":["Inter"],"headline-lg":["Playfair Display"],"headline-sm":["Playfair Display"],"display-lg-mobile":["Playfair Display"],"headline-lg-mobile":["Playfair Display"],"body-md":["Inter"],"body-sm":["Inter"],"headline-md":["Playfair Display"],"title-md":["Inter"]},"fontSize":{"display-lg":["48px",{"lineHeight":"56px","letterSpacing":"-0.02em","fontWeight":"700"}],"spec-numeral":["14px",{"lineHeight":"20px","fontWeight":"600"}],"body-lg":["18px",{"lineHeight":"28px","fontWeight":"400"}],"label-sm":["12px",{"lineHeight":"16px","letterSpacing":"0.04em","fontWeight":"600"}],"label-md":["14px",{"lineHeight":"20px","fontWeight":"500"}],"headline-lg":["32px",{"lineHeight":"40px","letterSpacing":"-0.01em","fontWeight":"600"}],"headline-sm":["20px",{"lineHeight":"28px","fontWeight":"600"}],"display-lg-mobile":["36px",{"lineHeight":"44px","letterSpacing":"-0.01em","fontWeight":"700"}],"headline-lg-mobile":["26px",{"lineHeight":"34px","fontWeight":"600"}],"body-md":["15px",{"lineHeight":"22px","fontWeight":"400"}],"body-sm":["13px",{"lineHeight":"18px","fontWeight":"400"}],"headline-md":["24px",{"lineHeight":"32px","fontWeight":"600"}],"title-md":["16px",{"lineHeight":"24px","fontWeight":"600"}]}}}};</script><style>@layer base{html,body{margin:0;padding:0;background-color:#faf9f6;color:#1a1c1a;-webkit-tap-highlight-color:transparent;}body{overscroll-behavior:none;}.pb-safe{padding-bottom:env(safe-area-inset-bottom,0px);}.pt-safe{padding-top:env(safe-area-inset-top,0px);}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head><body class="bg-surface font-body-md text-on-surface flex flex-col min-h-screen"><header class="fixed top-0 w-full z-50 pt-safe bg-surface/90 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.04)]"><aside class="bg-tertiary text-on-tertiary px-space-md py-1 text-center font-label-sm text-label-sm overflow-hidden whitespace-nowrap tracking-wide flex items-center justify-center gap-space-xs"><span class="w-1.5 h-1.5 rounded-full bg-secondary-fixed"></span><span class="">Pan India Delivery • Free Shipping above ₹1,499 • GST Invoicing Available</span><span class="w-1.5 h-1.5 rounded-full bg-secondary-fixed"></span></aside><div class="h-16 px-space-md flex items-center justify-between gap-space-sm"><div class="flex items-center gap-space-sm"><button aria-label="Open mega menu" class="w-11 h-11 flex items-center justify-center text-primary hover:text-secondary transition-colors"><span class="material-symbols-outlined text-2xl">menu</span></button><a class="flex items-center gap-space-xs" href="#"><img alt="Vistāra Krafts Monogram Logo" class="h-8 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/AEtjO1XwbkteHjhFQi2vrA9Q0AwFl6bgZQDb_jrAypU8osoK2jatxpyuNMMYKgfoBCoOiiB6jFCjw3mtHHBe1NkE1hFOema8o-BFjtzFNZ9L7WB60y9lqMWADNSqqStnv00rvJBcxud5MxrBcTKFBwqzL5aS-8R0yKlBdXawPwlpNFzi_xQ8Cl8k4ViWaV2I8clzCHBXn9JbL0jn_qtNv7D-JIBC31lwBX5KSO0Wyd0rjwQA-OHixGekj2xVdN8L"><span class="font-headline-sm text-headline-sm text-primary tracking-tight font-headline">Vistāra</span></a></div><div class="flex items-center gap-1"><button aria-label="Search Catalogue" class="w-11 h-11 flex items-center justify-center text-primary hover:text-secondary transition-colors"><span class="material-symbols-outlined text-2xl">search</span></button><a aria-label="Wishlist" class="relative w-11 h-11 flex items-center justify-center text-primary hover:text-secondary transition-colors" data-path="saved-wishlist" href="#"><span class="material-symbols-outlined text-2xl">favorite</span><span class="absolute top-2 right-2 w-4 h-4 bg-secondary text-on-secondary rounded-full font-label-sm text-[10px] flex items-center justify-center font-semibold leading-none">3</span></a><button aria-label="View Cart" class="relative w-11 h-11 flex items-center justify-center text-primary hover:text-secondary transition-colors"><span class="material-symbols-outlined text-2xl">shopping_bag</span><span class="absolute top-2 right-2 w-4 h-4 bg-primary text-on-primary rounded-full font-label-sm text-[10px] flex items-center justify-center font-semibold leading-none">2</span></button><a class="w-11 h-11 flex items-center justify-center pl-1" data-path="account" href="#"><img alt="Profile" class="w-8 h-8 rounded-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBEfH5pmgXdOI0mnnN25k9DHn4iZNDO6wW_YERKWNba2tdwUuopMefjulnjWQYyOtpO5PbWkiW9CmteZIRsPaPSZtGU_1WhgAGSj2NWg7e-8uCvKEkCHAWRLBPtIQYKdVhEDObJsA5letw3AbZTj1f26XSfoItEh4s-fkfu0rzR5lKs8brHwg-aa_t4YvHAzr7zuSxFyPvlwlBRY3wtWrTwqKk9Bpf3wOErpjYhoS0BYtQqpSjFGEvDig"></a></div></div></header><main class="flex-1 flex flex-col relative w-full pt-24 pb-28 bg-surface"><div class="flex flex-col w-full">
+<!-- Category Header -->
+<section class="px-space-md pt-2 pb-4 flex flex-col gap-2">
+<div class="flex items-center gap-2 text-on-surface-variant font-label-sm text-label-sm uppercase tracking-wider">
+<span class="">Home</span>
+<span class="material-symbols-outlined text-[14px]">chevron_right</span>
+<span class="text-secondary font-semibold">Chemical Systems</span>
+</div>
+<div class="flex flex-col gap-1.5">
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile text-primary tracking-tight">
+        Epoxy Resin &amp; Hardeners
+      </h1>
+<p class="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">
+        Low-viscosity casting resins, deep-pour formulas, and UV curable systems for craft &amp; production.
+      </p>
+</div>
+<!-- Pan-India Micro Highlight Badge -->
+<div class="mt-1 flex items-center justify-between bg-surface-container-low px-3 py-2 rounded-lg text-primary text-label-sm font-label-sm">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary text-base">verified</span>
+<span class="">Apothecary Lab Certified Batch 2024-C</span>
+</div>
+<span class="text-secondary font-spec-numeral text-spec-numeral">ISO 9001</span>
+</div>
+</section>
+<!-- Horizontal Scrollable Subcategory Pills -->
+<div class="w-full overflow-x-auto pb-2 px-space-md flex gap-2 no-scrollbar">
+<button class="px-4 py-1.5 rounded-full bg-primary text-on-primary font-label-sm text-label-sm whitespace-nowrap shadow-sm">
+      All Resins
+    </button>
+<button class="px-4 py-1.5 rounded-full bg-surface-container-high text-on-surface-variant font-label-sm text-label-sm whitespace-nowrap active:bg-secondary-container">
+      Casting 3:1
+    </button>
+<button class="px-4 py-1.5 rounded-full bg-surface-container-high text-on-surface-variant font-label-sm text-label-sm whitespace-nowrap active:bg-secondary-container">
+      Deep Pour 2:1
+    </button>
+<button class="px-4 py-1.5 rounded-full bg-surface-container-high text-on-surface-variant font-label-sm text-label-sm whitespace-nowrap active:bg-secondary-container">
+      Fast Cure 1:1
+    </button>
+<button class="px-4 py-1.5 rounded-full bg-surface-container-high text-on-surface-variant font-label-sm text-label-sm whitespace-nowrap active:bg-secondary-container">
+      UV Jewelry
+    </button>
+<button class="px-4 py-1.5 rounded-full bg-surface-container-high text-on-surface-variant font-label-sm text-label-sm whitespace-nowrap active:bg-secondary-container">
+      Doming &amp; Coating
+    </button>
+</div>
+<!-- Sticky Controls Bar -->
+<div class="sticky top-16 z-30 bg-surface/95 backdrop-blur-md px-space-md py-2.5 shadow-sm flex flex-col gap-2">
+<div class="flex items-center justify-between gap-2">
+<!-- Filter Trigger -->
+<button class="flex items-center gap-1.5 bg-primary text-on-primary px-3.5 py-2 rounded-lg font-label-sm text-label-sm shadow-sm active:scale-95 transition-transform" id="filter-btn">
+<span class="material-symbols-outlined text-base">tune</span>
+<span class="">Filter</span>
+<span class="bg-secondary text-on-secondary px-1.5 py-0.2 rounded-full text-[10px] font-bold">4</span>
+</button>
+<!-- Sort Dropdown -->
+<div class="relative flex-1 max-w-[170px]">
+<select class="w-full bg-surface-container-low text-on-surface font-label-sm text-label-sm py-2 pl-2.5 pr-7 rounded-lg appearance-none focus:outline-none focus:ring-1 focus:ring-primary" id="sort-select">
+<option>Sort: Popularity</option>
+<option>Price: Low to High</option>
+<option>Price: High to Low</option>
+<option>Viscosity: Low-High</option>
+</select>
+<span class="material-symbols-outlined text-on-surface-variant absolute right-1.5 top-2.5 text-base pointer-events-none">expand_more</span>
+</div>
+<!-- Layout Toggle & Counter -->
+<div class="flex items-center gap-1 bg-surface-container-low p-1 rounded-lg">
+<button aria-label="Two column grid" class="w-7 h-7 flex items-center justify-center rounded bg-surface text-primary shadow-xs" id="view-grid-btn">
+<span class="material-symbols-outlined text-lg">grid_view</span>
+</button>
+<button aria-label="Single column list" class="w-7 h-7 flex items-center justify-center rounded text-on-surface-variant hover:text-primary" id="view-list-btn">
+<span class="material-symbols-outlined text-lg">view_stream</span>
+</button>
+</div>
+</div>
+<!-- Active Filter summary chips & count -->
+<div class="flex items-center justify-between text-on-surface-variant font-label-sm text-label-sm pt-0.5">
+<div class="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5 text-[11px]">
+<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-surface-container-high text-primary">
+          Ratio: 3:1 &amp; 2:1
+          <span class="material-symbols-outlined text-xs cursor-pointer">close</span>
+</span>
+<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-surface-container-high text-primary">
+          In Stock
+          <span class="material-symbols-outlined text-xs cursor-pointer">close</span>
+</span>
+</div>
+<span class="text-on-surface-variant whitespace-nowrap text-label-sm font-spec-numeral pl-2 font-medium" id="active-products-count">28 Products</span>
+</div>
+</div>
+<!-- Collapsible Technical Filter Tray Modal / Drawer -->
+<div class="fixed inset-0 z-50 pointer-events-none opacity-0 transition-opacity duration-300" id="filter-drawer">
+<!-- Backdrop -->
+<div class="absolute inset-0 bg-primary/60 backdrop-blur-xs" id="filter-backdrop"></div>
+<!-- Drawer Panel -->
+<div class="absolute bottom-0 left-0 right-0 max-h-[751px] bg-surface rounded-t-2xl shadow-xl flex flex-col overflow-hidden translate-y-full transition-transform duration-300 ease-out" id="drawer-panel">
+<!-- Drawer Header -->
+<div class="p-space-md bg-surface-container-low flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary">tune</span>
+<span class="font-headline-sm text-headline-sm text-primary">Technical Specs &amp; Filters</span>
+</div>
+<button class="w-8 h-8 flex items-center justify-center rounded-full bg-surface text-on-surface-variant" id="close-filter-btn">
+<span class="material-symbols-outlined text-xl">close</span>
+</button>
+</div>
+<!-- Drawer Content -->
+<div class="p-space-md overflow-y-auto space-y-5 flex-1">
+<!-- Mix Ratio -->
+<div>
+<label class="block font-label-md text-label-md text-primary mb-2 font-semibold">Mix Ratio by Weight / Volume</label>
+<div class="grid grid-cols-4 gap-2">
+<button class="py-2 rounded-lg bg-primary text-on-primary font-spec-numeral text-spec-numeral text-center">3:1</button>
+<button class="py-2 rounded-lg bg-primary text-on-primary font-spec-numeral text-spec-numeral text-center">2:1</button>
+<button class="py-2 rounded-lg bg-surface-container-high text-on-surface font-spec-numeral text-spec-numeral text-center">1:1</button>
+<button class="py-2 rounded-lg bg-surface-container-high text-on-surface font-label-sm text-label-sm text-center">UV 1-Part</button>
+</div>
+</div>
+<!-- Pour Depth -->
+<div>
+<label class="block font-label-md text-label-md text-primary mb-2 font-semibold">Maximum Pour Depth</label>
+<div class="space-y-1.5">
+<label class="flex items-center justify-between p-2.5 rounded-lg bg-surface-container-low">
+<span class="text-body-sm font-body-sm text-on-surface">Up to 10mm (Surface Glaze &amp; Doming)</span>
+<input class="w-4 h-4 accent-primary rounded" type="checkbox">
+</label>
+<label class="flex items-center justify-between p-2.5 rounded-lg bg-surface-container-low">
+<span class="text-body-sm font-body-sm text-on-surface">10mm – 25mm (Standard Mould Casting)</span>
+<input checked="" class="w-4 h-4 accent-primary rounded" type="checkbox">
+</label>
+<label class="flex items-center justify-between p-2.5 rounded-lg bg-surface-container-low">
+<span class="text-body-sm font-body-sm text-on-surface">25mm – 50mm+ (Deep River Tables)</span>
+<input checked="" class="w-4 h-4 accent-primary rounded" type="checkbox">
+</label>
+</div>
+</div>
+<!-- Pot Life & Viscosity -->
+<div class="grid grid-cols-2 gap-3">
+<div>
+<label class="block font-label-sm text-label-sm text-primary mb-1.5 font-semibold">Pot Life (25°C)</label>
+<select class="w-full bg-surface-container-low text-body-sm font-body-sm p-2 rounded-lg text-on-surface">
+<option>&lt; 15 mins (Flash)</option>
+<option selected="">30 – 45 mins</option>
+<option>60 – 120 mins</option>
+</select>
+</div>
+<div>
+<label class="block font-label-sm text-label-sm text-primary mb-1.5 font-semibold">Viscosity</label>
+<select class="w-full bg-surface-container-low text-body-sm font-body-sm p-2 rounded-lg text-on-surface">
+<option>Low (Water-like)</option>
+<option>Medium (Honey)</option>
+<option>High (Thick dome)</option>
+</select>
+</div>
+</div>
+<!-- Price Range Slider -->
+<div>
+<div class="flex justify-between items-center mb-1">
+<label class="font-label-md text-label-md text-primary font-semibold">Price Bracket</label>
+<span class="font-spec-numeral text-spec-numeral text-secondary">₹299 – ₹12,000</span>
+</div>
+<input class="w-full accent-primary bg-surface-container-highest rounded-lg h-2" max="12000" min="299" type="range" value="4500">
+<div class="flex justify-between text-[11px] text-on-surface-variant font-spec-numeral mt-1">
+<span class="">₹299</span>
+<span class="">₹6,000</span>
+<span class="">₹12,000+</span>
+</div>
+</div>
+<!-- Stock Status -->
+<div>
+<label class="block font-label-md text-label-md text-primary mb-2 font-semibold">Inventory</label>
+<div class="flex gap-2">
+<button class="flex-1 py-2 rounded-lg bg-primary text-on-primary text-label-sm font-label-sm">In Stock (Pan-India)</button>
+<button class="flex-1 py-2 rounded-lg bg-surface-container-high text-on-surface text-label-sm font-label-sm">Commercial Drum Ready</button>
+</div>
+</div>
+</div>
+<!-- Drawer Footer Actions -->
+<div class="p-space-md bg-surface-container-low flex gap-3 shadow-md">
+<button class="flex-1 py-3 rounded-lg bg-surface text-primary font-label-md text-label-md shadow-xs active:scale-98" id="reset-filter-btn">
+          Clear All
+        </button>
+<button class="flex-2 py-3 rounded-lg bg-primary text-on-primary font-label-md text-label-md shadow-sm active:scale-98" id="apply-filter-btn">
+          Apply Specs (28 Results)
+        </button>
+</div>
+</div>
+</div>
+<!-- Products Grid (2-col default) -->
+<section class="px-space-md py-4">
+<div class="grid grid-cols-2 gap-3" id="product-grid"><!-- Card 1 -->
+<article class="bg-surface-container-low rounded-xl overflow-hidden flex flex-col justify-between shadow-xs transition-shadow duration-200 h-full" data-product-id="vk-res-001" data-sku="VK-UC-31-1200" data-name="UltraClear 3:1 Casting Resin" data-category="casting" data-price="1299" data-unit-price="108" data-ratio="3:1" data-viscosity="low" data-cure="24h" data-rating="4.9" data-stock="in_stock">
+<div class="relative">
+<div class="aspect-square bg-surface-container-lowest w-full flex items-center justify-center p-3 relative overflow-hidden">
+<img alt="UltraClear 3:1 Casting Resin" class="object-cover w-full h-full rounded-lg" data-alt="Studio photograph of UltraClear 3:1 casting resin canisters with clear glass-like cured geode paperweight beside it on warm ivory slate background, soft daylight, apothecary craft aesthetic" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBEnCvIiNxz3aK-YBQyHAWz2p2wX6i5WjCMqy02Z_pgnl2dMWA_z3WD3qTA0K1gqEfzLW7mdxRUrs2ldyuj24-R79figLxu7VSOf5MhiohlAfzOdWM1TOSeW35_lHrh4S-2O-iBYpLLiI6W9Y8jBPFtrIe4zvccTMpyFIJQwwzYA0uzrTqAPhC4hC3wpz1eRiNaA97eki6SZuJAvDGBsCkcSvG1SPiJV7BtJ5itAVGfyhUmSYJnsHMvzw">
+<span class="absolute top-2 left-2 bg-secondary text-on-secondary text-[10px] font-label-sm uppercase px-2 py-0.5 rounded-full font-semibold shadow-xs">Bestseller</span>
+<button aria-label="Add to wishlist" class="wishlist-btn absolute top-2 right-2 w-7 h-7 rounded-full bg-surface/90 text-primary flex items-center justify-center shadow-xs">
+<span class="material-symbols-outlined text-[16px]">favorite</span>
+</button>
+</div>
+<div class="bg-surface-container-high px-2 py-1 flex items-center justify-between text-[11px] font-spec-numeral text-primary">
+<span class="">Ratio 3:1</span>
+<span class="text-on-surface-variant">Depth 20mm</span>
+</div>
+</div>
+<div class="p-2.5 flex flex-col flex-1 justify-between gap-1.5">
+<div>
+<div class="flex items-center gap-1 text-[11px] text-secondary">
+<div class="flex items-center">
+<span class="material-symbols-outlined text-[13px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="font-spec-numeral font-bold ml-0.5 text-on-surface">4.9</span>
+</div>
+<span class="text-on-surface-variant font-spec-numeral">(142)</span>
+</div>
+<h2 class="font-title-md text-title-md text-primary line-clamp-1 mt-0.5">UltraClear 3:1 Casting</h2>
+<p class="text-[11px] font-body-sm text-on-surface-variant line-clamp-1">Canister set • 1.2 kg net</p>
+</div>
+<div class="pt-1 flex flex-col gap-2">
+<div class="flex flex-col">
+<div class="flex items-baseline gap-1.5">
+<span class="font-headline-sm text-headline-sm text-primary font-bold">₹1,299</span>
+<span class="text-[11px] text-on-surface-variant line-through font-spec-numeral">₹1,550</span>
+</div>
+<span class="text-[10px] font-spec-numeral text-secondary">₹108 / 100g</span>
+</div>
+<button class="quick-add-btn w-full bg-primary text-on-primary py-1.5 rounded-lg font-label-sm text-label-sm flex items-center justify-center gap-1 active:scale-95 shadow-xs transition-transform">
+<span class="material-symbols-outlined text-sm">add_shopping_cart</span>
+<span class="">Quick Add</span>
+</button>
+</div>
+</div>
+</article>
+<!-- Card 2 -->
+<article class="bg-surface-container-low rounded-xl overflow-hidden flex flex-col justify-between shadow-xs transition-shadow duration-200 h-full" data-product-id="vk-res-002" data-sku="VK-RF-21-3000" data-name="River Flow 2:1 Deep Pour Epoxy" data-category="deep_pour" data-price="2850" data-unit-price="95" data-ratio="2:1" data-viscosity="low" data-cure="48h" data-rating="4.8" data-stock="in_stock">
+<div class="relative">
+<div class="aspect-square bg-surface-container-lowest w-full flex items-center justify-center p-3 relative overflow-hidden">
+<img alt="River Flow 2:1 Deep Pour Epoxy" class="object-cover w-full h-full rounded-lg" data-alt="River flow 2:1 deep pour crystal resin bucket system surrounded by polished live edge teak wood slab showing deep bubble-free glass finish on ivory platform" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB5W0RxlC_qbCLiogOunZQJLwCIARNblOCu547tssvch4KcHjyQidb2Pqj42y6UPDqVUOLtfhsZVKJ8Hdx30t3WMpTJe11isaKisC_alp6Yk49cvuJIipcEzkaIHBWHiU3QefrMpytDplh-cEsce41ZOUIUGDrb6TPU5xXCEnrqTzHokQTZ0HjkbBevAv4o_E-JsEjGeJa0dnZWvbyMV104YVX9OokN7wPg58kHdnJCLaBPTQSPbqa_dg">
+<span class="absolute top-2 left-2 bg-primary-container text-on-primary-container text-[10px] font-label-sm uppercase px-2 py-0.5 rounded-full font-semibold shadow-xs">Deep Cast 50mm</span>
+<button aria-label="Add to wishlist" class="wishlist-btn absolute top-2 right-2 w-7 h-7 rounded-full bg-surface/90 text-primary flex items-center justify-center shadow-xs">
+<span class="material-symbols-outlined text-[16px]">favorite</span>
+</button>
+</div>
+<div class="bg-surface-container-high px-2 py-1 flex items-center justify-between text-[11px] font-spec-numeral text-primary">
+<span class="">Ratio 2:1</span>
+<span class="text-on-surface-variant">Cure 48h</span>
+</div>
+</div>
+<div class="p-2.5 flex flex-col flex-1 justify-between gap-1.5">
+<div>
+<div class="flex items-center gap-1 text-[11px] text-secondary">
+<div class="flex items-center">
+<span class="material-symbols-outlined text-[13px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="font-spec-numeral font-bold ml-0.5 text-on-surface">4.8</span>
+</div>
+<span class="text-on-surface-variant font-spec-numeral">(98)</span>
+</div>
+<h2 class="font-title-md text-title-md text-primary line-clamp-1 mt-0.5">River Flow 2:1 Pour</h2>
+<p class="text-[11px] font-body-sm text-on-surface-variant line-clamp-1">Dual pack • 3.0 kg net</p>
+</div>
+<div class="pt-1 flex flex-col gap-2">
+<div class="flex flex-col">
+<div class="flex items-baseline gap-1.5">
+<span class="font-headline-sm text-headline-sm text-primary font-bold">₹2,850</span>
+<span class="text-[11px] text-on-surface-variant line-through font-spec-numeral">₹3,200</span>
+</div>
+<span class="text-[10px] font-spec-numeral text-secondary">₹95 / 100g</span>
+</div>
+<button class="quick-add-btn w-full bg-primary text-on-primary py-1.5 rounded-lg font-label-sm text-label-sm flex items-center justify-center gap-1 active:scale-95 shadow-xs transition-transform">
+<span class="material-symbols-outlined text-sm">add_shopping_cart</span>
+<span class="">Quick Add</span>
+</button>
+</div>
+</div>
+</article>
+<!-- Card 3 -->
+<article class="bg-surface-container-low rounded-xl overflow-hidden flex flex-col justify-between shadow-xs transition-shadow duration-200 h-full" data-product-id="vk-res-003" data-sku="VK-HG-11-500" data-name="High-Gloss Doming Epoxy 1:1" data-category="doming" data-price="799" data-unit-price="159" data-ratio="1:1" data-viscosity="high" data-cure="12h" data-rating="5.0" data-stock="in_stock">
+<div class="relative">
+<div class="aspect-square bg-surface-container-lowest w-full flex items-center justify-center p-3 relative overflow-hidden">
+<img alt="High-Gloss Doming Epoxy 1:1" class="object-cover w-full h-full rounded-lg" data-alt="High gloss doming epoxy bottles 1 to 1 mix ratio displayed with glazed resin art coasters reflecting soft warm gallery lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDqlb7IBVOOKGQdlkshli66LfxK7ksTEDNrC0A4BuDzUBO4egoX6orddeLfRtAR6L_5SLGg5BSHYvThMgNhOA5h5Cfga6As7bsfs42pWHzk9CuzEhGL9lTfiWedVZZ1HJ96wchvuWBMJT_g7ZpK_ahAx-rhIN-uGz208_cF4LpKNbL_Ur9lD_Ci4rW3HXnyRrTA99WnfyljdtAa2j0MwdsUdmMZsGkf-uFYPKv4-nhR9XRnHNogow_I7w">
+<span class="absolute top-2 left-2 bg-surface-container-highest text-primary text-[10px] font-label-sm uppercase px-2 py-0.5 rounded-full font-semibold shadow-xs">High Viscosity</span>
+<button aria-label="Add to wishlist" class="wishlist-btn absolute top-2 right-2 w-7 h-7 rounded-full bg-surface/90 text-primary flex items-center justify-center shadow-xs">
+<span class="material-symbols-outlined text-[16px]">favorite</span>
+</button>
+</div>
+<div class="bg-surface-container-high px-2 py-1 flex items-center justify-between text-[11px] font-spec-numeral text-primary">
+<span class="">Ratio 1:1</span>
+<span class="text-on-surface-variant">Self-level</span>
+</div>
+</div>
+<div class="p-2.5 flex flex-col flex-1 justify-between gap-1.5">
+<div>
+<div class="flex items-center gap-1 text-[11px] text-secondary">
+<div class="flex items-center">
+<span class="material-symbols-outlined text-[13px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="font-spec-numeral font-bold ml-0.5 text-on-surface">5.0</span>
+</div>
+<span class="text-on-surface-variant font-spec-numeral">(64)</span>
+</div>
+<h2 class="font-title-md text-title-md text-primary line-clamp-1 mt-0.5">High-Gloss Doming 1:1</h2>
+<p class="text-[11px] font-body-sm text-on-surface-variant line-clamp-1">Surface kit • 500g net</p>
+</div>
+<div class="pt-1 flex flex-col gap-2">
+<div class="flex flex-col">
+<div class="flex items-baseline gap-1.5">
+<span class="font-headline-sm text-headline-sm text-primary font-bold">₹799</span>
+<span class="text-[11px] text-on-surface-variant line-through font-spec-numeral">₹899</span>
+</div>
+<span class="text-[10px] font-spec-numeral text-secondary">₹159 / 100g</span>
+</div>
+<button class="quick-add-btn w-full bg-primary text-on-primary py-1.5 rounded-lg font-label-sm text-label-sm flex items-center justify-center gap-1 active:scale-95 shadow-xs transition-transform">
+<span class="material-symbols-outlined text-sm">add_shopping_cart</span>
+<span class="">Quick Add</span>
+</button>
+</div>
+</div>
+</article>
+<!-- Card 4 -->
+<article class="bg-surface-container-low rounded-xl overflow-hidden flex flex-col justify-between shadow-xs transition-shadow duration-200 h-full" data-product-id="vk-res-004" data-sku="VK-QS-11-250" data-name="QuickSet 1:1 Fast Epoxy" data-category="fast_cure" data-price="480" data-unit-price="192" data-ratio="1:1" data-viscosity="medium" data-cure="4h" data-rating="4.7" data-stock="in_stock">
+<div class="relative">
+<div class="aspect-square bg-surface-container-lowest w-full flex items-center justify-center p-3 relative overflow-hidden">
+<img alt="QuickSet 1:1 Fast Epoxy" class="object-cover w-full h-full rounded-lg" data-alt="QuickSet fast curing epoxy duo bottles alongside fast cured silicone resin mold pieces in natural craft workshop lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCbnasnTSVLu2hYLiKrH6kzNDqjHUkXxfpcPPeLilSr7B48NPpbAxdm6E02JNZ03Xky30q9AeiEspvr-xXV5QWjAozM3lC1rzEjTywCCPZdThUrSzTFGrIFXLU6N6RrNiUgljvEX1kFPdEJcC5ABZSjwrAJDXtNhIIlhDiHyq6PmdhLjksG_focqOi7ob6FHBeABTUhzAHiK1AdQDGF4ilUmnlSic3H_Fb1GHUMjeTS8FncO2-d75qL6w">
+<span class="absolute top-2 left-2 bg-secondary text-on-secondary text-[10px] font-label-sm uppercase px-2 py-0.5 rounded-full font-semibold shadow-xs">Demold 4 hrs</span>
+<button aria-label="Add to wishlist" class="wishlist-btn absolute top-2 right-2 w-7 h-7 rounded-full bg-surface/90 text-primary flex items-center justify-center shadow-xs">
+<span class="material-symbols-outlined text-[16px]">favorite</span>
+</button>
+</div>
+<div class="bg-surface-container-high px-2 py-1 flex items-center justify-between text-[11px] font-spec-numeral text-primary">
+<span class="">Ratio 1:1</span>
+<span class="text-on-surface-variant">Pot Life 15m</span>
+</div>
+</div>
+<div class="p-2.5 flex flex-col flex-1 justify-between gap-1.5">
+<div>
+<div class="flex items-center gap-1 text-[11px] text-secondary">
+<div class="flex items-center">
+<span class="material-symbols-outlined text-[13px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="font-spec-numeral font-bold ml-0.5 text-on-surface">4.7</span>
+</div>
+<span class="text-on-surface-variant font-spec-numeral">(41)</span>
+</div>
+<h2 class="font-title-md text-title-md text-primary line-clamp-1 mt-0.5">QuickSet 1:1 Fast Cure</h2>
+<p class="text-[11px] font-body-sm text-on-surface-variant line-clamp-1">Rapid repair • 250g net</p>
+</div>
+<div class="pt-1 flex flex-col gap-2">
+<div class="flex flex-col">
+<div class="flex items-baseline gap-1.5">
+<span class="font-headline-sm text-headline-sm text-primary font-bold">₹480</span>
+<span class="text-[11px] text-on-surface-variant line-through font-spec-numeral">₹550</span>
+</div>
+<span class="text-[10px] font-spec-numeral text-secondary">₹192 / 100g</span>
+</div>
+<button class="quick-add-btn w-full bg-primary text-on-primary py-1.5 rounded-lg font-label-sm text-label-sm flex items-center justify-center gap-1 active:scale-95 shadow-xs transition-transform">
+<span class="material-symbols-outlined text-sm">add_shopping_cart</span>
+<span class="">Quick Add</span>
+</button>
+</div>
+</div>
+</article>
+<!-- Card 5 -->
+<article class="bg-surface-container-low rounded-xl overflow-hidden flex flex-col justify-between shadow-xs transition-shadow duration-200 h-full" data-product-id="vk-res-005" data-sku="VK-UV-365-200" data-name="Optical UV Hard Resin" data-category="uv_resin" data-price="649" data-unit-price="324" data-ratio="1-part" data-viscosity="low" data-cure="90s" data-rating="4.9" data-stock="in_stock">
+<div class="relative">
+<div class="aspect-square bg-surface-container-lowest w-full flex items-center justify-center p-3 relative overflow-hidden">
+<img alt="Optical UV Hard Resin" class="object-cover w-full h-full rounded-lg" data-alt="Optical grade UV hard resin squeeze bottle alongside gold bezel pendants embedded with botanicals under gentle spotlight" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB9C6Pa4g_6GzOZtIggye676zsCNpZ-EjayRAZs7AeQo7_Sm73nHfOGH8TkTlrxqqM3-q4OgUGaZBS59mCQ5H7h80aJ8YIPMh__3HgnN1YiIML56MAP3RNk18PI6Yy4WWx0JfqNozpwBJXuoOLV1NyDUp3SjAHYBi9hdPqP_8M1fc76A-7UR3tnvRqtloboFHfOpsUwX821jjfhbt6jwJfmgVz6YTzRZcIl5OZvlFCJNTFDBgFeLFUiPA">
+<span class="absolute top-2 left-2 bg-primary text-on-primary text-[10px] font-label-sm uppercase px-2 py-0.5 rounded-full font-semibold shadow-xs">Zero Mix 365nm</span>
+<button aria-label="Add to wishlist" class="wishlist-btn absolute top-2 right-2 w-7 h-7 rounded-full bg-surface/90 text-primary flex items-center justify-center shadow-xs">
+<span class="material-symbols-outlined text-[16px]">favorite</span>
+</button>
+</div>
+<div class="bg-surface-container-high px-2 py-1 flex items-center justify-between text-[11px] font-spec-numeral text-primary">
+<span class="">No Mix</span>
+<span class="text-on-surface-variant">Cure 90s</span>
+</div>
+</div>
+<div class="p-2.5 flex flex-col flex-1 justify-between gap-1.5">
+<div>
+<div class="flex items-center gap-1 text-[11px] text-secondary">
+<div class="flex items-center">
+<span class="material-symbols-outlined text-[13px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="font-spec-numeral font-bold ml-0.5 text-on-surface">4.9</span>
+</div>
+<span class="text-on-surface-variant font-spec-numeral">(89)</span>
+</div>
+<h2 class="font-title-md text-title-md text-primary line-clamp-1 mt-0.5">Optical UV Hard Resin</h2>
+<p class="text-[11px] font-body-sm text-on-surface-variant line-clamp-1">Nozzle bottle • 200g net</p>
+</div>
+<div class="pt-1 flex flex-col gap-2">
+<div class="flex flex-col">
+<div class="flex items-baseline gap-1.5">
+<span class="font-headline-sm text-headline-sm text-primary font-bold">₹649</span>
+<span class="text-[11px] text-on-surface-variant line-through font-spec-numeral">₹749</span>
+</div>
+<span class="text-[10px] font-spec-numeral text-secondary">₹324 / 100g</span>
+</div>
+<button class="quick-add-btn w-full bg-primary text-on-primary py-1.5 rounded-lg font-label-sm text-label-sm flex items-center justify-center gap-1 active:scale-95 shadow-xs transition-transform">
+<span class="material-symbols-outlined text-sm">add_shopping_cart</span>
+<span class="">Quick Add</span>
+</button>
+</div>
+</div>
+</article>
+<!-- Card 6 -->
+<article class="bg-surface-container-low rounded-xl overflow-hidden flex flex-col justify-between shadow-xs transition-shadow duration-200 h-full" data-product-id="vk-res-006" data-sku="VK-EB-31-1000" data-name="EcoBio 3:1 Bio-Based Resin" data-category="bio_based" data-price="1450" data-unit-price="145" data-ratio="3:1" data-viscosity="medium" data-cure="24h" data-rating="4.6" data-stock="in_stock">
+<div class="relative">
+<div class="aspect-square bg-surface-container-lowest w-full flex items-center justify-center p-3 relative overflow-hidden">
+<img alt="EcoBio 3:1 Bio-Based Resin" class="object-cover w-full h-full rounded-lg" data-alt="EcoBio eco friendly botanical derived resin container with green leaf subtle shadow on minimalist stone aesthetic backdrop" src="https://lh3.googleusercontent.com/aida-public/AB6AXuANQCZGg-SkRfOiXEX6GoK6R4JzoffbtS_-7ihkpfk4_6-PKbJfeycqVeNBorpqLKkHT8CSN8LLwnh5CFJkrlxowWNHnIL6oM0K3DLLzDTKgChRABfAZTPZsFqnaPto_gXdT9h_JmHNBteQGsjQpvjPdu94oKru9YzOyxlvOIyUZ9kMEz62WOHFaWNkCQBR91aoBGnVdjOafD3h1rjhU9BDEUqtzPIKS5XWzvFd6vpslHLZEzLjC5hA8Q">
+<span class="absolute top-2 left-2 bg-secondary-fixed text-on-secondary-fixed text-[10px] font-label-sm uppercase px-2 py-0.5 rounded-full font-semibold shadow-xs">Plant Based</span>
+<button aria-label="Add to wishlist" class="wishlist-btn absolute top-2 right-2 w-7 h-7 rounded-full bg-surface/90 text-primary flex items-center justify-center shadow-xs">
+<span class="material-symbols-outlined text-[16px]">favorite</span>
+</button>
+</div>
+<div class="bg-surface-container-high px-2 py-1 flex items-center justify-between text-[11px] font-spec-numeral text-primary">
+<span class="">Ratio 3:1</span>
+<span class="text-on-surface-variant">Low VOC</span>
+</div>
+</div>
+<div class="p-2.5 flex flex-col flex-1 justify-between gap-1.5">
+<div>
+<div class="flex items-center gap-1 text-[11px] text-secondary">
+<div class="flex items-center">
+<span class="material-symbols-outlined text-[13px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="font-spec-numeral font-bold ml-0.5 text-on-surface">4.6</span>
+</div>
+<span class="text-on-surface-variant font-spec-numeral">(27)</span>
+</div>
+<h2 class="font-title-md text-title-md text-primary line-clamp-1 mt-0.5">EcoBio 3:1 Bio Resin</h2>
+<p class="text-[11px] font-body-sm text-on-surface-variant line-clamp-1">Organic formula • 1.0 kg net</p>
+</div>
+<div class="pt-1 flex flex-col gap-2">
+<div class="flex flex-col">
+<div class="flex items-baseline gap-1.5">
+<span class="font-headline-sm text-headline-sm text-primary font-bold">₹1,450</span>
+<span class="text-[11px] text-on-surface-variant line-through font-spec-numeral">₹1,690</span>
+</div>
+<span class="text-[10px] font-spec-numeral text-secondary">₹145 / 100g</span>
+</div>
+<button class="quick-add-btn w-full bg-primary text-on-primary py-1.5 rounded-lg font-label-sm text-label-sm flex items-center justify-center gap-1 active:scale-95 shadow-xs transition-transform">
+<span class="material-symbols-outlined text-sm">add_shopping_cart</span>
+<span class="">Quick Add</span>
+</button>
+</div>
+</div>
+</article></div>
+</section>
+<!-- Bottom Pagination & Progress Section -->
+<section class="px-space-md py-6 flex flex-col items-center gap-3">
+<div class="w-full max-w-xs flex flex-col items-center gap-1.5">
+<div class="flex justify-between w-full font-label-sm text-label-sm text-on-surface-variant">
+<span class="">Loaded <span class="text-primary font-spec-numeral font-semibold">6</span> of 28 products</span>
+<span class="text-secondary font-spec-numeral">21%</span>
+</div>
+<!-- Progress Track -->
+<div class="w-full h-1.5 bg-surface-container-high rounded-full overflow-hidden">
+<div class="h-full bg-secondary rounded-full w-[21%]"></div>
+</div>
+</div>
+<button class="w-full max-w-xs py-3 px-4 rounded-lg bg-surface-container-high hover:bg-surface-container-highest text-primary font-label-md text-label-md flex items-center justify-center gap-2 active:scale-98 transition-all shadow-xs" id="load-more-btn">
+<span class="material-symbols-outlined text-base">refresh</span>
+<span class="">Load More Formulations</span>
+</button>
+<div class="flex items-center gap-3 pt-2 text-on-surface-variant text-[11px] font-label-sm">
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-sm text-secondary">local_shipping</span>
+<span class="">Secure Solvent Transit</span>
+</div>
+<span class="">•</span>
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-sm text-secondary">verified_user</span>
+<span class="">100% Non-Yellowing</span>
+</div>
+</div>
+</section>
+<!-- Interactive JavaScript -->
+<script src="../store-bridge.js"></script>
+<script>
+    (function() {
+      // Drawer Toggle
+      const filterBtn = document.getElementById('filter-btn');
+      const closeFilterBtn = document.getElementById('close-filter-btn');
+      const filterDrawer = document.getElementById('filter-drawer');
+      const filterBackdrop = document.getElementById('filter-backdrop');
+      const drawerPanel = document.getElementById('drawer-panel');
+      const applyFilterBtn = document.getElementById('apply-filter-btn');
+      const resetFilterBtn = document.getElementById('reset-filter-btn');
+      const productGrid = document.getElementById('product-grid');
+      const activeCountEl = document.getElementById('active-products-count');
+      const sortSelect = document.getElementById('sort-select');
+
+      let activeCategoryFilter = 'all';
+      let activeRatios = new Set();
+      let maxPriceFilter = 12000;
+
+      function openDrawer() {
+        filterDrawer.classList.remove('pointer-events-none', 'opacity-0');
+        filterDrawer.classList.add('pointer-events-auto', 'opacity-100');
+        drawerPanel.classList.remove('translate-y-full');
+        drawerPanel.classList.add('translate-y-0');
+      }
+
+      function closeDrawer() {
+        drawerPanel.classList.remove('translate-y-0');
+        drawerPanel.classList.add('translate-y-full');
+        filterDrawer.classList.remove('pointer-events-auto', 'opacity-100');
+        filterDrawer.classList.add('pointer-events-none', 'opacity-0');
+      }
+
+      if (filterBtn) filterBtn.addEventListener('click', openDrawer);
+      if (closeFilterBtn) closeFilterBtn.addEventListener('click', closeDrawer);
+      if (filterBackdrop) filterBackdrop.addEventListener('click', closeDrawer);
+
+      function applyFiltersAndSort() {
+        if (!productGrid) return;
+        const cards = Array.from(productGrid.querySelectorAll('article[data-product-id]'));
+        let visibleCount = 0;
+
+        cards.forEach(card => {
+          const cat = (card.getAttribute('data-category') || '').toLowerCase();
+          const ratio = (card.getAttribute('data-ratio') || '').toLowerCase();
+          const price = parseFloat(card.getAttribute('data-price')) || 0;
+
+          let matchCat = true;
+          if (activeCategoryFilter !== 'all') {
+            if (activeCategoryFilter === 'casting 3:1') matchCat = (cat === 'casting' || ratio === '3:1');
+            else if (activeCategoryFilter === 'deep pour 2:1') matchCat = (cat === 'deep_pour' || ratio === '2:1');
+            else if (activeCategoryFilter === 'fast cure 1:1') matchCat = (cat === 'fast_cure' || ratio === '1:1');
+            else if (activeCategoryFilter === 'uv jewelry') matchCat = (cat === 'uv_resin' || ratio === '1-part');
+            else if (activeCategoryFilter.includes('doming')) matchCat = (cat === 'doming');
+          }
+
+          let matchRatio = true;
+          if (activeRatios.size > 0) {
+            matchRatio = activeRatios.has(ratio);
+          }
+
+          const matchPrice = price <= maxPriceFilter;
+
+          if (matchCat && matchRatio && matchPrice) {
+            card.style.display = '';
+            visibleCount++;
+          } else {
+            card.style.display = 'none';
+          }
+        });
+
+        // Sort visible cards
+        const sortVal = sortSelect ? sortSelect.value : 'Sort: Popularity';
+        const sortedCards = cards.slice().sort((a, b) => {
+          const priceA = parseFloat(a.getAttribute('data-price')) || 0;
+          const priceB = parseFloat(b.getAttribute('data-price')) || 0;
+          const ratingA = parseFloat(a.getAttribute('data-rating')) || 0;
+          const ratingB = parseFloat(b.getAttribute('data-rating')) || 0;
+          const viscOrder = { low: 1, medium: 2, high: 3 };
+          const viscA = viscOrder[(a.getAttribute('data-viscosity') || 'low').toLowerCase()] || 2;
+          const viscB = viscOrder[(b.getAttribute('data-viscosity') || 'low').toLowerCase()] || 2;
+
+          if (sortVal.includes('Low to High')) return priceA - priceB;
+          if (sortVal.includes('High to Low')) return priceB - priceA;
+          if (sortVal.includes('Viscosity')) return viscA - viscB;
+          return ratingB - ratingA;
+        });
+
+        sortedCards.forEach(c => productGrid.appendChild(c));
+
+        if (activeCountEl) {
+          activeCountEl.textContent = `${visibleCount} Product${visibleCount === 1 ? '' : 's'}`;
+        }
+        if (applyFilterBtn) {
+          applyFilterBtn.textContent = `Apply Specs (${visibleCount} Result${visibleCount === 1 ? '' : 's'})`;
+        }
+      }
+
+      // Wire Subcategory Pills
+      const subcatContainer = document.querySelector('.w-full.overflow-x-auto.pb-2.px-space-md');
+      if (subcatContainer) {
+        const pills = subcatContainer.querySelectorAll('button');
+        pills.forEach(pill => {
+          pill.addEventListener('click', () => {
+            pills.forEach(p => {
+              p.className = 'px-4 py-1.5 rounded-full bg-surface-container-high text-on-surface-variant font-label-sm text-label-sm whitespace-nowrap active:bg-secondary-container';
+            });
+            pill.className = 'px-4 py-1.5 rounded-full bg-primary text-on-primary font-label-sm text-label-sm whitespace-nowrap shadow-sm';
+            const label = pill.textContent.trim().toLowerCase();
+            activeCategoryFilter = label === 'all resins' ? 'all' : label;
+            applyFiltersAndSort();
+          });
+        });
+      }
+
+      // Wire Sort Select
+      if (sortSelect) {
+        sortSelect.addEventListener('change', applyFiltersAndSort);
+      }
+
+      // Wire Drawer Mix Ratio buttons & Price Slider
+      if (drawerPanel) {
+        const ratioBtns = drawerPanel.querySelectorAll('.grid.grid-cols-4 button');
+        ratioBtns.forEach(btn => {
+          btn.addEventListener('click', () => {
+            const raw = btn.textContent.trim().toLowerCase();
+            const key = raw.includes('uv') ? '1-part' : raw;
+            if (activeRatios.has(key)) {
+              activeRatios.delete(key);
+              btn.className = 'py-2 rounded-lg bg-surface-container-high text-on-surface font-spec-numeral text-spec-numeral text-center';
+            } else {
+              activeRatios.add(key);
+              btn.className = 'py-2 rounded-lg bg-primary text-on-primary font-spec-numeral text-spec-numeral text-center';
+            }
+            applyFiltersAndSort();
+          });
+        });
+
+        const rangeInput = drawerPanel.querySelector('input[type="range"]');
+        const priceLabel = rangeInput ? rangeInput.previousElementSibling?.querySelector('.font-spec-numeral') : null;
+        if (rangeInput) {
+          rangeInput.addEventListener('input', () => {
+            maxPriceFilter = parseFloat(rangeInput.value) || 12000;
+            if (priceLabel) priceLabel.textContent = `₹299 – ₹${maxPriceFilter.toLocaleString('en-IN')}`;
+            applyFiltersAndSort();
+          });
+        }
+      }
+
+      if (resetFilterBtn) {
+        resetFilterBtn.addEventListener('click', () => {
+          activeCategoryFilter = 'all';
+          activeRatios.clear();
+          maxPriceFilter = 12000;
+          const rangeInput = drawerPanel?.querySelector('input[type="range"]');
+          if (rangeInput) {
+            rangeInput.value = '12000';
+            const priceLabel = rangeInput.previousElementSibling?.querySelector('.font-spec-numeral');
+            if (priceLabel) priceLabel.textContent = '₹299 – ₹12,000';
+          }
+          drawerPanel?.querySelectorAll('.grid.grid-cols-4 button').forEach(btn => {
+            btn.className = 'py-2 rounded-lg bg-surface-container-high text-on-surface font-spec-numeral text-spec-numeral text-center';
+          });
+          if (subcatContainer) {
+            const pills = subcatContainer.querySelectorAll('button');
+            pills.forEach((p, idx) => {
+              p.className = idx === 0
+                ? 'px-4 py-1.5 rounded-full bg-primary text-on-primary font-label-sm text-label-sm whitespace-nowrap shadow-sm'
+                : 'px-4 py-1.5 rounded-full bg-surface-container-high text-on-surface-variant font-label-sm text-label-sm whitespace-nowrap active:bg-secondary-container';
+            });
+          }
+          applyFiltersAndSort();
+        });
+      }
+
+      if (applyFilterBtn) {
+        applyFilterBtn.addEventListener('click', () => {
+          applyFiltersAndSort();
+          closeDrawer();
+        });
+      }
+
+      // Active filter summary chips removal
+      document.querySelectorAll('.sticky.top-16 .inline-flex .material-symbols-outlined').forEach(closeIcon => {
+        closeIcon.addEventListener('click', () => {
+          const chip = closeIcon.closest('.inline-flex');
+          if (chip) chip.remove();
+          activeRatios.clear();
+          applyFiltersAndSort();
+        });
+      });
+
+      // Grid / Single-column Layout Switcher
+      const gridBtn = document.getElementById('view-grid-btn');
+      const listBtn = document.getElementById('view-list-btn');
+
+      if (gridBtn && listBtn && productGrid) {
+        listBtn.addEventListener('click', function() {
+          productGrid.classList.remove('grid-cols-2');
+          productGrid.classList.add('grid-cols-1');
+          listBtn.classList.add('bg-surface', 'text-primary', 'shadow-xs');
+          listBtn.classList.remove('text-on-surface-variant');
+          gridBtn.classList.remove('bg-surface', 'text-primary', 'shadow-xs');
+          gridBtn.classList.add('text-on-surface-variant');
+        });
+
+        gridBtn.addEventListener('click', function() {
+          productGrid.classList.remove('grid-cols-1');
+          productGrid.classList.add('grid-cols-2');
+          gridBtn.classList.add('bg-surface', 'text-primary', 'shadow-xs');
+          gridBtn.classList.remove('text-on-surface-variant');
+          listBtn.classList.remove('bg-surface', 'text-primary', 'shadow-xs');
+          listBtn.classList.add('text-on-surface-variant');
+        });
+      }
+
+      // Helper for binding Wishlist & Quick Add on cards
+      const headerWishlistBadge = document.querySelector('header a[aria-label="Wishlist"] span:last-child');
+      const headerCartBadge = document.querySelector('header button[aria-label="View Cart"] span:last-child');
+
+      function bindCardActions(scopeEl) {
+        scopeEl.querySelectorAll('.wishlist-btn').forEach(function(btn) {
+          if (btn.dataset.bound) return;
+          btn.dataset.bound = '1';
+          btn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            const icon = btn.querySelector('.material-symbols-outlined');
+            let wCount = parseInt(headerWishlistBadge?.textContent || '3', 10) || 0;
+            if (icon.getAttribute('style')?.includes("FILL' 1")) {
+              icon.removeAttribute('style');
+              icon.classList.remove('text-secondary');
+              if (headerWishlistBadge) headerWishlistBadge.textContent = String(Math.max(0, wCount - 1));
+            } else {
+              icon.setAttribute('style', "font-variation-settings: 'FILL' 1;");
+              icon.classList.add('text-secondary');
+              if (headerWishlistBadge) headerWishlistBadge.textContent = String(wCount + 1);
+            }
+          });
+        });
+
+        scopeEl.querySelectorAll('.quick-add-btn').forEach(function(btn) {
+          if (btn.dataset.bound) return;
+          btn.dataset.bound = '1';
+          btn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            const card = btn.closest('article[data-product-id]');
+            const pid = card?.getAttribute('data-product-id') || 'vk-res-001';
+            if (window.ResinStore) window.ResinStore.addToCart(pid, null, 1);
+
+            if (headerCartBadge) {
+              const cCount = parseInt(headerCartBadge.textContent || '2', 10) || 0;
+              headerCartBadge.textContent = String(cCount + 1);
+            }
+
+            const originalContent = btn.innerHTML;
+            btn.innerHTML = '<span class="material-symbols-outlined text-sm">check</span><span>Added</span>';
+            btn.classList.add('bg-secondary', 'text-on-secondary');
+            btn.classList.remove('bg-primary', 'text-on-primary');
+            setTimeout(function() {
+              btn.innerHTML = originalContent;
+              btn.classList.remove('bg-secondary', 'text-on-secondary');
+              btn.classList.add('bg-primary', 'text-on-primary');
+            }, 1400);
+          });
+        });
+
+        // Clicking card image/title opens PDP
+        scopeEl.querySelectorAll('article[data-product-id]').forEach(card => {
+          if (card.dataset.navBound) return;
+          card.dataset.navBound = '1';
+          const imgWrap = card.querySelector('.aspect-square');
+          const titleEl = card.querySelector('h2');
+          [imgWrap, titleEl].forEach(el => {
+            if (el) {
+              el.style.cursor = 'pointer';
+              el.addEventListener('click', () => {
+                window.location.href = '../vist_ra_krafts_ultraclear_3_1_pdp/code.html';
+              });
+            }
+          });
+        });
+      }
+
+      bindCardActions(document);
+
+      // Load More Formulations Button
+      const loadMoreBtn = document.getElementById('load-more-btn');
+      if (loadMoreBtn && productGrid) {
+        loadMoreBtn.addEventListener('click', () => {
+          const extraCard = document.createElement('article');
+          extraCard.className = 'bg-surface-container-low rounded-xl overflow-hidden flex flex-col justify-between shadow-xs transition-shadow duration-200 h-full';
+          extraCard.setAttribute('data-product-id', 'vk-pig-007');
+          extraCard.setAttribute('data-category', 'casting');
+          extraCard.setAttribute('data-price', '899');
+          extraCard.setAttribute('data-ratio', '3:1');
+          extraCard.setAttribute('data-viscosity', 'low');
+          extraCard.setAttribute('data-rating', '4.9');
+          extraCard.innerHTML = `
+            <div class="relative">
+              <div class="aspect-square bg-surface-container-lowest w-full flex items-center justify-center p-3 relative overflow-hidden">
+                <img alt="Chameleon Mica Set" class="object-cover w-full h-full rounded-lg" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBsHygVQDC1PnFOM3bOHAJacAtodwre1FixR4hSycrhmG-F77MrskbkW2XcwL7ueawATyKCEyn1zGfWKW0u4qlBpzlo9yLqgRIf9YKzhrXNqcNxOLaCw_ID7b39Paw4KsYdkznjBV6kZikiaukQlA9VARAbHMFh-CQzYhth8LjrvcUWUFDvsv5EP0cq8ahNhihjMYhugsBrImA5bh9A-aPrJGVio28WEyvpUTiav1TvqOVONuJ4CbYZCQ">
+                <span class="absolute top-2 left-2 bg-secondary text-on-secondary text-[10px] font-label-sm uppercase px-2 py-0.5 rounded-full font-semibold shadow-xs">12 Shades</span>
+                <button aria-label="Add to wishlist" class="wishlist-btn absolute top-2 right-2 w-7 h-7 rounded-full bg-surface/90 text-primary flex items-center justify-center shadow-xs">
+                  <span class="material-symbols-outlined text-[16px]">favorite</span>
+                </button>
+              </div>
+              <div class="bg-surface-container-high px-2 py-1 flex items-center justify-between text-[11px] font-spec-numeral text-primary">
+                <span>Pure Mica</span><span class="text-on-surface-variant">12×10g</span>
+              </div>
+            </div>
+            <div class="p-2.5 flex flex-col flex-1 justify-between gap-1.5">
+              <div>
+                <h2 class="font-title-md text-title-md text-primary line-clamp-1 mt-0.5">Chameleon Mica 12-Jar Set</h2>
+                <p class="text-[11px] font-body-sm text-on-surface-variant line-clamp-1">Color-shift pigments • 120g net</p>
+              </div>
+              <div class="pt-1 flex flex-col gap-2">
+                <div class="flex items-baseline gap-1.5">
+                  <span class="font-headline-sm text-headline-sm text-primary font-bold">₹899</span>
+                  <span class="text-[11px] text-on-surface-variant line-through font-spec-numeral">₹1,199</span>
+                </div>
+                <button class="quick-add-btn w-full bg-primary text-on-primary py-1.5 rounded-lg font-label-sm text-label-sm flex items-center justify-center gap-1 active:scale-95 shadow-xs transition-transform">
+                  <span class="material-symbols-outlined text-sm">add_shopping_cart</span><span>Quick Add</span>
+                </button>
+              </div>
+            </div>`;
+          productGrid.appendChild(extraCard);
+          bindCardActions(extraCard);
+          applyFiltersAndSort();
+          loadMoreBtn.innerHTML = '<span class="material-symbols-outlined text-base">check_circle</span><span>All Studio Formulations Loaded</span>';
+          loadMoreBtn.disabled = true;
+        });
+      }
+
+      // Wire Header & Bottom Navigation Links
+      const viewCartBtn = document.querySelector('header button[aria-label="View Cart"]');
+      if (viewCartBtn) viewCartBtn.addEventListener('click', () => { window.location.href = '../vist_ra_krafts_cart_checkout/code.html'; });
+      document.querySelectorAll('a[data-path="storefront"]').forEach(a => a.href = '../vist_ra_krafts_home_storefront/code.html');
+      document.querySelectorAll('a[data-path="categories"]').forEach(a => a.href = '../vist_ra_krafts_resin_catalog_filters/code.html');
+      document.querySelectorAll('a[data-path="kits-and-projects"]').forEach(a => a.href = '../vist_ra_krafts_ultraclear_3_1_pdp/code.html');
+      document.querySelectorAll('a[data-path="saved-wishlist"]').forEach(a => a.href = '../index.html#/wishlist');
+      document.querySelectorAll('a[data-path="account"]').forEach(a => a.href = '../index.html#/account');
+    })();
+  </script>
+</div></main><nav class="fixed bottom-0 w-full z-50 pb-safe bg-surface-container-lowest/95 backdrop-blur-xl shadow-[0_-2px_12px_rgba(27,47,78,0.06)]" data-active-classes="text-primary font-semibold"><div class="flex justify-around items-center h-16 px-space-xs"><a class="flex flex-col items-center justify-center min-w-[56px] h-12 text-on-surface-variant transition-colors group" data-path="storefront" href="../vist_ra_krafts_home_storefront/code.html"><span class="material-symbols-outlined text-2xl group-hover:text-primary">storefront</span><span class="font-label-sm text-label-sm mt-0.5">Home</span></a><a aria-current="page" class="flex flex-col items-center justify-center min-w-[56px] h-12 transition-colors group text-primary font-semibold" data-path="categories" href="../vist_ra_krafts_resin_catalog_filters/code.html"><span class="material-symbols-outlined text-2xl group-hover:text-primary">grid_view</span><span class="font-label-sm text-label-sm mt-0.5">Catalogue</span></a><a class="flex flex-col items-center justify-center min-w-[56px] h-12 text-on-surface-variant transition-colors group" data-path="kits-and-projects" href="../vist_ra_krafts_ultraclear_3_1_pdp/code.html"><span class="material-symbols-outlined text-2xl group-hover:text-primary">science</span><span class="font-label-sm text-label-sm mt-0.5">Kits &amp; Formula</span></a><a class="flex flex-col items-center justify-center min-w-[56px] h-12 text-on-surface-variant transition-colors group" data-path="saved-wishlist" href="../index.html#/wishlist"><span class="material-symbols-outlined text-2xl group-hover:text-primary">bookmarks</span><span class="font-label-sm text-label-sm mt-0.5">Saved</span></a><a class="flex flex-col items-center justify-center min-w-[56px] h-12 text-on-surface-variant transition-colors group" data-path="account" href="../index.html#/account"><span class="material-symbols-outlined text-2xl group-hover:text-primary">manage_accounts</span><span class="font-label-sm text-label-sm mt-0.5">Account</span></a></div></nav>
+
+</body></html>

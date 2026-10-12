@@ -1,0 +1,207 @@
+/* ==========================================================================
+   Resin Art Memories (@resin.art.memories) × Vistāra Krafts Studio
+   60 / 30 / 10 High-RT Color System & Micro-Interaction Stylesheet
+   ========================================================================== */
+
+:root {
+  /* 60% Dominant Warm Gallery Surfaces (Zero Visual Fatigue) */
+  --surface-60-canvas: #faf8f5;
+  --surface-60-card: #ffffff;
+  --surface-60-mist: #f3f1ec;
+  --surface-60-blush: #fdf6f3;
+
+  /* 30% Structural Authority (Deep Naval Slate & Charcoal Ink) */
+  --structure-30-navy: #031a38;
+  --structure-30-slate: #1b2f4e;
+  --structure-30-ink: #18212e;
+  --structure-30-muted: #5a6270;
+  --structure-30-border: #e4e0d8;
+
+  /* 10% High-RT Conversion & Romantic Accents (Antique Brass & Rose Terracotta) */
+  --accent-10-brass: #b08d57;
+  --accent-10-gold: #775928;
+  --accent-10-flirty: #c85a48;
+  --accent-10-rose-soft: #ffe4de;
+  --accent-10-emerald: #266b4e;
+
+  --shadow-rest: 0 2px 6px rgba(3, 26, 56, 0.04), 0 1px 2px rgba(3, 26, 56, 0.02);
+  --shadow-elevated: 0 14px 32px -6px rgba(27, 47, 78, 0.11), 0 4px 10px -2px rgba(176, 141, 87, 0.08);
+  --shadow-modal: 0 24px 48px -12px rgba(3, 26, 56, 0.28);
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  background-color: var(--surface-60-canvas);
+  color: var(--structure-30-ink);
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: var(--surface-60-canvas);
+  color: var(--structure-30-ink);
+  font-family: 'Plus Jakarta Sans', 'Inter', system-ui, -apple-system, sans-serif;
+  overflow-x: hidden;
+}
+
+/* Tabular Figures for Pricing & Formulation Metrics (DESIGN.md Mandate) */
+.tabular-nums,
+.font-spec-numeral,
+.price-numeral,
+[data-price],
+table td {
+  font-variant-numeric: tabular-nums;
+}
+
+h1, h2, h3, .font-serif-editorial {
+  font-family: 'Playfair Display', Georgia, serif;
+  text-wrap: balance;
+}
+
+/* Hide scrollbars on horizontal rails while keeping scrollability */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Subtle Custom Scrollbar for Desktop */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--surface-60-canvas);
+}
+::-webkit-scrollbar-thumb {
+  background: #c8c2b8;
+  border-radius: 999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--accent-10-brass);
+}
+
+/* Instagram Story Ring Gradient (High-RT 10% Accent) */
+.story-ring {
+  background: linear-gradient(135deg, #c85a48 0%, #b08d57 50%, #e8a87c 100%);
+  padding: 2.5px;
+  border-radius: 9999px;
+  transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.25s ease;
+}
+.story-ring:hover {
+  transform: translateY(-2px) scale(1.04);
+  box-shadow: 0 8px 20px rgba(200, 90, 72, 0.25);
+}
+
+/* Tactile Card Elevation */
+.ram-card {
+  background-color: var(--surface-60-card);
+  border: 1px solid var(--structure-30-border);
+  border-radius: 14px;
+  box-shadow: var(--shadow-rest);
+  transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1),
+              box-shadow 0.28s cubic-bezier(0.22, 1, 0.36, 1),
+              border-color 0.28s ease;
+}
+.ram-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-elevated);
+  border-color: var(--accent-10-brass);
+}
+
+/* Art Deco Diamond Divider */
+.deco-divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+}
+.deco-divider::before,
+.deco-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--structure-30-border), transparent);
+}
+.deco-diamond {
+  width: 7px;
+  height: 7px;
+  background-color: var(--accent-10-brass);
+  transform: rotate(45deg);
+  display: inline-block;
+  flex-shrink: 0;
+}
+
+/* Liquid Resin Shimmer Button */
+.btn-shimmer {
+  position: relative;
+  overflow: hidden;
+}
+.btn-shimmer::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -120%;
+  width: 60%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.22), transparent);
+  transform: skewX(-20deg);
+  animation: shimmerSweep 4.5s infinite;
+}
+
+@keyframes shimmerSweep {
+  0%, 70% { left: -120%; }
+  100% { left: 160%; }
+}
+
+@keyframes heartPop {
+  0% { transform: scale(1); }
+  35% { transform: scale(1.32); }
+  70% { transform: scale(0.92); }
+  100% { transform: scale(1); }
+}
+
+.animate-heart-pop {
+  animation: heartPop 0.38s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes floatGentle {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-5px); }
+}
+
+.animate-float {
+  animation: floatGentle 5s ease-in-out infinite;
+}
+
+@keyframes fadeInSlide {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.route-view-enter {
+  animation: fadeInSlide 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Respect Reduced Motion Preferences (Modern Web Guidance) */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
