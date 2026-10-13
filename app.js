@@ -175,6 +175,270 @@
     }, 2800);
   };
 
+  // =========================================================================
+  // AWWWARDS SOTD FLUID MICRO-INTERACTIONS & TACTILE FEEDBACK ENGINE
+  // (Zero Audio • 100% Focused Luxury E-Commerce Experience)
+  // =========================================================================
+
+  // Liquid Resin Ripple Effect on Click
+  function sotdResinRipple(e) {
+    if (!e || typeof document === 'undefined') return;
+    const btn = e.currentTarget || e.target;
+    if (!btn || !btn.getBoundingClientRect) return;
+    const rect = btn.getBoundingClientRect();
+    const circle = document.createElement('span');
+    const d = Math.max(rect.width, rect.height);
+    const clientX = e.clientX ?? (rect.left + rect.width / 2);
+    const clientY = e.clientY ?? (rect.top + rect.height / 2);
+    const x = clientX - rect.left - d / 2;
+    const y = clientY - rect.top - d / 2;
+
+    circle.className = 'sotd-ripple-effect';
+    circle.style.width = circle.style.height = `${d}px`;
+    circle.style.left = `${x}px`;
+    circle.style.top = `${y}px`;
+    btn.appendChild(circle);
+
+    setTimeout(() => {
+      try { circle.remove(); } catch (_e) {}
+    }, 700);
+  }
+  window.sotdResinRipple = sotdResinRipple;
+
+  // Heart-Burst Multi-Particle Physics on Wishlist Toggle
+  function sotdHeartBurst(btn) {
+    if (!btn || typeof document === 'undefined' || !btn.getBoundingClientRect) return;
+    const rect = btn.getBoundingClientRect();
+    const wrap = document.createElement('div');
+    wrap.className = 'sotd-heart-burst-wrap';
+    wrap.style.left = `${rect.left + rect.width / 2}px`;
+    wrap.style.top = `${rect.top + rect.height / 2}px`;
+    document.body.appendChild(wrap);
+
+    const colors = ['#9e3322', '#b08d57', '#ffd79b', '#e05b45', '#ffdeae'];
+    for (let i = 0; i < 8; i++) {
+      const p = document.createElement('span');
+      p.className = 'sotd-burst-particle';
+      const angle = (i / 8) * 2 * Math.PI;
+      const dist = 24 + (i % 3) * 6;
+      const tx = Math.cos(angle) * dist;
+      const ty = Math.sin(angle) * dist - 8;
+      p.style.setProperty('--tx', `${tx.toFixed(1)}px`);
+      p.style.setProperty('--ty', `${ty.toFixed(1)}px`);
+      p.style.backgroundColor = colors[i % colors.length];
+      wrap.appendChild(p);
+    }
+
+    setTimeout(() => {
+      try { wrap.remove(); } catch (_e) {}
+    }, 700);
+  }
+  window.sotdHeartBurst = sotdHeartBurst;
+
+  // Custom Dynamic Cursor Follower (Desktop only, auto-disabled on touch/mobile)
+  let sotdCursorInitialized = false;
+  function initSotdCursor() {
+    if (typeof window === 'undefined' || typeof document === 'undefined') return;
+    if (sotdCursorInitialized) return;
+    if (window.matchMedia) {
+      if (window.matchMedia('(hover: none) or (pointer: coarse)').matches) return;
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    }
+
+    const dot = document.getElementById('sotd-cursor-dot');
+    const ring = document.getElementById('sotd-cursor-ring');
+    if (!dot || !ring) return;
+
+    sotdCursorInitialized = true;
+    let mouseX = -100, mouseY = -100;
+    let ringX = -100, ringY = -100;
+    let isMoving = false;
+
+    window.addEventListener('mousemove', (e) => {
+      mouseX = e.clientX;
+      mouseY = e.clientY;
+      if (!isMoving) {
+        isMoving = true;
+        dot.style.opacity = '1';
+        ring.style.opacity = '1';
+      }
+      dot.style.transform = `translate3d(${mouseX}px, ${mouseY}px, 0)`;
+    }, { passive: true });
+
+    window.addEventListener('mousedown', () => {
+      ring.classList.add('sotd-cursor-click');
+    });
+    window.addEventListener('mouseup', () => {
+      ring.classList.remove('sotd-cursor-click');
+    });
+
+    document.addEventListener('mouseover', (e) => {
+      const target = e.target.closest && e.target.closest('button, a, input, select, textarea, .ram-card, [role="button"], .sotd-magnetic');
+      if (target) {
+        ring.classList.add('sotd-cursor-active');
+      }
+    }, { passive: true });
+    document.addEventListener('mouseout', (e) => {
+      const target = e.target.closest && e.target.closest('button, a, input, select, textarea, .ram-card, [role="button"], .sotd-magnetic');
+      if (target) {
+        ring.classList.remove('sotd-cursor-active');
+      }
+    }, { passive: true });
+
+    function renderCursorLoop() {
+      ringX += (mouseX - ringX) * 0.18;
+      ringY += (mouseY - ringY) * 0.18;
+      ring.style.transform = `translate3d(${ringX.toFixed(1)}px, ${ringY.toFixed(1)}px, 0)`;
+      if (typeof requestAnimationFrame !== 'undefined') {
+        requestAnimationFrame(renderCursorLoop);
+      }
+    }
+    if (typeof requestAnimationFrame !== 'undefined') {
+      requestAnimationFrame(renderCursorLoop);
+    }
+  }
+
+  // 3D Card Tilt & Specular Light Reflection
+  function initSotdTilt() {
+    if (typeof document === 'undefined') return;
+    if (window.matchMedia) {
+      if (window.matchMedia('(hover: none) or (pointer: coarse)').matches) return;
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    }
+    const cards = document.querySelectorAll('.sotd-tilt, .ram-card');
+    cards.forEach(card => {
+      if (card._sotdTiltBound) return;
+      card._sotdTiltBound = true;
+
+      let glare = card.querySelector('.sotd-glare');
+      if (!glare) {
+        glare = document.createElement('div');
+        glare.className = 'sotd-glare';
+        card.appendChild(glare);
+      }
+
+      card.addEventListener('mousemove', (e) => {
+        const rect = card.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        const cx = rect.width / 2;
+        const cy = rect.height / 2;
+        const px = (x - cx) / cx;
+        const py = (y - cy) / cy;
+
+        const rotX = -py * 5;
+        const rotY = px * 5;
+
+        card.style.transform = `perspective(900px) rotateX(${rotX.toFixed(2)}deg) rotateY(${rotY.toFixed(2)}deg) translateZ(4px)`;
+        const glareX = (x / rect.width) * 100;
+        const glareY = (y / rect.height) * 100;
+        glare.style.opacity = '1';
+        glare.style.background = `radial-gradient(circle at ${glareX}% ${glareY}%, rgba(255,255,255,0.22) 0%, rgba(255,255,255,0) 65%)`;
+      }, { passive: true });
+
+      card.addEventListener('mouseleave', () => {
+        card.style.transform = '';
+        if (glare) glare.style.opacity = '0';
+      });
+    });
+  }
+
+  // Magnetic Button Snaps
+  function initSotdMagnetic() {
+    if (typeof document === 'undefined') return;
+    if (window.matchMedia) {
+      if (window.matchMedia('(hover: none) or (pointer: coarse)').matches) return;
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    }
+    const btns = document.querySelectorAll('.sotd-magnetic');
+    btns.forEach(btn => {
+      if (btn._sotdMagBound) return;
+      btn._sotdMagBound = true;
+
+      btn.addEventListener('mousemove', (e) => {
+        const rect = btn.getBoundingClientRect();
+        const x = e.clientX - (rect.left + rect.width / 2);
+        const y = e.clientY - (rect.top + rect.height / 2);
+        const pullX = Math.max(-6, Math.min(6, x * 0.18));
+        const pullY = Math.max(-6, Math.min(6, y * 0.18));
+        btn.style.transform = `translate3d(${pullX.toFixed(1)}px, ${pullY.toFixed(1)}px, 0)`;
+      }, { passive: true });
+
+      btn.addEventListener('mouseleave', () => {
+        btn.style.transform = '';
+      });
+    });
+  }
+
+  // Interactive Before/After Flower Dehydration Slider Controller
+  window.updateSotdSlider = function (rangeEl) {
+    if (!rangeEl) return;
+    const container = rangeEl.closest('.sotd-dehydration-slider');
+    if (!container) return;
+    const val = Number(rangeEl.value) || 50;
+    container.dataset.split = String(val);
+    const beforeLayer = container.querySelector('.sotd-before-layer');
+    const divider = container.querySelector('.sotd-slider-divider');
+    const pctReadout = container.querySelector('.sotd-slider-pct');
+    if (beforeLayer) beforeLayer.style.width = `${val}%`;
+    if (divider) divider.style.left = `${val}%`;
+    if (pctReadout) pctReadout.textContent = `${val}%`;
+  };
+
+  // Specimen Inspection Loupe on PDP
+  function initSotdSpecimenLoupe() {
+    if (typeof document === 'undefined') return;
+    const stage = document.getElementById('pdp-specimen-stage');
+    const loupe = document.getElementById('pdp-specimen-loupe');
+    const inner = document.getElementById('pdp-loupe-inner');
+    if (!stage || !loupe || !inner) return;
+
+    stage.addEventListener('mouseenter', () => {
+      loupe.classList.remove('hidden');
+    });
+    stage.addEventListener('mouseleave', () => {
+      loupe.classList.add('hidden');
+    });
+    stage.addEventListener('mousemove', (e) => {
+      const rect = stage.getBoundingClientRect();
+      const x = Math.max(0, Math.min(rect.width, e.clientX - rect.left));
+      const y = Math.max(0, Math.min(rect.height, e.clientY - rect.top));
+      const px = x / rect.width;
+      const py = y / rect.height;
+
+      loupe.style.transform = `translate3d(${x - 72}px, ${y - 72}px, 0)`;
+      const innerX = -(px * 200);
+      const innerY = -(py * 200);
+      inner.style.transform = `translate3d(${innerX.toFixed(1)}%, ${innerY.toFixed(1)}%, 0)`;
+    }, { passive: true });
+  }
+
+  // Fluid Viewport Scroll Reveals
+  function initSotdScrollReveals() {
+    if (typeof document === 'undefined' || typeof IntersectionObserver === 'undefined') return;
+    const reveals = document.querySelectorAll('.sotd-reveal:not(.is-visible)');
+    if (!reveals.length) return;
+    const obs = new IntersectionObserver((entries, observer) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12 });
+    reveals.forEach(el => obs.observe(el));
+  }
+
+  // Master SOTD Interaction Binder
+  function initSotdInteractions() {
+    initSotdCursor();
+    initSotdTilt();
+    initSotdMagnetic();
+    initSotdSpecimenLoupe();
+    initSotdScrollReveals();
+  }
+  window.initSotdInteractions = initSotdInteractions;
+
   function renderBarOrdersHtml(orders) {
     if (!Array.isArray(orders) || orders.length === 0) {
       return `<p class="text-xs text-on-surface-variant">No studio orders placed yet.</p>`;
@@ -492,7 +756,7 @@
 
     if (isListView) {
       return `
-        <article class="ram-card p-3.5 flex flex-col sm:flex-row gap-4 items-start sm:items-center group" data-product-id="${esc(p.id)}">
+        <article class="ram-card sotd-reveal p-3.5 flex flex-col sm:flex-row gap-4 items-start sm:items-center group" data-product-id="${esc(p.id)}">
           <div class="relative w-full sm:w-36 h-44 sm:h-36 rounded-xl bg-surface-container-low overflow-hidden shrink-0 cursor-pointer" onclick="window.navigateTo('product', '${esc(p.id)}')">
             <img src="${esc(p.image)}" alt="${esc(p.name)}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" loading="lazy">
             <span class="absolute top-2 left-2 max-w-[calc(100%-1rem)] truncate px-2.5 py-0.5 rounded-full bg-primary text-on-primary text-[10px] font-semibold uppercase">${esc(p.badge)}</span>
@@ -525,7 +789,7 @@
               </div>
               <div class="flex items-center gap-2">
                 <button type="button" onclick="window.navigateTo('product', '${esc(p.id)}')" class="min-h-[44px] px-3.5 py-2 rounded-lg border border-primary text-primary text-xs font-semibold hover:bg-surface-container-high transition-colors cursor-pointer">Specs</button>
-                <button type="button" onclick="window.handleQuickAdd(this, '${esc(p.id)}')" class="min-h-[44px] px-4 py-2 rounded-lg bg-primary text-on-primary text-xs font-semibold flex items-center gap-1.5 hover:bg-primary-container active:scale-95 transition-all cursor-pointer">
+                <button type="button" onclick="window.handleQuickAdd(this, '${esc(p.id)}')" class="btn-shimmer sotd-magnetic min-h-[44px] px-4 py-2 rounded-lg bg-primary text-on-primary text-xs font-semibold flex items-center gap-1.5 hover:bg-primary-container active:scale-95 transition-all cursor-pointer">
                   <span class="material-symbols-outlined text-sm" aria-hidden="true">add_shopping_cart</span>
                   <span>Quick Add</span>
                 </button>
@@ -537,7 +801,7 @@
     }
 
     return `
-      <article class="ram-card p-2.5 sm:p-3 flex flex-col justify-between relative group h-full" data-product-id="${esc(p.id)}" data-price="${p.price}" data-ratio="${esc(p.ratio)}">
+      <article class="ram-card sotd-tilt sotd-reveal p-2.5 sm:p-3 flex flex-col justify-between relative group h-full" data-product-id="${esc(p.id)}" data-price="${p.price}" data-ratio="${esc(p.ratio)}">
         <button type="button" aria-label="Save to Wishlist" onclick="window.handleWishlistToggle(event, '${esc(p.id)}')" class="absolute top-3.5 right-3.5 z-10 w-11 h-11 rounded-full bg-white/95 backdrop-blur-sm flex items-center justify-center ${isFav ? 'text-[#9e3322]' : 'text-primary'} shadow-sm hover:scale-105 active:scale-95 transition-transform cursor-pointer">
           <span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' ${isFav ? 1 : 0};" aria-hidden="true">${isFav ? 'favorite' : 'favorite_border'}</span>
         </button>
@@ -576,7 +840,7 @@
             </div>
             <button type="button" onclick="window.navigateTo('product', '${esc(p.id)}')" class="min-h-[44px] px-1.5 sm:px-2 inline-flex items-center text-xs font-semibold text-secondary hover:underline cursor-pointer shrink-0">Details</button>
           </div>
-          <button type="button" onclick="window.handleQuickAdd(this, '${esc(p.id)}')" class="w-full h-11 rounded-xl bg-primary hover:bg-primary-container text-on-primary font-label-md text-xs font-semibold flex items-center justify-center gap-1.5 active:scale-[0.98] transition-all shadow-xs cursor-pointer">
+          <button type="button" onclick="window.handleQuickAdd(this, '${esc(p.id)}')" class="btn-shimmer sotd-magnetic w-full h-11 rounded-xl bg-primary hover:bg-primary-container text-on-primary font-label-md text-xs font-semibold flex items-center justify-center gap-1.5 active:scale-[0.98] transition-all shadow-xs cursor-pointer">
             <span class="material-symbols-outlined text-base shrink-0" aria-hidden="true">add_shopping_cart</span>
             <span class="truncate">Quick Add</span>
           </button>
@@ -873,6 +1137,60 @@
                 <span class="font-label-sm text-[11px] text-on-surface-variant block">90s Hard UV Cure</span>
               </div>
             </button>
+          </div>
+        </section>
+
+        <!-- Interactive Before & After: 21-Day Cryo-Silica Floral Transformation Slider -->
+        <section class="px-4 sm:px-8 py-7 bg-surface flex flex-col gap-4 border-b border-[#e4e0d8]">
+          <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-2">
+            <div>
+              <span class="font-label-sm text-[11px] uppercase tracking-widest text-[#9e3322] font-bold">Heirloom Preservation Science</span>
+              <h2 class="font-headline-sm text-2xl sm:text-3xl text-primary font-bold tracking-tight">21-Day Cryo-Silica Floral Transformation</h2>
+              <p class="text-xs sm:text-sm text-on-surface-variant mt-0.5">Drag the interactive slider to compare raw bridal flowers against our museum-grade 50mm crystal-cast archival block.</p>
+            </div>
+            <div class="flex items-center gap-2 self-start sm:self-auto shrink-0">
+              <span class="px-2.5 py-1 rounded-full bg-secondary-container/50 text-on-secondary-container font-spec-numeral text-xs font-bold">
+                Comparison: <span class="sotd-slider-pct">50%</span>
+              </span>
+              <button type="button" onclick="window.navigateTo('custom-studio')" class="btn-shimmer sotd-magnetic min-h-[44px] px-3.5 py-2 rounded-xl bg-primary text-white text-xs font-bold inline-flex items-center gap-1.5 shadow-sm cursor-pointer">
+                <span>Commission Keepsake</span>
+                <span class="material-symbols-outlined text-sm" aria-hidden="true">arrow_forward</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="sotd-dehydration-slider relative w-full aspect-[4/3] sm:aspect-[16/7] rounded-2xl overflow-hidden border border-[#b08d57]/40 shadow-xl select-none" data-split="50">
+            <!-- After Layer (Preserved Optical Block) -->
+            <div class="absolute inset-0 w-full h-full bg-primary">
+              <img src="${esc(Store.IMAGES.floralCube)}" alt="After: Preserved 50mm Crystal Optical Block" class="w-full h-full object-cover">
+              <div class="absolute top-3 right-3 px-3 py-1 rounded-full bg-primary/90 backdrop-blur-md text-[#ffd79b] text-[11px] font-bold uppercase tracking-wider shadow-sm border border-white/15">
+                ✨ Day 21: Preserved 50mm Optical Block
+              </div>
+              <div class="absolute bottom-3 right-3 px-3 py-1.5 rounded-lg bg-black/60 backdrop-blur-xs text-white text-[11px] hidden sm:block">
+                0% Moisture • 95% Natural Color Retained • 85D Mirror Glass
+              </div>
+            </div>
+
+            <!-- Before Layer (Clipped - Fresh Wedding Garlands) -->
+            <div class="sotd-before-layer absolute inset-0 h-full overflow-hidden" style="width: 50%;">
+              <img src="${esc(Store.IMAGES.jewelryBezel)}" alt="Before: Fresh Bridal Wedding Garland" class="w-full h-full object-cover max-w-none" style="width: 100%; min-width: 100%;">
+              <div class="absolute top-3 left-3 px-3 py-1 rounded-full bg-black/75 backdrop-blur-md text-white text-[11px] font-bold uppercase tracking-wider shadow-sm border border-white/15">
+                🌸 Day 0: Fresh Wedding Garland
+              </div>
+              <div class="absolute bottom-3 left-3 px-3 py-1.5 rounded-lg bg-black/60 backdrop-blur-xs text-white text-[11px] hidden sm:block">
+                85% Moisture • Highly Perishable • 24h Express Cryo Pickup
+              </div>
+            </div>
+
+            <!-- Divider Line & Drag Handle -->
+            <div class="sotd-slider-divider absolute top-0 bottom-0 w-0.5 bg-white pointer-events-none" style="left: 50%;">
+              <div class="sotd-slider-handle absolute top-1/2 -translate-y-1/2 -translate-x-1/2">
+                <span class="material-symbols-outlined text-lg" aria-hidden="true">drag_indicator</span>
+              </div>
+            </div>
+
+            <!-- Accessible Native Range Input -->
+            <input type="range" min="0" max="100" value="50" aria-label="Floral preservation before and after comparison slider" class="sotd-slider-range" oninput="window.updateSotdSlider(this)">
           </div>
         </section>
 
@@ -1470,8 +1788,21 @@
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 px-4 sm:px-8 pt-6 items-start">
           <!-- Left Column: Gallery (6 cols) -->
           <div class="lg:col-span-6 lg:col-start-1 flex flex-col gap-3">
-            <div class="relative w-full aspect-square rounded-2xl overflow-hidden bg-white border border-[#e4e0d8] shadow-sm group">
+            <div id="pdp-specimen-stage" class="relative w-full aspect-square rounded-2xl overflow-hidden bg-white border border-[#e4e0d8] shadow-sm group cursor-crosshair">
               <img id="pdp-main-img" src="${esc(activeImg)}" alt="${esc(product.name)}" class="w-full h-full object-cover transition-all duration-300">
+              
+              <!-- Liquid Glass Specimen Inspection Loupe -->
+              <div id="pdp-specimen-loupe" class="sotd-specimen-loupe hidden">
+                <div id="pdp-loupe-inner" class="absolute w-[250%] h-[250%] max-w-none">
+                  <img id="pdp-loupe-img" src="${esc(activeImg)}" alt="Specimen Micro-Zoom" class="w-full h-full object-cover">
+                </div>
+                <div class="absolute inset-0 border border-white/20 rounded-full flex items-center justify-center pointer-events-none">
+                  <div class="w-full h-px bg-white/30"></div>
+                  <div class="h-full w-px bg-white/30 absolute"></div>
+                  <span class="absolute bottom-2 text-[9px] font-spec-numeral text-white bg-black/60 px-1.5 py-0.5 rounded uppercase font-bold tracking-widest">2.5× Macro</span>
+                </div>
+              </div>
+
               <div class="absolute top-3.5 left-3.5 flex flex-col gap-1.5 items-start">
                 <span class="bg-secondary text-on-secondary px-3 py-1 rounded-full font-label-sm text-[11px] tracking-wider uppercase font-bold shadow-xs">${esc(product.badge || 'Studio Edition')}</span>
                 <span class="bg-primary/90 text-on-primary px-3 py-1 rounded-full font-label-sm text-[11px] flex items-center gap-1 shadow-xs">
@@ -2156,6 +2487,54 @@
               <span class="material-symbols-outlined text-lg" aria-hidden="true">redeem</span>
               <span>Book &amp; Add Custom Keepsake to Bag</span>
             </button>
+          </div>
+        </div>
+
+        <!-- Interactive Before & After: 21-Day Cryo-Silica Floral Transformation Slider -->
+        <div class="ram-card p-5 sm:p-6 bg-white flex flex-col gap-4">
+          <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-2 border-b border-surface-container pb-3">
+            <div>
+              <span class="font-label-sm text-[11px] uppercase tracking-widest text-[#9e3322] font-bold">Heirloom Preservation Science</span>
+              <h2 class="font-headline-sm text-xl text-primary font-bold">Interactive Flower Transformation: Raw Garland vs Preserved Block</h2>
+              <p class="text-xs text-on-surface-variant mt-0.5">Drag the slider horizontally to view how fresh bridal varmalas transform through 21-day cryo-silica dehydration into optical 85D diamond resin.</p>
+            </div>
+            <span class="px-2.5 py-1 rounded-full bg-secondary-container/50 text-on-secondary-container font-spec-numeral text-xs font-bold shrink-0">
+              Split: <span class="sotd-slider-pct">50%</span>
+            </span>
+          </div>
+
+          <div class="sotd-dehydration-slider relative w-full aspect-[4/3] sm:aspect-[16/7] rounded-2xl overflow-hidden border border-[#b08d57]/40 shadow-md select-none" data-split="50">
+            <!-- After Layer (Preserved Optical Block) -->
+            <div class="absolute inset-0 w-full h-full bg-primary">
+              <img src="${esc(Store.IMAGES.floralCube)}" alt="After: Preserved 50mm Crystal Optical Block" class="w-full h-full object-cover">
+              <div class="absolute top-3 right-3 px-3 py-1 rounded-full bg-primary/90 backdrop-blur-md text-[#ffd79b] text-[11px] font-bold uppercase tracking-wider shadow-sm border border-white/15">
+                ✨ Day 21: Preserved 50mm Optical Block
+              </div>
+              <div class="absolute bottom-3 right-3 px-3 py-1.5 rounded-lg bg-black/60 backdrop-blur-xs text-white text-[11px] hidden sm:block">
+                0% Moisture • 95% Natural Color Retained • 85D Mirror Glass
+              </div>
+            </div>
+
+            <!-- Before Layer (Clipped - Fresh Wedding Garlands) -->
+            <div class="sotd-before-layer absolute inset-0 h-full overflow-hidden" style="width: 50%;">
+              <img src="${esc(Store.IMAGES.jewelryBezel)}" alt="Before: Fresh Bridal Wedding Garland" class="w-full h-full object-cover max-w-none" style="width: 100%; min-width: 100%;">
+              <div class="absolute top-3 left-3 px-3 py-1 rounded-full bg-black/75 backdrop-blur-md text-white text-[11px] font-bold uppercase tracking-wider shadow-sm border border-white/15">
+                🌸 Day 0: Fresh Wedding Garland
+              </div>
+              <div class="absolute bottom-3 left-3 px-3 py-1.5 rounded-lg bg-black/60 backdrop-blur-xs text-white text-[11px] hidden sm:block">
+                85% Moisture • Highly Perishable • 24h Express Cryo Pickup
+              </div>
+            </div>
+
+            <!-- Divider Line & Drag Handle -->
+            <div class="sotd-slider-divider absolute top-0 bottom-0 w-0.5 bg-white pointer-events-none" style="left: 50%;">
+              <div class="sotd-slider-handle absolute top-1/2 -translate-y-1/2 -translate-x-1/2">
+                <span class="material-symbols-outlined text-lg" aria-hidden="true">drag_indicator</span>
+              </div>
+            </div>
+
+            <!-- Accessible Native Range Input -->
+            <input type="range" min="0" max="100" value="50" aria-label="Floral preservation before and after comparison slider" class="sotd-slider-range" oninput="window.updateSotdSlider(this)">
           </div>
         </div>
 
@@ -3326,6 +3705,10 @@
 
     updateRouteSeoAndSchema();
 
+    try {
+      initSotdInteractions();
+    } catch (_e) {}
+
     if (preserveScroll && prevScrollY > 0) {
       try {
         window.scrollTo({ top: prevScrollY, left: 0, behavior: 'instant' });
@@ -3359,6 +3742,7 @@
     window.showToast(`Added "${product.shortName || product.name}" to Bag`, `${formatINR(product.price)} • View in Studio Bag`);
 
     if (btnEl) {
+      sotdResinRipple({ currentTarget: btnEl });
       if (!btnEl.dataset.origHtml) {
         btnEl.dataset.origHtml = btnEl.innerHTML;
       }
@@ -3377,10 +3761,14 @@
 
   window.handleWishlistToggle = function (ev, productId) {
     if (ev) ev.stopPropagation();
+    const btnTarget = ev ? (ev.currentTarget || ev.target) : null;
     const res = Store.toggleWishlist(productId);
     const product = Store.getProductById(productId);
     updateGlobalBadges();
     renderActiveView();
+    if (res.added && btnTarget) {
+      sotdHeartBurst(btnTarget);
+    }
     window.showToast(
       res.added ? 'Saved to Atelier Wishlist' : 'Removed from Wishlist',
       product ? product.shortName || product.name : ''

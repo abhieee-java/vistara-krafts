@@ -1160,6 +1160,52 @@ test('SEO, GEO & AEO Production Readiness: robots.txt, sitemap.xml, llms.txt, ll
   assert.strictEqual(mockDocument.getElementById('link-canonical').href, 'https://vistara-krafts.vercel.app/');
 });
 
+test('Awwwards SOTD (Site of the Day): Dynamic Cursor, 3D Tilt, Specimen Loupe, Before/After Slider, Ripple & Heart-Burst (Zero Audio E-Commerce Only)', () => {
+  const indexHtml = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8');
+  const stylesCss = fs.readFileSync(path.join(ROOT, 'styles.css'), 'utf8');
+  const appCode = fs.readFileSync(path.join(ROOT, 'app.js'), 'utf8');
+
+  // 1. Zero Audio Guarantee per strict customer directive
+  assert.ok(!indexHtml.includes('id="sotd-sound-toggle"'), 'index.html must not contain sound toggle');
+  assert.ok(!appCode.includes('new AudioContext'), 'app.js must not initialize AudioContext');
+  assert.ok(!appCode.includes('playClick()'), 'app.js must not contain audio playback');
+
+  // 2. Custom Dynamic Cursor Follower elements & touch suppression in CSS
+  assert.ok(indexHtml.includes('id="sotd-cursor-dot"'), 'index.html must define #sotd-cursor-dot');
+  assert.ok(indexHtml.includes('id="sotd-cursor-ring"'), 'index.html must define #sotd-cursor-ring');
+  assert.ok(stylesCss.includes('pointer-events: none'), 'styles.css must enforce pointer-events: none on cursor');
+  assert.ok(stylesCss.includes('@media (hover: none) or (pointer: coarse)'), 'styles.css must hide cursor on touch devices');
+  assert.ok(stylesCss.includes('will-change: transform, opacity'), 'styles.css must GPU-accelerate cursor with will-change');
+
+  // 3. 3D Card Tilt, Specular Glare & Magnetic Snaps
+  assert.ok(stylesCss.includes('.sotd-tilt'), 'styles.css must define .sotd-tilt');
+  assert.ok(stylesCss.includes('.sotd-glare'), 'styles.css must define .sotd-glare specular reflection');
+  assert.ok(stylesCss.includes('.sotd-magnetic'), 'styles.css must define .sotd-magnetic button snap');
+  assert.ok(stylesCss.includes('.sotd-ripple-effect'), 'styles.css must define .sotd-ripple-effect');
+  assert.ok(stylesCss.includes('.sotd-burst-particle'), 'styles.css must define .sotd-burst-particle');
+
+  // 4. Interactive Before/After Flower Dehydration Slider in Home & Custom Studio
+  sandbox.window.navigateTo('home');
+  const homeHtml = mockDocument.getElementById('app-view-root').innerHTML;
+  assert.ok(homeHtml.includes('sotd-dehydration-slider'), 'Home view must contain interactive flower dehydration slider');
+  assert.ok(homeHtml.includes('21-Day Cryo-Silica Floral Transformation'), 'Home view must display transformation title');
+  assert.ok(homeHtml.includes('type="range"'), 'Dehydration slider must use accessible range input');
+
+  sandbox.window.navigateTo('custom-studio');
+  const studioHtml = mockDocument.getElementById('app-view-root').innerHTML;
+  assert.ok(studioHtml.includes('sotd-dehydration-slider'), 'Custom Studio view must contain flower transformation slider');
+
+  // 5. Specimen Inspection Loupe on PDP
+  sandbox.window.navigateTo('product', 'ram-keep-001');
+  const pdpHtml = mockDocument.getElementById('app-view-root').innerHTML;
+  assert.ok(pdpHtml.includes('id="pdp-specimen-stage"'), 'PDP view must define #pdp-specimen-stage');
+  assert.ok(pdpHtml.includes('id="pdp-specimen-loupe"'), 'PDP view must define #pdp-specimen-loupe macro zoom');
+  assert.ok(pdpHtml.includes('2.5× Macro'), 'PDP specimen loupe must display 2.5x macro optical indicator');
+
+  // 6. Reset to home
+  sandbox.window.navigateTo('home');
+});
+
 // Async test for Cloudflare Pages Function (functions/api/[[route]].js) against real SQLite with PRAGMA foreign_keys = ON
 try {
   const { DatabaseSync } = await import('node:sqlite');
@@ -1574,6 +1620,26 @@ if (chromeExe) {
     assert.strictEqual(chromeSeoAudit.pdpCanonical, 'https://vistara-krafts.vercel.app/#/product/ram-keep-001');
     assert.strictEqual(chromeSeoAudit.pdpOgPrice, '4499');
     assert.ok(chromeSeoAudit.pdpGraphCount >= 7, 'Headless Chrome: PDP JSON-LD @graph must contain at least 7 structured nodes');
+
+    // 1c. Verify Awwwards SOTD interactive elements in real Headless Chrome
+    const sotdAudit = await cdpEval(`(() => {
+      const cursorDot = document.getElementById('sotd-cursor-dot');
+      const cursorRing = document.getElementById('sotd-cursor-ring');
+      const slider = document.querySelector('.sotd-dehydration-slider');
+      const sliderInput = document.querySelector('.sotd-slider-range');
+      return {
+        hasCursorDot: Boolean(cursorDot),
+        hasCursorRing: Boolean(cursorRing),
+        cursorPointerEvents: cursorRing ? getComputedStyle(cursorRing).pointerEvents : null,
+        hasSlider: Boolean(slider),
+        hasSliderInput: Boolean(sliderInput)
+      };
+    })()`);
+    assert.strictEqual(sotdAudit.hasCursorDot, true, 'Headless Chrome: #sotd-cursor-dot must exist in DOM');
+    assert.strictEqual(sotdAudit.hasCursorRing, true, 'Headless Chrome: #sotd-cursor-ring must exist in DOM');
+    assert.strictEqual(sotdAudit.cursorPointerEvents, 'none', 'Headless Chrome: #sotd-cursor-ring must have pointer-events: none');
+    assert.strictEqual(sotdAudit.hasSlider, true, 'Headless Chrome: Home view must mount .sotd-dehydration-slider');
+    assert.strictEqual(sotdAudit.hasSliderInput, true, 'Headless Chrome: .sotd-dehydration-slider must have range input');
 
     // 2. Verify full E2E user journey in real Chrome:
     // Guest wishlist -> Add to bag -> Checkout Gate -> 1-Click Google OAuth Chooser -> Step 2 Checkout Address -> Order Placement -> Logout -> Apple OAuth Chooser
