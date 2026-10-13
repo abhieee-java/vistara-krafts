@@ -1047,6 +1047,9 @@
 
       const { productId, variantLabel, price, regularPrice, qty = 1, customNote = '', name, image, sku } = opts;
       const product = this.getProductById(productId);
+      if (product && product.inStock === false) {
+        return this.getCartSummary();
+      }
       const cart = this.getCart();
       const targetName = name || (product ? product.name : 'Studio Formulation');
       const targetVariant = variantLabel || (product && product.variants && product.variants[0] ? product.variants[0].label : 'Standard Edition');
@@ -1655,6 +1658,16 @@
       const summary = this.getCartSummary();
       if (summary.itemsCount === 0) {
         return { success: false, message: 'Your Studio Bag is empty.' };
+      }
+      const outOfStockItem = summary.cart.find(i => {
+        const prod = this.getProductById(i.productId);
+        return prod && prod.inStock === false;
+      });
+      if (outOfStockItem) {
+        return {
+          success: false,
+          message: `"${outOfStockItem.name}" is currently out of stock. Please remove it from your studio bag before checking out.`
+        };
       }
       const authSession = this.getAuthSession();
       const customerName = String(checkoutDetails.name || (authSession && authSession.name) || '').trim();

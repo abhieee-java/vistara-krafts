@@ -763,9 +763,9 @@
               </div>
               <div class="flex items-center gap-2">
                 <button type="button" onclick="window.navigateTo('product', '${esc(p.id)}')" class="min-h-[44px] px-3.5 py-2 rounded-lg border border-primary text-primary text-xs font-semibold hover:bg-surface-container-high transition-colors cursor-pointer">Specs</button>
-                <button type="button" onclick="window.handleQuickAdd(this, '${esc(p.id)}')" class="btn-shimmer sotd-magnetic min-h-[44px] px-4 py-2 rounded-lg bg-primary text-on-primary text-xs font-semibold flex items-center gap-1.5 hover:bg-primary-container active:scale-95 transition-all cursor-pointer">
-                  <span class="material-symbols-outlined text-sm" aria-hidden="true">add_shopping_cart</span>
-                  <span>Quick Add</span>
+                <button type="button" onclick="window.handleQuickAdd(this, '${esc(p.id)}')" ${p.inStock === false ? 'disabled' : ''} class="btn-shimmer sotd-magnetic min-h-[44px] px-4 py-2 rounded-lg ${p.inStock === false ? 'bg-surface-container text-on-surface-variant cursor-not-allowed opacity-60' : 'bg-primary text-on-primary cursor-pointer hover:bg-primary-container'} text-xs font-semibold flex items-center gap-1.5 active:scale-95 transition-all">
+                  <span class="material-symbols-outlined text-sm" aria-hidden="true">${p.inStock === false ? 'block' : 'add_shopping_cart'}</span>
+                  <span>${p.inStock === false ? 'Sold Out' : 'Quick Add'}</span>
                 </button>
               </div>
             </div>
@@ -814,9 +814,9 @@
             </div>
             <button type="button" onclick="window.navigateTo('product', '${esc(p.id)}')" class="min-h-[44px] px-1.5 sm:px-2 inline-flex items-center text-xs font-semibold text-secondary hover:underline cursor-pointer shrink-0">Details</button>
           </div>
-          <button type="button" onclick="window.handleQuickAdd(this, '${esc(p.id)}')" class="btn-shimmer sotd-magnetic w-full h-11 rounded-xl bg-primary hover:bg-primary-container text-on-primary font-label-md text-xs font-semibold flex items-center justify-center gap-1.5 active:scale-[0.98] transition-all shadow-xs cursor-pointer">
-            <span class="material-symbols-outlined text-base shrink-0" aria-hidden="true">add_shopping_cart</span>
-            <span class="truncate">Quick Add</span>
+          <button type="button" onclick="window.handleQuickAdd(this, '${esc(p.id)}')" ${p.inStock === false ? 'disabled' : ''} class="btn-shimmer sotd-magnetic w-full h-11 rounded-xl ${p.inStock === false ? 'bg-surface-container text-on-surface-variant cursor-not-allowed opacity-60' : 'bg-primary hover:bg-primary-container text-on-primary cursor-pointer'} font-label-md text-xs font-semibold flex items-center justify-center gap-1.5 active:scale-[0.98] transition-all shadow-xs">
+            <span class="material-symbols-outlined text-base shrink-0" aria-hidden="true">${p.inStock === false ? 'block' : 'add_shopping_cart'}</span>
+            <span class="truncate">${p.inStock === false ? 'Sold Out' : 'Quick Add'}</span>
           </button>
         </div>
       </article>
@@ -2140,11 +2140,11 @@
                 <span class="material-symbols-outlined text-base" aria-hidden="true">add</span>
               </button>
             </div>
-            <button type="button" id="pdp-add-to-cart-btn" onclick="window.addPdpToCart()" class="btn-shimmer min-w-0 flex-1 h-12 px-2.5 sm:px-5 rounded-xl bg-primary hover:bg-primary-container text-on-primary font-title-md text-xs sm:text-sm font-bold flex items-center justify-center gap-1.5 sm:gap-2 shadow-md active:scale-[0.99] transition-all cursor-pointer">
-              <span class="material-symbols-outlined text-base sm:text-xl shrink-0" aria-hidden="true">shopping_bag</span>
-              <span id="pdp-cta-label" class="truncate">Add to Bag • ${formatINR(totalCtaPrice)}</span>
+            <button type="button" id="pdp-add-to-cart-btn" onclick="window.addPdpToCart()" ${product.inStock === false ? 'disabled' : ''} class="btn-shimmer min-w-0 flex-1 h-12 px-2.5 sm:px-5 rounded-xl ${product.inStock === false ? 'bg-surface-container text-on-surface-variant cursor-not-allowed opacity-60' : 'bg-primary hover:bg-primary-container text-on-primary cursor-pointer'} font-title-md text-xs sm:text-sm font-bold flex items-center justify-center gap-1.5 sm:gap-2 shadow-md active:scale-[0.99] transition-all">
+              <span class="material-symbols-outlined text-base sm:text-xl shrink-0" aria-hidden="true">${product.inStock === false ? 'block' : 'shopping_bag'}</span>
+              <span id="pdp-cta-label" class="truncate">${product.inStock === false ? 'Out of Stock' : `Add to Bag • ${formatINR(totalCtaPrice)}`}</span>
             </button>
-            <button type="button" id="pdp-buy-now-btn" onclick="window.buyNowPdp()" class="h-12 px-3 sm:px-5 rounded-xl bg-[#9e3322] hover:opacity-95 text-white font-title-md text-xs sm:text-sm font-bold flex items-center justify-center gap-1 shadow-md shrink-0 cursor-pointer whitespace-nowrap">
+            <button type="button" id="pdp-buy-now-btn" onclick="window.buyNowPdp()" ${product.inStock === false ? 'disabled' : ''} class="h-12 px-3 sm:px-5 rounded-xl ${product.inStock === false ? 'bg-surface-container text-on-surface-variant cursor-not-allowed opacity-60' : 'bg-[#9e3322] hover:opacity-95 text-white cursor-pointer'} font-title-md text-xs sm:text-sm font-bold flex items-center justify-center gap-1 shadow-md shrink-0 whitespace-nowrap">
               <span class="material-symbols-outlined text-base sm:text-lg shrink-0" aria-hidden="true">bolt</span>
               <span>Buy Now</span>
             </button>
@@ -3839,6 +3839,10 @@
   window.handleQuickAdd = function (btnEl, productId) {
     const product = Store.getProductById(productId);
     if (!product) return;
+    if (product.inStock === false) {
+      window.showToast('Item Out of Stock', 'This studio piece is currently unavailable.');
+      return;
+    }
     Store.addToCart({
       productId: product.id,
       name: product.name,
@@ -4110,6 +4114,11 @@
 
   window.addPdpToCart = function () {
     const prod = Store.getProductById(AppState.currentProductId);
+    if (!prod) return;
+    if (prod.inStock === false) {
+      window.showToast('Item Out of Stock', 'This studio piece is currently unavailable.');
+      return;
+    }
     const v = (prod.variants && prod.variants[AppState.selectedVariantIdx]) || {
       label: 'Standard Edition',
       price: prod.price,
@@ -4131,6 +4140,11 @@
   };
 
   window.buyNowPdp = function () {
+    const prod = Store.getProductById(AppState.currentProductId);
+    if (!prod || prod.inStock === false) {
+      window.showToast('Item Out of Stock', 'This studio piece is currently unavailable.');
+      return;
+    }
     window.addPdpToCart();
     window.navigateTo('cart');
     window.openCheckoutModal();

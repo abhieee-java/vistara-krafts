@@ -1257,7 +1257,39 @@ test('QA Audit & UX Reliability: Accessible Back Navigation on Subpages, Custom 
   assert.ok(accountHtml.includes('Browse Catalogue to Place Your First Order'), 'Account with 0 orders must provide first order CTA');
   if (prevOrdersJson) mockLocalStorage.setItem('ram_vk_orders_v2', prevOrdersJson);
 
-  // 6. Reset to home
+  // 6. Verify Out-of-Stock Guard & Reliable Inventory Protection
+  const products = sandbox.window.StorefrontBridge.getProducts().slice();
+  products[0].inStock = false;
+  mockLocalStorage.setItem('ram_vk_products_v2', JSON.stringify(products));
+
+  const preCartSummary = sandbox.window.StorefrontBridge.getCartSummary();
+  sandbox.window.StorefrontBridge.addToCart(products[0].id, 'std', 1);
+  const postCartSummary = sandbox.window.StorefrontBridge.getCartSummary();
+  assert.strictEqual(postCartSummary.itemsCount, preCartSummary.itemsCount, 'Out-of-stock product must NOT be added to cart');
+
+  // Verify placeOrder rejects if cart has out-of-stock item
+  sandbox.window.StorefrontBridge.saveCart([{
+    productId: products[0].id,
+    name: products[0].name,
+    variantLabel: 'Standard',
+    price: products[0].price,
+    qty: 1
+  }]);
+  const outOfStockOrderRes = sandbox.window.StorefrontBridge.placeOrder({
+    name: 'Test Patron',
+    phone: '9876543210',
+    address: 'Indiranagar, Bengaluru - 560038',
+    pincode: '560038'
+  });
+  assert.strictEqual(outOfStockOrderRes.success, false, 'placeOrder must reject orders containing out-of-stock items');
+  assert.ok(outOfStockOrderRes.message.includes('currently out of stock'), 'placeOrder must explain which item is out of stock');
+
+  // Restore inStock: true and clear cart
+  products[0].inStock = true;
+  mockLocalStorage.setItem('ram_vk_products_v2', JSON.stringify(products));
+  sandbox.window.StorefrontBridge.clearCart();
+
+  // 7. Reset to home
   sandbox.window.navigateTo('home');
 });
 
