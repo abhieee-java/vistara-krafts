@@ -1170,12 +1170,13 @@ test('Awwwards SOTD (Site of the Day): Dynamic Cursor, 3D Tilt, Specimen Loupe, 
   assert.ok(!appCode.includes('new AudioContext'), 'app.js must not initialize AudioContext');
   assert.ok(!appCode.includes('playClick()'), 'app.js must not contain audio playback');
 
-  // 2. Custom Dynamic Cursor Follower elements & touch suppression in CSS
-  assert.ok(indexHtml.includes('id="sotd-cursor-dot"'), 'index.html must define #sotd-cursor-dot');
-  assert.ok(indexHtml.includes('id="sotd-cursor-ring"'), 'index.html must define #sotd-cursor-ring');
-  assert.ok(stylesCss.includes('pointer-events: none'), 'styles.css must enforce pointer-events: none on cursor');
-  assert.ok(stylesCss.includes('@media (hover: none) or (pointer: coarse)'), 'styles.css must hide cursor on touch devices');
-  assert.ok(stylesCss.includes('will-change: transform, opacity'), 'styles.css must GPU-accelerate cursor with will-change');
+  // 2. Custom Dynamic Cursor Follower elements removed per user directive (restoring clean native mouse cursor)
+  assert.ok(!indexHtml.includes('id="sotd-cursor-dot"'), 'index.html must NOT contain #sotd-cursor-dot');
+  assert.ok(!indexHtml.includes('id="sotd-cursor-ring"'), 'index.html must NOT contain #sotd-cursor-ring');
+  assert.ok(!indexHtml.includes('Awwwards SOTD Winner'), 'index.html must NOT claim fake Awwwards SOTD award');
+  assert.ok(stylesCss.includes('.skeleton-box'), 'styles.css must include accessible .skeleton-box loading shimmer');
+  assert.ok(stylesCss.includes('.spinner'), 'styles.css must include .spinner progress indicator');
+  assert.ok(typeof sandbox.window.handleBackButton === 'function', 'window.handleBackButton must be defined globally');
 
   // 3. 3D Card Tilt, Specular Glare & Magnetic Snaps
   assert.ok(stylesCss.includes('.sotd-tilt'), 'styles.css must define .sotd-tilt');
@@ -1201,6 +1202,60 @@ test('Awwwards SOTD (Site of the Day): Dynamic Cursor, 3D Tilt, Specimen Loupe, 
   assert.ok(pdpHtml.includes('id="pdp-specimen-stage"'), 'PDP view must define #pdp-specimen-stage');
   assert.ok(pdpHtml.includes('id="pdp-specimen-loupe"'), 'PDP view must define #pdp-specimen-loupe macro zoom');
   assert.ok(pdpHtml.includes('2.5× Macro'), 'PDP specimen loupe must display 2.5x macro optical indicator');
+
+  // 6. Reset to home
+  sandbox.window.navigateTo('home');
+});
+
+test('QA Audit & UX Reliability: Accessible Back Navigation on Subpages, Custom 404 Route, Zero Broken Links, and Empty State CTAs', () => {
+  // 1. Verify 404.html static file exists
+  assert.ok(fs.existsSync(path.join(ROOT, '404.html')), '404.html static fallback page must exist in root');
+  const static404Html = fs.readFileSync(path.join(ROOT, '404.html'), 'utf8');
+  assert.ok(static404Html.includes('HTTP 404 • Page Not Found'), '404.html must display Page Not Found message');
+  assert.ok(static404Html.includes('href="./#/home"'), '404.html must provide link back home');
+
+  // 2. Verify SPA 404 routing for invalid route
+  sandbox.window.location.hash = '#/non-existent-route-xyz';
+  sandbox.window.handleRouteChange();
+  const notFoundHtml = mockDocument.getElementById('app-view-root').innerHTML;
+  assert.ok(notFoundHtml.includes('HTTP 404 • Page Not Found'), 'SPA must render custom 404 view on unknown hash route');
+  assert.ok(notFoundHtml.includes('Artisan Piece or Craft Material Not Found'), '404 view must display friendly artisan message');
+
+  // 3. Verify SPA 404 routing for unknown product ID (zero unhandled exceptions)
+  sandbox.window.location.hash = '#/product/non-existent-product-id';
+  sandbox.window.handleRouteChange();
+  const unknownProdHtml = mockDocument.getElementById('app-view-root').innerHTML;
+  assert.ok(unknownProdHtml.includes('HTTP 404 • Page Not Found'), 'SPA must render 404 view on invalid product ID without throwing');
+
+  // 4. Verify Accessible Back Buttons on Subpages
+  const subpages = [
+    { route: 'catalog', param: 'all', backText: 'Back to Discover' },
+    { route: 'product', param: 'vk-epx-301', backText: 'Back' },
+    { route: 'custom-studio', param: null, backText: 'Back to Discover' },
+    { route: 'wishlist', param: null, backText: 'Back' },
+    { route: 'cart', param: null, backText: 'Back to Shopping' },
+    { route: 'social', param: null, backText: 'Back to Discover' },
+    { route: 'account', param: null, backText: 'Back to Storefront' }
+  ];
+
+  for (const page of subpages) {
+    if (page.param) {
+      sandbox.window.navigateTo(page.route, page.param);
+    } else {
+      sandbox.window.navigateTo(page.route);
+    }
+    const html = mockDocument.getElementById('app-view-root').innerHTML;
+    assert.ok(html.includes('handleBackButton'), `${page.route} subview must include window.handleBackButton call`);
+    assert.ok(html.includes(page.backText), `${page.route} subview must render visible "${page.backText}" button text`);
+  }
+
+  // 5. Verify Account Empty State provides actionable First Order CTA (when 0 orders)
+  const prevOrdersJson = mockLocalStorage.getItem('ram_vk_orders_v2');
+  mockLocalStorage.setItem('ram_vk_orders_v2', '[]');
+  sandbox.window.navigateTo('account');
+  const accountHtml = mockDocument.getElementById('app-view-root').innerHTML;
+  assert.ok(accountHtml.includes('Browse Catalogue to Place Your First Order'), 'Account with 0 orders must provide first order CTA');
+  if (prevOrdersJson) mockLocalStorage.setItem('ram_vk_orders_v2', prevOrdersJson);
 
   // 6. Reset to home
   sandbox.window.navigateTo('home');
@@ -1621,23 +1676,24 @@ if (chromeExe) {
     assert.strictEqual(chromeSeoAudit.pdpOgPrice, '4499');
     assert.ok(chromeSeoAudit.pdpGraphCount >= 7, 'Headless Chrome: PDP JSON-LD @graph must contain at least 7 structured nodes');
 
-    // 1c. Verify Awwwards SOTD interactive elements in real Headless Chrome
+    // 1c. Verify clean native cursor (no bubbles), zero fake awards, and interactive elements in real Headless Chrome
     const sotdAudit = await cdpEval(`(() => {
       const cursorDot = document.getElementById('sotd-cursor-dot');
       const cursorRing = document.getElementById('sotd-cursor-ring');
+      const ribbonText = document.querySelector('header aside')?.textContent || '';
       const slider = document.querySelector('.sotd-dehydration-slider');
       const sliderInput = document.querySelector('.sotd-slider-range');
       return {
         hasCursorDot: Boolean(cursorDot),
         hasCursorRing: Boolean(cursorRing),
-        cursorPointerEvents: cursorRing ? getComputedStyle(cursorRing).pointerEvents : null,
+        hasFakeAward: ribbonText.includes('Awwwards'),
         hasSlider: Boolean(slider),
         hasSliderInput: Boolean(sliderInput)
       };
     })()`);
-    assert.strictEqual(sotdAudit.hasCursorDot, true, 'Headless Chrome: #sotd-cursor-dot must exist in DOM');
-    assert.strictEqual(sotdAudit.hasCursorRing, true, 'Headless Chrome: #sotd-cursor-ring must exist in DOM');
-    assert.strictEqual(sotdAudit.cursorPointerEvents, 'none', 'Headless Chrome: #sotd-cursor-ring must have pointer-events: none');
+    assert.strictEqual(sotdAudit.hasCursorDot, false, 'Headless Chrome: #sotd-cursor-dot must NOT exist in DOM (clean native cursor restored)');
+    assert.strictEqual(sotdAudit.hasCursorRing, false, 'Headless Chrome: #sotd-cursor-ring must NOT exist in DOM');
+    assert.strictEqual(sotdAudit.hasFakeAward, false, 'Headless Chrome: Header ribbon must NOT contain fake award claims');
     assert.strictEqual(sotdAudit.hasSlider, true, 'Headless Chrome: Home view must mount .sotd-dehydration-slider');
     assert.strictEqual(sotdAudit.hasSliderInput, true, 'Headless Chrome: .sotd-dehydration-slider must have range input');
 

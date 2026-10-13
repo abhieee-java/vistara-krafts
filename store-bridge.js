@@ -926,11 +926,12 @@
       return initial;
     },
 
-    getProductById(id) {
+    getProductById(id, fallbackToFirst = false) {
+      if (!id) return fallbackToFirst ? (this.getProducts()[0] || null) : null;
       const aliasMap = { 'potry-sienna-pitcher': 'potry-sienna-01', 'vk-dom-101': 'vk-res-003' };
       const resolvedId = aliasMap[id] || id;
       const list = this.getProducts();
-      return list.find(p => p.id === resolvedId) || list[0];
+      return list.find(p => p.id === resolvedId) || (fallbackToFirst ? list[0] : null);
     },
 
     getSocialPosts() {

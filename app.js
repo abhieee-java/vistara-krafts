@@ -235,67 +235,30 @@
   }
   window.sotdHeartBurst = sotdHeartBurst;
 
-  // Custom Dynamic Cursor Follower (Desktop only, auto-disabled on touch/mobile)
-  let sotdCursorInitialized = false;
-  function initSotdCursor() {
-    if (typeof window === 'undefined' || typeof document === 'undefined') return;
-    if (sotdCursorInitialized) return;
-    if (window.matchMedia) {
-      if (window.matchMedia('(hover: none) or (pointer: coarse)').matches) return;
-      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  // Universal Back Navigation for Non-Technical Users & Accessibility
+  window.handleBackButton = function (fallbackRoute = 'home') {
+    if (typeof window !== 'undefined' && window.history && window.history.length > 1) {
+      window.history.back();
+    } else {
+      window.navigateTo(fallbackRoute);
     }
+  };
 
-    const dot = document.getElementById('sotd-cursor-dot');
-    const ring = document.getElementById('sotd-cursor-ring');
-    if (!dot || !ring) return;
-
-    sotdCursorInitialized = true;
-    let mouseX = -100, mouseY = -100;
-    let ringX = -100, ringY = -100;
-    let isMoving = false;
-
-    window.addEventListener('mousemove', (e) => {
-      mouseX = e.clientX;
-      mouseY = e.clientY;
-      if (!isMoving) {
-        isMoving = true;
-        dot.style.opacity = '1';
-        ring.style.opacity = '1';
+  // Physical Backspace Key Navigation (when user is not editing an input field)
+  if (typeof window !== 'undefined') {
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Backspace') {
+        const activeTag = document.activeElement ? document.activeElement.tagName : '';
+        const isEditable = document.activeElement && (document.activeElement.isContentEditable || ['INPUT', 'TEXTAREA', 'SELECT'].includes(activeTag));
+        if (!isEditable) {
+          const nonHomeRoutes = ['catalog', 'product', 'social', 'custom-studio', 'wishlist', 'cart', 'account', '404'];
+          if (nonHomeRoutes.includes(AppState.currentRoute)) {
+            e.preventDefault();
+            window.handleBackButton('home');
+          }
+        }
       }
-      dot.style.transform = `translate3d(${mouseX}px, ${mouseY}px, 0)`;
-    }, { passive: true });
-
-    window.addEventListener('mousedown', () => {
-      ring.classList.add('sotd-cursor-click');
     });
-    window.addEventListener('mouseup', () => {
-      ring.classList.remove('sotd-cursor-click');
-    });
-
-    document.addEventListener('mouseover', (e) => {
-      const target = e.target.closest && e.target.closest('button, a, input, select, textarea, .ram-card, [role="button"], .sotd-magnetic');
-      if (target) {
-        ring.classList.add('sotd-cursor-active');
-      }
-    }, { passive: true });
-    document.addEventListener('mouseout', (e) => {
-      const target = e.target.closest && e.target.closest('button, a, input, select, textarea, .ram-card, [role="button"], .sotd-magnetic');
-      if (target) {
-        ring.classList.remove('sotd-cursor-active');
-      }
-    }, { passive: true });
-
-    function renderCursorLoop() {
-      ringX += (mouseX - ringX) * 0.18;
-      ringY += (mouseY - ringY) * 0.18;
-      ring.style.transform = `translate3d(${ringX.toFixed(1)}px, ${ringY.toFixed(1)}px, 0)`;
-      if (typeof requestAnimationFrame !== 'undefined') {
-        requestAnimationFrame(renderCursorLoop);
-      }
-    }
-    if (typeof requestAnimationFrame !== 'undefined') {
-      requestAnimationFrame(renderCursorLoop);
-    }
   }
 
   // 3D Card Tilt & Specular Light Reflection
@@ -429,9 +392,8 @@
     reveals.forEach(el => obs.observe(el));
   }
 
-  // Master SOTD Interaction Binder
+  // Master Studio Interaction Binder
   function initSotdInteractions() {
-    initSotdCursor();
     initSotdTilt();
     initSotdMagnetic();
     initSotdSpecimenLoupe();
@@ -696,23 +658,34 @@
 
   function handleRouteChange(forceResetScroll = false) {
     const { route, param, queryParams } = parseHash();
-    const validRoutes = ['home', 'catalog', 'product', 'social', 'custom-studio', 'wishlist', 'cart', 'account'];
-    AppState.currentRoute = validRoutes.includes(route) ? route : 'home';
+    const validRoutes = ['home', 'catalog', 'product', 'social', 'custom-studio', 'wishlist', 'cart', 'account', '404'];
+
+    if (!validRoutes.includes(route)) {
+      AppState.currentRoute = '404';
+    } else if (route === 'product') {
+      if (!param) {
+        AppState.currentRoute = '404';
+      } else {
+        const prod = Store.getProductById(param);
+        if (!prod) {
+          AppState.currentRoute = '404';
+        } else {
+          AppState.currentRoute = 'product';
+          AppState.currentProductId = param;
+          if (prod.variants && AppState.selectedVariantIdx >= prod.variants.length) {
+            AppState.selectedVariantIdx = 0;
+          }
+          if (typeof Store.recordRecentlyViewed === 'function') {
+            Store.recordRecentlyViewed(AppState.currentProductId);
+          }
+        }
+      }
+    } else {
+      AppState.currentRoute = route;
+    }
 
     if (AppState.currentRoute === 'catalog' && queryParams && Object.prototype.hasOwnProperty.call(queryParams, 'q')) {
       AppState.catalogSearch = queryParams.q || '';
-    }
-
-    if (AppState.currentRoute === 'product' && param) {
-      AppState.currentProductId = param;
-      const prod = Store.getProductById(param);
-      if (prod && prod.variants && AppState.selectedVariantIdx >= prod.variants.length) {
-        AppState.selectedVariantIdx = 0;
-      }
-    }
-
-    if (AppState.currentRoute === 'product' && typeof Store.recordRecentlyViewed === 'function') {
-      Store.recordRecentlyViewed(AppState.currentProductId);
     }
 
     const nextRouteKey = `${AppState.currentRoute}:${AppState.currentRoute === 'product' ? AppState.currentProductId : AppState.currentRoute === 'catalog' ? `${AppState.catalogCategory}:${AppState.catalogSearch}` : ''}`;
@@ -727,6 +700,7 @@
     updateGlobalBadges();
     syncBodyModalLock();
   }
+  window.handleRouteChange = handleRouteChange;
 
   function updateNavHighlight() {
     const active = AppState.currentRoute;
@@ -1592,6 +1566,14 @@
 
     return `
       <div class="route-view-enter flex flex-col w-full max-w-7xl mx-auto px-4 sm:px-8 py-5 gap-4">
+        <!-- Back Navigation Button -->
+        <div class="flex items-center">
+          <button type="button" onclick="window.handleBackButton('home')" aria-label="Go back to previous page" class="inline-flex items-center gap-1.5 text-xs font-semibold text-primary/80 hover:text-primary min-h-[44px] py-1 px-3 rounded-lg bg-surface-container-low hover:bg-surface-container transition-colors cursor-pointer w-fit">
+            <span class="material-symbols-outlined text-sm" aria-hidden="true">arrow_back</span>
+            <span>Back to Discover</span>
+          </button>
+        </div>
+
         <!-- Category Header -->
         <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-3">
           <div>
@@ -1728,6 +1710,9 @@
   // =========================================================================
   function renderPdpView() {
     const product = Store.getProductById(AppState.currentProductId);
+    if (!product) {
+      return render404View();
+    }
     const variants = product.variants || [];
     const activeVariant = variants[AppState.selectedVariantIdx] || variants[0] || {
       id: 'default',
@@ -1769,15 +1754,21 @@
           </span>
         </div>
 
-        <!-- Breadcrumb -->
-        <nav aria-label="Breadcrumb" class="px-4 sm:px-8 py-1.5 bg-surface-container-low text-on-surface-variant text-xs flex items-center justify-between gap-2 border-b border-[#e4e0d8]">
-          <ol class="flex items-center gap-1 overflow-x-auto no-scrollbar whitespace-nowrap">
-            <li><button type="button" onclick="window.navigateTo('home')" class="min-h-[44px] min-w-[44px] px-2 inline-flex items-center justify-center hover:text-primary cursor-pointer">Home</button></li>
-            <li>/</li>
-            <li><button type="button" onclick="window.navigateTo('catalog', '${esc(product.category || 'keepsakes')}')" class="min-h-[44px] min-w-[44px] px-2 inline-flex items-center justify-center hover:text-primary capitalize cursor-pointer">${esc(String(product.category || 'keepsakes').replace(/_/g, ' '))}</button></li>
-            <li>/</li>
-            <li class="text-primary font-bold truncate pl-1">${esc(product.shortName || product.name)}</li>
-          </ol>
+        <!-- Breadcrumb & Back Navigation -->
+        <nav aria-label="Breadcrumb" class="px-4 sm:px-8 py-1.5 bg-surface-container-low text-on-surface-variant text-xs flex items-center justify-between gap-2 border-b border-[#e4e0d8] flex-wrap">
+          <div class="flex items-center gap-2">
+            <button type="button" onclick="window.handleBackButton('catalog')" aria-label="Go back to previous page" class="inline-flex items-center gap-1 text-xs font-semibold text-primary hover:text-secondary min-h-[44px] px-2.5 rounded-lg bg-white border border-[#e4e0d8] hover:bg-surface-container transition-colors cursor-pointer shrink-0">
+              <span class="material-symbols-outlined text-sm" aria-hidden="true">arrow_back</span>
+              <span>Back</span>
+            </button>
+            <ol class="flex items-center gap-1 overflow-x-auto no-scrollbar whitespace-nowrap">
+              <li><button type="button" onclick="window.navigateTo('home')" class="min-h-[44px] px-1.5 inline-flex items-center justify-center hover:text-primary cursor-pointer">Home</button></li>
+              <li>/</li>
+              <li><button type="button" onclick="window.navigateTo('catalog', '${esc(product.category || 'keepsakes')}')" class="min-h-[44px] px-1.5 inline-flex items-center justify-center hover:text-primary capitalize cursor-pointer">${esc(String(product.category || 'keepsakes').replace(/_/g, ' '))}</button></li>
+              <li>/</li>
+              <li class="text-primary font-bold truncate pl-1">${esc(product.shortName || product.name)}</li>
+            </ol>
+          </div>
           <button type="button" onclick="window.shareCurrentProduct('${esc(product.id)}')" class="min-h-[44px] px-2 flex items-center gap-1 text-secondary font-semibold hover:underline shrink-0 cursor-pointer">
             <span class="material-symbols-outlined text-sm" aria-hidden="true">share</span>
             <span>Share</span>
@@ -2174,6 +2165,14 @@
 
     return `
       <div class="route-view-enter flex flex-col w-full max-w-7xl mx-auto px-4 sm:px-8 py-6 gap-6">
+        <!-- Back Navigation Button -->
+        <div class="flex items-center">
+          <button type="button" onclick="window.handleBackButton('home')" aria-label="Go back to previous page" class="inline-flex items-center gap-1.5 text-xs font-semibold text-primary/80 hover:text-primary min-h-[44px] py-1 px-3 rounded-lg bg-surface-container-low hover:bg-surface-container transition-colors cursor-pointer w-fit">
+            <span class="material-symbols-outlined text-sm" aria-hidden="true">arrow_back</span>
+            <span>Back to Discover</span>
+          </button>
+        </div>
+
         <!-- Official Instagram Profile Header Card -->
         <div class="ram-card p-5 sm:p-6 !bg-[#031a38] bg-gradient-to-r from-[#031a38] via-[#1b2f4e] to-[#2c1e21] text-white flex flex-col md:flex-row items-start md:items-center justify-between gap-5">
           <div class="flex flex-col sm:flex-row items-start sm:items-center gap-4">
@@ -2329,7 +2328,15 @@
     const recommendedProd = Store.getProductById(recommendedProdId);
 
     return `
-      <div class="route-view-enter flex flex-col w-full max-w-7xl mx-auto px-4 sm:px-8 py-6 gap-8">
+      <div class="route-view-enter flex flex-col w-full max-w-7xl mx-auto px-4 sm:px-8 py-6 gap-6">
+        <!-- Back Navigation Button -->
+        <div class="flex items-center">
+          <button type="button" onclick="window.handleBackButton('home')" aria-label="Go back to previous page" class="inline-flex items-center gap-1.5 text-xs font-semibold text-primary/80 hover:text-primary min-h-[44px] py-1 px-3 rounded-lg bg-surface-container-low hover:bg-surface-container transition-colors cursor-pointer w-fit">
+            <span class="material-symbols-outlined text-sm" aria-hidden="true">arrow_back</span>
+            <span>Back to Discover</span>
+          </button>
+        </div>
+
         <!-- Studio Header -->
         <div class="flex flex-col gap-1">
           <span class="font-label-sm text-xs uppercase tracking-widest text-[#9e3322] font-bold">Bespoke Atelier &amp; Formulation Lab</span>
@@ -2631,6 +2638,14 @@
 
     return `
       <div class="route-view-enter flex flex-col w-full max-w-7xl mx-auto px-4 sm:px-8 py-6 gap-6">
+        <!-- Back Navigation Button -->
+        <div class="flex items-center">
+          <button type="button" onclick="window.handleBackButton('home')" aria-label="Go back to previous page" class="inline-flex items-center gap-1.5 text-xs font-semibold text-primary/80 hover:text-primary min-h-[44px] py-1 px-3 rounded-lg bg-surface-container-low hover:bg-surface-container transition-colors cursor-pointer w-fit">
+            <span class="material-symbols-outlined text-sm" aria-hidden="true">arrow_back</span>
+            <span>Back</span>
+          </button>
+        </div>
+
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#e4e0d8] pb-4">
           <div>
             <span class="font-label-sm text-xs uppercase tracking-widest text-[#9e3322] font-bold">Personal Curation</span>
@@ -2688,6 +2703,14 @@
 
     return `
       <div class="route-view-enter flex flex-col w-full max-w-7xl mx-auto px-4 sm:px-8 py-6 pb-28 gap-6">
+        <!-- Back Navigation Button -->
+        <div class="flex items-center">
+          <button type="button" onclick="window.handleBackButton('catalog')" aria-label="Go back to catalogue" class="inline-flex items-center gap-1.5 text-xs font-semibold text-primary/80 hover:text-primary min-h-[44px] py-1 px-3 rounded-lg bg-surface-container-low hover:bg-surface-container transition-colors cursor-pointer w-fit">
+            <span class="material-symbols-outlined text-sm" aria-hidden="true">arrow_back</span>
+            <span>Back to Shopping</span>
+          </button>
+        </div>
+
         <!-- Free Shipping Progression Strip -->
         <div class="p-4 rounded-2xl bg-secondary-container text-on-secondary-container shadow-xs flex flex-col gap-2">
           <div class="flex flex-wrap items-center justify-between gap-2 text-xs font-semibold">
@@ -2897,6 +2920,14 @@
 
     return `
       <div class="route-view-enter flex flex-col w-full max-w-7xl mx-auto px-4 sm:px-8 py-6 gap-6">
+        <!-- Back Navigation Button -->
+        <div class="flex items-center">
+          <button type="button" onclick="window.handleBackButton('home')" aria-label="Go back to previous page" class="inline-flex items-center gap-1.5 text-xs font-semibold text-primary/80 hover:text-primary min-h-[44px] py-1 px-3 rounded-lg bg-surface-container-low hover:bg-surface-container transition-colors cursor-pointer w-fit">
+            <span class="material-symbols-outlined text-sm" aria-hidden="true">arrow_back</span>
+            <span>Back to Storefront</span>
+          </button>
+        </div>
+
         <!-- Patron Profile & Account Banner -->
         <div class="ram-card p-5 bg-white flex flex-col gap-4">
           <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 min-w-0">
@@ -2982,9 +3013,13 @@
           ${filteredOrders.length === 0 ? `
             <div class="ram-card p-8 bg-white text-center flex flex-col items-center gap-2">
               <span class="material-symbols-outlined text-3xl text-secondary" aria-hidden="true">inventory_2</span>
-              <h3 class="font-headline-sm text-lg text-primary font-bold">No Matching Orders Found</h3>
-              <p class="text-xs text-on-surface-variant">Try clearing your order search filter or place a new order from the catalogue.</p>
-              <button type="button" onclick="window.setAccountOrderSearch('')" class="min-h-[44px] px-4 py-2 rounded-lg bg-primary text-white text-xs font-bold mt-1 cursor-pointer">Show All Orders</button>
+              <h3 class="font-headline-sm text-lg text-primary font-bold">${allOrders.length === 0 ? 'No Studio Orders Placed Yet' : 'No Matching Orders Found'}</h3>
+              <p class="text-xs text-on-surface-variant max-w-md">${allOrders.length === 0 ? 'Your order history and floral preservation timelines will appear here once you place your first order.' : 'Try clearing your order search filter or search with a different Order #VK ID.'}</p>
+              ${allOrders.length === 0 ? `
+                <button type="button" onclick="window.navigateTo('catalog', 'all')" class="min-h-[44px] px-5 py-2.5 rounded-xl bg-primary text-white text-xs font-bold mt-1 cursor-pointer">Browse Catalogue to Place Your First Order</button>
+              ` : `
+                <button type="button" onclick="window.setAccountOrderSearch('')" class="min-h-[44px] px-4 py-2 rounded-lg bg-primary text-white text-xs font-bold mt-1 cursor-pointer">Show All Orders</button>
+              `}
             </div>
           ` : filteredOrders.map(ord => `
             <div class="ram-card p-5 bg-white flex flex-col gap-4" data-order-id="${esc(ord.orderId)}">
@@ -3453,6 +3488,66 @@
     };
   }
 
+  // =========================================================================
+  // 9. CUSTOM 404 NOT FOUND VIEW (Reliable UX for Non-Technical Users)
+  // =========================================================================
+  function render404View() {
+    return `
+      <div class="route-view-enter flex flex-col items-center justify-center w-full max-w-4xl mx-auto px-4 sm:px-8 py-12 sm:py-20 text-center gap-6">
+        <!-- Back Navigation Button -->
+        <div class="self-start">
+          <button type="button" onclick="window.handleBackButton('home')" aria-label="Go back to previous page" class="inline-flex items-center gap-1.5 text-xs font-semibold text-primary/80 hover:text-primary min-h-[44px] py-1 px-3 rounded-lg bg-surface-container-low hover:bg-surface-container transition-colors cursor-pointer w-fit">
+            <span class="material-symbols-outlined text-sm" aria-hidden="true">arrow_back</span>
+            <span>Back to Previous Page</span>
+          </button>
+        </div>
+
+        <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-secondary-container text-on-secondary-container text-xs font-bold uppercase tracking-wider">
+          <span class="material-symbols-outlined text-sm" aria-hidden="true">error_outline</span>
+          <span>HTTP 404 • Page Not Found</span>
+        </div>
+
+        <div class="space-y-3 max-w-xl">
+          <h1 class="font-headline-lg font-serif text-3xl sm:text-5xl text-primary font-bold tracking-tight">
+            Artisan Piece or Craft Material Not Found
+          </h1>
+          <p class="text-xs sm:text-sm text-on-surface-variant leading-relaxed">
+            The keepsake, resin formulation, or atelier page you are looking for does not exist, has been moved, or the link may have a typo.
+          </p>
+        </div>
+
+        <!-- Direct Search Bar -->
+        <div class="w-full max-w-md my-1">
+          <form onsubmit="event.preventDefault(); const q = this.querySelector('input').value; window.navigateTo('catalog', 'all'); window.setCatalogSearch(q);" class="relative flex items-center">
+            <span class="material-symbols-outlined text-lg text-outline absolute left-3.5 pointer-events-none" aria-hidden="true">search</span>
+            <input type="search" placeholder="Search resin formulations, varmala blocks, molds..." aria-label="Search catalogue products" class="w-full h-12 pl-10 pr-24 rounded-xl bg-white border border-[#e4e0d8] text-xs text-primary shadow-2xs focus:ring-2 focus:ring-secondary focus:border-secondary outline-none">
+            <button type="submit" class="absolute right-1.5 px-3.5 h-9 rounded-lg bg-primary hover:bg-primary-container text-white text-xs font-semibold cursor-pointer">Find</button>
+          </form>
+        </div>
+
+        <!-- Quick Recovery Action Buttons -->
+        <div class="flex flex-wrap items-center justify-center gap-3 pt-2">
+          <button type="button" onclick="window.navigateTo('home')" class="min-h-[44px] px-5 py-2.5 rounded-xl bg-primary hover:bg-primary-container text-white text-xs font-bold inline-flex items-center gap-2 cursor-pointer transition shadow-xs">
+            <span class="material-symbols-outlined text-base" aria-hidden="true">home</span>
+            <span>Discover Home</span>
+          </button>
+          <button type="button" onclick="window.navigateTo('catalog', 'all')" class="min-h-[44px] px-5 py-2.5 rounded-xl bg-secondary hover:bg-secondary/90 text-on-secondary text-xs font-bold inline-flex items-center gap-2 cursor-pointer transition shadow-xs">
+            <span class="material-symbols-outlined text-base" aria-hidden="true">inventory_2</span>
+            <span>Browse Full Catalogue</span>
+          </button>
+          <button type="button" onclick="window.navigateTo('custom-studio')" class="min-h-[44px] px-5 py-2.5 rounded-xl bg-white border border-[#e4e0d8] hover:bg-surface-container-low text-primary text-xs font-bold inline-flex items-center gap-2 cursor-pointer transition shadow-2xs">
+            <span class="material-symbols-outlined text-base text-[#9e3322]" aria-hidden="true">auto_awesome</span>
+            <span>Custom Studio</span>
+          </button>
+        </div>
+
+        <p class="text-xs text-on-surface-variant/80 mt-2">
+          Need custom floral preservation assistance? WhatsApp our artisan desk or visit <a href="https://www.instagram.com/resin.art.memories?utm_source=qr" target="_blank" rel="noopener noreferrer" class="text-[#9e3322] font-semibold underline">@resin.art.memories</a>.
+        </p>
+      </div>
+    `;
+  }
+
   function updateRouteSeoAndSchema() {
     if (typeof document === 'undefined') return null;
     const seoCfg = (Store && typeof Store.getSeoConfig === 'function')
@@ -3616,6 +3711,19 @@
           { name: routeLabels[route], url: canonicalUrl }
         ]
       };
+    } else if (route === '404') {
+      const canonicalUrl = `${siteUrl}/#/404`;
+      routeMeta = {
+        ...routeMeta,
+        title: '404 • Page Not Found | Vistāra Krafts (@resin.art.memories)',
+        description: 'The artisan keepsake or craft material page you are looking for was not found. Browse our catalogue or return to home.',
+        robots: 'noindex, nofollow',
+        canonicalUrl,
+        breadcrumbs: [
+          { name: 'Vistāra Krafts Studio Home', url: `${siteUrl}/` },
+          { name: '404 Not Found', url: canonicalUrl }
+        ]
+      };
     }
 
     document.title = routeMeta.title;
@@ -3696,6 +3804,9 @@
         break;
       case 'account':
         root.innerHTML = renderAccountView();
+        break;
+      case '404':
+        root.innerHTML = render404View();
         break;
       case 'home':
       default:
@@ -5006,7 +5117,21 @@
 
   window.submitCheckoutOrder = function (ev) {
     ev.preventDefault();
+    const submitBtn = (ev.target && ev.target.querySelector) ? ev.target.querySelector('button[type="submit"]') : null;
+    if (submitBtn) {
+      if (submitBtn.disabled) return;
+      submitBtn.disabled = true;
+      submitBtn.classList.add('opacity-70', 'cursor-not-allowed');
+    }
+    const resetSubmitBtn = () => {
+      if (submitBtn) {
+        submitBtn.disabled = false;
+        submitBtn.classList.remove('opacity-70', 'cursor-not-allowed');
+      }
+    };
+
     if (typeof Store.isAuthenticated === 'function' && !Store.isAuthenticated()) {
+      resetSubmitBtn();
       document.getElementById('checkout-modal')?.classList.add('hidden');
       window.openCloudflareAuthModal(true);
       window.showToast('Sign In Required', 'Please sign in before placing an order');
@@ -5023,11 +5148,13 @@
     const giftWrap = Boolean(document.getElementById('chk-gift-wrap')?.checked);
 
     if (!name || !phone || !address) {
+      resetSubmitBtn();
       window.showToast('Delivery Address Required', 'Please enter your recipient name, mobile number, and street address.');
       return;
     }
 
     const res = Store.placeOrder({ name, phone, address, pincode, paymentMethod, giftWrap });
+    resetSubmitBtn();
     document.getElementById('checkout-modal')?.classList.add('hidden');
     syncBodyModalLock();
     updateGlobalBadges();
