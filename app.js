@@ -4568,9 +4568,9 @@
       const btn = document.getElementById(`cf-persona-btn-${p}`);
       if (!btn) return;
       if (p === valid) {
-        btn.className = 'min-h-[40px] px-2.5 py-1.5 rounded-lg text-xs font-bold transition flex items-center justify-center gap-1.5 border border-primary bg-primary text-white cursor-pointer shadow-xs';
+        btn.className = 'min-h-[44px] px-2.5 py-1.5 rounded-lg text-xs font-bold transition flex items-center justify-center gap-1.5 border border-primary bg-primary text-white cursor-pointer shadow-xs';
       } else {
-        btn.className = 'min-h-[40px] px-2.5 py-1.5 rounded-lg text-xs font-bold transition flex items-center justify-center gap-1.5 border border-[#e4e0d8] bg-white text-primary hover:border-secondary cursor-pointer';
+        btn.className = 'min-h-[44px] px-2.5 py-1.5 rounded-lg text-xs font-bold transition flex items-center justify-center gap-1.5 border border-[#e4e0d8] bg-white text-primary hover:border-secondary cursor-pointer';
       }
     });
     if (Store && typeof Store.setPersonaPreference === 'function') {
