@@ -1117,37 +1117,27 @@
       if (saved && Array.isArray(saved) && saved.length > 0) {
         let updated = false;
         saved.forEach(p => {
-          if (!Array.isArray(p.colors) || !p.colors.length) {
+          if (!Array.isArray(p.colors)) {
             const defP = DEFAULT_PRODUCTS.find(dp => dp.id === p.id);
-            p.colors = (defP && defP.colors) ? cloneFallback(defP.colors) : [
-              { id: 'c-navy-gold', label: 'Royal Navy & 24K Gold', hex: '#0a1c30', accent: '#d4af37' },
-              { id: 'c-blush-rose', label: 'Blush Rose & Champagne', hex: '#f7d6d0', accent: '#e8a598' },
-              { id: 'c-emerald', label: 'Emerald Agate & Silver', hex: '#164e3f', accent: '#94a3b8' },
-              { id: 'c-ultraclear', label: 'UltraClear Archival Diamond', hex: '#e0f2fe', accent: '#0284c7' }
-            ];
+            p.colors = (defP && Array.isArray(defP.colors)) ? cloneFallback(defP.colors) : [];
             updated = true;
           }
-          if (!Array.isArray(p.shapes) || !p.shapes.length) {
+          if (!Array.isArray(p.shapes)) {
             const defP = DEFAULT_PRODUCTS.find(dp => dp.id === p.id);
-            p.shapes = (defP && defP.shapes) ? cloneFallback(defP.shapes) : [
-              { id: 's-arch', label: 'Mughal Arch', icon: 'account_balance' },
-              { id: 's-hex', label: 'Geode Hexagon', icon: 'hexagon' },
-              { id: 's-round', label: 'Heirloom Disc', icon: 'radio_button_unchecked' },
-              { id: 's-square', label: 'Square Prism', icon: 'crop_square' }
-            ];
+            p.shapes = (defP && Array.isArray(defP.shapes)) ? cloneFallback(defP.shapes) : [];
             updated = true;
           }
-          if (!Array.isArray(p.sizes) || !p.sizes.length) {
+          if (!Array.isArray(p.sizes)) {
             const defP = DEFAULT_PRODUCTS.find(dp => dp.id === p.id);
-            p.sizes = (defP && defP.sizes) ? cloneFallback(defP.sizes) : [
-              { id: 'sz-std', label: 'Standard Atelier', desc: 'Curated studio dimensions', priceDelta: 0 },
-              { id: 'sz-grand', label: 'Grand Archival (+₹650)', desc: 'Expanded statement edition', priceDelta: 650 }
-            ];
+            p.sizes = (defP && Array.isArray(defP.sizes)) ? cloneFallback(defP.sizes) : [];
+            updated = true;
+          }
+          if (!p.gender) {
+            p.gender = p.genderAffinity === 'masculine' ? 'men' : (p.genderAffinity === 'feminine' ? 'women' : 'all');
             updated = true;
           }
           if (!p.genderAffinity) {
-            const defP = DEFAULT_PRODUCTS.find(dp => dp.id === p.id);
-            p.genderAffinity = (defP && defP.genderAffinity) ? defP.genderAffinity : 'unisex';
+            p.genderAffinity = p.gender === 'men' ? 'masculine' : (p.gender === 'women' ? 'feminine' : 'unisex');
             updated = true;
           }
           if (!p.giftingTags) {
@@ -1173,39 +1163,14 @@
       const list = this.getProducts();
       const p = list.find(item => item.id === resolvedId) || (fallbackToFirst ? list[0] : null);
       if (!p) return null;
-      if (!p.colors || !p.colors.length) {
-        const defP = DEFAULT_PRODUCTS.find(dp => dp.id === p.id);
-        p.colors = (defP && defP.colors) ? defP.colors : [
-          { id: 'c-navy-gold', label: 'Royal Navy & 24K Gold', hex: '#0a1c30', accent: '#d4af37' },
-          { id: 'c-blush-rose', label: 'Blush Rose & Champagne', hex: '#f7d6d0', accent: '#e8a598' },
-          { id: 'c-emerald', label: 'Emerald Agate & Silver', hex: '#164e3f', accent: '#94a3b8' },
-          { id: 'c-ultraclear', label: 'UltraClear Archival Diamond', hex: '#e0f2fe', accent: '#0284c7' }
-        ];
-      }
-      if (!p.shapes || !p.shapes.length) {
-        const defP = DEFAULT_PRODUCTS.find(dp => dp.id === p.id);
-        p.shapes = (defP && defP.shapes) ? defP.shapes : [
-          { id: 's-arch', label: 'Mughal Arch', icon: 'account_balance' },
-          { id: 's-hex', label: 'Geode Hexagon', icon: 'hexagon' },
-          { id: 's-round', label: 'Heirloom Disc', icon: 'radio_button_unchecked' },
-          { id: 's-square', label: 'Square Prism', icon: 'crop_square' }
-        ];
-      }
-      if (!p.sizes || !p.sizes.length) {
-        const defP = DEFAULT_PRODUCTS.find(dp => dp.id === p.id);
-        p.sizes = (defP && defP.sizes) ? defP.sizes : [
-          { id: 'sz-sm', label: 'Petite 6" (Desk Edition)', desc: 'Compact keepsake / 400g', priceDelta: 0 },
-          { id: 'sz-md', label: 'Standard Studio 9"', desc: 'Most popular edition / 1.2kg', priceDelta: 0, popular: true },
-          { id: 'sz-lg', label: 'Royal Heirloom 12"', desc: 'Statement centerpiece / 2.4kg', priceDelta: 1500 }
-        ];
-      }
-      if (!p.genderAffinity) {
-        const defP = DEFAULT_PRODUCTS.find(dp => dp.id === p.id);
-        p.genderAffinity = (defP && defP.genderAffinity) ? defP.genderAffinity : 'neutral';
-      }
+      if (!Array.isArray(p.colors)) p.colors = [];
+      if (!Array.isArray(p.shapes)) p.shapes = [];
+      if (!Array.isArray(p.sizes)) p.sizes = [];
+      if (!p.gender) p.gender = p.genderAffinity === 'masculine' ? 'men' : (p.genderAffinity === 'feminine' ? 'women' : 'all');
+      if (!p.genderAffinity) p.genderAffinity = p.gender === 'men' ? 'masculine' : (p.gender === 'women' ? 'feminine' : 'unisex');
       if (!p.giftingTags) {
         const defP = DEFAULT_PRODUCTS.find(dp => dp.id === p.id);
-        p.giftingTags = (defP && defP.giftingTags) ? defP.giftingTags : ['keepsake', 'gift'];
+        p.giftingTags = (defP && defP.giftingTags) ? cloneFallback(defP.giftingTags) : ['keepsake', 'gift'];
       }
       return p;
     },
@@ -2160,6 +2125,14 @@
         summary: payload.summary || 'Studio catalogue & order state updated'
       };
 
+      if ((payload.type === 'PRODUCTS_UPDATED' || payload.action === 'PRODUCTS_UPDATED') && Array.isArray(payload.products)) {
+        safeWrite(STORAGE_KEYS.PRODUCTS, payload.products);
+        this.notify('products_updated', payload.products);
+        log.unshift(entry);
+        safeWrite(STORAGE_KEYS.STUDIO_SYNC_LOG, log.slice(0, 20));
+        return { ok: true, count: payload.products.length };
+      }
+
       const targetProduct = payload.product || (payload.action === 'STUDIO_UPSERT_PRODUCT' || payload.action === 'ADMIN_UPSERT_PRODUCT' ? payload.payload : null);
       if (targetProduct && targetProduct.id) {
         const products = this.getProducts().slice();
@@ -2210,36 +2183,30 @@
                     popular: true
                   }
                 ]),
-          genderAffinity: targetProduct.genderAffinity || existingProd.genderAffinity || 'unisex',
-          giftingTags: Array.isArray(targetProduct.giftingTags) ? targetProduct.giftingTags : (Array.isArray(existingProd.giftingTags) ? existingProd.giftingTags : ['gift', 'luxury']),
-          colors: Array.isArray(targetProduct.colors) && targetProduct.colors.length > 0
+          gender: targetProduct.gender || existingProd.gender || 'all',
+          genderAffinity: targetProduct.genderAffinity || existingProd.genderAffinity || (targetProduct.gender === 'men' ? 'masculine' : targetProduct.gender === 'women' ? 'feminine' : 'unisex'),
+          colors: (Array.isArray(targetProduct.colors) && targetProduct.colors.length > 0)
             ? targetProduct.colors
-            : (Array.isArray(existingProd.colors) && existingProd.colors.length > 0
-              ? existingProd.colors
-              : [
-                  { id: 'c-navy-gold', label: 'Royal Navy & 24K Gold', hex: '#0a1c30', accent: '#d4af37' },
-                  { id: 'c-blush-rose', label: 'Blush Rose & Champagne', hex: '#f7d6d0', accent: '#e8a598' },
-                  { id: 'c-emerald', label: 'Emerald Agate & Silver', hex: '#164e3f', accent: '#94a3b8' },
-                  { id: 'c-ultraclear', label: 'UltraClear Archival Diamond', hex: '#e0f2fe', accent: '#0284c7' }
-                ]),
-          shapes: Array.isArray(targetProduct.shapes) && targetProduct.shapes.length > 0
+            : ((Array.isArray(existingProd.colors) && existingProd.colors.length > 0) ? existingProd.colors : [
+                { id: 'c-navy-gold', label: 'Royal Navy & 24K Gold', hex: '#0a1c30', accent: '#d4af37' },
+                { id: 'c-blush-rose', label: 'Blush Rose & Champagne', hex: '#f7d6d0', accent: '#e8a598' },
+                { id: 'c-emerald', label: 'Emerald Agate & Silver', hex: '#164e3f', accent: '#94a3b8' },
+                { id: 'c-ultraclear', label: 'UltraClear Archival Diamond', hex: '#e0f2fe', accent: '#0284c7' }
+              ]),
+          shapes: (Array.isArray(targetProduct.shapes) && targetProduct.shapes.length > 0)
             ? targetProduct.shapes
-            : (Array.isArray(existingProd.shapes) && existingProd.shapes.length > 0
-              ? existingProd.shapes
-              : [
-                  { id: 's-arch', label: 'Mughal Arch', icon: 'account_balance' },
-                  { id: 's-hex', label: 'Geode Hexagon', icon: 'hexagon' },
-                  { id: 's-round', label: 'Heirloom Disc', icon: 'radio_button_unchecked' },
-                  { id: 's-square', label: 'Square Prism', icon: 'crop_square' }
-                ]),
-          sizes: Array.isArray(targetProduct.sizes) && targetProduct.sizes.length > 0
+            : ((Array.isArray(existingProd.shapes) && existingProd.shapes.length > 0) ? existingProd.shapes : [
+                { id: 's-arch', label: 'Mughal Arch', icon: 'account_balance' },
+                { id: 's-hex', label: 'Geode Hexagon', icon: 'hexagon' },
+                { id: 's-round', label: 'Heirloom Disc', icon: 'radio_button_unchecked' },
+                { id: 's-square', label: 'Square Prism', icon: 'crop_square' }
+              ]),
+          sizes: (Array.isArray(targetProduct.sizes) && targetProduct.sizes.length > 0)
             ? targetProduct.sizes
-            : (Array.isArray(existingProd.sizes) && existingProd.sizes.length > 0
-              ? existingProd.sizes
-              : [
-                  { id: 'sz-std', label: 'Standard Atelier', desc: 'Curated studio dimensions', priceDelta: 0 },
-                  { id: 'sz-grand', label: 'Grand Archival (+₹650)', desc: 'Expanded statement edition', priceDelta: 650 }
-                ]),
+            : ((Array.isArray(existingProd.sizes) && existingProd.sizes.length > 0) ? existingProd.sizes : [
+                { id: 'sz-std', label: 'Standard Atelier', desc: 'Curated studio dimensions', priceDelta: 0 },
+                { id: 'sz-grand', label: 'Grand Archival (+₹650)', desc: 'Expanded statement edition', priceDelta: 650 }
+              ]),
           specs: {
             mixRatioWeight: rawSpecs.mixRatioWeight || (targetProduct.ratio ? `${targetProduct.ratio} by Weight` : '3 : 1 (Resin : Hardener)'),
             mixRatioVolume: rawSpecs.mixRatioVolume || '2.6 : 1',

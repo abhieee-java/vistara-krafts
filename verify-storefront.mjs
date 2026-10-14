@@ -2045,11 +2045,23 @@ test('Persona Preference, Masculine/Feminine Feed Curation, Gifting Sort & Produ
   Store.setPersonaPreference('all');
   assert.strictEqual(Store.getPersonaPreference(), 'all');
 
-  // 2. Auth Modal Persona Selection & Patron Profile Sync
+  // 2. Auth Modal Persona Selection & Patron Profile Sync (Male & Female Only, No Universal Button)
+  const indexHtml = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8');
+  assert.ok(!indexHtml.includes('cf-persona-btn-all'), 'Login modal must NOT have a Universal button option');
+  assert.ok(indexHtml.includes('cf-persona-btn-masculine') && indexHtml.includes('cf-persona-btn-feminine'), 'Login modal must contain only male and female options');
+  assert.ok(!indexHtml.includes('Feed Curation &amp; Gifting Preference'), 'Login modal must NOT contain the verbose paragraph banner');
+
   sandbox.window.setAuthPersona('masculine');
   const hiddenPersonaInput = mockDocument.getElementById('cf-auth-selected-persona');
   assert.strictEqual(hiddenPersonaInput.value, 'masculine', 'Hidden persona input must be updated to masculine');
   assert.strictEqual(Store.getPersonaPreference(), 'masculine', 'Store preference must sync to masculine');
+
+  // Test toggle deselects back to 'all' without showing Universal
+  sandbox.window.setAuthPersona('masculine');
+  assert.strictEqual(Store.getPersonaPreference(), 'all', 'Toggling active persona in auth modal must reset to default "all"');
+
+  // Set to masculine for login test
+  sandbox.window.setAuthPersona('masculine');
 
   // Test login syncs persona into patron profile
   Store.logoutPatron();
@@ -2057,11 +2069,13 @@ test('Persona Preference, Masculine/Feminine Feed Curation, Gifting Sort & Produ
   const patronProfile = Store.getPatronProfile();
   assert.strictEqual(patronProfile.personaPreference, 'masculine', 'Patron profile must retain selected persona preference');
 
-  // 3. Feed Curation & Sorting based on Persona Preference
+  // 3. Feed Curation & Sorting based on Persona Preference (No Universal Option in Feed Bar)
   // Masculine feed prioritization
   sandbox.window.setFeedPersona('masculine');
   sandbox.window.navigateTo('home');
   const homeHtmlMasculine = mockDocument.getElementById('app-view-root').innerHTML;
+  assert.ok(homeHtmlMasculine.includes('Feed Curation &amp; Gifting Preference'), 'Home view must display Curation header & explainer');
+  assert.ok(!homeHtmlMasculine.includes('✨ Universal'), 'Feed curation bar must NOT display a Universal button');
   assert.ok(homeHtmlMasculine.includes('Gifts for Him') || homeHtmlMasculine.includes('👔 For Him'), 'Home view must display masculine curation');
 
   // Feminine feed prioritization

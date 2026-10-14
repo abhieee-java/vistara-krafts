@@ -737,37 +737,31 @@
     const isFav = Store.isWishlisted(p.id);
     const discountPct = p.regularPrice > p.price ? Math.round(((p.regularPrice - p.price) / p.regularPrice) * 100) : 0;
 
-    const colors = (Array.isArray(p.colors) && p.colors.length) ? p.colors : [
-      { id: 'c1', label: 'Classic Crystal Clear', hex: '#FFFFFF', accent: '#E0E7FF' },
-      { id: 'c2', label: 'Champagne Gold Infusion', hex: '#D4AF37', accent: '#FEF3C7' },
-      { id: 'c3', label: 'Midnight Obsidian Tint', hex: '#0F172A', accent: '#1E293B' }
-    ];
-    const shapes = (Array.isArray(p.shapes) && p.shapes.length) ? p.shapes : [
-      { id: 's1', label: 'Hexagonal Monolith' },
-      { id: 's2', label: 'Arch Heirloom' },
-      { id: 's3', label: 'Square Block' }
-    ];
-    const sizes = (Array.isArray(p.sizes) && p.sizes.length) ? p.sizes : [
-      { id: 'sz1', label: 'Standard Studio', priceDelta: 0 },
-      { id: 'sz2', label: 'Compact Keepsake', priceDelta: -250 },
-      { id: 'sz3', label: 'Grand Archival Master', priceDelta: 450 }
-    ];
+    const rawColors = Array.isArray(p.colors) ? p.colors : [];
+    const rawShapes = Array.isArray(p.shapes) ? p.shapes : [];
+    const rawSizes = Array.isArray(p.sizes) ? p.sizes : [];
+
+    const colors = rawColors.map((c, i) => (typeof c === 'string' ? { id: 'c' + i, label: c, hex: '#cda851' } : c));
+    const shapes = rawShapes.map((s, i) => (typeof s === 'string' ? { id: 's' + i, label: s } : s));
+    const sizes = rawSizes.map((sz, i) => (typeof sz === 'string' ? { id: 'sz' + i, label: sz, priceDelta: 0 } : sz));
+
+    const hasVarieties = colors.length > 0 || shapes.length > 0 || sizes.length > 0;
 
     if (!AppState.cardVarieties[p.id]) {
       AppState.cardVarieties[p.id] = { colorIdx: 0, shapeIdx: 0, sizeIdx: 0, open: false };
     }
     const varState = AppState.cardVarieties[p.id];
-    const currentColorIdx = Math.min(varState.colorIdx || 0, colors.length - 1);
-    const currentShapeIdx = Math.min(varState.shapeIdx || 0, shapes.length - 1);
-    const currentSizeIdx = Math.min(varState.sizeIdx || 0, sizes.length - 1);
-    const currentColor = colors[currentColorIdx];
-    const currentShape = shapes[currentShapeIdx];
-    const currentSize = sizes[currentSizeIdx];
+    const currentColorIdx = colors.length ? Math.min(varState.colorIdx || 0, colors.length - 1) : -1;
+    const currentShapeIdx = shapes.length ? Math.min(varState.shapeIdx || 0, shapes.length - 1) : -1;
+    const currentSizeIdx = sizes.length ? Math.min(varState.sizeIdx || 0, sizes.length - 1) : -1;
+    const currentColor = currentColorIdx >= 0 ? colors[currentColorIdx] : null;
+    const currentShape = currentShapeIdx >= 0 ? shapes[currentShapeIdx] : null;
+    const currentSize = currentSizeIdx >= 0 ? sizes[currentSizeIdx] : null;
     const isOpen = Boolean(varState.open);
-    const activePrice = p.price + (currentSize.priceDelta || 0);
+    const activePrice = p.price + (currentSize?.priceDelta || 0);
 
-    const isMasculine = p.genderAffinity === 'masculine';
-    const isFeminine = p.genderAffinity === 'feminine';
+    const isMasculine = p.gender === 'men' || p.genderAffinity === 'masculine';
+    const isFeminine = p.gender === 'women' || p.genderAffinity === 'feminine';
     const affinityTag = isMasculine
       ? `<span class="gifting-badge gifting-badge-him" title="Curated for Him • Wood & Dark Resin">👔 For Him</span>`
       : (isFeminine ? `<span class="gifting-badge gifting-badge-her" title="Curated for Her • Floral Keepsake">🌸 For Her</span>` : '');
@@ -806,14 +800,16 @@
             <div class="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-surface-container">
               <div class="flex items-baseline gap-2">
                 <span class="font-spec-numeral text-lg font-bold text-primary">${formatINR(activePrice)}</span>
-                <span class="font-spec-numeral text-xs text-outline line-through">${formatINR(p.regularPrice + (currentSize.priceDelta || 0))}</span>
+                <span class="font-spec-numeral text-xs text-outline line-through">${formatINR(p.regularPrice + (currentSize?.priceDelta || 0))}</span>
                 ${discountPct > 0 ? `<span class="text-[11px] font-bold text-[#9e3322]">${discountPct}% OFF</span>` : ''}
               </div>
               <div class="flex items-center gap-2">
+                ${hasVarieties ? `
                 <button type="button" onclick="window.toggleProductVariety('${esc(p.id)}', event)" aria-expanded="${isOpen ? 'true' : 'false'}" class="min-h-[44px] px-3 py-2 rounded-lg border border-[#e4e0d8] bg-surface-container-low hover:bg-surface-container text-primary text-xs font-semibold flex items-center gap-1 cursor-pointer">
                   <span class="material-symbols-outlined text-sm text-secondary" aria-hidden="true">tune</span>
                   <span>Varieties</span>
                 </button>
+                ` : ''}
                 <button type="button" onclick="window.navigateTo('product', '${esc(p.id)}')" class="min-h-[44px] px-3.5 py-2 rounded-lg border border-primary text-primary text-xs font-semibold hover:bg-surface-container-high transition-colors cursor-pointer">Specs</button>
                 <button type="button" onclick="window.handleQuickAdd(this, '${esc(p.id)}')" ${p.inStock === false ? 'disabled' : ''} class="btn-shimmer sotd-magnetic min-h-[44px] px-4 py-2 rounded-lg ${p.inStock === false ? 'bg-surface-container text-on-surface-variant cursor-not-allowed opacity-60' : 'bg-primary text-on-primary cursor-pointer hover:bg-primary-container'} text-xs font-semibold flex items-center gap-1.5 active:scale-95 transition-all">
                   <span class="material-symbols-outlined text-sm" aria-hidden="true">${p.inStock === false ? 'block' : 'add_shopping_cart'}</span>
@@ -821,21 +817,25 @@
                 </button>
               </div>
             </div>
+            ${hasVarieties ? `
             <!-- Expandable Variety Drawer for List View -->
             <div id="variety-drawer-${esc(p.id)}" class="variety-drawer ${isOpen ? 'open' : ''} w-full">
               <div class="pt-2 pb-1 border-t border-[#e4e0d8] flex flex-col gap-2">
                 <div class="flex flex-wrap items-center justify-between gap-2 text-xs">
-                  <span class="font-bold text-primary">Varieties: Color • Shape • Size</span>
-                  <span class="text-[11px] text-secondary font-semibold">${esc(currentColor.label)} • ${esc(currentShape.label)} • ${esc(currentSize.label)}</span>
+                  <span class="font-bold text-primary">Varieties:</span>
+                  <span class="text-[11px] text-secondary font-semibold">${[currentColor?.label, currentShape?.label, currentSize?.label].filter(Boolean).join(' • ')}</span>
                 </div>
+                ${colors.length > 0 ? `
                 <div class="flex items-center gap-2 flex-wrap">
                   <span class="text-[11px] text-on-surface-variant font-medium">Colors:</span>
                   ${colors.map((c, cIdx) => `
-                    <button type="button" aria-label="${esc(c.label)}" title="${esc(c.label)}" onclick="window.selectCardVariety('${esc(p.id)}', 'color', ${cIdx}, event)" class="variety-swatch w-6 h-6 rounded-full cursor-pointer relative ${cIdx === currentColorIdx ? 'active ring-2 ring-primary ring-offset-1 scale-110' : 'opacity-80 hover:opacity-100'}" style="background-color: ${esc(c.hex)}; border: 1.5px solid ${c.hex.toLowerCase() === '#ffffff' ? '#ccc' : '#d4af37'};">
+                    <button type="button" aria-label="${esc(c.label)}" title="${esc(c.label)}" onclick="window.selectCardVariety('${esc(p.id)}', 'color', ${cIdx}, event)" class="variety-swatch w-6 h-6 rounded-full cursor-pointer relative ${cIdx === currentColorIdx ? 'active ring-2 ring-primary ring-offset-1 scale-110' : 'opacity-80 hover:opacity-100'}" style="background-color: ${esc(c.hex || '#cda851')}; border: 1.5px solid ${(c.hex || '').toLowerCase() === '#ffffff' ? '#ccc' : '#d4af37'};">
                       ${cIdx === currentColorIdx ? '<span class="absolute inset-0 flex items-center justify-center text-[9px] text-white font-bold drop-shadow">✓</span>' : ''}
                     </button>
                   `).join('')}
                 </div>
+                ` : ''}
+                ${shapes.length > 0 ? `
                 <div class="flex items-center gap-1.5 flex-wrap">
                   <span class="text-[11px] text-on-surface-variant font-medium">Shapes:</span>
                   ${shapes.map((s, sIdx) => `
@@ -844,21 +844,25 @@
                     </button>
                   `).join('')}
                 </div>
+                ` : ''}
+                ${sizes.length > 0 ? `
                 <div class="flex items-center gap-1.5 flex-wrap">
                   <span class="text-[11px] text-on-surface-variant font-medium">Sizes:</span>
                   ${sizes.map((sz, szIdx) => `
                     <button type="button" onclick="window.selectCardVariety('${esc(p.id)}', 'size', ${szIdx}, event)" class="variety-chip px-2 py-0.5 rounded-md text-[10px] font-bold border transition-all cursor-pointer ${szIdx === currentSizeIdx ? 'bg-primary text-white border-primary' : 'bg-white text-primary border-[#e4e0d8]' }">
                       <span>${esc(sz.label)}</span>
-                      ${sz.priceDelta > 0 ? `<span class="text-[9px] font-normal">(+${formatINR(sz.priceDelta)})</span>` : ''}
+                      ${(sz.priceDelta || 0) > 0 ? `<span class="text-[9px] font-normal">(+${formatINR(sz.priceDelta)})</span>` : ''}
                     </button>
                   `).join('')}
                 </div>
+                ` : ''}
                 <button type="button" onclick="window.addCustomVarietyToCart('${esc(p.id)}')" ${p.inStock === false ? 'disabled' : ''} class="w-full sm:w-auto self-start min-h-[38px] px-3.5 py-1.5 rounded-lg bg-secondary hover:bg-secondary/90 text-white text-[11px] font-bold flex items-center justify-center gap-1.5 shadow-2xs cursor-pointer mt-1">
                   <span class="material-symbols-outlined text-sm" aria-hidden="true">add_shopping_cart</span>
                   <span id="var-cta-text-${esc(p.id)}">Add Selected Variety • ${formatINR(activePrice)}</span>
                 </button>
               </div>
             </div>
+            ` : ''}
           </div>
         </article>
       `;
@@ -901,7 +905,7 @@
           <div class="flex items-center justify-between gap-1 flex-wrap">
             <div class="flex items-baseline gap-1.5 min-w-0 flex-wrap">
               <span id="card-price-${esc(p.id)}" class="font-spec-numeral text-sm min-[360px]:text-base sm:text-lg text-primary font-bold">${formatINR(activePrice)}</span>
-              <span class="font-spec-numeral text-[10px] min-[360px]:text-[11px] text-outline line-through">${formatINR(p.regularPrice + (currentSize.priceDelta || 0))}</span>
+              <span class="font-spec-numeral text-[10px] min-[360px]:text-[11px] text-outline line-through">${formatINR(p.regularPrice + (currentSize?.priceDelta || 0))}</span>
             </div>
             <button type="button" onclick="window.navigateTo('product', '${esc(p.id)}')" class="min-h-[44px] px-1.5 sm:px-2 inline-flex items-center text-xs font-semibold text-secondary hover:underline cursor-pointer shrink-0">Details</button>
           </div>
@@ -910,37 +914,41 @@
             <span class="truncate">${p.inStock === false ? 'Sold Out' : 'Quick Add'}</span>
           </button>
 
+          ${hasVarieties ? `
           <!-- Variety Toggle Button & Drawer Immediately Below Product -->
           <div class="mt-1 pt-1.5 border-t border-[#e4e0d8]">
             <button type="button" onclick="window.toggleProductVariety('${esc(p.id)}', event)" aria-expanded="${isOpen ? 'true' : 'false'}" class="w-full min-h-[38px] px-2 py-1.5 rounded-lg border border-[#e4e0d8] bg-surface-container-low hover:bg-surface-container text-primary text-[11px] font-bold flex items-center justify-between gap-1 transition-all cursor-pointer">
               <span class="flex items-center gap-1 truncate">
                 <span class="material-symbols-outlined text-sm text-secondary" aria-hidden="true">palette</span>
-                <span>${isOpen ? 'Hide Varieties' : 'Select Variety (Color • Shape • Size)'}</span>
+                <span>${isOpen ? 'Hide Varieties' : 'Select Variety'}</span>
               </span>
               <span class="material-symbols-outlined text-base text-secondary transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}" aria-hidden="true">expand_more</span>
             </button>
             <div id="variety-drawer-${esc(p.id)}" class="variety-drawer ${isOpen ? 'open' : ''}">
               <div class="pt-2 pb-1 flex flex-col gap-2 text-xs">
+                ${colors.length > 0 ? `
                 <!-- Colors -->
                 <div class="flex flex-col gap-1">
                   <div class="flex items-center justify-between text-[11px]">
                     <span class="font-bold text-primary">🎨 Colors:</span>
-                    <span id="var-color-label-${esc(p.id)}" class="font-semibold text-secondary truncate max-w-[130px]">${esc(currentColor.label)}</span>
+                    <span id="var-color-label-${esc(p.id)}" class="font-semibold text-secondary truncate max-w-[130px]">${esc(currentColor ? currentColor.label : '')}</span>
                   </div>
                   <div class="flex items-center gap-1.5 flex-wrap">
                     ${colors.map((c, cIdx) => `
-                      <button type="button" aria-label="${esc(c.label)}" title="${esc(c.label)}" onclick="window.selectCardVariety('${esc(p.id)}', 'color', ${cIdx}, event)" class="variety-swatch w-6 h-6 rounded-full cursor-pointer relative ${cIdx === currentColorIdx ? 'active ring-2 ring-primary ring-offset-1 scale-110' : 'opacity-80 hover:opacity-100 hover:scale-105'}" style="background-color: ${esc(c.hex)}; border: 1.5px solid ${c.hex.toLowerCase() === '#ffffff' ? '#ccc' : '#d4af37'};">
+                      <button type="button" aria-label="${esc(c.label)}" title="${esc(c.label)}" onclick="window.selectCardVariety('${esc(p.id)}', 'color', ${cIdx}, event)" class="variety-swatch w-6 h-6 rounded-full cursor-pointer relative ${cIdx === currentColorIdx ? 'active ring-2 ring-primary ring-offset-1 scale-110' : 'opacity-80 hover:opacity-100 hover:scale-105'}" style="background-color: ${esc(c.hex || '#cda851')}; border: 1.5px solid ${(c.hex || '').toLowerCase() === '#ffffff' ? '#ccc' : '#d4af37'};">
                         ${cIdx === currentColorIdx ? '<span class="absolute inset-0 flex items-center justify-center text-[9px] text-white font-bold drop-shadow">✓</span>' : ''}
                       </button>
                     `).join('')}
                   </div>
                 </div>
+                ` : ''}
 
+                ${shapes.length > 0 ? `
                 <!-- Shapes -->
                 <div class="flex flex-col gap-1">
                   <div class="flex items-center justify-between text-[11px]">
                     <span class="font-bold text-primary">📐 Shapes:</span>
-                    <span id="var-shape-label-${esc(p.id)}" class="font-semibold text-secondary truncate max-w-[130px]">${esc(currentShape.label)}</span>
+                    <span id="var-shape-label-${esc(p.id)}" class="font-semibold text-secondary truncate max-w-[130px]">${esc(currentShape ? currentShape.label : '')}</span>
                   </div>
                   <div class="flex items-center gap-1 flex-wrap">
                     ${shapes.map((s, sIdx) => `
@@ -950,22 +958,25 @@
                     `).join('')}
                   </div>
                 </div>
+                ` : ''}
 
+                ${sizes.length > 0 ? `
                 <!-- Sizes -->
                 <div class="flex flex-col gap-1">
                   <div class="flex items-center justify-between text-[11px]">
                     <span class="font-bold text-primary">📏 Sizes:</span>
-                    <span id="var-size-label-${esc(p.id)}" class="font-semibold text-secondary truncate max-w-[130px]">${esc(currentSize.label)}</span>
+                    <span id="var-size-label-${esc(p.id)}" class="font-semibold text-secondary truncate max-w-[130px]">${esc(currentSize ? currentSize.label : '')}</span>
                   </div>
                   <div class="flex items-center gap-1 flex-wrap">
                     ${sizes.map((sz, szIdx) => `
                       <button type="button" onclick="window.selectCardVariety('${esc(p.id)}', 'size', ${szIdx}, event)" class="variety-chip px-2 py-0.5 rounded-md text-[10px] font-bold border transition-all cursor-pointer ${szIdx === currentSizeIdx ? 'bg-primary text-white border-primary' : 'bg-white text-primary border-[#e4e0d8] hover:bg-surface-container-low'}">
                         <span>${esc(sz.label)}</span>
-                        ${sz.priceDelta > 0 ? `<span class="text-[9px] ${szIdx === currentSizeIdx ? 'text-[#ffd79b]' : 'text-secondary'} font-normal">(+${formatINR(sz.priceDelta)})</span>` : ''}
+                        ${(sz.priceDelta || 0) > 0 ? `<span class="text-[9px] ${szIdx === currentSizeIdx ? 'text-[#ffd79b]' : 'text-secondary'} font-normal">(+${formatINR(sz.priceDelta)})</span>` : ''}
                       </button>
                     `).join('')}
                   </div>
                 </div>
+                ` : ''}
 
                 <!-- Add Selected Variety CTA -->
                 <button type="button" onclick="window.addCustomVarietyToCart('${esc(p.id)}')" ${p.inStock === false ? 'disabled' : ''} class="w-full min-h-[38px] px-3 py-1.5 rounded-lg bg-secondary hover:bg-secondary/90 text-white text-[11px] font-bold flex items-center justify-center gap-1 shadow-2xs active:scale-[0.98] transition-all cursor-pointer mt-0.5">
@@ -975,6 +986,7 @@
               </div>
             </div>
           </div>
+          ` : ''}
         </div>
       </article>
     `;
@@ -1361,25 +1373,27 @@
             </div>
           </div>
 
-          <!-- Feed Curation & Gifting Quick Bar -->
-          <div class="flex items-center gap-2 overflow-x-auto no-scrollbar py-1">
-            <span class="text-xs font-bold text-primary flex items-center gap-1 shrink-0">
-              <span class="material-symbols-outlined text-secondary text-sm" aria-hidden="true">auto_awesome</span>
-              <span>Feed Curation:</span>
-            </span>
-            <button type="button" onclick="window.setFeedPersona('all')" class="min-h-[38px] px-3.5 py-1.5 rounded-full text-xs font-bold transition flex items-center gap-1.5 shrink-0 cursor-pointer ${persona === 'all' ? 'bg-primary text-white shadow-xs' : 'bg-surface-container-low text-primary border border-[#e4e0d8] hover:border-secondary'}">
-              <span>✨ Universal</span>
-            </button>
-            <button type="button" onclick="window.setFeedPersona('masculine')" class="min-h-[38px] px-3.5 py-1.5 rounded-full text-xs font-bold transition flex items-center gap-1.5 shrink-0 cursor-pointer ${persona === 'masculine' ? 'bg-primary text-white shadow-xs' : 'bg-surface-container-low text-primary border border-[#e4e0d8] hover:border-secondary'}">
-              <span>👔 Gifts for Him</span>
-            </button>
-            <button type="button" onclick="window.setFeedPersona('feminine')" class="min-h-[38px] px-3.5 py-1.5 rounded-full text-xs font-bold transition flex items-center gap-1.5 shrink-0 cursor-pointer ${persona === 'feminine' ? 'bg-primary text-white shadow-xs' : 'bg-surface-container-low text-primary border border-[#e4e0d8] hover:border-secondary'}">
-              <span>🌸 Gifts for Her</span>
-            </button>
-            <button type="button" onclick="window.navigateTo('catalog', 'all'); window.setCatalogSort('gifting');" class="min-h-[38px] px-3.5 py-1.5 rounded-full text-xs font-bold transition flex items-center gap-1.5 shrink-0 cursor-pointer bg-surface-container-low text-primary border border-[#e4e0d8] hover:border-secondary">
-              <span class="material-symbols-outlined text-sm" aria-hidden="true">featured_seasonal_and_gifts</span>
-              <span>🎁 Gift Sets</span>
-            </button>
+          <!-- Feed Curation & Gifting Preference Panel -->
+          <div class="p-3.5 sm:p-4 rounded-2xl bg-surface-container-low/70 border border-[#e4e0d8] flex flex-col md:flex-row md:items-center justify-between gap-3 shadow-2xs">
+            <div class="space-y-0.5">
+              <div class="flex items-center gap-1.5 text-secondary font-label-sm text-[11px] uppercase tracking-wider font-bold">
+                <span class="material-symbols-outlined text-sm" aria-hidden="true">auto_awesome</span>
+                <span>Feed Curation &amp; Gifting Preference</span>
+              </div>
+              <p class="text-xs text-on-surface-variant">Instant Personalization: Select your curation profile so your catalogue feed highlights collections curated for him, for her, or universal craft systems.</p>
+            </div>
+            <div class="flex items-center gap-2 overflow-x-auto no-scrollbar py-0.5 shrink-0">
+              <button type="button" onclick="window.setFeedPersona('masculine')" class="min-h-[38px] px-3.5 py-1.5 rounded-full text-xs font-bold transition flex items-center gap-1.5 shrink-0 cursor-pointer ${persona === 'masculine' ? 'bg-primary text-white shadow-xs' : 'bg-white text-primary border border-[#e4e0d8] hover:border-secondary'}">
+                <span>👔 Gifts for Him</span>
+              </button>
+              <button type="button" onclick="window.setFeedPersona('feminine')" class="min-h-[38px] px-3.5 py-1.5 rounded-full text-xs font-bold transition flex items-center gap-1.5 shrink-0 cursor-pointer ${persona === 'feminine' ? 'bg-primary text-white shadow-xs' : 'bg-white text-primary border border-[#e4e0d8] hover:border-secondary'}">
+                <span>🌸 Gifts for Her</span>
+              </button>
+              <button type="button" onclick="window.navigateTo('catalog', 'all'); window.setCatalogSort('gifting');" class="min-h-[38px] px-3.5 py-1.5 rounded-full text-xs font-bold transition flex items-center gap-1.5 shrink-0 cursor-pointer bg-white text-primary border border-[#e4e0d8] hover:border-secondary">
+                <span class="material-symbols-outlined text-sm" aria-hidden="true">featured_seasonal_and_gifts</span>
+                <span>🎁 Gift Sets</span>
+              </button>
+            </div>
           </div>
 
           <div class="grid grid-cols-1 min-[360px]:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3.5 sm:gap-5">
@@ -1816,9 +1830,6 @@
             <span class="material-symbols-outlined text-secondary text-sm" aria-hidden="true">auto_awesome</span>
             <span>Curation &amp; Gifts:</span>
           </span>
-          <button type="button" onclick="window.setFeedPersona('all')" class="min-h-[38px] px-3.5 py-1.5 rounded-full text-xs font-bold transition flex items-center gap-1.5 shrink-0 cursor-pointer ${AppState.feedPersona === 'all' && AppState.catalogSort !== 'gifting' && AppState.catalogSort !== 'gifts_him' && AppState.catalogSort !== 'gifts_her' ? 'bg-primary text-white shadow-xs' : 'bg-surface-container-low text-primary border border-[#e4e0d8] hover:border-secondary'}">
-            <span>✨ Universal</span>
-          </button>
           <button type="button" onclick="window.setFeedPersona('masculine')" class="min-h-[38px] px-3.5 py-1.5 rounded-full text-xs font-bold transition flex items-center gap-1.5 shrink-0 cursor-pointer ${AppState.feedPersona === 'masculine' || AppState.catalogSort === 'gifts_him' ? 'bg-primary text-white shadow-xs' : 'bg-surface-container-low text-primary border border-[#e4e0d8] hover:border-secondary'}">
             <span>👔 Gifts for Him</span>
           </button>
@@ -1962,29 +1973,23 @@
       unitPrice: product.unitPriceLabel
     };
 
-    const colors = (Array.isArray(product.colors) && product.colors.length) ? product.colors : [
-      { id: 'c1', label: 'Classic Crystal Clear', hex: '#FFFFFF', accent: '#E0E7FF' },
-      { id: 'c2', label: 'Champagne Gold Infusion', hex: '#D4AF37', accent: '#FEF3C7' },
-      { id: 'c3', label: 'Midnight Obsidian Tint', hex: '#0F172A', accent: '#1E293B' }
-    ];
-    const shapes = (Array.isArray(product.shapes) && product.shapes.length) ? product.shapes : [
-      { id: 's1', label: 'Hexagonal Monolith' },
-      { id: 's2', label: 'Arch Heirloom' },
-      { id: 's3', label: 'Square Block' }
-    ];
-    const sizes = (Array.isArray(product.sizes) && product.sizes.length) ? product.sizes : [
-      { id: 'sz1', label: 'Standard Studio', priceDelta: 0 },
-      { id: 'sz2', label: 'Compact Keepsake', priceDelta: -250 },
-      { id: 'sz3', label: 'Grand Archival Master', priceDelta: 450 }
-    ];
+    const rawColors = Array.isArray(product.colors) ? product.colors : [];
+    const rawShapes = Array.isArray(product.shapes) ? product.shapes : [];
+    const rawSizes = Array.isArray(product.sizes) ? product.sizes : [];
 
-    const activeColorIdx = Math.min(AppState.pdpSelectedColorIdx || 0, colors.length - 1);
-    const activeShapeIdx = Math.min(AppState.pdpSelectedShapeIdx || 0, shapes.length - 1);
-    const activeSizeIdx = Math.min(AppState.pdpSelectedSizeIdx || 0, sizes.length - 1);
-    const activeColor = colors[activeColorIdx];
-    const activeShape = shapes[activeShapeIdx];
-    const activeSize = sizes[activeSizeIdx];
-    const sizeDelta = activeSize.priceDelta || 0;
+    const colors = rawColors.map((c, i) => (typeof c === 'string' ? { id: 'c' + i, label: c, hex: '#cda851' } : c));
+    const shapes = rawShapes.map((s, i) => (typeof s === 'string' ? { id: 's' + i, label: s } : s));
+    const sizes = rawSizes.map((sz, i) => (typeof sz === 'string' ? { id: 'sz' + i, label: sz, priceDelta: 0 } : sz));
+
+    const hasVarieties = colors.length > 0 || shapes.length > 0 || sizes.length > 0;
+
+    const activeColorIdx = colors.length ? Math.min(AppState.pdpSelectedColorIdx || 0, colors.length - 1) : -1;
+    const activeShapeIdx = shapes.length ? Math.min(AppState.pdpSelectedShapeIdx || 0, shapes.length - 1) : -1;
+    const activeSizeIdx = sizes.length ? Math.min(AppState.pdpSelectedSizeIdx || 0, sizes.length - 1) : -1;
+    const activeColor = activeColorIdx >= 0 ? colors[activeColorIdx] : null;
+    const activeShape = activeShapeIdx >= 0 ? shapes[activeShapeIdx] : null;
+    const activeSize = activeSizeIdx >= 0 ? sizes[activeSizeIdx] : null;
+    const sizeDelta = activeSize ? (activeSize.priceDelta || 0) : 0;
 
     const currentPrice = activeVariant.price + sizeDelta;
     const regularPrice = (activeVariant.regularPrice || activeVariant.price) + sizeDelta;
@@ -2103,6 +2108,19 @@
                   <span class="material-symbols-outlined text-xs" aria-hidden="true">water_drop</span>
                   98% Bubble-Free Rating
                 </span>
+                ${product.gender === 'women' || product.genderAffinity === 'feminine' ? `
+                  <span class="flex items-center gap-1 text-[#9e3322] text-xs bg-[#ffe4de] px-3 min-h-[44px] rounded-full font-semibold">
+                    <span>🌸</span> Mainly for Female / Women
+                  </span>
+                ` : (product.gender === 'men' || product.genderAffinity === 'masculine' ? `
+                  <span class="flex items-center gap-1 text-blue-900 text-xs bg-blue-100 px-3 min-h-[44px] rounded-full font-semibold">
+                    <span>👔</span> Mainly for Male / Men
+                  </span>
+                ` : `
+                  <span class="flex items-center gap-1 text-amber-900 text-xs bg-amber-50 border border-amber-200/60 px-3 min-h-[44px] rounded-full font-semibold">
+                    <span>✨</span> Universal (All Genders)
+                  </span>
+                `)}
               </div>
             </div>
 
@@ -2124,6 +2142,7 @@
               </div>
             </div>
 
+            ${hasVarieties ? `
             <!-- Interactive Product Varieties: Colors, Shapes, Sizes -->
             <div class="p-4 rounded-xl bg-surface-container-low border border-[#e4e0d8] flex flex-col gap-3.5">
               <div class="flex items-center justify-between">
@@ -2134,26 +2153,29 @@
                 <span class="font-label-sm text-[11px] text-secondary font-semibold">Tuned for Your Order</span>
               </div>
 
+              ${colors.length > 0 ? `
               <!-- Colors -->
               <div class="flex flex-col gap-1.5">
                 <div class="flex items-center justify-between text-xs">
                   <span class="font-bold text-primary">🎨 Color / Resin Tint:</span>
-                  <span class="font-semibold text-secondary">${esc(activeColor.label)}</span>
+                  <span class="font-semibold text-secondary">${esc(activeColor ? activeColor.label : '')}</span>
                 </div>
                 <div class="flex items-center gap-2 flex-wrap">
                   ${colors.map((c, cIdx) => `
-                    <button type="button" aria-label="${esc(c.label)}" title="${esc(c.label)}" onclick="window.selectPdpVariety('color', ${cIdx})" class="variety-swatch w-8 h-8 rounded-full transition-transform cursor-pointer relative ${cIdx === activeColorIdx ? 'active ring-2 ring-primary ring-offset-2 scale-110 shadow-sm' : 'opacity-80 hover:opacity-100 hover:scale-105'}" style="background-color: ${esc(c.hex)}; border: 2px solid ${c.hex.toLowerCase() === '#ffffff' ? '#ccc' : '#d4af37'};">
+                    <button type="button" aria-label="${esc(c.label)}" title="${esc(c.label)}" onclick="window.selectPdpVariety('color', ${cIdx})" class="variety-swatch w-8 h-8 rounded-full transition-transform cursor-pointer relative ${cIdx === activeColorIdx ? 'active ring-2 ring-primary ring-offset-2 scale-110 shadow-sm' : 'opacity-80 hover:opacity-100 hover:scale-105'}" style="background-color: ${esc(c.hex || '#cda851')}; border: 2px solid ${(c.hex || '').toLowerCase() === '#ffffff' ? '#ccc' : '#d4af37'};">
                       ${cIdx === activeColorIdx ? '<span class="absolute inset-0 flex items-center justify-center text-xs text-white font-bold drop-shadow">✓</span>' : ''}
                     </button>
                   `).join('')}
                 </div>
               </div>
+              ` : ''}
 
+              ${shapes.length > 0 ? `
               <!-- Shapes -->
               <div class="flex flex-col gap-1.5">
                 <div class="flex items-center justify-between text-xs">
                   <span class="font-bold text-primary">📐 Bespoke Shape:</span>
-                  <span class="font-semibold text-secondary">${esc(activeShape.label)}</span>
+                  <span class="font-semibold text-secondary">${esc(activeShape ? activeShape.label : '')}</span>
                 </div>
                 <div class="flex items-center gap-2 flex-wrap">
                   ${shapes.map((s, sIdx) => `
@@ -2163,12 +2185,14 @@
                   `).join('')}
                 </div>
               </div>
+              ` : ''}
 
+              ${sizes.length > 0 ? `
               <!-- Sizes -->
               <div class="flex flex-col gap-1.5">
                 <div class="flex items-center justify-between text-xs">
                   <span class="font-bold text-primary">📏 Edition Size:</span>
-                  <span class="font-semibold text-secondary">${esc(activeSize.label)}</span>
+                  <span class="font-semibold text-secondary">${esc(activeSize ? activeSize.label : '')}</span>
                 </div>
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
                   ${sizes.map((sz, szIdx) => `
@@ -2177,12 +2201,14 @@
                         <span class="font-bold text-xs truncate">${esc(sz.label)}</span>
                         ${sz.popular ? `<span class="px-1.5 py-0.5 rounded bg-secondary-fixed text-on-secondary-fixed text-[9px] font-bold uppercase shrink-0">Popular</span>` : ''}
                       </div>
-                      <span class="text-[11px] ${szIdx === activeSizeIdx ? 'text-[#ffd79b]' : 'text-on-surface-variant'}">${sz.priceDelta > 0 ? '+' + formatINR(sz.priceDelta) : 'Standard Studio'}</span>
+                      <span class="text-[11px] ${szIdx === activeSizeIdx ? 'text-[#ffd79b]' : 'text-on-surface-variant'}">${(sz.priceDelta || 0) > 0 ? '+' + formatINR(sz.priceDelta) : 'Standard Studio'}</span>
                     </button>
                   `).join('')}
                 </div>
               </div>
+              ` : ''}
             </div>
+            ` : ''}
 
             <!-- Variant / Kit Selector -->
             <div class="flex flex-col gap-2">
@@ -4328,9 +4354,9 @@
     const colors = product.colors || [];
     const shapes = product.shapes || [];
     const sizes = product.sizes || [];
-    const chosenColor = colors[varState.colorIdx] || colors[0];
-    const chosenShape = shapes[varState.shapeIdx] || shapes[0];
-    const chosenSize = sizes[varState.sizeIdx] || sizes[0];
+    const chosenColor = colors.length ? (colors[varState.colorIdx] || colors[0]) : null;
+    const chosenShape = shapes.length ? (shapes[varState.shapeIdx] || shapes[0]) : null;
+    const chosenSize = sizes.length ? (sizes[varState.sizeIdx] || sizes[0]) : null;
     const sizeDelta = chosenSize ? (chosenSize.priceDelta || 0) : 0;
     const finalPrice = product.price + sizeDelta;
 
@@ -4338,9 +4364,9 @@
       productId: product.id,
       name: product.name,
       variantLabel: product.variants && product.variants[0] ? product.variants[0].label : 'Standard Edition',
-      color: chosenColor ? chosenColor.label : 'Classic Clear',
-      shape: chosenShape ? chosenShape.label : 'Standard Shape',
-      size: chosenSize ? chosenSize.label : 'Standard Studio',
+      color: chosenColor ? (chosenColor.label || chosenColor) : '',
+      shape: chosenShape ? (chosenShape.label || chosenShape) : '',
+      size: chosenSize ? (chosenSize.label || chosenSize) : '',
       price: finalPrice,
       regularPrice: product.regularPrice + sizeDelta,
       qty: 1,
@@ -4348,7 +4374,8 @@
       sku: product.sku
     });
     updateGlobalBadges();
-    window.showToast(`Added "${product.shortName || product.name}" to Bag`, `${chosenColor ? chosenColor.label : ''} • ${formatINR(finalPrice)}`);
+    const quickSubtitle = [chosenColor ? (chosenColor.label || chosenColor) : '', formatINR(finalPrice)].filter(Boolean).join(' • ');
+    window.showToast(`Added "${product.shortName || product.name}" to Bag`, quickSubtitle);
 
     if (btnEl) {
       sotdResinRipple({ currentTarget: btnEl });
@@ -4470,28 +4497,39 @@
     const shapes = prod.shapes || [];
     const sizes = prod.sizes || [];
 
-    const chosenColor = colors[varState.colorIdx] || colors[0] || { label: 'Classic Crystal Clear' };
-    const chosenShape = shapes[varState.shapeIdx] || shapes[0] || { label: 'Standard Block' };
-    const chosenSize = sizes[varState.sizeIdx] || sizes[0] || { label: 'Standard Studio', priceDelta: 0 };
-    const finalPrice = prod.price + (chosenSize.priceDelta || 0);
+    const chosenColor = colors.length ? (colors[varState.colorIdx] || colors[0]) : null;
+    const chosenShape = shapes.length ? (shapes[varState.shapeIdx] || shapes[0]) : null;
+    const chosenSize = sizes.length ? (sizes[varState.sizeIdx] || sizes[0]) : null;
+    const finalPrice = prod.price + (chosenSize?.priceDelta || 0);
+
+    const varietyParts = [
+      prod.variants && prod.variants[0] ? prod.variants[0].label : 'Standard Edition',
+      chosenShape ? (chosenShape.label || chosenShape) : null,
+      chosenSize ? `(${chosenSize.label || chosenSize})` : null
+    ].filter(Boolean);
 
     Store.addToCart({
       productId: prod.id,
       name: prod.name,
-      variantLabel: `${chosenShape.label} (${chosenSize.label})`,
-      color: chosenColor.label,
-      shape: chosenShape.label,
-      size: chosenSize.label,
+      variantLabel: varietyParts.join(' • '),
+      color: chosenColor ? (chosenColor.label || chosenColor) : '',
+      shape: chosenShape ? (chosenShape.label || chosenShape) : '',
+      size: chosenSize ? (chosenSize.label || chosenSize) : '',
       price: finalPrice,
-      regularPrice: prod.regularPrice + (chosenSize.priceDelta || 0),
+      regularPrice: prod.regularPrice + (chosenSize?.priceDelta || 0),
       qty: 1,
       image: prod.image,
       sku: prod.sku
     });
     updateGlobalBadges();
+    const customSummary = [
+      chosenShape ? (chosenShape.label || chosenShape) : null,
+      chosenSize ? (chosenSize.label || chosenSize) : null,
+      formatINR(finalPrice)
+    ].filter(Boolean).join(' • ');
     window.showToast(
-      `Added ${prod.shortName || prod.name} (${chosenColor.label})`,
-      `${chosenShape.label} • ${chosenSize.label} • ${formatINR(finalPrice)}`
+      `Added ${prod.shortName || prod.name}${chosenColor ? ' (' + (chosenColor.label || chosenColor) + ')' : ''}`,
+      customSummary
     );
   };
 
@@ -4503,27 +4541,36 @@
   };
 
   window.setFeedPersona = function (persona) {
-    const valid = ['all', 'masculine', 'feminine'].includes(persona) ? persona : 'all';
+    let target = persona;
+    if (AppState.feedPersona === persona && persona !== 'all') {
+      target = 'all';
+    }
+    const valid = ['all', 'masculine', 'feminine'].includes(target) ? target : 'all';
     AppState.feedPersona = valid;
     if (typeof Store.setPersonaPreference === 'function') {
       Store.setPersonaPreference(valid);
     }
-    const label = valid === 'masculine' ? '👔 Gifts for Him' : (valid === 'feminine' ? '🌸 Gifts for Her' : '✨ Universal Collections');
+    const label = valid === 'masculine' ? '👔 Gifts for Him' : (valid === 'feminine' ? '🌸 Gifts for Her' : 'Curated Studio Collections');
     window.showToast(`Feed Curated: ${label}`, 'Catalogue order adjusted to your preferred aesthetic & gifting style.');
     renderActiveView({ preserveScroll: false });
   };
 
   window.setAuthPersona = function (persona) {
-    const valid = ['all', 'masculine', 'feminine'].includes(persona) ? persona : 'all';
+    let target = persona;
+    const curVal = document.getElementById('cf-auth-selected-persona')?.value;
+    if (curVal === persona && persona !== 'all') {
+      target = 'all';
+    }
+    const valid = ['all', 'masculine', 'feminine'].includes(target) ? target : 'all';
     const hiddenInput = document.getElementById('cf-auth-selected-persona');
     if (hiddenInput) hiddenInput.value = valid;
-    ['all', 'masculine', 'feminine'].forEach(p => {
+    ['masculine', 'feminine'].forEach(p => {
       const btn = document.getElementById(`cf-persona-btn-${p}`);
       if (!btn) return;
       if (p === valid) {
-        btn.className = 'min-h-[40px] px-2 py-1.5 rounded-lg text-xs font-bold transition flex items-center justify-center gap-1 border border-primary bg-primary text-white cursor-pointer';
+        btn.className = 'min-h-[40px] px-2.5 py-1.5 rounded-lg text-xs font-bold transition flex items-center justify-center gap-1.5 border border-primary bg-primary text-white cursor-pointer shadow-xs';
       } else {
-        btn.className = 'min-h-[40px] px-2 py-1.5 rounded-lg text-xs font-bold transition flex items-center justify-center gap-1 border border-[#e4e0d8] bg-white text-primary hover:border-secondary cursor-pointer';
+        btn.className = 'min-h-[40px] px-2.5 py-1.5 rounded-lg text-xs font-bold transition flex items-center justify-center gap-1.5 border border-[#e4e0d8] bg-white text-primary hover:border-secondary cursor-pointer';
       }
     });
     if (Store && typeof Store.setPersonaPreference === 'function') {
@@ -4783,23 +4830,25 @@
       regularPrice: prod.regularPrice
     };
 
-    const colors = prod.colors || [];
-    const shapes = prod.shapes || [];
-    const sizes = prod.sizes || [];
-    const activeColor = colors[AppState.pdpSelectedColorIdx] || colors[0];
-    const activeShape = shapes[AppState.pdpSelectedShapeIdx] || shapes[0];
-    const activeSize = sizes[AppState.pdpSelectedSizeIdx] || sizes[0];
+    const colors = (prod.colors || []).map((c, i) => (typeof c === 'string' ? { id: 'c' + i, label: c } : c));
+    const shapes = (prod.shapes || []).map((s, i) => (typeof s === 'string' ? { id: 's' + i, label: s } : s));
+    const sizes = (prod.sizes || []).map((sz, i) => (typeof sz === 'string' ? { id: 'sz' + i, label: sz, priceDelta: 0 } : sz));
+    const activeColor = colors.length > 0 ? (colors[AppState.pdpSelectedColorIdx] || colors[0]) : null;
+    const activeShape = shapes.length > 0 ? (shapes[AppState.pdpSelectedShapeIdx] || shapes[0]) : null;
+    const activeSize = sizes.length > 0 ? (sizes[AppState.pdpSelectedSizeIdx] || sizes[0]) : null;
     const sizeDelta = activeSize?.priceDelta || 0;
     const finalPrice = v.price + sizeDelta;
+
+    const varietyParts = [v.label, activeShape?.label, activeSize?.label ? `(${activeSize.label})` : ''].filter(Boolean);
 
     Store.addToCart({
       productId: prod.id,
       sku: prod.sku,
       name: prod.name,
-      variantLabel: `${v.label} • ${activeShape ? activeShape.label : ''} (${activeSize ? activeSize.label : ''})`,
-      color: activeColor ? activeColor.label : 'Classic Clear',
-      shape: activeShape ? activeShape.label : 'Standard Block',
-      size: activeSize ? activeSize.label : 'Standard Studio',
+      variantLabel: varietyParts.join(' • '),
+      color: activeColor ? activeColor.label : '',
+      shape: activeShape ? activeShape.label : '',
+      size: activeSize ? activeSize.label : '',
       price: finalPrice,
       regularPrice: (v.regularPrice || v.price) + sizeDelta,
       qty: AppState.pdpQty,
@@ -4807,9 +4856,10 @@
       customNote: AppState.pdpCustomNote
     });
     updateGlobalBadges();
+    const detailSubtitle = [activeColor?.label, activeShape?.label, activeSize?.label ? `(${activeSize.label})` : ''].filter(Boolean).join(' • ');
     window.showToast(
       `Added ${AppState.pdpQty} × ${prod.shortName || prod.name} to Bag`,
-      `${activeColor ? activeColor.label : ''} • ${activeShape ? activeShape.label : ''} (${activeSize ? activeSize.label : ''}) • Ready for checkout`
+      detailSubtitle ? `${detailSubtitle} • Ready for checkout` : 'Ready for checkout'
     );
   };
 
@@ -6595,6 +6645,13 @@
     } catch (e) {
       console.warn('DPDP consent init:', e);
     }
+
+    // Live store subscriptions (products, orders, carts updated from admin)
+    Store.subscribe((event) => {
+      if (event === 'products_updated' || event === 'studio_push_received') {
+        renderActiveView({ preserveScroll: true });
+      }
+    });
   });
 })();
 
