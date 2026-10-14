@@ -85,6 +85,7 @@
     'tds-spec-modal',
     'share-memory-modal',
     'checkout-modal',
+    'payment-processing-modal',
     'global-pincode-modal',
     'cloudflare-auth-modal',
     'account-bar-modal',
@@ -661,7 +662,7 @@
 
   function handleRouteChange(forceResetScroll = false) {
     const { route, param, queryParams } = parseHash();
-    const validRoutes = ['home', 'catalog', 'product', 'social', 'custom-studio', 'wishlist', 'cart', 'account', '404'];
+    const validRoutes = ['home', 'catalog', 'product', 'social', 'custom-studio', 'wishlist', 'cart', 'account', '404', '500'];
 
     if (!validRoutes.includes(route)) {
       AppState.currentRoute = '404';
@@ -1682,11 +1683,20 @@
 
         <!-- Product Grid or Empty State -->
         ${filtered.length === 0 ? `
-          <div class="ram-card p-10 text-center flex flex-col items-center gap-3 my-4">
-            <span class="material-symbols-outlined text-4xl text-secondary" aria-hidden="true">search_off</span>
-            <h2 class="font-headline-sm text-xl text-primary font-bold">No matching formulations or keepsakes</h2>
-            <p class="text-xs text-on-surface-variant max-w-sm">Try clearing your active search query or resetting the technical ratio filters.</p>
-            <button type="button" onclick="window.resetCatalogFilters()" class="min-h-[48px] px-5 py-2.5 rounded-xl bg-primary text-on-primary text-xs font-semibold cursor-pointer">Reset All Filters</button>
+          <div class="ram-card p-10 text-center flex flex-col items-center gap-3.5 my-4 bg-white">
+            <div class="relative w-24 h-24 flex items-center justify-center lottie-anim-float">
+              <div class="absolute inset-0 rounded-full bg-[#d4af37]/15 lottie-anim-pulse blur-md pointer-events-none"></div>
+              <svg class="w-full h-full drop-shadow-sm" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="No formulations found">
+                <circle cx="45" cy="45" r="28" stroke="#0f172a" stroke-width="2.5" fill="#fcf9f5" />
+                <circle cx="45" cy="45" r="22" stroke="#d4af37" stroke-width="1.2" stroke-dasharray="4 4" class="lottie-anim-spin" />
+                <path d="M66 66 L86 86" stroke="#9e3322" stroke-width="4" stroke-linecap="round" />
+                <polygon points="45,34 47,40 53,42 47,44 45,50 43,44 37,42 43,40" fill="#d4af37" />
+                <circle cx="28" cy="74" r="2.5" fill="#d4af37" opacity="0.6" />
+              </svg>
+            </div>
+            <h2 class="font-headline-sm text-xl text-primary font-bold">No Matching Formulations Found</h2>
+            <p class="text-xs text-on-surface-variant max-w-sm">Try clearing your search keyword, adjusting the viscosity filter, or resetting technical ratio parameters.</p>
+            <button type="button" onclick="window.resetCatalogFilters()" class="min-h-[48px] px-6 py-2.5 rounded-xl bg-primary text-white text-xs font-bold shadow-xs cursor-pointer">Reset All Filters</button>
           </div>
         ` : `
           <div class="${AppState.catalogView === 'list' ? 'flex flex-col gap-3.5' : 'grid grid-cols-1 min-[360px]:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3.5 sm:gap-5'}" id="catalog-product-grid">
@@ -2663,11 +2673,19 @@
         </div>
 
         ${products.length === 0 ? `
-          <div class="ram-card p-10 text-center flex flex-col items-center gap-3">
-            <span class="material-symbols-outlined text-4xl text-[#9e3322]" aria-hidden="true">favorite_border</span>
-            <h2 class="font-headline-sm text-xl text-primary font-bold">Your Saved List is Empty</h2>
+          <div class="ram-card p-10 text-center flex flex-col items-center gap-3.5 bg-white">
+            <div class="relative w-24 h-24 flex items-center justify-center lottie-anim-heart">
+              <div class="absolute inset-0 rounded-full bg-[#ffe4de] lottie-anim-pulse blur-md pointer-events-none"></div>
+              <svg class="w-full h-full drop-shadow-sm" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Saved list empty">
+                <circle cx="50" cy="50" r="44" stroke="#d4af37" stroke-width="1.2" stroke-dasharray="4 6" class="lottie-anim-spin" opacity="0.6" />
+                <path d="M50 78 C50 78 22 58 22 38 C22 26 32 18 42 22 C46 24 49 28 50 32 C51 28 54 24 58 22 C68 18 78 26 78 38 C78 58 50 78 50 78 Z" fill="#ffe4de" stroke="#9e3322" stroke-width="2" />
+                <path d="M44 48 C48 42 54 44 56 40" stroke="#266b4e" stroke-width="1.5" stroke-linecap="round" fill="none" />
+                <circle cx="70" cy="24" r="2.5" fill="#d4af37" />
+              </svg>
+            </div>
+            <h2 class="font-headline-sm text-xl text-primary font-bold">Your Wishlist is Empty</h2>
             <p class="text-xs text-on-surface-variant max-w-sm">Tap the heart icon on any resin formulation or floral keepsake to bookmark it for your next pour.</p>
-            <button type="button" onclick="window.navigateTo('catalog', 'all')" class="min-h-[48px] px-5 py-2.5 rounded-xl bg-primary text-on-primary text-xs font-bold cursor-pointer">Explore Catalogue</button>
+            <button type="button" onclick="window.navigateTo('catalog', 'all')" class="min-h-[48px] px-6 py-2.5 rounded-xl bg-primary text-white text-xs font-bold shadow-xs cursor-pointer">Explore Catalogue</button>
           </div>
         ` : `
           <div class="grid grid-cols-1 min-[360px]:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
@@ -2741,11 +2759,21 @@
         </div>
 
         ${summary.cart.length === 0 ? `
-          <div class="ram-card p-10 text-center flex flex-col items-center gap-3 bg-white">
-            <span class="material-symbols-outlined text-4xl text-secondary" aria-hidden="true">shopping_bag</span>
+          <div class="ram-card p-10 text-center flex flex-col items-center gap-3.5 bg-white">
+            <div class="relative w-24 h-24 flex items-center justify-center lottie-anim-float">
+              <div class="absolute inset-0 rounded-full bg-[#d4af37]/15 lottie-anim-pulse blur-md pointer-events-none"></div>
+              <svg class="w-full h-full drop-shadow-sm" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Studio bag empty">
+                <circle cx="50" cy="50" r="44" stroke="#d4af37" stroke-width="1.2" stroke-dasharray="4 6" class="lottie-anim-spin" opacity="0.6" />
+                <path d="M30 38 L34 82 C34 85 37 88 40 88 H60 C63 88 66 85 66 82 L70 38 Z" fill="#fcf9f5" stroke="#0f172a" stroke-width="2" />
+                <path d="M38 38 C38 24 62 24 62 38" stroke="#d4af37" stroke-width="2" stroke-linecap="round" fill="none" />
+                <polygon points="50,46 52,50 56,52 52,54 50,58 48,54 44,52 48,50" fill="#9e3322" />
+                <circle cx="74" cy="30" r="2.5" fill="#d4af37" />
+                <circle cx="26" cy="68" r="2" fill="#d4af37" opacity="0.7" />
+              </svg>
+            </div>
             <h2 class="font-headline-sm text-xl text-primary font-bold">Your Studio Bag is Empty</h2>
             <p class="text-xs text-on-surface-variant max-w-sm">Explore our preserved bridal keepsakes, ocean serving boards, or optical 3:1 &amp; 2:1 epoxy systems.</p>
-            <button type="button" onclick="window.navigateTo('catalog', 'all')" class="min-h-[48px] px-6 py-3 rounded-xl bg-primary text-on-primary text-xs font-bold cursor-pointer">Browse Catalogue</button>
+            <button type="button" onclick="window.navigateTo('catalog', 'all')" class="min-h-[48px] px-6 py-3 rounded-xl bg-primary text-on-primary text-xs font-bold shadow-xs cursor-pointer">Browse Catalogue</button>
           </div>
         ` : `
           <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
@@ -3014,14 +3042,25 @@
           </div>
 
           ${filteredOrders.length === 0 ? `
-            <div class="ram-card p-8 bg-white text-center flex flex-col items-center gap-2">
-              <span class="material-symbols-outlined text-3xl text-secondary" aria-hidden="true">inventory_2</span>
+            <div class="ram-card p-10 bg-white text-center flex flex-col items-center gap-3.5">
+              <div class="relative w-24 h-24 flex items-center justify-center lottie-anim-float">
+                <div class="absolute inset-0 rounded-full bg-[#d4af37]/15 lottie-anim-pulse blur-md pointer-events-none"></div>
+                <svg class="w-full h-full drop-shadow-sm" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="No studio orders">
+                  <circle cx="50" cy="50" r="44" stroke="#d4af37" stroke-width="1.2" stroke-dasharray="4 6" class="lottie-anim-spin" opacity="0.6" />
+                  <rect x="25" y="30" width="50" height="42" rx="4" fill="#fcf9f5" stroke="#0f172a" stroke-width="2" />
+                  <line x1="25" y1="51" x2="75" y2="51" stroke="#d4af37" stroke-width="1.5" />
+                  <line x1="50" y1="30" x2="50" y2="72" stroke="#d4af37" stroke-width="1.5" />
+                  <circle cx="50" cy="51" r="7" fill="#9e3322" stroke="#d4af37" stroke-width="1.5" />
+                  <polygon points="50,48 51,51 54,51 52,53 53,56 50,54 47,56 48,53 46,51 49,51" fill="#fff" />
+                  <circle cx="72" cy="24" r="2.5" fill="#d4af37" />
+                </svg>
+              </div>
               <h3 class="font-headline-sm text-lg text-primary font-bold">${allOrders.length === 0 ? 'No Studio Orders Placed Yet' : 'No Matching Orders Found'}</h3>
               <p class="text-xs text-on-surface-variant max-w-md">${allOrders.length === 0 ? 'Your order history and floral preservation timelines will appear here once you place your first order.' : 'Try clearing your order search filter or search with a different Order #VK ID.'}</p>
               ${allOrders.length === 0 ? `
-                <button type="button" onclick="window.navigateTo('catalog', 'all')" class="min-h-[44px] px-5 py-2.5 rounded-xl bg-primary text-white text-xs font-bold mt-1 cursor-pointer">Browse Catalogue to Place Your First Order</button>
+                <button type="button" onclick="window.navigateTo('catalog', 'all')" class="min-h-[48px] px-6 py-2.5 rounded-xl bg-primary text-white text-xs font-bold mt-1 shadow-xs cursor-pointer">Browse Catalogue to Place Your First Order</button>
               ` : `
-                <button type="button" onclick="window.setAccountOrderSearch('')" class="min-h-[44px] px-4 py-2 rounded-lg bg-primary text-white text-xs font-bold mt-1 cursor-pointer">Show All Orders</button>
+                <button type="button" onclick="window.setAccountOrderSearch('')" class="min-h-[48px] px-5 py-2.5 rounded-xl bg-primary text-white text-xs font-bold mt-1 shadow-xs cursor-pointer">Show All Orders</button>
               `}
             </div>
           ` : filteredOrders.map(ord => `
@@ -3496,13 +3535,36 @@
   // =========================================================================
   function render404View() {
     return `
-      <div class="route-view-enter flex flex-col items-center justify-center w-full max-w-4xl mx-auto px-4 sm:px-8 py-12 sm:py-20 text-center gap-6">
+      <div class="route-view-enter flex flex-col items-center justify-center w-full max-w-4xl mx-auto px-4 sm:px-8 py-10 sm:py-16 text-center gap-6">
         <!-- Back Navigation Button -->
         <div class="self-start">
           <button type="button" onclick="window.handleBackButton('home')" aria-label="Go back to previous page" class="inline-flex items-center gap-1.5 text-xs font-semibold text-primary/80 hover:text-primary min-h-[44px] py-1 px-3 rounded-lg bg-surface-container-low hover:bg-surface-container transition-colors cursor-pointer w-fit">
             <span class="material-symbols-outlined text-sm" aria-hidden="true">arrow_back</span>
             <span>Back to Previous Page</span>
           </button>
+        </div>
+
+        <!-- Lottie-Style Animated Kinetic SVG: Preserved Floral Botanical Crystal Specimen -->
+        <div class="relative w-40 h-40 sm:w-48 sm:h-48 flex items-center justify-center">
+          <div class="absolute inset-0 rounded-full bg-[#d4af37]/15 lottie-anim-pulse blur-xl pointer-events-none"></div>
+          <svg class="w-full h-full drop-shadow-md lottie-anim-float" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Animated missing specimen illustration">
+            <ellipse cx="100" cy="100" rx="84" ry="32" stroke="#d4af37" stroke-width="1.2" stroke-dasharray="4 6" opacity="0.6" class="lottie-anim-spin" />
+            <polygon points="100,28 152,70 140,148 100,172 60,148 48,70" fill="#fcf9f5" stroke="#0f172a" stroke-width="2" />
+            <polygon points="100,28 152,70 100,105" fill="#f4efe6" stroke="#0f172a" stroke-width="1.2" opacity="0.8" />
+            <polygon points="100,28 48,70 100,105" fill="#ede5d8" stroke="#0f172a" stroke-width="1.2" opacity="0.8" />
+            <polygon points="48,70 60,148 100,105" fill="#e2d7c5" stroke="#0f172a" stroke-width="1.2" opacity="0.7" />
+            <polygon points="152,70 140,148 100,105" fill="#dbcdb8" stroke="#0f172a" stroke-width="1.2" opacity="0.7" />
+            <polygon points="60,148 100,172 100,105" fill="#d0bfab" stroke="#0f172a" stroke-width="1.2" opacity="0.85" />
+            <polygon points="140,148 100,172 100,105" fill="#c4b09b" stroke="#0f172a" stroke-width="1.2" opacity="0.85" />
+            <circle cx="100" cy="98" r="8" fill="#9e3322" opacity="0.9" />
+            <circle cx="94" cy="94" r="5" fill="#d4af37" opacity="0.8" />
+            <circle cx="106" cy="94" r="5" fill="#d4af37" opacity="0.8" />
+            <circle cx="100" cy="88" r="5" fill="#d4af37" opacity="0.8" />
+            <path d="M100 106 Q98 126 100 142" stroke="#266b4e" stroke-width="1.5" stroke-linecap="round" />
+            <polygon points="160,42 163,48 169,51 163,54 160,60 157,54 151,51 157,48" fill="#d4af37" />
+            <circle cx="45" cy="120" r="2.5" fill="#d4af37" />
+            <circle cx="155" cy="130" r="3" fill="#9e3322" opacity="0.7" />
+          </svg>
         </div>
 
         <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-secondary-container text-on-secondary-container text-xs font-bold uppercase tracking-wider">
@@ -3550,6 +3612,82 @@
       </div>
     `;
   }
+
+  function render500View(errorDetails = '') {
+    const traceId = 'VK-ERR-' + Math.random().toString(36).slice(2, 8).toUpperCase() + '-' + Date.now().toString(36).toUpperCase();
+    return `
+      <div class="route-view-enter flex flex-col items-center justify-center w-full max-w-4xl mx-auto px-4 sm:px-8 py-10 sm:py-16 text-center gap-6">
+        <!-- Back Navigation Button -->
+        <div class="self-start">
+          <button type="button" onclick="window.handleBackButton('home')" aria-label="Go back to previous page" class="inline-flex items-center gap-1.5 text-xs font-semibold text-primary/80 hover:text-primary min-h-[44px] py-1 px-3 rounded-lg bg-surface-container-low hover:bg-surface-container transition-colors cursor-pointer w-fit">
+            <span class="material-symbols-outlined text-sm" aria-hidden="true">arrow_back</span>
+            <span>Back to Previous Page</span>
+          </button>
+        </div>
+
+        <!-- Lottie-Style Animated Kinetic SVG: Optical Curing Prism & Precision Gears -->
+        <div class="relative w-40 h-40 sm:w-48 sm:h-48 flex items-center justify-center">
+          <div class="absolute inset-0 rounded-full bg-[#d4af37]/10 lottie-anim-pulse blur-xl pointer-events-none"></div>
+          <svg class="w-full h-full drop-shadow-md" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Animated system interruption illustration">
+            <circle cx="100" cy="100" r="88" stroke="#d4af37" stroke-width="1.2" stroke-dasharray="4 8" opacity="0.45" />
+            <g class="lottie-anim-spin">
+              <circle cx="100" cy="100" r="64" stroke="#0f172a" stroke-width="2" stroke-dasharray="14 8" opacity="0.65" />
+              <circle cx="100" cy="100" r="54" stroke="#d4af37" stroke-width="1" opacity="0.3" />
+            </g>
+            <g class="lottie-anim-spin-rev">
+              <circle cx="100" cy="100" r="42" stroke="#9e3322" stroke-width="1.8" stroke-dasharray="10 6" opacity="0.75" />
+              <polygon points="100,62 133,119 67,119" stroke="#d4af37" stroke-width="1.5" fill="none" opacity="0.5" />
+            </g>
+            <g class="lottie-anim-pulse">
+              <polygon points="100,72 124,100 100,128 76,100" fill="#0f172a" stroke="#d4af37" stroke-width="2" />
+              <line x1="76" y1="100" x2="124" y2="100" stroke="#d4af37" stroke-width="1" opacity="0.7" />
+              <line x1="100" y1="72" x2="100" y2="128" stroke="#d4af37" stroke-width="1" opacity="0.7" />
+            </g>
+          </svg>
+        </div>
+
+        <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#fdf6f3] border border-[#9e3322]/20 text-[#9e3322] text-xs font-bold uppercase tracking-wider">
+          <span class="material-symbols-outlined text-sm" aria-hidden="true">precision_manufacturing</span>
+          <span>HTTP 500 • Studio System Interruption</span>
+        </div>
+
+        <div class="space-y-3 max-w-xl">
+          <h1 class="font-headline-lg font-serif text-3xl sm:text-5xl text-primary font-bold tracking-tight">
+            Temporary Atelier System Calibration
+          </h1>
+          <p class="text-xs sm:text-sm text-on-surface-variant leading-relaxed">
+            Our optical curing servers or cloud edge are taking a momentary breath. <strong>Your Studio Bag, items, and inputs remain safe.</strong> No orders or patron transactions were compromised.
+          </p>
+        </div>
+
+        <div class="flex flex-wrap items-center justify-center gap-3 pt-2">
+          <button type="button" onclick="window.location.reload()" class="min-h-[48px] px-6 py-2.5 rounded-xl bg-primary hover:bg-primary-container text-white text-xs font-bold inline-flex items-center gap-2 cursor-pointer shadow-xs">
+            <span class="material-symbols-outlined text-base" aria-hidden="true">refresh</span>
+            <span>Retry Request</span>
+          </button>
+          <button type="button" onclick="window.navigateTo('catalog', 'all')" class="min-h-[48px] px-5 py-2.5 rounded-xl bg-secondary hover:bg-secondary/90 text-on-secondary text-xs font-bold inline-flex items-center gap-2 cursor-pointer shadow-xs">
+            <span class="material-symbols-outlined text-base" aria-hidden="true">inventory_2</span>
+            <span>Browse Catalogue</span>
+          </button>
+          <a href="https://wa.me/919876543210?text=Hello%20Vistara%20Krafts%20Team,%20I%20experienced%20a%20500%20server%20interruption%20on%20the%20website" target="_blank" rel="noopener noreferrer" class="min-h-[48px] px-5 py-2.5 rounded-xl bg-white border border-[#e4e0d8] hover:bg-surface-container-low text-primary text-xs font-bold inline-flex items-center gap-2 shadow-2xs">
+            <span class="material-symbols-outlined text-base text-[#25D366]" aria-hidden="true">chat</span>
+            <span>WhatsApp Concierge</span>
+          </a>
+        </div>
+
+        <div class="p-3.5 rounded-xl bg-surface-container-low border border-[#e4e0d8] max-w-md w-full text-left flex items-start gap-3">
+          <span class="material-symbols-outlined text-secondary text-base mt-0.5" aria-hidden="true">info</span>
+          <div class="text-[11px] text-on-surface-variant">
+            <p class="font-bold text-primary">Incident Diagnostics</p>
+            <p class="font-mono mt-0.5">Trace ID: ${traceId}</p>
+            <p class="mt-1">${esc(errorDetails || 'Automatic failover ready. Local cache intact.')}</p>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+  window.render500View = render500View;
+
 
   function updateRouteSeoAndSchema() {
     if (typeof document === 'undefined') return null;
@@ -3786,35 +3924,43 @@
     const preserveScroll = !options || !options.resetScroll;
     const prevScrollY = preserveScroll ? window.scrollY : 0;
 
-    switch (AppState.currentRoute) {
-      case 'catalog':
-        root.innerHTML = renderCatalogView();
-        break;
-      case 'product':
-        root.innerHTML = renderPdpView();
-        break;
-      case 'social':
-        root.innerHTML = renderSocialView();
-        break;
-      case 'custom-studio':
-        root.innerHTML = renderCustomStudioView();
-        break;
-      case 'wishlist':
-        root.innerHTML = renderWishlistView();
-        break;
-      case 'cart':
-        root.innerHTML = renderCartView();
-        break;
-      case 'account':
-        root.innerHTML = renderAccountView();
-        break;
-      case '404':
-        root.innerHTML = render404View();
-        break;
-      case 'home':
-      default:
-        root.innerHTML = renderHomeView();
-        break;
+    try {
+      switch (AppState.currentRoute) {
+        case 'catalog':
+          root.innerHTML = renderCatalogView();
+          break;
+        case 'product':
+          root.innerHTML = renderPdpView();
+          break;
+        case 'social':
+          root.innerHTML = renderSocialView();
+          break;
+        case 'custom-studio':
+          root.innerHTML = renderCustomStudioView();
+          break;
+        case 'wishlist':
+          root.innerHTML = renderWishlistView();
+          break;
+        case 'cart':
+          root.innerHTML = renderCartView();
+          break;
+        case 'account':
+          root.innerHTML = renderAccountView();
+          break;
+        case '404':
+          root.innerHTML = render404View();
+          break;
+        case '500':
+          root.innerHTML = render500View();
+          break;
+        case 'home':
+        default:
+          root.innerHTML = renderHomeView();
+          break;
+      }
+    } catch (routeErr) {
+      console.error('Fatal route render exception caught:', routeErr);
+      root.innerHTML = render500View(routeErr?.message || 'Unexpected application render failure');
     }
 
     updateRouteSeoAndSchema();
@@ -5095,6 +5241,58 @@
     window.navigateTo('cart');
   };
 
+  // Helpers for Checkout Form Validation & Draft Persistence
+  function persistCurrentCheckoutDraft() {
+    if (typeof document === 'undefined' || !Store || typeof Store.saveCheckoutDraft !== 'function') return;
+    const name = document.getElementById('chk-name')?.value || '';
+    const phone = document.getElementById('chk-phone')?.value || '';
+    const address = document.getElementById('chk-address')?.value || '';
+    const pincode = document.getElementById('chk-pincode')?.value || '';
+    const paymentMethod = document.getElementById('chk-payment')?.value || 'UPI Instant (GPay / PhonePe)';
+    const giftWrap = Boolean(document.getElementById('chk-gift-wrap')?.checked);
+    Store.saveCheckoutDraft({ name, phone, address, pincode, paymentMethod, giftWrap });
+  }
+
+  function clearCheckoutFieldError(inputId, errId) {
+    const input = document.getElementById(inputId);
+    const err = document.getElementById(errId);
+    if (input) {
+      if (typeof input.removeAttribute === 'function') {
+        input.removeAttribute('aria-invalid');
+      }
+      if (input.classList && typeof input.classList.remove === 'function') {
+        input.classList.remove('border-[#9e3322]', 'focus:border-[#9e3322]', 'focus:ring-[#9e3322]');
+        input.classList.add('border-[#e4e0d8]');
+      }
+    }
+    if (err) {
+      err.textContent = '';
+      if (err.classList && typeof err.classList.add === 'function') {
+        err.classList.add('hidden');
+      }
+    }
+  }
+
+  function setCheckoutFieldError(inputId, errId, message) {
+    const input = document.getElementById(inputId);
+    const err = document.getElementById(errId);
+    if (input) {
+      if (typeof input.setAttribute === 'function') {
+        input.setAttribute('aria-invalid', 'true');
+      }
+      if (input.classList && typeof input.classList.add === 'function') {
+        input.classList.remove('border-[#e4e0d8]');
+        input.classList.add('border-[#9e3322]');
+      }
+    }
+    if (err) {
+      err.textContent = message;
+      if (err.classList && typeof err.classList.remove === 'function') {
+        err.classList.remove('hidden');
+      }
+    }
+  }
+
   // Checkout Modal (Step 2: Collect Delivery Address & Confirm Payment after Sign-In)
   window.openCheckoutModal = function () {
     const summary = Store.getCartSummary();
@@ -5111,19 +5309,59 @@
 
     const auth = (typeof Store.getAuthSession === 'function' && Store.getAuthSession()) || {};
     const profile = Store.getPatronProfile();
+    const draft = (typeof Store.getCheckoutDraft === 'function' && Store.getCheckoutDraft()) || {};
+
     const nameEl = document.getElementById('chk-name');
     const phoneEl = document.getElementById('chk-phone');
     const addrEl = document.getElementById('chk-address');
     const pinEl = document.getElementById('chk-pincode');
-    const resolvedName = (auth.name && auth.name !== 'Vistāra Studio Guest' ? auth.name : '') || (profile.name && profile.name !== 'Vistāra Studio Guest' ? profile.name : '');
-    const resolvedPhone = auth.phone || profile.phone || '';
-    const resolvedAddr = auth.address || profile.defaultAddress || profile.address || '';
+    const payEl = document.getElementById('chk-payment');
+    const giftEl = document.getElementById('chk-gift-wrap');
+
+    // Clear previous inline errors
+    clearCheckoutFieldError('chk-name', 'chk-name-err');
+    clearCheckoutFieldError('chk-phone', 'chk-phone-err');
+    clearCheckoutFieldError('chk-address', 'chk-address-err');
+    clearCheckoutFieldError('chk-pincode', 'chk-pincode-err');
+
+    const resolvedName = draft.name || (auth.name && auth.name !== 'Vistāra Studio Guest' ? auth.name : '') || (profile.name && profile.name !== 'Vistāra Studio Guest' ? profile.name : '');
+    const resolvedPhone = draft.phone || auth.phone || profile.phone || '';
+    const resolvedAddr = draft.address || auth.address || profile.defaultAddress || profile.address || '';
     const pinMatch = resolvedAddr.match(/\b([1-9][0-9]{5})\b/);
-    const resolvedPin = auth.pincode || profile.pincode || (pinMatch ? pinMatch[1] : '') || '';
+    const resolvedPin = draft.pincode || auth.pincode || profile.pincode || (pinMatch ? pinMatch[1] : '') || '';
+
     if (nameEl) nameEl.value = resolvedName;
     if (phoneEl) phoneEl.value = resolvedPhone;
     if (addrEl) addrEl.value = resolvedAddr;
     if (pinEl) pinEl.value = resolvedPin;
+    if (payEl && draft.paymentMethod) payEl.value = draft.paymentMethod;
+    if (giftEl && typeof draft.giftWrap === 'boolean') giftEl.checked = draft.giftWrap;
+
+    // Attach real-time input listeners to persist draft and clear errors as customer types
+    [
+      { inputId: 'chk-name', errId: 'chk-name-err' },
+      { inputId: 'chk-phone', errId: 'chk-phone-err' },
+      { inputId: 'chk-address', errId: 'chk-address-err' },
+      { inputId: 'chk-pincode', errId: 'chk-pincode-err' }
+    ].forEach(({ inputId, errId }) => {
+      const el = document.getElementById(inputId);
+      if (el && !el.dataset.draftBound) {
+        el.dataset.draftBound = 'true';
+        el.addEventListener('input', () => {
+          clearCheckoutFieldError(inputId, errId);
+          persistCurrentCheckoutDraft();
+        });
+      }
+    });
+
+    if (payEl && !payEl.dataset.draftBound) {
+      payEl.dataset.draftBound = 'true';
+      payEl.addEventListener('change', persistCurrentCheckoutDraft);
+    }
+    if (giftEl && !giftEl.dataset.draftBound) {
+      giftEl.dataset.draftBound = 'true';
+      giftEl.addEventListener('change', persistCurrentCheckoutDraft);
+    }
 
     const modal = document.getElementById('checkout-modal');
     const amountEl = document.getElementById('checkout-modal-payable');
@@ -5132,24 +5370,20 @@
     syncBodyModalLock();
   };
 
-  window.submitCheckoutOrder = function (ev) {
-    ev.preventDefault();
-    const submitBtn = (ev.target && ev.target.querySelector) ? ev.target.querySelector('button[type="submit"]') : null;
-    if (submitBtn) {
-      if (submitBtn.disabled) return;
-      submitBtn.disabled = true;
-      submitBtn.classList.add('opacity-70', 'cursor-not-allowed');
-    }
-    const resetSubmitBtn = () => {
-      if (submitBtn) {
-        submitBtn.disabled = false;
-        submitBtn.classList.remove('opacity-70', 'cursor-not-allowed');
-      }
-    };
+  let activePaymentTimeoutId = null;
+  let isPaymentSubmissionPending = false;
+  let lastCheckoutSubmissionPayload = null;
+
+  window.submitCheckoutOrder = async function (ev) {
+    if (ev && typeof ev.preventDefault === 'function') ev.preventDefault();
+    if (isPaymentSubmissionPending) return;
+
+    const modal = document.getElementById('checkout-modal');
+    const submitBtn = modal ? modal.querySelector('button[type="submit"]') : null;
 
     if (typeof Store.isAuthenticated === 'function' && !Store.isAuthenticated()) {
-      resetSubmitBtn();
-      document.getElementById('checkout-modal')?.classList.add('hidden');
+      if (modal) modal.classList.add('hidden');
+      syncBodyModalLock();
       window.openCloudflareAuthModal(true);
       window.showToast('Sign In Required', 'Please sign in before placing an order');
       return;
@@ -5164,28 +5398,282 @@
     const paymentMethod = document.getElementById('chk-payment')?.value || 'UPI Instant (GPay / PhonePe)';
     const giftWrap = Boolean(document.getElementById('chk-gift-wrap')?.checked);
 
-    if (!name || !phone || !address) {
-      resetSubmitBtn();
-      window.showToast('Delivery Address Required', 'Please enter your recipient name, mobile number, and street address.');
+    // Validate inputs with accessible inline errors
+    let hasError = false;
+    let firstInvalidEl = null;
+
+    if (!name || name.length < 2) {
+      setCheckoutFieldError('chk-name', 'chk-name-err', 'Please enter recipient name (at least 2 letters)');
+      hasError = true;
+      if (!firstInvalidEl) firstInvalidEl = document.getElementById('chk-name');
+    } else {
+      clearCheckoutFieldError('chk-name', 'chk-name-err');
+    }
+
+    const phoneClean = phone.replace(/[\s\-\+]/g, '');
+    const isPhoneValid = /^(91)?[6-9]\d{9}$/.test(phoneClean) || /^\d{10}$/.test(phoneClean);
+    if (!phone || !isPhoneValid) {
+      setCheckoutFieldError('chk-phone', 'chk-phone-err', 'Please enter a valid 10-digit mobile number');
+      hasError = true;
+      if (!firstInvalidEl) firstInvalidEl = document.getElementById('chk-phone');
+    } else {
+      clearCheckoutFieldError('chk-phone', 'chk-phone-err');
+    }
+
+    if (!address || address.length < 6) {
+      setCheckoutFieldError('chk-address', 'chk-address-err', 'Please enter your street address and building/landmark');
+      hasError = true;
+      if (!firstInvalidEl) firstInvalidEl = document.getElementById('chk-address');
+    } else {
+      clearCheckoutFieldError('chk-address', 'chk-address-err');
+    }
+
+    if (!pincode || !/^[1-9][0-9]{5}$/.test(pincode)) {
+      setCheckoutFieldError('chk-pincode', 'chk-pincode-err', 'Please enter a valid 6-digit Indian PIN code');
+      hasError = true;
+      if (!firstInvalidEl) firstInvalidEl = document.getElementById('chk-pincode');
+    } else {
+      clearCheckoutFieldError('chk-pincode', 'chk-pincode-err');
+    }
+
+    if (hasError) {
+      persistCurrentCheckoutDraft();
+      if (firstInvalidEl) firstInvalidEl.focus();
+      window.showToast('Incomplete Address Details', 'Please correct the highlighted fields.');
       return;
     }
 
-    const res = Store.placeOrder({ name, phone, address, pincode, paymentMethod, giftWrap });
-    resetSubmitBtn();
-    document.getElementById('checkout-modal')?.classList.add('hidden');
-    syncBodyModalLock();
-    updateGlobalBadges();
+    // Persist draft and prepare payload
+    persistCurrentCheckoutDraft();
+    const payload = { name, phone, address, pincode, paymentMethod, giftWrap };
+    lastCheckoutSubmissionPayload = payload;
 
-    if (res.success) {
-      window.showToast(`Order ${res.order.orderId} Confirmed! 🎉`, `Total Paid: ${formatINR(res.order.total)} via ${paymentMethod}`);
-      window.navigateTo('account');
-    } else if (res.requiresAuth) {
-      window.openCloudflareAuthModal(true);
-      window.showToast('Sign In Required', res.message || 'Please sign in to place your order.');
-    } else {
-      window.showToast('Checkout Notice', res.message || 'Please complete all required delivery fields.');
+    // Show Payment Processing State & disable submit to prevent duplicate submissions
+    isPaymentSubmissionPending = true;
+    if (submitBtn) {
+      submitBtn.disabled = true;
+      submitBtn.classList.add('opacity-70', 'cursor-not-allowed');
+    }
+
+    if (modal) modal.classList.add('hidden');
+    const procModal = document.getElementById('payment-processing-modal');
+    const timeoutBox = document.getElementById('pay-timeout-actions');
+    const statusEl = document.getElementById('pay-proc-status');
+    if (timeoutBox) timeoutBox.classList.add('hidden');
+    if (statusEl) {
+      statusEl.innerHTML = '<span class="w-2 h-2 rounded-full bg-secondary animate-ping"></span><span>Verifying Studio Order...</span>';
+    }
+    if (procModal) procModal.classList.remove('hidden');
+    syncBodyModalLock();
+
+    // Emergency safety timeout (10 seconds)
+    if (activePaymentTimeoutId) clearTimeout(activePaymentTimeoutId);
+    activePaymentTimeoutId = setTimeout(() => {
+      if (isPaymentSubmissionPending && timeoutBox) {
+        timeoutBox.classList.remove('hidden');
+        if (statusEl) {
+          statusEl.innerHTML = '<span class="w-2 h-2 rounded-full bg-[#9e3322] animate-ping"></span><span class="text-[#9e3322]">Gateway Response Delayed</span>';
+        }
+      }
+    }, 10000);
+
+    try {
+      const placeFn = (Store && typeof Store.placeOrderAsync === 'function')
+        ? Store.placeOrderAsync.bind(Store)
+        : (Store && typeof Store.placeOrder === 'function')
+          ? async (p) => Store.placeOrder(p)
+          : async () => ({ success: false, message: 'Store unavailable' });
+
+      const res = await placeFn(payload);
+
+      if (activePaymentTimeoutId) {
+        clearTimeout(activePaymentTimeoutId);
+        activePaymentTimeoutId = null;
+      }
+      isPaymentSubmissionPending = false;
+
+      // Close processing modal
+      if (procModal) procModal.classList.add('hidden');
+      syncBodyModalLock();
+
+      if (submitBtn) {
+        submitBtn.disabled = false;
+        submitBtn.classList.remove('opacity-70', 'cursor-not-allowed');
+      }
+
+      if (res.success) {
+        if (Store && typeof Store.clearCheckoutDraft === 'function') {
+          Store.clearCheckoutDraft();
+        }
+        updateGlobalBadges();
+
+        if (res.isOfflineBackup) {
+          window.showToast(
+            `Order #${res.order.orderId} Saved Locally (Offline Mode)`,
+            `Payment recorded locally via ${paymentMethod}. Will sync to Cloudflare KV once reconnected.`
+          );
+        } else {
+          window.showToast(
+            `Order #${res.order.orderId} Confirmed! 🎉`,
+            `Total Paid: ${formatINR(res.order.total)} via ${paymentMethod}`
+          );
+        }
+        window.navigateTo('account');
+      } else if (res.requiresAuth) {
+        if (modal) modal.classList.remove('hidden');
+        syncBodyModalLock();
+        window.openCloudflareAuthModal(true);
+        window.showToast('Sign In Required', res.message || 'Please sign in to place your order.');
+      } else {
+        // Recoverable error: preserve inputs and keep checkout modal open
+        if (modal) modal.classList.remove('hidden');
+        syncBodyModalLock();
+        window.showToast('Payment Processing Notice', res.message || 'Unable to finalize order. Your draft has been preserved.');
+      }
+    } catch (_err) {
+      if (activePaymentTimeoutId) {
+        clearTimeout(activePaymentTimeoutId);
+        activePaymentTimeoutId = null;
+      }
+      isPaymentSubmissionPending = false;
+      if (procModal) procModal.classList.add('hidden');
+      if (modal) modal.classList.remove('hidden');
+      syncBodyModalLock();
+      if (submitBtn) {
+        submitBtn.disabled = false;
+        submitBtn.classList.remove('opacity-70', 'cursor-not-allowed');
+      }
+      window.showToast('Payment / Network Issue', 'We could not complete your transaction right now. Your cart & draft address are safely preserved.');
     }
   };
+
+  window.retryPaymentSubmission = function () {
+    if (lastCheckoutSubmissionPayload) {
+      const timeoutBox = document.getElementById('pay-timeout-actions');
+      if (timeoutBox) timeoutBox.classList.add('hidden');
+      const statusEl = document.getElementById('pay-proc-status');
+      if (statusEl) {
+        statusEl.innerHTML = '<span class="w-2 h-2 rounded-full bg-secondary animate-ping"></span><span>Re-attempting Edge Verification...</span>';
+      }
+      isPaymentSubmissionPending = false;
+      window.submitCheckoutOrder(new Event('submit'));
+    } else {
+      window.cancelPaymentSubmission();
+      window.openCheckoutModal();
+    }
+  };
+
+  window.cancelPaymentSubmission = function () {
+    if (activePaymentTimeoutId) {
+      clearTimeout(activePaymentTimeoutId);
+      activePaymentTimeoutId = null;
+    }
+    isPaymentSubmissionPending = false;
+    const procModal = document.getElementById('payment-processing-modal');
+    if (procModal) procModal.classList.add('hidden');
+    const modal = document.getElementById('checkout-modal');
+    if (modal) {
+      modal.classList.remove('hidden');
+      const submitBtn = modal.querySelector('button[type="submit"]');
+      if (submitBtn) {
+        submitBtn.disabled = false;
+        submitBtn.classList.remove('opacity-70', 'cursor-not-allowed');
+      }
+    }
+    syncBodyModalLock();
+    window.showToast('Payment Cancelled', 'Your bag items and address entries are preserved.');
+  };
+
+  // Network Offline / Online Monitor with Retry and Auto-Recovery
+  let wasNetworkOffline = false;
+
+  function showOfflineBanner() {
+    const banner = document.getElementById('offline-atelier-banner');
+    if (!banner) return;
+    banner.classList.remove('hidden');
+    requestAnimationFrame(() => {
+      banner.classList.remove('is-hidden');
+    });
+  }
+
+  function hideOfflineBanner() {
+    const banner = document.getElementById('offline-atelier-banner');
+    if (!banner) return;
+    banner.classList.add('is-hidden');
+    setTimeout(() => {
+      if (banner.classList.contains('is-hidden')) {
+        banner.classList.add('hidden');
+      }
+    }, 400);
+  }
+
+  window.dismissOfflineBanner = function () {
+    hideOfflineBanner();
+  };
+
+  window.retryConnection = async function () {
+    const btn = document.getElementById('offline-retry-btn');
+    const origHtml = btn ? btn.innerHTML : '';
+    if (btn) {
+      btn.disabled = true;
+      btn.innerHTML = '<span class="material-symbols-outlined text-sm animate-spin" aria-hidden="true">sync</span><span>Checking...</span>';
+    }
+
+    let isConnected = typeof navigator !== 'undefined' ? navigator.onLine : true;
+    if (isConnected && typeof window !== 'undefined' && typeof fetch === 'function') {
+      try {
+        await fetch(window.location.origin + '/?ping=' + Date.now(), { method: 'HEAD', cache: 'no-store' });
+        isConnected = true;
+      } catch (_e) {
+        if (!navigator.onLine) isConnected = false;
+      }
+    }
+
+    if (btn) {
+      btn.disabled = false;
+      btn.innerHTML = origHtml || '<span class="material-symbols-outlined text-sm" aria-hidden="true">refresh</span><span>Retry Connection</span>';
+    }
+
+    if (isConnected) {
+      hideOfflineBanner();
+      wasNetworkOffline = false;
+      window.showToast('Connection Restored', 'Atelier online. Synchronizing studio queue with Cloudflare Edge.');
+      if (Store && typeof Store.syncPendingEdgeState === 'function') {
+        Store.syncPendingEdgeState();
+      }
+    } else {
+      window.showToast('Still Offline', 'Internet connection not detected yet. Operating in local resilient cache mode.');
+    }
+  };
+
+  function initNetworkMonitor() {
+    if (typeof window === 'undefined') return;
+
+    const handleOffline = () => {
+      wasNetworkOffline = true;
+      showOfflineBanner();
+      window.showToast('Offline Mode Activated', 'Network lost. Your Studio Bag and checkout forms are saved locally.');
+    };
+
+    const handleOnline = () => {
+      hideOfflineBanner();
+      if (wasNetworkOffline) {
+        wasNetworkOffline = false;
+        window.showToast('Connection Restored', 'Studio Atelier reconnected. Edge state synchronized.');
+        if (Store && typeof Store.syncPendingEdgeState === 'function') {
+          Store.syncPendingEdgeState();
+        }
+      }
+    };
+
+    window.addEventListener('offline', handleOffline);
+    window.addEventListener('online', handleOnline);
+
+    if (typeof navigator !== 'undefined' && !navigator.onLine) {
+      handleOffline();
+    }
+  }
+  window.initNetworkMonitor = initNetworkMonitor;
 
   // Programmatic Bridge Live Catalog / Social Drop Helper (Zero owner/admin UI strings)
   window.simulateExternalStudioPush = function () {
@@ -5542,6 +6030,7 @@
   // Initialize on DOMContentLoaded
   window.addEventListener('hashchange', handleRouteChange);
   document.addEventListener('DOMContentLoaded', () => {
+    initNetworkMonitor();
     handleRouteChange();
     // Start auto-dismiss timer for Vistāra Krafts vector splash animation (1.0s animation + 0.3s fade = 1.3s total)
     vkSplashTimer = setTimeout(() => {

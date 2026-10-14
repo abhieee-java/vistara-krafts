@@ -52,6 +52,7 @@ function makeMockElement(id = '') {
       contains: (c) => classes.has(c)
     },
     setAttribute: () => {},
+    removeAttribute: () => {},
     getAttribute: () => null,
     addEventListener: () => {},
     querySelector: () => makeMockElement(),
@@ -1919,6 +1920,117 @@ if (chromeExe) {
     console.error('   ', err.message);
     failed++;
   }
+}
+
+// Suite 22: Resilience, Network & Error Handling, and Kinetic Lottie-Style Feedback
+try {
+  // 1. Verify 500.html exists, has trace ID, reload button, and catalog link
+  assert.ok(fs.existsSync(path.join(ROOT, '500.html')), '500.html standalone server error page must exist');
+  const static500Html = fs.readFileSync(path.join(ROOT, '500.html'), 'utf8');
+  assert.ok(static500Html.includes('HTTP 500') && static500Html.includes('Studio System Interruption'), '500.html must display HTTP 500 notice');
+  assert.ok(static500Html.includes('VK-EDGE-500-'), '500.html must generate Edge incident trace ID');
+  assert.ok(static500Html.includes('window.location.reload()'), '500.html must offer reload action');
+  assert.ok(static500Html.includes('href="./#/catalog/all"'), '500.html must offer catalog link');
+
+  // 2. Verify 404.html has kinetic SVG illustration
+  assert.ok(fs.existsSync(path.join(ROOT, '404.html')), '404.html page must exist');
+  const static404Html = fs.readFileSync(path.join(ROOT, '404.html'), 'utf8');
+  assert.ok(static404Html.includes('anim-levitate') || static404Html.includes('lottie-anim-float'), '404.html must feature kinetic crystal SVG illustration');
+
+  // 3. Verify Offline Atelier Banner in index.html and styles.css
+  const indexHtml = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8');
+  const stylesCss = fs.readFileSync(path.join(ROOT, 'styles.css'), 'utf8');
+  assert.ok(indexHtml.includes('id="offline-atelier-banner"'), 'index.html must include #offline-atelier-banner');
+  assert.ok(indexHtml.includes('id="offline-retry-btn"'), 'index.html must include #offline-retry-btn');
+  assert.ok(stylesCss.includes('#offline-atelier-banner'), 'styles.css must style offline banner');
+  assert.ok(stylesCss.includes('lottieLevitate') || stylesCss.includes('lottieSpinSlow'), 'styles.css must define kinetic keyframes');
+
+  // 4. Verify Payment Processing Modal in index.html with timeout handling
+  assert.ok(indexHtml.includes('id="payment-processing-modal"'), 'index.html must include #payment-processing-modal');
+  assert.ok(indexHtml.includes('id="pay-timeout-actions"'), 'index.html must include emergency timeout action container');
+  assert.ok(indexHtml.includes('window.retryPaymentSubmission()'), 'index.html must bind retryPaymentSubmission');
+  assert.ok(indexHtml.includes('window.cancelPaymentSubmission()'), 'index.html must bind cancelPaymentSubmission');
+
+  // 5. Test Checkout Draft Persistence in StorefrontBridge
+  Store.clearCheckoutDraft();
+  assert.deepStrictEqual(Store.getCheckoutDraft(), {}, 'Checkout draft should initially be empty');
+  Store.saveCheckoutDraft({
+    name: 'Ananya Sharma',
+    phone: '+91 9988776655',
+    address: 'Flat 402, Lotus Orchid, Indiranagar, Bengaluru',
+    pincode: '560038',
+    paymentMethod: 'UPI Instant (GPay / PhonePe)',
+    giftWrap: true
+  });
+  const savedDraft = Store.getCheckoutDraft();
+  assert.strictEqual(savedDraft.name, 'Ananya Sharma', 'saveCheckoutDraft must persist customer name');
+  assert.strictEqual(savedDraft.pincode, '560038', 'saveCheckoutDraft must persist customer PIN code');
+  assert.strictEqual(savedDraft.giftWrap, true, 'saveCheckoutDraft must persist gift wrap preference');
+
+  // 6. Test placeOrderAsync resilient local preservation
+  const testCartItem = {
+    productId: 'vk-epx-301',
+    variantLabel: '1.2kg Kit (Bundle)',
+    price: 1149,
+    regularPrice: 1299,
+    qty: 1
+  };
+  Store.saveCart([testCartItem]);
+  assert.strictEqual(Store.getCart().length, 1, 'Cart should have 1 item');
+
+  // Verify auth requirement before order placement
+  Store.logoutPatron();
+  const unauthRes = await Store.placeOrderAsync({
+    name: 'Ananya Sharma',
+    phone: '+91 9988776655',
+    address: 'Flat 402, Lotus Orchid, Indiranagar, Bengaluru',
+    pincode: '560038'
+  });
+  assert.strictEqual(unauthRes.requiresAuth, true, 'placeOrderAsync must require authentication before ordering');
+
+  // Authenticate user
+  sandbox.window.completeOAuthChooserAccount('google', 'ananya.sharma@gmail.com', 'Ananya Sharma');
+  assert.strictEqual(Store.isAuthenticated(), true, 'User must be authenticated');
+
+  const orderRes = await Store.placeOrderAsync({
+    name: 'Ananya Sharma',
+    phone: '+91 9988776655',
+    address: 'Flat 402, Lotus Orchid, Indiranagar, Bengaluru',
+    pincode: '560038',
+    paymentMethod: 'UPI Instant (GPay / PhonePe)',
+    giftWrap: true
+  });
+  assert.ok(orderRes.success, 'placeOrderAsync must succeed and persist order locally');
+  assert.ok(orderRes.order && orderRes.order.orderId, 'placeOrderAsync must return an order with valid orderId');
+
+  // 7. Verify In-App 500 View & kinetic empty states in app.js
+  sandbox.window.navigateTo('500');
+  const view500 = mockDocument.getElementById('app-view-root').innerHTML;
+  assert.ok(view500.includes('500') && view500.includes('Studio System Interruption'), 'In-app 500 view must render 500 error state');
+  assert.ok(view500.includes('lottie-anim-spin'), 'In-app 500 view must feature kinetic SVG animation');
+  assert.ok(view500.includes('VK-ERR-') || view500.includes('VK-EDGE-'), 'In-app 500 view must display incident trace ID');
+
+  // Empty cart kinetic state
+  Store.saveCart([]);
+  sandbox.window.navigateTo('cart');
+  const cartHtml = mockDocument.getElementById('app-view-root').innerHTML;
+  assert.ok(cartHtml.includes('Your Studio Bag is Empty') && (cartHtml.includes('lottie-anim-float') || cartHtml.includes('svg')), 'Empty cart must render kinetic studio bag SVG');
+
+  // Empty wishlist kinetic state
+  Store.saveWishlist([]);
+  sandbox.window.navigateTo('wishlist');
+  const wishHtml = mockDocument.getElementById('app-view-root').innerHTML;
+  assert.ok(wishHtml.includes('Your Wishlist is Empty') && (wishHtml.includes('lottie-anim-pulse') || wishHtml.includes('svg')), 'Empty wishlist must render kinetic heart SVG');
+
+  // Reset to home
+  sandbox.window.navigateTo('home');
+
+  console.log('✅ PASS: Resilience, Network & Error Handling, and Kinetic Lottie-Style Feedback');
+  passed++;
+} catch (err) {
+  console.error('❌ FAIL: Resilience, Network & Error Handling, and Kinetic Lottie-Style Feedback');
+  console.error('   ', err.message);
+  failed++;
 }
 
 console.log(`\n========================================`);

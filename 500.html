@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>500 • Atelier System Interruption | Vistāra Krafts (@resin.art.memories)</title>
+  <meta name="description" content="Our optical curing servers or edge system encountered a momentary interruption. Your cart and details remain safe. Please retry or contact our artisan concierge.">
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" type="image/jpeg" href="./vistara-krafts-logo.jpg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,400;1,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
+  <link rel="stylesheet" href="./tokens.css">
+  <link rel="stylesheet" href="./styles.css">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @keyframes gearRotate {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+    @keyframes gearRotateRev {
+      from { transform: rotate(360deg); }
+      to { transform: rotate(0deg); }
+    }
+    @keyframes pulseGlow {
+      0%, 100% { opacity: 0.35; transform: scale(0.96); }
+      50% { opacity: 0.85; transform: scale(1.04); }
+    }
+    @keyframes floatSparkle {
+      0%, 100% { transform: translateY(0px) rotate(0deg); opacity: 0.4; }
+      50% { transform: translateY(-8px) rotate(15deg); opacity: 1; }
+    }
+    .anim-gear { transform-origin: center; animation: gearRotate 16s linear infinite; }
+    .anim-gear-rev { transform-origin: center; animation: gearRotateRev 22s linear infinite; }
+    .anim-glow { transform-origin: center; animation: pulseGlow 4s ease-in-out infinite; }
+    .anim-sparkle { transform-origin: center; animation: floatSparkle 3s ease-in-out infinite; }
+  </style>
+</head>
+<body class="bg-surface text-on-surface flex flex-col min-h-screen">
+  <header class="sticky top-0 w-full z-40 bg-surface/95 backdrop-blur-xl border-b border-[#e4e0d8] shadow-2xs">
+    <div class="max-w-7xl mx-auto h-16 px-4 sm:px-8 flex items-center justify-between">
+      <a href="./#/home" class="flex items-center gap-2.5">
+        <span class="w-10 h-10 rounded-lg overflow-hidden border border-[#e4e0d8] bg-white p-0.5 flex items-center justify-center shadow-2xs">
+          <img src="./vistara-krafts-logo.jpg" alt="Vistāra Krafts Logo" class="w-full h-full object-contain">
+        </span>
+        <div class="flex flex-col">
+          <span class="font-serif text-lg sm:text-xl text-primary font-bold tracking-tight leading-tight">Vistāra Krafts</span>
+          <span class="text-[10px] uppercase tracking-wider text-[#9e3322] font-bold leading-tight">@resin.art.memories</span>
+        </div>
+      </a>
+      <div class="flex items-center gap-2">
+        <button type="button" onclick="window.location.reload()" class="min-h-[44px] px-3.5 py-2 rounded-xl bg-surface-container hover:bg-surface-container-high text-primary text-xs font-bold inline-flex items-center gap-1.5 border border-[#e4e0d8] cursor-pointer">
+          <span class="material-symbols-outlined text-base">refresh</span>
+          <span>Retry</span>
+        </button>
+        <a href="./#/home" class="min-h-[44px] px-3.5 py-2 rounded-xl bg-primary hover:bg-primary-container text-white text-xs font-bold inline-flex items-center gap-1.5 shadow-2xs">
+          <span class="material-symbols-outlined text-base">home</span>
+          <span>Home</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <main class="flex-1 flex items-center justify-center p-4 sm:p-8">
+    <div class="flex flex-col items-center justify-center max-w-xl mx-auto text-center gap-6 py-8">
+      
+      <!-- Lottie-Style Animated Kinetic SVG: Optical Curing Prism & Precision Gears -->
+      <div class="relative w-44 h-44 sm:w-52 sm:h-52 flex items-center justify-center">
+        <div class="absolute inset-0 rounded-full bg-[#d4af37]/10 anim-glow blur-xl pointer-events-none"></div>
+        <svg class="w-full h-full drop-shadow-md" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Animated system calibration illustration">
+          <!-- Ambient Outer Orbit -->
+          <circle cx="100" cy="100" r="88" stroke="#d4af37" stroke-width="1.2" stroke-dasharray="4 8" opacity="0.45" />
+          
+          <!-- Outer Gear (Clockwise) -->
+          <g class="anim-gear">
+            <circle cx="100" cy="100" r="64" stroke="#0f172a" stroke-width="2" stroke-dasharray="14 8" opacity="0.65" />
+            <circle cx="100" cy="100" r="54" stroke="#d4af37" stroke-width="1" opacity="0.3" />
+          </g>
+
+          <!-- Counter Gear (Counter-Clockwise) -->
+          <g class="anim-gear-rev">
+            <circle cx="100" cy="100" r="42" stroke="#9e3322" stroke-width="1.8" stroke-dasharray="10 6" opacity="0.75" />
+            <polygon points="100,62 133,119 67,119" stroke="#d4af37" stroke-width="1.5" fill="none" opacity="0.5" />
+          </g>
+
+          <!-- Central Optical Crystal / Prism Core -->
+          <g class="anim-glow">
+            <polygon points="100,72 124,100 100,128 76,100" fill="#0f172a" stroke="#d4af37" stroke-width="2" />
+            <line x1="76" y1="100" x2="124" y2="100" stroke="#d4af37" stroke-width="1" opacity="0.7" />
+            <line x1="100" y1="72" x2="100" y2="128" stroke="#d4af37" stroke-width="1" opacity="0.7" />
+          </g>
+
+          <!-- Kinetic Floating Sparkles -->
+          <g class="anim-sparkle">
+            <polygon points="155,55 158,62 165,65 158,68 155,75 152,68 145,65 152,62" fill="#d4af37" />
+            <polygon points="42,135 44,140 49,142 44,144 42,149 40,144 35,142 40,140" fill="#9e3322" opacity="0.85" />
+            <circle cx="140" cy="148" r="3" fill="#d4af37" opacity="0.7" />
+            <circle cx="60" cy="58" r="2.5" fill="#0f172a" opacity="0.5" />
+          </g>
+        </svg>
+      </div>
+
+      <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#fdf6f3] border border-[#9e3322]/20 text-[#9e3322] text-xs font-bold uppercase tracking-wider">
+        <span class="material-symbols-outlined text-sm">precision_manufacturing</span>
+        <span>HTTP 500 • Studio System Interruption</span>
+      </div>
+
+      <div class="space-y-3">
+        <h1 class="font-headline-lg font-serif text-3xl sm:text-5xl text-primary font-bold tracking-tight">
+          Temporary Atelier System Calibration
+        </h1>
+        <p class="text-xs sm:text-sm text-on-surface-variant leading-relaxed max-w-lg">
+          Our optical curing servers or cloud edge are taking a momentary breath. <strong>Your Studio Bag, active wishlist, and customer inputs remain safe in your local browser cache.</strong> No payment or order has been compromised.
+        </p>
+      </div>
+
+      <div class="flex flex-wrap items-center justify-center gap-3 pt-2">
+        <button type="button" onclick="window.location.reload()" class="min-h-[48px] px-6 py-2.5 rounded-xl bg-primary hover:bg-primary-container text-white text-xs font-bold inline-flex items-center gap-2 shadow-xs cursor-pointer">
+          <span class="material-symbols-outlined text-base">refresh</span>
+          <span>Retry Connection Now</span>
+        </button>
+        <a href="./#/catalog/all" class="min-h-[48px] px-5 py-2.5 rounded-xl bg-secondary hover:bg-secondary/90 text-on-secondary text-xs font-bold inline-flex items-center gap-2 shadow-xs">
+          <span class="material-symbols-outlined text-base">inventory_2</span>
+          <span>Browse Catalogue</span>
+        </a>
+        <a href="https://wa.me/919876543210?text=Hello%20Vistara%20Krafts%20Team,%20I%20noticed%20a%20500%20server%20interruption%20on%20the%20website" target="_blank" rel="noopener noreferrer" class="min-h-[48px] px-5 py-2.5 rounded-xl bg-white border border-[#e4e0d8] hover:bg-surface-container-low text-primary text-xs font-bold inline-flex items-center gap-2 shadow-2xs">
+          <span class="material-symbols-outlined text-base text-[#25D366]">chat</span>
+          <span>WhatsApp Concierge</span>
+        </a>
+      </div>
+
+      <div class="p-3.5 rounded-xl bg-surface-container-low border border-[#e4e0d8] max-w-md w-full text-left flex items-start gap-3">
+        <span class="material-symbols-outlined text-secondary text-base mt-0.5">info</span>
+        <div class="text-[11px] text-on-surface-variant">
+          <p class="font-bold text-primary">Incident Diagnostics</p>
+          <p class="font-mono mt-0.5" id="diag-trace">Trace ID: VK-EDGE-500-CALIB</p>
+          <p class="mt-1">Edge Nodes: Bengaluru Primary (IN-KA) • Automatic Failover Ready</p>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <footer class="border-t border-[#e4e0d8] py-4 text-center text-xs text-on-surface-variant bg-surface-container-lowest">
+    <p>© 2026 Vistāra Krafts × Resin Art Memories. All rights reserved.</p>
+  </footer>
+
+  <script>
+    (function () {
+      const traceEl = document.getElementById('diag-trace');
+      if (traceEl) {
+        traceEl.textContent = 'Trace ID: VK-EDGE-500-' + Math.random().toString(36).slice(2, 8).toUpperCase() + '-' + Date.now().toString(36).toUpperCase();
+      }
+    })();
+  </script>
+</body>
+</html>

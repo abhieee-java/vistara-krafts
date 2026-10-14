@@ -989,6 +989,33 @@
     </div>
   </div>
 
+  <!-- Offline Atelier Resilience Banner (Auto-Toggled by Network Monitor) -->
+  <aside id="offline-atelier-banner" role="status" aria-live="assertive" class="is-hidden hidden sticky top-0 w-full min-w-0 bg-[#0f172a] text-white px-3 sm:px-6 py-2.5 shadow-lg border-b-2 border-[#d4af37] z-50 transition-all">
+    <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-2.5">
+      <div class="flex items-center gap-2.5 min-w-0">
+        <span class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center shrink-0 border border-[#d4af37]/40 lottie-anim-pulse">
+          <span class="material-symbols-outlined text-[#ffdeae] text-base" aria-hidden="true">wifi_off</span>
+        </span>
+        <div class="min-w-0">
+          <p id="offline-banner-title" class="text-xs font-bold text-white flex items-center gap-1.5 flex-wrap">
+            <span>Studio Atelier Offline Mode</span>
+            <span class="text-[10px] px-2 py-0.5 rounded-full bg-[#d4af37]/25 text-[#ffdeae] font-normal uppercase tracking-wider">Local Cache Active</span>
+          </p>
+          <p id="offline-banner-desc" class="text-[11px] text-[#e4e0d8] truncate">Internet connection interrupted. Your Studio Bag and form inputs are safely preserved.</p>
+        </div>
+      </div>
+      <div class="flex items-center gap-2 shrink-0 ml-auto">
+        <button type="button" id="offline-retry-btn" onclick="window.retryConnection()" class="min-h-[36px] px-3.5 py-1.5 rounded-lg bg-[#d4af37] hover:bg-[#b08d57] text-[#0f172a] text-xs font-bold inline-flex items-center gap-1 shadow-xs transition cursor-pointer">
+          <span class="material-symbols-outlined text-sm" aria-hidden="true">refresh</span>
+          <span>Retry Connection</span>
+        </button>
+        <button type="button" aria-label="Dismiss Offline Banner" onclick="window.dismissOfflineBanner()" class="min-w-[36px] min-h-[36px] rounded-lg bg-white/10 hover:bg-white/20 text-white flex items-center justify-center shrink-0 cursor-pointer">
+          <span class="material-symbols-outlined text-base" aria-hidden="true">close</span>
+        </button>
+      </div>
+    </div>
+  </aside>
+
   <!-- Top Pan-India Logistics & Vistāra Krafts Ribbon -->
   <header class="sticky top-0 w-full min-w-0 z-40 bg-surface/95 backdrop-blur-xl border-b border-[#e4e0d8] shadow-2xs max-w-full overflow-x-clip">
     <aside aria-label="Studio Highlights" class="w-full min-w-0 bg-tertiary text-on-tertiary px-2.5 sm:px-4 py-1 text-center text-[10px] sm:text-[11px] font-label-sm tracking-wide flex items-center justify-center gap-1.5 overflow-hidden">
@@ -1711,21 +1738,25 @@
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 shrink-0">
         <div>
           <label for="chk-name" class="text-[11px] font-bold text-primary block mb-1">Full Recipient Name *</label>
-          <input id="chk-name" type="text" required autocomplete="name" aria-label="Full Recipient Name" value="" placeholder="Enter your full name" class="w-full h-12 px-3 rounded-lg bg-surface-container-low border border-[#e4e0d8] text-xs">
+          <input id="chk-name" type="text" required autocomplete="name" aria-label="Full Recipient Name" aria-describedby="chk-name-err" value="" placeholder="Enter your full name" class="w-full h-12 px-3 rounded-lg bg-surface-container-low border border-[#e4e0d8] text-xs">
+          <p id="chk-name-err" class="hidden text-[10px] text-[#9e3322] font-semibold mt-1" role="alert"></p>
         </div>
         <div>
           <label for="chk-phone" class="text-[11px] font-bold text-primary block mb-1">Mobile / WhatsApp Number *</label>
-          <input id="chk-phone" type="tel" required autocomplete="tel" aria-label="WhatsApp or Mobile Number for Tracking" value="" placeholder="+91 98765 43210" class="w-full h-12 px-3 rounded-lg bg-surface-container-low border border-[#e4e0d8] text-xs">
+          <input id="chk-phone" type="tel" required autocomplete="tel" aria-label="WhatsApp or Mobile Number for Tracking" aria-describedby="chk-phone-err" value="" placeholder="+91 98765 43210" class="w-full h-12 px-3 rounded-lg bg-surface-container-low border border-[#e4e0d8] text-xs">
+          <p id="chk-phone-err" class="hidden text-[10px] text-[#9e3322] font-semibold mt-1" role="alert"></p>
         </div>
       </div>
       <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5 shrink-0">
         <div class="sm:col-span-2">
           <label for="chk-address" class="text-[11px] font-bold text-primary block mb-1">Street Address, Locality &amp; City *</label>
-          <input id="chk-address" type="text" required autocomplete="street-address" aria-label="Complete Street Address and PIN" value="" placeholder="Flat / House No., Street, City" class="w-full h-12 px-3 rounded-lg bg-surface-container-low border border-[#e4e0d8] text-xs">
+          <input id="chk-address" type="text" required autocomplete="street-address" aria-label="Complete Street Address and PIN" aria-describedby="chk-address-err" value="" placeholder="Flat / House No., Street, City" class="w-full h-12 px-3 rounded-lg bg-surface-container-low border border-[#e4e0d8] text-xs">
+          <p id="chk-address-err" class="hidden text-[10px] text-[#9e3322] font-semibold mt-1" role="alert"></p>
         </div>
         <div>
           <label for="chk-pincode" class="text-[11px] font-bold text-primary block mb-1">PIN Code *</label>
-          <input id="chk-pincode" type="text" required maxlength="6" pattern="[1-9][0-9]{5}" autocomplete="postal-code" aria-label="6-Digit Delivery PIN Code" value="" placeholder="560001" class="w-full h-12 px-3 rounded-lg bg-surface-container-low border border-[#e4e0d8] font-spec-numeral text-xs">
+          <input id="chk-pincode" type="text" required maxlength="6" pattern="[1-9][0-9]{5}" autocomplete="postal-code" aria-label="6-Digit Delivery PIN Code" aria-describedby="chk-pincode-err" value="" placeholder="560001" class="w-full h-12 px-3 rounded-lg bg-surface-container-low border border-[#e4e0d8] font-spec-numeral text-xs">
+          <p id="chk-pincode-err" class="hidden text-[10px] text-[#9e3322] font-semibold mt-1" role="alert"></p>
         </div>
       </div>
       <div class="shrink-0">
@@ -1754,8 +1785,46 @@
         <span class="text-xs font-semibold text-primary">Total Amount Payable (incl. 18% GST)</span>
         <span id="checkout-modal-payable" class="font-spec-numeral text-lg font-bold text-primary shrink-0">₹0</span>
       </div>
-      <button type="submit" class="btn-shimmer w-full min-h-[48px] py-3 rounded-xl bg-primary text-white text-xs font-bold shadow-md shrink-0 cursor-pointer">Place Order &amp; Save Delivery Address</button>
+      <button type="submit" id="checkout-submit-btn" class="btn-shimmer w-full min-h-[48px] py-3 rounded-xl bg-primary text-white text-xs font-bold shadow-md shrink-0 cursor-pointer">Place Order &amp; Save Delivery Address</button>
     </form>
+  </div>
+
+  <!-- 7B. Safe Payment Processing & Gateway Verification Modal (Anti-Duplicate & Timeout Safeguard) -->
+  <div id="payment-processing-modal" role="dialog" aria-modal="true" aria-labelledby="pay-proc-title" class="fixed inset-0 z-[60] bg-primary/75 backdrop-blur-md hidden flex items-center justify-center p-3 sm:p-4">
+    <div class="w-full max-w-sm max-w-[calc(100vw-24px)] bg-white rounded-2xl p-6 shadow-2xl flex flex-col items-center text-center gap-4 border border-[#d4af37]/40" onclick="event.stopPropagation()">
+      <!-- Kinetic Shield & Security Orbit SVG -->
+      <div class="relative w-24 h-24 flex items-center justify-center">
+        <div class="absolute inset-0 rounded-full bg-[#d4af37]/15 lottie-anim-pulse blur-md pointer-events-none"></div>
+        <svg class="w-full h-full drop-shadow-sm" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="50" cy="50" r="42" stroke="#d4af37" stroke-width="1.5" stroke-dasharray="6 6" class="lottie-anim-spin" />
+          <path d="M50 20 L75 32 V52 C75 68 50 82 50 82 C50 82 25 68 25 52 V32 Z" fill="#fcf9f5" stroke="#0f172a" stroke-width="2" />
+          <path d="M50 24 L71 34 V52 C71 65 50 77 50 77 C50 77 29 65 29 52 V34 Z" stroke="#d4af37" stroke-width="1.2" class="lottie-shield-stroke" />
+          <path d="M42 50 L48 56 L59 44" stroke="#266b4e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+      </div>
+
+      <div class="space-y-1">
+        <h3 id="pay-proc-title" class="font-headline-sm font-serif text-lg text-primary font-bold">Authorizing Secure Payment</h3>
+        <p id="pay-proc-desc" class="text-xs text-on-surface-variant">Connecting to 256-Bit Razorpay &amp; Banking Gateway. Please do not refresh or press back.</p>
+      </div>
+
+      <div class="w-full bg-surface-container-low p-3 rounded-xl border border-[#e4e0d8] flex items-center justify-between text-xs font-mono">
+        <span class="text-on-surface-variant">Status:</span>
+        <span id="pay-proc-status" class="font-bold text-secondary flex items-center gap-1.5">
+          <span class="w-2 h-2 rounded-full bg-secondary animate-ping"></span>
+          <span>Verifying Studio Order...</span>
+        </span>
+      </div>
+
+      <!-- Emergency Timeout Action (Becomes visible if network takes > 10 seconds) -->
+      <div id="pay-timeout-actions" class="hidden w-full flex flex-col gap-2 pt-1">
+        <p class="text-[11px] text-[#9e3322] font-semibold">Gateway taking longer than usual. Your cart and typed address remain intact.</p>
+        <div class="flex gap-2">
+          <button type="button" onclick="window.retryPaymentSubmission()" class="flex-1 min-h-[44px] py-2 px-3 rounded-xl bg-primary text-white text-xs font-bold shadow-xs cursor-pointer">Retry</button>
+          <button type="button" onclick="window.cancelPaymentSubmission()" class="min-h-[44px] py-2 px-3 rounded-xl bg-surface-container text-primary text-xs font-semibold hover:bg-surface-container-high cursor-pointer">Cancel</button>
+        </div>
+      </div>
+    </div>
   </div>
 
   <!-- 8. Change Pincode Modal -->

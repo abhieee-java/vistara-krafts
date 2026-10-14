@@ -24,7 +24,9 @@
     RECENTLY_VIEWED: 'ram_vk_recently_viewed_v2',
     STUDIO_SYNC_LOG: 'ram_vk_studio_sync_v2',
     DPDP_CONSENT: 'ram_vk_dpdp_consent_v1',
-    DPDP_TICKETS: 'ram_vk_dpdp_tickets_v1'
+    DPDP_TICKETS: 'ram_vk_dpdp_tickets_v1',
+    CHECKOUT_DRAFT: 'ram_vk_checkout_draft_v2',
+    OFFLINE_QUEUE: 'ram_vk_offline_queue_v2'
   };
 
   // Verified studio & product photography from the Stitch archive
@@ -1220,6 +1222,13 @@
       return safeRead(STORAGE_KEYS.WISHLIST, DEFAULT_WISHLIST);
     },
 
+    saveWishlist(list) {
+      const updated = Array.isArray(list) ? list : [];
+      safeWrite(STORAGE_KEYS.WISHLIST, updated);
+      this.notify('wishlist_updated', { count: updated.length, wishlist: updated });
+      return updated;
+    },
+
     isWishlisted(productId) {
       return this.getWishlist().includes(productId);
     },
@@ -1743,7 +1752,65 @@
       callCloudflareEdge('/orders', 'POST', newOrder);
       this.clearCart();
       this.notify('order_placed', newOrder);
+      this.clearCheckoutDraft();
       return { success: true, order: newOrder };
+    },
+
+    saveCheckoutDraft(data = {}) {
+      if (!data || typeof data !== 'object') return;
+      try {
+        const existing = this.getCheckoutDraft() || {};
+        const merged = { ...existing, ...data, updatedAt: Date.now() };
+        safeWrite(STORAGE_KEYS.CHECKOUT_DRAFT, merged);
+      } catch (_e) {}
+    },
+
+    getCheckoutDraft() {
+      return safeRead(STORAGE_KEYS.CHECKOUT_DRAFT, {}) || {};
+    },
+
+    clearCheckoutDraft() {
+      try {
+        if (typeof global.localStorage !== 'undefined') {
+          global.localStorage.removeItem(STORAGE_KEYS.CHECKOUT_DRAFT);
+        }
+      } catch (_e) {}
+      memoryStorage.delete(STORAGE_KEYS.CHECKOUT_DRAFT);
+    },
+
+    async placeOrderAsync(checkoutDetails = {}) {
+      const synchronousResult = this.placeOrder(checkoutDetails);
+      if (!synchronousResult.success) {
+        return synchronousResult;
+      }
+      this.clearCheckoutDraft();
+      try {
+        const edgeRes = await callCloudflareEdge('/orders', 'POST', synchronousResult.order);
+        if (edgeRes && (edgeRes.ok || edgeRes.success || edgeRes.orderId)) {
+          return { success: true, order: synchronousResult.order, verifiedByServer: true };
+        }
+      } catch (_err) {
+        // Edge offline or timeout: order is safely held in local storage backup
+      }
+      return { success: true, order: synchronousResult.order, verifiedByServer: false, isOfflineBackup: true };
+    },
+
+    async syncPendingEdgeState() {
+      const orders = this.getOrders();
+      if (orders && orders.length > 0) {
+        for (const ord of orders.slice(0, 3)) {
+          try {
+            await callCloudflareEdge('/orders', 'POST', ord);
+          } catch (_e) {}
+        }
+      }
+      const patron = this.getPatronProfile();
+      if (patron && patron.name) {
+        try {
+          await callCloudflareEdge('/auth/profile', 'PUT', patron);
+        } catch (_e) {}
+      }
+      return { synced: true };
     },
 
     // External Studio Bridge Receiver for Live Catalogue Drops & Customer Order Updates

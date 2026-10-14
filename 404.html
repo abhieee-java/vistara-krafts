@@ -14,6 +14,23 @@
   <link rel="stylesheet" href="./tokens.css">
   <link rel="stylesheet" href="./styles.css">
   <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @keyframes crystalLevitate {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      50% { transform: translateY(-10px) rotate(3deg); }
+    }
+    @keyframes orbitSpin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+    @keyframes auraPulse {
+      0%, 100% { opacity: 0.3; transform: scale(0.95); }
+      50% { opacity: 0.75; transform: scale(1.06); }
+    }
+    .anim-levitate { animation: crystalLevitate 5s ease-in-out infinite; }
+    .anim-orbit { transform-origin: center; animation: orbitSpin 20s linear infinite; }
+    .anim-aura { transform-origin: center; animation: auraPulse 4s ease-in-out infinite; }
+  </style>
 </head>
 <body class="bg-surface text-on-surface flex flex-col min-h-screen">
   <header class="sticky top-0 w-full z-40 bg-surface/95 backdrop-blur-xl border-b border-[#e4e0d8] shadow-2xs">
@@ -35,7 +52,38 @@
   </header>
 
   <main class="flex-1 flex items-center justify-center p-4 sm:p-8">
-    <div class="flex flex-col items-center justify-center max-w-xl mx-auto text-center gap-6 py-12">
+    <div class="flex flex-col items-center justify-center max-w-xl mx-auto text-center gap-6 py-8">
+      
+      <!-- Lottie-Style Animated Kinetic SVG: Preserved Floral Botanical Crystal Specimen -->
+      <div class="relative w-44 h-44 sm:w-52 sm:h-52 flex items-center justify-center">
+        <div class="absolute inset-0 rounded-full bg-[#d4af37]/15 anim-aura blur-xl pointer-events-none"></div>
+        <svg class="w-full h-full drop-shadow-md anim-levitate" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Animated missing specimen illustration">
+          <!-- Orbital Ellipse -->
+          <ellipse cx="100" cy="100" rx="84" ry="32" stroke="#d4af37" stroke-width="1.2" stroke-dasharray="4 6" opacity="0.6" class="anim-orbit" />
+          
+          <!-- Faceted Crystal Silhouette -->
+          <polygon points="100,28 152,70 140,148 100,172 60,148 48,70" fill="#fcf9f5" stroke="#0f172a" stroke-width="2" />
+          <polygon points="100,28 152,70 100,105" fill="#f4efe6" stroke="#0f172a" stroke-width="1.2" opacity="0.8" />
+          <polygon points="100,28 48,70 100,105" fill="#ede5d8" stroke="#0f172a" stroke-width="1.2" opacity="0.8" />
+          <polygon points="48,70 60,148 100,105" fill="#e2d7c5" stroke="#0f172a" stroke-width="1.2" opacity="0.7" />
+          <polygon points="152,70 140,148 100,105" fill="#dbcdb8" stroke="#0f172a" stroke-width="1.2" opacity="0.7" />
+          <polygon points="60,148 100,172 100,105" fill="#d0bfab" stroke="#0f172a" stroke-width="1.2" opacity="0.85" />
+          <polygon points="140,148 100,172 100,105" fill="#c4b09b" stroke="#0f172a" stroke-width="1.2" opacity="0.85" />
+
+          <!-- Preserved Gold Flower Stem inside Crystal -->
+          <circle cx="100" cy="98" r="8" fill="#9e3322" opacity="0.9" />
+          <circle cx="94" cy="94" r="5" fill="#d4af37" opacity="0.8" />
+          <circle cx="106" cy="94" r="5" fill="#d4af37" opacity="0.8" />
+          <circle cx="100" cy="88" r="5" fill="#d4af37" opacity="0.8" />
+          <path d="M100 106 Q98 126 100 142" stroke="#266b4e" stroke-width="1.5" stroke-linecap="round" />
+
+          <!-- Golden Prismatic Sparkles -->
+          <polygon points="160,42 163,48 169,51 163,54 160,60 157,54 151,51 157,48" fill="#d4af37" />
+          <circle cx="45" cy="120" r="2.5" fill="#d4af37" />
+          <circle cx="155" cy="130" r="3" fill="#9e3322" opacity="0.7" />
+        </svg>
+      </div>
+
       <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-secondary-container text-on-secondary-container text-xs font-bold uppercase tracking-wider">
         <span class="material-symbols-outlined text-sm">error_outline</span>
         <span>HTTP 404 • Page Not Found</span>
