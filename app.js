@@ -22,6 +22,11 @@
     catalogMaxPrice: 12000,
     catalogVisibleCount: 8,
     socialTagFilter: 'all',
+    feedPersona: (typeof Store !== 'undefined' && typeof Store.getPersonaPreference === 'function' ? Store.getPersonaPreference() : 'all') || 'all',
+    cardVarieties: {},
+    pdpSelectedColorIdx: 0,
+    pdpSelectedShapeIdx: 0,
+    pdpSelectedSizeIdx: 0,
     quizStep: 0,
     quizAnswers: {},
     quizCompleted: false,
@@ -732,20 +737,59 @@
     const isFav = Store.isWishlisted(p.id);
     const discountPct = p.regularPrice > p.price ? Math.round(((p.regularPrice - p.price) / p.regularPrice) * 100) : 0;
 
+    const colors = (Array.isArray(p.colors) && p.colors.length) ? p.colors : [
+      { id: 'c1', label: 'Classic Crystal Clear', hex: '#FFFFFF', accent: '#E0E7FF' },
+      { id: 'c2', label: 'Champagne Gold Infusion', hex: '#D4AF37', accent: '#FEF3C7' },
+      { id: 'c3', label: 'Midnight Obsidian Tint', hex: '#0F172A', accent: '#1E293B' }
+    ];
+    const shapes = (Array.isArray(p.shapes) && p.shapes.length) ? p.shapes : [
+      { id: 's1', label: 'Hexagonal Monolith' },
+      { id: 's2', label: 'Arch Heirloom' },
+      { id: 's3', label: 'Square Block' }
+    ];
+    const sizes = (Array.isArray(p.sizes) && p.sizes.length) ? p.sizes : [
+      { id: 'sz1', label: 'Standard Studio', priceDelta: 0 },
+      { id: 'sz2', label: 'Compact Keepsake', priceDelta: -250 },
+      { id: 'sz3', label: 'Grand Archival Master', priceDelta: 450 }
+    ];
+
+    if (!AppState.cardVarieties[p.id]) {
+      AppState.cardVarieties[p.id] = { colorIdx: 0, shapeIdx: 0, sizeIdx: 0, open: false };
+    }
+    const varState = AppState.cardVarieties[p.id];
+    const currentColorIdx = Math.min(varState.colorIdx || 0, colors.length - 1);
+    const currentShapeIdx = Math.min(varState.shapeIdx || 0, shapes.length - 1);
+    const currentSizeIdx = Math.min(varState.sizeIdx || 0, sizes.length - 1);
+    const currentColor = colors[currentColorIdx];
+    const currentShape = shapes[currentShapeIdx];
+    const currentSize = sizes[currentSizeIdx];
+    const isOpen = Boolean(varState.open);
+    const activePrice = p.price + (currentSize.priceDelta || 0);
+
+    const isMasculine = p.genderAffinity === 'masculine';
+    const isFeminine = p.genderAffinity === 'feminine';
+    const affinityTag = isMasculine
+      ? `<span class="gifting-badge gifting-badge-him" title="Curated for Him • Wood & Dark Resin">👔 For Him</span>`
+      : (isFeminine ? `<span class="gifting-badge gifting-badge-her" title="Curated for Her • Floral Keepsake">🌸 For Her</span>` : '');
+
     if (isListView) {
       return `
         <article class="ram-card sotd-reveal p-3.5 flex flex-col sm:flex-row gap-4 items-start sm:items-center group" data-product-id="${esc(p.id)}">
           <div class="relative w-full sm:w-36 h-44 sm:h-36 rounded-xl bg-surface-container-low overflow-hidden shrink-0 cursor-pointer" onclick="window.navigateTo('product', '${esc(p.id)}')">
             <img src="${esc(p.image)}" alt="${esc(p.name)}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" loading="lazy">
-            <span class="absolute top-2 left-2 max-w-[calc(100%-1rem)] truncate px-2.5 py-0.5 rounded-full bg-primary text-on-primary text-[10px] font-semibold uppercase">${esc(p.badge)}</span>
+            <div class="absolute top-2 left-2 flex flex-col gap-1 max-w-[calc(100%-1rem)]">
+              <span class="truncate px-2.5 py-0.5 rounded-full bg-primary text-on-primary text-[10px] font-semibold uppercase shadow-xs">${esc(p.badge)}</span>
+              ${affinityTag}
+            </div>
           </div>
           <div class="flex-1 min-w-0 w-full flex flex-col justify-between gap-2">
             <div>
               <div class="flex items-center justify-between gap-2">
-                <div class="flex items-center gap-1 text-xs text-secondary">
+                <div class="flex items-center gap-1.5 text-xs text-secondary">
                   <span class="material-symbols-outlined text-[14px]" style="font-variation-settings: 'FILL' 1;" aria-hidden="true">star</span>
                   <span class="font-spec-numeral font-bold text-primary">${p.rating.toFixed(1)}</span>
                   <span class="text-outline font-spec-numeral">(${p.reviewsCount})</span>
+                  ${affinityTag ? `<span class="hidden sm:inline-block">${affinityTag}</span>` : ''}
                 </div>
                 <button type="button" aria-label="Toggle Wishlist" onclick="window.handleWishlistToggle(event, '${esc(p.id)}')" class="w-11 h-11 rounded-full bg-surface-container-low flex items-center justify-center ${isFav ? 'text-[#9e3322]' : 'text-primary'} hover:scale-105 transition-transform cursor-pointer">
                   <span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' ${isFav ? 1 : 0};" aria-hidden="true">${isFav ? 'favorite' : 'favorite_border'}</span>
@@ -761,15 +805,57 @@
             </div>
             <div class="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-surface-container">
               <div class="flex items-baseline gap-2">
-                <span class="font-spec-numeral text-lg font-bold text-primary">${formatINR(p.price)}</span>
-                <span class="font-spec-numeral text-xs text-outline line-through">${formatINR(p.regularPrice)}</span>
+                <span class="font-spec-numeral text-lg font-bold text-primary">${formatINR(activePrice)}</span>
+                <span class="font-spec-numeral text-xs text-outline line-through">${formatINR(p.regularPrice + (currentSize.priceDelta || 0))}</span>
                 ${discountPct > 0 ? `<span class="text-[11px] font-bold text-[#9e3322]">${discountPct}% OFF</span>` : ''}
               </div>
               <div class="flex items-center gap-2">
+                <button type="button" onclick="window.toggleProductVariety('${esc(p.id)}', event)" aria-expanded="${isOpen ? 'true' : 'false'}" class="min-h-[44px] px-3 py-2 rounded-lg border border-[#e4e0d8] bg-surface-container-low hover:bg-surface-container text-primary text-xs font-semibold flex items-center gap-1 cursor-pointer">
+                  <span class="material-symbols-outlined text-sm text-secondary" aria-hidden="true">tune</span>
+                  <span>Varieties</span>
+                </button>
                 <button type="button" onclick="window.navigateTo('product', '${esc(p.id)}')" class="min-h-[44px] px-3.5 py-2 rounded-lg border border-primary text-primary text-xs font-semibold hover:bg-surface-container-high transition-colors cursor-pointer">Specs</button>
                 <button type="button" onclick="window.handleQuickAdd(this, '${esc(p.id)}')" ${p.inStock === false ? 'disabled' : ''} class="btn-shimmer sotd-magnetic min-h-[44px] px-4 py-2 rounded-lg ${p.inStock === false ? 'bg-surface-container text-on-surface-variant cursor-not-allowed opacity-60' : 'bg-primary text-on-primary cursor-pointer hover:bg-primary-container'} text-xs font-semibold flex items-center gap-1.5 active:scale-95 transition-all">
                   <span class="material-symbols-outlined text-sm" aria-hidden="true">${p.inStock === false ? 'block' : 'add_shopping_cart'}</span>
                   <span>${p.inStock === false ? 'Sold Out' : 'Quick Add'}</span>
+                </button>
+              </div>
+            </div>
+            <!-- Expandable Variety Drawer for List View -->
+            <div id="variety-drawer-${esc(p.id)}" class="variety-drawer ${isOpen ? 'open' : ''} w-full">
+              <div class="pt-2 pb-1 border-t border-[#e4e0d8] flex flex-col gap-2">
+                <div class="flex flex-wrap items-center justify-between gap-2 text-xs">
+                  <span class="font-bold text-primary">Varieties: Color • Shape • Size</span>
+                  <span class="text-[11px] text-secondary font-semibold">${esc(currentColor.label)} • ${esc(currentShape.label)} • ${esc(currentSize.label)}</span>
+                </div>
+                <div class="flex items-center gap-2 flex-wrap">
+                  <span class="text-[11px] text-on-surface-variant font-medium">Colors:</span>
+                  ${colors.map((c, cIdx) => `
+                    <button type="button" aria-label="${esc(c.label)}" title="${esc(c.label)}" onclick="window.selectCardVariety('${esc(p.id)}', 'color', ${cIdx}, event)" class="variety-swatch w-6 h-6 rounded-full cursor-pointer relative ${cIdx === currentColorIdx ? 'active ring-2 ring-primary ring-offset-1 scale-110' : 'opacity-80 hover:opacity-100'}" style="background-color: ${esc(c.hex)}; border: 1.5px solid ${c.hex.toLowerCase() === '#ffffff' ? '#ccc' : '#d4af37'};">
+                      ${cIdx === currentColorIdx ? '<span class="absolute inset-0 flex items-center justify-center text-[9px] text-white font-bold drop-shadow">✓</span>' : ''}
+                    </button>
+                  `).join('')}
+                </div>
+                <div class="flex items-center gap-1.5 flex-wrap">
+                  <span class="text-[11px] text-on-surface-variant font-medium">Shapes:</span>
+                  ${shapes.map((s, sIdx) => `
+                    <button type="button" onclick="window.selectCardVariety('${esc(p.id)}', 'shape', ${sIdx}, event)" class="variety-chip px-2 py-0.5 rounded-md text-[10px] font-bold border transition-all cursor-pointer ${sIdx === currentShapeIdx ? 'bg-primary text-white border-primary' : 'bg-white text-primary border-[#e4e0d8]' }">
+                      <span>${esc(s.label)}</span>
+                    </button>
+                  `).join('')}
+                </div>
+                <div class="flex items-center gap-1.5 flex-wrap">
+                  <span class="text-[11px] text-on-surface-variant font-medium">Sizes:</span>
+                  ${sizes.map((sz, szIdx) => `
+                    <button type="button" onclick="window.selectCardVariety('${esc(p.id)}', 'size', ${szIdx}, event)" class="variety-chip px-2 py-0.5 rounded-md text-[10px] font-bold border transition-all cursor-pointer ${szIdx === currentSizeIdx ? 'bg-primary text-white border-primary' : 'bg-white text-primary border-[#e4e0d8]' }">
+                      <span>${esc(sz.label)}</span>
+                      ${sz.priceDelta > 0 ? `<span class="text-[9px] font-normal">(+${formatINR(sz.priceDelta)})</span>` : ''}
+                    </button>
+                  `).join('')}
+                </div>
+                <button type="button" onclick="window.addCustomVarietyToCart('${esc(p.id)}')" ${p.inStock === false ? 'disabled' : ''} class="w-full sm:w-auto self-start min-h-[38px] px-3.5 py-1.5 rounded-lg bg-secondary hover:bg-secondary/90 text-white text-[11px] font-bold flex items-center justify-center gap-1.5 shadow-2xs cursor-pointer mt-1">
+                  <span class="material-symbols-outlined text-sm" aria-hidden="true">add_shopping_cart</span>
+                  <span id="var-cta-text-${esc(p.id)}">Add Selected Variety • ${formatINR(activePrice)}</span>
                 </button>
               </div>
             </div>
@@ -779,7 +865,7 @@
     }
 
     return `
-      <article class="ram-card sotd-tilt sotd-reveal p-2.5 sm:p-3 flex flex-col justify-between relative group h-full" data-product-id="${esc(p.id)}" data-price="${p.price}" data-ratio="${esc(p.ratio)}">
+      <article class="ram-card sotd-tilt sotd-reveal p-2.5 sm:p-3 flex flex-col justify-between relative group h-full" data-product-id="${esc(p.id)}" data-price="${activePrice}" data-ratio="${esc(p.ratio)}">
         <button type="button" aria-label="Save to Wishlist" onclick="window.handleWishlistToggle(event, '${esc(p.id)}')" class="absolute top-3.5 right-3.5 z-10 w-11 h-11 rounded-full bg-white/95 backdrop-blur-sm flex items-center justify-center ${isFav ? 'text-[#9e3322]' : 'text-primary'} shadow-sm hover:scale-105 active:scale-95 transition-transform cursor-pointer">
           <span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' ${isFav ? 1 : 0};" aria-hidden="true">${isFav ? 'favorite' : 'favorite_border'}</span>
         </button>
@@ -788,6 +874,7 @@
             <img src="${esc(p.image)}" alt="${esc(p.name)}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
             <div class="absolute top-2.5 left-2.5 max-w-[calc(100%-3.75rem)] flex flex-col gap-1">
               <span class="px-2.5 py-0.5 rounded-full bg-primary/95 backdrop-blur-xs text-on-primary font-label-sm text-[10px] uppercase font-semibold tracking-wider shadow-xs truncate block">${esc(p.badge)}</span>
+              ${affinityTag}
             </div>
             <div class="absolute bottom-0 inset-x-0 bg-primary/90 bg-gradient-to-t from-primary/95 via-primary/85 to-primary/75 px-2.5 py-1.5 flex items-center justify-between gap-1 text-[11px] font-spec-numeral text-white">
               <span class="truncate">${p.category === 'keepsakes' ? 'Custom Keepsake' : 'Ratio ' + esc(p.ratio)}</span>
@@ -813,8 +900,8 @@
         <div class="pt-2.5 mt-2 border-t border-surface-container flex flex-col gap-1.5">
           <div class="flex items-center justify-between gap-1 flex-wrap">
             <div class="flex items-baseline gap-1.5 min-w-0 flex-wrap">
-              <span class="font-spec-numeral text-sm min-[360px]:text-base sm:text-lg text-primary font-bold">${formatINR(p.price)}</span>
-              <span class="font-spec-numeral text-[10px] min-[360px]:text-[11px] text-outline line-through">${formatINR(p.regularPrice)}</span>
+              <span id="card-price-${esc(p.id)}" class="font-spec-numeral text-sm min-[360px]:text-base sm:text-lg text-primary font-bold">${formatINR(activePrice)}</span>
+              <span class="font-spec-numeral text-[10px] min-[360px]:text-[11px] text-outline line-through">${formatINR(p.regularPrice + (currentSize.priceDelta || 0))}</span>
             </div>
             <button type="button" onclick="window.navigateTo('product', '${esc(p.id)}')" class="min-h-[44px] px-1.5 sm:px-2 inline-flex items-center text-xs font-semibold text-secondary hover:underline cursor-pointer shrink-0">Details</button>
           </div>
@@ -822,6 +909,72 @@
             <span class="material-symbols-outlined text-base shrink-0" aria-hidden="true">${p.inStock === false ? 'block' : 'add_shopping_cart'}</span>
             <span class="truncate">${p.inStock === false ? 'Sold Out' : 'Quick Add'}</span>
           </button>
+
+          <!-- Variety Toggle Button & Drawer Immediately Below Product -->
+          <div class="mt-1 pt-1.5 border-t border-[#e4e0d8]">
+            <button type="button" onclick="window.toggleProductVariety('${esc(p.id)}', event)" aria-expanded="${isOpen ? 'true' : 'false'}" class="w-full min-h-[38px] px-2 py-1.5 rounded-lg border border-[#e4e0d8] bg-surface-container-low hover:bg-surface-container text-primary text-[11px] font-bold flex items-center justify-between gap-1 transition-all cursor-pointer">
+              <span class="flex items-center gap-1 truncate">
+                <span class="material-symbols-outlined text-sm text-secondary" aria-hidden="true">palette</span>
+                <span>${isOpen ? 'Hide Varieties' : 'Select Variety (Color • Shape • Size)'}</span>
+              </span>
+              <span class="material-symbols-outlined text-base text-secondary transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}" aria-hidden="true">expand_more</span>
+            </button>
+            <div id="variety-drawer-${esc(p.id)}" class="variety-drawer ${isOpen ? 'open' : ''}">
+              <div class="pt-2 pb-1 flex flex-col gap-2 text-xs">
+                <!-- Colors -->
+                <div class="flex flex-col gap-1">
+                  <div class="flex items-center justify-between text-[11px]">
+                    <span class="font-bold text-primary">🎨 Colors:</span>
+                    <span id="var-color-label-${esc(p.id)}" class="font-semibold text-secondary truncate max-w-[130px]">${esc(currentColor.label)}</span>
+                  </div>
+                  <div class="flex items-center gap-1.5 flex-wrap">
+                    ${colors.map((c, cIdx) => `
+                      <button type="button" aria-label="${esc(c.label)}" title="${esc(c.label)}" onclick="window.selectCardVariety('${esc(p.id)}', 'color', ${cIdx}, event)" class="variety-swatch w-6 h-6 rounded-full cursor-pointer relative ${cIdx === currentColorIdx ? 'active ring-2 ring-primary ring-offset-1 scale-110' : 'opacity-80 hover:opacity-100 hover:scale-105'}" style="background-color: ${esc(c.hex)}; border: 1.5px solid ${c.hex.toLowerCase() === '#ffffff' ? '#ccc' : '#d4af37'};">
+                        ${cIdx === currentColorIdx ? '<span class="absolute inset-0 flex items-center justify-center text-[9px] text-white font-bold drop-shadow">✓</span>' : ''}
+                      </button>
+                    `).join('')}
+                  </div>
+                </div>
+
+                <!-- Shapes -->
+                <div class="flex flex-col gap-1">
+                  <div class="flex items-center justify-between text-[11px]">
+                    <span class="font-bold text-primary">📐 Shapes:</span>
+                    <span id="var-shape-label-${esc(p.id)}" class="font-semibold text-secondary truncate max-w-[130px]">${esc(currentShape.label)}</span>
+                  </div>
+                  <div class="flex items-center gap-1 flex-wrap">
+                    ${shapes.map((s, sIdx) => `
+                      <button type="button" onclick="window.selectCardVariety('${esc(p.id)}', 'shape', ${sIdx}, event)" class="variety-chip px-2 py-0.5 rounded-md text-[10px] font-bold border transition-all cursor-pointer ${sIdx === currentShapeIdx ? 'bg-primary text-white border-primary' : 'bg-white text-primary border-[#e4e0d8] hover:bg-surface-container-low'}">
+                        <span>${esc(s.label)}</span>
+                      </button>
+                    `).join('')}
+                  </div>
+                </div>
+
+                <!-- Sizes -->
+                <div class="flex flex-col gap-1">
+                  <div class="flex items-center justify-between text-[11px]">
+                    <span class="font-bold text-primary">📏 Sizes:</span>
+                    <span id="var-size-label-${esc(p.id)}" class="font-semibold text-secondary truncate max-w-[130px]">${esc(currentSize.label)}</span>
+                  </div>
+                  <div class="flex items-center gap-1 flex-wrap">
+                    ${sizes.map((sz, szIdx) => `
+                      <button type="button" onclick="window.selectCardVariety('${esc(p.id)}', 'size', ${szIdx}, event)" class="variety-chip px-2 py-0.5 rounded-md text-[10px] font-bold border transition-all cursor-pointer ${szIdx === currentSizeIdx ? 'bg-primary text-white border-primary' : 'bg-white text-primary border-[#e4e0d8] hover:bg-surface-container-low'}">
+                        <span>${esc(sz.label)}</span>
+                        ${sz.priceDelta > 0 ? `<span class="text-[9px] ${szIdx === currentSizeIdx ? 'text-[#ffd79b]' : 'text-secondary'} font-normal">(+${formatINR(sz.priceDelta)})</span>` : ''}
+                      </button>
+                    `).join('')}
+                  </div>
+                </div>
+
+                <!-- Add Selected Variety CTA -->
+                <button type="button" onclick="window.addCustomVarietyToCart('${esc(p.id)}')" ${p.inStock === false ? 'disabled' : ''} class="w-full min-h-[38px] px-3 py-1.5 rounded-lg bg-secondary hover:bg-secondary/90 text-white text-[11px] font-bold flex items-center justify-center gap-1 shadow-2xs active:scale-[0.98] transition-all cursor-pointer mt-0.5">
+                  <span class="material-symbols-outlined text-sm" aria-hidden="true">add_shopping_cart</span>
+                  <span id="var-cta-text-${esc(p.id)}">Add Selected Variety • ${formatINR(activePrice)}</span>
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
       </article>
     `;
@@ -832,7 +985,23 @@
   // =========================================================================
   function renderHomeView() {
     const products = Store.getProducts();
-    const featuredProducts = products.slice(0, 8);
+    const persona = AppState.feedPersona || 'all';
+
+    let homeProducts = [...products];
+    if (persona === 'masculine') {
+      homeProducts.sort((a, b) => {
+        const aScore = a.genderAffinity === 'masculine' ? 2 : (a.genderAffinity === 'unisex' ? 1 : 0);
+        const bScore = b.genderAffinity === 'masculine' ? 2 : (b.genderAffinity === 'unisex' ? 1 : 0);
+        return bScore - aScore || b.reviewsCount - a.reviewsCount;
+      });
+    } else if (persona === 'feminine') {
+      homeProducts.sort((a, b) => {
+        const aScore = a.genderAffinity === 'feminine' ? 2 : (a.genderAffinity === 'unisex' ? 1 : 0);
+        const bScore = b.genderAffinity === 'feminine' ? 2 : (b.genderAffinity === 'unisex' ? 1 : 0);
+        return bScore - aScore || b.reviewsCount - a.reviewsCount;
+      });
+    }
+    const featuredProducts = homeProducts.slice(0, 8);
     const pinInfo = Store.getPincodeInfo();
     const socialPosts = Store.getSocialPosts().slice(0, 3);
 
@@ -1192,6 +1361,27 @@
             </div>
           </div>
 
+          <!-- Feed Curation & Gifting Quick Bar -->
+          <div class="flex items-center gap-2 overflow-x-auto no-scrollbar py-1">
+            <span class="text-xs font-bold text-primary flex items-center gap-1 shrink-0">
+              <span class="material-symbols-outlined text-secondary text-sm" aria-hidden="true">auto_awesome</span>
+              <span>Feed Curation:</span>
+            </span>
+            <button type="button" onclick="window.setFeedPersona('all')" class="min-h-[38px] px-3.5 py-1.5 rounded-full text-xs font-bold transition flex items-center gap-1.5 shrink-0 cursor-pointer ${persona === 'all' ? 'bg-primary text-white shadow-xs' : 'bg-surface-container-low text-primary border border-[#e4e0d8] hover:border-secondary'}">
+              <span>✨ Universal</span>
+            </button>
+            <button type="button" onclick="window.setFeedPersona('masculine')" class="min-h-[38px] px-3.5 py-1.5 rounded-full text-xs font-bold transition flex items-center gap-1.5 shrink-0 cursor-pointer ${persona === 'masculine' ? 'bg-primary text-white shadow-xs' : 'bg-surface-container-low text-primary border border-[#e4e0d8] hover:border-secondary'}">
+              <span>👔 Gifts for Him</span>
+            </button>
+            <button type="button" onclick="window.setFeedPersona('feminine')" class="min-h-[38px] px-3.5 py-1.5 rounded-full text-xs font-bold transition flex items-center gap-1.5 shrink-0 cursor-pointer ${persona === 'feminine' ? 'bg-primary text-white shadow-xs' : 'bg-surface-container-low text-primary border border-[#e4e0d8] hover:border-secondary'}">
+              <span>🌸 Gifts for Her</span>
+            </button>
+            <button type="button" onclick="window.navigateTo('catalog', 'all'); window.setCatalogSort('gifting');" class="min-h-[38px] px-3.5 py-1.5 rounded-full text-xs font-bold transition flex items-center gap-1.5 shrink-0 cursor-pointer bg-surface-container-low text-primary border border-[#e4e0d8] hover:border-secondary">
+              <span class="material-symbols-outlined text-sm" aria-hidden="true">featured_seasonal_and_gifts</span>
+              <span>🎁 Gift Sets</span>
+            </button>
+          </div>
+
           <div class="grid grid-cols-1 min-[360px]:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3.5 sm:gap-5">
             ${featuredProducts.map(p => renderProductCard(p, false)).join('')}
           </div>
@@ -1537,15 +1727,27 @@
       );
     }
 
-    if (AppState.catalogSort === 'price_asc') {
+    const persona = AppState.feedPersona || 'all';
+    const sort = AppState.catalogSort;
+
+    if (sort === 'price_asc') {
       list.sort((a, b) => a.price - b.price);
-    } else if (AppState.catalogSort === 'price_desc') {
+    } else if (sort === 'price_desc') {
       list.sort((a, b) => b.price - a.price);
-    } else if (AppState.catalogSort === 'rating') {
+    } else if (sort === 'rating') {
       list.sort((a, b) => b.rating - a.rating || b.reviewsCount - a.reviewsCount);
-    } else if (AppState.catalogSort === 'viscosity') {
+    } else if (sort === 'viscosity') {
       const order = { low: 1, medium: 2, high: 3 };
       list.sort((a, b) => (order[a.viscosity] || 2) - (order[b.viscosity] || 2));
+    } else if (sort === 'gifts_him' || (sort === 'popular' && persona === 'masculine')) {
+      const getHimScore = (p) => (p.genderAffinity === 'masculine' ? 20 : (p.genderAffinity === 'unisex' ? 10 : 0));
+      list.sort((a, b) => getHimScore(b) - getHimScore(a) || b.reviewsCount - a.reviewsCount);
+    } else if (sort === 'gifts_her' || (sort === 'popular' && persona === 'feminine')) {
+      const getHerScore = (p) => (p.genderAffinity === 'feminine' ? 20 : (p.genderAffinity === 'unisex' ? 10 : 0));
+      list.sort((a, b) => getHerScore(b) - getHerScore(a) || b.reviewsCount - a.reviewsCount);
+    } else if (sort === 'gifting') {
+      const getGiftScore = (p) => ((p.giftingTags && p.giftingTags.length) ? 20 : (p.isCustomizable ? 10 : 0));
+      list.sort((a, b) => getGiftScore(b) - getGiftScore(a) || b.reviewsCount - a.reviewsCount);
     } else {
       list.sort((a, b) => b.reviewsCount - a.reviewsCount);
     }
@@ -1608,6 +1810,27 @@
           `).join('')}
         </div>
 
+        <!-- Feed Curation & Gifting Quick Bar -->
+        <div class="flex items-center gap-2 overflow-x-auto no-scrollbar py-1">
+          <span class="text-xs font-bold text-primary flex items-center gap-1 shrink-0">
+            <span class="material-symbols-outlined text-secondary text-sm" aria-hidden="true">auto_awesome</span>
+            <span>Curation &amp; Gifts:</span>
+          </span>
+          <button type="button" onclick="window.setFeedPersona('all')" class="min-h-[38px] px-3.5 py-1.5 rounded-full text-xs font-bold transition flex items-center gap-1.5 shrink-0 cursor-pointer ${AppState.feedPersona === 'all' && AppState.catalogSort !== 'gifting' && AppState.catalogSort !== 'gifts_him' && AppState.catalogSort !== 'gifts_her' ? 'bg-primary text-white shadow-xs' : 'bg-surface-container-low text-primary border border-[#e4e0d8] hover:border-secondary'}">
+            <span>✨ Universal</span>
+          </button>
+          <button type="button" onclick="window.setFeedPersona('masculine')" class="min-h-[38px] px-3.5 py-1.5 rounded-full text-xs font-bold transition flex items-center gap-1.5 shrink-0 cursor-pointer ${AppState.feedPersona === 'masculine' || AppState.catalogSort === 'gifts_him' ? 'bg-primary text-white shadow-xs' : 'bg-surface-container-low text-primary border border-[#e4e0d8] hover:border-secondary'}">
+            <span>👔 Gifts for Him</span>
+          </button>
+          <button type="button" onclick="window.setFeedPersona('feminine')" class="min-h-[38px] px-3.5 py-1.5 rounded-full text-xs font-bold transition flex items-center gap-1.5 shrink-0 cursor-pointer ${AppState.feedPersona === 'feminine' || AppState.catalogSort === 'gifts_her' ? 'bg-primary text-white shadow-xs' : 'bg-surface-container-low text-primary border border-[#e4e0d8] hover:border-secondary'}">
+            <span>🌸 Gifts for Her</span>
+          </button>
+          <button type="button" onclick="window.setCatalogSort('gifting')" class="min-h-[38px] px-3.5 py-1.5 rounded-full text-xs font-bold transition flex items-center gap-1.5 shrink-0 cursor-pointer ${AppState.catalogSort === 'gifting' ? 'bg-secondary text-white shadow-xs' : 'bg-surface-container-low text-primary border border-[#e4e0d8] hover:border-secondary'}">
+            <span class="material-symbols-outlined text-sm" aria-hidden="true">featured_seasonal_and_gifts</span>
+            <span>🎁 Gift Sets</span>
+          </button>
+        </div>
+
         <!-- Sticky Search, Filter & Sort Controls Bar (Sticky on md+ desktop/tablet so mobile viewports aren't crushed) -->
         <div class="md:sticky md:top-[93px] z-30 bg-surface/95 backdrop-blur-md py-3 border-y border-[#e4e0d8] flex flex-col gap-2.5 max-w-full">
           <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2.5">
@@ -1634,6 +1857,9 @@
               <label for="catalog-sort-select" class="sr-only">Sort products</label>
               <select id="catalog-sort-select" aria-label="Sort products" onchange="window.setCatalogSort(this.value)" class="flex-1 sm:flex-initial h-12 px-2.5 sm:px-3 rounded-xl bg-white border border-[#e4e0d8] font-label-sm text-xs text-primary cursor-pointer">
                 <option value="popular" ${AppState.catalogSort === 'popular' ? 'selected' : ''}>Sort: Popularity</option>
+                <option value="gifts_him" ${AppState.catalogSort === 'gifts_him' ? 'selected' : ''}>👔 Gifts for Him (Wood &amp; Dark Resin)</option>
+                <option value="gifts_her" ${AppState.catalogSort === 'gifts_her' ? 'selected' : ''}>🌸 Gifts for Her (Floral &amp; Crystal Keepsakes)</option>
+                <option value="gifting" ${AppState.catalogSort === 'gifting' ? 'selected' : ''}>🎁 Curated Gift Options &amp; Sets</option>
                 <option value="price_asc" ${AppState.catalogSort === 'price_asc' ? 'selected' : ''}>Price: Low to High</option>
                 <option value="price_desc" ${AppState.catalogSort === 'price_desc' ? 'selected' : ''}>Price: High to Low</option>
                 <option value="rating" ${AppState.catalogSort === 'rating' ? 'selected' : ''}>Highest Rated</option>
@@ -1736,8 +1962,32 @@
       unitPrice: product.unitPriceLabel
     };
 
-    const currentPrice = activeVariant.price;
-    const regularPrice = activeVariant.regularPrice || currentPrice;
+    const colors = (Array.isArray(product.colors) && product.colors.length) ? product.colors : [
+      { id: 'c1', label: 'Classic Crystal Clear', hex: '#FFFFFF', accent: '#E0E7FF' },
+      { id: 'c2', label: 'Champagne Gold Infusion', hex: '#D4AF37', accent: '#FEF3C7' },
+      { id: 'c3', label: 'Midnight Obsidian Tint', hex: '#0F172A', accent: '#1E293B' }
+    ];
+    const shapes = (Array.isArray(product.shapes) && product.shapes.length) ? product.shapes : [
+      { id: 's1', label: 'Hexagonal Monolith' },
+      { id: 's2', label: 'Arch Heirloom' },
+      { id: 's3', label: 'Square Block' }
+    ];
+    const sizes = (Array.isArray(product.sizes) && product.sizes.length) ? product.sizes : [
+      { id: 'sz1', label: 'Standard Studio', priceDelta: 0 },
+      { id: 'sz2', label: 'Compact Keepsake', priceDelta: -250 },
+      { id: 'sz3', label: 'Grand Archival Master', priceDelta: 450 }
+    ];
+
+    const activeColorIdx = Math.min(AppState.pdpSelectedColorIdx || 0, colors.length - 1);
+    const activeShapeIdx = Math.min(AppState.pdpSelectedShapeIdx || 0, shapes.length - 1);
+    const activeSizeIdx = Math.min(AppState.pdpSelectedSizeIdx || 0, sizes.length - 1);
+    const activeColor = colors[activeColorIdx];
+    const activeShape = shapes[activeShapeIdx];
+    const activeSize = sizes[activeSizeIdx];
+    const sizeDelta = activeSize.priceDelta || 0;
+
+    const currentPrice = activeVariant.price + sizeDelta;
+    const regularPrice = (activeVariant.regularPrice || activeVariant.price) + sizeDelta;
     const discountPct = regularPrice > currentPrice ? Math.round(((regularPrice - currentPrice) / regularPrice) * 100) : 0;
 
     // Tiered volume pricing calculation synced with Store.getEffectiveUnitPrice
@@ -1871,6 +2121,66 @@
                 <span class="text-[#266b4e] font-bold flex items-center gap-0.5 shrink-0">
                   <span class="material-symbols-outlined text-sm" aria-hidden="true">check_circle</span> In Stock
                 </span>
+              </div>
+            </div>
+
+            <!-- Interactive Product Varieties: Colors, Shapes, Sizes -->
+            <div class="p-4 rounded-xl bg-surface-container-low border border-[#e4e0d8] flex flex-col gap-3.5">
+              <div class="flex items-center justify-between">
+                <span class="font-title-md text-xs sm:text-sm text-primary font-bold flex items-center gap-1.5">
+                  <span class="material-symbols-outlined text-secondary text-base" aria-hidden="true">palette</span>
+                  <span>Bespoke Product Varieties</span>
+                </span>
+                <span class="font-label-sm text-[11px] text-secondary font-semibold">Tuned for Your Order</span>
+              </div>
+
+              <!-- Colors -->
+              <div class="flex flex-col gap-1.5">
+                <div class="flex items-center justify-between text-xs">
+                  <span class="font-bold text-primary">🎨 Color / Resin Tint:</span>
+                  <span class="font-semibold text-secondary">${esc(activeColor.label)}</span>
+                </div>
+                <div class="flex items-center gap-2 flex-wrap">
+                  ${colors.map((c, cIdx) => `
+                    <button type="button" aria-label="${esc(c.label)}" title="${esc(c.label)}" onclick="window.selectPdpVariety('color', ${cIdx})" class="variety-swatch w-8 h-8 rounded-full transition-transform cursor-pointer relative ${cIdx === activeColorIdx ? 'active ring-2 ring-primary ring-offset-2 scale-110 shadow-sm' : 'opacity-80 hover:opacity-100 hover:scale-105'}" style="background-color: ${esc(c.hex)}; border: 2px solid ${c.hex.toLowerCase() === '#ffffff' ? '#ccc' : '#d4af37'};">
+                      ${cIdx === activeColorIdx ? '<span class="absolute inset-0 flex items-center justify-center text-xs text-white font-bold drop-shadow">✓</span>' : ''}
+                    </button>
+                  `).join('')}
+                </div>
+              </div>
+
+              <!-- Shapes -->
+              <div class="flex flex-col gap-1.5">
+                <div class="flex items-center justify-between text-xs">
+                  <span class="font-bold text-primary">📐 Bespoke Shape:</span>
+                  <span class="font-semibold text-secondary">${esc(activeShape.label)}</span>
+                </div>
+                <div class="flex items-center gap-2 flex-wrap">
+                  ${shapes.map((s, sIdx) => `
+                    <button type="button" onclick="window.selectPdpVariety('shape', ${sIdx})" class="min-h-[40px] px-3 py-1.5 rounded-lg text-xs font-bold border transition-all cursor-pointer ${sIdx === activeShapeIdx ? 'bg-primary text-white border-primary shadow-xs' : 'bg-white text-primary border-[#e4e0d8] hover:bg-surface-container'}">
+                      <span>${esc(s.label)}</span>
+                    </button>
+                  `).join('')}
+                </div>
+              </div>
+
+              <!-- Sizes -->
+              <div class="flex flex-col gap-1.5">
+                <div class="flex items-center justify-between text-xs">
+                  <span class="font-bold text-primary">📏 Edition Size:</span>
+                  <span class="font-semibold text-secondary">${esc(activeSize.label)}</span>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                  ${sizes.map((sz, szIdx) => `
+                    <button type="button" onclick="window.selectPdpVariety('size', ${szIdx})" class="min-h-[44px] p-2.5 rounded-xl border text-left flex flex-col justify-between transition-all cursor-pointer ${szIdx === activeSizeIdx ? 'bg-primary text-white border-primary shadow-xs' : 'bg-white text-primary border-[#e4e0d8] hover:bg-surface-container'}">
+                      <div class="flex items-center justify-between">
+                        <span class="font-bold text-xs truncate">${esc(sz.label)}</span>
+                        ${sz.popular ? `<span class="px-1.5 py-0.5 rounded bg-secondary-fixed text-on-secondary-fixed text-[9px] font-bold uppercase shrink-0">Popular</span>` : ''}
+                      </div>
+                      <span class="text-[11px] ${szIdx === activeSizeIdx ? 'text-[#ffd79b]' : 'text-on-surface-variant'}">${sz.priceDelta > 0 ? '+' + formatINR(sz.priceDelta) : 'Standard Studio'}</span>
+                    </button>
+                  `).join('')}
+                </div>
               </div>
             </div>
 
@@ -2795,6 +3105,13 @@
                           </button>
                         </div>
                         <p class="text-xs text-on-surface-variant break-words">${esc(item.variantLabel)} • SKU: ${esc(item.sku)}</p>
+                        ${(item.color || item.shape || item.size) ? `
+                          <div class="flex flex-wrap items-center gap-1.5 my-1 text-[11px]">
+                            ${item.color ? `<span class="px-2 py-0.5 rounded-full bg-surface-container-high text-primary font-semibold border border-[#e4e0d8]">🎨 ${esc(item.color)}</span>` : ''}
+                            ${item.shape ? `<span class="px-2 py-0.5 rounded-full bg-surface-container-high text-primary font-semibold border border-[#e4e0d8]">📐 ${esc(item.shape)}</span>` : ''}
+                            ${item.size ? `<span class="px-2 py-0.5 rounded-full bg-secondary-container/50 text-secondary font-bold border border-[#e4e0d8]">📏 ${esc(item.size)}</span>` : ''}
+                          </div>
+                        ` : ''}
                         ${item.customNote ? `<p class="text-[11px] text-[#9e3322] font-medium mt-1 break-anywhere">✨ Note: “${esc(item.customNote)}”</p>` : ''}
                       </div>
                       <div class="flex flex-wrap items-baseline gap-1.5 sm:gap-2 mt-2">
@@ -3121,7 +3438,22 @@
 
               <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-1">
                 <div class="text-xs text-on-surface-variant flex flex-wrap gap-2">
-                  ${(ord.items || []).map(it => `<span class="px-2.5 py-1 rounded bg-surface-container-low text-primary font-medium">${it.qty}× ${esc(it.name)}</span>`).join('')}
+                  ${(ord.items || []).map(it => `
+                    <div class="px-2.5 py-1.5 rounded-lg bg-surface-container-low text-primary font-medium flex flex-col gap-0.5 border border-[#e4e0d8]/80">
+                      <div class="flex items-center gap-1.5 flex-wrap">
+                        <span class="font-bold">${it.qty}×</span>
+                        <span>${esc(it.name)}</span>
+                        ${it.variantLabel ? `<span class="text-on-surface-variant text-[11px]">(${esc(it.variantLabel)})</span>` : ''}
+                      </div>
+                      ${(it.color || it.shape || it.size) ? `
+                        <div class="flex items-center gap-1.5 flex-wrap text-[10px] text-on-surface-variant font-semibold">
+                          ${it.color ? `<span class="px-1.5 py-0.5 rounded bg-white border border-[#e4e0d8]">🎨 ${esc(it.color)}</span>` : ''}
+                          ${it.shape ? `<span class="px-1.5 py-0.5 rounded bg-white border border-[#e4e0d8]">📐 ${esc(it.shape)}</span>` : ''}
+                          ${it.size ? `<span class="px-1.5 py-0.5 rounded bg-secondary-container/50 text-secondary border border-[#e4e0d8]">📏 ${esc(it.size)}</span>` : ''}
+                        </div>
+                      ` : ''}
+                    </div>
+                  `).join('')}
                 </div>
                 <div class="flex flex-wrap items-center gap-2 shrink-0">
                   <button type="button" onclick="window.openOrderInvoiceModal('${esc(ord.orderId)}')" class="min-h-[44px] px-3.5 py-2 rounded-lg bg-surface-container-low hover:bg-surface-container-high border border-[#e4e0d8] text-primary text-xs font-bold flex items-center gap-1.5 cursor-pointer">
@@ -3992,18 +4324,31 @@
       window.showToast('Item Out of Stock', 'This studio piece is currently unavailable.');
       return;
     }
+    const varState = AppState.cardVarieties[productId] || { colorIdx: 0, shapeIdx: 0, sizeIdx: 0 };
+    const colors = product.colors || [];
+    const shapes = product.shapes || [];
+    const sizes = product.sizes || [];
+    const chosenColor = colors[varState.colorIdx] || colors[0];
+    const chosenShape = shapes[varState.shapeIdx] || shapes[0];
+    const chosenSize = sizes[varState.sizeIdx] || sizes[0];
+    const sizeDelta = chosenSize ? (chosenSize.priceDelta || 0) : 0;
+    const finalPrice = product.price + sizeDelta;
+
     Store.addToCart({
       productId: product.id,
       name: product.name,
       variantLabel: product.variants && product.variants[0] ? product.variants[0].label : 'Standard Edition',
-      price: product.price,
-      regularPrice: product.regularPrice,
+      color: chosenColor ? chosenColor.label : 'Classic Clear',
+      shape: chosenShape ? chosenShape.label : 'Standard Shape',
+      size: chosenSize ? chosenSize.label : 'Standard Studio',
+      price: finalPrice,
+      regularPrice: product.regularPrice + sizeDelta,
       qty: 1,
       image: product.image,
       sku: product.sku
     });
     updateGlobalBadges();
-    window.showToast(`Added "${product.shortName || product.name}" to Bag`, `${formatINR(product.price)} • View in Studio Bag`);
+    window.showToast(`Added "${product.shortName || product.name}" to Bag`, `${chosenColor ? chosenColor.label : ''} • ${formatINR(finalPrice)}`);
 
     if (btnEl) {
       sotdResinRipple({ currentTarget: btnEl });
@@ -4021,6 +4366,170 @@
         btnEl._quickAddTimer = null;
       }, 1200);
     }
+  };
+
+  window.toggleProductVariety = function (productId, ev) {
+    if (ev && typeof ev.stopPropagation === 'function') ev.stopPropagation();
+    if (!AppState.cardVarieties[productId]) {
+      AppState.cardVarieties[productId] = { colorIdx: 0, shapeIdx: 0, sizeIdx: 0, open: false };
+    }
+    const currentOpen = Boolean(AppState.cardVarieties[productId].open);
+    AppState.cardVarieties[productId].open = !currentOpen;
+    const drawer = document.getElementById(`variety-drawer-${productId}`);
+    if (drawer) {
+      drawer.classList.toggle('open', !currentOpen);
+    }
+    const btn = ev?.currentTarget || document.querySelector(`[onclick*="toggleProductVariety('${productId}'"]`);
+    if (btn) {
+      btn.setAttribute('aria-expanded', !currentOpen ? 'true' : 'false');
+      const arrow = btn.querySelector('.material-symbols-outlined:last-child');
+      if (arrow) arrow.classList.toggle('rotate-180', !currentOpen);
+      const textSpan = btn.querySelector('span > span:last-child');
+      if (textSpan) textSpan.textContent = !currentOpen ? 'Hide Varieties' : 'Select Variety (Color • Shape • Size)';
+    }
+  };
+
+  window.selectCardVariety = function (productId, type, index, ev) {
+    if (ev && typeof ev.stopPropagation === 'function') ev.stopPropagation();
+    if (!AppState.cardVarieties[productId]) {
+      AppState.cardVarieties[productId] = { colorIdx: 0, shapeIdx: 0, sizeIdx: 0, open: true };
+    }
+    if (type === 'color') AppState.cardVarieties[productId].colorIdx = index;
+    if (type === 'shape') AppState.cardVarieties[productId].shapeIdx = index;
+    if (type === 'size') AppState.cardVarieties[productId].sizeIdx = index;
+
+    const prod = Store.getProductById(productId);
+    if (!prod) return;
+    const colors = prod.colors || [];
+    const shapes = prod.shapes || [];
+    const sizes = prod.sizes || [];
+
+    const varState = AppState.cardVarieties[productId];
+    const currentColor = colors[varState.colorIdx] || colors[0];
+    const currentShape = shapes[varState.shapeIdx] || shapes[0];
+    const currentSize = sizes[varState.sizeIdx] || sizes[0];
+    const activePrice = prod.price + (currentSize?.priceDelta || 0);
+
+    // Update labels and buttons inside drawer
+    const colorLabel = document.getElementById(`var-color-label-${productId}`);
+    if (colorLabel && currentColor) colorLabel.textContent = currentColor.label;
+    const shapeLabel = document.getElementById(`var-shape-label-${productId}`);
+    if (shapeLabel && currentShape) shapeLabel.textContent = currentShape.label;
+    const sizeLabel = document.getElementById(`var-size-label-${productId}`);
+    if (sizeLabel && currentSize) sizeLabel.textContent = currentSize.label;
+    const ctaText = document.getElementById(`var-cta-text-${productId}`);
+    if (ctaText) ctaText.textContent = `Add Selected Variety • ${formatINR(activePrice)}`;
+
+    const cardPrice = document.getElementById(`card-price-${productId}`);
+    if (cardPrice) cardPrice.textContent = formatINR(activePrice);
+
+    // Update active swatch/chip borders
+    const drawer = document.getElementById(`variety-drawer-${productId}`);
+    if (drawer) {
+      if (type === 'color') {
+        const swatches = drawer.querySelectorAll('.variety-swatch');
+        swatches.forEach((sw, idx) => {
+          const isActive = idx === index;
+          sw.classList.toggle('active', isActive);
+          sw.classList.toggle('ring-2', isActive);
+          sw.classList.toggle('ring-primary', isActive);
+          sw.classList.toggle('scale-110', isActive);
+          sw.innerHTML = isActive ? '<span class="absolute inset-0 flex items-center justify-center text-[9px] text-white font-bold drop-shadow">✓</span>' : '';
+        });
+      } else if (type === 'shape') {
+        const shapeEl = drawer.querySelector(`#var-shape-label-${productId}`);
+        const sContainer = shapeEl && typeof shapeEl.closest === 'function' ? shapeEl.closest('.flex-col') : null;
+        if (sContainer) {
+          sContainer.querySelectorAll('.variety-chip').forEach((ch, idx) => {
+            const isActive = idx === index;
+            ch.className = `variety-chip px-2 py-0.5 rounded-md text-[10px] font-bold border transition-all cursor-pointer ${isActive ? 'bg-primary text-white border-primary' : 'bg-white text-primary border-[#e4e0d8] hover:bg-surface-container-low'}`;
+          });
+        }
+      } else if (type === 'size') {
+        const sizeEl = drawer.querySelector(`#var-size-label-${productId}`);
+        const szContainer = sizeEl && typeof sizeEl.closest === 'function' ? sizeEl.closest('.flex-col') : null;
+        if (szContainer) {
+          szContainer.querySelectorAll('.variety-chip').forEach((ch, idx) => {
+            const isActive = idx === index;
+            ch.className = `variety-chip px-2 py-0.5 rounded-md text-[10px] font-bold border transition-all cursor-pointer ${isActive ? 'bg-primary text-white border-primary' : 'bg-white text-primary border-[#e4e0d8] hover:bg-surface-container-low'}`;
+          });
+        }
+      }
+    }
+  };
+
+  window.addCustomVarietyToCart = function (productId) {
+    const prod = Store.getProductById(productId);
+    if (!prod) return;
+    if (prod.inStock === false) {
+      window.showToast('Item Out of Stock', 'This studio piece is currently unavailable.');
+      return;
+    }
+    const varState = AppState.cardVarieties[productId] || { colorIdx: 0, shapeIdx: 0, sizeIdx: 0 };
+    const colors = prod.colors || [];
+    const shapes = prod.shapes || [];
+    const sizes = prod.sizes || [];
+
+    const chosenColor = colors[varState.colorIdx] || colors[0] || { label: 'Classic Crystal Clear' };
+    const chosenShape = shapes[varState.shapeIdx] || shapes[0] || { label: 'Standard Block' };
+    const chosenSize = sizes[varState.sizeIdx] || sizes[0] || { label: 'Standard Studio', priceDelta: 0 };
+    const finalPrice = prod.price + (chosenSize.priceDelta || 0);
+
+    Store.addToCart({
+      productId: prod.id,
+      name: prod.name,
+      variantLabel: `${chosenShape.label} (${chosenSize.label})`,
+      color: chosenColor.label,
+      shape: chosenShape.label,
+      size: chosenSize.label,
+      price: finalPrice,
+      regularPrice: prod.regularPrice + (chosenSize.priceDelta || 0),
+      qty: 1,
+      image: prod.image,
+      sku: prod.sku
+    });
+    updateGlobalBadges();
+    window.showToast(
+      `Added ${prod.shortName || prod.name} (${chosenColor.label})`,
+      `${chosenShape.label} • ${chosenSize.label} • ${formatINR(finalPrice)}`
+    );
+  };
+
+  window.selectPdpVariety = function (type, index) {
+    if (type === 'color') AppState.pdpSelectedColorIdx = index;
+    if (type === 'shape') AppState.pdpSelectedShapeIdx = index;
+    if (type === 'size') AppState.pdpSelectedSizeIdx = index;
+    renderActiveView({ preserveScroll: true });
+  };
+
+  window.setFeedPersona = function (persona) {
+    const valid = ['all', 'masculine', 'feminine'].includes(persona) ? persona : 'all';
+    AppState.feedPersona = valid;
+    if (typeof Store.setPersonaPreference === 'function') {
+      Store.setPersonaPreference(valid);
+    }
+    const label = valid === 'masculine' ? '👔 Gifts for Him' : (valid === 'feminine' ? '🌸 Gifts for Her' : '✨ Universal Collections');
+    window.showToast(`Feed Curated: ${label}`, 'Catalogue order adjusted to your preferred aesthetic & gifting style.');
+    renderActiveView({ preserveScroll: false });
+  };
+
+  window.setAuthPersona = function (persona) {
+    const valid = ['all', 'masculine', 'feminine'].includes(persona) ? persona : 'all';
+    const hiddenInput = document.getElementById('cf-auth-selected-persona');
+    if (hiddenInput) hiddenInput.value = valid;
+    ['all', 'masculine', 'feminine'].forEach(p => {
+      const btn = document.getElementById(`cf-persona-btn-${p}`);
+      if (!btn) return;
+      if (p === valid) {
+        btn.className = 'min-h-[40px] px-2 py-1.5 rounded-lg text-xs font-bold transition flex items-center justify-center gap-1 border border-primary bg-primary text-white cursor-pointer';
+      } else {
+        btn.className = 'min-h-[40px] px-2 py-1.5 rounded-lg text-xs font-bold transition flex items-center justify-center gap-1 border border-[#e4e0d8] bg-white text-primary hover:border-secondary cursor-pointer';
+      }
+    });
+    if (Store && typeof Store.setPersonaPreference === 'function') {
+      Store.setPersonaPreference(valid);
+    }
+    AppState.feedPersona = valid;
   };
 
   window.handleWishlistToggle = function (ev, productId) {
@@ -4273,19 +4782,35 @@
       price: prod.price,
       regularPrice: prod.regularPrice
     };
+
+    const colors = prod.colors || [];
+    const shapes = prod.shapes || [];
+    const sizes = prod.sizes || [];
+    const activeColor = colors[AppState.pdpSelectedColorIdx] || colors[0];
+    const activeShape = shapes[AppState.pdpSelectedShapeIdx] || shapes[0];
+    const activeSize = sizes[AppState.pdpSelectedSizeIdx] || sizes[0];
+    const sizeDelta = activeSize?.priceDelta || 0;
+    const finalPrice = v.price + sizeDelta;
+
     Store.addToCart({
       productId: prod.id,
       sku: prod.sku,
       name: prod.name,
-      variantLabel: v.label,
-      price: v.price,
-      regularPrice: v.regularPrice,
+      variantLabel: `${v.label} • ${activeShape ? activeShape.label : ''} (${activeSize ? activeSize.label : ''})`,
+      color: activeColor ? activeColor.label : 'Classic Clear',
+      shape: activeShape ? activeShape.label : 'Standard Block',
+      size: activeSize ? activeSize.label : 'Standard Studio',
+      price: finalPrice,
+      regularPrice: (v.regularPrice || v.price) + sizeDelta,
       qty: AppState.pdpQty,
       image: prod.image,
       customNote: AppState.pdpCustomNote
     });
     updateGlobalBadges();
-    window.showToast(`Added ${AppState.pdpQty} × ${prod.shortName || prod.name} to Bag`, `${v.label} • Ready for checkout`);
+    window.showToast(
+      `Added ${AppState.pdpQty} × ${prod.shortName || prod.name} to Bag`,
+      `${activeColor ? activeColor.label : ''} • ${activeShape ? activeShape.label : ''} (${activeSize ? activeSize.label : ''}) • Ready for checkout`
+    );
   };
 
   window.buyNowPdp = function () {
@@ -4633,6 +5158,10 @@
     syncBodyModalLock();
   };
 
+  window.closeTdsModal = function () {
+    window.closeModalById('tds-spec-modal');
+  };
+
   // Share Your Memory Upload Modal
   window.openShareMemoryModal = function () {
     document.getElementById('share-memory-modal')?.classList.remove('hidden');
@@ -4876,10 +5405,12 @@
 
   window.completeOAuthChooserAccount = function (provider, email, name) {
     const cleanProvider = provider === 'apple' ? 'apple' : 'google';
+    const personaPreference = document.getElementById('cf-auth-selected-persona')?.value || 'all';
     const res = Store.loginPatron({
       provider: cleanProvider,
       email: String(email || '').trim(),
       name: String(name || '').trim(),
+      personaPreference,
       credential: lastGisCredential
     });
     const errEl = document.getElementById('cf-auth-error');
@@ -4898,6 +5429,7 @@
     window.closeOAuthChooser();
     document.getElementById('cloudflare-auth-modal')?.classList.add('hidden');
     syncBodyModalLock();
+    AppState.feedPersona = Store.getPersonaPreference() || personaPreference;
     updateGlobalBadges();
     renderActiveView();
 
@@ -4942,6 +5474,9 @@
     }
     window.closeOAuthChooser();
     window.setEmailAuthTab('signin');
+    if (typeof window.setAuthPersona === 'function') {
+      window.setAuthPersona(Store.getPersonaPreference() || AppState.feedPersona || 'all');
+    }
     initGoogleIdentityServicesIfConfigured();
     initAppleSignInIfConfigured();
 
@@ -5075,6 +5610,7 @@
     const phone = document.getElementById('cf-auth-phone')?.value.trim() || '';
     const address = document.getElementById('cf-auth-address')?.value.trim() || '';
     const pincode = document.getElementById('cf-auth-pincode')?.value.trim() || '';
+    const personaPreference = document.getElementById('cf-auth-selected-persona')?.value || 'all';
 
     const errEl = document.getElementById('cf-auth-error');
     const res = Store.loginPatron({
@@ -5086,6 +5622,7 @@
       phone,
       address,
       pincode,
+      personaPreference,
       credential: lastGisCredential
     });
 
@@ -5106,6 +5643,7 @@
     window.closeOAuthChooser();
     document.getElementById('cloudflare-auth-modal')?.classList.add('hidden');
     syncBodyModalLock();
+    AppState.feedPersona = Store.getPersonaPreference() || personaPreference;
     updateGlobalBadges();
     renderActiveView();
 
@@ -5197,7 +5735,14 @@
           </div>
           ${(ord.items || []).map(it => `
             <div class="flex justify-between p-2.5 border-t border-surface-container">
-              <span>${it.qty}× ${esc(it.name)}</span>
+              <div>
+                <span>${it.qty}× ${esc(it.name)}</span>
+                ${(it.color || it.shape || it.size) ? `
+                  <p class="text-[10px] text-on-surface-variant font-medium mt-0.5">
+                    ${[it.color ? 'Color: ' + esc(it.color) : '', it.shape ? 'Shape: ' + esc(it.shape) : '', it.size ? 'Size: ' + esc(it.size) : ''].filter(Boolean).join(' • ')}
+                  </p>
+                ` : ''}
+              </div>
               <span class="font-spec-numeral font-semibold">${formatINR((it.price || ord.total) * (it.qty || 1))}</span>
             </div>
           `).join('')}
@@ -5228,7 +5773,10 @@
           productId: match.id,
           sku: match.sku,
           name: match.name,
-          variantLabel: (match.variants && match.variants[0] ? match.variants[0].label : 'Standard Edition'),
+          variantLabel: it.variantLabel || (match.variants && match.variants[0] ? match.variants[0].label : 'Standard Edition'),
+          color: it.color,
+          shape: it.shape,
+          size: it.size,
           price: it.price || match.price,
           regularPrice: match.regularPrice,
           qty: it.qty || 1,

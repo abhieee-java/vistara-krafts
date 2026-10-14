@@ -26,7 +26,8 @@
     DPDP_CONSENT: 'ram_vk_dpdp_consent_v1',
     DPDP_TICKETS: 'ram_vk_dpdp_tickets_v1',
     CHECKOUT_DRAFT: 'ram_vk_checkout_draft_v2',
-    OFFLINE_QUEUE: 'ram_vk_offline_queue_v2'
+    OFFLINE_QUEUE: 'ram_vk_offline_queue_v2',
+    PERSONA_PREF: 'ram_vk_persona_pref_v2'
   };
 
   // Verified studio & product photography from the Stitch archive
@@ -70,6 +71,8 @@
       category: 'keepsakes',
       subCategory: 'floral_preservation',
       relatedCategories: ['deep_pour'],
+      genderAffinity: 'feminine',
+      giftingTags: ['bridal', 'wedding', 'anniversary', 'gifts-for-her', 'keepsake'],
       badge: 'IG Viral Keepsake',
       price: 4499,
       regularPrice: 5499,
@@ -89,6 +92,25 @@
         IMAGES.ultraclearThumb2,
         IMAGES.jewelryBezel,
         IMAGES.coasterSet
+      ],
+      colors: [
+        { id: 'c-gold-leaf', label: '24K Gold Leaf & Crystal Clear', hex: '#d4af37', accent: '#fcf8ea' },
+        { id: 'c-blush-rose', label: 'Blush Rose & Champagne', hex: '#f7d6d0', accent: '#e8a598' },
+        { id: 'c-emerald-silver', label: 'Emerald Agate & Silver Leaf', hex: '#164e3f', accent: '#94a3b8' },
+        { id: 'c-royal-indigo', label: 'Royal Indigo & Silver Foil', hex: '#1e3a8a', accent: '#dbeafe' },
+        { id: 'c-ultraclear', label: 'UltraClear Archival Diamond', hex: '#e0f2fe', accent: '#0284c7' }
+      ],
+      shapes: [
+        { id: 's-arch', label: 'Mughal Arch', icon: 'account_balance' },
+        { id: 's-cube', label: 'Romantic Cube', icon: 'crop_square' },
+        { id: 's-hex', label: 'Geode Hexagon', icon: 'hexagon' },
+        { id: 's-round', label: 'Heirloom Disc', icon: 'radio_button_unchecked' },
+        { id: 's-heart', label: 'Heart Keepsake', icon: 'favorite' }
+      ],
+      sizes: [
+        { id: 'sz-8in', label: '8" Romantic Cube (Desk Mini)', desc: 'Preserves 8–12 roses + couple name tag', priceDelta: 0 },
+        { id: 'sz-12in', label: '12" Royal Heirloom Block', desc: 'Full Varmala + 24K gold flakes + warm LED stand', priceDelta: 1500, popular: true },
+        { id: 'sz-16in', label: '16" Gallery Mantel Frame', desc: 'Dual garland preservation + 2 complimentary coasters', priceDelta: 4000 }
       ],
       variants: [
         { id: 'vrm-8in', label: '8" Romantic Cube (Bridal Mini)', desc: 'Preserves 8–12 roses + couple name tag', price: 2999, regularPrice: 3699, unitPrice: '8×8×2 inch' },
@@ -115,6 +137,8 @@
       subtitle: 'Optical Grade Degassed Epoxy System for Deep Art, Coasters & Floral Preservation',
       category: 'casting',
       subCategory: 'casting_3_1',
+      genderAffinity: 'neutral',
+      giftingTags: ['epoxy-system', 'studio-kit', 'diy-craft', 'gifts-for-him', 'gifts-for-her'],
       badge: 'Bestseller',
       price: 1299,
       regularPrice: 1499,
@@ -134,6 +158,22 @@
         IMAGES.ultraclearThumb2,
         IMAGES.ultraclearThumb3,
         IMAGES.ultraclearThumb4
+      ],
+      colors: [
+        { id: 'c-clear', label: 'UltraClear Optical (Diamond Pure)', hex: '#f0f9ff', accent: '#0284c7' },
+        { id: 'c-ocean-blue', label: 'Ocean Lagoon Tint Kit', hex: '#0284c7', accent: '#bae6fd' },
+        { id: 'c-emerald', label: 'Emerald Forest Tint Kit', hex: '#059669', accent: '#a7f3d0' },
+        { id: 'c-smoke-black', label: 'Obsidian Smoke Tint Kit', hex: '#1e293b', accent: '#94a3b8' }
+      ],
+      shapes: [
+        { id: 's-pour', label: 'Liquid Bottle Set', icon: 'science' },
+        { id: 's-jug', label: 'Studio Ergonomic Jug', icon: 'local_drink' }
+      ],
+      sizes: [
+        { id: 'sz-400g', label: '400g Starter Kit', desc: '300g Resin + 100g Hardener', priceDelta: -750 },
+        { id: 'sz-1200g', label: '1.2kg Studio Pack', desc: '900g Resin + 300g Hardener', priceDelta: 0, popular: true },
+        { id: 'sz-4000g', label: '4.0kg Bulk Workshop Kit', desc: '3kg Resin + 1kg Hardener', priceDelta: 2500 },
+        { id: 'sz-12000g', label: '12kg Commercial Pack', desc: '9kg Resin + 3kg Hardener', priceDelta: 8700 }
       ],
       variants: [
         { id: 'kit-400g', label: '400g Kit', desc: '300g Resin + 100g Hardener • Small Casts', price: 549, regularPrice: 649, unitPrice: '₹137 / 100g' },
@@ -162,6 +202,8 @@
       category: 'keepsakes',
       subCategory: 'home_decor',
       relatedCategories: ['doming'],
+      genderAffinity: 'masculine',
+      giftingTags: ['gifts-for-him', 'barware', 'teak-wood', 'ocean-decor', 'luxury-home'],
       badge: 'Hand-Poured Art',
       price: 2199,
       regularPrice: 2799,
@@ -181,6 +223,21 @@
         IMAGES.ultraclearThumb4,
         IMAGES.riverTable,
         IMAGES.coasterSet
+      ],
+      colors: [
+        { id: 'c-maldives', label: 'Maldives Deep Navy & Turquoise', hex: '#0a1c30', accent: '#0284c7' },
+        { id: 'c-caribbean', label: 'Caribbean Emerald & Aqua Foam', hex: '#0f766e', accent: '#14b8a6' },
+        { id: 'c-midnight', label: 'Midnight Obsidian & Gold Leaf', hex: '#18181b', accent: '#d4af37' },
+        { id: 'c-sunset', label: 'Sunset Coral & Copper Sparkle', hex: '#be123c', accent: '#fb7185' }
+      ],
+      shapes: [
+        { id: 's-platter', label: '14" Teak Serving Board', icon: 'crop_portrait' },
+        { id: 's-charcuterie', label: '18" Live-Edge Charcuterie Paddle', icon: 'straighten' },
+        { id: 's-round-tray', label: '12" Round Vanity Platter', icon: 'radio_button_unchecked' }
+      ],
+      sizes: [
+        { id: 'sz-std', label: 'Standard 14" Teak Tray', desc: 'Burma Teak + 3-layer ocean foam lacing', priceDelta: 0, popular: true },
+        { id: 'sz-combo', label: 'Grand 18" Board + 4 Coasters Combo', desc: 'Complete entertaining table ensemble', priceDelta: 1000 }
       ],
       variants: [
         { id: 'ocn-std', label: '14" Lagoon Serving Board', desc: 'Burma Teak + 3-layer ocean foam lacing', price: 2199, regularPrice: 2799, unitPrice: 'Single Board', popular: true },
@@ -206,6 +263,8 @@
       subtitle: 'Ultra-Slow Exotherm Formula for 50mm Single-Pass Casts & Floral Blocks',
       category: 'deep_pour',
       subCategory: 'deep_pour_2_1',
+      genderAffinity: 'masculine',
+      giftingTags: ['gifts-for-him', 'woodworking', 'river-table', 'deep-pour', 'workshop'],
       badge: 'Up to 50mm',
       price: 2850,
       regularPrice: 3200,
@@ -225,6 +284,20 @@
         IMAGES.riverTable,
         IMAGES.ultraclearThumb2,
         IMAGES.ultraclearThumb3
+      ],
+      colors: [
+        { id: 'c-clear', label: 'Water-Clear Optical Glass', hex: '#f8fafc', accent: '#0ea5e9' },
+        { id: 'c-smoke', label: 'Smoky Charcoal Tint', hex: '#334155', accent: '#64748b' },
+        { id: 'c-caribbean', label: 'Turquoise River Tint', hex: '#0e7490', accent: '#06b6d4' },
+        { id: 'c-walnut', label: 'Deep Amber Coffee Tint', hex: '#78350f', accent: '#b45309' }
+      ],
+      shapes: [
+        { id: 's-deep', label: 'Deep Pour Cast System', icon: 'layers' },
+        { id: 's-table', label: 'Live-Edge Slab Format', icon: 'table_restaurant' }
+      ],
+      sizes: [
+        { id: 'sz-3kg', label: '3.0kg Dual Pack', desc: '2kg Resin + 1kg Hardener • Floral Blocks & Small Tables', priceDelta: 0, popular: true },
+        { id: 'sz-9kg', label: '9.0kg Furniture Studio Kit', desc: '6kg Resin + 3kg Hardener • Live-Edge River Tables', priceDelta: 5149 }
       ],
       variants: [
         { id: 'dp-3kg', label: '3.0kg Dual Pack', desc: '2kg Resin + 1kg Hardener • Floral Blocks & Small Tables', price: 2850, regularPrice: 3200, unitPrice: '₹95 / 100g', popular: true },
@@ -251,6 +324,8 @@
       category: 'keepsakes',
       subCategory: 'wall_art',
       relatedCategories: ['pigments'],
+      genderAffinity: 'feminine',
+      giftingTags: ['gifts-for-her', 'wall-art', 'crystals', 'geode', 'luxury-living'],
       badge: 'Collector Edition',
       price: 3899,
       regularPrice: 4699,
@@ -270,6 +345,21 @@
         IMAGES.coasterSet,
         IMAGES.micaChameleon,
         IMAGES.ultraclearThumb4
+      ],
+      colors: [
+        { id: 'c-champagne', label: 'Royal Champagne & Rose Gold', hex: '#f7d6d0', accent: '#d4af37' },
+        { id: 'c-emerald', label: 'Emerald Agate & Silver Quartz', hex: '#064e3b', accent: '#a7f3d0' },
+        { id: 'c-obsidian', label: 'Obsidian Black & 24K Gold Veins', hex: '#09090b', accent: '#eab308' },
+        { id: 'c-amethyst', label: 'Amethyst Lilac & Pearl Luster', hex: '#581c87', accent: '#d8b4fe' }
+      ],
+      shapes: [
+        { id: 's-round', label: '18" Round Geode Canvas', icon: 'radio_button_unchecked' },
+        { id: 's-hex', label: '20" Hexagonal Geode Specimen', icon: 'hexagon' },
+        { id: 's-grand', label: '24" Architectural Statement Panel', icon: 'crop_square' }
+      ],
+      sizes: [
+        { id: 'sz-18in', label: '18" Round Geode Canvas / Clock', desc: 'Silent sweep brass hands + raw quartz clusters', priceDelta: 0, popular: true },
+        { id: 'sz-24in', label: '24" Architectural Statement Panel', desc: 'Backlit warm LED halo + champagne druzy rim', priceDelta: 2600 }
       ],
       variants: [
         { id: 'geo-18in', label: '18" Round Geode Canvas / Clock', desc: 'Silent sweep brass hands + raw quartz clusters', price: 3899, regularPrice: 4699, unitPrice: '18 inch dia', popular: true },
@@ -295,6 +385,8 @@
       subtitle: 'Zero-Mix Instant Curing Formula for Pressed Flower Pendants & Bezel Charms',
       category: 'uv_resin',
       subCategory: 'uv_jewelry',
+      genderAffinity: 'feminine',
+      giftingTags: ['gifts-for-her', 'jewelry-making', 'uv-resin', 'diy-craft', 'pressed-flowers'],
       badge: 'UV Instant 90s',
       price: 649,
       regularPrice: 749,
@@ -314,6 +406,18 @@
         IMAGES.jewelryBezel,
         IMAGES.ultraclearThumb2,
         IMAGES.ultraclearThumb1
+      ],
+      colors: [
+        { id: 'c-crystal', label: 'Diamond Hard Optical Clear', hex: '#f8fafc', accent: '#38bdf8' },
+        { id: 'c-sparkle', label: 'Holographic Micro-Glitter Base', hex: '#fdf4ff', accent: '#f472b6' }
+      ],
+      shapes: [
+        { id: 's-nozzle', label: 'Precision Needle Tip Bottle', icon: 'colorize' },
+        { id: 's-twin', label: 'Twin Studio Duo + UV Lamp', icon: 'wb_incandescent' }
+      ],
+      sizes: [
+        { id: 'sz-100g', label: '100g Precision Nozzle Bottle', desc: 'Ideal for 25–30 botanical pendants', priceDelta: -270 },
+        { id: 'sz-200g', label: '200g Studio Twin Pack + UV Torch', desc: 'Includes 365nm mini curing lamp', priceDelta: 0, popular: true }
       ],
       variants: [
         { id: 'uv-100g', label: '100g Precision Nozzle Bottle', desc: 'Ideal for 25–30 botanical pendants', price: 379, regularPrice: 449, unitPrice: '₹379 / 100g' },
@@ -339,6 +443,8 @@
       subtitle: 'Cosmetic-Grade Dichroic Color-Shifting Mineral Pigments in Apothecary Jars',
       category: 'pigments',
       subCategory: 'pigments_mica',
+      genderAffinity: 'feminine',
+      giftingTags: ['gifts-for-her', 'pigments', 'colorist', 'shimmer', 'art-supplies'],
       badge: '12 Shades',
       price: 899,
       regularPrice: 1199,
@@ -358,6 +464,20 @@
         IMAGES.oceanMicaJar,
         IMAGES.geodeCanvas,
         IMAGES.coasterSet
+      ],
+      colors: [
+        { id: 'c-aurora', label: 'Aurora Teal & Rose Shifter', hex: '#14b8a6', accent: '#f43f5e' },
+        { id: 'c-sunset', label: 'Solar Flare Gold & Copper', hex: '#eab308', accent: '#f97316' },
+        { id: 'c-emerald', label: 'Emerald Agate & Indigo', hex: '#059669', accent: '#6366f1' },
+        { id: 'c-amethyst', label: 'Amethyst & Galaxy Blue', hex: '#8b5cf6', accent: '#3b82f6' }
+      ],
+      shapes: [
+        { id: 's-jar', label: 'Apothecary Glass Jars', icon: 'science' },
+        { id: 's-vault', label: 'Collector Vault Box', icon: 'inventory_2' }
+      ],
+      sizes: [
+        { id: 'sz-12', label: '12 × 10g Apothecary Jars', desc: 'Aurora Teal, Rose Gold, Emerald, Copper & more', priceDelta: 0, popular: true },
+        { id: 'sz-24', label: '24 × 10g Master Colorist Vault', desc: 'Full spectrum metallic + interference pearl', priceDelta: 700 }
       ],
       variants: [
         { id: 'mica-12', label: '12 × 10g Apothecary Glass Jars', desc: 'Aurora Teal, Rose Gold, Emerald, Copper & more', price: 899, regularPrice: 1199, unitPrice: '₹75 / jar', popular: true },
@@ -384,6 +504,8 @@
       category: 'keepsakes',
       subCategory: 'home_decor',
       relatedCategories: ['casting', 'molds'],
+      genderAffinity: 'feminine',
+      giftingTags: ['gifts-for-her', 'tableware', 'botanical', 'wedding-gift', 'keepsake'],
       badge: 'Gift Favorite',
       price: 1399,
       regularPrice: 1799,
@@ -403,6 +525,21 @@
         IMAGES.geodeMold,
         IMAGES.jewelryBezel,
         IMAGES.floralCube
+      ],
+      colors: [
+        { id: 'c-rose-gold', label: 'Blush Rose & 24K Gold Foil', hex: '#fce7f3', accent: '#d4af37' },
+        { id: 'c-emerald-bloom', label: 'Emerald Agate & White Bloom', hex: '#064e3b', accent: '#e2e8f0' },
+        { id: 'c-navy-delphinium', label: 'Pressed Blue Delphinium & Brass', hex: '#1e3a8a', accent: '#fbbf24' },
+        { id: 'c-pressed-orchid', label: 'Pressed Orchid & Champagne Leaf', hex: '#701a75', accent: '#fde047' }
+      ],
+      shapes: [
+        { id: 's-agate', label: 'Organic Agate Edge', icon: 'interests' },
+        { id: 's-hex', label: 'Geode Hexagon Edge', icon: 'hexagon' },
+        { id: 's-round', label: 'Circular Disc with Brass Rim', icon: 'radio_button_unchecked' }
+      ],
+      sizes: [
+        { id: 'sz-4pc', label: 'Set of 4 Coasters + Brass Holder', desc: 'Includes brass holder stand', priceDelta: 0, popular: true },
+        { id: 'sz-6pc', label: 'Set of 6 Coasters + Brass Holder', desc: 'Entertaining ensemble for dining tables', priceDelta: 499 }
       ],
       variants: [
         { id: 'cst-rose', label: 'Set of 4 — Blush Rose & 24K Gold Foil', desc: 'Includes brass holder stand', price: 1399, regularPrice: 1799, unitPrice: 'Set of 4', popular: true },
@@ -428,6 +565,8 @@
       subtitle: 'High-Viscosity Self-Leveling Glass Coat for Nameplates, Trays & Canvas Art',
       category: 'doming',
       subCategory: 'doming_1_1',
+      genderAffinity: 'neutral',
+      giftingTags: ['topcoat', 'doming', 'high-gloss', 'formula', 'diy-craft'],
       badge: 'High Viscosity',
       price: 799,
       regularPrice: 899,
@@ -447,6 +586,18 @@
         IMAGES.ultraclearThumb4,
         IMAGES.coasterSet,
         IMAGES.ultraclearThumb1
+      ],
+      colors: [
+        { id: 'c-glass', label: 'Liquid Glass Mirror Crystal', hex: '#f0fdf4', accent: '#15803d' },
+        { id: 'c-pearl', label: 'Subtle Pearl Shimmer Glaze', hex: '#fafaf9', accent: '#a8a29e' }
+      ],
+      shapes: [
+        { id: 's-canister', label: 'Equal Vol Twin Bottles', icon: 'view_in_ar' },
+        { id: 's-jug', label: 'Workshop Jug Duo', icon: 'local_drink' }
+      ],
+      sizes: [
+        { id: 'sz-500g', label: '500g Surface Kit', desc: '250g Resin + 250g Hardener', priceDelta: 0, popular: true },
+        { id: 'sz-2kg', label: '2.0kg Studio Topcoat Pack', desc: '1kg Resin + 1kg Hardener', priceDelta: 1700 }
       ],
       variants: [
         { id: 'dom-500g', label: '500g Surface Kit', desc: '250g Resin + 250g Hardener', price: 799, regularPrice: 899, unitPrice: '₹159 / 100g', popular: true },
@@ -472,6 +623,8 @@
       subtitle: 'Tear-Resistant Mirror-Interior Platinum Silicone for 80+ Effortless Demolds',
       category: 'molds',
       subCategory: 'silicone_molds',
+      genderAffinity: 'neutral',
+      giftingTags: ['molds', 'silicone', 'geode', 'craft-tools', 'studio'],
       badge: 'Mirror Gloss',
       price: 449,
       regularPrice: 599,
@@ -491,6 +644,18 @@
         IMAGES.siliconeMold4x,
         IMAGES.coasterSet,
         IMAGES.ultraclearThumb4
+      ],
+      colors: [
+        { id: 'c-translucent', label: 'Platinum Translucent Silicone', hex: '#f1f5f9', accent: '#64748b' },
+        { id: 'c-cyan', label: 'Ocean Teal Silicone', hex: '#0f766e', accent: '#2dd4bf' }
+      ],
+      shapes: [
+        { id: 's-agate', label: 'Agate Edge 4-Cavity Mould', icon: 'interests' },
+        { id: 's-block', label: '8" × 8" Floral Block Mould', icon: 'crop_square' }
+      ],
+      sizes: [
+        { id: 'sz-4cav', label: 'Set of 4 Agate Coaster Cavities', desc: '12mm depth • Natural live geode rim', priceDelta: 0, popular: true },
+        { id: 'sz-deep', label: '8" × 8" × 2.5" Deep Floral Block Mold', desc: 'Reinforced non-bowing walls for varmala blocks', priceDelta: 750 }
       ],
       variants: [
         { id: 'mld-4cav', label: 'Set of 4 Agate Coaster Cavities', desc: '12mm depth • Natural live geode rim', price: 449, regularPrice: 599, unitPrice: '₹112 / mold', popular: true },
@@ -516,6 +681,8 @@
       subtitle: '42% Plant-Derived Carbon Content • Zero VOC & Ultra-Gentle for Home Studios',
       category: 'bio_based',
       subCategory: 'casting_3_1',
+      genderAffinity: 'neutral',
+      giftingTags: ['bio-based', 'plant-derived', 'eco-friendly', 'zero-voc', 'home-studio'],
       badge: 'Plant Based',
       price: 1450,
       regularPrice: 1690,
@@ -535,6 +702,16 @@
         IMAGES.ultraclearMain,
         IMAGES.ultraclearThumb2,
         IMAGES.floralCube
+      ],
+      colors: [
+        { id: 'c-eco-clear', label: 'Plant-Derived Optical Clear', hex: '#ecfdf5', accent: '#059669' },
+        { id: 'c-sage', label: 'Forest Sage Micro-Tint', hex: '#064e3b', accent: '#34d399' }
+      ],
+      shapes: [
+        { id: 's-eco-jug', label: 'Eco-Recycled Pour Bottle', icon: 'eco' }
+      ],
+      sizes: [
+        { id: 'sz-1kg', label: '1.0kg Bio-Craft Kit', desc: '750g Bio Resin + 250g Hardener', priceDelta: 0, popular: true }
       ],
       variants: [
         { id: 'eco-1kg', label: '1.0kg Bio-Craft Kit', desc: '750g Bio Resin + 250g Hardener', price: 1450, regularPrice: 1690, unitPrice: '₹145 / 100g', popular: true }
@@ -559,6 +736,8 @@
       subtitle: 'Wheel-Thrown Iron Stoneware Paired with Food-Safe Vitreous Mineral Glaze',
       category: 'ceramics',
       subCategory: 'home_decor',
+      genderAffinity: 'masculine',
+      giftingTags: ['gifts-for-him', 'ceramics', 'stoneware', 'architectural', 'barware'],
       badge: 'Atelier Collab',
       price: 2499,
       regularPrice: 2999,
@@ -578,6 +757,19 @@
         IMAGES.siennaSpout,
         IMAGES.siennaTable,
         IMAGES.siennaStamp
+      ],
+      colors: [
+        { id: 'c-ochre', label: 'Ochre Sand & Iron Glaze', hex: '#b45309', accent: '#d97706' },
+        { id: 'c-basalt', label: 'Charcoal Basalt & Matte Slate', hex: '#18181b', accent: '#71717a' },
+        { id: 'c-terracotta', label: 'Sienna Terracotta & Brass Leaf', hex: '#9a3412', accent: '#ea580c' }
+      ],
+      shapes: [
+        { id: 's-pitcher', label: 'Ridged Studio Pitcher', icon: 'wine_bar' },
+        { id: 's-carafe', label: 'Compact Table Carafe', icon: 'local_cafe' }
+      ],
+      sizes: [
+        { id: 'sz-12l', label: '1.2L Standard Pitcher', desc: 'Wheel-thrown • 4–6 servings', priceDelta: 0, popular: true },
+        { id: 'sz-08l', label: '0.8L Compact Carafe', desc: 'Wheel-thrown • 2–3 servings', priceDelta: -500 }
       ],
       variants: [
         { id: 'sienna-12l', label: '1.2L Standard Pitcher — Ochre Sand', desc: 'Wheel-thrown • 4–6 servings', price: 2499, regularPrice: 2999, unitPrice: '1,200 ml', popular: true },
@@ -922,7 +1114,51 @@
 
     getProducts() {
       const saved = safeRead(STORAGE_KEYS.PRODUCTS, null);
-      if (saved && Array.isArray(saved) && saved.length >= DEFAULT_PRODUCTS.length) {
+      if (saved && Array.isArray(saved) && saved.length > 0) {
+        let updated = false;
+        saved.forEach(p => {
+          if (!Array.isArray(p.colors) || !p.colors.length) {
+            const defP = DEFAULT_PRODUCTS.find(dp => dp.id === p.id);
+            p.colors = (defP && defP.colors) ? cloneFallback(defP.colors) : [
+              { id: 'c-navy-gold', label: 'Royal Navy & 24K Gold', hex: '#0a1c30', accent: '#d4af37' },
+              { id: 'c-blush-rose', label: 'Blush Rose & Champagne', hex: '#f7d6d0', accent: '#e8a598' },
+              { id: 'c-emerald', label: 'Emerald Agate & Silver', hex: '#164e3f', accent: '#94a3b8' },
+              { id: 'c-ultraclear', label: 'UltraClear Archival Diamond', hex: '#e0f2fe', accent: '#0284c7' }
+            ];
+            updated = true;
+          }
+          if (!Array.isArray(p.shapes) || !p.shapes.length) {
+            const defP = DEFAULT_PRODUCTS.find(dp => dp.id === p.id);
+            p.shapes = (defP && defP.shapes) ? cloneFallback(defP.shapes) : [
+              { id: 's-arch', label: 'Mughal Arch', icon: 'account_balance' },
+              { id: 's-hex', label: 'Geode Hexagon', icon: 'hexagon' },
+              { id: 's-round', label: 'Heirloom Disc', icon: 'radio_button_unchecked' },
+              { id: 's-square', label: 'Square Prism', icon: 'crop_square' }
+            ];
+            updated = true;
+          }
+          if (!Array.isArray(p.sizes) || !p.sizes.length) {
+            const defP = DEFAULT_PRODUCTS.find(dp => dp.id === p.id);
+            p.sizes = (defP && defP.sizes) ? cloneFallback(defP.sizes) : [
+              { id: 'sz-std', label: 'Standard Atelier', desc: 'Curated studio dimensions', priceDelta: 0 },
+              { id: 'sz-grand', label: 'Grand Archival (+₹650)', desc: 'Expanded statement edition', priceDelta: 650 }
+            ];
+            updated = true;
+          }
+          if (!p.genderAffinity) {
+            const defP = DEFAULT_PRODUCTS.find(dp => dp.id === p.id);
+            p.genderAffinity = (defP && defP.genderAffinity) ? defP.genderAffinity : 'unisex';
+            updated = true;
+          }
+          if (!p.giftingTags) {
+            const defP = DEFAULT_PRODUCTS.find(dp => dp.id === p.id);
+            p.giftingTags = (defP && defP.giftingTags) ? cloneFallback(defP.giftingTags) : ['gift', 'luxury'];
+            updated = true;
+          }
+        });
+        if (updated) {
+          safeWrite(STORAGE_KEYS.PRODUCTS, saved);
+        }
         return saved;
       }
       const initial = cloneFallback(DEFAULT_PRODUCTS);
@@ -935,7 +1171,43 @@
       const aliasMap = { 'potry-sienna-pitcher': 'potry-sienna-01', 'vk-dom-101': 'vk-res-003' };
       const resolvedId = aliasMap[id] || id;
       const list = this.getProducts();
-      return list.find(p => p.id === resolvedId) || (fallbackToFirst ? list[0] : null);
+      const p = list.find(item => item.id === resolvedId) || (fallbackToFirst ? list[0] : null);
+      if (!p) return null;
+      if (!p.colors || !p.colors.length) {
+        const defP = DEFAULT_PRODUCTS.find(dp => dp.id === p.id);
+        p.colors = (defP && defP.colors) ? defP.colors : [
+          { id: 'c-navy-gold', label: 'Royal Navy & 24K Gold', hex: '#0a1c30', accent: '#d4af37' },
+          { id: 'c-blush-rose', label: 'Blush Rose & Champagne', hex: '#f7d6d0', accent: '#e8a598' },
+          { id: 'c-emerald', label: 'Emerald Agate & Silver', hex: '#164e3f', accent: '#94a3b8' },
+          { id: 'c-ultraclear', label: 'UltraClear Archival Diamond', hex: '#e0f2fe', accent: '#0284c7' }
+        ];
+      }
+      if (!p.shapes || !p.shapes.length) {
+        const defP = DEFAULT_PRODUCTS.find(dp => dp.id === p.id);
+        p.shapes = (defP && defP.shapes) ? defP.shapes : [
+          { id: 's-arch', label: 'Mughal Arch', icon: 'account_balance' },
+          { id: 's-hex', label: 'Geode Hexagon', icon: 'hexagon' },
+          { id: 's-round', label: 'Heirloom Disc', icon: 'radio_button_unchecked' },
+          { id: 's-square', label: 'Square Prism', icon: 'crop_square' }
+        ];
+      }
+      if (!p.sizes || !p.sizes.length) {
+        const defP = DEFAULT_PRODUCTS.find(dp => dp.id === p.id);
+        p.sizes = (defP && defP.sizes) ? defP.sizes : [
+          { id: 'sz-sm', label: 'Petite 6" (Desk Edition)', desc: 'Compact keepsake / 400g', priceDelta: 0 },
+          { id: 'sz-md', label: 'Standard Studio 9"', desc: 'Most popular edition / 1.2kg', priceDelta: 0, popular: true },
+          { id: 'sz-lg', label: 'Royal Heirloom 12"', desc: 'Statement centerpiece / 2.4kg', priceDelta: 1500 }
+        ];
+      }
+      if (!p.genderAffinity) {
+        const defP = DEFAULT_PRODUCTS.find(dp => dp.id === p.id);
+        p.genderAffinity = (defP && defP.genderAffinity) ? defP.genderAffinity : 'neutral';
+      }
+      if (!p.giftingTags) {
+        const defP = DEFAULT_PRODUCTS.find(dp => dp.id === p.id);
+        p.giftingTags = (defP && defP.giftingTags) ? defP.giftingTags : ['keepsake', 'gift'];
+      }
+      return p;
     },
 
     getSocialPosts() {
@@ -1057,13 +1329,16 @@
       const cart = this.getCart();
       const targetName = name || (product ? product.name : 'Studio Formulation');
       const targetVariant = variantLabel || (product && product.variants && product.variants[0] ? product.variants[0].label : 'Standard Edition');
+      const chosenColor = opts.color || opts.selectedColor || (product && product.colors && product.colors[0] ? product.colors[0].label : 'Classic Studio Edition');
+      const chosenShape = opts.shape || opts.selectedShape || (product && product.shapes && product.shapes[0] ? product.shapes[0].label : 'Standard Cast');
+      const chosenSize = opts.size || opts.selectedSize || (product && product.sizes && product.sizes[0] ? product.sizes[0].label : 'Standard Studio');
       const unitPrice = Number(price || (product ? product.price : 1299));
       const regPrice = Number(regularPrice || (product ? product.regularPrice : unitPrice));
-      const itemKey = `${productId || targetName}__${targetVariant}__${customNote || ''}`;
+      const itemKey = `${productId || targetName}__${targetVariant}__${chosenColor}__${chosenShape}__${chosenSize}__${customNote || ''}`;
 
       const existingIndex = cart.findIndex(item =>
         (item.itemKey && item.itemKey === itemKey) ||
-        (item.productId === productId && item.variantLabel === targetVariant && (item.customNote || '') === (customNote || ''))
+        (item.productId === productId && item.variantLabel === targetVariant && (item.color || '') === chosenColor && (item.shape || '') === chosenShape && (item.size || '') === chosenSize && (item.customNote || '') === (customNote || ''))
       );
 
       if (existingIndex > -1) {
@@ -1076,6 +1351,9 @@
           sku: sku || (product ? product.sku : 'VK-STD-01'),
           name: targetName,
           variantLabel: targetVariant,
+          color: chosenColor,
+          shape: chosenShape,
+          size: chosenSize,
           price: unitPrice,
           regularPrice: regPrice,
           qty: Math.max(1, Number(qty || 1)),
@@ -1308,6 +1586,37 @@
       return next;
     },
 
+    getPersonaPreference() {
+      const saved = safeRead(STORAGE_KEYS.PERSONA_PREF, null);
+      if (saved && ['all', 'masculine', 'feminine'].includes(saved)) {
+        return saved;
+      }
+      const auth = this.getAuthSession();
+      if (auth && auth.personaPreference && ['all', 'masculine', 'feminine'].includes(auth.personaPreference)) {
+        return auth.personaPreference;
+      }
+      return 'all';
+    },
+
+    setPersonaPreference(pref) {
+      const valid = ['all', 'masculine', 'feminine'].includes(pref) ? pref : 'all';
+      safeWrite(STORAGE_KEYS.PERSONA_PREF, valid);
+      const auth = this.getAuthSession();
+      if (auth && auth.email) {
+        auth.personaPreference = valid;
+        auth.gender = valid;
+        safeWrite(STORAGE_KEYS.AUTH_SESSION, auth);
+        const registeredUsers = safeRead(STORAGE_KEYS.REGISTERED_USERS, {}) || {};
+        if (registeredUsers[auth.email.toLowerCase()]) {
+          registeredUsers[auth.email.toLowerCase()].personaPreference = valid;
+          registeredUsers[auth.email.toLowerCase()].gender = valid;
+          safeWrite(STORAGE_KEYS.REGISTERED_USERS, registeredUsers);
+        }
+      }
+      this.notify('persona_preference_updated', { personaPreference: valid });
+      return valid;
+    },
+
     getAuthSession() {
       const session = safeRead(STORAGE_KEYS.AUTH_SESSION, null);
       if (session && typeof session === 'object' && session.authenticated && session.email) {
@@ -1384,6 +1693,12 @@
         ? `${cleanAddrBase} - ${resolvedPin}`
         : address;
 
+      // Resolve persona preference (masculine / feminine / all)
+      const rawGender = payload.personaPreference || payload.gender || (existingUser && existingUser.personaPreference) || (existingUser && existingUser.gender) || 'all';
+      const normalizedPref = (rawGender === 'male' || rawGender === 'masculine')
+        ? 'masculine'
+        : ((rawGender === 'female' || rawGender === 'feminine') ? 'feminine' : 'all');
+
       // Merge any guest wishlist items into the authenticated user's wishlist
       const guestWishlist = this.getWishlist();
       const savedUserWishlist = (existingUser && Array.isArray(existingUser.wishlist)) ? existingUser.wishlist : [];
@@ -1400,6 +1715,8 @@
         address: fullAddress,
         defaultAddress: fullAddress,
         pincode: resolvedPin,
+        gender: normalizedPref,
+        personaPreference: normalizedPref,
         wishlist: mergedWishlist,
         provider,
         passwordVerifier: provider === 'email'
@@ -1416,6 +1733,7 @@
       safeWrite(STORAGE_KEYS.REGISTERED_USERS, registeredUsers);
       safeWrite(STORAGE_KEYS.AUTH_SESSION, userRecord);
       safeWrite(STORAGE_KEYS.PATRON_PROFILE, userRecord);
+      this.setPersonaPreference(normalizedPref);
 
       // Sync with backend (/api/auth/google, /api/auth/apple, /api/auth/login, /api/auth/register)
       const endpoint = provider === 'google'
@@ -1431,6 +1749,8 @@
         phone,
         address: fullAddress,
         pincode: resolvedPin,
+        gender: normalizedPref,
+        personaPreference: normalizedPref,
         wishlist: mergedWishlist,
         credential
       }).then(data => {
@@ -1492,9 +1812,12 @@
 
     getPatronProfile() {
       const authSession = this.getAuthSession();
+      const currentPersona = this.getPersonaPreference();
       if (authSession) {
         return {
           ...authSession,
+          personaPreference: authSession.personaPreference || currentPersona,
+          gender: authSession.gender || authSession.personaPreference || currentPersona,
           address: authSession.address || '',
           defaultAddress: authSession.address || '',
           tier: authSession.memberTier || 'Verified Vistāra Patron',
@@ -1508,6 +1831,8 @@
         address: '',
         defaultAddress: '',
         pincode: '',
+        gender: currentPersona,
+        personaPreference: currentPersona,
         eventDate: '2026-11-18',
         tier: 'Gold Atelier Member',
         memberTier: 'Gold Atelier Member',
@@ -1517,6 +1842,8 @@
       const resolvedTier = profile.memberTier || profile.tier || 'Gold Atelier Member';
       return {
         ...profile,
+        personaPreference: profile.personaPreference || currentPersona,
+        gender: profile.gender || profile.personaPreference || currentPersona,
         address: resolvedAddress,
         defaultAddress: resolvedAddress,
         tier: resolvedTier,
@@ -1525,6 +1852,11 @@
     },
 
     savePatronProfile(updates = {}) {
+      if (updates.personaPreference || updates.gender) {
+        const pref = updates.personaPreference || updates.gender;
+        const validPref = (pref === 'male' || pref === 'masculine') ? 'masculine' : ((pref === 'female' || pref === 'feminine') ? 'feminine' : 'all');
+        this.setPersonaPreference(validPref);
+      }
       const current = this.getPatronProfile();
       const next = { ...current, ...updates };
       const resolvedAddress = updates.defaultAddress !== undefined
@@ -1741,6 +2073,10 @@
         items: summary.cart.map(i => ({
           productId: i.productId || 'vk-epx-301',
           name: `${i.name} (${i.variantLabel})`,
+          variantLabel: i.variantLabel || 'Standard Edition',
+          color: i.color || '',
+          shape: i.shape || '',
+          size: i.size || '',
           qty: i.qty,
           price: i.price,
           customNote: i.customNote
@@ -1874,6 +2210,36 @@
                     popular: true
                   }
                 ]),
+          genderAffinity: targetProduct.genderAffinity || existingProd.genderAffinity || 'unisex',
+          giftingTags: Array.isArray(targetProduct.giftingTags) ? targetProduct.giftingTags : (Array.isArray(existingProd.giftingTags) ? existingProd.giftingTags : ['gift', 'luxury']),
+          colors: Array.isArray(targetProduct.colors) && targetProduct.colors.length > 0
+            ? targetProduct.colors
+            : (Array.isArray(existingProd.colors) && existingProd.colors.length > 0
+              ? existingProd.colors
+              : [
+                  { id: 'c-navy-gold', label: 'Royal Navy & 24K Gold', hex: '#0a1c30', accent: '#d4af37' },
+                  { id: 'c-blush-rose', label: 'Blush Rose & Champagne', hex: '#f7d6d0', accent: '#e8a598' },
+                  { id: 'c-emerald', label: 'Emerald Agate & Silver', hex: '#164e3f', accent: '#94a3b8' },
+                  { id: 'c-ultraclear', label: 'UltraClear Archival Diamond', hex: '#e0f2fe', accent: '#0284c7' }
+                ]),
+          shapes: Array.isArray(targetProduct.shapes) && targetProduct.shapes.length > 0
+            ? targetProduct.shapes
+            : (Array.isArray(existingProd.shapes) && existingProd.shapes.length > 0
+              ? existingProd.shapes
+              : [
+                  { id: 's-arch', label: 'Mughal Arch', icon: 'account_balance' },
+                  { id: 's-hex', label: 'Geode Hexagon', icon: 'hexagon' },
+                  { id: 's-round', label: 'Heirloom Disc', icon: 'radio_button_unchecked' },
+                  { id: 's-square', label: 'Square Prism', icon: 'crop_square' }
+                ]),
+          sizes: Array.isArray(targetProduct.sizes) && targetProduct.sizes.length > 0
+            ? targetProduct.sizes
+            : (Array.isArray(existingProd.sizes) && existingProd.sizes.length > 0
+              ? existingProd.sizes
+              : [
+                  { id: 'sz-std', label: 'Standard Atelier', desc: 'Curated studio dimensions', priceDelta: 0 },
+                  { id: 'sz-grand', label: 'Grand Archival (+₹650)', desc: 'Expanded statement edition', priceDelta: 650 }
+                ]),
           specs: {
             mixRatioWeight: rawSpecs.mixRatioWeight || (targetProduct.ratio ? `${targetProduct.ratio} by Weight` : '3 : 1 (Resin : Hardener)'),
             mixRatioVolume: rawSpecs.mixRatioVolume || '2.6 : 1',
@@ -1889,6 +2255,11 @@
         };
         if (existingIdx > -1) products[existingIdx] = normalizedProd;
         else products.unshift(normalizedProd);
+        safeWrite(STORAGE_KEYS.PRODUCTS, products);
+      }
+
+      if ((payload.action === 'STUDIO_DELETE_PRODUCT' || payload.action === 'ADMIN_DELETE_PRODUCT') && payload.payload && payload.payload.id) {
+        const products = this.getProducts().slice().filter(p => p.id !== payload.payload.id);
         safeWrite(STORAGE_KEYS.PRODUCTS, products);
       }
 

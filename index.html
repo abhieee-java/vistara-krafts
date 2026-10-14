@@ -1924,6 +1924,32 @@
         </button>
       </div>
 
+      <!-- Feed Curation & Gifting Persona Option (Male / Female / Universal) -->
+      <div id="cf-auth-persona-box" class="p-2.5 rounded-xl bg-surface-container-low border border-[#e4e0d8] space-y-1.5 shrink-0">
+        <div class="flex items-center justify-between gap-2">
+          <span class="text-[11px] font-bold text-primary flex items-center gap-1.5">
+            <span class="material-symbols-outlined text-secondary text-sm" aria-hidden="true">auto_awesome</span>
+            <span>Feed Curation &amp; Gifting Preference</span>
+          </span>
+          <span class="text-[10px] text-secondary font-semibold">Instant Personalization</span>
+        </div>
+        <p class="text-[10px] text-on-surface-variant leading-tight">
+          Select your curation profile so your catalogue feed highlights collections curated for him, for her, or universal craft systems.
+        </p>
+        <div class="grid grid-cols-3 gap-1.5 pt-0.5">
+          <button type="button" id="cf-persona-btn-all" onclick="window.setAuthPersona('all')" class="min-h-[40px] px-2 py-1.5 rounded-lg text-xs font-bold transition flex items-center justify-center gap-1 border border-primary bg-primary text-white cursor-pointer">
+            <span>✨ Universal</span>
+          </button>
+          <button type="button" id="cf-persona-btn-masculine" onclick="window.setAuthPersona('masculine')" class="min-h-[40px] px-2 py-1.5 rounded-lg text-xs font-bold transition flex items-center justify-center gap-1 border border-[#e4e0d8] bg-white text-primary hover:border-secondary cursor-pointer">
+            <span>👔 For Him</span>
+          </button>
+          <button type="button" id="cf-persona-btn-feminine" onclick="window.setAuthPersona('feminine')" class="min-h-[40px] px-2 py-1.5 rounded-lg text-xs font-bold transition flex items-center justify-center gap-1 border border-[#e4e0d8] bg-white text-primary hover:border-secondary cursor-pointer">
+            <span>🌸 For Her</span>
+          </button>
+        </div>
+        <input type="hidden" id="cf-auth-selected-persona" value="all">
+      </div>
+
       <!-- Email + Password Form (No upfront street address required) -->
       <form id="cloudflare-auth-form" onsubmit="window.submitCloudflareAuthForm(event)" class="flex flex-col gap-2.5 shrink-0">
         <input type="hidden" id="cf-auth-provider" value="email">

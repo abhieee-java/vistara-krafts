@@ -812,3 +812,104 @@ textarea:disabled {
   pointer-events: none;
 }
 
+/* ==========================================================================
+   Product Varieties (Colors, Shapes, Sizes) Expandable Drawer & Motion Engine
+   ========================================================================== */
+
+.variety-drawer {
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  transform: translateY(-4px);
+  transition: max-height 0.38s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease, transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: max-height, opacity, transform;
+}
+
+.variety-drawer.is-open {
+  max-height: 520px;
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.variety-swatch {
+  width: 24px;
+  height: 24px;
+  border-radius: 9999px;
+  position: relative;
+  transition: transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.22s ease;
+  cursor: pointer;
+  flex-shrink: 0;
+  border: 1.5px solid rgba(0, 0, 0, 0.12);
+}
+
+.variety-swatch:hover {
+  transform: scale(1.18);
+}
+
+.variety-swatch.is-active {
+  transform: scale(1.22);
+  box-shadow: 0 0 0 2px #ffffff, 0 0 0 4px var(--structure-30-navy);
+}
+
+.variety-chip {
+  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+  cursor: pointer;
+}
+
+.variety-chip:hover {
+  border-color: var(--structure-30-navy);
+}
+
+.variety-chip.is-active {
+  background-color: var(--structure-30-navy) !important;
+  color: #ffffff !important;
+  border-color: var(--structure-30-navy) !important;
+  box-shadow: 0 1px 3px rgba(3, 26, 56, 0.15);
+}
+
+.gifting-curation-pill {
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  cursor: pointer;
+}
+
+.gifting-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  border-radius: 9999px;
+  font-weight: 700;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 2.5px 8px;
+  line-height: 1.2;
+}
+
+.gifting-badge-him {
+  background: #0f172a;
+  color: #ffd79b;
+  border: 1px solid rgba(212, 175, 55, 0.45);
+}
+
+.gifting-badge-her {
+  background: #ffe4de;
+  color: #9e3322;
+  border: 1px solid rgba(158, 51, 34, 0.3);
+}
+
+@keyframes varietyPopIn {
+  from {
+    opacity: 0;
+    transform: scale(0.96) translateY(-2px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.variety-drawer.is-open .variety-drawer-content {
+  animation: varietyPopIn 0.28s ease-out;
+}
+
+

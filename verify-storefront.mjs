@@ -56,7 +56,8 @@ function makeMockElement(id = '') {
     getAttribute: () => null,
     addEventListener: () => {},
     querySelector: () => makeMockElement(),
-    querySelectorAll: () => []
+    querySelectorAll: () => [],
+    closest: () => makeMockElement()
   };
   if (id) elementsById.set(id, el);
   return el;
@@ -2032,6 +2033,138 @@ try {
   console.error('   ', err.message);
   failed++;
 }
+
+// 25. Persona Preference, Masculine/Feminine Feed Curation, Gifting Sort & Product Varieties (Color, Shape, Size) Pipeline
+test('Persona Preference, Masculine/Feminine Feed Curation, Gifting Sort & Product Varieties (Color, Shape, Size) Pipeline', () => {
+  // 1. Store Persona Preference API
+  assert.strictEqual(Store.getPersonaPreference(), 'all', 'Default persona preference must be "all"');
+  Store.setPersonaPreference('masculine');
+  assert.strictEqual(Store.getPersonaPreference(), 'masculine');
+  Store.setPersonaPreference('feminine');
+  assert.strictEqual(Store.getPersonaPreference(), 'feminine');
+  Store.setPersonaPreference('all');
+  assert.strictEqual(Store.getPersonaPreference(), 'all');
+
+  // 2. Auth Modal Persona Selection & Patron Profile Sync
+  sandbox.window.setAuthPersona('masculine');
+  const hiddenPersonaInput = mockDocument.getElementById('cf-auth-selected-persona');
+  assert.strictEqual(hiddenPersonaInput.value, 'masculine', 'Hidden persona input must be updated to masculine');
+  assert.strictEqual(Store.getPersonaPreference(), 'masculine', 'Store preference must sync to masculine');
+
+  // Test login syncs persona into patron profile
+  Store.logoutPatron();
+  sandbox.window.completeOAuthChooserAccount('google', 'vikram.raval@gmail.com', 'Vikram Raval');
+  const patronProfile = Store.getPatronProfile();
+  assert.strictEqual(patronProfile.personaPreference, 'masculine', 'Patron profile must retain selected persona preference');
+
+  // 3. Feed Curation & Sorting based on Persona Preference
+  // Masculine feed prioritization
+  sandbox.window.setFeedPersona('masculine');
+  sandbox.window.navigateTo('home');
+  const homeHtmlMasculine = mockDocument.getElementById('app-view-root').innerHTML;
+  assert.ok(homeHtmlMasculine.includes('Gifts for Him') || homeHtmlMasculine.includes('👔 For Him'), 'Home view must display masculine curation');
+
+  // Feminine feed prioritization
+  sandbox.window.setFeedPersona('feminine');
+  sandbox.window.navigateTo('home');
+  const homeHtmlFeminine = mockDocument.getElementById('app-view-root').innerHTML;
+  assert.ok(homeHtmlFeminine.includes('Gifts for Her') || homeHtmlFeminine.includes('🌸 For Her'), 'Home view must display feminine curation');
+
+  // Catalog Gifting & Persona Sort
+  sandbox.window.navigateTo('catalog');
+  sandbox.window.setCatalogSort('gifts_him');
+  const catalogHimHtml = mockDocument.getElementById('app-view-root').innerHTML;
+  assert.ok(catalogHimHtml.includes('👔 For Him') || catalogHimHtml.includes('Executive'), 'Catalog sorted by gifts_him must display masculine items');
+
+  sandbox.window.setCatalogSort('gifts_her');
+  const catalogHerHtml = mockDocument.getElementById('app-view-root').innerHTML;
+  assert.ok(catalogHerHtml.includes('🌸 For Her') || catalogHerHtml.includes('Bridal') || catalogHerHtml.includes('Blush'), 'Catalog sorted by gifts_her must display feminine items');
+
+  sandbox.window.setCatalogSort('gifting');
+  const catalogGiftHtml = mockDocument.getElementById('app-view-root').innerHTML;
+  assert.ok(catalogGiftHtml.includes('🎁 Gift Set') || catalogGiftHtml.includes('Keepsake') || catalogGiftHtml.includes('Preservation'), 'Catalog sorted by gifting must prioritize gifting sets');
+
+  // 4. Product Varieties: Color Swatches, Shape Chips, Size Price Deltas
+  const products = Store.getProducts();
+  const testProduct = products[0]; // 'ram-keep-001'
+  assert.ok(Array.isArray(testProduct.colors) && testProduct.colors.length >= 2, 'Product must have multiple color swatches');
+  assert.ok(Array.isArray(testProduct.shapes) && testProduct.shapes.length >= 2, 'Product must have multiple shape varieties');
+  assert.ok(Array.isArray(testProduct.sizes) && testProduct.sizes.length >= 2, 'Product must have multiple size options');
+  assert.ok(testProduct.sizes.some(s => s.priceDelta > 0), 'Product must offer size upgrades with price deltas');
+
+  // Test card variety toggle & drawer
+  sandbox.window.navigateTo('home');
+  sandbox.window.toggleProductVariety(testProduct.id);
+  const varietyDrawer = mockDocument.getElementById(`variety-drawer-${testProduct.id}`);
+  assert.ok(varietyDrawer, 'Variety drawer element must exist on card');
+  assert.ok(!varietyDrawer.classList.contains('hidden'), 'Variety drawer must be revealed on toggle');
+
+  // Test swatch & chip selection
+  sandbox.window.selectCardVariety(testProduct.id, 'color', 1);
+  sandbox.window.selectCardVariety(testProduct.id, 'shape', 1);
+  sandbox.window.selectCardVariety(testProduct.id, 'size', 1); // Grand Archival (+650)
+
+  // Test adding selected custom variety to bag
+  Store.saveCart([]);
+  sandbox.window.addCustomVarietyToCart(testProduct.id);
+  const cartWithVariety = Store.getCart();
+  assert.strictEqual(cartWithVariety.length, 1, 'Cart must have 1 customized item');
+  const cartItem = cartWithVariety[0];
+  assert.strictEqual(cartItem.productId, testProduct.id);
+  assert.ok(cartItem.color, 'Cart item must store selected color');
+  assert.ok(cartItem.shape, 'Cart item must store selected shape');
+  assert.ok(cartItem.size, 'Cart item must store selected size');
+  assert.strictEqual(cartItem.price, testProduct.price + testProduct.sizes[1].priceDelta, 'Cart item price must reflect size priceDelta');
+
+  // 5. PDP Variety Selection
+  sandbox.window.navigateTo('product', testProduct.id);
+  sandbox.window.selectPdpVariety('color', 0);
+  sandbox.window.selectPdpVariety('shape', 2);
+  sandbox.window.selectPdpVariety('size', 1);
+  sandbox.window.addPdpToCart();
+
+  const cartAfterPdp = Store.getCart();
+  assert.strictEqual(cartAfterPdp.length, 2, 'Cart must contain both distinct variety items');
+
+  // 6. End-to-End Order Persistence & Invoicing of Varieties
+  const placeRes = Store.placeOrder({
+    name: 'Vikram Raval',
+    phone: '+91 9876543210',
+    address: 'Indiranagar 100ft Road, Bengaluru',
+    pincode: '560038',
+    paymentMethod: 'UPI Instant (GPay / PhonePe)',
+    giftWrap: true
+  });
+  assert.ok(placeRes.success && placeRes.order, 'Order placement with varieties must succeed');
+  const placedOrder = placeRes.order;
+  assert.ok(placedOrder.items.length >= 2, 'Order must contain placed items');
+  placedOrder.items.forEach(item => {
+    assert.ok(item.color, 'Persisted order item must retain color');
+    assert.ok(item.shape, 'Persisted order item must retain shape');
+    assert.ok(item.size, 'Persisted order item must retain size');
+  });
+
+  // Check Account view renders variety chips
+  sandbox.window.navigateTo('account');
+  const accountHtml = mockDocument.getElementById('app-view-root').innerHTML;
+  assert.ok(accountHtml.includes('Color:') || accountHtml.includes('🎨'), 'Account view must display order item variety color');
+  assert.ok(accountHtml.includes('Shape:') || accountHtml.includes('📐'), 'Account view must display order item variety shape');
+  assert.ok(accountHtml.includes('Size:') || accountHtml.includes('📏'), 'Account view must display order item variety size');
+
+  // Check GST Invoice Modal renders variety specifications
+  sandbox.window.openOrderInvoiceModal(placedOrder.orderId);
+  const invoiceModal = mockDocument.getElementById('tds-spec-modal');
+  assert.ok(!invoiceModal.classList.contains('hidden'), 'Invoice modal must open');
+  const invoiceHtml = mockDocument.getElementById('tds-modal-body').innerHTML;
+  assert.ok(invoiceHtml.includes('Color:'), 'Tax invoice must itemize variety color');
+  assert.ok(invoiceHtml.includes('Shape:'), 'Tax invoice must itemize variety shape');
+  assert.ok(invoiceHtml.includes('Size:'), 'Tax invoice must itemize variety size');
+  sandbox.window.closeTdsModal();
+
+  // Reset to universal feed & home
+  sandbox.window.setFeedPersona('all');
+  sandbox.window.navigateTo('home');
+});
 
 console.log(`\n========================================`);
 console.log(`Verification Summary: ${passed} passed, ${failed} failed`);
