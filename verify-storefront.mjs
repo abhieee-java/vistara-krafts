@@ -202,6 +202,53 @@ test('PIN code verifier validates 6-digit Indian PINs and rejects invalid inputs
   assert.strictEqual(Store.verifyPincode('ABCDEF').valid, false);
 });
 
+test('Vistāra Krafts (VK) vector splash screen modal, CSS keyframes, and controllers exist', () => {
+  const indexHtml = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8');
+  const stylesCss = fs.readFileSync(path.join(ROOT, 'styles.css'), 'utf8');
+  const appJs = fs.readFileSync(path.join(ROOT, 'app.js'), 'utf8');
+
+  assert.ok(indexHtml.includes('id="vkSplashContainer"'), 'index.html must contain #vkSplashContainer');
+  assert.ok(indexHtml.includes('id="vkLogoRoot"'), 'index.html must contain #vkLogoRoot');
+  assert.ok(indexHtml.includes('id="vkSvgElement"'), 'index.html must contain #vkSvgElement');
+  assert.ok(indexHtml.includes('id="vkBrandTitleBlock"'), 'index.html must contain #vkBrandTitleBlock');
+  assert.ok(indexHtml.includes('family=Cinzel'), 'index.html must link Cinzel font');
+
+  assert.ok(stylesCss.includes('#vkSplashContainer'), 'styles.css must contain #vkSplashContainer styles');
+  assert.ok(stylesCss.includes('vkDraw'), 'styles.css must define vkDraw keyframes');
+  assert.ok(stylesCss.includes('vkFadeIn'), 'styles.css must define vkFadeIn keyframes');
+
+  assert.ok(appJs.includes('window.dismissVkSplash'), 'app.js must define window.dismissVkSplash');
+  assert.ok(appJs.includes('window.replayVkSplash'), 'app.js must define window.replayVkSplash');
+});
+
+test('Digital Personal Data Protection (DPDP) Act 2023 compliance suite markup, methods, and controllers exist', () => {
+  const indexHtml = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8');
+  const storeBridge = fs.readFileSync(path.join(ROOT, 'store-bridge.js'), 'utf8');
+  const appJs = fs.readFileSync(path.join(ROOT, 'app.js'), 'utf8');
+
+  assert.ok(indexHtml.includes('id="dpdp-consent-banner"'), 'index.html must contain #dpdp-consent-banner');
+  assert.ok(indexHtml.includes('id="dpdp-notice-modal"'), 'index.html must contain #dpdp-notice-modal');
+  assert.ok(indexHtml.includes('id="dpdp-preferences-modal"'), 'index.html must contain #dpdp-preferences-modal');
+  assert.ok(indexHtml.includes('id="dpdp-grievance-modal"'), 'index.html must contain #dpdp-grievance-modal');
+  assert.ok(indexHtml.includes('id="chk-dpdp-consent"'), 'index.html checkout modal must contain DPDP consent checkbox');
+  assert.ok(indexHtml.includes('DPDP Act 2023 Notice &amp; Privacy'), 'index.html footer must contain DPDP Notice link');
+
+  assert.ok(storeBridge.includes('getDpdpConsent'), 'store-bridge.js must define getDpdpConsent');
+  assert.ok(storeBridge.includes('saveDpdpConsent'), 'store-bridge.js must define saveDpdpConsent');
+  assert.ok(storeBridge.includes('getDpdpTickets'), 'store-bridge.js must define getDpdpTickets');
+  assert.ok(storeBridge.includes('submitDpdpTicket'), 'store-bridge.js must define submitDpdpTicket');
+  assert.ok(storeBridge.includes('exportUserDataSummary'), 'store-bridge.js must define exportUserDataSummary');
+  assert.ok(storeBridge.includes('eraseUserData'), 'store-bridge.js must define eraseUserData');
+
+  assert.ok(appJs.includes('window.openDpdpModal'), 'app.js must define window.openDpdpModal');
+  assert.ok(appJs.includes('window.acceptDpdpBanner'), 'app.js must define window.acceptDpdpBanner');
+  assert.ok(appJs.includes('window.saveDpdpPreferencesForm'), 'app.js must define window.saveDpdpPreferencesForm');
+  assert.ok(appJs.includes('window.withdrawDpdpConsent'), 'app.js must define window.withdrawDpdpConsent');
+  assert.ok(appJs.includes('window.submitDpdpGrievanceForm'), 'app.js must define window.submitDpdpGrievanceForm');
+  assert.ok(appJs.includes('window.exportDpdpUserData'), 'app.js must define window.exportDpdpUserData');
+  assert.ok(appJs.includes('window.eraseDpdpUserData'), 'app.js must define window.eraseDpdpUserData');
+});
+
 test('Cart engine computes volume tier discounts, coupons, GST, and handles quantity 0 removal', () => {
   Store.clearCart();
   let summary = Store.getCartSummary();

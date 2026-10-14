@@ -22,7 +22,9 @@
     AUTH_SESSION: 'ram_vk_cf_auth_v2',
     REGISTERED_USERS: 'ram_vk_cf_users_v2',
     RECENTLY_VIEWED: 'ram_vk_recently_viewed_v2',
-    STUDIO_SYNC_LOG: 'ram_vk_studio_sync_v2'
+    STUDIO_SYNC_LOG: 'ram_vk_studio_sync_v2',
+    DPDP_CONSENT: 'ram_vk_dpdp_consent_v1',
+    DPDP_TICKETS: 'ram_vk_dpdp_tickets_v1'
   };
 
   // Verified studio & product photography from the Stitch archive
@@ -1915,6 +1917,114 @@
           areaServed: ['IN', 'Bengaluru', 'Mumbai', 'New Delhi', 'Hyderabad', 'Chennai', 'Pune', 'Jaipur', 'Kolkata', 'Udaipur', 'Goa']
         }
       };
+    },
+
+    // Digital Personal Data Protection (DPDP) Act 2023 Compliance Methods
+    getDpdpConsent() {
+      return safeRead(STORAGE_KEYS.DPDP_CONSENT, {
+        accepted: false,
+        date: null,
+        categories: {
+          orderFulfillment: true,
+          analyticsSession: true,
+          marketingPromos: false
+        },
+        age18PlusVerified: true,
+        language: 'en'
+      });
+    },
+
+    saveDpdpConsent(data) {
+      const current = this.getDpdpConsent();
+      const updated = {
+        accepted: true,
+        date: new Date().toISOString(),
+        categories: {
+          orderFulfillment: true,
+          analyticsSession: Boolean(data && data.categories ? data.categories.analyticsSession : true),
+          marketingPromos: Boolean(data && data.categories ? data.categories.marketingPromos : false)
+        },
+        age18PlusVerified: Boolean(data && typeof data.age18PlusVerified !== 'undefined' ? data.age18PlusVerified : true),
+        language: String((data && data.language) || current.language || 'en')
+      };
+      safeWrite(STORAGE_KEYS.DPDP_CONSENT, updated);
+      this.notify('dpdp_consent_updated', updated);
+      return updated;
+    },
+
+    getDpdpTickets() {
+      return safeRead(STORAGE_KEYS.DPDP_TICKETS, []);
+    },
+
+    submitDpdpTicket(payload) {
+      const tickets = this.getDpdpTickets().slice();
+      const ticketId = `DPDP-2026-${Math.floor(10000 + Math.random() * 90000)}`;
+      const newTicket = {
+        ticketId,
+        requestType: String(payload.requestType || 'Grievance Redressal'),
+        fullName: String(payload.fullName || 'Patron').trim(),
+        email: String(payload.email || '').trim(),
+        mobile: String(payload.mobile || '').trim(),
+        orderId: String(payload.orderId || '').trim(),
+        details: String(payload.details || '').trim(),
+        status: 'In Review (SLA <= 7 Days)',
+        timestamp: new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' }),
+        createdAtIso: new Date().toISOString()
+      };
+      tickets.unshift(newTicket);
+      safeWrite(STORAGE_KEYS.DPDP_TICKETS, tickets);
+      this.notify('dpdp_ticket_created', newTicket);
+      return newTicket;
+    },
+
+    exportUserDataSummary() {
+      const profile = this.getPatronProfile();
+      const session = safeRead(STORAGE_KEYS.AUTH_SESSION, null);
+      const orders = this.getOrders();
+      const cart = this.getCart();
+      const wishlist = this.getWishlist();
+      const consent = this.getDpdpConsent();
+      const tickets = this.getDpdpTickets();
+
+      return {
+        app: 'Vistāra Krafts Studio (@resin.art.memories)',
+        regulation: 'Digital Personal Data Protection (DPDP) Act, 2023 (India)',
+        exportTimestamp: new Date().toISOString(),
+        dataPrincipalSummary: {
+          profile,
+          sessionAuth: session ? { email: session.email, name: session.name, provider: session.provider } : 'Guest',
+          deliveryPincode: this.getPincode()
+        },
+        dpdpConsentState: consent,
+        dpdpGrievanceTickets: tickets,
+        commerceState: {
+          ordersCount: orders.length,
+          ordersList: orders,
+          cartItemsCount: cart.length,
+          cartItems: cart,
+          wishlistItemsCount: wishlist.length,
+          wishlistItems: wishlist
+        }
+      };
+    },
+
+    eraseUserData() {
+      safeWrite(STORAGE_KEYS.CART, []);
+      safeWrite(STORAGE_KEYS.WISHLIST, []);
+      safeWrite(STORAGE_KEYS.SAVED_POSTS, []);
+      safeWrite(STORAGE_KEYS.LIKED_POSTS, []);
+      safeWrite(STORAGE_KEYS.RECENTLY_VIEWED, []);
+      safeWrite(STORAGE_KEYS.PATRON_PROFILE, { name: '', email: '', phone: '', address: '', pincode: '560001' });
+      safeWrite(STORAGE_KEYS.AUTH_SESSION, null);
+      safeWrite(STORAGE_KEYS.DPDP_CONSENT, {
+        accepted: false,
+        date: null,
+        categories: { orderFulfillment: true, analyticsSession: false, marketingPromos: false },
+        age18PlusVerified: false,
+        language: 'en'
+      });
+      this.notify('dpdp_user_data_erased', { timestamp: new Date().toISOString() });
+      return { ok: true, erasedAt: new Date().toISOString() };
     },
 
     subscribe(fn) {

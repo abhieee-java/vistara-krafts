@@ -581,3 +581,147 @@ textarea:disabled {
   }
 }
 
+/* ==========================================================================
+   Vistāra Krafts (VK) Animated Vector Splash Screen Styles
+   ========================================================================== */
+#vkSplashContainer {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(250, 248, 245, 0.94);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 300ms cubic-bezier(0.16, 1, 0.3, 1), visibility 300ms ease;
+  user-select: none;
+}
+
+.dark #vkSplashContainer {
+  background-color: rgba(3, 26, 56, 0.96);
+}
+
+#vkSplashContainer.splash-dismissed {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.vk-emblem-container {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  background: transparent;
+  width: 100%;
+  max-width: 360px;
+}
+
+.vk-svg-canvas {
+  width: 360px;
+  height: 360px;
+  max-width: 100%;
+  overflow: visible;
+}
+
+.vk-stroke {
+  fill: none;
+  stroke: url(#vkNavyGradient);
+  stroke-width: 7;
+  stroke-linecap: square;
+  stroke-miterlimit: 10;
+}
+
+.vk-tri, .vk-monogram-group {
+  fill: url(#vkNavyVelvet);
+}
+
+.vk-brand-title {
+  font-family: 'Cinzel', 'Playfair Display', Georgia, serif;
+  color: #112942;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  font-weight: 700;
+  margin-top: 8px;
+}
+
+.dark .vk-brand-title {
+  color: #e0e8f5;
+}
+
+.vk-brand-rule {
+  height: 2px;
+  width: 78%;
+  background: linear-gradient(90deg, transparent, #112942, transparent);
+  margin-top: 6px;
+}
+
+.dark .vk-brand-rule {
+  background: linear-gradient(90deg, transparent, #8ba8cd, transparent);
+}
+
+/* Splash Keyframe Animations (Accelerated for High Speed Entrance) */
+.is-animated .vk-square-frame,
+.is-animated .vk-diamond-frame {
+  stroke-dasharray: 1200;
+  stroke-dashoffset: 1200;
+  animation: vkDraw 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.is-animated .vk-inner-line {
+  stroke-dasharray: 450;
+  stroke-dashoffset: 450;
+  animation: vkDraw 0.35s ease 0.15s forwards;
+}
+
+.is-animated .vk-tri,
+.is-animated .vk-monogram-group {
+  opacity: 0;
+  animation: vkFadeIn 0.3s ease 0.3s forwards;
+}
+
+.is-animated #vkBrandTitleBlock {
+  opacity: 0;
+  transform: translateY(6px);
+  animation: vkTitleFade 0.3s cubic-bezier(0.16, 1, 0.3, 1) 0.4s forwards;
+}
+
+@keyframes vkDraw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes vkFadeIn {
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes vkTitleFade {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .is-animated .vk-square-frame,
+  .is-animated .vk-diamond-frame,
+  .is-animated .vk-inner-line {
+    stroke-dashoffset: 0;
+    animation: none;
+  }
+  .is-animated .vk-tri,
+  .is-animated .vk-monogram-group,
+  .is-animated #vkBrandTitleBlock {
+    opacity: 1;
+    transform: none;
+    animation: none;
+  }
+}
+
+

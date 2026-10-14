@@ -87,7 +87,10 @@
     'checkout-modal',
     'global-pincode-modal',
     'cloudflare-auth-modal',
-    'account-bar-modal'
+    'account-bar-modal',
+    'dpdp-notice-modal',
+    'dpdp-preferences-modal',
+    'dpdp-grievance-modal'
   ];
 
   let lastActiveModalId = null;
@@ -5263,9 +5266,228 @@
     });
   }
 
+  // Vistāra Krafts (VK) Vector Splash Screen Controller
+  let vkSplashTimer = null;
+
+  window.dismissVkSplash = function () {
+    if (vkSplashTimer) {
+      clearTimeout(vkSplashTimer);
+      vkSplashTimer = null;
+    }
+    const splash = document.getElementById('vkSplashContainer');
+    if (splash) {
+      splash.classList.add('splash-dismissed');
+    }
+  };
+
+  window.replayVkSplash = function () {
+    if (vkSplashTimer) {
+      clearTimeout(vkSplashTimer);
+      vkSplashTimer = null;
+    }
+    const splash = document.getElementById('vkSplashContainer');
+    const logoRoot = document.getElementById('vkLogoRoot');
+    if (splash) {
+      splash.classList.remove('splash-dismissed');
+    }
+    if (logoRoot) {
+      logoRoot.classList.remove('is-animated');
+      // Trigger DOM reflow to restart CSS animations cleanly
+      void logoRoot.offsetWidth;
+      logoRoot.classList.add('is-animated');
+    }
+    vkSplashTimer = setTimeout(() => {
+      window.dismissVkSplash();
+    }, 1000);
+  };
+
+  // Digital Personal Data Protection (DPDP) Act 2023 Controller Functions
+  window.openDpdpModal = function (tab) {
+    ['dpdp-notice-modal', 'dpdp-preferences-modal', 'dpdp-grievance-modal'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.classList.add('hidden');
+    });
+
+    const targetId = tab === 'preferences' ? 'dpdp-preferences-modal' :
+                     tab === 'grievance' ? 'dpdp-grievance-modal' : 'dpdp-notice-modal';
+    const modal = document.getElementById(targetId);
+    if (!modal) return;
+
+    if (tab === 'preferences') {
+      const consent = ResinStore.getDpdpConsent();
+      const analyticsEl = document.getElementById('dpdp-pref-analytics');
+      const marketingEl = document.getElementById('dpdp-pref-marketing');
+      const ageEl = document.getElementById('dpdp-pref-age');
+      if (analyticsEl) analyticsEl.checked = Boolean(consent.categories && consent.categories.analyticsSession);
+      if (marketingEl) marketingEl.checked = Boolean(consent.categories && consent.categories.marketingPromos);
+      if (ageEl) ageEl.checked = Boolean(consent.age18PlusVerified);
+    }
+
+    if (tab === 'grievance') {
+      window.renderDpdpTickets();
+    }
+
+    modal.classList.remove('hidden');
+    syncBodyModalLock();
+  };
+
+  window.acceptDpdpBanner = function () {
+    ResinStore.saveDpdpConsent({
+      categories: { orderFulfillment: true, analyticsSession: true, marketingPromos: false },
+      age18PlusVerified: true
+    });
+    const banner = document.getElementById('dpdp-consent-banner');
+    if (banner) banner.classList.add('hidden');
+    window.showToast('DPDP Consent Saved', 'Your privacy choices have been updated.');
+  };
+
+  window.saveDpdpPreferencesForm = function (ev) {
+    if (ev) ev.preventDefault();
+    const analyticsEl = document.getElementById('dpdp-pref-analytics');
+    const marketingEl = document.getElementById('dpdp-pref-marketing');
+    const ageEl = document.getElementById('dpdp-pref-age');
+
+    ResinStore.saveDpdpConsent({
+      categories: {
+        orderFulfillment: true,
+        analyticsSession: Boolean(analyticsEl ? analyticsEl.checked : true),
+        marketingPromos: Boolean(marketingEl ? marketingEl.checked : false)
+      },
+      age18PlusVerified: Boolean(ageEl ? ageEl.checked : true)
+    });
+
+    window.closeModalById('dpdp-preferences-modal');
+    const banner = document.getElementById('dpdp-consent-banner');
+    if (banner) banner.classList.add('hidden');
+    window.showToast('Preferences Saved', 'DPDP Act 2023 consent preferences updated.');
+  };
+
+  window.withdrawDpdpConsent = function () {
+    ResinStore.saveDpdpConsent({
+      categories: { orderFulfillment: true, analyticsSession: false, marketingPromos: false },
+      age18PlusVerified: true
+    });
+    const analyticsEl = document.getElementById('dpdp-pref-analytics');
+    const marketingEl = document.getElementById('dpdp-pref-marketing');
+    if (analyticsEl) analyticsEl.checked = false;
+    if (marketingEl) marketingEl.checked = false;
+
+    window.closeModalById('dpdp-preferences-modal');
+    window.showToast('Consents Withdrawn', 'Optional processing consents have been revoked.');
+  };
+
+  window.toggleDpdpNoticeLang = function (lang) {
+    const enContainer = document.getElementById('dpdp-notice-content-en');
+    const hiContainer = document.getElementById('dpdp-notice-content-hi');
+    const enBtn = document.getElementById('dpdp-lang-en-btn');
+    const hiBtn = document.getElementById('dpdp-lang-hi-btn');
+
+    if (lang === 'hi') {
+      if (enContainer) enContainer.classList.add('hidden');
+      if (hiContainer) hiContainer.classList.remove('hidden');
+      if (enBtn) {
+        enBtn.className = 'min-h-[36px] px-3 rounded-lg bg-white border border-[#e4e0d8] text-primary hover:bg-surface-container text-[11px] font-bold cursor-pointer transition';
+      }
+      if (hiBtn) {
+        hiBtn.className = 'min-h-[36px] px-3 rounded-lg bg-primary text-white text-[11px] font-bold cursor-pointer transition';
+      }
+    } else {
+      if (hiContainer) hiContainer.classList.add('hidden');
+      if (enContainer) enContainer.classList.remove('hidden');
+      if (hiBtn) {
+        hiBtn.className = 'min-h-[36px] px-3 rounded-lg bg-white border border-[#e4e0d8] text-primary hover:bg-surface-container text-[11px] font-bold cursor-pointer transition';
+      }
+      if (enBtn) {
+        enBtn.className = 'min-h-[36px] px-3 rounded-lg bg-primary text-white text-[11px] font-bold cursor-pointer transition';
+      }
+    }
+  };
+
+  window.submitDpdpGrievanceForm = function (ev) {
+    if (ev) ev.preventDefault();
+    const typeEl = document.getElementById('dpdp-req-type');
+    const nameEl = document.getElementById('dpdp-req-name');
+    const emailEl = document.getElementById('dpdp-req-email');
+    const mobileEl = document.getElementById('dpdp-req-mobile');
+    const orderIdEl = document.getElementById('dpdp-req-orderid');
+    const detailsEl = document.getElementById('dpdp-req-details');
+
+    const ticket = ResinStore.submitDpdpTicket({
+      requestType: typeEl ? typeEl.value : 'Grievance Redressal',
+      fullName: nameEl ? nameEl.value : '',
+      email: emailEl ? emailEl.value : '',
+      mobile: mobileEl ? mobileEl.value : '',
+      orderId: orderIdEl ? orderIdEl.value : '',
+      details: detailsEl ? detailsEl.value : ''
+    });
+
+    window.renderDpdpTickets();
+    window.showToast('Grievance Ticket Raised', `Ticket ${ticket.ticketId} assigned (7-Day SLA)`);
+    if (ev && ev.target && ev.target.reset) ev.target.reset();
+  };
+
+  window.renderDpdpTickets = function () {
+    const listEl = document.getElementById('dpdp-ticket-list');
+    const slotEl = document.getElementById('dpdp-ticket-history-slot');
+    if (!listEl || !slotEl) return;
+
+    const tickets = ResinStore.getDpdpTickets();
+    if (tickets.length === 0) {
+      slotEl.classList.add('hidden');
+      return;
+    }
+
+    slotEl.classList.remove('hidden');
+    listEl.innerHTML = tickets.map(t => `
+      <div class="p-3 rounded-xl bg-surface-container-low border border-[#e4e0d8] space-y-1">
+        <div class="flex items-center justify-between gap-2">
+          <span class="font-bold text-primary text-xs font-spec-numeral">${esc(t.ticketId)}</span>
+          <span class="text-[10px] uppercase font-bold text-amber-800 bg-amber-50 px-2 py-0.5 rounded border border-amber-200 shrink-0">${esc(t.status)}</span>
+        </div>
+        <p class="text-[11px] font-semibold text-primary truncate">${esc(t.requestType)}</p>
+        <p class="text-[10px] text-on-surface-variant line-clamp-2">${esc(t.details)}</p>
+        <div class="text-[10px] text-on-surface-variant/80 pt-1 border-t border-surface-container flex items-center justify-between gap-2">
+          <span>Submitted: ${esc(t.timestamp)}</span>
+          <span>DPO SLA: 7 Days</span>
+        </div>
+      </div>
+    `).join('');
+  };
+
+  window.exportDpdpUserData = function () {
+    const data = ResinStore.exportUserDataSummary();
+    const jsonStr = JSON.stringify(data, null, 2);
+    const blob = new Blob([jsonStr], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `vistara_krafts_dpdp_user_data_${Date.now()}.json`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    window.showToast('Data Export Complete', 'Downloaded your DPDP Act 2023 summary file.');
+  };
+
+  window.eraseDpdpUserData = function () {
+    if (!confirm('DPDP Section 12 Deletion Confirmation:\nAre you sure you want to erase all your saved profile details, cart, and wishlist from this browser session?')) {
+      return;
+    }
+    ResinStore.eraseUserData();
+    window.closeModalById('dpdp-grievance-modal');
+    const banner = document.getElementById('dpdp-consent-banner');
+    if (banner) banner.classList.remove('hidden');
+    window.showToast('Personal Data Erased', 'Your local session profile & saved items were cleared.');
+  };
+
   // Global Escape key listener + Keyboard Tab Focus Trap inside active modals
   document.addEventListener('keydown', (ev) => {
     if (ev.key === 'Escape') {
+      const splash = document.getElementById('vkSplashContainer');
+      if (splash && !splash.classList.contains('splash-dismissed')) {
+        window.dismissVkSplash();
+        return;
+      }
       let closedAny = false;
       MODAL_IDS.forEach(id => {
         const el = document.getElementById(id);
@@ -5321,6 +5543,21 @@
   window.addEventListener('hashchange', handleRouteChange);
   document.addEventListener('DOMContentLoaded', () => {
     handleRouteChange();
+    // Start auto-dismiss timer for Vistāra Krafts vector splash animation (1.0s animation + 0.3s fade = 1.3s total)
+    vkSplashTimer = setTimeout(() => {
+      window.dismissVkSplash();
+    }, 1000);
+
+    // Check DPDP Consent State on initial load
+    try {
+      const dpdpConsent = ResinStore.getDpdpConsent();
+      if (!dpdpConsent.accepted) {
+        const banner = document.getElementById('dpdp-consent-banner');
+        if (banner) banner.classList.remove('hidden');
+      }
+    } catch (e) {
+      console.warn('DPDP consent init:', e);
+    }
   });
 })();
 

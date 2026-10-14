@@ -785,7 +785,7 @@
   <link rel="apple-touch-icon" href="./vistara-krafts-logo.jpg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,400;1,600&amp;family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&amp;family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,400;1,600&amp;family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
   <script id="tailwind-config">
@@ -842,6 +842,153 @@
 </head>
 <body class="bg-surface text-on-surface flex flex-col min-h-screen">
 
+  <!-- Vistāra Krafts (VK) Animated Vector Splash Screen -->
+  <div id="vkSplashContainer" class="fixed inset-0 z-50 flex flex-col items-center justify-center p-4 bg-surface/92 backdrop-blur-2xl transition-opacity duration-600 ease-out select-none cursor-pointer" onclick="window.dismissVkSplash()" role="dialog" aria-modal="true" aria-label="Vistāra Krafts Animated Splash Screen">
+    <div class="relative flex flex-col items-center justify-center text-center max-w-[90vw]" onclick="event.stopPropagation()">
+      <!-- Vistāra Krafts (VK) Transparent Vector Logo -->
+      <div id="vkLogoRoot" class="vk-emblem-container is-animated">
+        <svg id="vkSvgElement" class="vk-svg-canvas" viewBox="0 0 600 600" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Vistāra Krafts VK Logo">
+          <defs>
+            <!-- Deep Navy Textured Metallic Gradient matching original image -->
+            <linearGradient id="vkNavyGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop id="gradStop1" offset="0%" stop-color="#0d233a"></stop>
+              <stop id="gradStop2" offset="50%" stop-color="#183757"></stop>
+              <stop id="gradStop3" offset="100%" stop-color="#0a1c30"></stop>
+            </linearGradient>
+
+            <!-- Subtle Velvet Radial Sheen for Filled Triangles & Monogram -->
+            <radialGradient id="vkNavyVelvet" cx="45%" cy="40%" r="65%">
+              <stop id="velvetStop1" offset="0%" stop-color="#183757"></stop>
+              <stop id="velvetStop2" offset="55%" stop-color="#0d233a"></stop>
+              <stop id="velvetStop3" offset="100%" stop-color="#0a1c30"></stop>
+            </radialGradient>
+          </defs>
+
+          <!-- 1. UPRIGHT SQUARE & INTERNAL VERTICAL ARCHITECTURE -->
+          <g class="vk-square-group">
+            <!-- Outer Upright Square (296x296 centered at 300,300) -->
+            <rect class="vk-stroke vk-square-frame" x="152" y="152" width="296" height="296"></rect>
+
+            <!-- Left Inner Vertical Line (Runs from top edge y=152 down to bottom-left diamond edge y=404) -->
+            <line class="vk-stroke vk-inner-line" x1="194" y1="152" x2="194" y2="404"></line>
+
+            <!-- Right Inner Vertical Line (Runs from top-right diamond edge y=196 down to bottom edge y=448) -->
+            <line class="vk-stroke vk-inner-line" x1="406" y1="196" x2="406" y2="448"></line>
+          </g>
+
+          <!-- 2. 45-DEGREE INTERLOCKING DIAMOND & DIAGONAL BANDS -->
+          <g class="vk-diamond-group">
+            <!-- Outer Rotated Diamond Square (Vertices at 300,90 | 510,300 | 300,510 | 90,300) -->
+            <polygon class="vk-stroke vk-diamond-frame" points="300,90 510,300 300,510 90,300"></polygon>
+
+            <!-- Upper-Left Inner Diagonal Line (Starts on upper-right diamond edge at 329,119 and extends past left square edge to 133,315) -->
+            <line class="vk-stroke vk-inner-line" x1="329" y1="119" x2="133" y2="315"></line>
+
+            <!-- Lower-Right Inner Diagonal Line (Starts on lower-left diamond edge at 271,481 and extends past right square edge to 467,285) -->
+            <line class="vk-stroke vk-inner-line" x1="271" y1="481" x2="467" y2="285"></line>
+          </g>
+
+          <!-- 3. ALL 10 ARCHITECTURAL FILLED TRIANGLES (Exact Positions & Insets) -->
+          <g class="vk-triangles-layer">
+            <!-- Left Diamond Point Triangle -->
+            <polygon class="vk-tri tri-d1" points="107,300 140,267 140,333"></polygon>
+
+            <!-- Right Diamond Point Triangle -->
+            <polygon class="vk-tri tri-d1" points="493,300 460,267 460,333"></polygon>
+
+            <!-- Top Diamond Sub-Triangle (Resting above top horizontal square edge) -->
+            <polygon class="vk-tri tri-d2" points="329,130 309,144 349,144"></polygon>
+
+            <!-- Bottom Diamond Sub-Triangle (Resting below bottom horizontal square edge) -->
+            <polygon class="vk-tri tri-d2" points="271,470 251,456 291,456"></polygon>
+
+            <!-- Top-Right Upright Square Large Corner Triangle -->
+            <polygon class="vk-tri tri-d2" points="384,164 436,164 436,216"></polygon>
+
+            <!-- Bottom-Left Upright Square Large Corner Triangle -->
+            <polygon class="vk-tri tri-d2" points="164,384 164,436 216,436"></polygon>
+
+            <!-- Top-Left Outer Strip Small Corner Triangle -->
+            <polygon class="vk-tri tri-d3" points="163,163 183,163 163,183"></polygon>
+
+            <!-- Top-Left Inner Strip Small Corner Triangle -->
+            <polygon class="vk-tri tri-d4" points="204,163 222,163 204,181"></polygon>
+
+            <!-- Bottom-Right Outer Strip Small Corner Triangle -->
+            <polygon class="vk-tri tri-d3" points="437,437 417,437 437,417"></polygon>
+
+            <!-- Bottom-Right Inner Strip Small Corner Triangle -->
+            <polygon class="vk-tri tri-d4" points="396,437 378,437 396,419"></polygon>
+          </g>
+
+          <!-- 4. CENTRAL "VK" HIGH-CONTRAST LUXURY SERIF MONOGRAM (Pure Vector Paths) -->
+          <g class="vk-monogram-group">
+            <!-- Letter "V" with classic thick left diagonal, thin right diagonal, and bracketed top serifs -->
+            <path d="
+              M 192 246
+              L 241 246
+              L 241 251
+              C 231 251, 228 254, 232 264
+              L 260 331
+              L 286 265
+              C 290 255, 287 251, 276 251
+              L 276 246
+              L 309 246
+              L 309 251
+              C 299 251, 295 255, 290 267
+              L 256 355
+              L 246 355
+              L 206 263
+              C 202 254, 199 251, 192 251
+              Z
+            "></path>
+
+            <!-- Letter "K" with bold stem, refined upper diagonal arm, and sculpted lower serif leg -->
+            <path d="
+              M 301 350
+              C 309 350, 311 347, 311 338
+              L 311 263
+              C 311 254, 309 251, 301 251
+              L 301 246
+              L 351 246
+              L 351 251
+              C 342 251, 340 254, 340 263
+              L 340 298
+              L 378 262
+              C 384 256, 383 251, 373 251
+              L 373 246
+              L 409 246
+              L 409 251
+              C 399 251, 392 254, 383 263
+              L 360 285
+              L 399 339
+              C 405 347, 409 350, 416 350
+              L 416 355
+              L 368 355
+              L 368 350
+              C 376 350, 377 347, 372 340
+              L 343 299
+              L 340 302
+              L 340 338
+              C 340 347, 342 350, 351 350
+              L 351 355
+              L 301 355
+              Z
+            "></path>
+          </g>
+        </svg>
+
+        <!-- 5. OPTIONAL BRAND NAME ("Vistāra Krafts") -->
+        <div id="vkBrandTitleBlock" class="mt-2 flex flex-col items-center text-center">
+          <h1 class="vk-brand-title text-xl sm:text-2xl md:text-3xl tracking-[0.28em]">
+            Vistāra Krafts
+          </h1>
+          <div class="vk-brand-rule mt-2"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Top Pan-India Logistics & Vistāra Krafts Ribbon -->
   <header class="sticky top-0 w-full min-w-0 z-40 bg-surface/95 backdrop-blur-xl border-b border-[#e4e0d8] shadow-2xs max-w-full overflow-x-clip">
     <aside aria-label="Studio Highlights" class="w-full min-w-0 bg-tertiary text-on-tertiary px-2.5 sm:px-4 py-1 text-center text-[10px] sm:text-[11px] font-label-sm tracking-wide flex items-center justify-center gap-1.5 overflow-hidden">
@@ -856,7 +1003,7 @@
         <button type="button" aria-label="Open Navigation & Account Bar" onclick="window.openModalById('mobile-menu-drawer')" class="lg:hidden w-11 h-11 rounded-lg flex items-center justify-center text-primary hover:bg-surface-container shrink-0 cursor-pointer">
           <span class="material-symbols-outlined text-2xl" aria-hidden="true">menu</span>
         </button>
-        <a href="#/home" class="flex items-center gap-2 sm:gap-2.5 group min-w-0 min-h-[44px] py-1 overflow-hidden">
+        <a href="#/home" onclick="if(window.location.hash==='#/home'||window.location.hash===''||window.location.hash==='#'){window.replayVkSplash();}" class="flex items-center gap-2 sm:gap-2.5 group min-w-0 min-h-[44px] py-1 overflow-hidden" title="Vistāra Krafts — Click to replay animated intro">
           <span class="w-9 h-9 sm:w-10 sm:h-10 rounded-lg overflow-hidden shrink-0 border border-[#e4e0d8] bg-white p-0.5 flex items-center justify-center shadow-2xs">
             <img src="./vistara-krafts-logo.jpg" alt="Vistāra Krafts Official VK Logo" class="w-full h-full object-contain">
           </span>
@@ -944,11 +1091,20 @@
         </div>
 
         <div class="flex flex-col gap-1 text-xs">
-          <h2 class="font-headline-sm text-sm font-bold text-primary uppercase tracking-wider mb-1">Social &amp; Patron Care</h2>
+          <h2 class="font-headline-sm text-sm font-bold text-primary uppercase tracking-wider mb-1">Social &amp; Privacy</h2>
           <button type="button" onclick="window.navigateTo('social')" class="min-h-[44px] py-1.5 text-left text-on-surface-variant hover:text-primary flex items-center cursor-pointer">@resin.art.memories Reels Feed</button>
-          <button type="button" onclick="window.openTdsModal('tds')" class="min-h-[44px] py-1.5 text-left text-on-surface-variant hover:text-primary flex items-center cursor-pointer">ASTM Technical Data Sheets (TDS)</button>
-          <button type="button" onclick="window.openTdsModal('sds')" class="min-h-[44px] py-1.5 text-left text-on-surface-variant hover:text-primary flex items-center cursor-pointer">ISO 11014 Safety Certificates</button>
-          <button type="button" onclick="window.openAccountBarModal()" class="min-h-[44px] py-1.5 text-left text-on-surface-variant hover:text-primary flex items-center cursor-pointer">Account &amp; Order Status Popup</button>
+          <button type="button" onclick="window.openDpdpModal('notice')" class="min-h-[44px] py-1.5 text-left font-semibold text-[#725a19] hover:text-primary flex items-center gap-1 cursor-pointer">
+            <span class="material-symbols-outlined text-sm" aria-hidden="true">gavel</span>
+            <span>DPDP Act 2023 Notice &amp; Privacy</span>
+          </button>
+          <button type="button" onclick="window.openDpdpModal('preferences')" class="min-h-[44px] py-1.5 text-left text-on-surface-variant hover:text-primary flex items-center gap-1 cursor-pointer">
+            <span class="material-symbols-outlined text-sm" aria-hidden="true">tune</span>
+            <span>Manage Consent Preferences</span>
+          </button>
+          <button type="button" onclick="window.openDpdpModal('grievance')" class="min-h-[44px] py-1.5 text-left text-on-surface-variant hover:text-primary flex items-center gap-1 cursor-pointer">
+            <span class="material-symbols-outlined text-sm" aria-hidden="true">shield_person</span>
+            <span>DPDP Grievance &amp; Rights Portal</span>
+          </button>
         </div>
 
         <div class="flex flex-col gap-2.5 text-xs">
@@ -959,12 +1115,19 @@
             <input id="footer-newsletter-email" type="email" required placeholder="Your email address" aria-label="Email address for Atelier Circle newsletter" class="min-w-0 flex-1 h-12 px-3 rounded-xl bg-white border border-[#e4e0d8] text-xs">
             <button type="submit" class="px-4 h-12 min-w-[60px] rounded-xl bg-primary text-white text-xs font-semibold cursor-pointer shrink-0">Join</button>
           </form>
+          <p class="text-[10px] text-on-surface-variant/80">By subscribing, you agree to receive promotional notes under DPDP Act 2023. Unsubscribe anytime.</p>
         </div>
       </div>
 
       <div class="pt-6 border-t border-[#e4e0d8] flex flex-wrap items-center justify-between gap-3 text-xs text-on-surface-variant">
         <span class="break-words">© 2026 Vistāra Krafts (@resin.art.memories). All rights reserved.</span>
-        <span class="font-spec-numeral break-words">ISO 9001:2015 Certified • 100% Secure Payments • Insured Pan-India Air Transit</span>
+        <span class="font-spec-numeral break-words flex items-center gap-1.5">
+          <span class="inline-flex items-center gap-1 text-emerald-800 font-semibold bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
+            <span class="material-symbols-outlined text-xs" aria-hidden="true">verified</span>
+            <span>DPDP Act 2023 Compliant</span>
+          </span>
+          <span>• ISO 9001:2015 Certified • 100% Secure Payments • Insured Pan-India Air Transit</span>
+        </span>
       </div>
     </div>
   </footer>
@@ -1134,6 +1297,343 @@
     </div>
   </div>
 
+  <!-- =====================================================================
+       DIGITAL PERSONAL DATA PROTECTION (DPDP) ACT 2023 COMPLIANCE SUITE
+       ===================================================================== -->
+
+  <!-- 1. Floating DPDP Consent Banner (Shown on first visit) -->
+  <div id="dpdp-consent-banner" role="region" aria-label="Data Protection & Privacy Notice" class="fixed bottom-3 sm:bottom-4 inset-x-3 sm:inset-x-4 max-w-xl mx-auto z-40 bg-[#031a38]/95 backdrop-blur-md text-white rounded-xl border border-[#725a19]/50 shadow-xl p-2.5 sm:p-3 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2.5 transition-all duration-300 hidden">
+    <div class="flex items-center gap-2 min-w-0">
+      <div class="w-7 h-7 rounded-lg bg-[#725a19]/30 border border-[#725a19]/50 flex items-center justify-center shrink-0 text-[#f3e5ab]">
+        <span class="material-symbols-outlined text-base" aria-hidden="true">gavel</span>
+      </div>
+      <div class="min-w-0 text-[11px] leading-tight">
+        <span class="font-bold text-[#f3e5ab]">DPDP Act 2023:</span>
+        <span class="text-white/90">Recipient details &amp; floral media collected strictly for order delivery. No pre-checked trackers.</span>
+      </div>
+    </div>
+    <div class="flex items-center gap-1.5 shrink-0 w-full sm:w-auto justify-end">
+      <button type="button" onclick="window.openDpdpModal('notice')" class="px-2 py-1 min-h-[32px] rounded-lg bg-white/10 hover:bg-white/20 text-white text-[10px] font-semibold cursor-pointer border border-white/20 transition">
+        Notice
+      </button>
+      <button type="button" onclick="window.openDpdpModal('preferences')" class="px-2 py-1 min-h-[32px] rounded-lg bg-white/10 hover:bg-white/20 text-white text-[10px] font-semibold cursor-pointer border border-white/20 transition">
+        Preferences
+      </button>
+      <button type="button" onclick="window.acceptDpdpBanner()" class="px-3 py-1 min-h-[32px] rounded-lg bg-[#9e3322] hover:bg-[#852a1b] text-white text-[11px] font-bold shadow-xs cursor-pointer transition">
+        Accept
+      </button>
+    </div>
+  </div>
+
+  <!-- 2. DPDP Comprehensive Itemized Notice & Policy Modal -->
+  <div id="dpdp-notice-modal" role="dialog" aria-modal="true" aria-labelledby="dpdp-notice-title" class="fixed inset-0 z-50 bg-primary/65 backdrop-blur-xs hidden flex items-center justify-center p-3 sm:p-4" onclick="window.closeModalById('dpdp-notice-modal')">
+    <div class="w-full max-w-2xl max-w-[calc(100vw-24px)] max-h-[92dvh] overflow-y-auto bg-white rounded-2xl p-4 sm:p-6 shadow-2xl flex flex-col gap-4 text-xs text-on-surface" onclick="event.stopPropagation()">
+      <div class="flex items-start justify-between gap-3 border-b border-surface-container pb-3 shrink-0">
+        <div class="space-y-1 min-w-0">
+          <div class="flex items-center gap-2 flex-wrap">
+            <span class="text-[10px] uppercase tracking-wider text-[#9e3322] font-bold">Government of India • Section 5 Notice</span>
+            <span class="text-[10px] uppercase font-bold text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">Verified Legal Policy</span>
+          </div>
+          <h3 id="dpdp-notice-title" class="font-headline-sm text-lg text-primary font-bold">Digital Personal Data Protection (DPDP) Notice 2023</h3>
+        </div>
+        <button type="button" aria-label="Close DPDP Notice Modal" onclick="window.closeModalById('dpdp-notice-modal')" class="w-11 h-11 rounded-full bg-surface-container-low flex items-center justify-center shrink-0 cursor-pointer">
+          <span class="material-symbols-outlined text-lg" aria-hidden="true">close</span>
+        </button>
+      </div>
+
+      <!-- Language Selector for Multi-Language Notice Compliance (Section 5(3)) -->
+      <div class="flex items-center justify-between gap-2 p-2.5 rounded-xl bg-[#fdf8f0] border border-[#725a19]/20 shrink-0">
+        <span class="font-bold text-primary text-[11px]">🌐 Notice Language / भाषा:</span>
+        <div class="flex items-center gap-1">
+          <button type="button" id="dpdp-lang-en-btn" onclick="window.toggleDpdpNoticeLang('en')" class="min-h-[36px] px-3 rounded-lg bg-primary text-white text-[11px] font-bold cursor-pointer transition">English</button>
+          <button type="button" id="dpdp-lang-hi-btn" onclick="window.toggleDpdpNoticeLang('hi')" class="min-h-[36px] px-3 rounded-lg bg-white border border-[#e4e0d8] text-primary hover:bg-surface-container text-[11px] font-bold cursor-pointer transition">हिंदी (Hindi)</button>
+        </div>
+      </div>
+
+      <!-- Notice Content (Dynamic Language Container) -->
+      <div id="dpdp-notice-body" class="space-y-4 overflow-y-auto leading-relaxed text-on-surface-variant shrink-0">
+        <!-- English Content Default -->
+        <div id="dpdp-notice-content-en" class="space-y-3">
+          <p class="text-xs text-primary font-medium bg-surface-container-low p-3 rounded-xl border border-[#e4e0d8]">
+            This Notice is issued pursuant to <strong>Section 5 of the Digital Personal Data Protection (DPDP) Act, 2023</strong> by <strong>Vistāra Krafts Studio &amp; Chemical Atelier (@resin.art.memories)</strong> ("Data Fiduciary") before processing any personal data of Data Principals in India.
+          </p>
+
+          <div class="space-y-2">
+            <h4 class="font-bold text-primary text-xs uppercase tracking-wider flex items-center gap-1.5">
+              <span class="material-symbols-outlined text-sm text-[#9e3322]" aria-hidden="true">checklist</span>
+              <span>1. Itemized Personal Data Categories &amp; Specified Purposes</span>
+            </h4>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-[11px]">
+              <div class="p-3 rounded-xl bg-surface-container-low border border-[#e4e0d8]">
+                <strong class="text-primary block mb-1">📦 Recipient Identity &amp; Delivery Address</strong>
+                <span>Full Name, Mobile/WhatsApp, Street Address, City, PIN Code for BlueDart air shipping, delivery SMS/WhatsApp alerts, and GST tax invoicing.</span>
+              </div>
+              <div class="p-3 rounded-xl bg-surface-container-low border border-[#e4e0d8]">
+                <strong class="text-primary block mb-1">💐 Custom Bridal Keepsake Floral Photos</strong>
+                <span>Garland, bouquet, and keepsake layout photo uploads strictly for custom 50mm resin casting design, lettering proofs, and approval.</span>
+              </div>
+              <div class="p-3 rounded-xl bg-surface-container-low border border-[#e4e0d8]">
+                <strong class="text-primary block mb-1">🔐 Auth &amp; Account State</strong>
+                <span>Email address and 1-click Google/Apple auth tokens for account login, wishlist synchronization, and order history tracking.</span>
+              </div>
+              <div class="p-3 rounded-xl bg-surface-container-low border border-[#e4e0d8]">
+                <strong class="text-primary block mb-1">💌 Atelier Circle Promotional Notes (Optional)</strong>
+                <span>Email address strictly upon explicit opt-in for discount code KRAFTFIRST and bridal slot release alerts.</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="space-y-2">
+            <h4 class="font-bold text-primary text-xs uppercase tracking-wider flex items-center gap-1.5">
+              <span class="material-symbols-outlined text-sm text-[#9e3322]" aria-hidden="true">verified_user</span>
+              <span>2. Your Statutory Rights under DPDP Act 2023</span>
+            </h4>
+            <ul class="list-disc pl-5 space-y-1 text-[11px] text-on-surface-variant">
+              <li><strong>Right to Access Summary:</strong> Request an itemized export of all personal data held by Vistāra Krafts.</li>
+              <li><strong>Right to Correction &amp; Completion:</strong> Request correction or update of inaccurate contact/address details.</li>
+              <li><strong>Right to Erasure:</strong> Request instant deletion of account profile and uploaded floral media (subject to statutory tax retention requirements).</li>
+              <li><strong>Right to Withdraw Consent:</strong> Withdraw optional marketing or session consents at any time.</li>
+              <li><strong>Right to Grievance Redressal:</strong> Submit formal grievances to our Data Protection Officer with a binding 7-day resolution SLA.</li>
+              <li><strong>Right to Nominate:</strong> Nominate an individual to exercise rights in the event of death or incapacity.</li>
+            </ul>
+          </div>
+
+          <div class="p-3.5 rounded-xl bg-[#fbf7f0] border border-[#725a19]/25 space-y-1 text-[11px]">
+            <strong class="text-primary block font-bold text-xs">🛡️ Data Protection Officer &amp; Grievance Redressal Mechanism</strong>
+            <p><strong>DPO Officer:</strong> Ms. Ananya Sharma (Data Protection Officer &amp; Legal Lead)</p>
+            <p><strong>Grievance Email:</strong> <a href="mailto:grievance@vistarakrafts.com" class="text-[#9e3322] font-semibold underline">grievance@vistarakrafts.com</a> / <a href="mailto:dpo@vistarakrafts.com" class="text-[#9e3322] font-semibold underline">dpo@vistarakrafts.com</a></p>
+            <p><strong>Studio Address:</strong> Vistāra Krafts Chemical Atelier, Studio 4, MG Road, Bengaluru, KA - 560001, India</p>
+            <p><strong>Resolution Timeline SLA:</strong> Response and resolution within 7 calendar days as prescribed under DPDP Rules.</p>
+          </div>
+        </div>
+
+        <!-- Hindi Content Hidden by Default -->
+        <div id="dpdp-notice-content-hi" class="space-y-3 hidden">
+          <p class="text-xs text-primary font-medium bg-surface-container-low p-3 rounded-xl border border-[#e4e0d8]">
+            यह सूचना <strong>डिजिटल व्यक्तिगत डेटा संरक्षण (DPDP) अधिनियम, 2023 की धारा 5</strong> के तहत <strong>विस्तारा क्राफ्ट्स स्टूडियो एवं केमिकल एतलिए (@resin.art.memories)</strong> ("डेटा फिडुशियरी") द्वारा भारत में डेटा प्रिंसिपलों के डेटा प्रसंस्करण से पूर्व जारी की जाती है।
+          </p>
+
+          <div class="space-y-2">
+            <h4 class="font-bold text-primary text-xs uppercase tracking-wider flex items-center gap-1.5">
+              <span class="material-symbols-outlined text-sm text-[#9e3322]" aria-hidden="true">checklist</span>
+              <span>1. एकत्र किया जाने वाला व्यक्तिगत डेटा एवं विशिष्ट उद्देश्य</span>
+            </h4>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-[11px]">
+              <div class="p-3 rounded-xl bg-surface-container-low border border-[#e4e0d8]">
+                <strong class="text-primary block mb-1">📦 नाम एवं डिलीवरी का पता</strong>
+                <span>पूरा नाम, मोबाइल/व्हाट्सएप, पता, पिन कोड - ब्लू डार्ट डिलीवरी, व्हाट्सएप अपडेट एवं जीएसटी चालान के लिए।</span>
+              </div>
+              <div class="p-3 rounded-xl bg-surface-container-low border border-[#e4e0d8]">
+                <strong class="text-primary block mb-1">💐 दुल्हन की वरमाला/फूलों की तस्वीरें</strong>
+                <span>कस्टम 50mm रेज़िन ब्लॉक डिज़ाइन, ब्रास कैलीग्रफी प्रूफिंग एवं अनुमोदन हेतु अपलोड की गई तस्वीरें।</span>
+              </div>
+              <div class="p-3 rounded-xl bg-surface-container-low border border-[#e4e0d8]">
+                <strong class="text-primary block mb-1">🔐 खाता एवं लॉग-इन</strong>
+                <span>ईमेल पता एवं गूगल/एप्पल लॉग-इन टोकन - खाता सुरक्षा, विशलिस्ट एवं ऑर्डर ट्रैकिंग हेतु।</span>
+              </div>
+              <div class="p-3 rounded-xl bg-surface-container-low border border-[#e4e0d8]">
+                <strong class="text-primary block mb-1">💌 एतलिए सर्कल डिस्काउंट (ऐच्छिक)</strong>
+                <span>डिस्काउंट कोड KRAFTFIRST और नए रेज़िन प्रोडक्ट अपडेट के लिए ऐच्छिक ईमेल सहमति।</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="space-y-2">
+            <h4 class="font-bold text-primary text-xs uppercase tracking-wider flex items-center gap-1.5">
+              <span class="material-symbols-outlined text-sm text-[#9e3322]" aria-hidden="true">verified_user</span>
+              <span>2. DPDP अधिनियम 2023 के तहत आपके वैधानिक अधिकार</span>
+            </h4>
+            <ul class="list-disc pl-5 space-y-1 text-[11px] text-on-surface-variant">
+              <li><strong>डेटा सारांश तक पहुंच का अधिकार:</strong> विस्तारा क्राफ्ट्स के पास संग्रहीत आपके सभी डेटा का सारांश प्राप्त करें।</li>
+              <li><strong>डेटा संशोधन एवं अद्यतन का अधिकार:</strong> गलत संपर्क/पते को सुधारने या अपडेट करने का अनुरोध करें।</li>
+              <li><strong>डेटा मिटाने का अधिकार:</strong> अपने खाते एवं अपलोड की गई तस्वीरों को तुरंत मिटाने का अनुरोध करें।</li>
+              <li><strong>सहमति वापस लेने का अधिकार:</strong> ऐच्छिक प्रचार या सेशन सहमति को किसी भी समय वापस लें।</li>
+              <li><strong>शिकायत निवारण का अधिकार:</strong> 7 दिनों के भीतर निवारण हेतु डेटा सुरक्षा अधिकारी को शिकायत भेजें।</li>
+            </ul>
+          </div>
+
+          <div class="p-3.5 rounded-xl bg-[#fbf7f0] border border-[#725a19]/25 space-y-1 text-[11px]">
+            <strong class="text-primary block font-bold text-xs">🛡️ डेटा सुरक्षा अधिकारी एवं शिकायत निवारण प्रणाली</strong>
+            <p><strong>अधिकारी:</strong> सुश्री अनन्या शर्मा (डेटा प्रोटेक्शन ऑफिसर)</p>
+            <p><strong>शिकायत ईमेल:</strong> <a href="mailto:grievance@vistarakrafts.com" class="text-[#9e3322] font-semibold underline">grievance@vistarakrafts.com</a></p>
+            <p><strong>निवारण समयावधि:</strong> DPDP नियमों के अनुसार 7 कार्य दिवसों के भीतर पूर्ण समाधान।</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Modal Action Buttons -->
+      <div class="flex flex-col sm:flex-row gap-2 shrink-0 border-t border-surface-container pt-3">
+        <button type="button" onclick="window.closeModalById('dpdp-notice-modal'); window.openDpdpModal('preferences');" class="flex-1 min-h-[44px] py-2.5 rounded-xl bg-surface-container-low border border-[#e4e0d8] text-primary text-xs font-bold hover:bg-surface-container cursor-pointer">
+          Manage Consent Preferences
+        </button>
+        <button type="button" onclick="window.closeModalById('dpdp-notice-modal'); window.openDpdpModal('grievance');" class="flex-1 min-h-[44px] py-2.5 rounded-xl bg-primary text-white text-xs font-bold shadow-md cursor-pointer">
+          Raise DPDP Grievance / Rights Request
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. DPDP Granular Consent Preferences Manager Modal -->
+  <div id="dpdp-preferences-modal" role="dialog" aria-modal="true" aria-labelledby="dpdp-pref-title" class="fixed inset-0 z-50 bg-primary/65 backdrop-blur-xs hidden flex items-center justify-center p-3 sm:p-4" onclick="window.closeModalById('dpdp-preferences-modal')">
+    <form onsubmit="window.saveDpdpPreferencesForm(event)" class="w-full max-w-lg max-w-[calc(100vw-24px)] max-h-[92dvh] overflow-y-auto bg-white rounded-2xl p-4 sm:p-6 shadow-2xl flex flex-col gap-4 text-xs text-on-surface" onclick="event.stopPropagation()">
+      <div class="flex items-start justify-between gap-3 border-b border-surface-container pb-3 shrink-0">
+        <div class="space-y-1 min-w-0">
+          <span class="text-[10px] uppercase tracking-wider text-[#9e3322] font-bold block">DPDP Act 2023 • Section 6 Consent Architecture</span>
+          <h3 id="dpdp-pref-title" class="font-headline-sm text-lg text-primary font-bold truncate">Manage Personal Data Consent Preferences</h3>
+        </div>
+        <button type="button" aria-label="Close Consent Preferences Modal" onclick="window.closeModalById('dpdp-preferences-modal')" class="w-11 h-11 rounded-full bg-surface-container-low flex items-center justify-center shrink-0 cursor-pointer">
+          <span class="material-symbols-outlined text-lg" aria-hidden="true">close</span>
+        </button>
+      </div>
+
+      <div class="space-y-3 shrink-0">
+        <!-- 1. Essential Order Processing (Locked) -->
+        <div class="p-3.5 rounded-xl bg-surface-container-low border border-[#e4e0d8] flex items-start justify-between gap-3">
+          <div class="space-y-1 min-w-0">
+            <div class="flex items-center gap-2">
+              <strong class="text-primary font-bold text-xs">1. Essential Order Fulfillment &amp; Delivery</strong>
+              <span class="text-[10px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-800 border border-emerald-300">Strictly Necessary</span>
+            </div>
+            <p class="text-[11px] text-on-surface-variant leading-relaxed">
+              Required to process orders, ship preserved varmala blocks via BlueDart, issue GST invoices, and send WhatsApp delivery updates. Cannot be toggled off for active orders.
+            </p>
+          </div>
+          <input type="checkbox" checked disabled class="w-5 h-5 accent-primary cursor-not-allowed shrink-0 mt-0.5" aria-label="Essential Order Fulfillment (Required)">
+        </div>
+
+        <!-- 2. Session Analytics & Wishlist Persistence -->
+        <div class="p-3.5 rounded-xl bg-surface-container-low border border-[#e4e0d8] flex items-start justify-between gap-3">
+          <div class="space-y-1 min-w-0">
+            <strong class="text-primary font-bold text-xs block">2. Session State &amp; Custom Calculator Persistence</strong>
+            <p class="text-[11px] text-on-surface-variant leading-relaxed">
+              Stores local shopping bag items, saved wishlist pieces, pincode serviceability checks, and custom epoxy pour calculations in your browser local storage.
+            </p>
+          </div>
+          <input id="dpdp-pref-analytics" type="checkbox" checked class="w-5 h-5 accent-primary cursor-pointer shrink-0 mt-0.5" aria-label="Toggle Session Analytics & Local Persistence">
+        </div>
+
+        <!-- 3. Marketing & Atelier Circle Notes -->
+        <div class="p-3.5 rounded-xl bg-surface-container-low border border-[#e4e0d8] flex items-start justify-between gap-3">
+          <div class="space-y-1 min-w-0">
+            <strong class="text-primary font-bold text-xs block">3. Marketing Notes &amp; Promotional Codes</strong>
+            <p class="text-[11px] text-on-surface-variant leading-relaxed">
+              Receive exclusive bridal preservation slot openings, discount code KRAFTFIRST updates, and new optical epoxy formula releases via email.
+            </p>
+          </div>
+          <input id="dpdp-pref-marketing" type="checkbox" class="w-5 h-5 accent-primary cursor-pointer shrink-0 mt-0.5" aria-label="Toggle Marketing & Atelier Circle Notes">
+        </div>
+
+        <!-- 4. Age Verification Checkbox (Section 9 Protection) -->
+        <div class="p-3 rounded-xl bg-[#fdf8f0] border border-[#725a19]/25 flex items-start gap-2.5">
+          <input id="dpdp-pref-age" type="checkbox" checked required class="w-5 h-5 accent-primary cursor-pointer shrink-0 mt-0.5" aria-label="Age Verification Declaration under Section 9">
+          <label for="dpdp-pref-age" class="text-[11px] text-primary font-medium leading-tight cursor-pointer">
+            <strong>Age Declaration (Section 9 DPDP Act 2023):</strong> I confirm that I am 18 years or older, or possess verifiable parental/guardian consent to share personal data.
+          </label>
+        </div>
+      </div>
+
+      <div class="flex flex-col sm:flex-row gap-2 shrink-0 border-t border-surface-container pt-3">
+        <button type="button" onclick="window.withdrawDpdpConsent()" class="min-h-[44px] px-4 py-2.5 rounded-xl bg-surface-container-low border border-error/30 text-error text-xs font-bold hover:bg-error/5 cursor-pointer">
+          Withdraw Optional Consents
+        </button>
+        <button type="submit" class="flex-1 min-h-[44px] py-2.5 rounded-xl bg-primary text-white text-xs font-bold shadow-md cursor-pointer">
+          Save Consent Preferences
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <!-- 4. DPDP Grievance Redressal & Rights Portal Modal -->
+  <div id="dpdp-grievance-modal" role="dialog" aria-modal="true" aria-labelledby="dpdp-grievance-title" class="fixed inset-0 z-50 bg-primary/65 backdrop-blur-xs hidden flex items-center justify-center p-3 sm:p-4" onclick="window.closeModalById('dpdp-grievance-modal')">
+    <div class="w-full max-w-xl max-w-[calc(100vw-24px)] max-h-[92dvh] overflow-y-auto bg-white rounded-2xl p-4 sm:p-6 shadow-2xl flex flex-col gap-4 text-xs text-on-surface" onclick="event.stopPropagation()">
+      <div class="flex items-start justify-between gap-3 border-b border-surface-container pb-3 shrink-0">
+        <div class="space-y-1 min-w-0">
+          <span class="text-[10px] uppercase tracking-wider text-[#9e3322] font-bold block">Section 13 • 7-Day Resolution SLA</span>
+          <h3 id="dpdp-grievance-title" class="font-headline-sm text-lg text-primary font-bold truncate">DPDP Grievance &amp; Data Rights Portal</h3>
+        </div>
+        <button type="button" aria-label="Close Grievance Portal Modal" onclick="window.closeModalById('dpdp-grievance-modal')" class="w-11 h-11 rounded-full bg-surface-container-low flex items-center justify-center shrink-0 cursor-pointer">
+          <span class="material-symbols-outlined text-lg" aria-hidden="true">close</span>
+        </button>
+      </div>
+
+      <!-- Quick Action Buttons for Instant Data Rights -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 shrink-0">
+        <button type="button" onclick="window.exportDpdpUserData()" class="p-3 rounded-xl bg-surface-container-low hover:bg-surface-container border border-[#e4e0d8] flex items-center gap-2.5 text-left transition cursor-pointer">
+          <span class="material-symbols-outlined text-primary text-xl shrink-0" aria-hidden="true">download</span>
+          <div class="min-w-0">
+            <strong class="text-primary text-xs block font-bold">Instant Data Export (Section 11)</strong>
+            <span class="text-[10px] text-on-surface-variant block truncate">Download full summary of your data in JSON</span>
+          </div>
+        </button>
+        <button type="button" onclick="window.eraseDpdpUserData()" class="p-3 rounded-xl bg-error/5 hover:bg-error/10 border border-error/20 flex items-center gap-2.5 text-left transition cursor-pointer">
+          <span class="material-symbols-outlined text-error text-xl shrink-0" aria-hidden="true">delete_forever</span>
+          <div class="min-w-0">
+            <strong class="text-error text-xs block font-bold">Instant Data Erasure (Section 12)</strong>
+            <span class="text-[10px] text-error/80 block truncate">Erase stored profile, wishlist &amp; cart</span>
+          </div>
+        </button>
+      </div>
+
+      <div class="flex items-center gap-2 text-[10px] uppercase tracking-widest text-on-surface-variant font-bold shrink-0">
+        <span class="flex-1 h-px bg-surface-container"></span>
+        <span>or submit formal DPDP ticket</span>
+        <span class="flex-1 h-px bg-surface-container"></span>
+      </div>
+
+      <!-- DPDP Grievance Ticket Submission Form -->
+      <form onsubmit="window.submitDpdpGrievanceForm(event)" class="flex flex-col gap-3 shrink-0">
+        <div>
+          <label for="dpdp-req-type" class="text-[11px] font-bold text-primary block mb-1">Select DPDP Statutory Request Type *</label>
+          <select id="dpdp-req-type" required class="w-full h-11 px-3 rounded-xl bg-surface-container-low border border-[#e4e0d8] text-xs">
+            <option value="Right to Access My Data Summary">Right to Access Summary of Personal Data (Section 11)</option>
+            <option value="Right to Correct Inaccurate Information">Right to Correction &amp; Updating (Section 12)</option>
+            <option value="Right to Erasure / Media Deletion">Right to Erasure / Account &amp; Floral Photo Deletion (Section 12)</option>
+            <option value="Right to Withdraw Data Consent">Right to Withdraw Processing Consent (Section 6)</option>
+            <option value="Data Protection Grievance / Dispute">Formal Data Protection Grievance / Dispute (Section 13)</option>
+            <option value="Nominate Representative">Nominate Representative for Data Rights (Section 14)</option>
+          </select>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+          <div>
+            <label for="dpdp-req-name" class="text-[11px] font-bold text-primary block mb-1">Full Name *</label>
+            <input id="dpdp-req-name" type="text" required placeholder="Your full name" class="w-full h-11 px-3 rounded-xl bg-surface-container-low border border-[#e4e0d8] text-xs">
+          </div>
+          <div>
+            <label for="dpdp-req-email" class="text-[11px] font-bold text-primary block mb-1">Email Address *</label>
+            <input id="dpdp-req-email" type="email" required placeholder="you@example.com" class="w-full h-11 px-3 rounded-xl bg-surface-container-low border border-[#e4e0d8] text-xs">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+          <div>
+            <label for="dpdp-req-mobile" class="text-[11px] font-bold text-primary block mb-1">Mobile / WhatsApp Number</label>
+            <input id="dpdp-req-mobile" type="tel" placeholder="+91 98765 43210" class="w-full h-11 px-3 rounded-xl bg-surface-container-low border border-[#e4e0d8] text-xs">
+          </div>
+          <div>
+            <label for="dpdp-req-orderid" class="text-[11px] font-bold text-primary block mb-1">Order ID (If Applicable)</label>
+            <input id="dpdp-req-orderid" type="text" placeholder="e.g. VK-2026-8492" class="w-full h-11 px-3 rounded-xl bg-surface-container-low border border-[#e4e0d8] text-xs">
+          </div>
+        </div>
+
+        <div>
+          <label for="dpdp-req-details" class="text-[11px] font-bold text-primary block mb-1">Grievance / Request Details *</label>
+          <textarea id="dpdp-req-details" rows="3" required placeholder="Describe your request or grievance under the DPDP Act 2023..." class="w-full p-3 rounded-xl bg-surface-container-low border border-[#e4e0d8] text-xs"></textarea>
+        </div>
+
+        <button type="submit" class="w-full min-h-[48px] py-3 rounded-xl bg-[#9e3322] text-white text-xs font-bold shadow-md cursor-pointer shrink-0">
+          Submit DPDP Grievance Ticket (7-Day Resolution SLA)
+        </button>
+      </form>
+
+      <!-- DPDP Ticket History Log Slot -->
+      <div id="dpdp-ticket-history-slot" class="space-y-2 shrink-0 pt-2 border-t border-surface-container hidden">
+        <h4 class="font-bold text-primary text-xs uppercase tracking-wider">Your Submitted DPDP Tickets</h4>
+        <div id="dpdp-ticket-list" class="space-y-2"></div>
+      </div>
+    </div>
+  </div>
+
   <!-- 5. TDS / SDS / Wholesale Spec Sheet Modal -->
   <div id="tds-spec-modal" role="dialog" aria-modal="true" aria-labelledby="tds-modal-title" class="fixed inset-0 z-50 bg-primary/50 backdrop-blur-xs hidden flex items-center justify-center p-3 sm:p-4" onclick="window.closeModalById('tds-spec-modal')">
     <div class="w-full max-w-md max-w-[calc(100vw-24px)] max-h-[90dvh] overflow-y-auto bg-white rounded-2xl p-4 sm:p-5 shadow-2xl flex flex-col gap-4" onclick="event.stopPropagation()">
@@ -1242,6 +1742,12 @@
         <label for="chk-gift-wrap" class="min-h-[44px] px-3 py-2 rounded-lg bg-[#fdf6f3] border border-[#9e3322]/25 flex items-center justify-between gap-2 cursor-pointer">
           <span class="text-xs font-semibold text-primary">🎁 Add Complimentary Silk Potli &amp; Wax-Sealed Gift Note</span>
           <input id="chk-gift-wrap" type="checkbox" checked aria-label="Add Complimentary Silk Potli and Wax-Sealed Gift Note" class="w-5 h-5 accent-primary shrink-0">
+        </label>
+      </div>
+      <div class="shrink-0 p-2.5 rounded-lg bg-surface-container-low border border-[#e4e0d8] flex items-start gap-2">
+        <input id="chk-dpdp-consent" type="checkbox" checked required class="w-4 h-4 accent-primary cursor-pointer shrink-0 mt-0.5" aria-label="Consent to processing shipping details under DPDP Act 2023">
+        <label for="chk-dpdp-consent" class="text-[10px] text-on-surface-variant font-medium leading-snug cursor-pointer">
+          I consent to Vistāra Krafts processing my contact details &amp; address for BlueDart air delivery &amp; GST invoicing under the <strong>DPDP Act, 2023</strong>.
         </label>
       </div>
       <div class="p-3 rounded-xl bg-surface-container-low flex items-center justify-between gap-2 shrink-0">
