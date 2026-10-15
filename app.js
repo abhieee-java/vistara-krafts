@@ -1149,12 +1149,12 @@
               <div>
                 <div class="flex items-center gap-1.5 text-[#9e3322] font-label-sm text-[11px] uppercase tracking-wider font-bold">
                   <span class="material-symbols-outlined text-base" aria-hidden="true">psychology</span>
-                  <span>First-User Research Guided Matcher</span>
+                  <span>Find What You Need</span>
                 </div>
                 <h2 class="font-headline-sm text-lg sm:text-xl text-primary font-bold mt-0.5">What are you creating or preserving today?</h2>
-                <p class="text-xs text-on-surface-variant">Tap your goal below and we’ll curate the exact formula or bespoke keepsake for you:</p>
+                <p class="text-xs text-on-surface-variant">Tap your goal below and we’ll show you the best choice:</p>
               </div>
-              <span class="px-2.5 py-1 rounded-full bg-secondary-container/50 text-on-secondary-container font-spec-numeral text-[11px] font-bold shrink-0">30-Sec Studio Matcher</span>
+              <span class="px-2.5 py-1 rounded-full bg-secondary-container/50 text-on-secondary-container font-spec-numeral text-[11px] font-bold shrink-0">30-Second Helper</span>
             </div>
 
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5" id="persona-quiz-options">
@@ -1197,12 +1197,12 @@
               <div class="flex items-center justify-between gap-2">
                 <div class="flex items-center gap-2">
                   <span class="material-symbols-outlined text-primary text-xl" aria-hidden="true">local_shipping</span>
-                  <h2 class="font-title-md text-base text-primary font-bold">Pan-India Transit &amp; Pickup Check</h2>
+                  <h2 class="font-title-md text-base text-primary font-bold">Check Delivery &amp; Pickup</h2>
                 </div>
                 <span class="font-label-sm text-[11px] text-secondary px-2.5 py-0.5 rounded-full bg-secondary-container/40 font-semibold shrink-0">Air &amp; Surface Cargo</span>
               </div>
               <p class="text-xs text-on-surface-variant mt-1">
-                Verify expedited courier dispatch &amp; 24-hour bridal flower pickup via BlueDart, Delhivery &amp; DTDC:
+                Check delivery times and free 24-hour flower pickup across India:
               </p>
             </div>
 
@@ -1227,7 +1227,7 @@
         <section class="py-7 px-4 sm:px-8 bg-surface flex flex-col gap-4">
           <div class="flex items-end justify-between">
             <div>
-              <span class="font-label-sm text-[11px] uppercase tracking-widest text-secondary font-bold">Curated Mediums</span>
+              <span class="font-label-sm text-[11px] uppercase tracking-widest text-secondary font-bold">Explore Collections</span>
               <h2 class="font-headline-sm text-xl sm:text-2xl text-primary font-bold tracking-tight">Explore by Memory &amp; Craft Project</h2>
             </div>
             <button type="button" onclick="window.navigateTo('catalog', 'all')" class="min-h-[44px] px-2 font-label-sm text-xs text-secondary font-semibold inline-flex items-center gap-0.5 hover:underline cursor-pointer shrink-0">
@@ -1303,9 +1303,9 @@
         <section class="px-4 sm:px-8 py-7 bg-surface flex flex-col gap-4 border-b border-[#e4e0d8]">
           <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-2">
             <div>
-              <span class="font-label-sm text-[11px] uppercase tracking-widest text-[#9e3322] font-bold">Heirloom Preservation Science</span>
-              <h2 class="font-headline-sm text-2xl sm:text-3xl text-primary font-bold tracking-tight">21-Day Cryo-Silica Floral Transformation</h2>
-              <p class="text-xs sm:text-sm text-on-surface-variant mt-0.5">Drag the interactive slider to compare raw bridal flowers against our museum-grade 50mm crystal-cast archival block.</p>
+              <span class="font-label-sm text-[11px] uppercase tracking-widest text-[#9e3322] font-bold">Real Flower Preservation</span>
+              <h2 class="font-headline-sm text-2xl sm:text-3xl text-primary font-bold tracking-tight">21-Day Floral Transformation</h2>
+              <p class="text-xs sm:text-sm text-on-surface-variant mt-0.5">Drag the slider to compare real wedding flowers with our clear crystal keepsake block.</p>
             </div>
             <div class="flex items-center gap-2 self-start sm:self-auto shrink-0">
               <span class="px-2.5 py-1 rounded-full bg-secondary-container/50 text-on-secondary-container font-spec-numeral text-xs font-bold">
@@ -1362,9 +1362,9 @@
             <div>
               <div class="inline-flex items-center gap-1.5 text-secondary font-label-sm text-xs uppercase tracking-wider mb-1 font-bold">
                 <span class="material-symbols-outlined text-sm" aria-hidden="true">diamond</span>
-                <span>Archival Craft &amp; Keepsake Series</span>
+                <span>Featured Keepsakes &amp; Supplies</span>
               </div>
-              <h2 class="font-headline-sm text-2xl sm:text-3xl text-primary font-bold tracking-tight">Bestselling Keepsakes &amp; Chemical Systems</h2>
+              <h2 class="font-headline-sm text-2xl sm:text-3xl text-primary font-bold tracking-tight">Bestselling Keepsakes &amp; Epoxy Kits</h2>
             </div>
             <div class="flex flex-wrap items-center gap-2">
               <button type="button" onclick="window.navigateTo('catalog', 'keepsakes')" class="min-h-[44px] px-4 py-2 rounded-full bg-[#ffe4de] text-[#9e3322] font-label-sm text-xs font-bold hover:opacity-90 inline-flex items-center cursor-pointer">Preserved Keepsakes</button>
@@ -1380,7 +1380,7 @@
                 <span class="material-symbols-outlined text-sm" aria-hidden="true">auto_awesome</span>
                 <span>Feed Curation &amp; Gifting Preference</span>
               </div>
-              <p class="text-xs text-on-surface-variant">Instant Personalization: Select your curation profile so your catalogue feed highlights collections curated for him, for her, or universal craft systems.</p>
+              <p class="text-xs text-on-surface-variant">Personalize your feed: Choose gifts for him, gifts for her, or browse all handcrafted collections.</p>
             </div>
             <div class="flex items-center gap-2 overflow-x-auto no-scrollbar py-0.5 shrink-0">
               <button type="button" onclick="window.setFeedPersona('masculine')" class="min-h-[38px] px-3.5 py-1.5 rounded-full text-xs font-bold transition flex items-center gap-1.5 shrink-0 cursor-pointer ${persona === 'masculine' ? 'bg-primary text-white shadow-xs' : 'bg-white text-primary border border-[#e4e0d8] hover:border-secondary'}">
@@ -1407,9 +1407,9 @@
             <div>
               <div class="inline-flex items-center gap-1.5 text-[#9e3322] font-label-sm text-xs uppercase tracking-wider font-bold">
                 <span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;" aria-hidden="true">favorite</span>
-                <span>Social Commerce Community • @resin.art.memories</span>
+                <span>Instagram Community • @resin.art.memories</span>
               </div>
-              <h2 class="font-headline-sm text-2xl text-primary font-bold">Shop Directly from Our Studio Reels &amp; Client Diaries</h2>
+              <h2 class="font-headline-sm text-2xl text-primary font-bold">Shop Directly from Our Studio Reels &amp; Stories</h2>
             </div>
             <button type="button" onclick="window.navigateTo('social')" class="self-start sm:self-auto min-h-[44px] px-5 py-2.5 rounded-xl bg-[#9e3322] text-white font-label-md text-xs font-bold flex items-center gap-1.5 shadow-sm hover:opacity-95 cursor-pointer">
               <span>Explore Full Social Feed</span>
@@ -1803,43 +1803,46 @@
               <span class="text-secondary font-bold">Storefront Catalogue</span>
             </div>
             <h1 class="font-headline-lg text-2xl sm:text-4xl text-primary font-bold tracking-tight mt-0.5">
-              Keepsake Art &amp; Archival Resin Systems
+              Keepsake Art &amp; Epoxy Resin Supplies
             </h1>
             <p class="text-xs sm:text-sm text-on-surface-variant mt-0.5">
-              Bespoke preserved floral blocks, hand-poured ocean decor, and ISO-certified 3:1, 2:1 &amp; UV epoxy formulations.
+              Handcrafted flower preservation, ocean decor, and quality 3:1, 2:1 &amp; UV resin formulas.
             </p>
           </div>
           <div class="flex items-center gap-2 bg-surface-container-low px-3.5 py-2 rounded-xl border border-[#e4e0d8] self-start sm:self-end shrink-0">
             <span class="material-symbols-outlined text-secondary text-base" aria-hidden="true">verified</span>
-            <span class="font-label-sm text-xs text-primary font-semibold">Batch 2026-C • ISO 9001 Lab Certified</span>
+            <span class="font-label-sm text-xs text-primary font-semibold">Tested &amp; Certified • Batch 2026-C</span>
           </div>
         </div>
 
-        <!-- Horizontal Category Pills -->
-        <div class="flex items-center gap-2 overflow-x-auto no-scrollbar py-1">
-          ${categories.map(cat => `
-            <button type="button" onclick="window.setCatalogCategory('${cat.id}')" class="min-h-[44px] px-4 py-2 rounded-full font-label-sm text-xs whitespace-nowrap shrink-0 transition-all cursor-pointer ${AppState.catalogCategory === cat.id ? 'bg-primary text-on-primary font-bold shadow-xs' : 'bg-surface-container-high text-on-surface-variant hover:bg-secondary-container/50'}">
-              ${esc(cat.label)}
-            </button>
-          `).join('')}
-        </div>
+        <!-- Categories & Gifting Filter Rail (Unified on PC, clean scroll on mobile) -->
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-2.5 py-1">
+          <!-- Horizontal Category Pills -->
+          <div class="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5 min-w-0">
+            ${categories.map(cat => `
+              <button type="button" onclick="window.setCatalogCategory('${cat.id}')" class="min-h-[44px] px-3.5 py-1.5 rounded-full font-label-sm text-xs whitespace-nowrap shrink-0 transition-all cursor-pointer ${AppState.catalogCategory === cat.id ? 'bg-primary text-on-primary font-bold shadow-xs' : 'bg-surface-container-high text-on-surface-variant hover:bg-secondary-container/50'}">
+                ${esc(cat.label)}
+              </button>
+            `).join('')}
+          </div>
 
-        <!-- Feed Curation & Gifting Quick Bar -->
-        <div class="flex items-center gap-2 overflow-x-auto no-scrollbar py-1">
-          <span class="text-xs font-bold text-primary flex items-center gap-1 shrink-0">
-            <span class="material-symbols-outlined text-secondary text-sm" aria-hidden="true">auto_awesome</span>
-            <span>Curation &amp; Gifts:</span>
-          </span>
-          <button type="button" onclick="window.setFeedPersona('masculine')" class="min-h-[38px] px-3.5 py-1.5 rounded-full text-xs font-bold transition flex items-center gap-1.5 shrink-0 cursor-pointer ${AppState.feedPersona === 'masculine' || AppState.catalogSort === 'gifts_him' ? 'bg-primary text-white shadow-xs' : 'bg-surface-container-low text-primary border border-[#e4e0d8] hover:border-secondary'}">
-            <span>👔 Gifts for Him</span>
-          </button>
-          <button type="button" onclick="window.setFeedPersona('feminine')" class="min-h-[38px] px-3.5 py-1.5 rounded-full text-xs font-bold transition flex items-center gap-1.5 shrink-0 cursor-pointer ${AppState.feedPersona === 'feminine' || AppState.catalogSort === 'gifts_her' ? 'bg-primary text-white shadow-xs' : 'bg-surface-container-low text-primary border border-[#e4e0d8] hover:border-secondary'}">
-            <span>🌸 Gifts for Her</span>
-          </button>
-          <button type="button" onclick="window.setCatalogSort('gifting')" class="min-h-[38px] px-3.5 py-1.5 rounded-full text-xs font-bold transition flex items-center gap-1.5 shrink-0 cursor-pointer ${AppState.catalogSort === 'gifting' ? 'bg-secondary text-white shadow-xs' : 'bg-surface-container-low text-primary border border-[#e4e0d8] hover:border-secondary'}">
-            <span class="material-symbols-outlined text-sm" aria-hidden="true">featured_seasonal_and_gifts</span>
-            <span>🎁 Gift Sets</span>
-          </button>
+          <!-- Feed Curation & Gifting Quick Bar -->
+          <div class="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5 shrink-0">
+            <span class="text-xs font-bold text-primary flex items-center gap-1 shrink-0">
+              <span class="material-symbols-outlined text-secondary text-sm" aria-hidden="true">auto_awesome</span>
+              <span>Gifts:</span>
+            </span>
+            <button type="button" onclick="window.setFeedPersona('masculine')" class="min-h-[38px] px-3 py-1.5 rounded-full text-xs font-bold transition flex items-center gap-1.5 shrink-0 cursor-pointer ${AppState.feedPersona === 'masculine' || AppState.catalogSort === 'gifts_him' ? 'bg-primary text-white shadow-xs' : 'bg-surface-container-low text-primary border border-[#e4e0d8] hover:border-secondary'}">
+              <span>👔 For Him</span>
+            </button>
+            <button type="button" onclick="window.setFeedPersona('feminine')" class="min-h-[38px] px-3 py-1.5 rounded-full text-xs font-bold transition flex items-center gap-1.5 shrink-0 cursor-pointer ${AppState.feedPersona === 'feminine' || AppState.catalogSort === 'gifts_her' ? 'bg-primary text-white shadow-xs' : 'bg-surface-container-low text-primary border border-[#e4e0d8] hover:border-secondary'}">
+              <span>🌸 For Her</span>
+            </button>
+            <button type="button" onclick="window.setCatalogSort('gifting')" class="min-h-[38px] px-3 py-1.5 rounded-full text-xs font-bold transition flex items-center gap-1.5 shrink-0 cursor-pointer ${AppState.catalogSort === 'gifting' ? 'bg-secondary text-white shadow-xs' : 'bg-surface-container-low text-primary border border-[#e4e0d8] hover:border-secondary'}">
+              <span class="material-symbols-outlined text-sm" aria-hidden="true">featured_seasonal_and_gifts</span>
+              <span>🎁 Gift Sets</span>
+            </button>
+          </div>
         </div>
 
         <!-- Sticky Search, Filter & Sort Controls Bar (Sticky on md+ desktop/tablet so mobile viewports aren't crushed) -->
@@ -5533,8 +5536,8 @@
     const bannerEl = document.getElementById('cloudflare-auth-reason-banner');
     if (bannerEl) {
       bannerEl.innerHTML = fromCheckout
-        ? '🔒 <strong>Sign In to Continue to Checkout:</strong> Continue with <strong>Google</strong>, <strong>Apple</strong>, or your <strong>Email</strong>. You will enter your delivery address in the next step.'
-        : 'Continue with <strong>Google</strong>, <strong>Apple</strong>, or your <strong>Email</strong> to sign in, sync your wishlist, and track orders. Delivery address is collected only at checkout.';
+        ? '🔒 <strong>Sign In to Continue:</strong> Sign in with <strong>Google</strong>, <strong>Apple</strong>, or your <strong>Email</strong>. You will add your delivery address next.'
+        : 'Sign in with <strong>Google</strong>, <strong>Apple</strong>, or your <strong>Email</strong> to save your favorites, personalize your feed, and track orders.';
     }
 
     const modal = document.getElementById('cloudflare-auth-modal');
