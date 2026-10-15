@@ -4571,15 +4571,60 @@
       const btn = document.getElementById(`cf-persona-btn-${p}`);
       if (!btn) return;
       if (p === valid) {
-        btn.className = 'min-h-[44px] h-11 px-2.5 py-1.5 rounded-lg text-xs font-bold transition flex items-center justify-center gap-1.5 border-2 border-primary bg-primary text-white cursor-pointer shadow-xs';
+        btn.className = 'w-full min-h-[56px] p-3.5 rounded-2xl border-2 border-primary bg-primary text-white text-left transition flex items-center justify-between gap-3 cursor-pointer shadow-xs';
       } else {
-        btn.className = 'min-h-[44px] h-11 px-2.5 py-1.5 rounded-lg text-xs font-bold transition flex items-center justify-center gap-1.5 border border-[#e4e0d8] bg-white text-primary hover:border-secondary hover:bg-surface-container-low cursor-pointer';
+        btn.className = 'w-full min-h-[56px] p-3.5 rounded-2xl border-2 border-[#e4e0d8] hover:border-primary bg-white hover:bg-surface-container-low text-primary text-left transition flex items-center justify-between gap-3 cursor-pointer group shadow-2xs';
       }
     });
     if (Store && typeof Store.setPersonaPreference === 'function') {
       Store.setPersonaPreference(valid);
     }
     AppState.feedPersona = valid;
+  };
+
+  window.showAuthStep = function (step) {
+    const credStep = document.getElementById('cf-auth-step-credentials');
+    const curStep = document.getElementById('cf-auth-step-curation');
+    if (step === 'curation') {
+      if (credStep) credStep.classList.add('hidden');
+      if (curStep) {
+        curStep.classList.remove('hidden');
+        curStep.classList.add('flex');
+      }
+    } else {
+      if (curStep) {
+        curStep.classList.add('hidden');
+        curStep.classList.remove('flex');
+      }
+      if (credStep) credStep.classList.remove('hidden');
+    }
+  };
+
+  window.selectPersonaAndFinish = function (persona) {
+    const valid = ['masculine', 'feminine'].includes(persona) ? persona : 'all';
+    window.setAuthPersona(valid);
+    document.getElementById('cloudflare-auth-modal')?.classList.add('hidden');
+    syncBodyModalLock();
+    AppState.feedPersona = valid;
+    updateGlobalBadges();
+    renderActiveView();
+    const label = valid === 'masculine' ? 'Curated for Him 👔' : 'Curated for Her 🌸';
+    window.showToast(label, 'Your bespoke catalogue feed is now personalized.');
+    if (AppState.pendingCheckoutAfterAuth) {
+      AppState.pendingCheckoutAfterAuth = false;
+      window.openCheckoutModal();
+    }
+  };
+
+  window.skipPersonaAndFinish = function () {
+    document.getElementById('cloudflare-auth-modal')?.classList.add('hidden');
+    syncBodyModalLock();
+    updateGlobalBadges();
+    renderActiveView();
+    if (AppState.pendingCheckoutAfterAuth) {
+      AppState.pendingCheckoutAfterAuth = false;
+      window.openCheckoutModal();
+    }
   };
 
   window.handleWishlistToggle = function (ev, productId) {
@@ -5602,19 +5647,28 @@
       errEl.classList.add('hidden');
     }
     window.closeOAuthChooser();
-    document.getElementById('cloudflare-auth-modal')?.classList.add('hidden');
-    syncBodyModalLock();
+
+    const shouldOpenCheckout = AppState.pendingCheckoutAfterAuth;
+    if (shouldOpenCheckout) {
+      AppState.pendingCheckoutAfterAuth = false;
+      document.getElementById('cloudflare-auth-modal')?.classList.add('hidden');
+      syncBodyModalLock();
+      AppState.feedPersona = Store.getPersonaPreference() || personaPreference;
+      updateGlobalBadges();
+      renderActiveView();
+      const providerLabel = cleanProvider === 'apple' ? 'Apple ID' : 'Google';
+      window.showToast(`Signed in as ${res.session.name}`, `Verified via ${providerLabel}`);
+      window.openCheckoutModal();
+      return;
+    }
+
+    // Normal OAuth login: update session & advance to Part 2 (Curation Step)
     AppState.feedPersona = Store.getPersonaPreference() || personaPreference;
     updateGlobalBadges();
     renderActiveView();
-
-    const shouldOpenCheckout = AppState.pendingCheckoutAfterAuth;
-    AppState.pendingCheckoutAfterAuth = false;
     const providerLabel = cleanProvider === 'apple' ? 'Apple ID' : 'Google';
-    window.showToast(`Signed in as ${res.session.name}`, `Verified via ${providerLabel}`);
-    if (shouldOpenCheckout) {
-      window.openCheckoutModal();
-    }
+    window.showToast(`Signed in as ${res.session.name}! ✨`, `Verified via ${providerLabel}`);
+    window.showAuthStep('curation');
   };
 
   window.submitOAuthChooserCustom = function () {
@@ -5643,6 +5697,7 @@
   window.openCloudflareAuthModal = function (fromCheckout = false) {
     AppState.pendingCheckoutAfterAuth = Boolean(fromCheckout);
     isForgotAuthMode = false;
+    window.showAuthStep('credentials');
     const pwd = document.getElementById('cf-auth-password');
     const icon = document.getElementById('cf-auth-pwd-toggle-icon');
     if (pwd) pwd.type = 'password';
@@ -5833,19 +5888,26 @@
     }
 
     window.closeOAuthChooser();
-    document.getElementById('cloudflare-auth-modal')?.classList.add('hidden');
-    syncBodyModalLock();
+
+    const shouldOpenCheckout = AppState.pendingCheckoutAfterAuth;
+    if (shouldOpenCheckout) {
+      AppState.pendingCheckoutAfterAuth = false;
+      document.getElementById('cloudflare-auth-modal')?.classList.add('hidden');
+      syncBodyModalLock();
+      AppState.feedPersona = Store.getPersonaPreference() || personaPreference;
+      updateGlobalBadges();
+      renderActiveView();
+      window.showToast(`Signed in as ${res.session.name}`, `Verified via ${provider.toUpperCase()}`);
+      window.openCheckoutModal();
+      return;
+    }
+
+    // Standard sign-in / registration: update session & advance to Part 2 (Curation Step)
     AppState.feedPersona = Store.getPersonaPreference() || personaPreference;
     updateGlobalBadges();
     renderActiveView();
-
-    const shouldOpenCheckout = AppState.pendingCheckoutAfterAuth;
-    AppState.pendingCheckoutAfterAuth = false;
-
-    window.showToast(`Signed in as ${res.session.name}`, `Verified via ${provider.toUpperCase()}`);
-    if (shouldOpenCheckout) {
-      window.openCheckoutModal();
-    }
+    window.showToast(mode === 'register' ? `Account Created, ${res.session.name}! ✨` : `Signed in as ${res.session.name}! ✨`, 'Please select your feed curation preference.');
+    window.showAuthStep('curation');
   };
 
   window.handlePatronLogout = function () {

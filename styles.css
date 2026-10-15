@@ -928,6 +928,17 @@ textarea:disabled {
   animation: authModalPop 0.22s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
+/* Auth Modal Desktop 3D Animation Showcase */
+.auth-desktop-showcase {
+  display: none !important;
+}
+
+@media (min-width: 768px) {
+  .auth-desktop-showcase {
+    display: flex !important;
+  }
+}
+
 /* Floating Liquid Resin Specimen Sphere */
 @keyframes vkOrbFloat {
   0%, 100% {
