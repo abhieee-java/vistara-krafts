@@ -981,7 +981,7 @@ textarea:disabled {
   position: absolute;
   inset: -15%;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(255, 215, 155, 0.35) 0%, rgba(37, 75, 119, 0.25) 50%, transparent 75%);
+  background: radial-gradient(circle, rgba(176, 141, 87, 0.35) 0%, rgba(3, 26, 56, 0.12) 50%, transparent 75%);
   filter: blur(18px);
   animation: vkGlowBreathe 4s ease-in-out infinite;
   pointer-events: none;
@@ -990,11 +990,12 @@ textarea:disabled {
 .vk-orb-sphere {
   position: relative;
   border-radius: 50%;
-  background: radial-gradient(circle at 35% 30%, #fff7d6 0%, #ffd79b 22%, #c59b4c 45%, #1d3a63 75%, #080f1d 100%);
+  background: radial-gradient(circle at 35% 30%, #fffbf0 0%, #ffd79b 22%, #c59b4c 45%, #1b3860 75%, #031a38 100%);
   box-shadow: 
-    inset -6px -6px 16px rgba(0, 0, 0, 0.75),
-    inset 4px 4px 10px rgba(255, 255, 255, 0.65),
-    0 0 24px rgba(255, 215, 155, 0.35);
+    inset -6px -6px 14px rgba(3, 26, 56, 0.75),
+    inset 4px 4px 10px rgba(255, 255, 255, 0.8),
+    0 10px 24px -4px rgba(176, 141, 87, 0.35),
+    0 4px 10px rgba(3, 26, 56, 0.15);
   z-index: 2;
   overflow: hidden;
 }
@@ -1006,7 +1007,7 @@ textarea:disabled {
   width: 45%;
   height: 30%;
   border-radius: 50%;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.85) 0%, rgba(255, 255, 255, 0) 100%);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0) 100%);
   transform: rotate(-25deg);
   pointer-events: none;
 }
@@ -1014,7 +1015,7 @@ textarea:disabled {
 .vk-orbital-ring-outer {
   position: absolute;
   border-radius: 50%;
-  border: 1.5px solid rgba(255, 215, 155, 0.45);
+  border: 1.5px solid rgba(176, 141, 87, 0.55);
   animation: vkOrbitalRotate 18s linear infinite;
   pointer-events: none;
   z-index: 3;
@@ -1023,7 +1024,7 @@ textarea:disabled {
 .vk-orbital-ring-inner {
   position: absolute;
   border-radius: 50%;
-  border: 1px dashed rgba(255, 215, 155, 0.3);
+  border: 1px dashed rgba(176, 141, 87, 0.35);
   animation: vkOrbitalRotateRev 12s linear infinite;
   pointer-events: none;
   z-index: 1;
@@ -1036,8 +1037,8 @@ textarea:disabled {
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: #ffd79b;
-  box-shadow: 0 0 8px #ffd79b, 0 0 14px rgba(255, 215, 155, 0.8);
+  background: #b08d57;
+  box-shadow: 0 0 8px #b08d57, 0 0 12px rgba(255, 215, 155, 0.9);
   transform: translateX(-50%);
 }
 

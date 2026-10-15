@@ -4571,9 +4571,9 @@
       const btn = document.getElementById(`cf-persona-btn-${p}`);
       if (!btn) return;
       if (p === valid) {
-        btn.className = 'min-h-[44px] h-11 px-2.5 py-1.5 rounded-lg text-xs font-bold transition flex items-center justify-center gap-1.5 border border-[#ffd79b] bg-gradient-to-r from-[#ffd79b] to-[#d4af37] text-[#080f1d] cursor-pointer shadow-md';
+        btn.className = 'min-h-[44px] h-11 px-2.5 py-1.5 rounded-lg text-xs font-bold transition flex items-center justify-center gap-1.5 border-2 border-primary bg-primary text-white cursor-pointer shadow-xs';
       } else {
-        btn.className = 'min-h-[44px] h-11 px-2.5 py-1.5 rounded-lg text-xs font-bold transition flex items-center justify-center gap-1.5 border border-[#263750] bg-[#121c2e] text-[#cbd5e1] hover:border-[#ffd79b]/50 hover:text-white cursor-pointer';
+        btn.className = 'min-h-[44px] h-11 px-2.5 py-1.5 rounded-lg text-xs font-bold transition flex items-center justify-center gap-1.5 border border-[#e4e0d8] bg-white text-primary hover:border-secondary hover:bg-surface-container-low cursor-pointer';
       }
     });
     if (Store && typeof Store.setPersonaPreference === 'function') {
@@ -5434,12 +5434,12 @@
     if (isChecked) {
       input.value = '0';
       box.textContent = '';
-      box.className = 'w-4 h-4 rounded border border-[#263750] bg-transparent flex items-center justify-center text-[10px]';
+      box.className = 'w-4 h-4 rounded border border-[#e4e0d8] bg-white flex items-center justify-center text-[10px]';
       if (btn) btn.setAttribute('aria-checked', 'false');
     } else {
       input.value = '1';
       box.textContent = '✓';
-      box.className = 'w-4 h-4 rounded border border-[#ffd79b] bg-[#ffd79b] text-[#080f1d] flex items-center justify-center text-[10px] font-black leading-none';
+      box.className = 'w-4 h-4 rounded border border-primary bg-primary text-white flex items-center justify-center text-[10px] font-black leading-none';
       if (btn) btn.setAttribute('aria-checked', 'true');
     }
   };
@@ -5530,11 +5530,11 @@
 
     if (tabSignin && tabRegister) {
       if (cleanMode === 'signin') {
-        tabSignin.className = 'min-h-[44px] h-11 rounded-lg bg-gradient-to-r from-[#ffd79b] to-[#d4af37] text-[#080f1d] text-xs font-bold shadow-md transition cursor-pointer';
-        tabRegister.className = 'min-h-[44px] h-11 rounded-lg bg-transparent text-[#9ca8bc] hover:text-white hover:bg-white/5 text-xs font-bold transition cursor-pointer';
+        tabSignin.className = 'min-h-[44px] h-11 rounded-lg bg-primary text-white text-xs font-bold shadow-xs transition cursor-pointer';
+        tabRegister.className = 'min-h-[44px] h-11 rounded-lg bg-transparent text-primary hover:bg-white/70 text-xs font-bold transition cursor-pointer';
       } else {
-        tabRegister.className = 'min-h-[44px] h-11 rounded-lg bg-gradient-to-r from-[#ffd79b] to-[#d4af37] text-[#080f1d] text-xs font-bold shadow-md transition cursor-pointer';
-        tabSignin.className = 'min-h-[44px] h-11 rounded-lg bg-transparent text-[#9ca8bc] hover:text-white hover:bg-white/5 text-xs font-bold transition cursor-pointer';
+        tabRegister.className = 'min-h-[44px] h-11 rounded-lg bg-primary text-white text-xs font-bold shadow-xs transition cursor-pointer';
+        tabSignin.className = 'min-h-[44px] h-11 rounded-lg bg-transparent text-primary hover:bg-white/70 text-xs font-bold transition cursor-pointer';
       }
     }
 
@@ -5763,15 +5763,15 @@
 
     if (accountsContainer) {
       accountsContainer.innerHTML = chooserAccounts.map(acc => `
-        <button type="button" onclick="window.completeOAuthChooserAccount('${cleanProvider}', '${esc(acc.email)}', '${esc(acc.name)}')" style="min-height: 48px; height: 48px;" class="w-full min-h-[48px] h-12 px-3 py-2 rounded-xl bg-[#121c2e] hover:bg-[#1a2942] border border-[#263750] flex items-center justify-between gap-2 text-left transition cursor-pointer">
+        <button type="button" onclick="window.completeOAuthChooserAccount('${cleanProvider}', '${esc(acc.email)}', '${esc(acc.name)}')" style="min-height: 48px; height: 48px;" class="w-full min-h-[48px] h-12 px-3 py-2 rounded-xl bg-white hover:bg-surface-container-low border border-[#e4e0d8] flex items-center justify-between gap-2 text-left transition cursor-pointer shadow-2xs">
           <div class="flex items-center gap-2.5 min-w-0">
-            <span class="w-8 h-8 rounded-full bg-gradient-to-br from-[#ffd79b] to-[#c59b4c] text-[#080f1d] text-xs font-bold flex items-center justify-center shrink-0">${esc(acc.name.charAt(0))}</span>
+            <span class="w-8 h-8 rounded-full bg-primary text-white text-xs font-bold flex items-center justify-center shrink-0">${esc(acc.name.charAt(0))}</span>
             <div class="min-w-0">
-              <p class="text-xs font-bold text-white truncate">${esc(acc.name)}</p>
-              <p class="text-[11px] text-[#9ca8bc] truncate">${esc(acc.email)}</p>
+              <p class="text-xs font-bold text-primary truncate">${esc(acc.name)}</p>
+              <p class="text-[11px] text-on-surface-variant truncate">${esc(acc.email)}</p>
             </div>
           </div>
-          <span class="text-[10px] font-bold text-[#ffd79b] shrink-0">1-Click Sign In →</span>
+          <span class="text-[10px] font-bold text-secondary shrink-0">1-Click Sign In →</span>
         </button>
       `).join('');
     }
