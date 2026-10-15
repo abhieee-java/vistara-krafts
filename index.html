@@ -1848,151 +1848,257 @@
     </div>
   </div>
 
-  <!-- 9. Vistāra Krafts Sign-In Modal (Step 1: 1-Click Google, Apple, or Email Identity) -->
-  <div id="cloudflare-auth-modal" role="dialog" aria-modal="true" aria-labelledby="cloudflare-auth-modal-title" class="fixed inset-0 z-[55] bg-primary/65 backdrop-blur-xs hidden flex items-center justify-center p-2.5 sm:p-4" onclick="window.closeModalById('cloudflare-auth-modal')">
-    <div class="w-full max-w-md md:max-w-3xl max-w-[calc(100vw-20px)] max-h-[92dvh] overflow-y-auto bg-white rounded-2xl p-4 sm:p-6 shadow-2xl flex flex-col gap-3 sm:gap-4" onclick="event.stopPropagation()">
-      <div class="flex items-center justify-between gap-2 border-b border-surface-container pb-3 shrink-0">
-        <div class="flex items-center gap-2.5 min-w-0">
-          <img src="./vistara-krafts-logo.jpg" alt="Vistāra Krafts Logo" class="w-9 h-9 sm:w-10 sm:h-10 rounded-lg object-cover border border-[#725a19]/25 shrink-0">
-          <div class="min-w-0">
-            <span class="text-[10px] uppercase tracking-wider text-secondary font-bold block">Your Account</span>
-            <h3 id="cloudflare-auth-modal-title" class="font-headline-sm text-base sm:text-lg text-primary font-bold truncate">Sign In to Vistāra Krafts</h3>
+  <!-- 9. Vistāra Krafts Luxury Sign-In Modal (Mobile-App Reference + PC Atelier Split-Stage) -->
+  <div id="cloudflare-auth-modal" role="dialog" aria-modal="true" aria-labelledby="cloudflare-auth-modal-title" class="fixed inset-0 z-[55] bg-black/80 backdrop-blur-md hidden flex items-center justify-center p-2 sm:p-4" onclick="window.closeModalById('cloudflare-auth-modal')">
+    <div class="w-full max-w-md md:max-w-4xl max-w-[calc(100vw-16px)] max-h-[94dvh] overflow-y-auto bg-[#080e1b] text-white rounded-3xl shadow-2xl border border-[#ffd79b]/25 flex flex-col md:flex-row overflow-hidden relative" onclick="event.stopPropagation()">
+      
+      <!-- PC/Desktop Left Stage: Atelier 3D Liquid Resin Orb Showcase -->
+      <div class="hidden md:flex md:w-5/12 flex-col justify-between p-6 lg:p-8 bg-gradient-to-br from-[#0c182b] via-[#091120] to-[#040812] border-r border-[#ffd79b]/15 relative overflow-hidden shrink-0">
+        <!-- Ambient radial glow behind orb -->
+        <div class="absolute -top-12 -left-12 w-64 h-64 rounded-full bg-[#ffd79b]/10 blur-3xl pointer-events-none"></div>
+        <div class="absolute bottom-0 right-0 w-64 h-64 rounded-full bg-[#1e3e6b]/20 blur-3xl pointer-events-none"></div>
+
+        <!-- Atelier Brand Header -->
+        <div class="relative z-10 flex items-center gap-3">
+          <img src="./vistara-krafts-logo.jpg" alt="Vistāra Krafts Logo" class="w-10 h-10 rounded-xl object-cover border border-[#ffd79b]/40 shadow-md shrink-0">
+          <div>
+            <span class="text-[10px] uppercase tracking-widest text-[#ffd79b] font-bold block">VISTĀRA KRAFTS</span>
+            <span class="text-xs text-[#9ca8bc] font-serif italic">Artisan Resin Studio</span>
           </div>
         </div>
-        <button type="button" id="cf-auth-close-btn" aria-label="Close Sign In Modal" onclick="window.closeModalById('cloudflare-auth-modal')" style="height: 44px; min-height: 44px; width: 44px; min-width: 44px;" class="w-11 h-11 min-w-[44px] min-h-[44px] rounded-full bg-surface-container-low hover:bg-surface-container flex items-center justify-center shrink-0 cursor-pointer">
-          <span class="material-symbols-outlined text-lg" aria-hidden="true">close</span>
-        </button>
+
+        <!-- Central Floating Resin Specimen Sphere (Desktop 140px) -->
+        <div class="relative z-10 my-auto py-6 flex flex-col items-center text-center">
+          <div class="vk-orb-container w-36 h-36 mb-5">
+            <div class="vk-orb-glow"></div>
+            <!-- Outer tilted ring -->
+            <div class="vk-orbital-ring-outer w-36 h-36">
+              <span class="vk-orbital-dot"></span>
+            </div>
+            <!-- Inner reverse ring -->
+            <div class="vk-orbital-ring-inner w-28 h-28"></div>
+            <!-- Glowing Resin Sphere -->
+            <div class="vk-orb-sphere w-24 h-24">
+              <div class="vk-orb-glare"></div>
+            </div>
+          </div>
+          <h4 class="font-headline-sm text-lg font-bold text-white tracking-wide">Preserved Memories in Glass</h4>
+          <p class="text-xs text-[#9ca8bc] leading-relaxed mt-1 max-w-[240px]">
+            Handcrafted luxury resin art, custom botanical keepsakes &amp; bespoke decor.
+          </p>
+        </div>
+
+        <!-- Value Badges -->
+        <div class="relative z-10 space-y-2 pt-4 border-t border-[#ffd79b]/15 text-xs text-[#cbd5e1]">
+          <div class="flex items-center gap-2">
+            <span class="material-symbols-outlined text-[#ffd79b] text-base shrink-0" aria-hidden="true">tune</span>
+            <span class="truncate">Curated Collections for Him &amp; Her</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="material-symbols-outlined text-emerald-400 text-base shrink-0" aria-hidden="true">verified_user</span>
+            <span class="truncate">100% Secure Sign-In • Private &amp; Protected</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="material-symbols-outlined text-[#ffd79b] text-base shrink-0" aria-hidden="true">local_shipping</span>
+            <span class="truncate">Track Bespoke Pours Across India</span>
+          </div>
+        </div>
       </div>
 
-      <!-- Responsive Layout: Mobile-First Single Flow, PC/Desktop Clean Two Columns -->
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 items-start shrink-0">
-        <!-- Left Side: Friendly Intro, 1-Click Social Sign-In & Gender Selection -->
-        <div class="flex flex-col gap-3">
-          <p id="cloudflare-auth-reason-banner" class="text-xs text-on-surface-variant bg-[#fdf8f0] border border-[#725a19]/20 rounded-xl px-3.5 py-2.5 leading-relaxed">
-            Sign in with <strong>Google</strong>, <strong>Apple</strong>, or your <strong>Email</strong> to save your favorites, personalize your feed, and track orders.
-          </p>
+      <!-- Right Stage (Mobile: Full Width / PC: 7/12 Width) -->
+      <div class="w-full md:w-7/12 p-4 sm:p-6 flex flex-col justify-between gap-3 bg-[#080e1b] relative">
+        
+        <!-- Top Action Bar (Back Arrow left, Title/Logo center, Close right) -->
+        <div class="flex items-center justify-between gap-2 shrink-0">
+          <button type="button" id="cf-auth-back-btn" aria-label="Go Back" onclick="window.handleAuthModalBack()" style="height: 44px; min-height: 44px; width: 44px; min-width: 44px;" class="w-11 h-11 min-w-[44px] min-h-[44px] rounded-full bg-white/5 hover:bg-white/10 text-[#cbd5e1] hover:text-white flex items-center justify-center shrink-0 transition cursor-pointer">
+            <span class="material-symbols-outlined text-lg" aria-hidden="true">arrow_back</span>
+          </button>
 
-          <!-- 1-Click Social Login Buttons (Google & Apple) -->
-          <div class="grid grid-cols-2 gap-2">
-            <button type="button" id="cf-oauth-google-btn" onclick="window.startCloudflareOAuth('google')" class="min-h-[44px] px-3 py-2.5 rounded-xl bg-white border border-[#dadce0] hover:bg-surface-container-low text-primary text-xs font-bold flex items-center justify-center gap-2 shadow-2xs transition cursor-pointer">
-              <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" aria-hidden="true">
-                <path fill="#4285F4" d="M23.49 12.27c0-.79-.07-1.54-.19-2.27H12v4.51h6.47c-.29 1.48-1.14 2.73-2.4 3.58v3h3.86c2.26-2.09 3.56-5.17 3.56-8.82z"/>
-                <path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.86-3c-1.08.72-2.45 1.16-4.07 1.16-3.13 0-5.78-2.11-6.73-4.96H1.29v3.09C3.26 21.3 7.31 24 12 24z"/>
-                <path fill="#FBBC05" d="M5.27 14.29c-.25-.72-.38-1.49-.38-2.29s.14-1.57.38-2.29V6.62H1.29C.47 8.24 0 10.06 0 12s.47 3.76 1.29 5.38l3.98-3.09z"/>
-                <path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.31 0 3.26 2.7 1.29 6.62l3.98 3.09c.95-2.85 3.6-4.96 6.73-4.96z"/>
-              </svg>
-              <span class="truncate">Continue with Google</span>
-            </button>
-            <button type="button" id="cf-oauth-apple-btn" onclick="window.startCloudflareOAuth('apple')" class="min-h-[44px] px-3 py-2.5 rounded-xl bg-[#111312] hover:bg-black text-white text-xs font-bold flex items-center justify-center gap-2 shadow-2xs transition cursor-pointer">
-              <svg class="w-4 h-4 shrink-0 fill-current" viewBox="0 0 24 24" aria-hidden="true">
-                <path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"/>
-              </svg>
-              <span class="truncate">Continue with Apple</span>
-            </button>
+          <div class="flex items-center gap-2 min-w-0">
+            <img src="./vistara-krafts-logo.jpg" alt="Vistāra Krafts Logo" class="w-7 h-7 rounded-lg object-cover border border-[#ffd79b]/30 shrink-0">
+            <span class="text-xs uppercase tracking-wider text-[#ffd79b] font-bold truncate">Vistāra Krafts</span>
           </div>
 
-          <div id="cf-google-gis-button-slot" class="hidden justify-center shrink-0"></div>
+          <button type="button" id="cf-auth-close-btn" aria-label="Close Sign In Modal" onclick="window.closeModalById('cloudflare-auth-modal')" style="height: 44px; min-height: 44px; width: 44px; min-width: 44px;" class="w-11 h-11 min-w-[44px] min-h-[44px] rounded-full bg-white/5 hover:bg-white/10 text-[#cbd5e1] hover:text-white flex items-center justify-center shrink-0 transition cursor-pointer">
+            <span class="material-symbols-outlined text-lg" aria-hidden="true">close</span>
+          </button>
+        </div>
 
-          <!-- 1-Click OAuth Account Chooser Sheet (Google / Apple) -->
-          <div id="cf-oauth-chooser-sheet" class="hidden rounded-xl border border-[#dadce0] bg-[#fcf9f5] p-3.5 space-y-2.5 shrink-0">
-            <div class="flex items-center justify-between gap-2">
-              <span id="cf-oauth-chooser-title" class="text-xs font-bold text-primary">Choose an account to continue to Vistāra Krafts</span>
-              <button type="button" id="cf-oauth-chooser-close-btn" aria-label="Close Account Chooser" onclick="window.closeOAuthChooser()" style="height: 44px; min-height: 44px; width: 44px; min-width: 44px;" class="w-11 h-11 min-w-[44px] min-h-[44px] shrink-0 rounded-lg flex items-center justify-center text-on-surface-variant hover:text-primary cursor-pointer">
-                <span class="material-symbols-outlined text-base" aria-hidden="true">close</span>
-              </button>
+        <!-- Mobile-Only Hero Liquid Resin Specimen Sphere (Matches User Screenshot) -->
+        <div class="md:hidden flex flex-col items-center justify-center pt-1 pb-1 shrink-0">
+          <div class="vk-orb-container w-20 h-20">
+            <div class="vk-orb-glow"></div>
+            <!-- Outer tilted ring -->
+            <div class="vk-orbital-ring-outer w-20 h-20">
+              <span class="vk-orbital-dot"></span>
             </div>
-            <div id="cf-oauth-chooser-accounts" class="space-y-1.5"></div>
-            <div class="pt-2 border-t border-surface-container space-y-2">
-              <label for="cf-oauth-custom-email" class="text-[11px] font-semibold text-on-surface-variant block">Or sign in with another account email</label>
-              <div class="flex flex-col sm:flex-row gap-1.5">
-                <input id="cf-oauth-custom-name" type="text" aria-label="Your Name" placeholder="Your Name" class="min-w-0 sm:w-2/5 h-11 min-h-[44px] px-2.5 rounded-lg bg-white border border-[#e4e0d8] text-xs">
-                <input id="cf-oauth-custom-email" type="email" aria-label="Google or Apple Email Address" placeholder="you@gmail.com" class="min-w-0 sm:flex-1 h-11 min-h-[44px] px-2.5 rounded-lg bg-white border border-[#e4e0d8] text-xs">
-                <button type="button" id="cf-oauth-custom-submit" onclick="window.submitOAuthChooserCustom()" class="min-h-[44px] px-3.5 rounded-lg bg-primary text-white text-xs font-bold shrink-0 cursor-pointer">Continue</button>
+            <!-- Inner reverse ring -->
+            <div class="vk-orbital-ring-inner w-16 h-16"></div>
+            <!-- Glowing Resin Sphere -->
+            <div class="vk-orb-sphere w-14 h-14">
+              <div class="vk-orb-glare"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Screen Titles -->
+        <div class="text-center md:text-left shrink-0">
+          <h3 id="cloudflare-auth-modal-title" class="font-headline-sm text-xl sm:text-2xl font-bold text-white tracking-tight">Welcome Back!</h3>
+          <p id="cloudflare-auth-modal-subtitle" class="text-xs text-[#9ca8bc] mt-0.5 leading-relaxed">
+            Sign in to access your bespoke keepsakes and curated feed.
+          </p>
+        </div>
+
+        <p id="cloudflare-auth-reason-banner" class="hidden text-xs text-[#cbd5e1] bg-[#10192a] border border-[#263750] rounded-xl px-3 py-2 leading-relaxed shrink-0">
+          Sign in with <strong>Google</strong>, <strong>Apple</strong>, or your <strong>Email</strong> to save your favorites, personalize your feed, and track orders.
+        </p>
+
+        <!-- Mode Switcher Tabs (Sign In vs Create Account) -->
+        <div class="grid grid-cols-2 gap-1.5 p-1 rounded-xl bg-[#10192a] border border-[#263750] shrink-0">
+          <button type="button" id="cf-tab-signin" onclick="window.setEmailAuthTab('signin')" style="min-height: 44px; height: 44px;" class="min-h-[44px] h-11 rounded-lg bg-gradient-to-r from-[#ffd79b] to-[#d4af37] text-[#080f1d] text-xs font-bold transition cursor-pointer">
+            Sign In
+          </button>
+          <button type="button" id="cf-tab-register" onclick="window.setEmailAuthTab('register')" style="min-height: 44px; height: 44px;" class="min-h-[44px] h-11 rounded-lg bg-transparent text-[#9ca8bc] hover:text-white hover:bg-white/5 text-xs font-bold transition cursor-pointer">
+            Create Account
+          </button>
+        </div>
+
+        <!-- Email + Password Form -->
+        <form id="cloudflare-auth-form" onsubmit="window.submitCloudflareAuthForm(event)" class="flex flex-col gap-2 shrink-0">
+          <input type="hidden" id="cf-auth-provider" value="email">
+          <input type="hidden" id="cf-auth-mode" value="signin">
+
+          <!-- Registration Only Fields -->
+          <div id="cf-register-fields-wrap" class="hidden grid-cols-1 min-[350px]:grid-cols-2 gap-2">
+            <div>
+              <label for="cf-auth-name" class="text-[11px] font-bold text-[#ffd79b] block mb-1">Full Name *</label>
+              <input id="cf-auth-name" type="text" autocomplete="name" aria-label="Full Name" placeholder="Your Full Name" style="min-height: 44px; height: 44px;" class="w-full h-11 min-h-[44px] px-3 rounded-xl bg-[#121c2e] border border-[#263750] text-white placeholder:text-[#64748b] text-xs focus:border-[#ffd79b] focus:ring-1 focus:ring-[#ffd79b]/40 outline-none transition box-border">
+            </div>
+            <div>
+              <label for="cf-auth-phone" class="text-[11px] font-bold text-[#ffd79b] block mb-1">Mobile Number</label>
+              <input id="cf-auth-phone" type="tel" autocomplete="tel" aria-label="Mobile Number" placeholder="+91 98765 43210" style="min-height: 44px; height: 44px;" class="w-full h-11 min-h-[44px] px-3 rounded-xl bg-[#121c2e] border border-[#263750] text-white placeholder:text-[#64748b] text-xs focus:border-[#ffd79b] focus:ring-1 focus:ring-[#ffd79b]/40 outline-none transition box-border">
+            </div>
+          </div>
+
+          <!-- Email & Password Inputs -->
+          <div class="grid grid-cols-1 gap-2">
+            <div id="cf-auth-email-wrap">
+              <label for="cf-auth-email" class="text-[11px] font-bold text-[#ffd79b] block mb-1">Email Address *</label>
+              <input id="cf-auth-email" type="email" required autocomplete="email" aria-label="Email Address" placeholder="you@example.com" oninput="window.onAuthEmailInput && window.onAuthEmailInput(this.value)" style="min-height: 44px; height: 44px;" class="w-full h-11 min-h-[44px] px-3 rounded-xl bg-[#121c2e] border border-[#263750] text-white placeholder:text-[#64748b] text-xs focus:border-[#ffd79b] focus:ring-1 focus:ring-[#ffd79b]/40 outline-none transition box-border">
+            </div>
+            <div id="cf-auth-password-wrap">
+              <label for="cf-auth-password" class="text-[11px] font-bold text-[#ffd79b] block mb-1">Password *</label>
+              <div class="relative flex items-center">
+                <input id="cf-auth-password" type="password" required minlength="6" autocomplete="current-password" aria-label="Password" placeholder="Min. 6 characters" style="min-height: 44px; height: 44px;" class="w-full h-11 min-h-[44px] pl-3 pr-11 rounded-xl bg-[#121c2e] border border-[#263750] text-white placeholder:text-[#64748b] text-xs focus:border-[#ffd79b] focus:ring-1 focus:ring-[#ffd79b]/40 outline-none transition box-border">
+                <button type="button" id="cf-auth-pwd-toggle" onclick="window.toggleAuthPasswordVisibility()" aria-label="Toggle password visibility" style="height: 44px; min-height: 44px; width: 44px; min-width: 44px;" class="absolute right-0 h-11 min-h-[44px] w-11 min-w-[44px] flex items-center justify-center text-[#9ca8bc] hover:text-[#ffd79b] transition cursor-pointer">
+                  <span id="cf-auth-pwd-toggle-icon" class="material-symbols-outlined text-lg" aria-hidden="true">visibility</span>
+                </button>
               </div>
             </div>
           </div>
 
+          <!-- Remember Me + Forgot Password Row -->
+          <div id="cf-auth-remember-row" class="flex items-center justify-between gap-2 shrink-0">
+            <button type="button" id="cf-auth-remember-btn" onclick="window.toggleAuthRememberMe()" role="checkbox" aria-checked="true" style="min-height: 44px; height: 44px;" class="min-h-[44px] h-11 flex items-center gap-2 text-xs text-[#cbd5e1] hover:text-white transition cursor-pointer">
+              <span id="cf-auth-remember-box" class="w-4 h-4 rounded border border-[#ffd79b] bg-[#ffd79b] text-[#080f1d] flex items-center justify-center text-[10px] font-black leading-none">✓</span>
+              <span>Remember me</span>
+            </button>
+            <input type="hidden" id="cf-auth-remember" value="1">
+            <button type="button" id="cf-auth-forgot-btn" onclick="window.setAuthForgotMode(true)" style="min-height: 44px; height: 44px;" class="min-h-[44px] h-11 flex items-center text-xs font-semibold text-[#ffd79b] hover:text-white hover:underline transition cursor-pointer">
+              <span>Forgot Password?</span>
+            </button>
+          </div>
+
           <!-- Feed Curation Persona Option (Strictly Male and Female) -->
-          <div id="cf-auth-persona-box" class="p-3 rounded-xl bg-surface-container-low border border-[#e4e0d8] space-y-1.5 shrink-0">
+          <div id="cf-auth-persona-box" class="p-2.5 rounded-xl bg-[#10192a] border border-[#263750] space-y-1.5 shrink-0">
             <div class="flex items-center justify-between">
-              <span class="text-[11px] font-bold text-primary flex items-center gap-1.5">
-                <span class="material-symbols-outlined text-secondary text-sm" aria-hidden="true">tune</span>
-                <span>Gender:</span>
+              <span class="text-[11px] font-bold text-[#cbd5e1] flex items-center gap-1.5">
+                <span class="material-symbols-outlined text-[#ffd79b] text-sm" aria-hidden="true">tune</span>
+                <span>Curate Feed For:</span>
               </span>
+              <span class="text-[10px] text-[#9ca8bc]">Personalized Curation</span>
             </div>
             <div class="grid grid-cols-2 gap-2">
-              <button type="button" id="cf-persona-btn-masculine" onclick="window.setAuthPersona('masculine')" class="min-h-[44px] px-2.5 py-1.5 rounded-lg text-xs font-bold transition flex items-center justify-center gap-1.5 border border-[#e4e0d8] bg-white text-primary hover:border-secondary cursor-pointer" aria-label="Select Male">
+              <button type="button" id="cf-persona-btn-masculine" onclick="window.setAuthPersona('masculine')" style="min-height: 44px; height: 44px;" class="min-h-[44px] h-11 px-2.5 py-1.5 rounded-lg text-xs font-bold transition flex items-center justify-center gap-1.5 border border-[#263750] bg-[#121c2e] text-[#cbd5e1] hover:border-[#ffd79b]/50 hover:text-white cursor-pointer" aria-label="Select Male">
                 <span>👔 Male</span>
               </button>
-              <button type="button" id="cf-persona-btn-feminine" onclick="window.setAuthPersona('feminine')" class="min-h-[44px] px-2.5 py-1.5 rounded-lg text-xs font-bold transition flex items-center justify-center gap-1.5 border border-[#e4e0d8] bg-white text-primary hover:border-secondary cursor-pointer" aria-label="Select Female">
+              <button type="button" id="cf-persona-btn-feminine" onclick="window.setAuthPersona('feminine')" style="min-height: 44px; height: 44px;" class="min-h-[44px] h-11 px-2.5 py-1.5 rounded-lg text-xs font-bold transition flex items-center justify-center gap-1.5 border border-[#263750] bg-[#121c2e] text-[#cbd5e1] hover:border-[#ffd79b]/50 hover:text-white cursor-pointer" aria-label="Select Female">
                 <span>🌸 Female</span>
               </button>
             </div>
             <input type="hidden" id="cf-auth-selected-persona" value="all">
           </div>
 
-          <!-- Security Badge -->
-          <div class="px-3 py-2 rounded-lg bg-surface-container-low border border-[#e4e0d8] flex items-center justify-between gap-2">
-            <div class="flex items-center gap-1.5 min-w-0">
-              <span class="material-symbols-outlined text-emerald-700 text-base shrink-0" aria-hidden="true">verified_user</span>
-              <span class="text-[11px] font-semibold text-primary truncate">100% Secure Sign-In • Private &amp; Protected</span>
+          <p id="cf-auth-error" role="alert" class="hidden text-xs text-red-400 font-semibold"></p>
+
+          <!-- Primary Radiant Submit CTA -->
+          <button type="submit" id="cf-auth-submit-btn" style="min-height: 48px; height: 48px;" class="btn-shimmer w-full min-h-[48px] h-12 rounded-xl bg-gradient-to-r from-[#ffd79b] via-[#e2b96f] to-[#c7964b] text-[#080f1d] text-xs font-bold tracking-wide shadow-lg shadow-[#ffd79b]/20 hover:brightness-105 active:scale-[0.99] transition cursor-pointer mt-0.5">
+            Sign In
+          </button>
+        </form>
+
+        <!-- Social Divider -->
+        <div id="cf-auth-social-divider" class="flex items-center gap-2 text-[10px] uppercase tracking-widest text-[#9ca8bc] font-bold shrink-0 my-0.5">
+          <span class="flex-1 h-px bg-[#263750]"></span>
+          <span>Or continue with</span>
+          <span class="flex-1 h-px bg-[#263750]"></span>
+        </div>
+
+        <!-- 1-Click Social Sign-In Buttons (Google & Apple) -->
+        <div id="cf-auth-social-row" class="grid grid-cols-2 gap-2 shrink-0">
+          <button type="button" id="cf-oauth-google-btn" onclick="window.startCloudflareOAuth('google')" style="min-height: 44px; height: 44px;" class="min-h-[44px] h-11 px-3 py-2 rounded-xl bg-[#10192a] hover:bg-[#16233b] border border-[#263750] hover:border-[#ffd79b]/40 text-white text-xs font-bold flex items-center justify-center gap-2 shadow-xs transition cursor-pointer">
+            <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" aria-hidden="true">
+              <path fill="#4285F4" d="M23.49 12.27c0-.79-.07-1.54-.19-2.27H12v4.51h6.47c-.29 1.48-1.14 2.73-2.4 3.58v3h3.86c2.26-2.09 3.56-5.17 3.56-8.82z"/>
+              <path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.86-3c-1.08.72-2.45 1.16-4.07 1.16-3.13 0-5.78-2.11-6.73-4.96H1.29v3.09C3.26 21.3 7.31 24 12 24z"/>
+              <path fill="#FBBC05" d="M5.27 14.29c-.25-.72-.38-1.49-.38-2.29s.14-1.57.38-2.29V6.62H1.29C.47 8.24 0 10.06 0 12s.47 3.76 1.29 5.38l3.98-3.09z"/>
+              <path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.31 0 3.26 2.7 1.29 6.62l3.98 3.09c.95-2.85 3.6-4.96 6.73-4.96z"/>
+            </svg>
+            <span class="truncate">Continue with Google</span>
+          </button>
+          <button type="button" id="cf-oauth-apple-btn" onclick="window.startCloudflareOAuth('apple')" style="min-height: 44px; height: 44px;" class="min-h-[44px] h-11 px-3 py-2 rounded-xl bg-[#10192a] hover:bg-[#16233b] border border-[#263750] hover:border-[#ffd79b]/40 text-white text-xs font-bold flex items-center justify-center gap-2 shadow-xs transition cursor-pointer">
+            <svg class="w-4 h-4 shrink-0 fill-current" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"/>
+            </svg>
+            <span class="truncate">Continue with Apple</span>
+          </button>
+        </div>
+
+        <div id="cf-google-gis-button-slot" class="hidden justify-center shrink-0"></div>
+
+        <!-- 1-Click OAuth Account Chooser Sheet (Google / Apple) -->
+        <div id="cf-oauth-chooser-sheet" class="hidden rounded-2xl border border-[#ffd79b]/30 bg-[#0c1424] p-3.5 space-y-2.5 shrink-0 shadow-xl">
+          <div class="flex items-center justify-between gap-2">
+            <span id="cf-oauth-chooser-title" class="text-xs font-bold text-[#ffd79b]">Choose an account to continue to Vistāra Krafts</span>
+            <button type="button" id="cf-oauth-chooser-close-btn" aria-label="Close Account Chooser" onclick="window.closeOAuthChooser()" style="height: 44px; min-height: 44px; width: 44px; min-width: 44px;" class="w-11 h-11 min-w-[44px] min-h-[44px] shrink-0 rounded-lg flex items-center justify-center text-[#9ca8bc] hover:text-white cursor-pointer">
+              <span class="material-symbols-outlined text-base" aria-hidden="true">close</span>
+            </button>
+          </div>
+          <div id="cf-oauth-chooser-accounts" class="space-y-1.5"></div>
+          <div class="pt-2 border-t border-[#263750] space-y-2">
+            <label for="cf-oauth-custom-email" class="text-[11px] font-semibold text-[#cbd5e1] block">Or sign in with another account email</label>
+            <div class="flex flex-col sm:flex-row gap-1.5">
+              <input id="cf-oauth-custom-name" type="text" aria-label="Your Name" placeholder="Your Name" style="min-height: 44px; height: 44px;" class="min-w-0 sm:w-2/5 h-11 min-h-[44px] px-2.5 rounded-lg bg-[#121c2e] border border-[#263750] text-white text-xs box-border">
+              <input id="cf-oauth-custom-email" type="email" aria-label="Google or Apple Email Address" placeholder="you@gmail.com" style="min-height: 44px; height: 44px;" class="min-w-0 sm:flex-1 h-11 min-h-[44px] px-2.5 rounded-lg bg-[#121c2e] border border-[#263750] text-white text-xs box-border">
+              <button type="button" id="cf-oauth-custom-submit" onclick="window.submitOAuthChooserCustom()" style="min-height: 44px; height: 44px;" class="min-h-[44px] px-3.5 rounded-lg bg-[#ffd79b] text-[#080f1d] text-xs font-bold shrink-0 cursor-pointer">Continue</button>
             </div>
-            <span class="text-[10px] font-spec-numeral uppercase tracking-wider px-1.5 py-0.5 rounded bg-emerald-50 text-emerald-800 border border-emerald-200 shrink-0">Safe</span>
           </div>
         </div>
 
-        <!-- Right Side: Email Sign-In / Create Account Tabs & Form -->
-        <div class="flex flex-col gap-3">
-          <div class="flex items-center gap-2 text-[10px] uppercase tracking-widest text-on-surface-variant font-bold shrink-0">
-            <span class="flex-1 h-px bg-surface-container md:hidden"></span>
-            <span id="cf-auth-mode-divider">Or use email</span>
-            <span class="flex-1 h-px bg-surface-container"></span>
+        <!-- Security Badge -->
+        <div class="px-3 py-2 rounded-xl bg-[#0e1726] border border-[#263750] flex items-center justify-between gap-2 shrink-0">
+          <div class="flex items-center gap-1.5 min-w-0">
+            <span class="material-symbols-outlined text-emerald-400 text-base shrink-0" aria-hidden="true">verified_user</span>
+            <span class="text-[11px] font-semibold text-[#cbd5e1] truncate">100% Secure Sign-In • Private &amp; Protected</span>
           </div>
-
-          <!-- Email Sign In vs Create Account Tabs -->
-          <div class="grid grid-cols-2 gap-1.5 p-1 rounded-xl bg-surface-container-low border border-[#e4e0d8] shrink-0">
-            <button type="button" id="cf-tab-signin" onclick="window.setEmailAuthTab('signin')" class="min-h-[44px] rounded-lg bg-primary text-white text-xs font-bold transition cursor-pointer">
-              Sign In
-            </button>
-            <button type="button" id="cf-tab-register" onclick="window.setEmailAuthTab('register')" class="min-h-[44px] rounded-lg bg-transparent text-primary hover:bg-white/70 text-xs font-bold transition cursor-pointer">
-              Create Account
-            </button>
-          </div>
-
-          <!-- Email + Password Form -->
-          <form id="cloudflare-auth-form" onsubmit="window.submitCloudflareAuthForm(event)" class="flex flex-col gap-2.5 shrink-0">
-            <input type="hidden" id="cf-auth-provider" value="email">
-            <input type="hidden" id="cf-auth-mode" value="signin">
-
-            <div id="cf-register-fields-wrap" class="hidden grid-cols-1 min-[350px]:grid-cols-2 gap-2">
-              <div>
-                <label for="cf-auth-name" class="text-[11px] font-bold text-primary block mb-0.5">Full Name *</label>
-                <input id="cf-auth-name" type="text" autocomplete="name" aria-label="Full Name" placeholder="Your Full Name" class="w-full h-11 min-h-[44px] px-2.5 rounded-lg bg-surface-container-low border border-[#e4e0d8] text-xs">
-              </div>
-              <div>
-                <label for="cf-auth-phone" class="text-[11px] font-bold text-primary block mb-0.5">Mobile Number</label>
-                <input id="cf-auth-phone" type="tel" autocomplete="tel" aria-label="Mobile or WhatsApp Number" placeholder="+91 98765 43210" class="w-full h-11 min-h-[44px] px-2.5 rounded-lg bg-surface-container-low border border-[#e4e0d8] text-xs">
-              </div>
-            </div>
-
-            <div class="grid grid-cols-1 min-[350px]:grid-cols-2 gap-2">
-              <div id="cf-auth-email-wrap">
-                <label for="cf-auth-email" class="text-[11px] font-bold text-primary block mb-0.5">Email Address *</label>
-                <input id="cf-auth-email" type="email" required autocomplete="email" aria-label="Email Address" placeholder="you@example.com" oninput="window.onAuthEmailInput && window.onAuthEmailInput(this.value)" class="w-full h-11 min-h-[44px] px-2.5 rounded-lg bg-surface-container-low border border-[#e4e0d8] text-xs">
-              </div>
-              <div id="cf-auth-password-wrap">
-                <label for="cf-auth-password" class="text-[11px] font-bold text-primary block mb-0.5">Password *</label>
-                <input id="cf-auth-password" type="password" required minlength="6" autocomplete="current-password" aria-label="Password" placeholder="Min. 6 characters" class="w-full h-11 min-h-[44px] px-2.5 rounded-lg bg-surface-container-low border border-[#e4e0d8] text-xs">
-              </div>
-            </div>
-
-            <p id="cf-auth-error" role="alert" class="hidden text-xs text-error font-semibold"></p>
-
-            <button type="submit" id="cf-auth-submit-btn" class="btn-shimmer w-full min-h-[48px] py-2.5 rounded-xl bg-primary text-white text-xs font-bold shadow-md cursor-pointer mt-1">
-              Sign In
-            </button>
-          </form>
+          <span class="text-[10px] font-mono uppercase tracking-wider px-1.5 py-0.5 rounded bg-emerald-950/80 text-emerald-300 border border-emerald-500/30 shrink-0">Safe</span>
         </div>
+
+        <!-- Footer Navigation Switcher -->
+        <div id="cf-auth-footer-nav" class="flex items-center justify-center gap-1.5 text-xs text-[#9ca8bc] shrink-0 pt-1">
+          <span id="cf-auth-footer-text">Don't have an account?</span>
+          <button type="button" id="cf-auth-footer-btn" onclick="window.handleAuthFooterSwitch()" style="height: 44px; min-height: 44px;" class="min-h-[44px] h-11 text-[#ffd79b] font-bold hover:underline cursor-pointer flex items-center">Sign Up</button>
+        </div>
+
       </div>
     </div>
   </div>

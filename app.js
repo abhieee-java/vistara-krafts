@@ -4571,9 +4571,9 @@
       const btn = document.getElementById(`cf-persona-btn-${p}`);
       if (!btn) return;
       if (p === valid) {
-        btn.className = 'min-h-[44px] px-2.5 py-1.5 rounded-lg text-xs font-bold transition flex items-center justify-center gap-1.5 border border-primary bg-primary text-white cursor-pointer shadow-xs';
+        btn.className = 'min-h-[44px] h-11 px-2.5 py-1.5 rounded-lg text-xs font-bold transition flex items-center justify-center gap-1.5 border border-[#ffd79b] bg-gradient-to-r from-[#ffd79b] to-[#d4af37] text-[#080f1d] cursor-pointer shadow-md';
       } else {
-        btn.className = 'min-h-[44px] px-2.5 py-1.5 rounded-lg text-xs font-bold transition flex items-center justify-center gap-1.5 border border-[#e4e0d8] bg-white text-primary hover:border-secondary cursor-pointer';
+        btn.className = 'min-h-[44px] h-11 px-2.5 py-1.5 rounded-lg text-xs font-bold transition flex items-center justify-center gap-1.5 border border-[#263750] bg-[#121c2e] text-[#cbd5e1] hover:border-[#ffd79b]/50 hover:text-white cursor-pointer';
       }
     });
     if (Store && typeof Store.setPersonaPreference === 'function') {
@@ -5410,7 +5410,102 @@
     }
   }
 
+  let isForgotAuthMode = false;
+
+  window.toggleAuthPasswordVisibility = function () {
+    const pwd = document.getElementById('cf-auth-password');
+    const icon = document.getElementById('cf-auth-pwd-toggle-icon');
+    if (!pwd) return;
+    if (pwd.type === 'password') {
+      pwd.type = 'text';
+      if (icon) icon.textContent = 'visibility_off';
+    } else {
+      pwd.type = 'password';
+      if (icon) icon.textContent = 'visibility';
+    }
+  };
+
+  window.toggleAuthRememberMe = function () {
+    const input = document.getElementById('cf-auth-remember');
+    const box = document.getElementById('cf-auth-remember-box');
+    const btn = document.getElementById('cf-auth-remember-btn');
+    if (!input || !box) return;
+    const isChecked = input.value === '1';
+    if (isChecked) {
+      input.value = '0';
+      box.textContent = '';
+      box.className = 'w-4 h-4 rounded border border-[#263750] bg-transparent flex items-center justify-center text-[10px]';
+      if (btn) btn.setAttribute('aria-checked', 'false');
+    } else {
+      input.value = '1';
+      box.textContent = '✓';
+      box.className = 'w-4 h-4 rounded border border-[#ffd79b] bg-[#ffd79b] text-[#080f1d] flex items-center justify-center text-[10px] font-black leading-none';
+      if (btn) btn.setAttribute('aria-checked', 'true');
+    }
+  };
+
+  window.setAuthForgotMode = function (enable) {
+    isForgotAuthMode = Boolean(enable);
+    const regWrap = document.getElementById('cf-register-fields-wrap');
+    const pwdWrap = document.getElementById('cf-auth-password-wrap');
+    const rememberRow = document.getElementById('cf-auth-remember-row');
+    const personaBox = document.getElementById('cf-auth-persona-box');
+    const socialDivider = document.getElementById('cf-auth-social-divider');
+    const socialRow = document.getElementById('cf-auth-social-row');
+    const titleEl = document.getElementById('cloudflare-auth-modal-title');
+    const subtitleEl = document.getElementById('cloudflare-auth-modal-subtitle');
+    const submitBtn = document.getElementById('cf-auth-submit-btn');
+    const footerText = document.getElementById('cf-auth-footer-text');
+    const footerBtn = document.getElementById('cf-auth-footer-btn');
+    const errEl = document.getElementById('cf-auth-error');
+    if (errEl) {
+      errEl.textContent = '';
+      errEl.classList.add('hidden');
+    }
+
+    if (isForgotAuthMode) {
+      if (titleEl) titleEl.textContent = 'Forgot Password?';
+      if (subtitleEl) subtitleEl.textContent = "Enter your email address and we'll send a password recovery link.";
+      if (regWrap) regWrap.classList.add('hidden');
+      if (pwdWrap) pwdWrap.classList.add('hidden');
+      if (rememberRow) rememberRow.classList.add('hidden');
+      if (personaBox) personaBox.classList.add('hidden');
+      if (socialDivider) socialDivider.classList.add('hidden');
+      if (socialRow) socialRow.classList.add('hidden');
+      if (submitBtn) submitBtn.textContent = 'Send Reset Link';
+      if (footerText) footerText.textContent = 'Remembered your password?';
+      if (footerBtn) footerBtn.textContent = 'Sign In';
+    } else {
+      if (socialDivider) socialDivider.classList.remove('hidden');
+      if (socialRow) socialRow.classList.remove('hidden');
+      window.setEmailAuthTab('signin');
+    }
+  };
+
+  window.handleAuthFooterSwitch = function () {
+    if (isForgotAuthMode) {
+      window.setAuthForgotMode(false);
+    } else {
+      const mode = document.getElementById('cf-auth-mode')?.value;
+      window.setEmailAuthTab(mode === 'register' ? 'signin' : 'register');
+    }
+  };
+
+  window.handleAuthModalBack = function () {
+    if (isForgotAuthMode) {
+      window.setAuthForgotMode(false);
+    } else {
+      const mode = document.getElementById('cf-auth-mode')?.value;
+      if (mode === 'register') {
+        window.setEmailAuthTab('signin');
+      } else {
+        window.closeModalById('cloudflare-auth-modal');
+      }
+    }
+  };
+
   window.setEmailAuthTab = function (mode) {
+    isForgotAuthMode = false;
     const cleanMode = mode === 'register' ? 'register' : 'signin';
     const modeInput = document.getElementById('cf-auth-mode');
     if (modeInput) modeInput.value = cleanMode;
@@ -5423,16 +5518,30 @@
     const regWrap = document.getElementById('cf-register-fields-wrap');
     const nameInput = document.getElementById('cf-auth-name');
     const submitBtn = document.getElementById('cf-auth-submit-btn');
+    const titleEl = document.getElementById('cloudflare-auth-modal-title');
+    const subtitleEl = document.getElementById('cloudflare-auth-modal-subtitle');
+    const pwdWrap = document.getElementById('cf-auth-password-wrap');
+    const rememberRow = document.getElementById('cf-auth-remember-row');
+    const personaBox = document.getElementById('cf-auth-persona-box');
+    const socialDivider = document.getElementById('cf-auth-social-divider');
+    const socialRow = document.getElementById('cf-auth-social-row');
+    const footerText = document.getElementById('cf-auth-footer-text');
+    const footerBtn = document.getElementById('cf-auth-footer-btn');
 
     if (tabSignin && tabRegister) {
       if (cleanMode === 'signin') {
-        tabSignin.className = 'min-h-[44px] rounded-lg bg-primary text-white text-xs font-bold transition cursor-pointer';
-        tabRegister.className = 'min-h-[44px] rounded-lg bg-transparent text-primary hover:bg-white/70 text-xs font-bold transition cursor-pointer';
+        tabSignin.className = 'min-h-[44px] h-11 rounded-lg bg-gradient-to-r from-[#ffd79b] to-[#d4af37] text-[#080f1d] text-xs font-bold shadow-md transition cursor-pointer';
+        tabRegister.className = 'min-h-[44px] h-11 rounded-lg bg-transparent text-[#9ca8bc] hover:text-white hover:bg-white/5 text-xs font-bold transition cursor-pointer';
       } else {
-        tabRegister.className = 'min-h-[44px] rounded-lg bg-primary text-white text-xs font-bold transition cursor-pointer';
-        tabSignin.className = 'min-h-[44px] rounded-lg bg-transparent text-primary hover:bg-white/70 text-xs font-bold transition cursor-pointer';
+        tabRegister.className = 'min-h-[44px] h-11 rounded-lg bg-gradient-to-r from-[#ffd79b] to-[#d4af37] text-[#080f1d] text-xs font-bold shadow-md transition cursor-pointer';
+        tabSignin.className = 'min-h-[44px] h-11 rounded-lg bg-transparent text-[#9ca8bc] hover:text-white hover:bg-white/5 text-xs font-bold transition cursor-pointer';
       }
     }
+
+    if (pwdWrap) pwdWrap.classList.remove('hidden');
+    if (personaBox) personaBox.classList.remove('hidden');
+    if (socialDivider) socialDivider.classList.remove('hidden');
+    if (socialRow) socialRow.classList.remove('hidden');
 
     if (regWrap) {
       if (cleanMode === 'register') {
@@ -5446,8 +5555,21 @@
     if (nameInput) {
       nameInput.required = cleanMode === 'register';
     }
-    if (submitBtn) {
-      submitBtn.textContent = cleanMode === 'register' ? 'Create Account' : 'Sign In';
+
+    if (cleanMode === 'signin') {
+      if (titleEl) titleEl.textContent = 'Welcome Back!';
+      if (subtitleEl) subtitleEl.textContent = 'Sign in to access your bespoke keepsakes and curated feed.';
+      if (submitBtn) submitBtn.textContent = 'Sign In';
+      if (rememberRow) rememberRow.classList.remove('hidden');
+      if (footerText) footerText.textContent = "Don't have an account?";
+      if (footerBtn) footerBtn.textContent = 'Sign Up';
+    } else {
+      if (titleEl) titleEl.textContent = 'Create Your Account';
+      if (subtitleEl) subtitleEl.textContent = 'Join Vistāra Krafts to unlock tailored keepsake collections.';
+      if (submitBtn) submitBtn.textContent = 'Create Account';
+      if (rememberRow) rememberRow.classList.add('hidden');
+      if (footerText) footerText.textContent = 'Already have an account?';
+      if (footerBtn) footerBtn.textContent = 'Sign In';
     }
   };
 
@@ -5520,6 +5642,12 @@
 
   window.openCloudflareAuthModal = function (fromCheckout = false) {
     AppState.pendingCheckoutAfterAuth = Boolean(fromCheckout);
+    isForgotAuthMode = false;
+    const pwd = document.getElementById('cf-auth-password');
+    const icon = document.getElementById('cf-auth-pwd-toggle-icon');
+    if (pwd) pwd.type = 'password';
+    if (icon) icon.textContent = 'visibility';
+
     const errEl = document.getElementById('cf-auth-error');
     if (errEl) {
       errEl.textContent = '';
@@ -5635,15 +5763,15 @@
 
     if (accountsContainer) {
       accountsContainer.innerHTML = chooserAccounts.map(acc => `
-        <button type="button" onclick="window.completeOAuthChooserAccount('${cleanProvider}', '${esc(acc.email)}', '${esc(acc.name)}')" class="w-full min-h-[48px] px-3 py-2 rounded-xl bg-white hover:bg-surface-container-low border border-[#e4e0d8] flex items-center justify-between gap-2 text-left transition cursor-pointer">
+        <button type="button" onclick="window.completeOAuthChooserAccount('${cleanProvider}', '${esc(acc.email)}', '${esc(acc.name)}')" style="min-height: 48px; height: 48px;" class="w-full min-h-[48px] h-12 px-3 py-2 rounded-xl bg-[#121c2e] hover:bg-[#1a2942] border border-[#263750] flex items-center justify-between gap-2 text-left transition cursor-pointer">
           <div class="flex items-center gap-2.5 min-w-0">
-            <span class="w-8 h-8 rounded-full bg-primary text-white text-xs font-bold flex items-center justify-center shrink-0">${esc(acc.name.charAt(0))}</span>
+            <span class="w-8 h-8 rounded-full bg-gradient-to-br from-[#ffd79b] to-[#c59b4c] text-[#080f1d] text-xs font-bold flex items-center justify-center shrink-0">${esc(acc.name.charAt(0))}</span>
             <div class="min-w-0">
-              <p class="text-xs font-bold text-primary truncate">${esc(acc.name)}</p>
-              <p class="text-[11px] text-on-surface-variant truncate">${esc(acc.email)}</p>
+              <p class="text-xs font-bold text-white truncate">${esc(acc.name)}</p>
+              <p class="text-[11px] text-[#9ca8bc] truncate">${esc(acc.email)}</p>
             </div>
           </div>
-          <span class="text-[10px] font-bold text-secondary shrink-0">1-Click Sign In →</span>
+          <span class="text-[10px] font-bold text-[#ffd79b] shrink-0">1-Click Sign In →</span>
         </button>
       `).join('');
     }
@@ -5655,6 +5783,17 @@
 
   window.submitCloudflareAuthForm = function (ev) {
     if (ev && typeof ev.preventDefault === 'function') ev.preventDefault();
+    if (isForgotAuthMode) {
+      const email = document.getElementById('cf-auth-email')?.value.trim() || '';
+      if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        window.showToast('Enter Valid Email', 'Please enter your registered email address to receive password reset instructions.');
+        return;
+      }
+      window.showToast('Reset Link Sent', `If an account exists for ${email}, recovery instructions have been sent.`);
+      window.setAuthForgotMode(false);
+      return;
+    }
+
     const provider = document.getElementById('cf-auth-provider')?.value || 'email';
     const mode = document.getElementById('cf-auth-mode')?.value || 'signin';
     const email = document.getElementById('cf-auth-email')?.value.trim() || '';
