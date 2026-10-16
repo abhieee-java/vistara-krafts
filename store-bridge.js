@@ -1729,23 +1729,12 @@
           reviewsCount: Number(row.reviews_count || 12),
           image: row.image || (Array.isArray(row.gallery) && row.gallery[0]) || (Array.isArray(row.images) && row.images[0]) || IMAGES.floralCube,
           images: (Array.isArray(row.gallery) && row.gallery.length > 0) ? row.gallery : (Array.isArray(row.images) && row.images.length > 0 ? row.images : (row.image ? [row.image] : [IMAGES.floralCube])),
-          colors: (Array.isArray(row.colors) && row.colors.length > 0) ? row.colors : [
-            { id: 'c-gold-leaf', label: '24K Gold Leaf & Crystal Clear', hex: '#d4af37', accent: '#fcf8ea' },
-            { id: 'c-blush-rose', label: 'Blush Rose & Champagne', hex: '#f7d6d0', accent: '#e8a598' },
-            { id: 'c-emerald-silver', label: 'Emerald Agate & Silver Leaf', hex: '#164e3f', accent: '#94a3b8' }
-          ],
-          shapes: (Array.isArray(row.shapes) && row.shapes.length > 0) ? row.shapes : [
-            { id: 's-arch', label: 'Mughal Arch', icon: 'account_balance' },
-            { id: 's-cube', label: 'Romantic Cube', icon: 'crop_square' },
-            { id: 's-round', label: 'Heirloom Disc', icon: 'radio_button_unchecked' }
-          ],
-          sizes: (Array.isArray(row.sizes) && row.sizes.length > 0) ? row.sizes : [
-            { id: 'sz-std', label: 'Standard Studio Edition', desc: 'Standard studio sizing', priceDelta: 0 },
-            { id: 'sz-lrg', label: 'Grand Archival Edition', desc: 'Expanded preservation size', priceDelta: 650 }
-          ],
-          gender: row.gender && row.gender !== 'all' ? row.gender : (row.category === 'keepsakes' ? 'women' : 'all'),
-          genderAffinity: row.gender_affinity && row.gender_affinity !== 'neutral' ? row.gender_affinity : (row.category === 'keepsakes' ? 'feminine' : 'neutral'),
-          giftingTags: (Array.isArray(row.gifting_tags) && row.gifting_tags.length > 0) ? row.gifting_tags : ['keepsake', 'bridal', 'gifts-for-her', 'wedding'],
+          colors: Array.isArray(row.colors) ? row.colors : [],
+          shapes: Array.isArray(row.shapes) ? row.shapes : [],
+          sizes: Array.isArray(row.sizes) ? row.sizes : [],
+          gender: row.gender || 'all',
+          genderAffinity: row.gender_affinity || (row.gender === 'men' ? 'masculine' : (row.gender === 'women' ? 'feminine' : 'neutral')),
+          giftingTags: Array.isArray(row.gifting_tags) ? row.gifting_tags : [],
           description: row.description || '',
           createdAt: row.created_at,
           updatedAt: row.updated_at
