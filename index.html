@@ -980,9 +980,9 @@
 
         <!-- 5. OPTIONAL BRAND NAME ("Vistāra Krafts") -->
         <div id="vkBrandTitleBlock" class="mt-2 flex flex-col items-center text-center">
-          <h1 class="vk-brand-title text-xl sm:text-2xl md:text-3xl tracking-[0.28em]">
+          <div role="heading" aria-level="1" class="vk-brand-title text-xl sm:text-2xl md:text-3xl tracking-[0.28em]">
             Vistāra Krafts
-          </h1>
+          </div>
           <div class="vk-brand-rule mt-2"></div>
         </div>
       </div>
@@ -1024,19 +1024,19 @@
       <span class="w-1.5 h-1.5 rounded-full bg-secondary-fixed shrink-0 hidden sm:inline-block"></span>
     </aside>
 
-    <div class="max-w-7xl mx-auto h-14 sm:h-16 px-2 sm:px-6 lg:px-8 flex items-center justify-between gap-1.5 sm:gap-2 w-full min-w-0">
+    <div class="max-w-7xl mx-auto h-13 sm:h-16 px-2.5 sm:px-6 lg:px-8 flex items-center justify-between gap-1 sm:gap-2 w-full min-w-0">
       <!-- Strict Brand Identity: Vistāra Krafts + Uploaded VK Monogram Logo -->
-      <div class="flex items-center gap-1.5 sm:gap-2.5 flex-1 min-w-0 overflow-hidden">
-        <button type="button" aria-label="Open Navigation & Account Bar" onclick="window.openModalById('mobile-menu-drawer')" class="lg:hidden w-11 h-11 rounded-lg flex items-center justify-center text-primary hover:bg-surface-container shrink-0 cursor-pointer">
+      <div class="flex items-center gap-1.5 sm:gap-2.5 min-w-0 overflow-hidden">
+        <button type="button" aria-label="Open Navigation & Account Bar" onclick="window.openModalById('mobile-menu-drawer')" class="lg:hidden w-10 h-10 rounded-lg flex items-center justify-center text-primary hover:bg-surface-container shrink-0 cursor-pointer">
           <span class="material-symbols-outlined text-2xl" aria-hidden="true">menu</span>
         </button>
-        <a href="#/home" onclick="if(window.location.hash==='#/home'||window.location.hash===''||window.location.hash==='#'){window.replayVkSplash();}" class="flex items-center gap-2 sm:gap-2.5 group min-w-0 min-h-[44px] py-1 overflow-hidden" title="Vistāra Krafts — Click to replay animated intro">
-          <span class="w-9 h-9 sm:w-10 sm:h-10 rounded-lg overflow-hidden shrink-0 border border-[#e4e0d8] bg-white p-0.5 flex items-center justify-center shadow-2xs">
+        <a href="#/home" onclick="if(window.location.hash==='#/home'||window.location.hash===''||window.location.hash==='#'){window.replayVkSplash();}" class="flex items-center gap-2 group min-w-0 min-h-[40px] py-0.5 overflow-hidden" title="Vistāra Krafts — Click to replay animated intro">
+          <span class="w-8 h-8 sm:w-9 sm:h-9 rounded-lg overflow-hidden shrink-0 border border-[#e4e0d8] bg-white p-0.5 flex items-center justify-center shadow-2xs">
             <img src="./vistara-krafts-logo.jpg" alt="Vistāra Krafts Official VK Logo" class="w-full h-full object-contain">
           </span>
-          <div class="flex flex-col min-w-0 overflow-hidden">
-            <span class="font-serif text-[15px] sm:text-lg xl:text-xl text-primary font-bold tracking-tight leading-tight truncate">Vistāra Krafts</span>
-            <span class="text-[9px] sm:text-[10px] uppercase tracking-wider text-[#9e3322] font-bold leading-tight truncate">@resin.art.memories</span>
+          <div class="flex flex-col min-w-0 overflow-hidden justify-center">
+            <span class="font-serif text-[14.5px] sm:text-lg xl:text-xl text-primary font-bold tracking-tight leading-none truncate">Vistāra Krafts</span>
+            <span class="text-[8.5px] sm:text-[10px] uppercase tracking-wider text-[#9e3322] font-semibold leading-tight mt-0.5 truncate hidden min-[360px]:inline">@resin.art.memories</span>
           </div>
         </a>
       </div>
@@ -1066,22 +1066,22 @@
           <span class="js-header-pin font-semibold">560001</span>
         </button>
 
-        <button type="button" aria-label="Search Catalogue" onclick="window.navigateTo('catalog', 'all'); setTimeout(() => document.getElementById('catalog-search-input')?.focus(), 120);" class="hidden sm:flex w-11 h-11 rounded-lg items-center justify-center text-primary hover:bg-surface-container cursor-pointer shrink-0">
-          <span class="material-symbols-outlined text-[22px]" aria-hidden="true">search</span>
+        <button type="button" aria-label="Search Catalogue" onclick="window.navigateTo('catalog', 'all'); setTimeout(() => document.getElementById('catalog-search-input')?.focus(), 120);" class="hidden sm:flex w-10 h-10 sm:w-11 sm:h-11 rounded-lg items-center justify-center text-primary hover:bg-surface-container cursor-pointer shrink-0">
+          <span class="material-symbols-outlined text-[21px]" aria-hidden="true">search</span>
         </button>
 
-        <button type="button" aria-label="Saved Wishlist" onclick="window.navigateTo('wishlist')" class="relative w-11 h-11 rounded-lg flex items-center justify-center text-primary hover:bg-surface-container cursor-pointer shrink-0">
-          <span class="material-symbols-outlined text-[21px]" aria-hidden="true">favorite</span>
-          <span class="js-wishlist-badge hidden absolute top-1.5 right-1 min-w-[16px] h-4 px-1 bg-[#9e3322] text-white rounded-full font-spec-numeral text-[10px] font-bold flex items-center justify-center">0</span>
+        <button type="button" aria-label="Saved Wishlist" onclick="window.navigateTo('wishlist')" class="relative w-10 h-10 sm:w-11 sm:h-11 rounded-lg flex items-center justify-center text-primary hover:bg-surface-container cursor-pointer shrink-0">
+          <span class="material-symbols-outlined text-[20px] sm:text-[21px]" aria-hidden="true">favorite</span>
+          <span class="js-wishlist-badge hidden absolute top-1 right-1 min-w-[15px] h-3.5 sm:h-4 px-1 bg-[#9e3322] text-white rounded-full font-spec-numeral text-[9px] sm:text-[10px] font-bold flex items-center justify-center">0</span>
         </button>
 
-        <button type="button" aria-label="View Studio Bag" onclick="window.navigateTo('cart')" class="relative w-11 h-11 rounded-lg flex items-center justify-center text-primary hover:bg-surface-container cursor-pointer shrink-0">
-          <span class="material-symbols-outlined text-[21px]" aria-hidden="true">shopping_bag</span>
-          <span class="js-cart-badge hidden absolute top-1.5 right-1 min-w-[16px] h-4 px-1 bg-primary text-on-primary rounded-full font-spec-numeral text-[10px] font-bold flex items-center justify-center">0</span>
+        <button type="button" aria-label="View Studio Bag" onclick="window.navigateTo('cart')" class="relative w-10 h-10 sm:w-11 sm:h-11 rounded-lg flex items-center justify-center text-primary hover:bg-surface-container cursor-pointer shrink-0">
+          <span class="material-symbols-outlined text-[20px] sm:text-[21px]" aria-hidden="true">shopping_bag</span>
+          <span class="js-cart-badge hidden absolute top-1 right-1 min-w-[15px] h-3.5 sm:h-4 px-1 bg-primary text-on-primary rounded-full font-spec-numeral text-[9px] sm:text-[10px] font-bold flex items-center justify-center">0</span>
         </button>
 
-        <button type="button" id="header-account-bar-btn" aria-label="Account & Sign In Bar" onclick="window.openAccountBarModal()" class="min-w-[44px] min-h-[44px] px-2 sm:px-3 rounded-lg bg-surface-container-low hover:bg-surface-container border border-[#e4e0d8] flex items-center justify-center gap-1.5 text-primary text-xs font-bold cursor-pointer shrink-0">
-          <span class="material-symbols-outlined text-[20px] text-[#9e3322]" aria-hidden="true">person</span>
+        <button type="button" id="header-account-bar-btn" aria-label="Account & Sign In Bar" onclick="window.openAccountBarModal()" class="w-10 h-10 sm:w-auto min-h-[40px] px-0 sm:px-3 rounded-lg bg-surface-container-low hover:bg-surface-container border border-[#e4e0d8] flex items-center justify-center gap-1.5 text-primary text-xs font-bold cursor-pointer shrink-0">
+          <span class="material-symbols-outlined text-[19px] sm:text-[20px] text-[#9e3322]" aria-hidden="true">person</span>
           <span id="header-account-bar-label" class="hidden sm:inline truncate max-w-[88px]">Sign In</span>
         </button>
       </div>
@@ -1161,26 +1161,26 @@
 
   <!-- Mobile Fixed Bottom Tab Navigation Bar -->
   <nav aria-label="Mobile Bottom Navigation" class="lg:hidden fixed bottom-0 inset-x-0 z-40 pb-safe bg-white/95 backdrop-blur-xl border-t border-[#e4e0d8] shadow-[0_-2px_12px_rgba(3,26,56,0.06)] max-w-full overflow-x-clip">
-    <div class="flex justify-around items-center h-16 px-1 max-w-full">
-      <button type="button" data-nav-route="home" onclick="window.navigateTo('home')" class="bottom-tab-item flex-1 min-w-0 max-w-[72px] flex flex-col items-center justify-center h-12 text-primary font-bold cursor-pointer">
-        <span class="material-symbols-outlined text-[22px]" aria-hidden="true">storefront</span>
-        <span class="text-[10px] mt-0.5 truncate max-w-full px-0.5">Home</span>
+    <div class="flex justify-around items-center h-14 px-1 max-w-full">
+      <button type="button" data-nav-route="home" onclick="window.navigateTo('home')" class="bottom-tab-item flex-1 min-w-0 max-w-[72px] flex flex-col items-center justify-center h-11 text-primary font-bold cursor-pointer">
+        <span class="material-symbols-outlined text-[20px]" aria-hidden="true">storefront</span>
+        <span class="text-[9.5px] mt-0.5 truncate max-w-full px-0.5 leading-none">Home</span>
       </button>
-      <button type="button" data-nav-route="catalog" onclick="window.navigateTo('catalog', 'all')" class="bottom-tab-item flex-1 min-w-0 max-w-[72px] flex flex-col items-center justify-center h-12 text-on-surface-variant cursor-pointer">
-        <span class="material-symbols-outlined text-[22px]" aria-hidden="true">grid_view</span>
-        <span class="text-[10px] mt-0.5 truncate max-w-full px-0.5">Catalogue</span>
+      <button type="button" data-nav-route="catalog" onclick="window.navigateTo('catalog', 'all')" class="bottom-tab-item flex-1 min-w-0 max-w-[72px] flex flex-col items-center justify-center h-11 text-on-surface-variant cursor-pointer">
+        <span class="material-symbols-outlined text-[20px]" aria-hidden="true">grid_view</span>
+        <span class="text-[9.5px] mt-0.5 truncate max-w-full px-0.5 leading-none">Catalogue</span>
       </button>
-      <button type="button" data-nav-route="custom-studio" onclick="window.navigateTo('custom-studio')" class="bottom-tab-item flex-1 min-w-0 max-w-[72px] flex flex-col items-center justify-center h-12 text-on-surface-variant cursor-pointer">
-        <span class="material-symbols-outlined text-[22px] text-[#9e3322]" aria-hidden="true">auto_awesome</span>
-        <span class="text-[10px] mt-0.5 truncate max-w-full px-0.5">Custom</span>
+      <button type="button" data-nav-route="custom-studio" onclick="window.navigateTo('custom-studio')" class="bottom-tab-item flex-1 min-w-0 max-w-[72px] flex flex-col items-center justify-center h-11 text-on-surface-variant cursor-pointer">
+        <span class="material-symbols-outlined text-[20px] text-[#9e3322]" aria-hidden="true">auto_awesome</span>
+        <span class="text-[9.5px] mt-0.5 truncate max-w-full px-0.5 leading-none">Custom</span>
       </button>
-      <button type="button" data-nav-route="social" onclick="window.navigateTo('social')" class="bottom-tab-item flex-1 min-w-0 max-w-[72px] flex flex-col items-center justify-center h-12 text-on-surface-variant cursor-pointer">
-        <span class="material-symbols-outlined text-[22px]" aria-hidden="true">photo_camera</span>
-        <span class="text-[10px] mt-0.5 truncate max-w-full px-0.5">Social IG</span>
+      <button type="button" data-nav-route="social" onclick="window.navigateTo('social')" class="bottom-tab-item flex-1 min-w-0 max-w-[72px] flex flex-col items-center justify-center h-11 text-on-surface-variant cursor-pointer">
+        <span class="material-symbols-outlined text-[20px]" aria-hidden="true">photo_camera</span>
+        <span class="text-[9.5px] mt-0.5 truncate max-w-full px-0.5 leading-none">Social IG</span>
       </button>
-      <button type="button" data-nav-route="cart" onclick="window.navigateTo('cart')" class="bottom-tab-item relative flex-1 min-w-0 max-w-[72px] flex flex-col items-center justify-center h-12 text-on-surface-variant cursor-pointer">
-        <span class="material-symbols-outlined text-[22px]" aria-hidden="true">shopping_bag</span>
-        <span class="text-[10px] mt-0.5 truncate max-w-full px-0.5">Bag</span>
+      <button type="button" data-nav-route="cart" onclick="window.navigateTo('cart')" class="bottom-tab-item relative flex-1 min-w-0 max-w-[72px] flex flex-col items-center justify-center h-11 text-on-surface-variant cursor-pointer">
+        <span class="material-symbols-outlined text-[20px]" aria-hidden="true">shopping_bag</span>
+        <span class="text-[9.5px] mt-0.5 truncate max-w-full px-0.5 leading-none">Bag</span>
       </button>
     </div>
   </nav>

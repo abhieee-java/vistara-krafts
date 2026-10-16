@@ -1795,139 +1795,126 @@
     ];
 
     return `
-      <div class="route-view-enter flex flex-col w-full max-w-7xl mx-auto px-4 sm:px-8 py-5 gap-4">
-        <!-- Back Navigation Button -->
-        <div class="flex items-center">
-          <button type="button" onclick="window.handleBackButton('home')" aria-label="Go back to previous page" class="inline-flex items-center gap-1.5 text-xs font-semibold text-primary/80 hover:text-primary min-h-[44px] py-1 px-3 rounded-lg bg-surface-container-low hover:bg-surface-container transition-colors cursor-pointer w-fit">
-            <span class="material-symbols-outlined text-sm" aria-hidden="true">arrow_back</span>
-            <span>Back to Discover</span>
-          </button>
+      <div class="route-view-enter flex flex-col w-full max-w-7xl mx-auto px-3 sm:px-8 py-3 sm:py-5 gap-2.5 sm:gap-4">
+        <!-- Compact Navigation & Breadcrumb Row -->
+        <div class="flex items-center justify-between gap-2 min-w-0">
+          <div class="flex items-center gap-1.5 text-xs text-on-surface-variant font-label-sm min-w-0">
+            <button type="button" onclick="window.handleBackButton('home')" aria-label="Go back to previous page" class="inline-flex items-center gap-1 text-xs font-semibold text-primary/80 hover:text-primary py-1 px-2.5 rounded-lg bg-surface-container-low hover:bg-surface-container border border-[#e4e0d8] transition-colors cursor-pointer shrink-0">
+              <span class="material-symbols-outlined text-[15px]" aria-hidden="true">arrow_back</span>
+              <span>Back to Discover</span>
+            </button>
+            <span class="text-outline/40">/</span>
+            <button type="button" onclick="window.navigateTo('home')" class="hover:text-primary transition-colors cursor-pointer shrink-0">Home</button>
+            <span class="material-symbols-outlined text-[13px] text-outline/60" aria-hidden="true">chevron_right</span>
+            <span class="text-secondary font-bold truncate">Catalogue</span>
+          </div>
+          <div class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-surface-container-low border border-[#e4e0d8] text-[10.5px] sm:text-xs text-primary font-semibold shrink-0">
+            <span class="material-symbols-outlined text-secondary text-[14px]" aria-hidden="true">verified</span>
+            <span class="hidden sm:inline">Tested &amp; Certified • </span><span>Batch 2026-C</span>
+          </div>
         </div>
 
-        <!-- Category Header -->
-        <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-3">
-          <div>
-            <div class="flex items-center gap-1 text-on-surface-variant font-label-sm text-xs uppercase tracking-wider">
-              <button type="button" onclick="window.navigateTo('home')" class="min-h-[44px] min-w-[44px] px-2 inline-flex items-center justify-center hover:text-primary cursor-pointer">Home</button>
-              <span class="material-symbols-outlined text-xs" aria-hidden="true">chevron_right</span>
-              <span class="text-secondary font-bold">Storefront Catalogue</span>
+        <!-- Catalogue Title & Editorial Subtitle -->
+        <div class="flex flex-col gap-0.5">
+          <h1 class="font-headline-lg text-xl sm:text-3xl text-primary font-bold tracking-tight leading-tight">
+            Keepsake Art &amp; Epoxy Resin Supplies
+          </h1>
+          <p class="text-[11.5px] sm:text-xs text-on-surface-variant leading-normal">
+            Handcrafted flower preservation, ocean decor, and quality 3:1, 2:1 &amp; UV resin formulas.
+          </p>
+        </div>
+
+        <!-- Category & Gifting Filter Rail -->
+        <div class="flex flex-col gap-2 pt-0.5">
+          <!-- Horizontal Category Pills with visual edge fade -->
+          <div class="relative w-full min-w-0">
+            <div class="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5 scroll-smooth overscroll-x-contain touch-pan-x [mask-image:linear-gradient(to_right,black_calc(100%-28px),transparent)] sm:[mask-image:none]">
+              ${categories.map(cat => `
+                <button type="button" onclick="window.setCatalogCategory('${cat.id}')" class="h-8.5 px-3.5 rounded-full font-label-sm text-xs whitespace-nowrap shrink-0 transition-all cursor-pointer ${AppState.catalogCategory === cat.id ? 'bg-primary text-on-primary font-bold shadow-2xs' : 'bg-surface-container-low text-primary border border-[#e4e0d8] hover:border-secondary font-medium'}">
+                  ${esc(cat.label)}
+                </button>
+              `).join('')}
             </div>
-            <h1 class="font-headline-lg text-2xl sm:text-4xl text-primary font-bold tracking-tight mt-0.5">
-              Keepsake Art &amp; Epoxy Resin Supplies
-            </h1>
-            <p class="text-xs sm:text-sm text-on-surface-variant mt-0.5">
-              Handcrafted flower preservation, ocean decor, and quality 3:1, 2:1 &amp; UV resin formulas.
-            </p>
-          </div>
-          <div class="flex items-center gap-2 bg-surface-container-low px-3.5 py-2 rounded-xl border border-[#e4e0d8] self-start sm:self-end shrink-0">
-            <span class="material-symbols-outlined text-secondary text-base" aria-hidden="true">verified</span>
-            <span class="font-label-sm text-xs text-primary font-semibold">Tested &amp; Certified • Batch 2026-C</span>
-          </div>
-        </div>
-
-        <!-- Categories & Gifting Filter Rail (Unified on PC, clean scroll on mobile) -->
-        <div class="flex flex-col md:flex-row md:items-center justify-between gap-2.5 py-1">
-          <!-- Horizontal Category Pills -->
-          <div class="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5 min-w-0">
-            ${categories.map(cat => `
-              <button type="button" onclick="window.setCatalogCategory('${cat.id}')" class="min-h-[44px] px-3.5 py-1.5 rounded-full font-label-sm text-xs whitespace-nowrap shrink-0 transition-all cursor-pointer ${AppState.catalogCategory === cat.id ? 'bg-primary text-on-primary font-bold shadow-xs' : 'bg-surface-container-high text-on-surface-variant hover:bg-secondary-container/50'}">
-                ${esc(cat.label)}
-              </button>
-            `).join('')}
           </div>
 
           <!-- Feed Curation & Gifting Quick Bar -->
           <div class="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5 shrink-0">
-            <span class="text-xs font-bold text-primary flex items-center gap-1 shrink-0">
-              <span class="material-symbols-outlined text-secondary text-sm" aria-hidden="true">auto_awesome</span>
+            <span class="text-[11px] font-bold uppercase tracking-wider text-secondary flex items-center gap-1 shrink-0">
+              <span class="material-symbols-outlined text-[15px]" aria-hidden="true">featured_seasonal_and_gifts</span>
               <span>Gifts:</span>
             </span>
-            <button type="button" onclick="window.setFeedPersona('masculine')" class="min-h-[38px] px-3 py-1.5 rounded-full text-xs font-bold transition flex items-center gap-1.5 shrink-0 cursor-pointer ${AppState.feedPersona === 'masculine' || AppState.catalogSort === 'gifts_him' ? 'bg-primary text-white shadow-xs' : 'bg-surface-container-low text-primary border border-[#e4e0d8] hover:border-secondary'}">
+            <button type="button" onclick="window.setFeedPersona('masculine')" class="h-8 px-2.5 rounded-full text-xs font-bold transition flex items-center gap-1 shrink-0 cursor-pointer ${AppState.feedPersona === 'masculine' || AppState.catalogSort === 'gifts_him' ? 'bg-primary text-white shadow-2xs' : 'bg-surface-container-low text-primary border border-[#e4e0d8] hover:border-secondary'}">
               <span>👔 For Him</span>
             </button>
-            <button type="button" onclick="window.setFeedPersona('feminine')" class="min-h-[38px] px-3 py-1.5 rounded-full text-xs font-bold transition flex items-center gap-1.5 shrink-0 cursor-pointer ${AppState.feedPersona === 'feminine' || AppState.catalogSort === 'gifts_her' ? 'bg-primary text-white shadow-xs' : 'bg-surface-container-low text-primary border border-[#e4e0d8] hover:border-secondary'}">
+            <button type="button" onclick="window.setFeedPersona('feminine')" class="h-8 px-2.5 rounded-full text-xs font-bold transition flex items-center gap-1 shrink-0 cursor-pointer ${AppState.feedPersona === 'feminine' || AppState.catalogSort === 'gifts_her' ? 'bg-primary text-white shadow-2xs' : 'bg-surface-container-low text-primary border border-[#e4e0d8] hover:border-secondary'}">
               <span>🌸 For Her</span>
             </button>
-            <button type="button" onclick="window.setCatalogSort('gifting')" class="min-h-[38px] px-3 py-1.5 rounded-full text-xs font-bold transition flex items-center gap-1.5 shrink-0 cursor-pointer ${AppState.catalogSort === 'gifting' ? 'bg-secondary text-white shadow-xs' : 'bg-surface-container-low text-primary border border-[#e4e0d8] hover:border-secondary'}">
-              <span class="material-symbols-outlined text-sm" aria-hidden="true">featured_seasonal_and_gifts</span>
+            <button type="button" onclick="window.setCatalogSort('gifting')" class="h-8 px-2.5 rounded-full text-xs font-bold transition flex items-center gap-1 shrink-0 cursor-pointer ${AppState.catalogSort === 'gifting' ? 'bg-secondary text-white shadow-2xs' : 'bg-surface-container-low text-primary border border-[#e4e0d8] hover:border-secondary'}">
+              <span class="material-symbols-outlined text-[14px]" aria-hidden="true">featured_seasonal_and_gifts</span>
               <span>🎁 Gift Sets</span>
             </button>
           </div>
         </div>
 
-        <!-- Sticky Search, Filter & Sort Controls Bar (Sticky on md+ desktop/tablet so mobile viewports aren't crushed) -->
-        <div class="md:sticky md:top-[93px] z-30 bg-surface/95 backdrop-blur-md py-3 border-y border-[#e4e0d8] flex flex-col gap-2.5 max-w-full">
-          <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2.5">
-            <!-- Instant Search Input -->
-            <div class="relative w-full sm:flex-1 min-w-0">
-              <label for="catalog-search-input" class="sr-only">Search catalogue products</label>
-              <span class="material-symbols-outlined text-on-surface-variant text-lg absolute left-3 top-3.5 pointer-events-none" aria-hidden="true">search</span>
-              <input id="catalog-search-input" type="text" aria-label="Search catalogue products" value="${esc(AppState.catalogSearch)}" oninput="window.setCatalogSearch(this.value)" placeholder="Search varmala block, 3:1 resin, ocean tray, mica, mold..." class="w-full h-12 pl-9 pr-10 rounded-xl bg-white border border-[#e4e0d8] text-xs sm:text-sm text-primary">
-              ${AppState.catalogSearch ? `
-                <button type="button" aria-label="Clear search" onclick="window.setCatalogSearch('')" class="w-11 h-11 absolute right-1 top-0.5 flex items-center justify-center text-outline hover:text-primary cursor-pointer">
-                  <span class="material-symbols-outlined text-base" aria-hidden="true">close</span>
-                </button>
-              ` : ''}
-            </div>
-
-            <div class="flex flex-wrap items-center gap-2 w-full sm:w-auto">
-              <!-- Filter Drawer Trigger -->
-              <button type="button" onclick="window.toggleCatalogFilterDrawer(true)" class="flex-1 sm:flex-initial h-12 px-3 sm:px-4 rounded-xl bg-primary text-on-primary font-label-sm text-xs font-semibold flex items-center justify-center gap-1.5 shadow-xs cursor-pointer">
-                <span class="material-symbols-outlined text-base" aria-hidden="true">tune</span>
-                <span>Specs Filter</span>
+        <!-- Compact Search & Specs Filter Controls Bar -->
+        <div class="md:sticky md:top-[93px] z-30 bg-surface/95 backdrop-blur-md py-1 flex items-center gap-2 w-full min-w-0">
+          <!-- Search Input -->
+          <div class="relative flex-1 min-w-0">
+            <label for="catalog-search-input" class="sr-only">Search catalogue products</label>
+            <span class="material-symbols-outlined text-on-surface-variant text-[18px] absolute left-3 top-2.5 pointer-events-none" aria-hidden="true">search</span>
+            <input id="catalog-search-input" type="text" aria-label="Search catalogue products" value="${esc(AppState.catalogSearch)}" oninput="window.setCatalogSearch(this.value)" placeholder="Search keepsakes, resin, pigments..." class="w-full h-10 pl-9 pr-8 rounded-xl bg-white border border-[#e4e0d8] text-xs text-primary placeholder:text-outline/70 focus:outline-none focus:border-primary">
+            ${AppState.catalogSearch ? `
+              <button type="button" aria-label="Clear search" onclick="window.setCatalogSearch('')" class="w-8 h-8 absolute right-1 top-1 flex items-center justify-center text-outline hover:text-primary cursor-pointer">
+                <span class="material-symbols-outlined text-sm" aria-hidden="true">close</span>
               </button>
-
-              <!-- Sort Select -->
-              <label for="catalog-sort-select" class="sr-only">Sort products</label>
-              <select id="catalog-sort-select" aria-label="Sort products" onchange="window.setCatalogSort(this.value)" class="flex-1 sm:flex-initial h-12 px-2.5 sm:px-3 rounded-xl bg-white border border-[#e4e0d8] font-label-sm text-xs text-primary cursor-pointer">
-                <option value="popular" ${AppState.catalogSort === 'popular' ? 'selected' : ''}>Sort: Popularity</option>
-                <option value="gifts_him" ${AppState.catalogSort === 'gifts_him' ? 'selected' : ''}>👔 Gifts for Him (Wood &amp; Dark Resin)</option>
-                <option value="gifts_her" ${AppState.catalogSort === 'gifts_her' ? 'selected' : ''}>🌸 Gifts for Her (Floral &amp; Crystal Keepsakes)</option>
-                <option value="gifting" ${AppState.catalogSort === 'gifting' ? 'selected' : ''}>🎁 Curated Gift Options &amp; Sets</option>
-                <option value="price_asc" ${AppState.catalogSort === 'price_asc' ? 'selected' : ''}>Price: Low to High</option>
-                <option value="price_desc" ${AppState.catalogSort === 'price_desc' ? 'selected' : ''}>Price: High to Low</option>
-                <option value="rating" ${AppState.catalogSort === 'rating' ? 'selected' : ''}>Highest Rated</option>
-                <option value="viscosity" ${AppState.catalogSort === 'viscosity' ? 'selected' : ''}>Viscosity: Low–High</option>
-              </select>
-
-              <!-- Grid / List Switcher -->
-              <div class="flex items-center bg-surface-container-low p-0.5 rounded-xl border border-[#e4e0d8] shrink-0">
-                <button type="button" aria-label="Grid View" onclick="window.setCatalogView('grid')" class="w-11 h-11 rounded-lg flex items-center justify-center ${AppState.catalogView === 'grid' ? 'bg-white text-primary shadow-2xs' : 'text-on-surface-variant'} cursor-pointer">
-                  <span class="material-symbols-outlined text-lg" aria-hidden="true">grid_view</span>
-                </button>
-                <button type="button" aria-label="List View" onclick="window.setCatalogView('list')" class="w-11 h-11 rounded-lg flex items-center justify-center ${AppState.catalogView === 'list' ? 'bg-white text-primary shadow-2xs' : 'text-on-surface-variant'} cursor-pointer">
-                  <span class="material-symbols-outlined text-lg" aria-hidden="true">view_stream</span>
-                </button>
-              </div>
-            </div>
+            ` : ''}
           </div>
 
-          <!-- Active Filter Summary Row -->
-          <div class="flex flex-wrap items-center justify-between gap-2 text-xs text-on-surface-variant">
-            <div class="flex items-center gap-1.5 flex-wrap min-w-0">
-              ${AppState.catalogCategory !== 'all' ? `
-                <button type="button" onclick="window.setCatalogCategory('all')" class="min-h-[44px] inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-surface-container-high text-primary font-medium cursor-pointer">
-                  <span>Category: ${esc(AppState.catalogCategory)}</span>
-                  <span class="material-symbols-outlined text-xs" aria-hidden="true">close</span>
-                </button>
-              ` : ''}
-              ${AppState.catalogRatioFilter !== 'all' ? `
-                <button type="button" onclick="window.setCatalogRatio('all')" class="min-h-[44px] inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-surface-container-high text-primary font-medium cursor-pointer">
-                  <span>Ratio: ${esc(AppState.catalogRatioFilter)}</span>
-                  <span class="material-symbols-outlined text-xs" aria-hidden="true">close</span>
-                </button>
-              ` : ''}
-              ${AppState.catalogMaxPrice < 12000 ? `
-                <button type="button" onclick="window.setCatalogMaxPrice(12000)" class="min-h-[44px] inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-surface-container-high text-primary font-medium cursor-pointer">
-                  <span>Max: ${formatINR(AppState.catalogMaxPrice)}</span>
-                  <span class="material-symbols-outlined text-xs" aria-hidden="true">close</span>
-                </button>
-              ` : ''}
-              <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-[#e8f5e9] text-[#266b4e] font-semibold">
-                In Stock • Pan-India Dispatch
-              </span>
-            </div>
+          <!-- Specs Filter Trigger -->
+          <button type="button" onclick="window.toggleCatalogFilterDrawer(true)" class="h-10 px-3 sm:px-4 rounded-xl bg-primary text-on-primary font-label-sm text-xs font-semibold flex items-center justify-center gap-1.5 shadow-2xs hover:bg-primary/95 transition-all cursor-pointer shrink-0">
+            <span class="material-symbols-outlined text-[17px]" aria-hidden="true">tune</span>
+            <span class="whitespace-nowrap">Specs Filter</span>
+            ${(AppState.catalogRatioFilter !== 'all' || AppState.catalogMaxPrice < 12000) ? `
+              <span class="w-2 h-2 rounded-full bg-[#ffdeae] animate-pulse"></span>
+            ` : ''}
+          </button>
+        </div>
+
+        <!-- Streamlined Metadata & Sort Bar -->
+        <div class="flex items-center justify-between gap-2 text-xs py-1 border-b border-[#e4e0d8]/80">
+          <div class="flex items-center gap-1.5 min-w-0">
             <span class="font-spec-numeral font-bold text-primary shrink-0">${filtered.length} Products</span>
+            ${AppState.catalogCategory !== 'all' ? `
+              <button type="button" onclick="window.setCatalogCategory('all')" class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-surface-container-high text-primary font-medium text-[11px] cursor-pointer truncate max-w-[140px]">
+                <span>${esc(AppState.catalogCategory)}</span>
+                <span class="material-symbols-outlined text-[11px]" aria-hidden="true">close</span>
+              </button>
+            ` : ''}
+          </div>
+
+          <div class="flex items-center gap-1.5 shrink-0">
+            <!-- Sort Select -->
+            <label for="catalog-sort-select" class="sr-only">Sort products</label>
+            <select id="catalog-sort-select" aria-label="Sort products" onchange="window.setCatalogSort(this.value)" class="h-8.5 px-2.5 rounded-lg bg-white border border-[#e4e0d8] font-label-sm text-[11.5px] text-primary cursor-pointer focus:outline-none focus:border-primary">
+              <option value="popular" ${AppState.catalogSort === 'popular' ? 'selected' : ''}>Popular</option>
+              <option value="gifts_him" ${AppState.catalogSort === 'gifts_him' ? 'selected' : ''}>👔 For Him</option>
+              <option value="gifts_her" ${AppState.catalogSort === 'gifts_her' ? 'selected' : ''}>🌸 For Her</option>
+              <option value="gifting" ${AppState.catalogSort === 'gifting' ? 'selected' : ''}>🎁 Gift Sets</option>
+              <option value="price_asc" ${AppState.catalogSort === 'price_asc' ? 'selected' : ''}>Price: Low to High</option>
+              <option value="price_desc" ${AppState.catalogSort === 'price_desc' ? 'selected' : ''}>Price: High to Low</option>
+              <option value="rating" ${AppState.catalogSort === 'rating' ? 'selected' : ''}>Highest Rated</option>
+              <option value="viscosity" ${AppState.catalogSort === 'viscosity' ? 'selected' : ''}>Viscosity: Low–High</option>
+            </select>
+
+            <!-- Grid / List Switcher -->
+            <div class="flex items-center bg-surface-container-low p-0.5 rounded-lg border border-[#e4e0d8] shrink-0">
+              <button type="button" aria-label="Grid View" onclick="window.setCatalogView('grid')" class="w-7.5 h-7.5 rounded-md flex items-center justify-center ${AppState.catalogView === 'grid' ? 'bg-white text-primary shadow-2xs' : 'text-on-surface-variant'} cursor-pointer">
+                <span class="material-symbols-outlined text-[16px]" aria-hidden="true">grid_view</span>
+              </button>
+              <button type="button" aria-label="List View" onclick="window.setCatalogView('list')" class="w-7.5 h-7.5 rounded-md flex items-center justify-center ${AppState.catalogView === 'list' ? 'bg-white text-primary shadow-2xs' : 'text-on-surface-variant'} cursor-pointer">
+                <span class="material-symbols-outlined text-[16px]" aria-hidden="true">view_stream</span>
+              </button>
+            </div>
           </div>
         </div>
 
@@ -1940,7 +1927,7 @@
                 <circle cx="45" cy="45" r="28" stroke="#0f172a" stroke-width="2.5" fill="#fcf9f5" />
                 <circle cx="45" cy="45" r="22" stroke="#d4af37" stroke-width="1.2" stroke-dasharray="4 4" class="lottie-anim-spin" />
                 <path d="M66 66 L86 86" stroke="#9e3322" stroke-width="4" stroke-linecap="round" />
-                <polygon points="45,34 47,40 53,42 47,44 45,50 43,44 37,42 43,40" fill="#d4af37" />
+                <polygon points="45,34 47,40 53,42 47,44 45,50 43,44 45,50 43,44 37,42 43,40" fill="#d4af37" />
                 <circle cx="28" cy="74" r="2.5" fill="#d4af37" opacity="0.6" />
               </svg>
             </div>
@@ -1958,7 +1945,7 @@
             </button>
           </div>
         ` : `
-          <div class="${AppState.catalogView === 'list' ? 'flex flex-col gap-3.5' : 'grid grid-cols-1 min-[360px]:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3.5 sm:gap-5'}" id="catalog-product-grid">
+          <div class="${AppState.catalogView === 'list' ? 'flex flex-col gap-3' : 'grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2.5 sm:gap-4'}" id="catalog-product-grid">
             ${visible.map(p => renderProductCard(p, AppState.catalogView === 'list')).join('')}
           </div>
         `}
