@@ -3,7 +3,9 @@ import path from 'node:path';
 import { defineConfig } from 'vite';
 
 const STATIC_ASSETS = [
-  'cloudflare-config.js',
+  'supabase-config.js',
+  'supabase-client.js',
+  'cloudinary-config.js',
   'store-bridge.js',
   'app.js',
   'styles.css',
@@ -16,6 +18,7 @@ const STATIC_ASSETS = [
 ];
 
 export default defineConfig({
+  envPrefix: ['VITE_', 'SUPABASE_', 'CLOUDINARY_'],
   plugins: [
     {
       name: 'copy-vistara-static-runtime',
