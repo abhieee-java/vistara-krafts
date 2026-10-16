@@ -6,15 +6,14 @@
 (function (window) {
   'use strict';
 
-  // 1. Production / Environment Configuration Placeholders
-  // Replace these with your actual Supabase project credentials from https://supabase.com/dashboard
-  const SUPABASE_URL = window.SUPABASE_URL || 'https://YOUR_PROJECT_ID.supabase.co';
-  const SUPABASE_ANON_KEY = window.SUPABASE_ANON_KEY || 'YOUR_SUPABASE_ANON_KEY';
+  // 1. Production Supabase Project Credentials
+  const SUPABASE_URL = window.SUPABASE_URL || 'https://niamxrskqhjvzwxomxrx.supabase.co';
+  const SUPABASE_ANON_KEY = window.SUPABASE_ANON_KEY || 'sb_publishable_gK22Lr7xNqKI7VFAfnsQTA_7UD0S2iu';
 
   window.VISTARA_SUPABASE_CONFIG = {
     url: SUPABASE_URL,
     anonKey: SUPABASE_ANON_KEY,
-    isConfigured: !SUPABASE_URL.includes('YOUR_PROJECT_ID') && !SUPABASE_ANON_KEY.includes('YOUR_SUPABASE_ANON_KEY')
+    isConfigured: true
   };
 
   // 2. Client Initialization

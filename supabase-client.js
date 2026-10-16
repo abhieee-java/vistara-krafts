@@ -10,10 +10,10 @@
   'use strict';
 
   const DEFAULT_CONFIG = {
-    supabaseUrl: global.SUPABASE_URL || 'https://xyzcompany.supabase.co',
-    supabaseAnonKey: global.SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.e30.mock_key',
+    supabaseUrl: global.SUPABASE_URL || 'https://niamxrskqhjvzwxomxrx.supabase.co',
+    supabaseAnonKey: global.SUPABASE_ANON_KEY || 'sb_publishable_gK22Lr7xNqKI7VFAfnsQTA_7UD0S2iu',
     authStorageKey: 'vk_supabase_auth_token',
-    isLive: Boolean(global.SUPABASE_URL && global.SUPABASE_ANON_KEY && !global.SUPABASE_URL.includes('xyzcompany'))
+    isLive: true
   };
 
   const config = Object.assign({}, DEFAULT_CONFIG, global.VISTARA_SUPABASE_CONFIG || {});
