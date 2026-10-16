@@ -1029,15 +1029,15 @@
   // Backend & External Admin Host Configuration
   const backendConfig = {
     supabase: {
-      url: global.SUPABASE_URL || 'https://xyzcompany.supabase.co',
-      anonKey: global.SUPABASE_ANON_KEY || 'sb_publishable_ready_to_connect',
-      status: global.SUPABASE_URL ? 'connected' : 'staged_local_replica',
+      url: global.SUPABASE_URL || 'https://niamxrskqhjvzwxomxrx.supabase.co',
+      anonKey: global.SUPABASE_ANON_KEY || 'sb_publishable_gK22Lr7xNqKI7VFAfnsQTA_7UD0S2iu',
+      status: 'connected',
       tables: ['profiles', 'products', 'orders', 'inventory_logs', 'payments', 'settings']
     },
     cloudinary: {
-      cloudName: (global.VistaraCloudinary && global.VistaraCloudinary.config && global.VistaraCloudinary.config.cloudName) || 'vistara-krafts',
-      uploadPreset: 'vistara_products',
-      cdnUrl: 'https://res.cloudinary.com/vistara-krafts',
+      cloudName: (global.VistaraCloudinary && global.VistaraCloudinary.config && global.VistaraCloudinary.config.cloudName) || 'ecugysfd',
+      uploadPreset: (global.VistaraCloudinary && global.VistaraCloudinary.config && global.VistaraCloudinary.config.uploadPreset) || 'sxr8cHma94PzeXQGH85s_1yT8FY',
+      cdnUrl: 'https://res.cloudinary.com/ecugysfd',
       status: 'cloudinary_cdn_ready'
     },
     adminHostBridge: {
@@ -2441,6 +2441,81 @@
       });
     }
   };
+
+  // Live Supabase Ingestion & Synchronization
+  async function syncFromSupabase() {
+    try {
+      const url = backendConfig.supabase.url;
+      const key = backendConfig.supabase.anonKey;
+      if (!url || !key || url.includes('xyzcompany')) return;
+
+      const endpoint = `${url}/rest/v1/products?select=*&is_active=eq.true&order=created_at.desc`;
+      const res = await fetch(endpoint, {
+        headers: {
+          'apikey': key,
+          'Authorization': `Bearer ${key}`
+        }
+      });
+      if (!res.ok) return;
+
+      const liveProducts = await res.json();
+      if (Array.isArray(liveProducts) && liveProducts.length > 0) {
+        const normalized = liveProducts.map(row => ({
+          id: row.id,
+          sku: row.sku,
+          name: row.name,
+          shortName: row.short_name || row.name,
+          subtitle: row.subtitle || '',
+          brand: row.brand || 'Vistāra Krafts',
+          category: row.category || 'resin',
+          subCategory: row.subcategory || 'atelier',
+          badge: row.badge || '',
+          price: Number(row.price || 0),
+          regularPrice: Number(row.compare_at_price || Math.round((row.price || 0) * 1.25)),
+          costPrice: Number(row.cost_price || 0),
+          discount: Number(row.discount || 0),
+          stockQuantity: Number(row.stock ?? 10),
+          inStock: Boolean(row.stock > 0),
+          featured: Boolean(row.featured),
+          hero: Boolean(row.hero),
+          isNew: Boolean(row.is_new),
+          rating: Number(row.rating || 4.9),
+          reviewsCount: Number(row.reviews_count || 12),
+          image: (Array.isArray(row.images) && row.images[0]) || 'https://images.unsplash.com/photo-1579783900882-c0d3dad7b119?auto=format&fit=crop&w=800&q=80',
+          images: (Array.isArray(row.images) && row.images.length > 0) ? row.images : ['https://images.unsplash.com/photo-1579783900882-c0d3dad7b119?auto=format&fit=crop&w=800&q=80'],
+          colors: Array.isArray(row.colors) && row.colors.length > 0 ? row.colors : ['Classic Gold', 'Ocean Blue'],
+          shapes: Array.isArray(row.shapes) && row.shapes.length > 0 ? row.shapes : ['Round', 'Rectangular'],
+          sizes: Array.isArray(row.sizes) && row.sizes.length > 0 ? row.sizes : ['Standard', 'Large'],
+          gender: row.gender || 'all',
+          genderAffinity: row.gender_affinity || 'unisex',
+          giftingTags: Array.isArray(row.gifting_tags) && row.gifting_tags.length > 0 ? row.gifting_tags : ['luxury', 'gift'],
+          description: row.description || '',
+          createdAt: row.created_at,
+          updatedAt: row.updated_at
+        }));
+
+        const currentLocal = safeRead(STORAGE_KEYS.PRODUCTS, []);
+        const isDifferent = JSON.stringify(currentLocal) !== JSON.stringify(normalized);
+        if (isDifferent) {
+          safeWrite(STORAGE_KEYS.PRODUCTS, normalized);
+          Store.notify('products_updated', normalized);
+          if (typeof global.dispatchEvent === 'function') {
+            global.dispatchEvent(new CustomEvent('vk:products:updated', { detail: normalized }));
+          }
+        }
+      }
+    } catch (e) {
+      // Graceful offline fallback
+    }
+  }
+
+  Store.syncFromSupabase = syncFromSupabase;
+
+  if (typeof window !== 'undefined' && typeof fetch === 'function') {
+    if (typeof setTimeout === 'function') setTimeout(syncFromSupabase, 300);
+    if (typeof setInterval === 'function') setInterval(syncFromSupabase, 4000);
+    if (typeof window.addEventListener === 'function') window.addEventListener('focus', syncFromSupabase);
+  }
 
   // Setup Cross-Window / BroadcastChannel Listener for Live Studio Drops
   try {
