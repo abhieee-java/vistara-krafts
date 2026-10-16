@@ -11,7 +11,7 @@
   const DEFAULT_CONFIG = {
     cloudName: global.CLOUDINARY_CLOUD_NAME || 'ecugysfd',
     uploadPreset: global.CLOUDINARY_UPLOAD_PRESET || 'sxr8cHma94PzeXQGH85s_1yT8FY',
-    apiKey: global.CLOUDINARY_API_KEY || '',
+    apiKey: global.CLOUDINARY_API_KEY || '157337468163933',
     secureDeliveryUrl: 'https://res.cloudinary.com'
   };
 
