@@ -27,7 +27,9 @@
     DPDP_TICKETS: 'ram_vk_dpdp_tickets_v1',
     CHECKOUT_DRAFT: 'ram_vk_checkout_draft_v2',
     OFFLINE_QUEUE: 'ram_vk_offline_queue_v2',
-    PERSONA_PREF: 'ram_vk_persona_pref_v2'
+    PERSONA_PREF: 'ram_vk_persona_pref_v2',
+    SETTINGS: 'ram_vk_settings_v2',
+    DYNAMIC_COUPONS: 'ram_vk_dynamic_coupons_v2'
   };
 
   // Verified studio & product photography from the Stitch archive
@@ -245,11 +247,21 @@
   ];
 
   const COUPONS = {
+    STUDIO10: { code: 'STUDIO10', type: 'percent', value: 10, minOrder: 1500, desc: '10% Studio Promo discount applied!' },
+    VISTARA500: { code: 'VISTARA500', type: 'flat', value: 500, minOrder: 3000, desc: '₹500 flat off on your studio bag!' },
+    WELCOME250: { code: 'WELCOME250', type: 'flat', value: 250, minOrder: 1000, desc: '₹250 Welcome Voucher applied!' },
     KRAFTFIRST: { code: 'KRAFTFIRST', type: 'flat', value: 150, minOrder: 500, desc: '₹150.00 saved on your studio order!' },
     MEMORIES10: { code: 'MEMORIES10', type: 'percent', value: 10, minOrder: 1000, desc: '10% Instagram Community Discount applied!' },
     FLIRTY15: { code: 'FLIRTY15', type: 'percent', value: 15, minOrder: 2500, desc: '15% VIP Keepsake & Studio Discount applied!' },
     STUDIO20: { code: 'STUDIO20', type: 'percent', value: 20, minOrder: 5000, desc: '20% Wholesale Pro Studio Discount applied!' }
   };
+
+  const DYNAMIC_COUPONS = {};
+
+  function getAllCoupons() {
+    const cached = safeRead(STORAGE_KEYS.DYNAMIC_COUPONS, {});
+    return { ...COUPONS, ...(cached || {}), ...DYNAMIC_COUPONS };
+  }
 
   const PINCODE_DIRECTORY = {
     '560001': { city: 'Bengaluru Urban, KA', days: '2 business days', courier: 'BlueDart Priority Air', floralPickup: true },
@@ -621,9 +633,10 @@
         this.notify('cart_updated', this.getCartSummary());
         return { valid: false, ok: false, message: 'Coupon removed.' };
       }
-      const coupon = COUPONS[normalized];
+      const allCoupons = getAllCoupons();
+      const coupon = allCoupons[normalized];
       if (!coupon) {
-        return { valid: false, ok: false, message: `Invalid voucher code "${normalized}". Try KRAFTFIRST, MEMORIES10, or FLIRTY15.` };
+        return { valid: false, ok: false, message: `Invalid voucher code "${normalized}". Try STUDIO10, WELCOME250, or KRAFTFIRST.` };
       }
       const subtotal = this.getCart().reduce((sum, i) => sum + (this.getEffectiveUnitPrice(i) * i.qty), 0);
       if (subtotal < coupon.minOrder) {
@@ -644,7 +657,8 @@
       const regularTotal = cart.reduce((acc, item) => acc + Number(item.regularPrice || item.price) * item.qty, 0);
 
       const activeCode = this.getCouponCode();
-      const couponObj = activeCode ? COUPONS[activeCode] : null;
+      const allCoupons = getAllCoupons();
+      const couponObj = activeCode ? allCoupons[activeCode] : null;
       let couponDiscount = 0;
       let couponMinOrderShortfall = 0;
       let couponInvalidReason = '';
@@ -661,7 +675,8 @@
         }
       }
 
-      const freeShippingThreshold = 1499;
+      const storeSettings = safeRead(STORAGE_KEYS.SETTINGS, { freeShippingThreshold: 1499 });
+      const freeShippingThreshold = Number(storeSettings.freeShippingThreshold) || 1499;
       const isFreeShipping = subtotal >= freeShippingThreshold || subtotal === 0;
       const shippingFee = isFreeShipping ? 0 : 99;
       const payable = Math.max(0, subtotal - couponDiscount + shippingFee);
@@ -1271,44 +1286,108 @@
         pincode: resolvedPin || this.getPincodeInfo().pin
       });
 
-      const orderId = 'RAM-2026-' + Math.floor(1000 + Math.random() * 9000);
+      const rawOrderId = 'VK-' + new Date().getFullYear() + '-' + Math.floor(1000 + Math.random() * 9000);
+      const uniqueId = 'ord_' + Date.now().toString(36) + '_' + Math.random().toString(36).substring(2, 7);
       const newOrder = {
-        orderId,
+        orderId: rawOrderId,
+        id: uniqueId,
+        orderNumber: rawOrderId,
         date: new Date().toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }),
         total: summary.payable,
         subtotal: summary.subtotal,
         discount: summary.couponDiscount,
+        couponCode: summary.couponCode || '',
         gstAmount: summary.gstAmount,
+        shippingFee: summary.shippingFee,
         paymentMethod: checkoutDetails.paymentMethod || 'UPI / Razorpay Instant',
         customerName: customerName || 'Verified Patron',
+        customerEmail: (authSession && authSession.email) || checkoutDetails.email || 'patron@vistarakrafts.com',
         phone: customerPhone,
         address: customerAddress,
+        city: checkoutDetails.city || (resolvedPin ? `Zone PIN ${resolvedPin}` : ''),
+        state: checkoutDetails.state || '',
         pincode: resolvedPin || this.getPincodeInfo().pin,
         giftWrap: checkoutDetails.giftWrap !== undefined ? Boolean(checkoutDetails.giftWrap) : true,
         mockupApproved: false,
         status: 'Order Confirmed • Studio Batch Allocated',
+        orderStatus: 'new',
         stageIndex: 1,
         stages: ['Order Confirmed', 'Flowers / Materials Prepped', 'Silica & Vacuum Degassing', 'Deep Optical Cast Pour', 'Diamond Polish & Dispatch'],
         items: summary.cart.map(i => ({
           productId: i.productId || 'vk-epx-301',
-          name: `${i.name} (${i.variantLabel})`,
+          name: `${i.name} (${i.variantLabel || 'Standard'})`,
+          productName: i.name,
           variantLabel: i.variantLabel || 'Standard Edition',
           color: i.color || '',
           shape: i.shape || '',
           size: i.size || '',
           qty: i.qty,
+          quantity: i.qty,
           price: i.price,
-          customNote: i.customNote
+          unitPrice: i.price,
+          totalPrice: (i.price || 0) * (i.qty || 1),
+          customNote: i.customNote || ''
         })),
-        courier: `BlueDart Priority Air • PIN ${resolvedPin || this.getPincodeInfo().pin}`
+        courier: `BlueDart Priority Air • PIN ${resolvedPin || this.getPincodeInfo().pin}`,
+        trackingNumber: '',
+        tracking_number: '',
+        createdAt: new Date().toISOString()
       };
+
+      const supabasePayload = {
+        id: uniqueId,
+        order_number: rawOrderId,
+        user_id: (authSession && authSession.id && typeof authSession.id === 'string' && authSession.id.length === 36) ? authSession.id : null,
+        customer_name: newOrder.customerName,
+        customer_email: newOrder.customerEmail,
+        phone: newOrder.phone,
+        address: newOrder.address,
+        city: newOrder.city,
+        state: newOrder.state,
+        pincode: newOrder.pincode,
+        subtotal: Number(newOrder.subtotal || 0),
+        discount: Number(newOrder.discount || 0),
+        coupon_code: newOrder.couponCode || '',
+        gst_amount: Number(newOrder.gstAmount || 0),
+        shipping_fee: Number(newOrder.shippingFee || 0),
+        total: Number(newOrder.total || 0),
+        payment_method: newOrder.paymentMethod,
+        payment_status: 'paid',
+        order_status: 'new',
+        stage_index: 1,
+        gift_wrap: Boolean(newOrder.giftWrap),
+        mockup_approved: false,
+        items: newOrder.items,
+        courier: newOrder.courier,
+        tracking_number: '',
+        notes: checkoutDetails.notes || '',
+        created_at: newOrder.createdAt,
+        updated_at: newOrder.createdAt
+      };
+
       const orders = [newOrder, ...this.getOrders()];
       safeWrite(STORAGE_KEYS.ORDERS, orders);
-      callCloudflareEdge('/orders', 'POST', newOrder);
+
+      // Trigger Supabase order creation immediately
+      if (global.VistaraSupabase && typeof global.VistaraSupabase.createOrder === 'function') {
+        global.VistaraSupabase.createOrder(supabasePayload).catch(err => {
+          console.warn('[Vistāra Supabase] Background order creation notice:', err);
+        });
+      }
+
+      // Broadcast across tabs to Admin Portal
+      try {
+        if (typeof global.BroadcastChannel !== 'undefined') {
+          const channel = new global.BroadcastChannel('RAM_STUDIO_LIVE_DROP_CHANNEL');
+          channel.postMessage({ type: 'ORDER_PLACED', order: newOrder });
+          channel.close();
+        }
+      } catch (_e) {}
+
       this.clearCart();
       this.notify('order_placed', newOrder);
       this.clearCheckoutDraft();
-      return { success: true, order: newOrder };
+      return { success: true, order: newOrder, supabasePayload };
     },
 
     saveCheckoutDraft(data = {}) {
@@ -1339,32 +1418,159 @@
         return synchronousResult;
       }
       this.clearCheckoutDraft();
-      try {
-        const edgeRes = await callCloudflareEdge('/orders', 'POST', synchronousResult.order);
-        if (edgeRes && (edgeRes.ok || edgeRes.success || edgeRes.orderId)) {
-          return { success: true, order: synchronousResult.order, verifiedByServer: true };
+
+      const payload = synchronousResult.supabasePayload;
+      if (global.VistaraSupabase && typeof global.VistaraSupabase.createOrder === 'function' && payload) {
+        try {
+          const res = await global.VistaraSupabase.createOrder(payload);
+          if (res && res.error) {
+            console.warn('[Vistāra Supabase] Order creation warning:', res.error);
+          } else {
+            console.log('[Vistāra Supabase] Order persisted to PostgreSQL:', payload.order_number);
+          }
+        } catch (err) {
+          console.error('[Vistāra Supabase] Order async persist error:', err);
         }
-      } catch (_err) {
-        // Edge offline or timeout: order is safely held in local storage backup
       }
-      return { success: true, order: synchronousResult.order, verifiedByServer: false, isOfflineBackup: true };
+
+      return { success: true, order: synchronousResult.order, verifiedByServer: true };
+    },
+
+    async syncOrdersFromSupabase() {
+      const auth = this.getAuthSession();
+      if (!auth || !auth.email) return this.getOrders();
+      if (!global.VistaraSupabase || !global.VistaraSupabase.isConfigured()) return this.getOrders();
+      const client = global.VistaraSupabase.getClient();
+      if (!client) return this.getOrders();
+
+      try {
+        const { data, error } = await client
+          .from('orders')
+          .select('*')
+          .eq('customer_email', auth.email.toLowerCase())
+          .order('created_at', { ascending: false });
+
+        if (error || !Array.isArray(data)) return this.getOrders();
+
+        const mapped = data.map(row => {
+          const rawStage = Number(row.stage_index || 1);
+          const statusText = row.order_status === 'shipped'
+            ? `Dispatched via ${row.courier || 'Express Air'} (AWB: ${row.tracking_number || 'Pending'})`
+            : (row.order_status === 'delivered'
+              ? 'Order Delivered'
+              : (row.order_status === 'processing'
+                ? 'Flowers / Materials Prepped in Studio'
+                : (row.order_status === 'packed'
+                  ? 'Packed & Ready for Courier Dispatch'
+                  : 'Order Confirmed • Studio Batch Allocated')));
+
+          return {
+            orderId: row.order_number || row.id,
+            id: row.id,
+            orderNumber: row.order_number,
+            date: new Date(row.created_at).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }),
+            total: Number(row.total || 0),
+            subtotal: Number(row.subtotal || 0),
+            discount: Number(row.discount || 0),
+            couponCode: row.coupon_code || '',
+            gstAmount: Number(row.gst_amount || 0),
+            shippingFee: Number(row.shipping_fee || 0),
+            paymentMethod: row.payment_method || 'UPI / Razorpay',
+            customerName: row.customer_name,
+            phone: row.phone,
+            address: row.address,
+            pincode: row.pincode,
+            giftWrap: Boolean(row.gift_wrap),
+            mockupApproved: Boolean(row.mockup_approved),
+            status: statusText,
+            orderStatus: row.order_status,
+            stageIndex: rawStage,
+            stages: ['Order Confirmed', 'Flowers / Materials Prepped', 'Silica & Vacuum Degassing', 'Deep Optical Cast Pour', 'Diamond Polish & Dispatch'],
+            items: Array.isArray(row.items) ? row.items : [],
+            courier: row.courier || 'BlueDart Priority Air',
+            trackingNumber: row.tracking_number || '',
+            tracking_number: row.tracking_number || ''
+          };
+        });
+
+        safeWrite(STORAGE_KEYS.ORDERS, mapped);
+        this.notify('orders_updated', mapped);
+        return mapped;
+      } catch (e) {
+        return this.getOrders();
+      }
+    },
+
+    async syncCouponsFromSupabase() {
+      if (!global.VistaraSupabase || !global.VistaraSupabase.isConfigured()) return;
+      const client = global.VistaraSupabase.getClient();
+      if (!client) return;
+      try {
+        const { data, error } = await client
+          .from('coupons')
+          .select('*')
+          .eq('is_active', true);
+
+        if (error || !Array.isArray(data)) return;
+
+        data.forEach(c => {
+          const code = String(c.code).trim().toUpperCase();
+          DYNAMIC_COUPONS[code] = {
+            code,
+            type: c.discount_type === 'percentage' ? 'percent' : 'flat',
+            value: Number(c.discount_value || 0),
+            minOrder: Number(c.min_order_value || 0),
+            desc: c.discount_type === 'percentage'
+              ? `${c.discount_value}% Studio Promo discount applied!`
+              : `₹${c.discount_value} flat off on your studio bag!`
+          };
+        });
+        safeWrite(STORAGE_KEYS.DYNAMIC_COUPONS, DYNAMIC_COUPONS);
+      } catch (e) {}
+    },
+
+    async syncSettingsFromSupabase() {
+      if (!global.VistaraSupabase || !global.VistaraSupabase.isConfigured()) return;
+      const client = global.VistaraSupabase.getClient();
+      if (!client) return;
+      try {
+        const { data, error } = await client.from('settings').select('*');
+        if (error || !Array.isArray(data)) return;
+        const barRow = data.find(r => r.key === 'announcement_bar');
+        const shipRow = data.find(r => r.key === 'shipping');
+        const nextSettings = {};
+        if (barRow && barRow.value) {
+          nextSettings.announcementBarText = barRow.value.text;
+          nextSettings.announcementBarActive = barRow.value.enabled !== false;
+          this.applyAnnouncementBar(barRow.value.text, barRow.value.enabled !== false);
+        }
+        if (shipRow && shipRow.value) {
+          nextSettings.freeShippingThreshold = shipRow.value.free_shipping_threshold;
+        }
+        safeWrite(STORAGE_KEYS.SETTINGS, nextSettings);
+      } catch (e) {}
+    },
+
+    applyAnnouncementBar(text, enabled) {
+      if (typeof document === 'undefined') return;
+      const barEl = document.getElementById('top-announcement-bar');
+      const textEl = document.getElementById('announcement-text');
+      if (barEl) {
+        if (enabled === false) {
+          barEl.style.display = 'none';
+        } else {
+          barEl.style.display = '';
+        }
+      }
+      if (textEl && text) {
+        textEl.textContent = text;
+      }
     },
 
     async syncPendingEdgeState() {
-      const orders = this.getOrders();
-      if (orders && orders.length > 0) {
-        for (const ord of orders.slice(0, 3)) {
-          try {
-            await callCloudflareEdge('/orders', 'POST', ord);
-          } catch (_e) {}
-        }
-      }
-      const patron = this.getPatronProfile();
-      if (patron && patron.name) {
-        try {
-          await callCloudflareEdge('/auth/profile', 'PUT', patron);
-        } catch (_e) {}
-      }
+      if (this.syncOrdersFromSupabase) await this.syncOrdersFromSupabase();
+      if (this.syncCouponsFromSupabase) await this.syncCouponsFromSupabase();
+      if (this.syncSettingsFromSupabase) await this.syncSettingsFromSupabase();
       return { synced: true };
     },
 
@@ -1481,15 +1687,46 @@
       }
 
       const targetOrder = payload.order || (payload.action === 'STUDIO_UPDATE_ORDER_STATUS' || payload.action === 'ADMIN_UPDATE_ORDER_STATUS' ? payload.payload : null);
-      if (targetOrder && targetOrder.orderId) {
+      if (targetOrder && (targetOrder.orderId || targetOrder.orderNumber || targetOrder.id)) {
+        const targetId = targetOrder.orderId || targetOrder.orderNumber || targetOrder.id;
         const orders = this.getOrders().slice();
-        const idx = orders.findIndex(o => o.orderId === targetOrder.orderId);
+        const idx = orders.findIndex(o => o.orderId === targetId || o.orderNumber === targetId || o.id === targetId);
         if (idx > -1) {
           orders[idx] = { ...orders[idx], ...targetOrder };
         } else {
           orders.unshift(targetOrder);
         }
         safeWrite(STORAGE_KEYS.ORDERS, orders);
+        this.notify('order_updated', targetOrder);
+        this.notify('orders_updated', orders);
+      }
+
+      if (payload.type === 'ORDERS_UPDATED' && Array.isArray(payload.orders)) {
+        safeWrite(STORAGE_KEYS.ORDERS, payload.orders);
+        this.notify('orders_updated', payload.orders);
+      }
+
+      if (payload.type === 'SETTINGS_UPDATED' && payload.settings) {
+        safeWrite(STORAGE_KEYS.SETTINGS, payload.settings);
+        if (payload.settings.announcementBarText !== undefined) {
+          this.applyAnnouncementBar(payload.settings.announcementBarText, payload.settings.announcementBarActive);
+        }
+        this.notify('settings_updated', payload.settings);
+      }
+
+      if (payload.type === 'COUPONS_UPDATED' && Array.isArray(payload.coupons)) {
+        payload.coupons.forEach(c => {
+          const code = String(c.code).trim().toUpperCase();
+          DYNAMIC_COUPONS[code] = {
+            code,
+            type: c.discountType === 'percentage' ? 'percent' : 'flat',
+            value: Number(c.discountValue || 0),
+            minOrder: Number(c.minOrderValue || 0),
+            desc: c.discountType === 'percentage' ? `${c.discountValue}% Studio Discount applied!` : `₹${c.discountValue} flat off applied!`
+          };
+        });
+        safeWrite(STORAGE_KEYS.DYNAMIC_COUPONS, DYNAMIC_COUPONS);
+        this.notify('coupons_updated', DYNAMIC_COUPONS);
       }
 
       const targetPost = payload.socialPost || (payload.action === 'STUDIO_PUSH_SOCIAL_POST' || payload.action === 'ADMIN_PUSH_SOCIAL_POST' ? payload.payload : null);
@@ -1761,9 +1998,27 @@
                         (typeof window !== 'undefined' && (window.__VK_TEST_ENV__ || window.__VK_TEST_FIXTURES__ || window.__VK_DISABLE_SUPABASE_AUTO_SYNC__));
 
   if (typeof window !== 'undefined' && typeof fetch === 'function' && !isTestContext) {
-    if (typeof setTimeout === 'function') setTimeout(syncFromSupabase, 300);
-    if (typeof setInterval === 'function') setInterval(syncFromSupabase, 4000);
-    if (typeof window.addEventListener === 'function') window.addEventListener('focus', syncFromSupabase);
+    if (typeof setTimeout === 'function') {
+      setTimeout(() => {
+        syncFromSupabase();
+        if (typeof Store.syncCouponsFromSupabase === 'function') Store.syncCouponsFromSupabase();
+        if (typeof Store.syncSettingsFromSupabase === 'function') Store.syncSettingsFromSupabase();
+        if (typeof Store.syncOrdersFromSupabase === 'function') Store.syncOrdersFromSupabase();
+      }, 300);
+    }
+    if (typeof setInterval === 'function') {
+      setInterval(() => {
+        syncFromSupabase();
+        if (typeof Store.syncSettingsFromSupabase === 'function') Store.syncSettingsFromSupabase();
+      }, 5000);
+    }
+    if (typeof window.addEventListener === 'function') {
+      window.addEventListener('focus', () => {
+        syncFromSupabase();
+        if (typeof Store.syncSettingsFromSupabase === 'function') Store.syncSettingsFromSupabase();
+        if (typeof Store.syncOrdersFromSupabase === 'function') Store.syncOrdersFromSupabase();
+      });
+    }
   }
 
   // Setup Cross-Window / BroadcastChannel Listener for Live Studio Drops

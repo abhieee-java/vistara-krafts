@@ -434,7 +434,7 @@
               </div>
             `).join('')}
           </div>
-          <p class="text-[10px] text-on-surface-variant truncate">🚚 ${esc(ord.courier || 'BlueDart Air Priority')}</p>
+          <p class="text-[10px] text-on-surface-variant truncate">🚚 ${esc(ord.courier || 'BlueDart Air Priority')}${(ord.trackingNumber || ord.tracking_number) ? ` • AWB: <strong class="text-emerald-800">${esc(ord.trackingNumber || ord.tracking_number)}</strong>` : ''}</p>
           <div class="flex flex-wrap items-center gap-1.5 pt-1">
             ${!ord.mockupApproved ? `
               <button type="button" onclick="window.handleApproveOrderMockup('${esc(ord.orderId)}')" class="flex-1 min-h-[44px] px-2.5 py-1.5 rounded-lg bg-[#9e3322] text-white text-[11px] font-bold cursor-pointer">
@@ -3431,6 +3431,12 @@
                   </div>
                   <h3 class="text-sm font-bold text-primary mt-0.5">${esc(ord.status)}</h3>
                   <p class="text-xs text-on-surface-variant">Placed on ${esc(ord.date)} • ${esc(ord.courier)} • ${esc(ord.paymentMethod || 'UPI Instant')}</p>
+                  ${(ord.trackingNumber || ord.tracking_number) ? `
+                    <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-[#e8f5e9] text-[#1b5e20] border border-[#c8e6c9] text-xs font-bold mt-1.5">
+                      <span class="material-symbols-outlined text-sm" aria-hidden="true">local_shipping</span>
+                      <span>Dispatched via ${esc(ord.carrier || ord.courier || 'Express Air')} • AWB Tracking: <strong>${esc(ord.trackingNumber || ord.tracking_number)}</strong></span>
+                    </div>
+                  ` : ''}
                 </div>
                 <div class="text-right">
                   <span class="font-spec-numeral text-lg font-bold text-primary">${formatINR(ord.total)}</span>
@@ -6864,7 +6870,7 @@
 
     // Live store subscriptions (products, orders, carts updated from admin)
     Store.subscribe((event) => {
-      if (event === 'products_updated' || event === 'studio_push_received') {
+      if (event === 'products_updated' || event === 'studio_push_received' || event === 'orders_updated' || event === 'order_updated' || event === 'settings_updated') {
         renderActiveView({ preserveScroll: true });
       }
     });
