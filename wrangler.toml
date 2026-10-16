@@ -21,11 +21,10 @@ TURNSTILE_SITE_KEY = "1x00000000000000000000AA"
 GOOGLE_CLIENT_ID = "DEV_GOOGLE_CLIENT_ID.apps.googleusercontent.com"
 APPLE_CLIENT_ID = "in.vistarakrafts.storefront.dev"
 
-# Uncomment after running `npx wrangler d1 create vistara_krafts_db`:
-# [[d1_databases]]
-# binding = "VISTARA_DB"
-# database_name = "vistara_krafts_db"
-# database_id = "YOUR_DEV_D1_DATABASE_ID"
+[[d1_databases]]
+binding = "VISTARA_DB"
+database_name = "vistara_krafts_db"
+database_id = "db690fd6-0158-4c24-aca3-17812b3e3c45"
 
 # Uncomment after running `npx wrangler kv namespace create VISTARA_SESSIONS`:
 # [[kv_namespaces]]
@@ -46,7 +45,11 @@ BRAND_NAME = "Vistāra Krafts"
 TURNSTILE_SITE_KEY = "REPLACE_WITH_CLIENT_TURNSTILE_SITE_KEY"
 GOOGLE_CLIENT_ID = "REPLACE_WITH_CLIENT_GOOGLE_CLIENT_ID.apps.googleusercontent.com"
 APPLE_CLIENT_ID = "REPLACE_WITH_CLIENT_APPLE_SERVICES_ID"
-# Secrets to set via CLI (`npx wrangler pages secret put <NAME>`):
 # - JWT_SECRET
 # - TURNSTILE_SECRET_KEY
 # - RAZORPAY_KEY_SECRET
+
+[[env.production.d1_databases]]
+binding = "VISTARA_DB"
+database_name = "vistara_krafts_db"
+database_id = "db690fd6-0158-4c24-aca3-17812b3e3c45"
