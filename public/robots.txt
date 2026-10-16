@@ -1,6 +1,6 @@
 # Vistāra Krafts (@resin.art.memories) — SEO, GEO & AEO Crawler Directives
 # Active Deployment: https://vistara-krafts.vercel.app
-# Future Custom Domain Ready: https://vistarakrafts.in (swap via cloudflare-config.js / VISTARA_SITE_URL)
+# Future Custom Domain Ready: https://vistarakrafts.com (swap via cloudflare-config.js / VISTARA_SITE_URL)
 # AI / LLM Context Discovery: /llms.txt and /llms-full.txt
 
 User-agent: *

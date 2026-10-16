@@ -1848,7 +1848,7 @@
         const sessionObj = {
           ...(existingAuth || {}),
           ...next,
-          email: next.email || (existingAuth && existingAuth.email) || 'patron@vistarakrafts.in',
+          email: next.email || (existingAuth && existingAuth.email) || 'patron@vistarakrafts.com',
           address: resolvedAddress,
           defaultAddress: resolvedAddress,
           pincode: resolvedPin,
@@ -2292,7 +2292,7 @@
         global.VISTARA_CUSTOM_DOMAIN ||
         seoCfg.futureCustomDomain ||
         (cfCfg.brand && cfCfg.brand.futureCustomDomain) ||
-        'https://vistarakrafts.in'
+        'https://vistarakrafts.com'
       ).replace(/\/+$/, '');
       return {
         siteUrl,

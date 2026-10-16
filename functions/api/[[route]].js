@@ -290,7 +290,7 @@ export async function onRequest(context) {
         'https://vistara-krafts.vercel.app'
       ).replace(/\/+$/, '');
       const futureCustomDomain = String(
-        (env && env.FUTURE_CUSTOM_DOMAIN) || 'https://vistarakrafts.in'
+        (env && env.FUTURE_CUSTOM_DOMAIN) || 'https://vistarakrafts.com'
       ).replace(/\/+$/, '');
 
       const productIds = [

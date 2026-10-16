@@ -1081,7 +1081,7 @@ test('SEO, GEO & AEO Production Readiness: robots.txt, sitemap.xml, llms.txt, ll
     assert.ok(llmsContent.includes('Vistāra Krafts'), `${relPath} must include brand identity Vistāra Krafts`);
     assert.ok(llmsContent.includes('@resin.art.memories'), `${relPath} must include Instagram handle @resin.art.memories`);
     assert.ok(llmsContent.includes('https://vistara-krafts.vercel.app'), `${relPath} must reference https://vistara-krafts.vercel.app`);
-    assert.ok(llmsContent.includes('https://vistarakrafts.in'), `${relPath} must document future custom domain https://vistarakrafts.in`);
+    assert.ok(llmsContent.includes('https://vistarakrafts.com'), `${relPath} must document future custom domain https://vistarakrafts.com`);
     for (const prod of coreProducts) {
       assert.ok(llmsContent.includes(prod.sku), `${relPath} must include SKU ${prod.sku}`);
     }
@@ -1121,7 +1121,7 @@ test('SEO, GEO & AEO Production Readiness: robots.txt, sitemap.xml, llms.txt, ll
   // 3. Verify Store.getSeoConfig() and dynamic per-route / per-product / per-variant SEO updates in app.js
   const seoCfg = Store.getSeoConfig();
   assert.strictEqual(seoCfg.siteUrl, 'https://vistara-krafts.vercel.app');
-  assert.strictEqual(seoCfg.futureCustomDomain, 'https://vistarakrafts.in');
+  assert.strictEqual(seoCfg.futureCustomDomain, 'https://vistarakrafts.com');
   assert.strictEqual(seoCfg.geo.region, 'IN-KA');
 
   sandbox.window.navigateTo('product', 'ram-keep-001');
@@ -1193,15 +1193,15 @@ test('SEO, GEO & AEO Production Readiness: robots.txt, sitemap.xml, llms.txt, ll
     payload: { id: 'ram-minimal-seo-test' }
   });
 
-  // 4. Verify runtime custom domain swap via window.VISTARA_SITE_URL = 'https://vistarakrafts.in'
-  sandbox.window.VISTARA_SITE_URL = 'https://vistarakrafts.in';
+  // 4. Verify runtime custom domain swap via window.VISTARA_SITE_URL = 'https://vistarakrafts.com'
+  sandbox.window.VISTARA_SITE_URL = 'https://vistarakrafts.com';
   sandbox.window.navigateTo('custom-studio');
   const swappedSeo = sandbox.window.getActiveSeoSnapshot();
-  assert.strictEqual(swappedSeo.siteUrl, 'https://vistarakrafts.in', 'Setting window.VISTARA_SITE_URL must swap active siteUrl without refactoring');
-  assert.strictEqual(swappedSeo.canonicalUrl, 'https://vistarakrafts.in/#/custom-studio');
-  assert.strictEqual(mockDocument.getElementById('link-canonical').href, 'https://vistarakrafts.in/#/custom-studio');
+  assert.strictEqual(swappedSeo.siteUrl, 'https://vistarakrafts.com', 'Setting window.VISTARA_SITE_URL must swap active siteUrl without refactoring');
+  assert.strictEqual(swappedSeo.canonicalUrl, 'https://vistarakrafts.com/#/custom-studio');
+  assert.strictEqual(mockDocument.getElementById('link-canonical').href, 'https://vistarakrafts.com/#/custom-studio');
   const swappedGraph = JSON.parse(mockDocument.getElementById('vistara-schema-jsonld').textContent);
-  assert.strictEqual(swappedGraph['@graph'][0]['@id'], 'https://vistarakrafts.in/#organization');
+  assert.strictEqual(swappedGraph['@graph'][0]['@id'], 'https://vistarakrafts.com/#organization');
 
   // Reset back to default Vercel domain and #/home
   delete sandbox.window.VISTARA_SITE_URL;
@@ -1391,13 +1391,13 @@ try {
   assert.strictEqual(seoApi.status, 200);
   assert.strictEqual(seoApi.data.ok, true);
   assert.strictEqual(seoApi.data.siteUrl, 'https://vistara-krafts.vercel.app');
-  assert.strictEqual(seoApi.data.futureCustomDomain, 'https://vistarakrafts.in');
+  assert.strictEqual(seoApi.data.futureCustomDomain, 'https://vistarakrafts.com');
   assert.strictEqual(seoApi.data.productsCount, 12);
 
-  const seoCustomDomain = await callWorker('/seo?domain=https://vistarakrafts.in', 'GET');
+  const seoCustomDomain = await callWorker('/seo?domain=https://vistarakrafts.com', 'GET');
   assert.strictEqual(seoCustomDomain.status, 200);
-  assert.strictEqual(seoCustomDomain.data.siteUrl, 'https://vistarakrafts.in');
-  assert.strictEqual(seoCustomDomain.data.sitemapUrl, 'https://vistarakrafts.in/sitemap.xml');
+  assert.strictEqual(seoCustomDomain.data.siteUrl, 'https://vistarakrafts.com');
+  assert.strictEqual(seoCustomDomain.data.sitemapUrl, 'https://vistarakrafts.com/sitemap.xml');
 
   const sitemapRes = await onRequest({
     request: new Request('https://vistarakrafts.com/api/sitemap.xml', { method: 'GET' }),

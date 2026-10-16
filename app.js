@@ -3590,7 +3590,7 @@
       },
       image: `${siteUrl}/vistara-krafts-logo.jpg`,
       description: seoCfg.defaultDescription,
-      email: 'concierge@vistarakrafts.in',
+      email: 'concierge@vistarakrafts.com',
       telephone: '+91-80-4890-7210',
       priceRange: '₹299 - ₹12,999',
       currenciesAccepted: 'INR',
@@ -3633,7 +3633,7 @@
       sameAs: [
         'https://www.instagram.com/resin.art.memories?utm_source=qr',
         'https://www.instagram.com/resin.art.memories',
-        seoCfg.futureCustomDomain || 'https://vistarakrafts.in'
+        seoCfg.futureCustomDomain || 'https://vistarakrafts.com'
       ]
     };
 
@@ -4056,7 +4056,7 @@
       ? Store.getSeoConfig()
       : {
           siteUrl: String(window.VISTARA_SITE_URL || 'https://vistara-krafts.vercel.app').replace(/\/+$/, ''),
-          futureCustomDomain: 'https://vistarakrafts.in',
+          futureCustomDomain: 'https://vistarakrafts.com',
           defaultTitle: 'Vistāra Krafts (@resin.art.memories) | UltraClear Epoxy Resin Systems & Bridal Varmala Preservation Studio India',
           defaultDescription: 'Official Vistāra Krafts × Resin Art Memories (@resin.art.memories) Storefront.',
           defaultKeywords: 'Vistara Krafts, Resin Art Memories, @resin.art.memories, bridal varmala preservation India, epoxy resin kit India',

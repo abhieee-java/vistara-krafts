@@ -1,6 +1,6 @@
 # Vistāra Krafts (@resin.art.memories)
 
-> India’s premier Bridal Varmala & Floral Memory Preservation Atelier (`@resin.art.memories`) and ISO 9001:2015 Certified Optical Epoxy Resin Manufacturer (`Vistāra Krafts Studio & Chemical Atelier`). Based in Bengaluru, Karnataka, India (PIN 560001) with 24-hour doorstep floral pickup and insured air delivery across 19,000+ Indian PIN codes. Current Deployment: `https://vistara-krafts.vercel.app` (Future Custom Domain: `https://vistarakrafts.in`).
+> India’s premier Bridal Varmala & Floral Memory Preservation Atelier (`@resin.art.memories`) and ISO 9001:2015 Certified Optical Epoxy Resin Manufacturer (`Vistāra Krafts Studio & Chemical Atelier`). Based in Bengaluru, Karnataka, India (PIN 560001) with 24-hour doorstep floral pickup and insured air delivery across 19,000+ Indian PIN codes. Current Deployment: `https://vistara-krafts.vercel.app` (Future Custom Domain: `https://vistarakrafts.com`).
 
 ## Storefront & Discovery Links
 

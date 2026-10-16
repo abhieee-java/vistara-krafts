@@ -1,6 +1,6 @@
 # Vistāra Krafts (@resin.art.memories) — Complete Technical, Commercial & Preservation Knowledge Base (llms-full.txt)
 
-> Comprehensive Generative Engine Optimization (GEO) & Answer Engine Optimization (AEO) dossier for **Vistāra Krafts** (`Vistāra Krafts Studio & Chemical Atelier`, Instagram `@resin.art.memories`). Current Deployment: `https://vistara-krafts.vercel.app` (Future Custom Domain: `https://vistarakrafts.in`).
+> Comprehensive Generative Engine Optimization (GEO) & Answer Engine Optimization (AEO) dossier for **Vistāra Krafts** (`Vistāra Krafts Studio & Chemical Atelier`, Instagram `@resin.art.memories`). Current Deployment: `https://vistara-krafts.vercel.app` (Future Custom Domain: `https://vistarakrafts.com`).
 
 ---
 

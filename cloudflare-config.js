@@ -22,11 +22,11 @@
         instagramUrl: 'https://www.instagram.com/resin.art.memories',
         logoPath: './vistara-krafts-logo.jpg',
         siteUrl: (global && global.VISTARA_SITE_URL) || 'https://vistara-krafts.vercel.app',
-        futureCustomDomain: (global && global.VISTARA_CUSTOM_DOMAIN) || 'https://vistarakrafts.in'
+        futureCustomDomain: (global && global.VISTARA_CUSTOM_DOMAIN) || 'https://vistarakrafts.com'
       },
       seo: {
         siteUrl: (global && global.VISTARA_SITE_URL) || 'https://vistara-krafts.vercel.app',
-        futureCustomDomain: (global && global.VISTARA_CUSTOM_DOMAIN) || 'https://vistarakrafts.in',
+        futureCustomDomain: (global && global.VISTARA_CUSTOM_DOMAIN) || 'https://vistarakrafts.com',
         defaultTitle: 'Vistāra Krafts — Bespoke Varmala Preservation & Optical Epoxy Storefront',
         defaultDescription: 'Official Vistāra Krafts (@resin.art.memories) E-Commerce Storefront in India. Preserved wedding varmalas in 50mm crystal blocks, ocean resin art, and ISO-9001 optical 3:1 & 2:1 epoxy systems with Pan-India express delivery.',
         defaultKeywords: 'Vistara Krafts, Vistāra Krafts, resin.art.memories, bridal varmala preservation India, wedding garland preservation in resin, 3:1 casting epoxy resin India, 2:1 deep pour river table epoxy, 1:1 doming epoxy, UV resin jewelry India, ocean wave resin tray, quartz geode wall art, epoxy pour calculator, HALS UV non-yellowing epoxy, HSN 39073010',
@@ -96,11 +96,11 @@
         instagramUrl: 'https://www.instagram.com/resin.art.memories',
         logoPath: './vistara-krafts-logo.jpg',
         siteUrl: (global && global.VISTARA_SITE_URL) || 'https://vistara-krafts.vercel.app',
-        futureCustomDomain: (global && global.VISTARA_CUSTOM_DOMAIN) || 'https://vistarakrafts.in'
+        futureCustomDomain: (global && global.VISTARA_CUSTOM_DOMAIN) || 'https://vistarakrafts.com'
       },
       seo: {
         siteUrl: (global && global.VISTARA_SITE_URL) || 'https://vistara-krafts.vercel.app',
-        futureCustomDomain: (global && global.VISTARA_CUSTOM_DOMAIN) || 'https://vistarakrafts.in',
+        futureCustomDomain: (global && global.VISTARA_CUSTOM_DOMAIN) || 'https://vistarakrafts.com',
         defaultTitle: 'Vistāra Krafts — Bespoke Varmala Preservation & Optical Epoxy Storefront',
         defaultDescription: 'Official Vistāra Krafts (@resin.art.memories) E-Commerce Storefront in India. Preserved wedding varmalas in 50mm crystal blocks, ocean resin art, and ISO-9001 optical 3:1 & 2:1 epoxy systems with Pan-India express delivery.',
         defaultKeywords: 'Vistara Krafts, Vistāra Krafts, resin.art.memories, bridal varmala preservation India, wedding garland preservation in resin, 3:1 casting epoxy resin India, 2:1 deep pour river table epoxy, 1:1 doming epoxy, UV resin jewelry India, ocean wave resin tray, quartz geode wall art, epoxy pour calculator, HALS UV non-yellowing epoxy, HSN 39073010',
@@ -130,7 +130,7 @@
         d1Binding: 'VISTARA_DB',
         kvBinding: 'VISTARA_SESSIONS',
         r2Binding: 'VISTARA_MEDIA',
-        r2PublicUrl: (global && global.CF_R2_PUBLIC_URL) || 'https://media.vistarakrafts.in',
+        r2PublicUrl: (global && global.CF_R2_PUBLIC_URL) || 'https://media.vistarakrafts.com',
         turnstileSiteKey: (global && global.CF_TURNSTILE_SITE_KEY) || 'CLIENT_TURNSTILE_SITE_KEY'
       },
       oauth: {
