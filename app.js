@@ -874,43 +874,43 @@
           <span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' ${isFav ? 1 : 0};" aria-hidden="true">${isFav ? 'favorite' : 'favorite_border'}</span>
         </button>
         <div>
-          <div class="relative w-full aspect-square rounded-xl bg-surface-container-low overflow-hidden mb-2.5 cursor-pointer" onclick="window.navigateTo('product', '${esc(p.id)}')">
-            <img src="${esc(p.image)}" alt="${esc(p.name)}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
-            <div class="absolute top-2.5 left-2.5 max-w-[calc(100%-3.75rem)] flex flex-col gap-1">
-              <span class="px-2.5 py-0.5 rounded-full bg-primary/95 backdrop-blur-xs text-on-primary font-label-sm text-[10px] uppercase font-semibold tracking-wider shadow-xs truncate block">${esc(p.badge)}</span>
+          <div class="relative w-full aspect-square rounded-xl bg-surface-container-low overflow-hidden mb-2 cursor-pointer" onclick="window.navigateTo('product', '${esc(p.id)}')">
+            <img src="${esc(p.image)}" alt="${esc(p.name)}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" loading="lazy">
+            <div class="absolute top-2 left-2 max-w-[calc(100%-3rem)] flex flex-col gap-1 pointer-events-none">
+              <span class="px-2 py-0.5 rounded-full bg-primary/90 text-on-primary font-label-sm text-[9.5px] uppercase font-semibold tracking-wider shadow-2xs truncate block">${esc(p.badge)}</span>
               ${affinityTag}
-            </div>
-            <div class="absolute bottom-0 inset-x-0 bg-primary/90 bg-gradient-to-t from-primary/95 via-primary/85 to-primary/75 px-2.5 py-1.5 flex items-center justify-between gap-1 text-[11px] font-spec-numeral text-white">
-              <span class="truncate">${p.category === 'keepsakes' ? 'Custom Keepsake' : 'Ratio ' + esc(p.ratio)}</span>
-              <span class="shrink-0">Depth ${esc(p.pourDepth)}</span>
             </div>
           </div>
           <div class="flex items-center justify-between gap-1 mb-1">
             <div class="flex items-center gap-1 min-w-0">
-              <span class="material-symbols-outlined text-secondary text-sm shrink-0" style="font-variation-settings: 'FILL' 1;" aria-hidden="true">star</span>
+              <span class="material-symbols-outlined text-secondary text-xs shrink-0" style="font-variation-settings: 'FILL' 1;" aria-hidden="true">star</span>
               <span class="font-spec-numeral text-xs text-primary font-semibold">${p.rating.toFixed(1)}</span>
               <span class="font-spec-numeral text-[11px] text-outline truncate">(${p.reviewsCount})</span>
             </div>
-            ${discountPct > 0 ? `<span class="font-spec-numeral text-[10px] font-bold px-1.5 py-0.5 rounded bg-[#ffe4de] text-[#9e3322] shrink-0">${discountPct}% OFF</span>` : ''}
+            ${discountPct > 0 ? `<span class="font-spec-numeral text-[9.5px] font-bold px-1.5 py-0.5 rounded bg-[#ffe4de] text-[#9e3322] shrink-0">${discountPct}% OFF</span>` : ''}
           </div>
-          <h2 class="font-title-md text-[13px] min-[360px]:text-[14px] sm:text-[15px] leading-snug text-primary font-semibold line-clamp-2 min-h-[2.4rem] cursor-pointer hover:text-secondary transition-colors break-words" onclick="window.navigateTo('product', '${esc(p.id)}')">
+          <h2 class="font-title-md text-[13.5px] min-[360px]:text-[14px] sm:text-[15px] leading-snug text-primary font-semibold line-clamp-2 min-h-[2.4rem] cursor-pointer hover:text-secondary transition-colors break-words" onclick="window.navigateTo('product', '${esc(p.id)}')">
             ${esc(p.shortName || p.name)}
           </h2>
-          <div class="flex flex-wrap gap-1 mt-1.5">
-            <span class="px-1.5 py-0.5 rounded bg-surface-container-high text-on-surface-variant font-label-sm text-[10px] truncate max-w-full">${esc(p.unitPriceLabel)}</span>
-            <span class="px-1.5 py-0.5 rounded bg-secondary-container/40 text-on-secondary-container font-label-sm text-[10px] shrink-0">${p.isCustomizable ? '✨ Personalizable' : 'Lab Certified'}</span>
+          <!-- Clear & Simplified Key Specifications -->
+          <div class="flex items-center gap-1.5 text-[10.5px] text-on-surface-variant font-spec-numeral mt-1 flex-wrap">
+            <span class="font-medium text-primary">${p.category === 'keepsakes' ? 'Custom Keepsake' : 'Ratio ' + esc(p.ratio)}</span>
+            <span class="text-outline/40">•</span>
+            <span>Depth ${esc(p.pourDepth)}</span>
+            <span class="text-outline/40">•</span>
+            <span class="text-on-surface-variant truncate max-w-[90px]">${esc(p.unitPriceLabel)}</span>
           </div>
         </div>
-        <div class="pt-2.5 mt-2 border-t border-surface-container flex flex-col gap-1.5">
+        <div class="pt-2 mt-1.5 border-t border-surface-container flex flex-col gap-1.5">
           <div class="flex items-center justify-between gap-1 flex-wrap">
             <div class="flex items-baseline gap-1.5 min-w-0 flex-wrap">
               <span id="card-price-${esc(p.id)}" class="font-spec-numeral text-sm min-[360px]:text-base sm:text-lg text-primary font-bold">${formatINR(activePrice)}</span>
               <span class="font-spec-numeral text-[10px] min-[360px]:text-[11px] text-outline line-through">${formatINR(p.regularPrice + (currentSize?.priceDelta || 0))}</span>
             </div>
-            <button type="button" onclick="window.navigateTo('product', '${esc(p.id)}')" class="min-h-[44px] px-1.5 sm:px-2 inline-flex items-center text-xs font-semibold text-secondary hover:underline cursor-pointer shrink-0">Details</button>
+            <button type="button" onclick="window.navigateTo('product', '${esc(p.id)}')" class="min-h-[44px] px-1.5 inline-flex items-center text-xs font-semibold text-secondary hover:underline cursor-pointer shrink-0">Details</button>
           </div>
-          <button type="button" onclick="window.handleQuickAdd(this, '${esc(p.id)}')" ${p.inStock === false ? 'disabled' : ''} class="btn-shimmer sotd-magnetic w-full h-11 rounded-xl ${p.inStock === false ? 'bg-surface-container text-on-surface-variant cursor-not-allowed opacity-60' : 'bg-primary hover:bg-primary-container text-on-primary cursor-pointer'} font-label-md text-xs font-semibold flex items-center justify-center gap-1.5 active:scale-[0.98] transition-all shadow-xs">
-            <span class="material-symbols-outlined text-base shrink-0" aria-hidden="true">${p.inStock === false ? 'block' : 'add_shopping_cart'}</span>
+          <button type="button" onclick="window.handleQuickAdd(this, '${esc(p.id)}')" ${p.inStock === false ? 'disabled' : ''} class="btn-shimmer sotd-magnetic w-full h-10 rounded-xl ${p.inStock === false ? 'bg-surface-container text-on-surface-variant cursor-not-allowed opacity-60' : 'bg-primary hover:bg-primary-container text-on-primary cursor-pointer'} font-label-md text-xs font-semibold flex items-center justify-center gap-1.5 active:scale-[0.98] transition-all shadow-2xs">
+            <span class="material-symbols-outlined text-[17px] shrink-0" aria-hidden="true">${p.inStock === false ? 'block' : 'add_shopping_cart'}</span>
             <span class="truncate">${p.inStock === false ? 'Sold Out' : 'Quick Add'}</span>
           </button>
 
@@ -1795,11 +1795,11 @@
     ];
 
     return `
-      <div class="route-view-enter flex flex-col w-full max-w-7xl mx-auto px-3 sm:px-8 py-3 sm:py-5 gap-2.5 sm:gap-4">
-        <!-- Compact Navigation & Breadcrumb Row -->
-        <div class="flex items-center justify-between gap-2 min-w-0">
-          <div class="flex items-center gap-1.5 text-xs text-on-surface-variant font-label-sm min-w-0">
-            <button type="button" onclick="window.handleBackButton('home')" aria-label="Go back to previous page" class="inline-flex items-center gap-1 text-xs font-semibold text-primary/80 hover:text-primary py-1 px-2.5 rounded-lg bg-surface-container-low hover:bg-surface-container border border-[#e4e0d8] transition-colors cursor-pointer shrink-0">
+      <div class="route-view-enter flex flex-col w-full max-w-7xl mx-auto px-3 sm:px-8 py-3 sm:py-5 pb-44 sm:pb-28 gap-3 sm:gap-4">
+        <!-- 1. Dedicated Back Navigation & Breadcrumb Element -->
+        <nav aria-label="Breadcrumb Navigation" class="flex items-center w-full">
+          <div class="inline-flex items-center gap-1.5 text-xs text-on-surface-variant font-label-sm">
+            <button type="button" onclick="window.handleBackButton('home')" aria-label="Go back to previous page" class="inline-flex items-center gap-1.5 text-xs font-semibold text-primary/80 hover:text-primary py-1 px-2.5 rounded-lg bg-surface-container-low hover:bg-surface-container border border-[#e4e0d8] transition-colors cursor-pointer shrink-0">
               <span class="material-symbols-outlined text-[15px]" aria-hidden="true">arrow_back</span>
               <span>Back to Discover</span>
             </button>
@@ -1808,25 +1808,31 @@
             <span class="material-symbols-outlined text-[13px] text-outline/60" aria-hidden="true">chevron_right</span>
             <span class="text-secondary font-bold truncate">Catalogue</span>
           </div>
-          <div class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-surface-container-low border border-[#e4e0d8] text-[10.5px] sm:text-xs text-primary font-semibold shrink-0">
-            <span class="material-symbols-outlined text-secondary text-[14px]" aria-hidden="true">verified</span>
-            <span class="hidden sm:inline">Tested &amp; Certified • </span><span>Batch 2026-C</span>
+        </nav>
+
+        <!-- 2. Catalogue Header & Dedicated Properly Aligned Certification Badge -->
+        <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-2.5 pt-0.5">
+          <div class="flex flex-col gap-1 max-w-2xl min-w-0">
+            <h1 class="font-headline-lg text-2xl sm:text-3xl lg:text-4xl text-primary font-bold tracking-tight leading-snug break-words">
+              Keepsake Art &amp; Epoxy Resin Supplies
+            </h1>
+            <p class="text-xs sm:text-sm text-on-surface-variant leading-relaxed">
+              Handcrafted flower preservation, ocean decor, and quality 3:1, 2:1 &amp; UV resin formulas.
+            </p>
+          </div>
+          <!-- Separate Properly Aligned Certification Badge Element -->
+          <div class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-surface-container-low border border-[#e4e0d8] text-xs text-primary font-semibold self-start sm:self-end shrink-0 shadow-2xs">
+            <span class="material-symbols-outlined text-secondary text-base" aria-hidden="true">verified</span>
+            <span>Tested &amp; Certified • Batch 2026-C</span>
           </div>
         </div>
 
-        <!-- Catalogue Title & Editorial Subtitle -->
-        <div class="flex flex-col gap-0.5">
-          <h1 class="font-headline-lg text-xl sm:text-3xl text-primary font-bold tracking-tight leading-tight">
-            Keepsake Art &amp; Epoxy Resin Supplies
-          </h1>
-          <p class="text-[11.5px] sm:text-xs text-on-surface-variant leading-normal">
-            Handcrafted flower preservation, ocean decor, and quality 3:1, 2:1 &amp; UV resin formulas.
-          </p>
-        </div>
-
-        <!-- Category & Gifting Filter Rail -->
-        <div class="flex flex-col gap-2 pt-0.5">
-          <!-- Horizontal Category Pills with visual edge fade -->
+        <!-- 3. Distinct Category Filter Rail -->
+        <div class="flex flex-col gap-1.5 pt-1">
+          <div class="flex items-center justify-between">
+            <span class="text-[11px] font-bold uppercase tracking-wider text-on-surface-variant/90">Categories</span>
+            <span class="text-[10px] text-outline hidden sm:inline">Swipe horizontally to explore</span>
+          </div>
           <div class="relative w-full min-w-0">
             <div class="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5 scroll-smooth overscroll-x-contain touch-pan-x [mask-image:linear-gradient(to_right,black_calc(100%-28px),transparent)] sm:[mask-image:none]">
               ${categories.map(cat => `
@@ -1836,33 +1842,33 @@
               `).join('')}
             </div>
           </div>
-
-          <!-- Feed Curation & Gifting Quick Bar -->
-          <div class="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5 shrink-0">
-            <span class="text-[11px] font-bold uppercase tracking-wider text-secondary flex items-center gap-1 shrink-0">
-              <span class="material-symbols-outlined text-[15px]" aria-hidden="true">featured_seasonal_and_gifts</span>
-              <span>Gifts:</span>
-            </span>
-            <button type="button" onclick="window.setFeedPersona('masculine')" class="h-8 px-2.5 rounded-full text-xs font-bold transition flex items-center gap-1 shrink-0 cursor-pointer ${AppState.feedPersona === 'masculine' || AppState.catalogSort === 'gifts_him' ? 'bg-primary text-white shadow-2xs' : 'bg-surface-container-low text-primary border border-[#e4e0d8] hover:border-secondary'}">
-              <span>👔 For Him</span>
-            </button>
-            <button type="button" onclick="window.setFeedPersona('feminine')" class="h-8 px-2.5 rounded-full text-xs font-bold transition flex items-center gap-1 shrink-0 cursor-pointer ${AppState.feedPersona === 'feminine' || AppState.catalogSort === 'gifts_her' ? 'bg-primary text-white shadow-2xs' : 'bg-surface-container-low text-primary border border-[#e4e0d8] hover:border-secondary'}">
-              <span>🌸 For Her</span>
-            </button>
-            <button type="button" onclick="window.setCatalogSort('gifting')" class="h-8 px-2.5 rounded-full text-xs font-bold transition flex items-center gap-1 shrink-0 cursor-pointer ${AppState.catalogSort === 'gifting' ? 'bg-secondary text-white shadow-2xs' : 'bg-surface-container-low text-primary border border-[#e4e0d8] hover:border-secondary'}">
-              <span class="material-symbols-outlined text-[14px]" aria-hidden="true">featured_seasonal_and_gifts</span>
-              <span>🎁 Gift Sets</span>
-            </button>
-          </div>
         </div>
 
-        <!-- Compact Search & Specs Filter Controls Bar -->
-        <div class="md:sticky md:top-[93px] z-30 bg-surface/95 backdrop-blur-md py-1 flex items-center gap-2 w-full min-w-0">
-          <!-- Search Input -->
+        <!-- 4. Distinct Gifting Shortcuts Rail (Cleanly Separated) -->
+        <div class="flex items-center gap-2 overflow-x-auto no-scrollbar py-1 shrink-0 border-t border-[#e4e0d8]/60 pt-2">
+          <span class="text-[11px] font-bold uppercase tracking-wider text-secondary flex items-center gap-1 shrink-0">
+            <span class="material-symbols-outlined text-[15px]" aria-hidden="true">featured_seasonal_and_gifts</span>
+            <span>Gifts:</span>
+          </span>
+          <button type="button" onclick="window.setFeedPersona('masculine')" class="h-8 px-3 rounded-full text-xs font-bold transition flex items-center gap-1.5 shrink-0 cursor-pointer ${AppState.feedPersona === 'masculine' || AppState.catalogSort === 'gifts_him' ? 'bg-primary text-white shadow-2xs' : 'bg-surface-container-low text-primary border border-[#e4e0d8] hover:border-secondary'}">
+            <span>👔 For Him</span>
+          </button>
+          <button type="button" onclick="window.setFeedPersona('feminine')" class="h-8 px-3 rounded-full text-xs font-bold transition flex items-center gap-1.5 shrink-0 cursor-pointer ${AppState.feedPersona === 'feminine' || AppState.catalogSort === 'gifts_her' ? 'bg-primary text-white shadow-2xs' : 'bg-surface-container-low text-primary border border-[#e4e0d8] hover:border-secondary'}">
+            <span>🌸 For Her</span>
+          </button>
+          <button type="button" onclick="window.setCatalogSort('gifting')" class="h-8 px-3 rounded-full text-xs font-bold transition flex items-center gap-1.5 shrink-0 cursor-pointer ${AppState.catalogSort === 'gifting' ? 'bg-secondary text-white shadow-2xs' : 'bg-surface-container-low text-primary border border-[#e4e0d8] hover:border-secondary'}">
+            <span class="material-symbols-outlined text-[14px]" aria-hidden="true">featured_seasonal_and_gifts</span>
+            <span>🎁 Gift Sets</span>
+          </button>
+        </div>
+
+        <!-- 5. Search (Primary Control) & Specs Filter (Compact Secondary Control) -->
+        <div class="md:sticky md:top-[93px] z-30 bg-surface/95 backdrop-blur-md py-1.5 flex items-center gap-2 w-full min-w-0">
+          <!-- Primary Search Input -->
           <div class="relative flex-1 min-w-0">
             <label for="catalog-search-input" class="sr-only">Search catalogue products</label>
             <span class="material-symbols-outlined text-on-surface-variant text-[18px] absolute left-3 top-2.5 pointer-events-none" aria-hidden="true">search</span>
-            <input id="catalog-search-input" type="text" aria-label="Search catalogue products" value="${esc(AppState.catalogSearch)}" oninput="window.setCatalogSearch(this.value)" placeholder="Search keepsakes, resin, pigments..." class="w-full h-10 pl-9 pr-8 rounded-xl bg-white border border-[#e4e0d8] text-xs text-primary placeholder:text-outline/70 focus:outline-none focus:border-primary">
+            <input id="catalog-search-input" type="text" aria-label="Search catalogue products" value="${esc(AppState.catalogSearch)}" oninput="window.setCatalogSearch(this.value)" placeholder="Search keepsakes, resin, pigments..." class="w-full h-10 pl-9 pr-8 rounded-xl bg-white border border-[#e4e0d8] shadow-2xs text-xs sm:text-sm text-primary placeholder:text-outline/70 focus:outline-none focus:border-primary">
             ${AppState.catalogSearch ? `
               <button type="button" aria-label="Clear search" onclick="window.setCatalogSearch('')" class="w-8 h-8 absolute right-1 top-1 flex items-center justify-center text-outline hover:text-primary cursor-pointer">
                 <span class="material-symbols-outlined text-sm" aria-hidden="true">close</span>
@@ -1870,17 +1876,17 @@
             ` : ''}
           </div>
 
-          <!-- Specs Filter Trigger -->
-          <button type="button" onclick="window.toggleCatalogFilterDrawer(true)" class="h-10 px-3 sm:px-4 rounded-xl bg-primary text-on-primary font-label-sm text-xs font-semibold flex items-center justify-center gap-1.5 shadow-2xs hover:bg-primary/95 transition-all cursor-pointer shrink-0">
-            <span class="material-symbols-outlined text-[17px]" aria-hidden="true">tune</span>
+          <!-- Compact Secondary Specs Filter -->
+          <button type="button" onclick="window.toggleCatalogFilterDrawer(true)" class="h-10 px-3 sm:px-3.5 rounded-xl bg-surface-container-low hover:bg-surface-container border border-[#e4e0d8] hover:border-primary text-primary font-label-sm text-xs font-semibold flex items-center justify-center gap-1.5 transition-all cursor-pointer shrink-0 shadow-2xs">
+            <span class="material-symbols-outlined text-[17px] text-secondary" aria-hidden="true">tune</span>
             <span class="whitespace-nowrap">Specs Filter</span>
             ${(AppState.catalogRatioFilter !== 'all' || AppState.catalogMaxPrice < 12000) ? `
-              <span class="w-2 h-2 rounded-full bg-[#ffdeae] animate-pulse"></span>
+              <span class="w-1.5 h-1.5 rounded-full bg-[#9e3322]"></span>
             ` : ''}
           </button>
         </div>
 
-        <!-- Streamlined Metadata & Sort Bar -->
+        <!-- 6. Streamlined Metadata & Sort Bar -->
         <div class="flex items-center justify-between gap-2 text-xs py-1 border-b border-[#e4e0d8]/80">
           <div class="flex items-center gap-1.5 min-w-0">
             <span class="font-spec-numeral font-bold text-primary shrink-0">${filtered.length} Products</span>
@@ -1918,7 +1924,7 @@
           </div>
         </div>
 
-        <!-- Product Grid or Empty State -->
+        <!-- 7. Product Grid or Empty State -->
         ${filtered.length === 0 ? `
           <div class="ram-card p-10 text-center flex flex-col items-center gap-3.5 my-4 bg-white">
             <div class="relative w-24 h-24 flex items-center justify-center lottie-anim-float">
