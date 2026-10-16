@@ -6312,7 +6312,7 @@
         if (res.isOfflineBackup) {
           window.showToast(
             `Order #${res.order.orderId} Saved Locally (Offline Mode)`,
-            `Payment recorded locally via ${paymentMethod}. Will sync to Cloudflare KV once reconnected.`
+            `Payment recorded locally via ${paymentMethod}. Will sync to Supabase once reconnected.`
           );
         } else {
           window.showToast(
@@ -6439,7 +6439,7 @@
     if (isConnected) {
       hideOfflineBanner();
       wasNetworkOffline = false;
-      window.showToast('Connection Restored', 'Atelier online. Synchronizing studio queue with Cloudflare Edge.');
+      window.showToast('Connection Restored', 'Atelier online. Synchronizing studio queue with Supabase.');
       if (Store && typeof Store.syncPendingEdgeState === 'function') {
         Store.syncPendingEdgeState();
       }

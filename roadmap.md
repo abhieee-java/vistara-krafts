@@ -2,7 +2,7 @@
 
 > **Current Version:** `1.0.0` (Production Release Candidate)  
 > **Target Release:** Q4 2026  
-> **Production Target:** `https://vistarakrafts.in` (currently hosted on Cloudflare Pages / Vercel preview)  
+> **Production Target:** `https://vistarakrafts.in` (hosted on Vercel preview with Supabase backend)  
 
 ---
 
@@ -20,8 +20,8 @@ gantt
     60/30/10 Warm Gallery Palette    :done, p4, 2026-10-06, 2026-10-10
     3D Liquid Resin Specimen Orb      :done, p5, 2026-10-11, 2026-10-13
     Two-Part Auth & Persona Curation  :done, p6, 2026-10-14, 2026-10-15
-    section Phase 7–10 (Edge & Scale)
-    Cloudflare D1 & KV Edge Serverless :active, p7, 2026-10-16, 2026-10-25
+    section Phase 7–10 (Database & Scale)
+    Supabase PostgreSQL & Cloudinary :done, p7, 2026-10-16, 2026-10-16
     Custom Domain & Live Razorpay     : p8, 2026-10-26, 2026-11-05
     BlueDart Live Courier Tracking    : p9, 2026-11-06, 2026-11-18
     WebGL 3D Interactive Keepsake AR   : p10, 2026-11-19, 2026-12-10
@@ -71,15 +71,16 @@ gantt
 
 ### 🚀 Active & Upcoming Milestones
 
-#### Phase 7: Cloudflare Edge Migration & Database Binding (Active)
-- [ ] Connect production Cloudflare D1 database (`vistara_krafts_db`) to Pages Function `/api/*`.
-- [ ] Deploy Edge KV namespace for stateless session token validation and instant logout revocation.
-- [ ] Bind Cloudflare R2 bucket (`vistara-krafts-media`) for high-resolution customer floral uploads.
-- [ ] Swap development Turnstile key (`1x00000000000000000000AA`) with client production key.
+#### Phase 7: Supabase PostgreSQL & Cloudinary Migration (Completed)
+- [x] Create comprehensive PostgreSQL 15+ schema in `supabase/schema.sql` spanning 8 relational tables.
+- [x] Configure PostgreSQL Row Level Security (RLS) policies and `supabase_realtime` replication.
+- [x] Implement Supabase Auth adapter supporting Email/Password, 1-Click OAuth (Google & Apple PKCE), and 2-part persona curation.
+- [x] Implement Cloudinary responsive image optimization (`f_auto,q_auto,w_800`) and client-side unsigned upload adapter.
+- [x] Completely decommission and delete all remote and local Cloudflare resources.
 
 #### Phase 8: Custom Domain & Live Razorpay Integration
-- [ ] Bind custom domain `https://vistarakrafts.in` with automatic Cloudflare Universal SSL.
-- [ ] Connect Razorpay live webhook endpoint (`/api/payments/verify`) with HMAC SHA-256 signature verification.
+- [x] Verify production readiness across all 25 automated test suites in `verify-storefront.mjs`.
+- [ ] Connect Razorpay live webhook endpoint with HMAC SHA-256 signature verification.
 - [ ] Issue automatic GST invoices on order completion.
 
 #### Phase 9: Real-Time Courier Webhooks & WhatsApp Updates

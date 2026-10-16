@@ -2,7 +2,7 @@
 
 > **Document Status:** Active Engineering Invariant Ledger  
 > **Last Audited:** October 2026  
-> **Architecture Scope:** Client Storefront SPA (`index.html`, `app.js`, `styles.css`, `store-bridge.js`), Cloudflare D1/Pages Functions, and Automated Quality Gates  
+> **Architecture Scope:** Client Storefront SPA (`index.html`, `app.js`, `styles.css`, `store-bridge.js`), Supabase PostgreSQL / Auth Adapter, and Automated Quality Gates  
 
 ---
 
@@ -29,7 +29,7 @@ Each issue is classified under our four-tier severity standard:
 | `ISS-002` | **P2** | **Mitigated** | `store-bridge.js` | Safari Private Browsing & Sandboxed `<iframe>` `localStorage` SecurityError. |
 | `ISS-003` | **P3** | **Mitigated** | `verify-storefront.mjs` | Headless Chrome CDP viewport dimension desynchronization (800×600 default). |
 | `ISS-004` | **P3** | **Mitigated** | `app.js` / Auth API | In-App Social Browser (Instagram/FB WebView) OAuth popup suppression. |
-| `ISS-005` | **P3** | **Mitigated** | `app.js` / Cloudflare D1 | Edge Network Cold-Start Query Latency vs Optimistic Local Mock Sync. |
+| `ISS-005` | **P3** | **Mitigated** | `app.js` / Supabase | Network Latency vs Optimistic Local Mock Sync with Single-Flight Locking. |
 | `ISS-006` | **P3** | **Mitigated** | `index.html` / `styles.css` | iOS Mobile Safari Dynamic Viewport Height (`100vh` bottom clipping). |
 | `ISS-007` | **P2** | **Mitigated** | `store-bridge.js` | Web Crypto API (`crypto.subtle`) unavailability in non-secure HTTP origins. |
 | `ISS-008` | **P4** | **By Design** | `index.html` / Auth Modal | Complete omission of "Universal" curation button from all UI views. |
@@ -178,11 +178,11 @@ Each issue is classified under our four-tier severity standard:
 
 ---
 
-### ISS-005: Cloudflare D1 Cold-Start Query Latency vs Optimistic Local Mock Sync
+### ISS-005: Supabase Network Latency vs Optimistic Local Mock Sync
 
 - **Affected Files:** [`store-bridge.js`](file:///C:/Users/Dell/.gemini/antigravity/scratch/stitch_potry_e_commerce_storefront/store-bridge.js), [`app.js`](file:///C:/Users/Dell/.gemini/antigravity/scratch/stitch_potry_e_commerce_storefront/app.js)
 - **Severity:** P3 (Minor)
-- **Impact:** In local mock mode, auth and cart updates take `< 2ms`. Over the Cloudflare Edge network, initial cold-start queries to D1 can take 35–65ms. If a user double-clicks the "Sign In" button, duplicate requests could be dispatched.
+- **Impact:** In local mock mode, auth and cart updates take `< 2ms`. Over external networks, queries can take 35–65ms. If a user double-clicks the "Sign In" button, duplicate requests could be dispatched.
 - **Hardened Mitigation:**
   All form buttons implement atomic single-flight locking:
   1. Upon click, the submit button is immediately assigned `disabled = true` and `aria-busy = "true"`.
@@ -210,10 +210,10 @@ Each issue is classified under our four-tier severity standard:
 
 - **Affected Files:** [`store-bridge.js`](file:///C:/Users/Dell/.gemini/antigravity/scratch/stitch_potry_e_commerce_storefront/store-bridge.js)
 - **Severity:** P2 (Major)
-- **Impact:** Client-side PBKDF2 password derivation (50,000 iterations) relies on `window.crypto.subtle`. Browsers strictly disable `crypto.subtle` in insecure contexts (`http://`), except on `localhost`.
+- **Impact:** Client-side PBKDF2 password derivation relies on `window.crypto.subtle`. Browsers strictly disable `crypto.subtle` in insecure contexts (`http://`), except on `localhost`.
 - **Hardened Mitigation:**
-  1. Production domain [`https://vistarakrafts.com`](file:///C:/Users/Dell/.gemini/antigravity/scratch/stitch_potry_e_commerce_storefront/index.html) enforces HTTP-to-HTTPS redirect at Cloudflare Edge with HSTS preloaded (`max-age=63072000; includeSubDomains; preload`).
-  2. In local test environments running over raw IP addresses (`http://192.168.x.x`), `store-bridge.js` detects `!window.crypto?.subtle` and falls back to a clean deterministic SHA-256 fallback with console security warning for developer visibility.
+  1. Production domain [`https://vistarakrafts.com`](file:///C:/Users/Dell/.gemini/antigravity/scratch/stitch_potry_e_commerce_storefront/index.html) enforces HTTP-to-HTTPS redirect with HSTS preloaded (`max-age=63072000; includeSubDomains; preload`).
+  2. In local test environments running over raw IP addresses (`http://192.168.x.x`), `store-bridge.js` detects `!window.crypto?.subtle` and falls back to a clean deterministic fallback with console security warning for developer visibility.
 
 ---
 
@@ -228,7 +228,7 @@ These items represent explicit design decisions commanded by the product owner. 
 
 ### ISS-009: Zero Administrative Panel or CMS UI in This Codebase
 - **Mandate:** This repository is strictly a customer-facing luxury storefront. No `/admin` route, admin login, CMS forms, or product creation tools may exist here.
-- **Implementation:** Admin operations are completely decoupled into an external management repository. That external service writes to the shared Cloudflare D1 database and R2 media bucket. The storefront operates purely as a high-speed reflection of that data.
+- **Implementation:** Admin operations are completely decoupled into an external management repository (`vistara-krafts-admin`). That external service writes to the shared Supabase PostgreSQL database and Cloudinary media bucket. The storefront operates purely as a high-speed reflection of that data.
 
 ### ISS-010: Two-Part Authentication Sequencing
 - **Mandate:** Gender/curation preference must never be asked during initial sign-in.

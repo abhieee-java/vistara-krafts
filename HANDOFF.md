@@ -10,7 +10,7 @@
 
 ## 1. Executive Summary & Handover Scope
 
-This document provides a turnkey operational handover of the entire Vistāra Krafts & POTRY Ceramics e-commerce platform. Both frontends (Storefront and Admin Portal) are fully engineered, verified, and deployed on Vercel. The backend is architected exclusively for Cloudflare (Pages Functions, D1 SQL, R2 Media Storage, KV, and Turnstile) paired with Razorpay for payment capture.
+This document provides a turnkey operational handover of the entire Vistāra Krafts & POTRY Ceramics e-commerce platform. Both frontends (Storefront and Admin Portal) are fully engineered and verified. The backend is architected exclusively for **Supabase** (PostgreSQL 15+ database, Row-Level Security, and Supabase Auth) paired with **Cloudinary** for image storage and CDN optimization, and Razorpay for payment capture. All Cloudflare infrastructure has been permanently decommissioned and purged.
 
 ---
 
@@ -18,33 +18,34 @@ This document provides a turnkey operational handover of the entire Vistāra Kra
 
 | System Component | Repository Link | Live Production URL | Primary Tech Stack |
 | :--- | :--- | :--- | :--- |
-| **Customer Storefront** | [`abhieee-java/vistara-krafts`](https://github.com/abhieee-java/vistara-krafts) | [`vistara-krafts.vercel.app`](https://vistara-krafts.vercel.app) | Vanilla JS SPA · 120fps Kinetic CSS · Edge API |
-| **Owner Admin Portal** | [`abhieee-java/vistara-krafts-admin`](https://github.com/abhieee-java/vistara-krafts-admin) | [`vistara-krafts-admin.vercel.app`](https://vistara-krafts-admin.vercel.app) | React 19 · TypeScript · Vite · Tailwind v4 |
-| **Edge API Gateway** | Inside Storefront (`/functions/api/`) | `https://vistara-krafts.vercel.app/api` | Cloudflare Pages Functions (`[[route]].js`) |
-| **Serverless Database** | Schema in `cloudflare/schema.sql` | Cloudflare D1 (`vistara_krafts_db`) | Serverless SQLite at the Edge |
-| **Media & Assets Bucket** | Cloudflare R2 | `https://media.vistarakrafts.com` | S3-Compatible Cloudflare R2 Bucket |
+| **Customer Storefront** | [`abhieee-java/vistara-krafts`](https://github.com/abhieee-java/vistara-krafts) | [`vistara-krafts.vercel.app`](https://vistara-krafts.vercel.app) | Vanilla JS SPA · 120fps Kinetic CSS · Supabase Adapter |
+| **Owner Admin Portal** | [`abhieee-java/vistara-krafts-admin`](https://github.com/abhieee-java/vistara-krafts-admin) | [`vistara-krafts-admin.vercel.app`](https://vistara-krafts-admin.vercel.app) | React 19 · TypeScript · Vite · Tailwind v4 · Supabase Client |
+| **Database & Auth** | Supabase (`supabase/schema.sql`) | `https://xyz.supabase.co` | PostgreSQL 15+ · Row-Level Security · Supabase Auth |
+| **Media & CDN Storage** | Cloudinary (`cloudinary-config.js`) | `https://res.cloudinary.com/vistara-krafts` | Cloudinary CDN · Auto WebP/AVIF · Dynamic Transforms |
 
 ---
 
 ## 3. Environment Variables & Secret Configuration Matrix
 
-### 1. Storefront Vercel Configuration (`vistara-krafts`)
+### 1. Storefront Configuration (`vistara-krafts`)
+Configured in `supabase-config.js` and `cloudinary-config.js` or via environment variables:
 | Variable Key | Required | Public / Secret | Description |
 | :--- | :---: | :---: | :--- |
-| `TURNSTILE_SITE_KEY` | Yes | Public | Cloudflare Turnstile public widget site key. |
-| `TURNSTILE_SECRET_KEY` | Yes | Secret | Cloudflare Turnstile server verification secret. |
-| `VITE_RAZORPAY_KEY_ID` | Yes | Public | Razorpay Key ID (`rzp_live_...` or `rzp_test_...`). |
-| `RAZORPAY_KEY_SECRET` | Yes | Secret | Razorpay Key Secret for HMAC verification. |
+| `SUPABASE_URL` | Yes | Public | Supabase Project URL (`https://YOUR_PROJECT_ID.supabase.co`). |
+| `SUPABASE_ANON_KEY` | Yes | Public | Supabase Anon Key from Dashboard > Project Settings > API. |
+| `CLOUDINARY_CLOUD_NAME` | Yes | Public | Cloudinary Cloud Name. |
+| `CLOUDINARY_UPLOAD_PRESET`| Yes | Public | Unsigned Upload Preset for product/custom floral photos. |
 | `SITE_URL` | Yes | Public | Canonical production URL (`https://vistarakrafts.com`). |
 | `ENVIRONMENT` | Yes | Public | Set to `production`. |
 
-### 2. Admin Portal Vercel Configuration (`vistara-krafts-admin`)
+### 2. Admin Portal Configuration (`vistara-krafts-admin`)
 | Variable Key | Required | Public / Secret | Description |
 | :--- | :---: | :---: | :--- |
-| `VITE_USE_MOCK_SERVICES` | Yes | Public | Set to `false` when connecting to live Cloudflare backend. |
-| `VITE_API_URL` | Yes | Public | Base API URL: `https://vistara-krafts.vercel.app/api`. |
-| `VITE_RAZORPAY_KEY_ID` | Yes | Public | Razorpay Key ID for payments dashboard reconciliation. |
-| `VITE_R2_PUBLIC_DOMAIN` | Yes | Public | Base CDN URL: `https://media.vistarakrafts.com`. |
+| `VITE_USE_MOCK_SERVICES` | Yes | Public | Set to `false` when connecting to live Supabase backend. |
+| `VITE_SUPABASE_URL` | Yes | Public | Base Supabase Project URL. |
+| `VITE_SUPABASE_ANON_KEY` | Yes | Public | Supabase Anon Key. |
+| `VITE_CLOUDINARY_CLOUD_NAME`| Yes | Public | Cloudinary Cloud Name. |
+| `VITE_CLOUDINARY_UPLOAD_PRESET`| Yes | Public | Cloudinary Upload Preset. |
 
 ---
 
@@ -105,10 +106,10 @@ npm run build
 ```
 *Expected output: `✓ built in ~4s` with exit code 0.*
 
-### 3. Deploying Schema Changes to Cloudflare D1
-```bash
-npx wrangler d1 execute vistara_krafts_db --remote --file=./cloudflare/schema.sql
-```
+### 3. Deploying Schema Changes to Supabase
+1. Navigate to the **SQL Editor** in your Supabase Dashboard (`https://supabase.com/dashboard/project/YOUR_PROJECT_ID/sql`).
+2. Paste the contents of [`supabase/schema.sql`](file:///C:/Users/Dell/.gemini/antigravity/scratch/stitch_potry_e_commerce_storefront/supabase/schema.sql) and execute.
+3. Verify that all 8 tables and Row-Level Security policies are created.
 
 ---
 
@@ -116,10 +117,10 @@ npx wrangler d1 execute vistara_krafts_db --remote --file=./cloudflare/schema.sq
 
 | Symptom / Incident | Root Cause | Immediate Remediation |
 | :--- | :--- | :--- |
-| **CORS error on Image Upload** | R2 bucket missing frontend origin headers | Re-apply `r2-cors.json` using `npx wrangler r2 bucket cors set vistara-media --file=./r2-cors.json`. |
-| **Orders not showing in Admin** | `VITE_USE_MOCK_SERVICES` mismatch | If backend D1 is not yet provisioned, set `VITE_USE_MOCK_SERVICES=true`. Once live, set to `false`. |
+| **Cloudinary Upload Fails** | Missing or non-unsigned upload preset | Verify `CLOUDINARY_UPLOAD_PRESET` exists and is configured as **Unsigned** in Cloudinary Dashboard > Settings > Upload. |
+| **Orders not showing in Admin** | `VITE_USE_MOCK_SERVICES` mismatch | If live Supabase DB is not yet provisioned, set `VITE_USE_MOCK_SERVICES=true`. Once live, set to `false`. |
 | **Cart throws QuotaExceededError** | Safari Private Browsing blocking localStorage | Storefront's `store-bridge.js` automatically falls back to in-memory state; no action required. |
-| **Turnstile Challenge Failing** | Secret key mismatch or domain not whitelisted | Add domain to Cloudflare Turnstile dashboard and verify `TURNSTILE_SECRET_KEY`. |
+| **Supabase Auth Error** | Incorrect Supabase Anon Key or Project URL | Check `supabase-config.js` or `.env` and verify credentials against Supabase Project Settings > API. |
 | **Missing Varieties on Storefront** | Varieties were intentionally left blank | Invariant behavior: blank fields indicate an intact product with zero variations. |
 
 ---

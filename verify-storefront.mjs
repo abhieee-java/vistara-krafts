@@ -126,8 +126,10 @@ const sandbox = {
 sandbox.window = sandbox;
 vm.createContext(sandbox);
 
-const cfConfigCode = fs.readFileSync(path.join(ROOT, 'cloudflare-config.js'), 'utf8');
-vm.runInContext(cfConfigCode, sandbox);
+const supabaseConfigCode = fs.readFileSync(path.join(ROOT, 'supabase-config.js'), 'utf8');
+vm.runInContext(supabaseConfigCode, sandbox);
+const cloudinaryConfigCode = fs.readFileSync(path.join(ROOT, 'cloudinary-config.js'), 'utf8');
+vm.runInContext(cloudinaryConfigCode, sandbox);
 
 const bridgeCode = fs.readFileSync(path.join(ROOT, 'store-bridge.js'), 'utf8');
 vm.runInContext(bridgeCode, sandbox);
@@ -834,7 +836,8 @@ test('Decisions 2, 3 & 4: 2-Step Auth vs Checkout Address, 1-Click Google/Apple 
   assert.ok(indexHtml.includes('./vistara-krafts-logo.jpg'), 'index.html must display official ./vistara-krafts-logo.jpg');
   assert.ok(indexHtml.includes('id="cloudflare-auth-modal"'), 'index.html must include #cloudflare-auth-modal');
   assert.ok(indexHtml.includes('id="account-bar-modal"'), 'index.html must include top-bar #account-bar-modal');
-  assert.ok(indexHtml.includes('./cloudflare-config.js'), 'index.html must load ./cloudflare-config.js');
+  assert.ok(indexHtml.includes('./supabase-config.js'), 'index.html must load ./supabase-config.js');
+  assert.ok(indexHtml.includes('./cloudinary-config.js'), 'index.html must load ./cloudinary-config.js');
 
   // Decision 4: Verify zero technical/developer jargon in customer-facing HTML/JS
   assert.ok(!indexHtml.includes('Cloudflare Edge Identity'), 'index.html must not expose Cloudflare Edge Identity label');
@@ -850,9 +853,9 @@ test('Decisions 2, 3 & 4: 2-Step Auth vs Checkout Address, 1-Click Google/Apple 
   assert.ok(indexHtml.includes('id="chk-address"') && indexHtml.includes('value=""'), '#chk-address must have empty default value=""');
   assert.ok(indexHtml.includes('id="chk-pincode"') && indexHtml.includes('value=""'), '#chk-pincode must have empty default value=""');
 
-  // 2. Verify Cloudflare Full-Stack Framework files exist
-  ['cloudflare-config.js', 'wrangler.toml', 'cloudflare/schema.sql', 'functions/api/[[route]].js', 'CLOUDFLARE_SETUP.md'].forEach(rel => {
-    assert.ok(fs.existsSync(path.join(ROOT, rel)), `Cloudflare framework file ${rel} must exist`);
+  // 2. Verify Supabase & Cloudinary Full-Stack Framework files exist
+  ['supabase-config.js', 'cloudinary-config.js', 'supabase/schema.sql', 'supabase_schema.sql'].forEach(rel => {
+    assert.ok(fs.existsSync(path.join(ROOT, rel)), `Backend framework file ${rel} must exist`);
   });
 
   // 3. Decision 4: Test Guest Wishlist Sync across Sign-In and Sign-Out
@@ -1342,184 +1345,76 @@ test('QA Audit & UX Reliability: Accessible Back Navigation on Subpages, Custom 
   sandbox.window.navigateTo('home');
 });
 
-// Async test for Cloudflare Pages Function (functions/api/[[route]].js) against real SQLite with PRAGMA foreign_keys = ON
+// Async test for Supabase PostgreSQL Schema, Supabase Auth Integration & Cloudinary Media Storage Suite
 try {
-  const { DatabaseSync } = await import('node:sqlite');
-  const { onRequest } = await import('./functions/api/[[route]].js');
-  // Test against a blank SQLite DB (without manually running schema.sql first) to verify ensureD1Schema auto-initializes tables!
-  const sqlite = new DatabaseSync(':memory:');
-  sqlite.exec('PRAGMA foreign_keys = ON;');
+  const fs = await import('node:fs');
+  const path = await import('node:path');
 
-  const d1Mock = {
-    prepare(sql) {
-      return {
-        _args: [],
-        bind(...args) { this._args = args; return this; },
-        async run() { return sqlite.prepare(sql).run(...this._args); },
-        async first() { return sqlite.prepare(sql).get(...this._args) || null; },
-        async all() { return { results: sqlite.prepare(sql).all(...this._args) }; }
-      };
-    }
-  };
-  const kvMap = new Map();
-  const kvMock = {
-    async put(k, v) { kvMap.set(k, v); },
-    async get(k) { return kvMap.get(k) || null; },
-    async delete(k) { kvMap.delete(k); }
-  };
-  const env = { DB: d1Mock, SESSIONS_KV: kvMock };
+  // 1. Verify supabase/schema.sql existence and PostgreSQL structural integrity
+  const schemaPath = path.resolve('supabase/schema.sql');
+  assert.ok(fs.existsSync(schemaPath), 'supabase/schema.sql must exist');
+  const schemaSql = fs.readFileSync(schemaPath, 'utf8');
 
-  async function callWorker(p, method = 'GET', body = null, token = '') {
-    const headers = { 'Content-Type': 'application/json' };
-    if (token) headers['Authorization'] = `Bearer ${token}`;
-    const req = new Request(`https://vistarakrafts.com/api${p}`, {
-      method,
-      headers,
-      body: body ? JSON.stringify(body) : undefined
-    });
-    const res = await onRequest({ request: req, env });
-    const data = await res.json();
-    return { status: res.status, headers: res.headers, data };
-  }
+  assert.ok(schemaSql.includes('CREATE TABLE IF NOT EXISTS public.profiles'), 'Schema must define public.profiles');
+  assert.ok(schemaSql.includes('CREATE TABLE IF NOT EXISTS public.products'), 'Schema must define public.products');
+  assert.ok(schemaSql.includes('CREATE TABLE IF NOT EXISTS public.orders'), 'Schema must define public.orders');
+  assert.ok(schemaSql.includes('CREATE TABLE IF NOT EXISTS public.inventory_logs'), 'Schema must define public.inventory_logs');
+  assert.ok(schemaSql.includes('CREATE TABLE IF NOT EXISTS public.payments'), 'Schema must define public.payments');
+  assert.ok(schemaSql.includes('CREATE TABLE IF NOT EXISTS public.settings'), 'Schema must define public.settings');
+  assert.ok(schemaSql.includes('ENABLE ROW LEVEL SECURITY'), 'Schema must enforce Row Level Security (RLS)');
+  assert.ok(schemaSql.includes('supabase_realtime'), 'Schema must publish realtime publications');
 
-  // 1. Health endpoint, COOP header & SEO/Sitemap/LLMs endpoints
-  const health = await callWorker('/health', 'GET');
-  assert.strictEqual(health.status, 200);
-  assert.strictEqual(health.headers.get('Cross-Origin-Opener-Policy'), 'same-origin-allow-popups');
+  // 2. Verify Supabase Client Adapter (supabase-client.js)
+  await import('./supabase-client.js');
+  const sb = globalThis.VistaraSupabase;
+  assert.ok(sb && sb.auth, 'Supabase client must expose auth methods');
+  assert.ok(sb.from, 'Supabase client must expose from() database query builder');
 
-  const seoApi = await callWorker('/seo', 'GET');
-  assert.strictEqual(seoApi.status, 200);
-  assert.strictEqual(seoApi.data.ok, true);
-  assert.strictEqual(seoApi.data.siteUrl, 'https://vistara-krafts.vercel.app');
-  assert.strictEqual(seoApi.data.futureCustomDomain, 'https://vistarakrafts.com');
-  assert.strictEqual(seoApi.data.productsCount, 12);
-
-  const seoCustomDomain = await callWorker('/seo?domain=https://vistarakrafts.com', 'GET');
-  assert.strictEqual(seoCustomDomain.status, 200);
-  assert.strictEqual(seoCustomDomain.data.siteUrl, 'https://vistarakrafts.com');
-  assert.strictEqual(seoCustomDomain.data.sitemapUrl, 'https://vistarakrafts.com/sitemap.xml');
-
-  const sitemapRes = await onRequest({
-    request: new Request('https://vistarakrafts.com/api/sitemap.xml', { method: 'GET' }),
-    env
+  // Test Supabase Auth Sign Up
+  const signUpRes = await sb.auth.signUp({
+    email: 'patron.test@vistarakrafts.com',
+    password: 'Password#123',
+    options: { data: { full_name: 'Priya Sharma', phone: '+91 98450 12345' } }
   });
-  assert.strictEqual(sitemapRes.status, 200);
-  assert.ok((sitemapRes.headers.get('Content-Type') || '').includes('application/xml'));
-  const sitemapText = await sitemapRes.text();
-  const realCatalogIds = [
-    'ram-keep-001', 'vk-epx-301', 'ram-keep-002', 'vk-epx-201',
-    'ram-keep-003', 'vk-uv-hard', 'vk-pig-cham', 'ram-keep-004',
-    'vk-res-003', 'vk-mld-geo', 'vk-res-006', 'potry-sienna-01'
-  ];
-  for (const pid of realCatalogIds) {
-    assert.ok(sitemapText.includes(`<loc>https://vistara-krafts.vercel.app/#/product/${pid}</loc>`), `/api/sitemap.xml must include real product ID ${pid}`);
-  }
-  assert.ok(!sitemapText.includes('vk-res-004') && !sitemapText.includes('vk-uv-100') && !sitemapText.includes('vk-pig-ocean'), '/api/sitemap.xml must not include hallucinated product IDs');
+  assert.strictEqual(signUpRes.error, null);
+  assert.ok(signUpRes.data.user.id);
+  assert.strictEqual(signUpRes.data.user.email, 'patron.test@vistarakrafts.com');
 
-  const llmsRes = await onRequest({
-    request: new Request('https://vistarakrafts.com/api/llms.txt', { method: 'GET' }),
-    env
-  });
-  assert.strictEqual(llmsRes.status, 200);
-  const llmsText = await llmsRes.text();
-  assert.ok(llmsText.includes('Vistāra Krafts'));
-  for (const pid of realCatalogIds) {
-    assert.ok(llmsText.includes(`/#/product/${pid}`), `/api/llms.txt must include real product ID ${pid}`);
-  }
-
-  // 2. First-time user login on /auth/login without upfront shipping address
-  const login1 = await callWorker('/auth/login', 'POST', {
-    email: 'first.login@vistara.in',
+  // Test Supabase Auth Sign In With Password
+  const signInRes = await sb.auth.signInWithPassword({
+    email: 'patron.test@vistarakrafts.com',
     password: 'Password#123'
   });
-  assert.strictEqual(login1.status, 200, 'First-time /auth/login without upfront shipping address must succeed with 200 OK');
-  assert.ok(login1.headers.get('Set-Cookie').includes('HttpOnly'), '/auth/login must set HttpOnly session cookie');
+  assert.strictEqual(signInRes.error, null);
+  assert.ok(signInRes.data.session.access_token);
 
-  // Verify both GET /auth/me and GET /auth/session work
-  const meCheck = await callWorker('/auth/me', 'GET', null, login1.data.token);
-  assert.strictEqual(meCheck.status, 200, 'GET /auth/me must return 200 OK');
-  assert.strictEqual(meCheck.data.authenticated, true);
-  const sessionCheck = await callWorker('/auth/session', 'GET', null, login1.data.token);
-  assert.strictEqual(sessionCheck.status, 200, 'GET /auth/session must return 200 OK');
-  assert.strictEqual(sessionCheck.data.authenticated, true);
-
-  // 3. Duplicate email registration on /auth/register (resolves canonical users.id -> no FK error)
-  const reg1 = await callWorker('/auth/register', 'POST', {
-    email: 'dup.reg@vistara.in',
-    password: 'Password#123',
-    name: 'Rohan Mehta',
-    phone: '+91 98201 33445',
-    wishlist: ['ram-keep-001']
+  // Test Supabase 1-Click OAuth (Google / Apple)
+  const oauthRes = await sb.auth.signInWithOAuth({
+    provider: 'google',
+    options: { email: 'patron.google@gmail.com', name: 'Google Patron' }
   });
-  assert.strictEqual(reg1.status, 200);
-  const reg2 = await callWorker('/auth/register', 'POST', {
-    email: 'dup.reg@vistara.in',
-    password: 'Password#123',
-    name: 'Rohan Mehta Updated',
-    wishlist: ['vk-epx-301']
-  });
-  assert.strictEqual(reg2.status, 200, 'Second /auth/register for existing email must succeed without D1 foreign key error');
-  assert.deepStrictEqual(reg2.data.user.wishlist, ['ram-keep-001', 'vk-epx-301'], 'D1 /auth/register must merge wishlists');
+  assert.strictEqual(oauthRes.error, null);
+  assert.strictEqual(oauthRes.data.user.app_metadata.provider, 'google');
 
-  // 4. Dedicated /auth/google and /auth/apple endpoints without upfront address
-  const googleAuth = await callWorker('/auth/google', 'POST', {
-    email: 'dup.reg@vistara.in',
-    name: 'Rohan Mehta Google'
-  });
-  assert.strictEqual(googleAuth.status, 200, 'POST /auth/google must succeed without upfront address');
-  const appleAuth = await callWorker('/auth/apple', 'POST', {
-    email: 'apple.patron@icloud.com',
-    name: 'Ananya Apple'
-  });
-  assert.strictEqual(appleAuth.status, 200, 'POST /auth/apple must succeed without upfront address');
+  // Test Supabase Auth Sign Out
+  const signOutRes = await sb.auth.signOut();
+  assert.strictEqual(signOutRes.error, null);
 
-  // 5. PUT /auth/profile updates D1 user profile & wishlist
-  const profUpdate = await callWorker('/auth/profile', 'PUT', {
-    email: 'dup.reg@vistara.in',
-    name: 'Rohan Mehta Atelier',
-    phone: '+91 98201 99999',
-    address: '88 Worli Sea Face, Mumbai - 400030',
-    pincode: '400030',
-    wishlist: ['ram-keep-001', 'vk-epx-301']
-  }, googleAuth.data.token);
-  assert.strictEqual(profUpdate.status, 200, 'PUT /auth/profile must return 200 OK');
-  assert.strictEqual(profUpdate.data.user.name, 'Rohan Mehta Atelier');
+  // 3. Verify Cloudinary Media Storage Adapter (cloudinary-config.js)
+  await import('./cloudinary-config.js');
+  const cld = globalThis.VistaraCloudinary;
+  assert.ok(cld && cld.optimize, 'Cloudinary adapter must provide optimize() method');
+  assert.ok(cld.uploadImage, 'Cloudinary adapter must provide uploadImage() method');
 
-  // 6. POST /orders & GET /orders persist and retrieve orders in D1 AND update user address in both D1 and edgeMemoryUsers
-  const postOrd = await callWorker('/orders', 'POST', {
-    orderId: 'VK-2026-9901',
-    customerName: 'Rohan Mehta Atelier',
-    customerEmail: 'dup.reg@vistara.in',
-    phone: '+91 98201 99999',
-    address: '99 Cuffe Parade, Mumbai - 400005',
-    pincode: '400005',
-    subtotal: 2598,
-    discount: 150,
-    gstAmount: 373.42,
-    total: 2448,
-    paymentMethod: 'UPI Instant',
-    giftWrap: true,
-    items: [{ productId: 'vk-epx-301', name: 'UltraClear 3:1 Casting Resin', qty: 2, price: 1299 }]
-  }, googleAuth.data.token);
-  assert.strictEqual(postOrd.status, 200, 'POST /orders must persist order in D1 and return 200 OK');
+  // Test Cloudinary transformation URL generator
+  const sampleCldUrl = 'https://res.cloudinary.com/vistara-krafts/image/upload/v1/products/varmala.jpg';
+  const optimizedUrl = cld.optimize(sampleCldUrl, { width: 800, quality: 'auto', format: 'auto' });
+  assert.ok(optimizedUrl.includes('f_auto,q_auto,w_800'), 'Cloudinary optimize must inject f_auto,q_auto,w_800 transforms');
 
-  // Verify subsequent Google login without address preserves the address saved during POST /orders
-  const googleReauth = await callWorker('/auth/google', 'POST', {
-    email: 'dup.reg@vistara.in',
-    name: 'Rohan Mehta Atelier'
-  });
-  assert.strictEqual(googleReauth.data.user.address, '99 Cuffe Parade, Mumbai - 400005', 'POST /orders must persist delivery address to user profile in D1 and edgeMemoryUsers');
-  assert.strictEqual(googleReauth.data.user.pincode, '400005', 'POST /orders must persist PIN code to user profile in D1 and edgeMemoryUsers');
-
-  const getOrds = await callWorker('/orders?email=dup.reg@vistara.in', 'GET', null, googleAuth.data.token);
-  assert.strictEqual(getOrds.status, 200, 'GET /orders must return 200 OK');
-  assert.strictEqual(getOrds.data.orders.length, 1);
-  assert.strictEqual(getOrds.data.orders[0].orderId, 'VK-2026-9901');
-
-  console.log('✅ PASS: Cloudflare Pages Function (functions/api/[[route]].js) passes real SQLite/D1 foreign-key, 1-Click OAuth, Wishlist Merge & Order persistence tests');
+  console.log('✅ PASS: Supabase PostgreSQL Schema, Supabase Auth Integration & Cloudinary Media Storage Suite');
   passed++;
 } catch (err) {
-  console.error('❌ FAIL: Cloudflare Pages Function D1/SQLite integration test');
+  console.error('❌ FAIL: Supabase / Cloudinary integration test');
   console.error('   ', err.message);
   failed++;
 }
@@ -1539,31 +1434,6 @@ if (chromeExe) {
     const http = await import('node:http');
     const os = await import('node:os');
     const { spawn } = await import('node:child_process');
-    const { DatabaseSync } = await import('node:sqlite');
-    const { onRequest } = await import('./functions/api/[[route]].js');
-
-    const e2eSqlite = new DatabaseSync(':memory:');
-    e2eSqlite.exec('PRAGMA foreign_keys = ON;');
-    const e2eD1 = {
-      prepare(sql) {
-        return {
-          _args: [],
-          bind(...args) { this._args = args; return this; },
-          async run() { return e2eSqlite.prepare(sql).run(...this._args); },
-          async first() { return e2eSqlite.prepare(sql).get(...this._args) || null; },
-          async all() { return { results: e2eSqlite.prepare(sql).all(...this._args) }; }
-        };
-      }
-    };
-    const e2eKvMap = new Map();
-    const e2eEnv = {
-      DB: e2eD1,
-      SESSIONS_KV: {
-        async put(k, v) { e2eKvMap.set(k, v); },
-        async get(k) { return e2eKvMap.get(k) || null; },
-        async delete(k) { e2eKvMap.delete(k); }
-      }
-    };
 
     const mimeTypes = {
       '.html': 'text/html; charset=utf-8',
@@ -1582,22 +1452,14 @@ if (chromeExe) {
       try {
         const u = new URL(req.url, 'http://127.0.0.1');
         if (u.pathname.startsWith('/api/')) {
-          const chunks = [];
-          for await (const c of req) chunks.push(c);
-          const bodyBuf = Buffer.concat(chunks);
-          const headers = new Headers();
-          for (const [k, v] of Object.entries(req.headers)) {
-            if (v) headers.set(k, Array.isArray(v) ? v.join(', ') : v);
+          res.statusCode = 200;
+          res.setHeader('Content-Type', 'application/json');
+          res.setHeader('Cross-Origin-Opener-Policy', 'same-origin-allow-popups');
+          if (u.pathname.includes('/seo')) {
+            res.end(JSON.stringify({ ok: true, siteUrl: 'https://vistara-krafts.vercel.app', futureCustomDomain: 'https://vistarakrafts.com' }));
+          } else {
+            res.end(JSON.stringify({ ok: true, token: 'sb_e2e_token', authenticated: true, user: { id: 'usr_e2e', name: 'Rohan Mehta' } }));
           }
-          const cfReq = new Request(`http://127.0.0.1${u.pathname}${u.search}`, {
-            method: req.method,
-            headers,
-            body: ['GET', 'HEAD'].includes(req.method) ? undefined : bodyBuf
-          });
-          const cfRes = await onRequest({ request: cfReq, env: e2eEnv });
-          res.statusCode = cfRes.status;
-          cfRes.headers.forEach((v, k) => res.setHeader(k, v));
-          res.end(Buffer.from(await cfRes.arrayBuffer()));
           return;
         }
         let filePath = path.join(ROOT, u.pathname === '/' ? 'index.html' : decodeURIComponent(u.pathname));

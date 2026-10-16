@@ -12,7 +12,7 @@
 Testing in Vistāra Krafts operates on three foundational principles:
 1. **Zero Flakiness:** All tests execute with deterministic mock clocks, synchronous state assertions, and reliable headless browser automation via Chrome DevTools Protocol (CDP).
 2. **Real Rendering Verification:** Rather than testing virtual DOM simulations only, our suite boots a real headless Google Chrome instance to measure actual CSS computed bounding boxes, touch target heights (>= 44px), and viewport overflows at 320px.
-3. **Database & Edge Emulation:** The suite includes real SQLite database assertions to ensure Cloudflare D1 SQL schema queries, foreign keys, and indexes match production expectations.
+3. **Database & Persistence Verification:** The suite validates the production Supabase PostgreSQL schema, RLS policies, Supabase Auth integration, and Cloudinary media storage transformations.
 
 ---
 
@@ -41,7 +41,7 @@ Testing in Vistāra Krafts operates on three foundational principles:
 | **19** | **SEO, GEO & AEO Production Readiness** | Audits `robots.txt`, `sitemap.xml`, `llms.txt`, `llms-full.txt`, and Schema.org JSON-LD `@graph`. |
 | **20** | **Awwwards SOTD Interactions** | Validates dynamic cursor follower, 3D card tilt, specimen loupe inspection, and before/after floral slider. |
 | **21** | **QA Audit & Accessible Navigation** | Verifies subpage back navigation (`←`), custom 404 route handling, and empty state CTA actions. |
-| **22** | **Cloudflare Pages Function & SQLite/D1 Emulation** | Simulates edge environment: executes SQL queries against SQLite, tests password hashing (PBKDF2), and tests JWT creation. |
+| **22** | **Supabase PostgreSQL Schema, Supabase Auth & Cloudinary Media Storage** | Verifies PostgreSQL schema tables & RLS, tests Supabase Auth methods (signUp, signInWithPassword, signInWithOAuth, signOut), and tests Cloudinary media optimizer & upload adapter. |
 | **23** | **Real Headless Chrome E2E Multi-Viewport Audit** | Launches headless Chrome at 320px, 375px, and 1280px; measures physical bounding rects of modal buttons and inputs (`h >= 44px`, `right <= 320px`). |
 | **24** | **Resilience, Offline Banner & 500 Page** | Tests offline state banner visibility on window offline event, and verifies `500.html` and `404.html` integrity. |
 | **25** | **Persona Preference, Feed Curation & Varieties** | Validates persona selection (`masculine`, `feminine`, `all`), ensures no "Universal" button exists, verifies feed re-sorting, and tests color/shape swatches. |

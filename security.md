@@ -1,8 +1,9 @@
 # SECURITY & COMPLIANCE SPECIFICATION — VISTĀRA KRAFTS
 
 > **Regulatory Anchor:** Digital Personal Data Protection (DPDP) Act 2023 (India)  
-> **Bot Mitigation:** Cloudflare Turnstile CAPTCHA-less Bot Defense  
-> **Cryptographic Engine:** Web Crypto API (PBKDF2-HMAC-SHA256, 50,000 iterations)  
+> **Authentication Engine:** Supabase Auth (Argon2/Bcrypt password hashing & signed JWT tokens)  
+> **Database Security:** Supabase PostgreSQL 15+ Row Level Security (RLS)  
+> **Media CDN Security:** Cloudinary Unsigned & Signed Presets with strict MIME enforcement  
 > **Data Protection Officer (DPO):** Ms. Ananya Sharma (`grievance@vistarakrafts.com`)  
 
 ---
@@ -11,20 +12,20 @@
 
 ```mermaid
 graph TD
-    User["Customer / Client"] -->|"HTTPS / TLS 1.3"| Edge["Cloudflare Edge WAF"]
-    Edge -->|"Turnstile Verification"| Turnstile["Cloudflare Turnstile API"]
-    Edge -->|"Rate Limiting & DDoS Shield"| Functions["Pages Functions (/api/*)"]
+    User["Customer / Client"] -->|"HTTPS / TLS 1.3"| CDN["Global CDN & WAF"]
+    CDN -->|"Secure REST / WS"| Supabase["Supabase Cloud Infrastructure"]
     
     subgraph DataProtection["Data Protection & Privacy Safeguards"]
-        PBKDF2["PBKDF2 Password Hashing (50,000 iterations + Salt)"]
-        DPDP["DPDP Act 2023 Consent & Rights Vault"]
-        Sanitize["HTML Entity Escaping & Parameterized SQL"]
+        Auth["Supabase Auth Engine (Bcrypt / Argon2 & Asymmetric JWTs)"]
+        RLS["PostgreSQL Row Level Security (RLS Policies)"]
+        DPDP["DPDP Act 2023 Consent & Rights Vault (public.dpdp_consents)"]
+        Sanitize["Strict HTML Escaping & Parameterized Queries"]
     end
 
-    Functions --> DataProtection
-    DataProtection --> D1[("Cloudflare D1 (Encrypted SQLite)")]
-    DataProtection --> KV[("Cloudflare KV (Session Revocation)")]
-    DataProtection --> R2[("Cloudflare R2 (Encrypted Object Storage)")]
+    Supabase --> DataProtection
+    DataProtection --> Postgres[("Supabase PostgreSQL DB")]
+    DataProtection --> Realtime["Supabase Realtime CDC"]
+    CDN -->|"Unsigned Media Presets"| Cloudinary[("Cloudinary Media CDN")]
 ```
 
 ---
@@ -39,6 +40,7 @@ Vistāra Krafts is fully engineered to comply with the **Digital Personal Data P
   - *Strictly Necessary:* Order fulfillment, GST invoicing, BlueDart courier updates.
   - *Session Analytics:* Shopping bag and custom calculator local storage persistence.
   - *Atelier Circle Notes:* Promotional emails and bridal slot announcements.
+- **Persistent Consent Vault:** Consents are logged to `public.dpdp_consents` via `StorefrontBridge.recordConsent()` for audit readiness.
 
 ### 2. Section 9: Protection of Minors
 - **Implementation:** Mandatory age declaration checkbox required during consent confirmation:
@@ -50,7 +52,7 @@ Vistāra Krafts is fully engineered to comply with the **Digital Personal Data P
 
 ### 4. Section 12: Right to Correction & Erasure
 - **Implementation:** Instant data erasure trigger (`window.eraseDpdpUserData()`).
-- **Action:** Wipes all personal tokens, addresses, order drafts, and uploaded floral photos from browser storage, D1, and edge sessions.
+- **Action:** Wipes all personal tokens, addresses, order drafts, and uploaded floral photos from browser storage and requests deletion from Supabase.
 
 ### 5. Section 13: Grievance Redressal Mechanism
 - **Data Protection Officer (DPO):** Ms. Ananya Sharma
@@ -59,48 +61,21 @@ Vistāra Krafts is fully engineered to comply with the **Digital Personal Data P
 
 ---
 
-## 3. Cryptography & Password Hashing Standard
+## 3. Authentication & Password Security Standard
 
-When accounts are created via Email and Password, credentials are never stored in plain text:
-
-```javascript
-// functions/api/[[route]].js - PBKDF2 Password Hashing
-async function hashPasswordPBKDF2(password, saltHex) {
-  const enc = new TextEncoder();
-  const keyMaterial = await crypto.subtle.importKey(
-    'raw',
-    enc.encode(password),
-    { name: 'PBKDF2' },
-    false,
-    ['deriveBits']
-  );
-  const bits = await crypto.subtle.deriveBits(
-    {
-      name: 'PBKDF2',
-      salt: enc.encode(saltHex),
-      iterations: 50000,
-      hash: 'SHA-256'
-    },
-    keyMaterial,
-    256
-  );
-  return Array.from(new Uint8Array(bits))
-    .map(b => b.toString(16).padStart(2, '0'))
-    .join('');
-}
-```
-
-- **Salt:** 16-byte cryptographically secure random hexadecimal string.
-- **Iterations:** 50,000 rounds of SHA-256 HMAC.
-- **Output:** 256-bit derived key hex digest.
+When accounts are created via Email and Password, credentials and sessions are managed securely through **Supabase Auth**:
+- **Password Protection:** Handled via industry-standard hashing (bcrypt/argon2) on Supabase's hardened authentication infrastructure. Plaintext passwords never touch client storage or database tables.
+- **Session Tokens:** Stateless, signed JWTs with automatic token refresh, verified cryptographically on every database request.
+- **1-Click OAuth:** Google and Apple OAuth integrations utilizing secure PKCE flows.
 
 ---
 
-## 4. Bot & Fraud Defense: Cloudflare Turnstile
+## 4. Database Access Control & Row Level Security (RLS)
 
-To protect sign-in forms and order placement from automated credential stuffing and inventory hoarding bots, Cloudflare Turnstile is embedded natively:
-- **Dev Sitekey:** `1x00000000000000000000AA` (Always-pass testing key for `localhost`).
-- **Server Verification:** Pages Function verifies every incoming `X-CF-Turnstile-Token` against `https://challenges.cloudflare.com/turnstile/v0/siteverify` using the client's private secret before authorizing account creation or order placement.
+All 8 application tables enforce strict PostgreSQL Row-Level Security:
+1. **Public Reads:** `public.products`, `public.settings`, and `public.coupons` are accessible to anonymous storefront visitors (`role = anon`).
+2. **Patron Isolation:** Customers can only read and update their own records in `public.profiles` and `public.orders` (`auth.uid() = id` or `auth.uid() = user_id`).
+3. **Admin Service Role:** Full management privileges are restricted to the `service_role` key used exclusively by the Admin Portal backend.
 
 ---
 
@@ -119,6 +94,6 @@ To protect sign-in forms and order placement from automated credential stuffing 
      }
      ```
 2. **SQL Injection Prevention:**
-   - All D1 queries in `functions/api/[[route]].js` use parameterized statements (`env.VISTARA_DB.prepare('SELECT * FROM users WHERE email = ?').bind(email)`).
+   - All Supabase queries use the PostgREST query builder with prepared parameterized statements under the hood.
 3. **Cross-Origin Opener Policy (COOP):**
    - Headers configured to `same-origin-allow-popups` to support Google Identity Services and Apple OAuth popup windows safely without cross-window exploitation.

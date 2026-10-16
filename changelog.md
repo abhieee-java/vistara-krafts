@@ -4,6 +4,29 @@ All notable changes to the **Vistāra Krafts** (`@resin.art.memories`) e-commerc
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.0] - 2026-10-16
+
+### Added
+- **Full-Fledged Supabase PostgreSQL 15+ Schema:** Authored comprehensive PostgreSQL DDL in `supabase/schema.sql` and `supabase_schema.sql` spanning 8 relational tables:
+  - `public.profiles` with `gender_preference` ('masculine' | 'feminine' | 'universal') linked to `auth.users`
+  - `public.products` (seeded with all 12 flagship SKUs from Resin Art Memories, Vistāra Krafts, and POTRY)
+  - `public.orders`, `public.inventory_logs`, `public.payments`, `public.settings`, `public.coupons`, `public.custom_mockups`, and `public.dpdp_consents`
+  - Strict Row Level Security (RLS) policies on all tables
+  - Realtime publication `supabase_realtime` enabled for live drops and inventory syncing
+  - Automatic triggers: `on_auth_user_created` for user profiles, `handle_updated_at` for timestamp auditing
+- **Supabase Client & Auth Adapter (`supabase-client.js` & `supabase-config.js`):** Client-side bridge providing `signUp`, `signInWithPassword`, `signInWithOAuth` (Google & Apple PKCE), `signOut`, `updatePersonaPreference`, and query builders.
+- **Cloudinary Media Storage & Dynamic CDN (`cloudinary-config.js`):** Responsive image optimization (`optimize(url, { width: 800, quality: 'auto', format: 'auto' })` generating `f_auto,q_auto,w_800` transforms) and direct unsigned uploads for products and custom client floral photos.
+
+### Removed
+- **Complete Cloudflare Purge:**
+  - Permanently deleted remote Cloudflare Pages projects `vistara-krafts` and `vistara-krafts-admin`.
+  - Permanently deleted remote Cloudflare D1 databases `vistara_krafts_db` and `vistara_kraft_db`.
+  - Deleted local Cloudflare files: `wrangler.toml`, `cloudflare-config.js`, `CLOUDFLARE_SETUP.md`, `cloudflare/schema.sql`, and `functions/api/[[route]].js`.
+
+### Verified
+- Executed `node verify-storefront.mjs`: All 25 test suites passed cleanly with 0 failures (`25 passed, 0 failed`).
+- Headless Chrome CDP multi-viewport tests (320px, 375px, 1280px) verified zero runtime exceptions.
+
 ---
 
 ## [1.0.0] - 2026-10-15

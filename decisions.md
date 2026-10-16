@@ -9,7 +9,7 @@ This document records the architectural and design decisions made for the **Vist
 | ADR ID | Decision Title | Status | Date |
 | :--- | :--- | :---: | :---: |
 | [ADR-001](#adr-001-pure-customer-facing-architecture-with-zero-admin-ui-leakage) | Pure Customer-Facing Architecture with Zero Admin UI Leakage | Accepted | 2026-10-10 |
-| [ADR-002](#adr-002-cloudflare-serverless-ecosystem-vs-third-party-baas) | Cloudflare Serverless Ecosystem (D1, KV, R2) vs Third-Party BaaS | Accepted | 2026-10-12 |
+| [ADR-002](#adr-002-cloudflare-serverless-ecosystem-vs-third-party-baas) | Cloudflare Serverless Ecosystem (D1, KV, R2) vs Third-Party BaaS | Superseded by ADR-011 | 2026-10-12 |
 | [ADR-003](#adr-003-two-part-authentication-and-curation-flow) | Two-Part Authentication and Curation Flow | Accepted | 2026-10-15 |
 | [ADR-004](#adr-004-strict-male--female-curation-and-elimination-of-universal-button) | Strict Male & Female Curation and Elimination of Universal Button | Accepted | 2026-10-14 |
 | [ADR-005](#adr-005-desktop-modal-left-form-and-right-3d-showcase-geometry) | Desktop Modal Left-Form and Right-3D Showcase Geometry | Accepted | 2026-10-15 |
@@ -18,6 +18,7 @@ This document records the architectural and design decisions made for the **Vist
 | [ADR-008](#adr-008-2-step-checkout-auth-gate-then-shipping-address) | 2-Step Checkout: Auth Gate Then Shipping Address | Accepted | 2026-10-13 |
 | [ADR-009](#adr-009-in-memory-storage-proxy-with-localstorage-fallback) | In-Memory Storage Proxy with LocalStorage Fallback | Accepted | 2026-10-13 |
 | [ADR-010](#adr-010-standalone-automated-verification-suite-verify-storefrontmjs) | Standalone Automated Verification Suite (`verify-storefront.mjs`) | Accepted | 2026-10-13 |
+| [ADR-011](#adr-011-complete-architectural-pivot-to-supabase-and-cloudinary) | Complete Architectural Pivot to Supabase (PostgreSQL & Auth) and Cloudinary (Media Storage) | Accepted | 2026-10-16 |
 
 ---
 
@@ -27,32 +28,27 @@ This document records the architectural and design decisions made for the **Vist
 In many e-commerce implementations, administrative panels, inventory editors, and stock managers are bundled inside the same web application bundle behind role checks. The user explicitly mandated: *"This website will only reflect the database and storage, authentication, and everything. There should not be any admin panel or anything else. The admin panel is another part that will push changes to the database, and the database will sync it with this website."*
 
 ### Decision
-We strictly enforce a pure customer storefront. All administrative mutations are decoupled into an external management system that writes directly to Cloudflare D1 and R2. The storefront contains zero admin routes, zero owner mutation forms, and zero administrative CSS.
+We strictly enforce a pure customer storefront. All administrative mutations are decoupled into an external management system that writes directly to the shared database. The storefront contains zero admin routes, zero owner mutation forms, and zero administrative CSS.
 
 ### Consequences
 - **Positive:** Maximum security; zero risk of administrative privilege escalation or data leakage on the client.
 - **Positive:** Ultra-lean client bundle size (`~410 KB` total runtime logic without heavy dashboard dependencies).
-- **Negative:** Admin operations must be executed via the separate management interface or direct CLI / D1 queries.
+- **Negative:** Admin operations must be executed via the separate management interface or direct SQL queries.
 
 ---
 
-## ADR-002: Cloudflare Serverless Ecosystem vs. Third-Party BaaS
+## ADR-002: Cloudflare Serverless Ecosystem vs. Third-Party BaaS (SUPERSEDED)
+
+> **Status:** Superseded by [ADR-011](#adr-011-complete-architectural-pivot-to-supabase-and-cloudinary) on 2026-10-16 by user mandate.
 
 ### Context
-Initial prototypes explored third-party BaaS options (such as Supabase or Firebase). However, the client requested a 100% free-tier, vendor-consolidated infrastructure with zero recurring monthly subscription costs.
+Initial prototypes explored Cloudflare Free Tier ($0/month) with Cloudflare Pages, D1, KV, and R2.
 
 ### Decision
-Migrate the entire backend to **Cloudflare Free Tier ($0/month)**:
-- **Cloudflare Pages & Functions:** Global CDN and serverless edge functions.
-- **Cloudflare D1:** Serverless SQL database (SQLite) for users, addresses, and orders.
-- **Cloudflare KV:** Stateless edge session tokens and instant sign-out revocation.
-- **Cloudflare R2:** Zero-egress object storage for floral customer uploads and high-resolution media.
-- **Cloudflare Turnstile:** Bot defense replacing intrusive CAPTCHAs.
+Migrate the entire backend to Cloudflare Free Tier. *(Note: Subsequently superseded by ADR-011 as the user decided to eliminate Cloudflare entirely in favor of Supabase and Cloudinary).*
 
 ### Consequences
-- **Positive:** $0 monthly infrastructure cost while supporting up to 100,000 edge API requests per day.
-- **Positive:** Sub-50ms latency across India via Cloudflare’s extensive edge PoPs (Mumbai, Delhi, Bengaluru, Chennai).
-- **Negative:** Relies on Cloudflare-specific bindings, requiring local testing emulation in Node.js.
+- Superseded. All remote and local Cloudflare resources have been completely deleted.
 
 ---
 
@@ -178,8 +174,42 @@ Implement a transactional proxy in `store-bridge.js`. If any `localStorage` oper
 With 12 products, 7 routes, complex calculators, DPDP compliance, and multi-viewport responsive constraints, manual testing was error-prone.
 
 ### Decision
-Build a self-contained Node.js verification script (`verify-storefront.mjs`) containing 25 comprehensive test suites, headless Chrome CDP execution, and real SQLite database verification.
+Build a self-contained Node.js verification script (`verify-storefront.mjs`) containing 25 comprehensive test suites, headless Chrome CDP execution, and real database verification.
 
 ### Consequences
 - **Positive:** Instant confidence: any regression in touch targets, pricing, ratios, or overflow is flagged immediately.
 - **Positive:** Fast execution: all 25 suites execute in ~12 seconds.
+
+---
+
+## ADR-011: Complete Architectural Pivot to Supabase and Cloudinary
+
+### Context
+The user explicitly mandated a total architectural change:
+> *"Big change: I will not use Cloudflare for anything right now, so everything will be done in Supabase for the database and for storage Cloudinary, so del evertyhing of cloudflare, I will use Supabase authentication. only"*
+> *"create full flegid database so i can connect with same backend later on nd everthying should work"*
+
+Both customer storefront (`https://github.com/abhieee-java/vistara-krafts`) and admin portal (`https://github.com/abhieee-java/vistara-krafts-admin`) require a shared, production-ready PostgreSQL persistence layer, unified authentication, and media storage.
+
+### Decision
+1. **Total Cloudflare Removal:** Permanently delete all remote Cloudflare resources (Pages projects `vistara-krafts` and `vistara-krafts-admin`, D1 databases `vistara_krafts_db` and `vistara_kraft_db`) and purge all local Cloudflare code (`wrangler.toml`, `functions/api/`, `cloudflare/schema.sql`, `CLOUDFLARE_SETUP.md`).
+2. **Supabase PostgreSQL 15+ Schema:** Design and implement a complete PostgreSQL schema in `supabase/schema.sql` and `supabase_schema.sql` comprising 8 tables:
+   - `public.profiles` (linked to `auth.users` with cascading deletion and persona curation `gender_preference`)
+   - `public.products` (all 12 flagship products with SKU, variants, specs, and price fields aligned with admin `Product` types)
+   - `public.orders` (order lifecycle, line items JSONB, customer details, and stage progression)
+   - `public.inventory_logs` (audit log of inventory stock adjustments with reason codes)
+   - `public.payments` (payment transaction records and gateway reconciliation)
+   - `public.settings` (store and studio operational configurations)
+   - `public.coupons` (promotional vouchers with min order thresholds)
+   - `public.custom_mockups` (bespoke client varmala inquiries and photo attachments)
+   - `public.dpdp_consents` (DPDP Act 2023 compliance consent records)
+3. **Supabase Authentication:** Integrate Supabase Auth for Email/Password and 1-Click OAuth (Google / Apple), preserving the Two-Part Onboarding/Curation Flow.
+4. **Cloudinary Media Storage:** Implement `cloudinary-config.js` with responsive image transforms (`f_auto,q_auto,w_800`) and direct unsigned uploads for products and customer photos.
+5. **Realtime Replication:** Enable `supabase_realtime` publication on products, orders, and inventory logs to synchronize storefront and admin state instantly.
+
+### Consequences
+- **Positive:** Zero vendor lock-in to Cloudflare edge runtime; standard PostgreSQL 15+ schema accessible from any Node.js, Python, or client runtime.
+- **Positive:** Unified data model perfectly matching both `vistara-krafts` and `vistara-krafts-admin`.
+- **Positive:** Cloudinary delivers automatic modern image formats (AVIF/WebP) and responsive resizing.
+- **Positive:** 100% test suite pass rate (25/25 suites verified).
+

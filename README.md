@@ -2,7 +2,8 @@
 
 [![Site Status](https://img.shields.io/badge/status-production--ready-emerald?style=for-the-badge)](https://vistara-krafts.vercel.app/)
 [![Verification Suite](https://img.shields.io/badge/tests-25%2F25%20passing-brightgreen?style=for-the-badge)](file:///C:/Users/Dell/.gemini/antigravity/scratch/stitch_potry_e_commerce_storefront/verify-storefront.mjs)
-[![Cloudflare Pages](https://img.shields.io/badge/hosting-Cloudflare%20Pages%20%2B%20D1-orange?style=for-the-badge)](https://pages.cloudflare.com/)
+[![Database](https://img.shields.io/badge/database-Supabase%20PostgreSQL-3ECF8E?style=for-the-badge&logo=supabase)](https://supabase.com/)
+[![Storage](https://img.shields.io/badge/storage-Cloudinary%20CDN-3448C5?style=for-the-badge&logo=cloudinary)](https://cloudinary.com/)
 [![DPDP Act 2023](https://img.shields.io/badge/compliance-DPDP%20Act%202023%20Verified-blue?style=for-the-badge)](#digital-personal-data-protection-dpdp-act-2023)
 
 > **Official E-Commerce Storefront for Vistāra Krafts Studio & Chemical Atelier (`@resin.art.memories`) and POTRY Contemporary Ceramics.**  
@@ -15,14 +16,14 @@
 Vistāra Krafts is engineered to an **"Apple, Elevated"** aesthetic standard:
 - **Classic Architectural Restraint:** Deep visual hierarchy, mathematical spacing, editorial typography (Playfair Display paired with Inter), and warm glassmorphic depth (`#faf8f5` warm alabaster canvas, `#031a38` naval authority, and `#b08d57` antique brass accents).
 - **Kinetic Discipline (60fps–120fps):** Interactive 3D floating liquid resin specimen orb with concentric rotating orbital rings, spring-physics modals (`cubic-bezier(0.16, 1, 0.3, 1)`), and zero layout thrashing on low-end devices.
-- **Zero Admin UI Leakage:** This repository is 100% dedicated to customer shopping, product exploration, bespoke calculators, and secure ordering. The administrative inventory panel is completely decoupled and pushes changes directly to the Cloudflare D1 database.
+- **Zero Admin UI Leakage:** This repository is 100% dedicated to customer shopping, product exploration, bespoke calculators, and secure ordering. The administrative inventory panel is completely decoupled and pushes changes directly to the shared Supabase PostgreSQL database.
 
 ---
 
 ## ⚡ Key Highlights & Core Features
 
 ### 1. Two-Part Authentication & Curation Flow
-- **Part 1 (Credentials Only):** Seamless login and registration via Email & Password, 1-Click Google OAuth account chooser, or Apple ID. No disruptive gender questions in the first part.
+- **Part 1 (Credentials Only):** Seamless login and registration via Supabase Auth (Email & Password, 1-Click Google OAuth account chooser, or Apple ID). No disruptive gender questions in the first part.
 - **Part 2 (Curation Step):** Once authenticated, the user is presented with **"Curate Your Studio Feed"**:
   - `👔 Male`: Curated for Him (Executive desk keepsakes, geometric blocks, watches & masculine gifts).
   - `🌸 Female`: Curated for Her (Bridal varmala floral blocks, botanical trays, and rose quartz geode wall art).
@@ -61,9 +62,8 @@ Vistāra Krafts is engineered to an **"Apple, Elevated"** aesthetic standard:
 | **Styling Engine** | Tailwind CSS CDN + W3C Design Tokens ([`tokens.css`](file:///C:/Users/Dell/.gemini/antigravity/scratch/stitch_potry_e_commerce_storefront/tokens.css), [`styles.css`](file:///C:/Users/Dell/.gemini/antigravity/scratch/stitch_potry_e_commerce_storefront/styles.css)) |
 | **Typography** | Playfair Display (Headlines/Editorial) + Inter (Body/Data) + Material Symbols Outlined |
 | **State & Storage Bridge** | [`store-bridge.js`](file:///C:/Users/Dell/.gemini/antigravity/scratch/stitch_potry_e_commerce_storefront/store-bridge.js) with resilient In-Memory proxy + LocalStorage fallbacks |
-| **Edge Serverless Backend** | Cloudflare Pages Functions ([`functions/api/[[route]].js`](file:///C:/Users/Dell/.gemini/antigravity/scratch/stitch_potry_e_commerce_storefront/functions/api/[[route]].js)) |
-| **Database** | Cloudflare D1 (Serverless SQLite with Foreign Keys and Indexes) |
-| **Bot Defense** | Cloudflare Turnstile (Always-pass dev key: `1x00000000000000000000AA`) |
+| **Database & Auth** | Supabase (PostgreSQL 15+ with Row-Level Security & Supabase Auth) |
+| **Media Storage & CDN** | Cloudinary (Responsive image delivery, `f_auto,q_auto,w_800` transforms & unsigned upload) |
 | **Testing Suite** | Automated verification runner ([`verify-storefront.mjs`](file:///C:/Users/Dell/.gemini/antigravity/scratch/stitch_potry_e_commerce_storefront/verify-storefront.mjs)) with 25 test suites |
 
 ---
@@ -95,30 +95,37 @@ npm test
 
 ---
 
-## ☁️ Cloudflare Deployment & Production Setup
+## ⚡ Supabase & Cloudinary Production Setup
 
-The storefront is engineered to run on the **Cloudflare 100% Free Tier ($0/month)**:
-- Unlimited static bandwidth on Cloudflare Pages
-- 100,000 edge API requests/day on Pages Functions
-- 5 GB free serverless SQL storage on Cloudflare D1
-- 10 GB free media storage on Cloudflare R2
+The platform uses **Supabase** for its PostgreSQL database and authentication, and **Cloudinary** for image storage and CDN delivery.
 
-### Production Initialization
-```bash
-# 1. Login to Cloudflare CLI
-npx wrangler login
+### 1. Supabase PostgreSQL Schema & Auth Setup
+1. Create a project at [supabase.com](https://supabase.com).
+2. In the Supabase Dashboard, navigate to **SQL Editor**.
+3. Open [`supabase/schema.sql`](file:///C:/Users/Dell/.gemini/antigravity/scratch/stitch_potry_e_commerce_storefront/supabase/schema.sql) and run the script. This creates:
+   - `public.profiles` with `gender_preference` ('masculine' | 'feminine' | 'universal')
+   - `public.products` (seeded with all 12 flagship SKUs)
+   - `public.orders`, `public.inventory_logs`, `public.payments`, `public.settings`, `public.coupons`, `public.custom_mockups`, `public.dpdp_consents`
+   - Row Level Security (RLS) policies and triggers (`on_auth_user_created`, `handle_updated_at`)
+   - Realtime publication `supabase_realtime`
+4. Copy your project URL (`https://xyz.supabase.co`) and Anon Key from **Project Settings > API**.
+5. Configure [`supabase-config.js`](file:///C:/Users/Dell/.gemini/antigravity/scratch/stitch_potry_e_commerce_storefront/supabase-config.js):
+   ```javascript
+   window.SUPABASE_URL = 'https://YOUR_PROJECT_ID.supabase.co';
+   window.SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY';
+   ```
 
-# 2. Create D1 Database
-npx wrangler d1 create vistara_krafts_db
+### 2. Cloudinary Media Storage Setup
+1. Create an account at [cloudinary.com](https://cloudinary.com).
+2. Create an **unsigned upload preset** named `vistara_products` (or your choice) under **Settings > Upload > Upload Presets**.
+3. In [`cloudinary-config.js`](file:///C:/Users/Dell/.gemini/antigravity/scratch/stitch_potry_e_commerce_storefront/cloudinary-config.js), set:
+   ```javascript
+   window.CLOUDINARY_CLOUD_NAME = 'your-cloud-name';
+   window.CLOUDINARY_UPLOAD_PRESET = 'vistara_products';
+   ```
+4. All product images utilize automatic format (`f_auto`), quality compression (`q_auto`), and responsive width scaling (`w_800`).
 
-# 3. Apply Schema
-npx wrangler d1 execute vistara_krafts_db --remote --file=./cloudflare/schema.sql
-
-# 4. Deploy Frontend & Functions
-npx wrangler pages deploy . --project-name=vistara-krafts
-```
-
-For step-by-step handover instructions and credential replacement, see [`handoff.md`](file:///C:/Users/Dell/.gemini/antigravity/scratch/stitch_potry_e_commerce_storefront/handoff.md) and [`CLOUDFLARE_SETUP.md`](file:///C:/Users/Dell/.gemini/antigravity/scratch/stitch_potry_e_commerce_storefront/CLOUDFLARE_SETUP.md).
+For step-by-step handover instructions and credential replacement, see [`handoff.md`](file:///C:/Users/Dell/.gemini/antigravity/scratch/stitch_potry_e_commerce_storefront/handoff.md).
 
 ---
 
