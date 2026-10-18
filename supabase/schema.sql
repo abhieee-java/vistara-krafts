@@ -355,23 +355,37 @@ ALTER TABLE public.coupons ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.custom_mockups ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.dpdp_consents ENABLE ROW LEVEL SECURITY;
 
--- Products Policies: Public can read active products; Admins/Service-role full control
+-- Helper function to verify service_role, owner, or admin role
+CREATE OR REPLACE FUNCTION public.is_admin()
+RETURNS BOOLEAN AS $$
+BEGIN
+  RETURN (
+    coalesce(auth.jwt()->>'role', '') = 'service_role' OR
+    coalesce(auth.jwt()->'app_metadata'->>'role', '') IN ('admin', 'owner') OR
+    coalesce(auth.jwt()->'user_metadata'->>'is_admin', 'false') = 'true'
+  );
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER STABLE;
+
+-- Products Policies: Public can read active products; Only Admins/Service-role can write
 DROP POLICY IF EXISTS "Public read active products" ON public.products;
 CREATE POLICY "Public read active products" ON public.products
-  FOR SELECT USING (is_active = true OR auth.role() = 'authenticated');
+  FOR SELECT USING (is_active = true OR public.is_admin());
 
 DROP POLICY IF EXISTS "Admin write products" ON public.products;
 CREATE POLICY "Admin write products" ON public.products
-  FOR ALL USING (auth.jwt()->>'role' = 'service_role' OR auth.role() = 'authenticated');
+  FOR ALL USING (public.is_admin())
+  WITH CHECK (public.is_admin());
 
--- Categories Policies
+-- Categories Policies: Public can read; Only Admins can write
 DROP POLICY IF EXISTS "Public read categories" ON public.categories;
 CREATE POLICY "Public read categories" ON public.categories
-  FOR SELECT USING (is_active = true);
+  FOR SELECT USING (is_active = true OR public.is_admin());
 
 DROP POLICY IF EXISTS "Admin write categories" ON public.categories;
 CREATE POLICY "Admin write categories" ON public.categories
-  FOR ALL USING (auth.jwt()->>'role' = 'service_role' OR auth.role() = 'authenticated');
+  FOR ALL USING (public.is_admin())
+  WITH CHECK (public.is_admin());
 
 -- Profiles Policies
 DROP POLICY IF EXISTS "Users read own profile" ON public.profiles;
@@ -386,36 +400,49 @@ DROP POLICY IF EXISTS "Public insert profiles on signup" ON public.profiles;
 CREATE POLICY "Public insert profiles on signup" ON public.profiles
   FOR INSERT WITH CHECK (true);
 
--- Orders Policies
+-- Orders Policies: Strict isolation — Customers can only read their own orders
 DROP POLICY IF EXISTS "Users read own orders" ON public.orders;
 CREATE POLICY "Users read own orders" ON public.orders
-  FOR SELECT USING (auth.uid() = user_id OR auth.role() = 'authenticated' OR auth.jwt()->>'role' = 'service_role');
+  FOR SELECT USING ((auth.uid() IS NOT NULL AND auth.uid() = user_id) OR public.is_admin());
 
 DROP POLICY IF EXISTS "Users insert orders" ON public.orders;
 CREATE POLICY "Users insert orders" ON public.orders
-  FOR INSERT WITH CHECK (true);
+  FOR INSERT WITH CHECK (
+    (payment_status = 'pending' AND (user_id IS NULL OR user_id = auth.uid()))
+    OR public.is_admin()
+  );
 
 DROP POLICY IF EXISTS "Admin update orders" ON public.orders;
 CREATE POLICY "Admin update orders" ON public.orders
-  FOR ALL USING (auth.jwt()->>'role' = 'service_role' OR auth.role() = 'authenticated');
+  FOR UPDATE USING (public.is_admin())
+  WITH CHECK (public.is_admin());
 
+DROP POLICY IF EXISTS "Admin delete orders" ON public.orders;
+CREATE POLICY "Admin delete orders" ON public.orders
+  FOR DELETE USING (public.is_admin());
+
+-- Inventory Logs Policies
 -- Inventory Logs Policies
 DROP POLICY IF EXISTS "Admin view inventory logs" ON public.inventory_logs;
 CREATE POLICY "Admin view inventory logs" ON public.inventory_logs
-  FOR SELECT USING (auth.jwt()->>'role' = 'service_role' OR auth.role() = 'authenticated');
+  FOR SELECT USING (public.is_admin());
 
 DROP POLICY IF EXISTS "Admin write inventory logs" ON public.inventory_logs;
 CREATE POLICY "Admin write inventory logs" ON public.inventory_logs
-  FOR INSERT WITH CHECK (auth.jwt()->>'role' = 'service_role' OR auth.role() = 'authenticated');
+  FOR INSERT WITH CHECK (public.is_admin());
 
 -- Payments Policies
 DROP POLICY IF EXISTS "Admin view payments" ON public.payments;
 CREATE POLICY "Admin view payments" ON public.payments
-  FOR SELECT USING (auth.jwt()->>'role' = 'service_role' OR auth.role() = 'authenticated');
+  FOR SELECT USING (
+    public.is_admin() OR
+    EXISTS (SELECT 1 FROM public.orders WHERE orders.id = payments.order_id AND orders.user_id = auth.uid())
+  );
 
 DROP POLICY IF EXISTS "System insert payments" ON public.payments;
 CREATE POLICY "System insert payments" ON public.payments
-  FOR INSERT WITH CHECK (true);
+  FOR ALL USING (public.is_admin())
+  WITH CHECK (public.is_admin());
 
 -- Settings & Coupons Policies
 DROP POLICY IF EXISTS "Public view settings" ON public.settings;
@@ -424,15 +451,17 @@ CREATE POLICY "Public view settings" ON public.settings
 
 DROP POLICY IF EXISTS "Admin manage settings" ON public.settings;
 CREATE POLICY "Admin manage settings" ON public.settings
-  FOR ALL USING (auth.jwt()->>'role' = 'service_role' OR auth.role() = 'authenticated');
+  FOR ALL USING (public.is_admin())
+  WITH CHECK (public.is_admin());
 
 DROP POLICY IF EXISTS "Public view coupons" ON public.coupons;
 CREATE POLICY "Public view coupons" ON public.coupons
-  FOR SELECT USING (is_active = true);
+  FOR SELECT USING (is_active = true OR public.is_admin());
 
 DROP POLICY IF EXISTS "Admin manage coupons" ON public.coupons;
 CREATE POLICY "Admin manage coupons" ON public.coupons
-  FOR ALL USING (auth.jwt()->>'role' = 'service_role' OR auth.role() = 'authenticated');
+  FOR ALL USING (public.is_admin())
+  WITH CHECK (public.is_admin());
 
 -- DPDP & Custom Mockups Policies
 DROP POLICY IF EXISTS "Users manage mockups" ON public.custom_mockups;

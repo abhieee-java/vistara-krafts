@@ -1413,27 +1413,262 @@
     },
 
     async placeOrderAsync(checkoutDetails = {}) {
-      const synchronousResult = this.placeOrder(checkoutDetails);
-      if (!synchronousResult.success) {
-        return synchronousResult;
+      const summary = this.getCartSummary();
+      if (summary.itemsCount === 0) {
+        return { success: false, message: 'Your Studio Bag is empty.' };
       }
-      this.clearCheckoutDraft();
+      const outOfStockItem = summary.cart.find(i => {
+        const prod = this.getProductById(i.productId);
+        return prod && prod.inStock === false;
+      });
+      if (outOfStockItem) {
+        return {
+          success: false,
+          message: `"${outOfStockItem.name}" is currently out of stock. Please remove it from your studio bag before checking out.`
+        };
+      }
 
-      const payload = synchronousResult.supabasePayload;
-      if (global.VistaraSupabase && typeof global.VistaraSupabase.createOrder === 'function' && payload) {
+      const authSession = this.getAuthSession();
+      if (!authSession) {
+        return {
+          success: false,
+          requiresAuth: true,
+          message: 'Please sign in to your account to place your order.'
+        };
+      }
+
+      const customerName = String(checkoutDetails.name || (authSession && authSession.name) || '').trim();
+      const customerPhone = String(checkoutDetails.phone || (authSession && authSession.phone) || '').trim();
+      const rawAddress = String(checkoutDetails.address || (authSession && authSession.address) || '').trim();
+      const customerPincode = String(checkoutDetails.pincode || (authSession && authSession.pincode) || '').trim();
+
+      if (!customerName || !customerPhone || !rawAddress) {
+        return {
+          success: false,
+          requiresAddress: true,
+          message: 'Please enter your delivery recipient name, mobile number, and shipping address.'
+        };
+      }
+
+      const pinMatch = rawAddress.match(/\b([1-9][0-9]{5})\b/);
+      const resolvedPin = customerPincode || (pinMatch ? pinMatch[1] : '');
+      if (resolvedPin && /^[1-9][0-9]{5}$/.test(resolvedPin)) {
+        this.verifyPincode(resolvedPin);
+      }
+      const cleanAddressBase = rawAddress.replace(/\s*-\s*[1-9][0-9]{5}\s*$/, '').trim();
+      const customerAddress = (resolvedPin && !cleanAddressBase.includes(resolvedPin))
+        ? `${cleanAddressBase} - ${resolvedPin}`
+        : rawAddress;
+
+      this.savePatronProfile({
+        name: customerName,
+        phone: customerPhone,
+        address: customerAddress,
+        defaultAddress: customerAddress,
+        pincode: resolvedPin || this.getPincodeInfo().pin
+      });
+
+      const isTestEnv = (typeof global !== 'undefined' && global.__VK_TEST_ENV__) ||
+                        (typeof window !== 'undefined' && window.__VK_TEST_ENV__);
+
+      // In browser runtime with Razorpay SDK and server available
+      if (!isTestEnv && typeof window !== 'undefined' && typeof window.fetch === 'function') {
+        const procModal = document.getElementById('payment-processing-modal');
         try {
-          const res = await global.VistaraSupabase.createOrder(payload);
-          if (res && res.error) {
-            console.warn('[Vistāra Supabase] Order creation warning:', res.error);
-          } else {
-            console.log('[Vistāra Supabase] Order persisted to PostgreSQL:', payload.order_number);
+          const createRes = await fetch('/api/create-order', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              userId: (authSession && authSession.id) || null,
+              name: customerName,
+              phone: customerPhone,
+              address: customerAddress,
+              pincode: resolvedPin || this.getPincodeInfo().pin,
+              email: (authSession && authSession.email) || checkoutDetails.email,
+              items: summary.cart.map(i => ({
+                productId: i.productId,
+                variantLabel: i.variantLabel,
+                qty: i.qty,
+                color: i.color,
+                shape: i.shape,
+                size: i.size,
+                customNote: i.customNote
+              })),
+              couponCode: summary.couponCode,
+              giftWrap: checkoutDetails.giftWrap !== undefined ? Boolean(checkoutDetails.giftWrap) : true,
+              notes: checkoutDetails.notes || ''
+            })
+          });
+
+          if (!createRes.ok) {
+            if (procModal) procModal.classList.add('hidden');
+            const errData = await createRes.json().catch(() => ({}));
+            return {
+              success: false,
+              message: errData.error || `Checkout failed with status ${createRes.status}. Please review your bag.`
+            };
           }
-        } catch (err) {
-          console.error('[Vistāra Supabase] Order async persist error:', err);
+
+          const rzpData = await createRes.json();
+          if (!rzpData || !rzpData.success || !rzpData.razorpayOrderId) {
+            if (procModal) procModal.classList.add('hidden');
+            return {
+              success: false,
+              message: (rzpData && rzpData.error) || 'Failed to initialize payment gateway order.'
+            };
+          }
+
+          if (procModal) procModal.classList.add('hidden');
+
+          if (typeof window.Razorpay !== 'function') {
+            return {
+              success: false,
+              message: 'Razorpay payment SDK failed to load. Please verify your internet connection or ad-blocker settings and reload.'
+            };
+          }
+
+          return new Promise((resolve) => {
+            const options = {
+              key: rzpData.keyId || 'rzp_test_TpT9QQKuBwPSmm',
+              amount: rzpData.amount,
+              currency: rzpData.currency || 'INR',
+              name: 'Vistāra Krafts Studio',
+              description: `Order #${rzpData.orderId}`,
+              image: './vistara-krafts-logo.jpg',
+              order_id: rzpData.razorpayOrderId,
+              prefill: {
+                name: customerName,
+                email: (authSession && authSession.email) || checkoutDetails.email || 'patron@vistarakrafts.com',
+                contact: customerPhone
+              },
+              theme: {
+                color: '#031a38'
+              },
+              handler: async (response) => {
+                if (procModal) {
+                  const statusEl = document.getElementById('pay-proc-status');
+                  if (statusEl) {
+                    statusEl.innerHTML = '<span class="w-2 h-2 rounded-full bg-secondary animate-ping"></span><span>Verifying Payment Signature...</span>';
+                  }
+                  procModal.classList.remove('hidden');
+                }
+                try {
+                  const vRes = await fetch('/api/verify-payment', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                      orderId: rzpData.orderId,
+                      razorpay_order_id: response.razorpay_order_id,
+                      razorpay_payment_id: response.razorpay_payment_id,
+                      razorpay_signature: response.razorpay_signature
+                    })
+                  });
+                  const vData = await vRes.json();
+                  if (vData.success && vData.verified) {
+                    // Use authoritative server items snapshot
+                    const authoritativeItems = (rzpData.summary && Array.isArray(rzpData.summary.items))
+                      ? rzpData.summary.items
+                      : (vData.items || summary.cart.map(i => ({
+                          productId: i.productId,
+                          name: `${i.name} (${i.variantLabel || 'Standard'})`,
+                          productName: i.name,
+                          variantLabel: i.variantLabel || 'Standard Edition',
+                          qty: i.qty,
+                          price: i.price,
+                          totalPrice: (i.price || 0) * (i.qty || 1)
+                        })));
+
+                    const confirmedOrder = {
+                      orderId: rzpData.orderId,
+                      id: rzpData.internalId || ('ord_' + Date.now().toString(36)),
+                      orderNumber: rzpData.orderId,
+                      user_id: (authSession && authSession.id) || null,
+                      date: new Date().toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }),
+                      total: rzpData.summary.total,
+                      subtotal: rzpData.summary.subtotal,
+                      discount: rzpData.summary.discount,
+                      couponCode: rzpData.summary.couponCode || '',
+                      gstAmount: rzpData.summary.gstAmount,
+                      shippingFee: rzpData.summary.shippingFee,
+                      paymentMethod: 'Razorpay Test Gateway',
+                      payment_status: 'paid',
+                      customerName,
+                      customerEmail: (authSession && authSession.email) || checkoutDetails.email || 'patron@vistarakrafts.com',
+                      phone: customerPhone,
+                      address: customerAddress,
+                      pincode: resolvedPin || this.getPincodeInfo().pin,
+                      giftWrap: checkoutDetails.giftWrap !== undefined ? Boolean(checkoutDetails.giftWrap) : true,
+                      mockupApproved: false,
+                      status: 'Order Confirmed • Studio Batch Allocated',
+                      orderStatus: 'confirmed',
+                      stageIndex: 1,
+                      stages: ['Order Confirmed', 'Flowers / Materials Prepped', 'Silica & Vacuum Degassing', 'Deep Optical Cast Pour', 'Diamond Polish & Dispatch'],
+                      items: authoritativeItems,
+                      courier: `BlueDart Priority Air • PIN ${resolvedPin || this.getPincodeInfo().pin}`,
+                      razorpay_order_id: response.razorpay_order_id,
+                      razorpay_payment_id: response.razorpay_payment_id,
+                      razorpay_signature: response.razorpay_signature,
+                      createdAt: new Date().toISOString()
+                    };
+                    const orders = [confirmedOrder, ...this.getOrders().filter(o => o.orderId !== confirmedOrder.orderId)];
+                    safeWrite(STORAGE_KEYS.ORDERS, orders);
+                    this.clearCart();
+                    this.notify('order_placed', confirmedOrder);
+                    this.clearCheckoutDraft();
+                    if (procModal) procModal.classList.add('hidden');
+                    resolve({ success: true, order: confirmedOrder, verifiedByServer: true });
+                  } else {
+                    if (procModal) procModal.classList.add('hidden');
+                    resolve({ success: false, message: vData.error || 'Payment signature verification failed.' });
+                  }
+                } catch (verErr) {
+                  if (procModal) procModal.classList.add('hidden');
+                  resolve({ success: false, message: 'Payment verification network error: ' + verErr.message });
+                }
+              },
+              modal: {
+                ondismiss: () => {
+                  if (procModal) procModal.classList.add('hidden');
+                  resolve({ success: false, cancelled: true, message: 'Payment window was closed. Your cart and draft address have been preserved.' });
+                }
+              }
+            };
+            const rzpInstance = new window.Razorpay(options);
+            rzpInstance.open();
+          });
+        } catch (_apiErr) {
+          if (procModal) procModal.classList.add('hidden');
+          return {
+            success: false,
+            message: 'Unable to connect to payment server. Please check your internet connection and try again.'
+          };
         }
       }
 
-      return { success: true, order: synchronousResult.order, verifiedByServer: true };
+      // Offline / Test environment fallback ONLY when explicitly enabled by unit test runner (__VK_TEST_ENV__)
+      if (isTestEnv) {
+        const synchronousResult = this.placeOrder(checkoutDetails);
+        if (!synchronousResult.success) {
+          return synchronousResult;
+        }
+        this.clearCheckoutDraft();
+
+        const payload = synchronousResult.supabasePayload;
+        if (global.VistaraSupabase && typeof global.VistaraSupabase.createOrder === 'function' && payload) {
+          try {
+            await global.VistaraSupabase.createOrder(payload);
+          } catch (err) {
+            console.error('[Vistāra Supabase] Order async persist error:', err);
+          }
+        }
+
+        return { success: true, order: synchronousResult.order, verifiedByServer: true };
+      }
+
+      return {
+        success: false,
+        message: 'Checkout requires an active connection to the Vistāra Krafts payment server.'
+      };
     },
 
     async syncOrdersFromSupabase() {
