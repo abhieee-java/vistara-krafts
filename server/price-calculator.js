@@ -178,14 +178,15 @@ export class PriceCalculator {
       let regularPrice = product.regularPrice;
       let resolvedVariantLabel = 'Standard Edition';
 
-      if (item.variantLabel && Array.isArray(product.variants) && product.variants.length > 0) {
+      const variantKey = item.variantId || item.variant_id || item.variantLabel || item.variant;
+      if (variantKey && Array.isArray(product.variants) && product.variants.length > 0) {
         const found = product.variants.find(
-          v => v.id === item.variantLabel || v.label === item.variantLabel
+          v => v.id === variantKey || v.label === variantKey
         );
         if (found) {
           unitPrice = Number(found.price || unitPrice);
           regularPrice = Number(found.regularPrice || regularPrice);
-          resolvedVariantLabel = found.label || item.variantLabel;
+          resolvedVariantLabel = found.label || variantKey;
         } else {
           resolvedVariantLabel = product.variants[0].label || 'Standard Edition';
           unitPrice = Number(product.variants[0].price || unitPrice);

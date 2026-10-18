@@ -171,12 +171,10 @@ export class OrderService {
    * Cryptographically verifies HMAC signature and cross-checks with Razorpay REST API.
    */
   static async verifyPayment(payload = {}) {
-    const {
-      orderId,
-      razorpay_order_id,
-      razorpay_payment_id,
-      razorpay_signature
-    } = payload;
+    const orderId = payload.orderId;
+    const razorpay_order_id = payload.razorpay_order_id || payload.razorpayOrderId;
+    const razorpay_payment_id = payload.razorpay_payment_id || payload.razorpayPaymentId;
+    const razorpay_signature = payload.razorpay_signature || payload.razorpaySignature;
 
     if (!razorpay_order_id || !razorpay_payment_id || !razorpay_signature) {
       throw new Error('Missing required Razorpay verification parameters (order_id, payment_id, or signature).');
@@ -307,6 +305,9 @@ export class OrderService {
     return {
       success: true,
       verified: true,
+      status: 'paid',
+      paymentStatus: 'paid',
+      orderStatus: 'confirmed',
       orderId: updatedOrder.order_number,
       total: updatedOrder.total,
       paymentId: razorpay_payment_id,
@@ -326,20 +327,39 @@ export class OrderService {
       const qty = item.qty || item.quantity || 1;
       const sku = item.sku || 'VK-STD';
 
-      const logRecord = {
-        id: `inv_${Date.now().toString(36)}_${Math.random().toString(36).substring(2, 6)}`,
-        product_id: productId,
-        sku: sku,
-        change: -qty,
-        previous_stock: 50,
-        new_stock: Math.max(0, 50 - qty),
-        reason: 'SALE',
-        notes: `Order #${order.order_number} confirmed paid via Razorpay`,
-        created_by: 'system',
-        created_at: new Date().toISOString()
-      };
+      if (!productId) continue;
 
       try {
+        const prodLookup = await this.supabaseRequest(`products?id=eq.${encodeURIComponent(productId)}&select=id,stock,in_stock`);
+        let currentStock = 50;
+        if (prodLookup.data && Array.isArray(prodLookup.data) && prodLookup.data.length > 0) {
+          currentStock = Number(prodLookup.data[0].stock ?? 50);
+        }
+        const newStock = Math.max(0, currentStock - qty);
+
+        // Update authoritative product stock in database
+        await this.supabaseRequest(
+          `products?id=eq.${encodeURIComponent(productId)}`,
+          'PATCH',
+          {
+            stock: newStock,
+            in_stock: newStock > 0,
+            updated_at: new Date().toISOString()
+          }
+        );
+
+        const logRecord = {
+          product_id: productId,
+          sku: sku,
+          change: -qty,
+          previous_stock: currentStock,
+          new_stock: newStock,
+          reason: 'SALE',
+          notes: `Order #${order.order_number} confirmed paid via Razorpay`,
+          created_by: 'system',
+          created_at: new Date().toISOString()
+        };
+
         await this.supabaseRequest('inventory_logs', 'POST', logRecord);
       } catch (_e) {}
     }

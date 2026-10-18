@@ -2178,39 +2178,54 @@
 
       const liveProducts = await res.json();
       if (Array.isArray(liveProducts)) {
-        const normalized = liveProducts.map(row => ({
-          id: row.id,
-          sku: row.sku,
-          name: row.name,
-          shortName: row.short_name || row.name,
-          subtitle: row.subtitle || '',
-          brand: row.brand || 'Vistāra Krafts',
-          category: row.category || 'resin',
-          subCategory: row.subcategory || 'atelier',
-          badge: row.badge || '',
-          price: Number(row.price || 0),
-          regularPrice: Number(row.compare_at_price || Math.round((row.price || 0) * 1.25)),
-          costPrice: Number(row.cost_price || 0),
-          discount: Number(row.discount || 0),
-          stockQuantity: Number(row.stock ?? 10),
-          inStock: Boolean(row.stock > 0),
-          featured: Boolean(row.featured),
-          hero: Boolean(row.hero),
-          isNew: Boolean(row.is_new),
-          rating: Number(row.rating || 4.9),
-          reviewsCount: Number(row.reviews_count || 12),
-          image: row.image || (Array.isArray(row.gallery) && row.gallery[0]) || (Array.isArray(row.images) && row.images[0]) || IMAGES.floralCube,
-          images: (Array.isArray(row.gallery) && row.gallery.length > 0) ? row.gallery : (Array.isArray(row.images) && row.images.length > 0 ? row.images : (row.image ? [row.image] : [IMAGES.floralCube])),
-          colors: Array.isArray(row.colors) ? row.colors : [],
-          shapes: Array.isArray(row.shapes) ? row.shapes : [],
-          sizes: Array.isArray(row.sizes) ? row.sizes : [],
-          gender: row.gender || 'all',
-          genderAffinity: row.gender_affinity || (row.gender === 'men' ? 'masculine' : (row.gender === 'women' ? 'feminine' : 'neutral')),
-          giftingTags: Array.isArray(row.gifting_tags) ? row.gifting_tags : [],
-          description: row.description || '',
-          createdAt: row.created_at,
-          updatedAt: row.updated_at
-        }));
+        const normalized = liveProducts.map(row => {
+          const parseField = (val, fallback) => {
+            if (!val) return fallback;
+            if (typeof val === 'object') return val;
+            try { return JSON.parse(val); } catch { return fallback; }
+          };
+          const specs = parseField(row.specs, {});
+          const variants = parseField(row.variants, []);
+
+          return {
+            id: row.id,
+            sku: row.sku,
+            name: row.name,
+            shortName: row.short_name || row.name,
+            subtitle: row.subtitle || '',
+            brand: row.brand || 'Vistāra Krafts',
+            category: row.category || 'resin',
+            subCategory: row.subcategory || 'atelier',
+            badge: row.badge || '',
+            price: Number(row.price || 0),
+            regularPrice: Number(row.compare_at_price || Math.round((row.price || 0) * 1.25)),
+            costPrice: Number(row.cost_price || 0),
+            discount: Number(row.discount || 0),
+            stockQuantity: Number(row.stock ?? 10),
+            inStock: Boolean(row.stock > 0),
+            featured: Boolean(row.featured),
+            hero: Boolean(row.hero),
+            isNew: Boolean(row.is_new),
+            rating: Number(row.rating || 4.9),
+            reviewsCount: Number(row.reviews_count || 12),
+            ratio: row.ratio || specs.ratio || '',
+            viscosity: row.viscosity || specs.viscosity || 'low',
+            cureTime: row.cure_time || specs.cureTime || '',
+            specs: specs,
+            variants: Array.isArray(variants) ? variants : [],
+            image: row.image || (Array.isArray(row.gallery) && row.gallery[0]) || (Array.isArray(row.images) && row.images[0]) || IMAGES.floralCube,
+            images: (Array.isArray(row.gallery) && row.gallery.length > 0) ? row.gallery : (Array.isArray(row.images) && row.images.length > 0 ? row.images : (row.image ? [row.image] : [IMAGES.floralCube])),
+            colors: Array.isArray(row.colors) ? row.colors : [],
+            shapes: Array.isArray(row.shapes) ? row.shapes : [],
+            sizes: Array.isArray(row.sizes) ? row.sizes : [],
+            gender: row.gender || 'all',
+            genderAffinity: row.gender_affinity || (row.gender === 'men' ? 'masculine' : (row.gender === 'women' ? 'feminine' : 'neutral')),
+            giftingTags: Array.isArray(row.gifting_tags) ? row.gifting_tags : [],
+            description: row.description || '',
+            createdAt: row.created_at,
+            updatedAt: row.updated_at
+          };
+        });
 
         const currentLocal = safeRead(STORAGE_KEYS.PRODUCTS, []);
         const isDifferent = JSON.stringify(currentLocal) !== JSON.stringify(normalized);
