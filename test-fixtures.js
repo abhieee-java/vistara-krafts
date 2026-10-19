@@ -1,758 +1,1904 @@
-const IMAGES = {
-    logoVistara: './vistara-krafts-logo.jpg',
-    logoPotry: 'https://lh3.googleusercontent.com/aida/AEtjO1UL_yv7CTSIh8DKMJSJyoEYV6KxkBv-vKrFle0GDCkSpaAqW6NgAOHRFgnmdA8w4H2gwXZOcRM-pCA3X5qDVsa1CQTVwxmaMPMsdc2iRpZlnIY37B_Odr_E0inLU4jSiTjX-EQA0Agmjtt1KTwPei-xB5SFz-_Vz8FO8ZaxhrSn_qoOWRpZzE0n60032HCsmPdzpGhw6WMTp64N4O1PkEPVu-x-tvp-wjJtQkxP3sXTtaDy59arIJ3cDp2L',
-    avatarPatron: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBEfH5pmgXdOI0mnnN25k9DHn4iZNDO6wW_YERKWNba2tdwUuopMefjulnjWQYyOtpO5PbWkiW9CmteZIRsPaPSZtGU_1WhgAGSj2NWg7e-8uCvKEkCHAWRLBPtIQYKdVhEDObJsA5letw3AbZTj1f26XSfoItEh4s-fkfu0rzR5lKs8brHwg-aa_t4YvHAzr7zuSxFyPvlwlBRY3wtWrTwqKk9Bpf3wOErpjYhoS0BYtQqpSjFGEvDig',
-    floralCube: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBXW-CtxPaQNBpLYiDkZiAh_3HctPzR3wSCDa6iBBPevbe8OYTRQh3MBrygeRClgewcRXZmXbGFcwCAJ8voXhr1Gis32c3Xd7f9MpmY8HuxABgInUPnavbPeSPIZtwzwMcmwPtXzx7Z63sTUGuH0-iZ0MPSphmGmleYJW3_njEtUfcbKOPB1icNTEcuIPrr9seRXtiWbBpXV0TUCSnKGRmIqqDcgv5vapJcyIzP8GkKndOeGidcCWTJWg',
-    jewelryBezel: 'https://lh3.googleusercontent.com/aida-public/AB6AXuASdeQkmmEQPW1Z1FyFDZPlt23GxEkA8qw-6gKoevLZuY8N4qtgN57MB84sc4y-C75qu3m8ZM_U-BxwLhYMruaXqI5K-9mJhbsKj2LFJr4EpbT4A95tXrmqdaBaIjaIQF2LST_9XGeT7fwu1uKsQVQnCfzYQg5S_JXVGkfisqaGm9DXUD_ByN6qw9ALWJ-YGOsHiDgGXipcupCHC6FdeJJTqCLfvSjRGbT5E0ecbxW5lPpBED8lSQlSRQ',
-    coasterSet: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBsuKGlgeujHuiaSQZYD5K6m5pg8ytyYXi0H5vJHZe16JcOZ6svtWNiWU-mfxqfk50B69TOKcCuP7J6f3k23HD_e3dxYrJDJtnL5X0iAaVvGJ04gmvEtD3Tthf9RTj4zbo3zgxswTFcX2Bebgm9l1SgfA-srRH4LMuzyDqwJa-Y3zduspBI9VQK8JPLTTUr40gJUzZVE-LhN-k9ek2ki2kGuvpJC790Xs6K040523SkYk-rhQV_IStqIg',
-    oceanWave: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAjzZFFaUlhkp3iunRIf4XTsGHQEnqYHu6pE65tBztKE7OolcCbUmdQivWEjR7Iw3kWILrY-SOL_WmRhZu9EvoUpa07FYLMMcOX4LFL9SAM8vS0iiyzGKVHV5g1yGZRA_heWpGcVykSqFyKi5Nq-kqaEqzkN_BuB4tzxCuGgOjGh1ChjcyrLAFbKcMMvhAQ2MxMA05f5fuhuKzbs1o3iByY2g2xxrgf7FqrVQmZOtXXHtlmMiEzdzwMjQ',
-    geodeCanvas: 'https://lh3.googleusercontent.com/aida-public/AB6AXuA8cz82Qgt63X11PW-NF0BP3BK10qS00sh3LcoIFfylPxnOCd_ulVRhrI58Ms6bzijA-vM_HfUG0IIFHdpDCTYC40_A5Qxc8VlBEgemP5Ylp5_Bkb7xyt20aiMk9cq23_g8Pllm6ObQyqRCRDYVfM5iFG9Rze05F1405nzoC9vGogMjnnY-K4qpPb0ZIDtOTFtPODyRFBdyVOGYU5-plWn-1Mp-QGmX0Dcnufa9wOT7J7EE2ITnEaJ9mw',
-    riverTable: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAVZ1vB45YWVjK0W4fMNGjw_QSz0ZlQbt6dWPHPnvtzqYLCn9msP_EdC9KD1007bWb2sD3mFCtvV7pPy0B-gdCUmOm4pwNb56xsKyGI5hhpbN0RRsSKICHspRvKOO8RLg5xYRvGhPtjeChcyxBnp7EtmG9ZVj8W-Nxw9hZjkKu1eUdAPpQ-_Nqt7BEaFxdHJCbjgOWzXqTc_TrNxhAOvFZ_bwUALL8CXHbh8Wbzz1sEQUOl5rF-ltu43g',
-    ultraclearMain: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBRDycw3YoY4kwqRgc2RIKed3egGLaRRPS-s_Rj31II52yPo9mDwes-hs9trRWTLBtNK3kTpXaTRhlSVuTdOCl9dbdO_WTG2X7GPf1I7HYJSKSGD-a3Fgl7B6c8ro6jp7dFha0mHMnnRi-QtFlnFZ4ndGGuGaiAFgz667F1dX9gmHFfhqzuZqqbfuY7BUnC2X8WuzXjYz_F6yqBPS7AOMwiLvJ_ZgwVyGjt1XfOSW2V6nLeNup72rQpSw',
-    ultraclearThumb1: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAQWPIc9RjjOm562dw3ddz6mENg7B79L8sE2vd8DXSPWjCkWBCtZKyexl_l-8s30_zToPodAS1phxSqY0nnzQm46KbX4zIIlWVcqAMUZUxTu8aXo6wvOhzgnrtxzNhJ4p8IcsNDvujKOfqx2bD5zxFyCTJsxlJllbFak3BCMsI5-K6pHgOq8f1YZRylmTnljwQMFSsYaT7CYTXj6yxL5v6Vo4kMOGvNksBROF_YEXqD2-Fp9Y88Nea_xg',
-    ultraclearThumb2: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAmtDwFwE9dI4651IT8Cp51-KbxaO8kyaG1KWkJJfY6So_X7JydXTJGJYxcqFHm4qFRVfdLRiQCgDlTa3BnhgAhwu9vgXxvNtgkzk1wC10cAiYPPUvn4R1zy57bSpVpejzjN9U0krunXqre8ZXUetkJW2eVwtU20ubwTUkLJdgBuoClanQobEINLZHxgNqYmZwdhu85NX_SOJkHxK7AO7HPqaTlflxNzIgv1HuAUXZnmVwry2iGcQcGkg',
-    ultraclearThumb3: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBkroz5hIPjPYisInSbhSaH6GGWT5c69cF66lGSYiMLZxKLTdEp46j7K0ZNRFrWxqjcMAyJALQRq5BwfeOLdjvhy6m-87tfKJQ9vAy00Y8GHQmI-8SCiaqGW2KgbejJjorqxJwUIQarDMnE-X88JfDD5EStpvETeg1NWUEIEh449YfqUGpKoiWl-mjZsyySo2XEk4EecUjs2uatr0YqyVnOjo6cT4BpwIwLcOCk-iXHBMMpFJ1nfc2_nw',
-    ultraclearThumb4: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBdvPZuR6YS_G_8p9poYabe8eAhEapid_YXjI0B_Jk8UPPPJz5jkFfgGp7i84_5vUjZU2LKgNwgyUjZwUrQp9u0E5JFnGvTFLhDTX6lqx4qH7uLKQZQKTMHRuZdrokjEPAIw0DHVIubmGXta72_SNZg0gQtfIOh_S-uBtYQreovIq9DpZpkmWl7HRNQ8YHcWRkSflNk0Zrugt1jnHxsk3TzgI2YTwUzpU8PusCBVvtfKohphqv7Uz7Z2Q',
-    deepPour21: 'https://lh3.googleusercontent.com/aida-public/AB6AXuB5W0RxlC_qbCLiogOunZQJLwCIARNblOCu547tssvch4KcHjyQidb2Pqj42y6UPDqVUOLtfhsZVKJ8Hdx30t3WMpTJe11isaKisC_alp6Yk49cvuJIipcEzkaIHBWHiU3QefrMpytDplh-cEsce41ZOUIUGDrb6TPU5xXCEnrqTzHokQTZ0HjkbBevAv4o_E-JsEjGeJa0dnZWvbyMV104YVX9OokN7wPg58kHdnJCLaBPTQSPbqa_dg',
-    doming11: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDqlb7IBVOOKGQdlkshli66LfxK7ksTEDNrC0A4BuDzUBO4egoX6orddeLfRtAR6L_5SLGg5BSHYvThMgNhOA5h5Cfga6As7bsfs42pWHzk9CuzEhGL9lTfiWedVZZ1HJ96wchvuWBMJT_g7ZpK_ahAx-rhIN-uGz208_cF4LpKNbL_Ur9lD_Ci4rW3HXnyRrTA99WnfyljdtAa2j0MwdsUdmMZsGkf-uFYPKv4-nhR9XRnHNogow_I7w',
-    quickSet11: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCbnasnTSVLu2hYLiKrH6kzNDqjHUkXxfpcPPeLilSr7B48NPpbAxdm6E02JNZ03Xky30q9AeiEspvr-xXV5QWjAozM3lC1rzEjTywCCPZdThUrSzTFGrIFXLU6N6RrNiUgljvEX1kFPdEJcC5ABZSjwrAJDXtNhIIlhDiHyq6PmdhLjksG_focqOi7ob6FHBeABTUhzAHiK1AdQDGF4ilUmnlSic3H_Fb1GHUMjeTS8FncO2-d75qL6w',
-    uvHard: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCWu96XXw_-a6fZfaVzPObJ7VcVkqEVYlCBb3_3E1N3M9-80ipFCOkRbb2f6AlfdeClKEwuX6KY1oL-YpWsi-pw_ymNDNTKelCiwpi5ki3KFW0VF7hXZdrc4skHdyVj1EQPRt6v4znohGzQcEZs4pCiqtEJ3fJv3RRzUwfsB2AFFJZIFyxk054ZJ33xk4OLEvOkO9jMLm4ZfN6xNvY9bz2YNuMgOAq75Nu-IcUyL2OzokyvipFhtmN_8w',
-    micaChameleon: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBsHygVQDC1PnFOM3bOHAJacAtodwre1FixR4hSycrhmG-F77MrskbkW2XcwL7ueawATyKCEyn1zGfWKW0u4qlBpzlo9yLqgRIf9YKzhrXNqcNxOLaCw_ID7b39Paw4KsYdkznjBV6kZikiaukQlA9VARAbHMFh-CQzYhth8LjrvcUWUFDvsv5EP0cq8ahNhihjMYhugsBrImA5bh9A-aPrJGVio28WEyvpUTiav1TvqOVONuJ4CbYZCQ',
-    ecoBio: 'https://lh3.googleusercontent.com/aida-public/AB6AXuANQCZGg-SkRfOiXEX6GoK6R4JzoffbtS_-7ihkpfk4_6-PKbJfeycqVeNBorpqLKkHT8CSN8LLwnh5CFJkrlxowWNHnIL6oM0K3DLLzDTKgChRABfAZTPZsFqnaPto_gXdT9h_JmHNBteQGsjQpvjPdu94oKru9YzOyxlvOIyUZ9kMEz62WOHFaWNkCQBR91aoBGnVdjOafD3h1rjhU9BDEUqtzPIKS5XWzvFd6vpslHLZEzLjC5hA8Q',
-    geodeMold: 'https://lh3.googleusercontent.com/aida-public/AB6AXuALJpk3c80a1Mrf3flcRflAc828a5vcaeDV9qEpcoBm1MbDH4Y-bxGb74HPWWhNakHOEuqyW5O13zPv1s3-qmZzS8Do6MFzTpA6iF5syIOWNkt0GFBYmnLlfqBsq0BKW01eDGhAzky-UlNqL-HNmdBYEmNx5CeziUnLuAH8tovtJpetmWIK7eaibXjdWY1rHHnuoP9knfzaZ3_HrEZF6juyZi8Cv38pE2bJy5E_JfMtRMoqkkt7zFKLpA',
-    siennaPitcher: 'https://lh3.googleusercontent.com/aida-public/AB6AXuC4v5UEoHMPUfjyZvw-pRB5rieXSJVcdqHO5bwDOia0NN0jpnEQZRqGdhiZnBw5FQ2yiK4mTV7_APtHo1HJq94rbc1bRq_Y5OUjiheJZSNo3h9e5XpGNVQsbfnMDtASMIoLWPHI4SVHVtNyZmNRkEzf5-Fggr6BkQ57D-g2NKbtWLpS7Q6OKGh5oWQQfxdadZNLHLGqEfv1F98rtipSdWG3XCVAo73iFagCjml30rbmzqI81c5YxGjoAw',
-    siennaSpout: 'https://lh3.googleusercontent.com/aida-public/AB6AXuD-EJ1o1ePHpsz_O8r-Ik9eOFMyJRNsgMm96ZbZdCAZqAgrxJBJh3DX6gGdCUR-EJxf8_I--NSskOUfi_iqs_Cv2DYHhk8tdZdXwZcIFuTS3ysh-Jm8cxdO_Ft71jKUjtZdlAcyAam4_RYy3HJRGnGwCXQgLeYUFfQILDID-xUx4HY5MjksU80HKSXfEups8Yafyz1_7HlrqiW8p77Jlogu-213R9fmmPBfq9MmJeSfKD_xCN1Z7TM0Hg',
-    siennaTable: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBBnNxDST6TF_hJ4W9GT9nTVXG_271qfy4djrhvCFPEM3yQoyNOSKRCpk1BMiTeKP-w_h1rAZgCK_5EO5Ms-8upoZhtGku0aNIF25aENPF4BKBggOHk9yOUqUNLZQm8J1QYAKOnnNYiqzkcjA0DI5STfc4iwQtXb9MMr_u2n_u6bPRPNjNkT9G-jk92O-QxgQrrHYyV3hAIRNqr67zlvUfbqZlS-h98ogVUkxufmiDfT9AX0r-DeUe_xg',
-    siennaStamp: 'https://lh3.googleusercontent.com/aida-public/AB6AXuA-3yjdCvZfDryc1Y0tgNw_J_Pt26rjf0w-jHczKYeSKIeXR-wXkZvoQW2CcbCxBdCc_mJkJo_tkon4isgXwUTWVP1gFoYT4Si1iU9rjmWWi5N0lU8qtjKGuHZG0nOMNXB2RXHoQA4PzC6ROibYI0Od1NGz6hdAr-E9jKpWQ_cWn9eWRtTGDi0ztXVkB98hrjPhRixK06TocWZnBrN0M6GA_XOkWs30yrjAxAksend7s4YoIWNaleHu3w',
-    oceanMicaJar: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCR2fNybe2S7ETdDIR2E5TctJDdHepjAMeq0qTSs_XGpEKEUOlL3gw_8cBxwtXoiS2ZNX9uUtBwU82leSsjwvpXkVwSoa5mLDTm5MxuTxLkP9aXwO7xX4ymWgORnLYcCT2aA2QqPLzllinMpy7nC-Z_c4JMp9gb8JVMeXtlVpr6zGIMADlqD84MYeEtTe2cLA7DIzN1tP6T9FvCg5Z6sjMthqahJbxzBX6h6ZoNawRZV2xByGmFTuKfpQ',
-    siliconeMold4x: 'https://lh3.googleusercontent.com/aida-public/AB6AXuA2ZTMF-WsUhnpK0cw0PI3jx7iyCBNcRQMBPZv0TZZnbDiSZQpUubqRmRqF9oAzyjLtW8TGShVhC0p7zZ3A6M6wloNYrVJTfR3SOfSeDMn0g7AaOnzKXd4UV0kt-9HKzT9AXamagVHVH5FQQeAJgcCRwc5z2BjUJ8Vq0HCt9GMBkcO2RU81_TMAA6mRy0XHh2ivX2txHiD8BhNa_nCMFXNhmT8xOdWZAN_5zYRHdj-CYhQP0e8u3itN_g'
-  };
+export const IMAGES = {
+  "logoVistara": "./vistara-krafts-logo.jpg",
+  "resin201": "https://res.cloudinary.com/ecugysfd/image/upload/v1792353785/catalog_cata1_resin_bottles_set_1792353782.png",
+  "resin301": "https://res.cloudinary.com/ecugysfd/image/upload/v1792353785/catalog_cata1_resin_bottles_set_1792353782.png",
+  "uvResin": "https://res.cloudinary.com/ecugysfd/image/upload/v1792353851/catalog_cata1_uv_resin_25g_box_1792353847.png",
+  "decoMarkers": "https://res.cloudinary.com/ecugysfd/image/upload/v1792353788/catalog_cata1_deco_markers_1792353786.jpg",
+  "metalStand": "https://res.cloudinary.com/ecugysfd/image/upload/v1792353791/catalog_cata1_metal_folding_stands_1792353789.png",
+  "agateMold": "https://res.cloudinary.com/ecugysfd/image/upload/v1792353794/catalog_cata1_agate_mould_single_1792353792.png",
+  "foilFlakes": "https://res.cloudinary.com/ecugysfd/image/upload/v1792353797/catalog_cata1_foil_flakes_1792353795.jpg",
+  "opaquePigments": "https://res.cloudinary.com/ecugysfd/image/upload/v1792353801/catalog_cata1_opaque_pigments_1792353798.png",
+  "inkPearlPigments": "https://res.cloudinary.com/ecugysfd/image/upload/v1792353804/catalog_cata1_ink_pearl_pigments_1792353802.png",
+  "bubblesBuster": "https://res.cloudinary.com/ecugysfd/image/upload/v1792353829/catalog_cata1_bubbles_buster_1792353815.png",
+  "resinPolish": "https://res.cloudinary.com/ecugysfd/image/upload/v1792353814/catalog_cata1_resin_polish_1792353811.png",
+  "blowTorch": "https://res.cloudinary.com/ecugysfd/image/upload/v1792353806/catalog_cata1_blow_torch_1792353805.png",
+  "liquidLatex": "https://res.cloudinary.com/ecugysfd/image/upload/v1792353810/catalog_cata1_liquid_latex_1792353808.png",
+  "flowerMold4in1": "https://res.cloudinary.com/ecugysfd/image/upload/v1792353832/catalog_cata1_mould_4in1_flower_1792353830.png",
+  "magicSilicaGel": "https://res.cloudinary.com/ecugysfd/image/upload/v1792353842/catalog_cata1_magic_silica_gel_1792353840.png",
+  "mould6CavityAgate": "https://res.cloudinary.com/ecugysfd/image/upload/v1792353835/catalog_cata1_mould_6cavity_agate_1792353833.png",
+  "bookmarkMold": "https://res.cloudinary.com/ecugysfd/image/upload/v1792353839/catalog_cata1_mould_bookmark_6in_1792353836.png",
+  "leafMold": "https://res.cloudinary.com/ecugysfd/image/upload/v1792353865/catalog_cata1_leaf_mould_1_1792353857.png",
+  "smallFlowers": "https://res.cloudinary.com/ecugysfd/image/upload/v1792353895/catalog_cata1_small_flowers_03_1792353883.png"
+};
 
 export const TEST_PRODUCTS = [
-    {
-      id: 'ram-keep-001',
-      sku: 'RAM-VRM-BLK-12',
-      name: 'Eternal Varmala & Bridal Bouquet Time-Capsule Block',
-      shortName: 'Eternal Varmala Resin Block',
-      subtitle: 'Museum-Grade 50mm Deep Optical Cast with 24K Gold Leaf & Custom Brass Calligraphy',
-      category: 'keepsakes',
-      subCategory: 'floral_preservation',
-      relatedCategories: ['deep_pour'],
-      genderAffinity: 'feminine',
-      giftingTags: ['bridal', 'wedding', 'anniversary', 'gifts-for-her', 'keepsake'],
-      badge: 'IG Viral Keepsake',
-      price: 4499,
-      regularPrice: 5499,
-      unitPriceLabel: 'Free Floral Pickup',
-      ratio: '2:1',
-      viscosity: 'low',
-      pourDepth: '50mm',
-      cureTime: '72h',
-      potLife: '90m',
-      rating: 5.0,
-      reviewsCount: 418,
-      inStock: true,
-      isCustomizable: true,
-      image: IMAGES.floralCube,
-      gallery: [
-        IMAGES.floralCube,
-        IMAGES.ultraclearThumb2,
-        IMAGES.jewelryBezel,
-        IMAGES.coasterSet
-      ],
-      colors: [
-        { id: 'c-gold-leaf', label: '24K Gold Leaf & Crystal Clear', hex: '#d4af37', accent: '#fcf8ea' },
-        { id: 'c-blush-rose', label: 'Blush Rose & Champagne', hex: '#f7d6d0', accent: '#e8a598' },
-        { id: 'c-emerald-silver', label: 'Emerald Agate & Silver Leaf', hex: '#164e3f', accent: '#94a3b8' },
-        { id: 'c-royal-indigo', label: 'Royal Indigo & Silver Foil', hex: '#1e3a8a', accent: '#dbeafe' },
-        { id: 'c-ultraclear', label: 'UltraClear Archival Diamond', hex: '#e0f2fe', accent: '#0284c7' }
-      ],
-      shapes: [
-        { id: 's-arch', label: 'Mughal Arch', icon: 'account_balance' },
-        { id: 's-cube', label: 'Romantic Cube', icon: 'crop_square' },
-        { id: 's-hex', label: 'Geode Hexagon', icon: 'hexagon' },
-        { id: 's-round', label: 'Heirloom Disc', icon: 'radio_button_unchecked' },
-        { id: 's-heart', label: 'Heart Keepsake', icon: 'favorite' }
-      ],
-      sizes: [
-        { id: 'sz-8in', label: '8" Romantic Cube (Desk Mini)', desc: 'Preserves 8–12 roses + couple name tag', priceDelta: 0 },
-        { id: 'sz-12in', label: '12" Royal Heirloom Block', desc: 'Full Varmala + 24K gold flakes + warm LED stand', priceDelta: 1500, popular: true },
-        { id: 'sz-16in', label: '16" Gallery Mantel Frame', desc: 'Dual garland preservation + 2 complimentary coasters', priceDelta: 4000 }
-      ],
-      variants: [
-        { id: 'vrm-8in', label: '8" Romantic Cube (Bridal Mini)', desc: 'Preserves 8–12 roses + couple name tag', price: 2999, regularPrice: 3699, unitPrice: '8×8×2 inch' },
-        { id: 'vrm-12in', label: '12" Royal Heirloom Block', desc: 'Full Varmala + 24K gold flakes + warm LED stand', price: 4499, regularPrice: 5499, unitPrice: '12×12×2.5 inch', popular: true },
-        { id: 'vrm-16in', label: '16" Gallery Mantel Frame + Coasters (2x)', desc: 'Dual garland preservation + 2 complimentary coasters', price: 6999, regularPrice: 8499, unitPrice: '16×16 inch combo' }
-      ],
-      specs: {
-        mixRatioWeight: '2 : 1 (Deep Pour Archival)',
-        mixRatioVolume: '1.8 : 1 (Degassed Chamber)',
-        workingPotLife: '90 Minutes @ 23°C',
-        demoldDuration: '48 Hours',
-        fullGlassCure: '7 Days Silica + 72h Cure',
-        dynamicViscosity: '350 mPa·s (Zero-Bubble)',
-        maxDepth: '50mm – 65mm',
-        hardness: '85D Scratch-Shield',
-        uvStability: 'HALS + UV400 (10+ Yrs)'
+  {
+    "id": "vk-cat-res-201",
+    "sku": "VK-RES-201-SET",
+    "name": "Vistāra Krafts 2:1 High-Gloss Epoxy Resin & Hardener Set",
+    "shortName": "2:1 Epoxy Resin Set",
+    "short_name": "2:1 Epoxy Resin Set",
+    "subtitle": "High-Clarity Gloss Coating & Shallow Casting System (300g & 1.5kg Options)",
+    "brand": "Vistāra Krafts",
+    "category": "casting",
+    "subCategory": "Coating & Casting Resin",
+    "subcategory": "Coating & Casting Resin",
+    "badge": "Studio Classic",
+    "price": 599,
+    "regularPrice": 699,
+    "compare_at_price": 699,
+    "cost_price": 320,
+    "discount": 14,
+    "tax_rate": 18,
+    "hsn_code": "39073010",
+    "stock": 45,
+    "low_stock_threshold": 5,
+    "inStock": true,
+    "in_stock": true,
+    "status": "active",
+    "isActive": true,
+    "is_active": true,
+    "rating": 4.9,
+    "reviewsCount": 86,
+    "reviews_count": 86,
+    "ratio": "2:1",
+    "viscosity": "medium",
+    "cureTime": "18-24 Hours",
+    "potLife": "45 mins",
+    "image": "https://res.cloudinary.com/ecugysfd/image/upload/v1792353785/catalog_cata1_resin_bottles_set_1792353782.png",
+    "gallery": [
+      "https://res.cloudinary.com/ecugysfd/image/upload/v1792353785/catalog_cata1_resin_bottles_set_1792353782.png"
+    ],
+    "images": [
+      "https://res.cloudinary.com/ecugysfd/image/upload/v1792353785/catalog_cata1_resin_bottles_set_1792353782.png"
+    ],
+    "variants": [
+      {
+        "id": "var-201-300g",
+        "label": "300g Set (200g Resin + 100g Hardener)",
+        "price": 599,
+        "regularPrice": 699,
+        "stock": 25,
+        "sku": "VK-RES-201-300G"
+      },
+      {
+        "id": "var-201-1500g",
+        "label": "1.5 Kg Set (1000g Resin + 500g Hardener)",
+        "price": 1899,
+        "regularPrice": 2199,
+        "stock": 20,
+        "sku": "VK-RES-201-15KG"
       }
+    ],
+    "specs": {
+      "mixRatioWeight": "2:1 by weight",
+      "dynamicViscosity": "medium",
+      "fullGlassCure": "18-24 Hours",
+      "workingPotLife": "45 mins",
+      "finish": "High Gloss Diamond Mirror",
+      "uvStability": "ASTM D1003 Lightfast HALS + UV400"
     },
-    {
-      id: 'vk-epx-301',
-      sku: 'VK-EPX-301-12K',
-      name: 'UltraClear 3:1 Casting Resin',
-      shortName: 'UltraClear 3:1 Casting',
-      subtitle: 'Optical Grade Degassed Epoxy System for Deep Art, Coasters & Floral Preservation',
-      category: 'casting',
-      subCategory: 'casting_3_1',
-      genderAffinity: 'neutral',
-      giftingTags: ['epoxy-system', 'studio-kit', 'diy-craft', 'gifts-for-him', 'gifts-for-her'],
-      badge: 'Bestseller',
-      price: 1299,
-      regularPrice: 1499,
-      unitPriceLabel: '₹108 / 100g',
-      ratio: '3:1',
-      viscosity: 'low',
-      pourDepth: '20mm',
-      cureTime: '24h',
-      potLife: '45m',
-      rating: 4.9,
-      reviewsCount: 342,
-      inStock: true,
-      isCustomizable: false,
-      image: IMAGES.ultraclearMain,
-      gallery: [
-        IMAGES.ultraclearMain,
-        IMAGES.ultraclearThumb2,
-        IMAGES.ultraclearThumb3,
-        IMAGES.ultraclearThumb4
-      ],
-      colors: [
-        { id: 'c-clear', label: 'UltraClear Optical (Diamond Pure)', hex: '#f0f9ff', accent: '#0284c7' },
-        { id: 'c-ocean-blue', label: 'Ocean Lagoon Tint Kit', hex: '#0284c7', accent: '#bae6fd' },
-        { id: 'c-emerald', label: 'Emerald Forest Tint Kit', hex: '#059669', accent: '#a7f3d0' },
-        { id: 'c-smoke-black', label: 'Obsidian Smoke Tint Kit', hex: '#1e293b', accent: '#94a3b8' }
-      ],
-      shapes: [
-        { id: 's-pour', label: 'Liquid Bottle Set', icon: 'science' },
-        { id: 's-jug', label: 'Studio Ergonomic Jug', icon: 'local_drink' }
-      ],
-      sizes: [
-        { id: 'sz-400g', label: '400g Starter Kit', desc: '300g Resin + 100g Hardener', priceDelta: -750 },
-        { id: 'sz-1200g', label: '1.2kg Studio Pack', desc: '900g Resin + 300g Hardener', priceDelta: 0, popular: true },
-        { id: 'sz-4000g', label: '4.0kg Bulk Workshop Kit', desc: '3kg Resin + 1kg Hardener', priceDelta: 2500 },
-        { id: 'sz-12000g', label: '12kg Commercial Pack', desc: '9kg Resin + 3kg Hardener', priceDelta: 8700 }
-      ],
-      variants: [
-        { id: 'kit-400g', label: '400g Kit', desc: '300g Resin + 100g Hardener • Small Casts', price: 549, regularPrice: 649, unitPrice: '₹137 / 100g' },
-        { id: 'kit-1200g', label: '1.2kg Kit', desc: '900g Resin + 300g Hardener • Standard Studio Edition', price: 1299, regularPrice: 1499, unitPrice: '₹108.25 / 100g', popular: true },
-        { id: 'kit-4000g', label: '4kg Bulk Kit', desc: '3kg Resin + 1kg Hardener • Mid Furniture & Keepsakes', price: 3799, regularPrice: 5199, unitPrice: '₹94.97 / 100g' },
-        { id: 'kit-12000g', label: '12kg Commercial Pack', desc: '9kg Resin + 3kg Hardener • Architectural Casts', price: 9999, regularPrice: 12999, unitPrice: '₹83.3 / 100g' }
-      ],
-      specs: {
-        mixRatioWeight: '3 : 1 (Resin : Hardener)',
-        mixRatioVolume: '2.6 : 1 (Parts by vol.)',
-        workingPotLife: '45 – 55 Minutes',
-        demoldDuration: '18 – 24 Hours',
-        fullGlassCure: '48 – 72 Hours',
-        dynamicViscosity: '600 – 800 mPa·s',
-        maxDepth: '15mm – 20mm (1.5–2 cm)',
-        hardness: '82D (Diamond Finish)',
-        uvStability: 'HALS Guaranteed 3+ Yrs'
+    "colors": [],
+    "shapes": [],
+    "sizes": [
+      "300g",
+      "1.5 Kg"
+    ],
+    "gender": "all",
+    "genderAffinity": "neutral",
+    "gender_affinity": "neutral",
+    "giftingTags": [
+      "diy-kit",
+      "studio-supplies",
+      "resin-art",
+      "bestseller"
+    ],
+    "gifting_tags": [
+      "diy-kit",
+      "studio-supplies",
+      "resin-art",
+      "bestseller"
+    ],
+    "description": "Professional 2:1 mixing ratio epoxy resin & hardener system formulated specifically for resin artists, coaster creators, and tray makers. Delivers high optical clarity, excellent self-leveling capabilities, and robust bubble-release kinetics with advanced UV resistance against yellowing."
+  },
+  {
+    "id": "vk-cat-res-301",
+    "sku": "VK-RES-301-SET",
+    "name": "Vistāra Krafts 3:1 Deep Pour & Casting Epoxy Resin System",
+    "shortName": "3:1 Deep Pour Resin",
+    "short_name": "3:1 Deep Pour Resin",
+    "subtitle": "Ultra-Low Viscosity Bubble-Free Pouring System (300g & 1.2kg Options)",
+    "brand": "Vistāra Krafts",
+    "category": "deep_pour",
+    "subCategory": "Deep Pour & River Tables",
+    "subcategory": "Deep Pour & River Tables",
+    "badge": "Deep Casting",
+    "price": 649,
+    "regularPrice": 749,
+    "compare_at_price": 749,
+    "cost_price": 360,
+    "discount": 13,
+    "tax_rate": 18,
+    "hsn_code": "39073010",
+    "stock": 40,
+    "low_stock_threshold": 5,
+    "inStock": true,
+    "in_stock": true,
+    "status": "active",
+    "isActive": true,
+    "is_active": true,
+    "rating": 4.95,
+    "reviewsCount": 112,
+    "reviews_count": 112,
+    "ratio": "3:1",
+    "viscosity": "low",
+    "cureTime": "24-36 Hours",
+    "potLife": "90 mins",
+    "image": "https://res.cloudinary.com/ecugysfd/image/upload/v1792353785/catalog_cata1_resin_bottles_set_1792353782.png",
+    "gallery": [
+      "https://res.cloudinary.com/ecugysfd/image/upload/v1792353785/catalog_cata1_resin_bottles_set_1792353782.png"
+    ],
+    "images": [
+      "https://res.cloudinary.com/ecugysfd/image/upload/v1792353785/catalog_cata1_resin_bottles_set_1792353782.png"
+    ],
+    "variants": [
+      {
+        "id": "var-301-300g",
+        "label": "300g Set (225g Resin + 75g Hardener)",
+        "price": 649,
+        "regularPrice": 749,
+        "stock": 20,
+        "sku": "VK-RES-301-300G"
+      },
+      {
+        "id": "var-301-1200g",
+        "label": "1.2 Kg Set (900g Resin + 300g Hardener)",
+        "price": 1749,
+        "regularPrice": 1999,
+        "stock": 20,
+        "sku": "VK-RES-301-12KG"
       }
+    ],
+    "specs": {
+      "mixRatioWeight": "3:1 by weight",
+      "dynamicViscosity": "low",
+      "fullGlassCure": "24-36 Hours",
+      "workingPotLife": "90 mins",
+      "finish": "Crystal Clear Water Cast",
+      "uvStability": "ASTM D1003 Lightfast HALS + UV400"
     },
-    {
-      id: 'ram-keep-002',
-      sku: 'RAM-OCN-TRY-01',
-      name: 'Maldives Ocean Wave Teak Charcuterie & Vanity Tray',
-      shortName: 'Ocean Wave Teak Tray',
-      subtitle: 'Hand-poured Multi-Layer Lacing Foam Waves over Seasoned Burma Teak',
-      category: 'keepsakes',
-      subCategory: 'home_decor',
-      relatedCategories: ['doming'],
-      genderAffinity: 'masculine',
-      giftingTags: ['gifts-for-him', 'barware', 'teak-wood', 'ocean-decor', 'luxury-home'],
-      badge: 'Hand-Poured Art',
-      price: 2199,
-      regularPrice: 2799,
-      unitPriceLabel: 'Food Safe Glaze',
-      ratio: '1:1',
-      viscosity: 'high',
-      pourDepth: '10mm',
-      cureTime: '24h',
-      potLife: '35m',
-      rating: 4.9,
-      reviewsCount: 215,
-      inStock: true,
-      isCustomizable: true,
-      image: IMAGES.oceanWave,
-      gallery: [
-        IMAGES.oceanWave,
-        IMAGES.ultraclearThumb4,
-        IMAGES.riverTable,
-        IMAGES.coasterSet
-      ],
-      colors: [
-        { id: 'c-maldives', label: 'Maldives Deep Navy & Turquoise', hex: '#0a1c30', accent: '#0284c7' },
-        { id: 'c-caribbean', label: 'Caribbean Emerald & Aqua Foam', hex: '#0f766e', accent: '#14b8a6' },
-        { id: 'c-midnight', label: 'Midnight Obsidian & Gold Leaf', hex: '#18181b', accent: '#d4af37' },
-        { id: 'c-sunset', label: 'Sunset Coral & Copper Sparkle', hex: '#be123c', accent: '#fb7185' }
-      ],
-      shapes: [
-        { id: 's-platter', label: '14" Teak Serving Board', icon: 'crop_portrait' },
-        { id: 's-charcuterie', label: '18" Live-Edge Charcuterie Paddle', icon: 'straighten' },
-        { id: 's-round-tray', label: '12" Round Vanity Platter', icon: 'radio_button_unchecked' }
-      ],
-      sizes: [
-        { id: 'sz-std', label: 'Standard 14" Teak Tray', desc: 'Burma Teak + 3-layer ocean foam lacing', priceDelta: 0, popular: true },
-        { id: 'sz-combo', label: 'Grand 18" Board + 4 Coasters Combo', desc: 'Complete entertaining table ensemble', priceDelta: 1000 }
-      ],
-      variants: [
-        { id: 'ocn-std', label: '14" Lagoon Serving Board', desc: 'Burma Teak + 3-layer ocean foam lacing', price: 2199, regularPrice: 2799, unitPrice: 'Single Board', popular: true },
-        { id: 'ocn-set', label: '14" Board + 4 Ocean Coasters Combo', desc: 'Complete entertaining table ensemble', price: 3199, regularPrice: 3999, unitPrice: '5-Piece Set' }
-      ],
-      specs: {
-        mixRatioWeight: '1 : 1 (High-Gloss Doming)',
-        mixRatioVolume: '1 : 1 (Self-Leveling)',
-        workingPotLife: '35 Minutes',
-        demoldDuration: '12 Hours',
-        fullGlassCure: '48 Hours (Food Contact Safe)',
-        dynamicViscosity: '2200 mPa·s (Wave Lacing)',
-        maxDepth: '8mm Surface Coat',
-        hardness: '84D Heat-Resistant (75°C)',
-        uvStability: 'HALS Marine Grade'
+    "colors": [],
+    "shapes": [],
+    "sizes": [
+      "300g",
+      "1.2 Kg"
+    ],
+    "gender": "all",
+    "genderAffinity": "neutral",
+    "gender_affinity": "neutral",
+    "giftingTags": [
+      "river-table",
+      "deep-pour",
+      "botanical-encapsulation"
+    ],
+    "gifting_tags": [
+      "river-table",
+      "deep-pour",
+      "botanical-encapsulation"
+    ],
+    "description": "Engineered for deep-cavity casting, river tables, large botanical encapsulation blocks, and geode platters. Its slow-curing exothermic profile suppresses thermal cracking and bubble retention, yielding water-clear glasslike depth."
+  },
+  {
+    "id": "vk-cat-acc-deco",
+    "sku": "VK-ACC-DECO-MRK",
+    "name": "DecoColor Premium Metallic Paint Marker Pen",
+    "shortName": "Deco Paint Markers",
+    "short_name": "Deco Paint Markers",
+    "subtitle": "High-Luster Oil-Based Leafing Finish for Gilded Coaster Rims & Geode Art",
+    "brand": "Vistāra Krafts",
+    "category": "accessories",
+    "subCategory": "Edge Detailing & Finishing",
+    "subcategory": "Edge Detailing & Finishing",
+    "badge": "Gilded Rims",
+    "price": 299,
+    "regularPrice": 349,
+    "compare_at_price": 349,
+    "cost_price": 130,
+    "discount": 14,
+    "tax_rate": 18,
+    "hsn_code": "96082000",
+    "stock": 85,
+    "low_stock_threshold": 5,
+    "inStock": true,
+    "in_stock": true,
+    "status": "active",
+    "isActive": true,
+    "is_active": true,
+    "rating": 4.88,
+    "reviewsCount": 54,
+    "reviews_count": 54,
+    "ratio": "N/A",
+    "viscosity": "low",
+    "cureTime": "24h",
+    "potLife": "30m",
+    "image": "https://res.cloudinary.com/ecugysfd/image/upload/v1792353788/catalog_cata1_deco_markers_1792353786.jpg",
+    "gallery": [
+      "https://res.cloudinary.com/ecugysfd/image/upload/v1792353788/catalog_cata1_deco_markers_1792353786.jpg"
+    ],
+    "images": [
+      "https://res.cloudinary.com/ecugysfd/image/upload/v1792353788/catalog_cata1_deco_markers_1792353786.jpg"
+    ],
+    "variants": [
+      {
+        "id": "var-deco-gold",
+        "label": "Golden Metallic Marker (Single Pen)",
+        "price": 299,
+        "regularPrice": 349,
+        "stock": 45,
+        "sku": "VK-DECO-GLD"
+      },
+      {
+        "id": "var-deco-silver",
+        "label": "Silver Metallic Marker (Single Pen)",
+        "price": 299,
+        "regularPrice": 349,
+        "stock": 40,
+        "sku": "VK-DECO-SLV"
+      },
+      {
+        "id": "var-deco-duo",
+        "label": "Gold + Silver Duo Pack (Set of 2)",
+        "price": 549,
+        "regularPrice": 698,
+        "stock": 25,
+        "sku": "VK-DECO-DUO"
       }
+    ],
+    "specs": {
+      "mixRatioWeight": "Single Component",
+      "dynamicViscosity": "low",
+      "fullGlassCure": "24h",
+      "workingPotLife": "30m",
+      "finish": "Optical Gloss Diamond Clear",
+      "uvStability": "ASTM D1003 Lightfast HALS + UV400"
     },
-    {
-      id: 'vk-epx-201',
-      sku: 'VK-EPX-201-3KG',
-      name: 'River Flow 2:1 Deep Pour River Table Epoxy',
-      shortName: 'Deep Pour 2:1 Epoxy',
-      subtitle: 'Ultra-Slow Exotherm Formula for 50mm Single-Pass Casts & Floral Blocks',
-      category: 'deep_pour',
-      subCategory: 'deep_pour_2_1',
-      genderAffinity: 'masculine',
-      giftingTags: ['gifts-for-him', 'woodworking', 'river-table', 'deep-pour', 'workshop'],
-      badge: 'Up to 50mm',
-      price: 2850,
-      regularPrice: 3200,
-      unitPriceLabel: '₹95 / 100g',
-      ratio: '2:1',
-      viscosity: 'low',
-      pourDepth: '50mm',
-      cureTime: '48h',
-      potLife: '120m',
-      rating: 4.8,
-      reviewsCount: 188,
-      inStock: true,
-      isCustomizable: false,
-      image: IMAGES.deepPour21,
-      gallery: [
-        IMAGES.deepPour21,
-        IMAGES.riverTable,
-        IMAGES.ultraclearThumb2,
-        IMAGES.ultraclearThumb3
-      ],
-      colors: [
-        { id: 'c-clear', label: 'Water-Clear Optical Glass', hex: '#f8fafc', accent: '#0ea5e9' },
-        { id: 'c-smoke', label: 'Smoky Charcoal Tint', hex: '#334155', accent: '#64748b' },
-        { id: 'c-caribbean', label: 'Turquoise River Tint', hex: '#0e7490', accent: '#06b6d4' },
-        { id: 'c-walnut', label: 'Deep Amber Coffee Tint', hex: '#78350f', accent: '#b45309' }
-      ],
-      shapes: [
-        { id: 's-deep', label: 'Deep Pour Cast System', icon: 'layers' },
-        { id: 's-table', label: 'Live-Edge Slab Format', icon: 'table_restaurant' }
-      ],
-      sizes: [
-        { id: 'sz-3kg', label: '3.0kg Dual Pack', desc: '2kg Resin + 1kg Hardener • Floral Blocks & Small Tables', priceDelta: 0, popular: true },
-        { id: 'sz-9kg', label: '9.0kg Furniture Studio Kit', desc: '6kg Resin + 3kg Hardener • Live-Edge River Tables', priceDelta: 5149 }
-      ],
-      variants: [
-        { id: 'dp-3kg', label: '3.0kg Dual Pack', desc: '2kg Resin + 1kg Hardener • Floral Blocks & Small Tables', price: 2850, regularPrice: 3200, unitPrice: '₹95 / 100g', popular: true },
-        { id: 'dp-9kg', label: '9.0kg Furniture Studio Kit', desc: '6kg Resin + 3kg Hardener • Live-Edge River Tables', price: 7999, regularPrice: 9600, unitPrice: '₹88.8 / 100g' }
-      ],
-      specs: {
-        mixRatioWeight: '2 : 1 (Resin : Hardener)',
-        mixRatioVolume: '1.85 : 1 (Parts by vol.)',
-        workingPotLife: '90 – 120 Minutes',
-        demoldDuration: '36 – 48 Hours',
-        fullGlassCure: '72 – 96 Hours',
-        dynamicViscosity: '320 – 450 mPa·s (Water-thin)',
-        maxDepth: '50mm (2 inches single pass)',
-        hardness: '85D Structural Grade',
-        uvStability: 'Dual HALS + Benzotriazole'
+    "colors": [
+      {
+        "id": "c-gold",
+        "label": "Golden Leafing",
+        "hex": "#D4AF37"
+      },
+      {
+        "id": "c-silver",
+        "label": "Silver Chrome",
+        "hex": "#C0C0C0"
       }
+    ],
+    "shapes": [],
+    "sizes": [
+      "Single Marker",
+      "Duo Pack"
+    ],
+    "gender": "all",
+    "genderAffinity": "neutral",
+    "gender_affinity": "neutral",
+    "giftingTags": [
+      "finishing-tools",
+      "gold-rims",
+      "calligraphy"
+    ],
+    "gifting_tags": [
+      "finishing-tools",
+      "gold-rims",
+      "calligraphy"
+    ],
+    "description": "Premium oil-based metallic paint marker with opaque, liquid-metal reflectivity. Specially formulated for outlining cured resin coasters, painting geode crystal rim edges, glass detailing, and luxury gold-leaf accentuation."
+  },
+  {
+    "id": "vk-cat-acc-stnd",
+    "sku": "VK-ACC-FLDG-STND",
+    "name": "Polished Gold Metal Folding Easel & Art Display Stand",
+    "shortName": "Metal Folding Stand",
+    "short_name": "Metal Folding Stand",
+    "subtitle": "Sturdy Electroplated Gold Iron Easel for Clocks, Slabs, Trays & Coasters",
+    "brand": "Vistāra Krafts",
+    "category": "accessories",
+    "subCategory": "Art Display & Easels",
+    "subcategory": "Art Display & Easels",
+    "badge": "Gallery Display",
+    "price": 199,
+    "regularPrice": 249,
+    "compare_at_price": 249,
+    "cost_price": 85,
+    "discount": 20,
+    "tax_rate": 18,
+    "hsn_code": "83025000",
+    "stock": 120,
+    "low_stock_threshold": 5,
+    "inStock": true,
+    "in_stock": true,
+    "status": "active",
+    "isActive": true,
+    "is_active": true,
+    "rating": 4.82,
+    "reviewsCount": 67,
+    "reviews_count": 67,
+    "ratio": "N/A",
+    "viscosity": "low",
+    "cureTime": "24h",
+    "potLife": "30m",
+    "image": "https://res.cloudinary.com/ecugysfd/image/upload/v1792353791/catalog_cata1_metal_folding_stands_1792353789.png",
+    "gallery": [
+      "https://res.cloudinary.com/ecugysfd/image/upload/v1792353791/catalog_cata1_metal_folding_stands_1792353789.png"
+    ],
+    "images": [
+      "https://res.cloudinary.com/ecugysfd/image/upload/v1792353791/catalog_cata1_metal_folding_stands_1792353789.png"
+    ],
+    "variants": [
+      {
+        "id": "var-stnd-4in",
+        "label": "4-Inch Folding Stand (Coasters & Mini Slabs)",
+        "price": 199,
+        "regularPrice": 249,
+        "stock": 35,
+        "sku": "VK-STND-4IN"
+      },
+      {
+        "id": "var-stnd-6in",
+        "label": "6-Inch Folding Stand (Small Platters & 6\" Clocks)",
+        "price": 279,
+        "regularPrice": 349,
+        "stock": 35,
+        "sku": "VK-STND-6IN"
+      },
+      {
+        "id": "var-stnd-8in",
+        "label": "8-Inch Folding Stand (Plates, Geode Wall Art)",
+        "price": 349,
+        "regularPrice": 429,
+        "stock": 30,
+        "sku": "VK-STND-8IN"
+      },
+      {
+        "id": "var-stnd-10in",
+        "label": "10-Inch Folding Stand (Large Clocks & Art Slabs)",
+        "price": 429,
+        "regularPrice": 529,
+        "stock": 20,
+        "sku": "VK-STND-10IN"
+      }
+    ],
+    "specs": {
+      "mixRatioWeight": "Single Component",
+      "dynamicViscosity": "low",
+      "fullGlassCure": "24h",
+      "workingPotLife": "30m",
+      "finish": "Mirror Polished Royal Gold",
+      "uvStability": "ASTM D1003 Lightfast HALS + UV400"
     },
-    {
-      id: 'ram-keep-003',
-      sku: 'RAM-GEO-CLK-18',
-      name: 'Royal Champagne & Quartz Geode Statement Wall Art',
-      shortName: 'Quartz Geode Wall Art',
-      subtitle: 'Encrusted with Raw Clear Quartz Crystals, Metallic Bronze & Rose-Gold Leaf',
-      category: 'keepsakes',
-      subCategory: 'wall_art',
-      relatedCategories: ['pigments'],
-      genderAffinity: 'feminine',
-      giftingTags: ['gifts-for-her', 'wall-art', 'crystals', 'geode', 'luxury-living'],
-      badge: 'Collector Edition',
-      price: 3899,
-      regularPrice: 4699,
-      unitPriceLabel: 'Natural Quartz',
-      ratio: '1:1',
-      viscosity: 'high',
-      pourDepth: '15mm',
-      cureTime: '24h',
-      potLife: '40m',
-      rating: 5.0,
-      reviewsCount: 129,
-      inStock: true,
-      isCustomizable: true,
-      image: IMAGES.geodeCanvas,
-      gallery: [
-        IMAGES.geodeCanvas,
-        IMAGES.coasterSet,
-        IMAGES.micaChameleon,
-        IMAGES.ultraclearThumb4
-      ],
-      colors: [
-        { id: 'c-champagne', label: 'Royal Champagne & Rose Gold', hex: '#f7d6d0', accent: '#d4af37' },
-        { id: 'c-emerald', label: 'Emerald Agate & Silver Quartz', hex: '#064e3b', accent: '#a7f3d0' },
-        { id: 'c-obsidian', label: 'Obsidian Black & 24K Gold Veins', hex: '#09090b', accent: '#eab308' },
-        { id: 'c-amethyst', label: 'Amethyst Lilac & Pearl Luster', hex: '#581c87', accent: '#d8b4fe' }
-      ],
-      shapes: [
-        { id: 's-round', label: '18" Round Geode Canvas', icon: 'radio_button_unchecked' },
-        { id: 's-hex', label: '20" Hexagonal Geode Specimen', icon: 'hexagon' },
-        { id: 's-grand', label: '24" Architectural Statement Panel', icon: 'crop_square' }
-      ],
-      sizes: [
-        { id: 'sz-18in', label: '18" Round Geode Canvas / Clock', desc: 'Silent sweep brass hands + raw quartz clusters', priceDelta: 0, popular: true },
-        { id: 'sz-24in', label: '24" Architectural Statement Panel', desc: 'Backlit warm LED halo + champagne druzy rim', priceDelta: 2600 }
-      ],
-      variants: [
-        { id: 'geo-18in', label: '18" Round Geode Canvas / Clock', desc: 'Silent sweep brass hands + raw quartz clusters', price: 3899, regularPrice: 4699, unitPrice: '18 inch dia', popular: true },
-        { id: 'geo-24in', label: '24" Architectural Statement Panel', desc: 'Backlit warm LED halo + champagne druzy rim', price: 6499, regularPrice: 7999, unitPrice: '24 inch dia' }
-      ],
-      specs: {
-        mixRatioWeight: '1 : 1 Thixotropic Gel',
-        mixRatioVolume: '1 : 1',
-        workingPotLife: '40 Minutes',
-        demoldDuration: '24 Hours',
-        fullGlassCure: '48 Hours',
-        dynamicViscosity: '3500 mPa·s (Hold-on-Edge)',
-        maxDepth: '12mm Multi-Layer',
-        hardness: '83D Mirror Gloss',
-        uvStability: 'Archival Non-Yellowing'
+    "colors": [
+      {
+        "id": "c-gold-metal",
+        "label": "Royal Gold",
+        "hex": "#D4AF37"
       }
+    ],
+    "shapes": [],
+    "sizes": [
+      "4 inch",
+      "6 inch",
+      "8 inch",
+      "10 inch"
+    ],
+    "gender": "all",
+    "genderAffinity": "neutral",
+    "gender_affinity": "neutral",
+    "giftingTags": [
+      "easel",
+      "art-display",
+      "plate-stand"
+    ],
+    "gifting_tags": [
+      "easel",
+      "art-display",
+      "plate-stand"
+    ],
+    "description": "Heavy-gauge electroplated gold metal folding easel stand with protective ball-feet tips. Provides steady, anti-tip support for geode agate coasters, custom resin wall clocks, ceramic display plates, and wedding keepsakes."
+  },
+  {
+    "id": "vk-cat-mld-agat",
+    "sku": "VK-MLD-AGT-SNG",
+    "name": "Fluted Edge Agate Geode Coaster Silicone Mold",
+    "shortName": "Agate Coaster Mould",
+    "short_name": "Agate Coaster Mould",
+    "subtitle": "Gloss-Mirror Organic Geode Coaster & Platter Mold (5\", 6\", 8\" Sizes)",
+    "brand": "Vistāra Krafts",
+    "category": "molds",
+    "subCategory": "Coaster & Tray Molds",
+    "subcategory": "Coaster & Tray Molds",
+    "badge": "Bestseller",
+    "price": 249,
+    "regularPrice": 299,
+    "compare_at_price": 299,
+    "cost_price": 110,
+    "discount": 17,
+    "tax_rate": 18,
+    "hsn_code": "39269099",
+    "stock": 70,
+    "low_stock_threshold": 5,
+    "inStock": true,
+    "in_stock": true,
+    "status": "active",
+    "isActive": true,
+    "is_active": true,
+    "rating": 4.91,
+    "reviewsCount": 98,
+    "reviews_count": 98,
+    "ratio": "N/A",
+    "viscosity": "low",
+    "cureTime": "24h",
+    "potLife": "30m",
+    "image": "https://res.cloudinary.com/ecugysfd/image/upload/v1792353794/catalog_cata1_agate_mould_single_1792353792.png",
+    "gallery": [
+      "https://res.cloudinary.com/ecugysfd/image/upload/v1792353794/catalog_cata1_agate_mould_single_1792353792.png"
+    ],
+    "images": [
+      "https://res.cloudinary.com/ecugysfd/image/upload/v1792353794/catalog_cata1_agate_mould_single_1792353792.png"
+    ],
+    "variants": [
+      {
+        "id": "var-mld-agt-5in",
+        "label": "5-Inch Agate Coaster Mould",
+        "price": 249,
+        "regularPrice": 299,
+        "stock": 25,
+        "sku": "VK-MLD-AGT-5IN"
+      },
+      {
+        "id": "var-mld-agt-6in",
+        "label": "6-Inch Agate Coaster Mould",
+        "price": 299,
+        "regularPrice": 349,
+        "stock": 25,
+        "sku": "VK-MLD-AGT-6IN"
+      },
+      {
+        "id": "var-mld-agt-8in",
+        "label": "8-Inch Geode Platter Mould",
+        "price": 399,
+        "regularPrice": 479,
+        "stock": 20,
+        "sku": "VK-MLD-AGT-8IN"
+      }
+    ],
+    "specs": {
+      "mixRatioWeight": "Single Component",
+      "dynamicViscosity": "low",
+      "fullGlassCure": "24h",
+      "workingPotLife": "30m",
+      "finish": "Optical Gloss Diamond Clear",
+      "uvStability": "ASTM D1003 Lightfast HALS + UV400"
     },
-    {
-      id: 'vk-uv-hard',
-      sku: 'VK-UV-HRD-200G',
-      name: 'Jewelry Glass Optical UV Resin (Hard Type 365nm)',
-      shortName: 'Jewelry Glass UV Resin',
-      subtitle: 'Zero-Mix Instant Curing Formula for Pressed Flower Pendants & Bezel Charms',
-      category: 'uv_resin',
-      subCategory: 'uv_jewelry',
-      genderAffinity: 'feminine',
-      giftingTags: ['gifts-for-her', 'jewelry-making', 'uv-resin', 'diy-craft', 'pressed-flowers'],
-      badge: 'UV Instant 90s',
-      price: 649,
-      regularPrice: 749,
-      unitPriceLabel: '₹324 / 100g',
-      ratio: '1-part',
-      viscosity: 'low',
-      pourDepth: '10mm',
-      cureTime: '90s',
-      potLife: '15m',
-      rating: 4.9,
-      reviewsCount: 420,
-      inStock: true,
-      isCustomizable: false,
-      image: IMAGES.uvHard,
-      gallery: [
-        IMAGES.uvHard,
-        IMAGES.jewelryBezel,
-        IMAGES.ultraclearThumb2,
-        IMAGES.ultraclearThumb1
-      ],
-      colors: [
-        { id: 'c-crystal', label: 'Diamond Hard Optical Clear', hex: '#f8fafc', accent: '#38bdf8' },
-        { id: 'c-sparkle', label: 'Holographic Micro-Glitter Base', hex: '#fdf4ff', accent: '#f472b6' }
-      ],
-      shapes: [
-        { id: 's-nozzle', label: 'Precision Needle Tip Bottle', icon: 'colorize' },
-        { id: 's-twin', label: 'Twin Studio Duo + UV Lamp', icon: 'wb_incandescent' }
-      ],
-      sizes: [
-        { id: 'sz-100g', label: '100g Precision Nozzle Bottle', desc: 'Ideal for 25–30 botanical pendants', priceDelta: -270 },
-        { id: 'sz-200g', label: '200g Studio Twin Pack + UV Torch', desc: 'Includes 365nm mini curing lamp', priceDelta: 0, popular: true }
-      ],
-      variants: [
-        { id: 'uv-100g', label: '100g Precision Nozzle Bottle', desc: 'Ideal for 25–30 botanical pendants', price: 379, regularPrice: 449, unitPrice: '₹379 / 100g' },
-        { id: 'uv-200g', label: '200g Studio Twin Pack + UV Torch', desc: 'Includes 365nm mini curing lamp', price: 649, regularPrice: 749, unitPrice: '₹324 / 100g', popular: true }
-      ],
-      specs: {
-        mixRatioWeight: '1-Part Ready to Use',
-        mixRatioVolume: 'No Mixing Required',
-        workingPotLife: 'Unlimited until UV Exposure',
-        demoldDuration: '90 – 120 Seconds (365nm LED)',
-        fullGlassCure: '3 Minutes Cool-Down',
-        dynamicViscosity: '500 mPa·s (Self-Doming)',
-        maxDepth: '5mm per UV Layer',
-        hardness: '84D Tack-Free Surface',
-        uvStability: 'Anti-Ambering Optical Grade'
+    "colors": [],
+    "shapes": [
+      "Organic Agate Wave"
+    ],
+    "sizes": [
+      "5 inch",
+      "6 inch",
+      "8 inch"
+    ],
+    "gender": "all",
+    "genderAffinity": "neutral",
+    "gender_affinity": "neutral",
+    "giftingTags": [
+      "silicone-molds",
+      "geode-coasters",
+      "diy-crafts"
+    ],
+    "gifting_tags": [
+      "silicone-molds",
+      "geode-coasters",
+      "diy-crafts"
+    ],
+    "description": "High-tear strength translucent silicone coaster mold with organic wave fluting. The ultra-smooth mirror cavity replicates natural crystalline geode formations without requiring surface sanding or recoating."
+  },
+  {
+    "id": "vk-cat-pig-foil",
+    "sku": "VK-PIG-FLK-FOIL",
+    "name": "Artisanal Metallic Leafing Foil Flakes (Glass Jar Set)",
+    "shortName": "Metallic Leaf Flakes",
+    "short_name": "Metallic Leaf Flakes",
+    "subtitle": "Lustrous Gilded Flakes with Application Brush for Geode Veins & Inclusions",
+    "brand": "Vistāra Krafts",
+    "category": "pigments",
+    "subCategory": "Foils & Metallic Inclusions",
+    "subcategory": "Foils & Metallic Inclusions",
+    "badge": "Luxury Luster",
+    "price": 199,
+    "regularPrice": 249,
+    "compare_at_price": 249,
+    "cost_price": 75,
+    "discount": 20,
+    "tax_rate": 18,
+    "hsn_code": "32129000",
+    "stock": 95,
+    "low_stock_threshold": 5,
+    "inStock": true,
+    "in_stock": true,
+    "status": "active",
+    "isActive": true,
+    "is_active": true,
+    "rating": 4.86,
+    "reviewsCount": 42,
+    "reviews_count": 42,
+    "ratio": "N/A",
+    "viscosity": "low",
+    "cureTime": "24h",
+    "potLife": "30m",
+    "image": "https://res.cloudinary.com/ecugysfd/image/upload/v1792353797/catalog_cata1_foil_flakes_1792353795.jpg",
+    "gallery": [
+      "https://res.cloudinary.com/ecugysfd/image/upload/v1792353797/catalog_cata1_foil_flakes_1792353795.jpg"
+    ],
+    "images": [
+      "https://res.cloudinary.com/ecugysfd/image/upload/v1792353797/catalog_cata1_foil_flakes_1792353795.jpg"
+    ],
+    "variants": [
+      {
+        "id": "var-foil-gld",
+        "label": "Imperial Gold Flakes Jar + Brush",
+        "price": 199,
+        "regularPrice": 249,
+        "stock": 50,
+        "sku": "VK-FOIL-GLD-JAR"
+      },
+      {
+        "id": "var-foil-slv",
+        "label": "Starlight Silver Flakes Jar + Brush",
+        "price": 199,
+        "regularPrice": 249,
+        "stock": 45,
+        "sku": "VK-FOIL-SLV-JAR"
+      },
+      {
+        "id": "var-foil-combo",
+        "label": "Gold + Silver Twin Jars + 2 Brushes",
+        "price": 349,
+        "regularPrice": 449,
+        "stock": 30,
+        "sku": "VK-FOIL-COMBO"
       }
+    ],
+    "specs": {
+      "mixRatioWeight": "Single Component",
+      "dynamicViscosity": "low",
+      "fullGlassCure": "24h",
+      "workingPotLife": "30m",
+      "finish": "Optical Gloss Diamond Clear",
+      "uvStability": "ASTM D1003 Lightfast HALS + UV400"
     },
-    {
-      id: 'vk-pig-cham',
-      sku: 'VK-MICA-CHAM-12',
-      name: 'Metallic Chameleon Mica Powder Set (12 Shades)',
-      shortName: 'Chameleon Mica Set (12x)',
-      subtitle: 'Cosmetic-Grade Dichroic Color-Shifting Mineral Pigments in Apothecary Jars',
-      category: 'pigments',
-      subCategory: 'pigments_mica',
-      genderAffinity: 'feminine',
-      giftingTags: ['gifts-for-her', 'pigments', 'colorist', 'shimmer', 'art-supplies'],
-      badge: '12 Shades',
-      price: 899,
-      regularPrice: 1199,
-      unitPriceLabel: '₹75 / jar',
-      ratio: '3:1',
-      viscosity: 'low',
-      pourDepth: '25mm',
-      cureTime: '24h',
-      potLife: '45m',
-      rating: 4.9,
-      reviewsCount: 164,
-      inStock: true,
-      isCustomizable: false,
-      image: IMAGES.micaChameleon,
-      gallery: [
-        IMAGES.micaChameleon,
-        IMAGES.oceanMicaJar,
-        IMAGES.geodeCanvas,
-        IMAGES.coasterSet
-      ],
-      colors: [
-        { id: 'c-aurora', label: 'Aurora Teal & Rose Shifter', hex: '#14b8a6', accent: '#f43f5e' },
-        { id: 'c-sunset', label: 'Solar Flare Gold & Copper', hex: '#eab308', accent: '#f97316' },
-        { id: 'c-emerald', label: 'Emerald Agate & Indigo', hex: '#059669', accent: '#6366f1' },
-        { id: 'c-amethyst', label: 'Amethyst & Galaxy Blue', hex: '#8b5cf6', accent: '#3b82f6' }
-      ],
-      shapes: [
-        { id: 's-jar', label: 'Apothecary Glass Jars', icon: 'science' },
-        { id: 's-vault', label: 'Collector Vault Box', icon: 'inventory_2' }
-      ],
-      sizes: [
-        { id: 'sz-12', label: '12 × 10g Apothecary Jars', desc: 'Aurora Teal, Rose Gold, Emerald, Copper & more', priceDelta: 0, popular: true },
-        { id: 'sz-24', label: '24 × 10g Master Colorist Vault', desc: 'Full spectrum metallic + interference pearl', priceDelta: 700 }
-      ],
-      variants: [
-        { id: 'mica-12', label: '12 × 10g Apothecary Glass Jars', desc: 'Aurora Teal, Rose Gold, Emerald, Copper & more', price: 899, regularPrice: 1199, unitPrice: '₹75 / jar', popular: true },
-        { id: 'mica-24', label: '24 × 10g Master Colorist Vault', desc: 'Full spectrum metallic + interference pearl', price: 1599, regularPrice: 2199, unitPrice: '₹66 / jar' }
-      ],
-      specs: {
-        mixRatioWeight: '1% – 3% pigment load by weight',
-        mixRatioVolume: '1 scoop per 100g mixed resin',
-        workingPotLife: 'Does not alter resin pot life',
-        demoldDuration: 'Standard per resin system',
-        fullGlassCure: 'Zero sinking suspension',
-        dynamicViscosity: '10–60 μm particle size',
-        maxDepth: 'All pour depths',
-        hardness: 'Non-reactive mineral',
-        uvStability: '100% Lightfast Inorganic'
+    "colors": [
+      {
+        "id": "c-gld-flk",
+        "label": "Imperial 24K Gold Leaf",
+        "hex": "#E5C158"
+      },
+      {
+        "id": "c-slv-flk",
+        "label": "Starlight Silver Leaf",
+        "hex": "#E0E0E0"
       }
+    ],
+    "shapes": [],
+    "sizes": [
+      "Single Jar (3g)",
+      "Twin Set (6g)"
+    ],
+    "gender": "all",
+    "genderAffinity": "neutral",
+    "gender_affinity": "neutral",
+    "giftingTags": [
+      "gold-flakes",
+      "leafing",
+      "metallic-resin"
+    ],
+    "gifting_tags": [
+      "gold-flakes",
+      "leafing",
+      "metallic-resin"
+    ],
+    "description": "Delicate metallic gold and silver leaf flakes that disperse seamlessly into resin matrices or adhere to tacky borders. Perfect for geode art fractures, crystal core clusters, jewelry pendants, and resin bookends."
+  },
+  {
+    "id": "vk-cat-pig-opaq",
+    "sku": "VK-PIG-OPQ-20G",
+    "name": "High-Density Opaque Liquid Resin Pigment Paste (20g)",
+    "shortName": "Opaque Pigment 20g",
+    "short_name": "Opaque Pigment 20g",
+    "subtitle": "Ultra-Saturated Non-Bleed Color Paste for Deep Resin Coloring (All Colours)",
+    "brand": "Vistāra Krafts",
+    "category": "pigments",
+    "subCategory": "Opaque Color Pastes",
+    "subcategory": "Opaque Color Pastes",
+    "badge": "Vibrant Saturation",
+    "price": 149,
+    "regularPrice": 189,
+    "compare_at_price": 189,
+    "cost_price": 60,
+    "discount": 21,
+    "tax_rate": 18,
+    "hsn_code": "32041990",
+    "stock": 150,
+    "low_stock_threshold": 5,
+    "inStock": true,
+    "in_stock": true,
+    "status": "active",
+    "isActive": true,
+    "is_active": true,
+    "rating": 4.89,
+    "reviewsCount": 73,
+    "reviews_count": 73,
+    "ratio": "N/A",
+    "viscosity": "low",
+    "cureTime": "24h",
+    "potLife": "30m",
+    "image": "https://res.cloudinary.com/ecugysfd/image/upload/v1792353801/catalog_cata1_opaque_pigments_1792353798.png",
+    "gallery": [
+      "https://res.cloudinary.com/ecugysfd/image/upload/v1792353801/catalog_cata1_opaque_pigments_1792353798.png"
+    ],
+    "images": [
+      "https://res.cloudinary.com/ecugysfd/image/upload/v1792353801/catalog_cata1_opaque_pigments_1792353798.png"
+    ],
+    "variants": [
+      {
+        "id": "var-opq-single",
+        "label": "Single 20g Color Jar (Choose from Palette)",
+        "price": 149,
+        "regularPrice": 189,
+        "stock": 80,
+        "sku": "VK-OPQ-20G-SGL"
+      },
+      {
+        "id": "var-opq-set6",
+        "label": "Studio Essentials 6-Color Pack (20g × 6)",
+        "price": 749,
+        "regularPrice": 899,
+        "stock": 35,
+        "sku": "VK-OPQ-SET-6"
+      },
+      {
+        "id": "var-opq-set12",
+        "label": "Master Artisan 12-Color Full Palette",
+        "price": 1399,
+        "regularPrice": 1749,
+        "stock": 20,
+        "sku": "VK-OPQ-SET-12"
+      }
+    ],
+    "specs": {
+      "mixRatioWeight": "Single Component",
+      "dynamicViscosity": "low",
+      "fullGlassCure": "24h",
+      "workingPotLife": "30m",
+      "finish": "Optical Gloss Diamond Clear",
+      "uvStability": "ASTM D1003 Lightfast HALS + UV400"
     },
-    {
-      id: 'ram-keep-004',
-      sku: 'RAM-CST-FLR-04',
-      name: 'Petrified Botanical & Brass Edge Coaster Set (Set of 4)',
-      shortName: 'Botanical Brass Coasters (4)',
-      subtitle: 'Real Pressed Delphiniums & Gold Foil Electroplated Rim in Heat-Resistant Resin',
-      category: 'keepsakes',
-      subCategory: 'home_decor',
-      relatedCategories: ['casting', 'molds'],
-      genderAffinity: 'feminine',
-      giftingTags: ['gifts-for-her', 'tableware', 'botanical', 'wedding-gift', 'keepsake'],
-      badge: 'Gift Favorite',
-      price: 1399,
-      regularPrice: 1799,
-      unitPriceLabel: '₹349 / coaster',
-      ratio: '3:1',
-      viscosity: 'medium',
-      pourDepth: '12mm',
-      cureTime: '24h',
-      potLife: '45m',
-      rating: 4.9,
-      reviewsCount: 276,
-      inStock: true,
-      isCustomizable: true,
-      image: IMAGES.coasterSet,
-      gallery: [
-        IMAGES.coasterSet,
-        IMAGES.geodeMold,
-        IMAGES.jewelryBezel,
-        IMAGES.floralCube
-      ],
-      colors: [
-        { id: 'c-rose-gold', label: 'Blush Rose & 24K Gold Foil', hex: '#fce7f3', accent: '#d4af37' },
-        { id: 'c-emerald-bloom', label: 'Emerald Agate & White Bloom', hex: '#064e3b', accent: '#e2e8f0' },
-        { id: 'c-navy-delphinium', label: 'Pressed Blue Delphinium & Brass', hex: '#1e3a8a', accent: '#fbbf24' },
-        { id: 'c-pressed-orchid', label: 'Pressed Orchid & Champagne Leaf', hex: '#701a75', accent: '#fde047' }
-      ],
-      shapes: [
-        { id: 's-agate', label: 'Organic Agate Edge', icon: 'interests' },
-        { id: 's-hex', label: 'Geode Hexagon Edge', icon: 'hexagon' },
-        { id: 's-round', label: 'Circular Disc with Brass Rim', icon: 'radio_button_unchecked' }
-      ],
-      sizes: [
-        { id: 'sz-4pc', label: 'Set of 4 Coasters + Brass Holder', desc: 'Includes brass holder stand', priceDelta: 0, popular: true },
-        { id: 'sz-6pc', label: 'Set of 6 Coasters + Brass Holder', desc: 'Entertaining ensemble for dining tables', priceDelta: 499 }
-      ],
-      variants: [
-        { id: 'cst-rose', label: 'Set of 4 — Blush Rose & 24K Gold Foil', desc: 'Includes brass holder stand', price: 1399, regularPrice: 1799, unitPrice: 'Set of 4', popular: true },
-        { id: 'cst-emerald', label: 'Set of 4 — Emerald Agate & White Bloom', desc: 'Alcohol ink petrified bloom technique', price: 1499, regularPrice: 1899, unitPrice: 'Set of 4' }
-      ],
-      specs: {
-        mixRatioWeight: '3 : 1 Heat-Shield Formula',
-        mixRatioVolume: '2.6 : 1',
-        workingPotLife: '45 Minutes',
-        demoldDuration: '18 Hours',
-        fullGlassCure: 'Thermal Cured to 85°C',
-        dynamicViscosity: '750 mPa·s',
-        maxDepth: '12mm Agate Edge',
-        hardness: '84D Hot-Cup Safe',
-        uvStability: 'HALS 5+ Years'
+    "colors": [
+      {
+        "id": "c-all-colors",
+        "label": "All Colours Full Palette",
+        "hex": "#3B82F6"
+      },
+      {
+        "id": "c-ocean-blue",
+        "label": "Aegean Cobalt Blue",
+        "hex": "#1D4ED8"
+      },
+      {
+        "id": "c-pure-white",
+        "label": "Titanium White",
+        "hex": "#FFFFFF"
+      },
+      {
+        "id": "c-jet-black",
+        "label": "Onyx Jet Black",
+        "hex": "#111827"
       }
+    ],
+    "shapes": [],
+    "sizes": [
+      "20g Single",
+      "6 × 20g Set",
+      "12 × 20g Set"
+    ],
+    "gender": "all",
+    "genderAffinity": "neutral",
+    "gender_affinity": "neutral",
+    "giftingTags": [
+      "pigments",
+      "color-paste",
+      "solid-resin"
+    ],
+    "gifting_tags": [
+      "pigments",
+      "color-paste",
+      "solid-resin"
+    ],
+    "description": "Micro-ground resin paste formulation providing 100% solid opacity with a single drop. Will not thin out resin viscosity or interfere with curing ratios. Creates crisp solid coastlines, geode outer layers, and marble veins."
+  },
+  {
+    "id": "vk-cat-pig-inks",
+    "sku": "VK-PIG-INK-PRL",
+    "name": "Vivid Alcohol Inks & Shimmering Pearl Luster Pigments Set",
+    "shortName": "Inks & Pearl Pigments",
+    "short_name": "Inks & Pearl Pigments",
+    "subtitle": "Fast-Dispersing Petri Alcohol Dyes & Cosmic Pearl Mica Liquid Set",
+    "brand": "Vistāra Krafts",
+    "category": "pigments",
+    "subCategory": "Alcohol Inks & Pearl Dyes",
+    "subcategory": "Alcohol Inks & Pearl Dyes",
+    "badge": "Petri & Shimmer",
+    "price": 499,
+    "regularPrice": 599,
+    "compare_at_price": 599,
+    "cost_price": 240,
+    "discount": 17,
+    "tax_rate": 18,
+    "hsn_code": "32041990",
+    "stock": 65,
+    "low_stock_threshold": 5,
+    "inStock": true,
+    "in_stock": true,
+    "status": "active",
+    "isActive": true,
+    "is_active": true,
+    "rating": 4.93,
+    "reviewsCount": 59,
+    "reviews_count": 59,
+    "ratio": "N/A",
+    "viscosity": "low",
+    "cureTime": "24h",
+    "potLife": "30m",
+    "image": "https://res.cloudinary.com/ecugysfd/image/upload/v1792353804/catalog_cata1_ink_pearl_pigments_1792353802.png",
+    "gallery": [
+      "https://res.cloudinary.com/ecugysfd/image/upload/v1792353804/catalog_cata1_ink_pearl_pigments_1792353802.png"
+    ],
+    "images": [
+      "https://res.cloudinary.com/ecugysfd/image/upload/v1792353804/catalog_cata1_ink_pearl_pigments_1792353802.png"
+    ],
+    "variants": [
+      {
+        "id": "var-ink-set10",
+        "label": "10-Color Alcohol Ink Starter Palette",
+        "price": 499,
+        "regularPrice": 599,
+        "stock": 30,
+        "sku": "VK-INK-SET-10"
+      },
+      {
+        "id": "var-prl-bottle",
+        "label": "Royal Blue Shimmering Pearl Pigment 20g",
+        "price": 249,
+        "regularPrice": 299,
+        "stock": 40,
+        "sku": "VK-PRL-BLU-20G"
+      },
+      {
+        "id": "var-ink-combo",
+        "label": "Master Inks + Pearl Shimmer Bundle",
+        "price": 899,
+        "regularPrice": 1149,
+        "stock": 20,
+        "sku": "VK-INK-PRL-MSTR"
+      }
+    ],
+    "specs": {
+      "mixRatioWeight": "Single Component",
+      "dynamicViscosity": "low",
+      "fullGlassCure": "24h",
+      "workingPotLife": "30m",
+      "finish": "Optical Gloss Diamond Clear",
+      "uvStability": "ASTM D1003 Lightfast HALS + UV400"
     },
-    {
-      id: 'vk-res-003',
-      sku: 'VK-HG-11-500',
-      name: 'High-Gloss Doming & Topcoat Epoxy 1:1',
-      shortName: 'High-Gloss Doming 1:1',
-      subtitle: 'High-Viscosity Self-Leveling Glass Coat for Nameplates, Trays & Canvas Art',
-      category: 'doming',
-      subCategory: 'doming_1_1',
-      genderAffinity: 'neutral',
-      giftingTags: ['topcoat', 'doming', 'high-gloss', 'formula', 'diy-craft'],
-      badge: 'High Viscosity',
-      price: 799,
-      regularPrice: 899,
-      unitPriceLabel: '₹159 / 100g',
-      ratio: '1:1',
-      viscosity: 'high',
-      pourDepth: '10mm',
-      cureTime: '12h',
-      potLife: '30m',
-      rating: 5.0,
-      reviewsCount: 64,
-      inStock: true,
-      isCustomizable: false,
-      image: IMAGES.doming11,
-      gallery: [
-        IMAGES.doming11,
-        IMAGES.ultraclearThumb4,
-        IMAGES.coasterSet,
-        IMAGES.ultraclearThumb1
-      ],
-      colors: [
-        { id: 'c-glass', label: 'Liquid Glass Mirror Crystal', hex: '#f0fdf4', accent: '#15803d' },
-        { id: 'c-pearl', label: 'Subtle Pearl Shimmer Glaze', hex: '#fafaf9', accent: '#a8a29e' }
-      ],
-      shapes: [
-        { id: 's-canister', label: 'Equal Vol Twin Bottles', icon: 'view_in_ar' },
-        { id: 's-jug', label: 'Workshop Jug Duo', icon: 'local_drink' }
-      ],
-      sizes: [
-        { id: 'sz-500g', label: '500g Surface Kit', desc: '250g Resin + 250g Hardener', priceDelta: 0, popular: true },
-        { id: 'sz-2kg', label: '2.0kg Studio Topcoat Pack', desc: '1kg Resin + 1kg Hardener', priceDelta: 1700 }
-      ],
-      variants: [
-        { id: 'dom-500g', label: '500g Surface Kit', desc: '250g Resin + 250g Hardener', price: 799, regularPrice: 899, unitPrice: '₹159 / 100g', popular: true },
-        { id: 'dom-2kg', label: '2.0kg Studio Topcoat Pack', desc: '1kg Resin + 1kg Hardener', price: 2499, regularPrice: 2999, unitPrice: '₹125 / 100g' }
-      ],
-      specs: {
-        mixRatioWeight: '1 : 1 (Equal Weight/Vol)',
-        mixRatioVolume: '1 : 1',
-        workingPotLife: '30 – 35 Minutes',
-        demoldDuration: '10 – 12 Hours',
-        fullGlassCure: '36 Hours',
-        dynamicViscosity: '2400 mPa·s (Honey Dome)',
-        maxDepth: '6mm Doming Coat',
-        hardness: '83D Scratch Resistant',
-        uvStability: 'HALS Surface Armor'
+    "colors": [],
+    "shapes": [],
+    "sizes": [
+      "10-Color Inks",
+      "Single Pearl 20g",
+      "Master Bundle"
+    ],
+    "gender": "all",
+    "genderAffinity": "neutral",
+    "gender_affinity": "neutral",
+    "giftingTags": [
+      "alcohol-inks",
+      "petri-dishes",
+      "pearl-mica"
+    ],
+    "gifting_tags": [
+      "alcohol-inks",
+      "petri-dishes",
+      "pearl-mica"
+    ],
+    "description": "Dynamic dual-purpose color studio set. Includes concentrated alcohol dropper inks for mesmerizing petri blooms and smoke tendrils, plus high-intensity pearl luster pigments for metallic 3D wave and geode river textures."
+  },
+  {
+    "id": "vk-cat-acc-bubb",
+    "sku": "VK-ACC-BUB-BSTR",
+    "name": "Bubbles Buster Instant Resin Defoamer Fine-Mist Solution (100ml)",
+    "shortName": "Bubbles Buster Spray",
+    "short_name": "Bubbles Buster Spray",
+    "subtitle": "Instant Surface Bubble Dissolving Spray for Flawless Mirror Tops",
+    "brand": "Vistāra Krafts",
+    "category": "accessories",
+    "subCategory": "Surface Finishing & Care",
+    "subcategory": "Surface Finishing & Care",
+    "badge": "Zero Pinhole",
+    "price": 349,
+    "regularPrice": 399,
+    "compare_at_price": 399,
+    "cost_price": 150,
+    "discount": 13,
+    "tax_rate": 18,
+    "hsn_code": "38249900",
+    "stock": 75,
+    "low_stock_threshold": 5,
+    "inStock": true,
+    "in_stock": true,
+    "status": "active",
+    "isActive": true,
+    "is_active": true,
+    "rating": 4.85,
+    "reviewsCount": 48,
+    "reviews_count": 48,
+    "ratio": "N/A",
+    "viscosity": "low",
+    "cureTime": "24h",
+    "potLife": "30m",
+    "image": "https://res.cloudinary.com/ecugysfd/image/upload/v1792353829/catalog_cata1_bubbles_buster_1792353815.png",
+    "gallery": [
+      "https://res.cloudinary.com/ecugysfd/image/upload/v1792353829/catalog_cata1_bubbles_buster_1792353815.png"
+    ],
+    "images": [
+      "https://res.cloudinary.com/ecugysfd/image/upload/v1792353829/catalog_cata1_bubbles_buster_1792353815.png"
+    ],
+    "variants": [
+      {
+        "id": "var-bub-100ml",
+        "label": "100ml Fine Mist Atomizer Bottle",
+        "price": 349,
+        "regularPrice": 399,
+        "stock": 50,
+        "sku": "VK-BUB-100ML"
+      },
+      {
+        "id": "var-bub-twin",
+        "label": "Twin Pack (100ml × 2)",
+        "price": 599,
+        "regularPrice": 798,
+        "stock": 25,
+        "sku": "VK-BUB-TWIN"
       }
+    ],
+    "specs": {
+      "mixRatioWeight": "Single Component",
+      "dynamicViscosity": "low",
+      "fullGlassCure": "24h",
+      "workingPotLife": "30m",
+      "finish": "Optical Gloss Diamond Clear",
+      "uvStability": "ASTM D1003 Lightfast HALS + UV400"
     },
-    {
-      id: 'vk-mld-geo',
-      sku: 'VK-MLD-GEO-04',
-      name: 'Platinum Silicone Geode Coaster & Tray Mold Set',
-      shortName: 'Silicone Geode Mold (4x)',
-      subtitle: 'Tear-Resistant Mirror-Interior Platinum Silicone for 80+ Effortless Demolds',
-      category: 'molds',
-      subCategory: 'silicone_molds',
-      genderAffinity: 'neutral',
-      giftingTags: ['molds', 'silicone', 'geode', 'craft-tools', 'studio'],
-      badge: 'Mirror Gloss',
-      price: 449,
-      regularPrice: 599,
-      unitPriceLabel: '4 Cavities',
-      ratio: '3:1',
-      viscosity: 'low',
-      pourDepth: '15mm',
-      cureTime: '24h',
-      potLife: '45m',
-      rating: 4.8,
-      reviewsCount: 152,
-      inStock: true,
-      isCustomizable: false,
-      image: IMAGES.geodeMold,
-      gallery: [
-        IMAGES.geodeMold,
-        IMAGES.siliconeMold4x,
-        IMAGES.coasterSet,
-        IMAGES.ultraclearThumb4
-      ],
-      colors: [
-        { id: 'c-translucent', label: 'Platinum Translucent Silicone', hex: '#f1f5f9', accent: '#64748b' },
-        { id: 'c-cyan', label: 'Ocean Teal Silicone', hex: '#0f766e', accent: '#2dd4bf' }
-      ],
-      shapes: [
-        { id: 's-agate', label: 'Agate Edge 4-Cavity Mould', icon: 'interests' },
-        { id: 's-block', label: '8" × 8" Floral Block Mould', icon: 'crop_square' }
-      ],
-      sizes: [
-        { id: 'sz-4cav', label: 'Set of 4 Agate Coaster Cavities', desc: '12mm depth • Natural live geode rim', priceDelta: 0, popular: true },
-        { id: 'sz-deep', label: '8" × 8" × 2.5" Deep Floral Block Mold', desc: 'Reinforced non-bowing walls for varmala blocks', priceDelta: 750 }
-      ],
-      variants: [
-        { id: 'mld-4cav', label: 'Set of 4 Agate Coaster Cavities', desc: '12mm depth • Natural live geode rim', price: 449, regularPrice: 599, unitPrice: '₹112 / mold', popular: true },
-        { id: 'mld-block', label: '8" × 8" × 2.5" Deep Floral Block Mold', desc: 'Reinforced non-bowing walls for varmala blocks', price: 1199, regularPrice: 1499, unitPrice: 'Heavy Duty' }
-      ],
-      specs: {
-        mixRatioWeight: 'Platinum Addition-Cure Silicone',
-        mixRatioVolume: 'Shore A 30 Flexibility',
-        workingPotLife: '80+ Casts Lifespan',
-        demoldDuration: 'No Mold Release Spray Needed',
-        fullGlassCure: 'Heat Resistant to 220°C',
-        dynamicViscosity: 'Optical Mirror Interior',
-        maxDepth: '12mm – 65mm',
-        hardness: 'Tear Strength 28 kN/m',
-        uvStability: 'Washable with Warm Soap'
+    "colors": [],
+    "shapes": [],
+    "sizes": [
+      "100ml",
+      "Twin 100ml"
+    ],
+    "gender": "all",
+    "genderAffinity": "neutral",
+    "gender_affinity": "neutral",
+    "giftingTags": [
+      "bubble-popper",
+      "anti-bubble",
+      "surface-spray"
+    ],
+    "gifting_tags": [
+      "bubble-popper",
+      "anti-bubble",
+      "surface-spray"
+    ],
+    "description": "Specially engineered surface-tension breaking formula. Spray 1-2 fine pumps over wet freshly poured epoxy to immediately collapse microbubbles and surface foam without heat or scorching sensitive silicone molds."
+  },
+  {
+    "id": "vk-cat-acc-poli",
+    "sku": "VK-ACC-RES-POL",
+    "name": "Vistāra Mirror Gloss Resin Polish & Scratch Restorer Compound (40g)",
+    "shortName": "Resin Polish Compound",
+    "short_name": "Resin Polish Compound",
+    "subtitle": "High-Luster Micro-Fine Buffing Cream for Clear Casting Surface Restoration",
+    "brand": "Vistāra Krafts",
+    "category": "accessories",
+    "subCategory": "Buffing & Surface Restoration",
+    "subcategory": "Buffing & Surface Restoration",
+    "badge": "Dazzling Shine",
+    "price": 299,
+    "regularPrice": 349,
+    "compare_at_price": 349,
+    "cost_price": 120,
+    "discount": 14,
+    "tax_rate": 18,
+    "hsn_code": "34059090",
+    "stock": 80,
+    "low_stock_threshold": 5,
+    "inStock": true,
+    "in_stock": true,
+    "status": "active",
+    "isActive": true,
+    "is_active": true,
+    "rating": 4.87,
+    "reviewsCount": 51,
+    "reviews_count": 51,
+    "ratio": "N/A",
+    "viscosity": "low",
+    "cureTime": "24h",
+    "potLife": "30m",
+    "image": "https://res.cloudinary.com/ecugysfd/image/upload/v1792353814/catalog_cata1_resin_polish_1792353811.png",
+    "gallery": [
+      "https://res.cloudinary.com/ecugysfd/image/upload/v1792353814/catalog_cata1_resin_polish_1792353811.png"
+    ],
+    "images": [
+      "https://res.cloudinary.com/ecugysfd/image/upload/v1792353814/catalog_cata1_resin_polish_1792353811.png"
+    ],
+    "variants": [
+      {
+        "id": "var-pol-40g",
+        "label": "40g Squeeze Bottle (Sub-Micron Formula)",
+        "price": 299,
+        "regularPrice": 349,
+        "stock": 50,
+        "sku": "VK-POL-40G"
+      },
+      {
+        "id": "var-pol-kit",
+        "label": "Polish Kit (40g Compound + Microfiber Cloth)",
+        "price": 399,
+        "regularPrice": 479,
+        "stock": 30,
+        "sku": "VK-POL-KIT"
       }
+    ],
+    "specs": {
+      "mixRatioWeight": "Single Component",
+      "dynamicViscosity": "low",
+      "fullGlassCure": "24h",
+      "workingPotLife": "30m",
+      "finish": "Optical Gloss Diamond Clear",
+      "uvStability": "ASTM D1003 Lightfast HALS + UV400"
     },
-    {
-      id: 'vk-res-006',
-      sku: 'VK-EB-31-1000',
-      name: 'EcoBio 3:1 Botanical Bio-Based Casting Resin',
-      shortName: 'EcoBio 3:1 Bio Resin',
-      subtitle: '42% Plant-Derived Carbon Content • Zero VOC & Ultra-Gentle for Home Studios',
-      category: 'bio_based',
-      subCategory: 'casting_3_1',
-      genderAffinity: 'neutral',
-      giftingTags: ['bio-based', 'plant-derived', 'eco-friendly', 'zero-voc', 'home-studio'],
-      badge: 'Plant Based',
-      price: 1450,
-      regularPrice: 1690,
-      unitPriceLabel: '₹145 / 100g',
-      ratio: '3:1',
-      viscosity: 'medium',
-      pourDepth: '20mm',
-      cureTime: '24h',
-      potLife: '45m',
-      rating: 4.7,
-      reviewsCount: 73,
-      inStock: true,
-      isCustomizable: false,
-      image: IMAGES.ecoBio,
-      gallery: [
-        IMAGES.ecoBio,
-        IMAGES.ultraclearMain,
-        IMAGES.ultraclearThumb2,
-        IMAGES.floralCube
-      ],
-      colors: [
-        { id: 'c-eco-clear', label: 'Plant-Derived Optical Clear', hex: '#ecfdf5', accent: '#059669' },
-        { id: 'c-sage', label: 'Forest Sage Micro-Tint', hex: '#064e3b', accent: '#34d399' }
-      ],
-      shapes: [
-        { id: 's-eco-jug', label: 'Eco-Recycled Pour Bottle', icon: 'eco' }
-      ],
-      sizes: [
-        { id: 'sz-1kg', label: '1.0kg Bio-Craft Kit', desc: '750g Bio Resin + 250g Hardener', priceDelta: 0, popular: true }
-      ],
-      variants: [
-        { id: 'eco-1kg', label: '1.0kg Bio-Craft Kit', desc: '750g Bio Resin + 250g Hardener', price: 1450, regularPrice: 1690, unitPrice: '₹145 / 100g', popular: true }
-      ],
-      specs: {
-        mixRatioWeight: '3 : 1 Bio-Epoxy',
-        mixRatioVolume: '2.6 : 1',
-        workingPotLife: '45 Minutes',
-        demoldDuration: '24 Hours',
-        fullGlassCure: '72 Hours',
-        dynamicViscosity: '700 mPa·s',
-        maxDepth: '20mm',
-        hardness: '81D',
-        uvStability: 'ASTM D6866 Certified Bio'
+    "colors": [],
+    "shapes": [],
+    "sizes": [
+      "40g",
+      "Polish Kit"
+    ],
+    "gender": "all",
+    "genderAffinity": "neutral",
+    "gender_affinity": "neutral",
+    "giftingTags": [
+      "resin-polish",
+      "scratch-remover",
+      "buffing"
+    ],
+    "gifting_tags": [
+      "resin-polish",
+      "scratch-remover",
+      "buffing"
+    ],
+    "description": "Ultra-fine abrasive polishing compound that clears micro-scratches, dull haze, and demolding marks from cured resin surfaces. Leaves behind a crystalline, fingerprint-resistant, diamond-hard gloss finish."
+  },
+  {
+    "id": "vk-cat-acc-trch",
+    "sku": "VK-ACC-BLW-TRCH",
+    "name": "Refillable Micro Jet Flame Blow Torch for Resin De-gassing & Wave Art",
+    "shortName": "Micro Blow Torch",
+    "short_name": "Micro Blow Torch",
+    "subtitle": "Precision Windproof Jet Flame with Safety Lock for Wave Cells & Bubble Pop",
+    "brand": "Vistāra Krafts",
+    "category": "accessories",
+    "subCategory": "Thermal Tools",
+    "subcategory": "Thermal Tools",
+    "badge": "Essential Tool",
+    "price": 499,
+    "regularPrice": 599,
+    "compare_at_price": 599,
+    "cost_price": 210,
+    "discount": 17,
+    "tax_rate": 18,
+    "hsn_code": "84681000",
+    "stock": 60,
+    "low_stock_threshold": 5,
+    "inStock": true,
+    "in_stock": true,
+    "status": "active",
+    "isActive": true,
+    "is_active": true,
+    "rating": 4.9,
+    "reviewsCount": 64,
+    "reviews_count": 64,
+    "ratio": "N/A",
+    "viscosity": "low",
+    "cureTime": "24h",
+    "potLife": "30m",
+    "image": "https://res.cloudinary.com/ecugysfd/image/upload/v1792353806/catalog_cata1_blow_torch_1792353805.png",
+    "gallery": [
+      "https://res.cloudinary.com/ecugysfd/image/upload/v1792353806/catalog_cata1_blow_torch_1792353805.png"
+    ],
+    "images": [
+      "https://res.cloudinary.com/ecugysfd/image/upload/v1792353806/catalog_cata1_blow_torch_1792353805.png"
+    ],
+    "variants": [
+      {
+        "id": "var-trch-sgl",
+        "label": "Single Micro Blow Torch (Emerald Green / Jet Black)",
+        "price": 499,
+        "regularPrice": 599,
+        "stock": 40,
+        "sku": "VK-TRCH-SGL"
+      },
+      {
+        "id": "var-trch-gas",
+        "label": "Blow Torch + Butane Refill Canister Bundle",
+        "price": 749,
+        "regularPrice": 899,
+        "stock": 20,
+        "sku": "VK-TRCH-BNDL"
       }
+    ],
+    "specs": {
+      "mixRatioWeight": "Single Component",
+      "dynamicViscosity": "low",
+      "fullGlassCure": "24h",
+      "workingPotLife": "30m",
+      "finish": "Optical Gloss Diamond Clear",
+      "uvStability": "ASTM D1003 Lightfast HALS + UV400"
     },
-    {
-      id: 'potry-sienna-01',
-      sku: 'PTR-SN-1200',
-      name: 'Sienna Ridged Stoneware & Resin-Glazed Vessel',
-      shortName: 'Sienna Ridged Pitcher',
-      subtitle: 'Wheel-Thrown Iron Stoneware Paired with Food-Safe Vitreous Mineral Glaze',
-      category: 'ceramics',
-      subCategory: 'home_decor',
-      genderAffinity: 'masculine',
-      giftingTags: ['gifts-for-him', 'ceramics', 'stoneware', 'architectural', 'barware'],
-      badge: 'Atelier Collab',
-      price: 2499,
-      regularPrice: 2999,
-      unitPriceLabel: '1.2L Vessel',
-      ratio: '1:1',
-      viscosity: 'medium',
-      pourDepth: '10mm',
-      cureTime: '24h',
-      potLife: '45m',
-      rating: 4.9,
-      reviewsCount: 94,
-      inStock: true,
-      isCustomizable: true,
-      image: IMAGES.siennaPitcher,
-      gallery: [
-        IMAGES.siennaPitcher,
-        IMAGES.siennaSpout,
-        IMAGES.siennaTable,
-        IMAGES.siennaStamp
-      ],
-      colors: [
-        { id: 'c-ochre', label: 'Ochre Sand & Iron Glaze', hex: '#b45309', accent: '#d97706' },
-        { id: 'c-basalt', label: 'Charcoal Basalt & Matte Slate', hex: '#18181b', accent: '#71717a' },
-        { id: 'c-terracotta', label: 'Sienna Terracotta & Brass Leaf', hex: '#9a3412', accent: '#ea580c' }
-      ],
-      shapes: [
-        { id: 's-pitcher', label: 'Ridged Studio Pitcher', icon: 'wine_bar' },
-        { id: 's-carafe', label: 'Compact Table Carafe', icon: 'local_cafe' }
-      ],
-      sizes: [
-        { id: 'sz-12l', label: '1.2L Standard Pitcher', desc: 'Wheel-thrown • 4–6 servings', priceDelta: 0, popular: true },
-        { id: 'sz-08l', label: '0.8L Compact Carafe', desc: 'Wheel-thrown • 2–3 servings', priceDelta: -500 }
-      ],
-      variants: [
-        { id: 'sienna-12l', label: '1.2L Standard Pitcher — Ochre Sand', desc: 'Wheel-thrown • 4–6 servings', price: 2499, regularPrice: 2999, unitPrice: '1,200 ml', popular: true },
-        { id: 'sienna-08l', label: '0.8L Compact Carafe — Charcoal Basalt', desc: 'Wheel-thrown • 2–3 servings', price: 1999, regularPrice: 2399, unitPrice: '800 ml' }
-      ],
-      specs: {
-        mixRatioWeight: 'Cone 10 Reduction Stoneware',
-        mixRatioVolume: '1,200 ml Capacity',
-        workingPotLife: '3-Day Wheel & Rib Process',
-        demoldDuration: 'Bisque Fired Cone 06',
-        fullGlassCure: '2350°F Kiln Vitrification',
-        dynamicViscosity: 'Lead-Free Feldspathic Glaze',
-        maxDepth: '21.0 cm Height × 11.4 cm Base',
-        hardness: 'Thermal Shock Resistant',
-        uvStability: 'Heirloom Permanent'
+    "colors": [
+      {
+        "id": "c-green-torch",
+        "label": "Emerald Green Body",
+        "hex": "#10B981"
       }
-    }
-  ];
+    ],
+    "shapes": [],
+    "sizes": [
+      "Standard Torch",
+      "Torch + Gas Bundle"
+    ],
+    "gender": "all",
+    "genderAffinity": "neutral",
+    "gender_affinity": "neutral",
+    "giftingTags": [
+      "torch",
+      "heat-gun",
+      "wave-art"
+    ],
+    "gifting_tags": [
+      "torch",
+      "heat-gun",
+      "wave-art"
+    ],
+    "description": "Professional ergonomic studio blow torch. Emits an adjustable concentrated blue needle flame to burst stubborn deep-seated air bubbles in wet resin within seconds, and activates delicate ocean wave cell lacing."
+  },
+  {
+    "id": "vk-cat-acc-latx",
+    "sku": "VK-ACC-LIQ-LATX",
+    "name": "Peelable Liquid Latex Edge & Drip Protective Barrier (100ml)",
+    "shortName": "Liquid Latex Barrier",
+    "short_name": "Liquid Latex Barrier",
+    "subtitle": "Brush-On Masking Film for Clean Coaster Backs & Drip-Free Resin Doming",
+    "brand": "Vistāra Krafts",
+    "category": "accessories",
+    "subCategory": "Masking & Cleanup",
+    "subcategory": "Masking & Cleanup",
+    "badge": "Effortless Cleanup",
+    "price": 279,
+    "regularPrice": 329,
+    "compare_at_price": 329,
+    "cost_price": 110,
+    "discount": 15,
+    "tax_rate": 18,
+    "hsn_code": "40011010",
+    "stock": 90,
+    "low_stock_threshold": 5,
+    "inStock": true,
+    "in_stock": true,
+    "status": "active",
+    "isActive": true,
+    "is_active": true,
+    "rating": 4.83,
+    "reviewsCount": 39,
+    "reviews_count": 39,
+    "ratio": "N/A",
+    "viscosity": "low",
+    "cureTime": "24h",
+    "potLife": "30m",
+    "image": "https://res.cloudinary.com/ecugysfd/image/upload/v1792353810/catalog_cata1_liquid_latex_1792353808.png",
+    "gallery": [
+      "https://res.cloudinary.com/ecugysfd/image/upload/v1792353810/catalog_cata1_liquid_latex_1792353808.png"
+    ],
+    "images": [
+      "https://res.cloudinary.com/ecugysfd/image/upload/v1792353810/catalog_cata1_liquid_latex_1792353808.png"
+    ],
+    "variants": [
+      {
+        "id": "var-latx-100ml",
+        "label": "100ml Easy-Squeeze Dispenser Bottle",
+        "price": 279,
+        "regularPrice": 329,
+        "stock": 60,
+        "sku": "VK-LATX-100ML"
+      },
+      {
+        "id": "var-latx-twin",
+        "label": "Twin Pack (100ml × 2)",
+        "price": 499,
+        "regularPrice": 658,
+        "stock": 30,
+        "sku": "VK-LATX-TWIN"
+      }
+    ],
+    "specs": {
+      "mixRatioWeight": "Single Component",
+      "dynamicViscosity": "low",
+      "fullGlassCure": "24h",
+      "workingPotLife": "30m",
+      "finish": "Optical Gloss Diamond Clear",
+      "uvStability": "ASTM D1003 Lightfast HALS + UV400"
+    },
+    "colors": [],
+    "shapes": [],
+    "sizes": [
+      "100ml",
+      "Twin 100ml"
+    ],
+    "gender": "all",
+    "genderAffinity": "neutral",
+    "gender_affinity": "neutral",
+    "giftingTags": [
+      "latex-masking",
+      "clean-edges",
+      "peel-off"
+    ],
+    "gifting_tags": [
+      "latex-masking",
+      "clean-edges",
+      "peel-off"
+    ],
+    "description": "Easy brush-on liquid latex solution. Coat the reverse side and edges of coasters, trays, or wood slabs prior to resin pouring. Catches all accidental drips and peels off smoothly in one piece after curing."
+  },
+  {
+    "id": "vk-cat-mld-flw4",
+    "sku": "VK-MLD-4IN1-FLW",
+    "name": "4-in-1 Graduated Petal Flower Coaster & Trinket Silicone Mold Set",
+    "shortName": "4 in 1 Flower Mould",
+    "short_name": "4 in 1 Flower Mould",
+    "subtitle": "Four Cascading Blossom Cavities for Layered Floral Coasters & Ring Dishes",
+    "brand": "Vistāra Krafts",
+    "category": "molds",
+    "subCategory": "Floral & Botanical Molds",
+    "subcategory": "Floral & Botanical Molds",
+    "badge": "Tiered Set",
+    "price": 399,
+    "regularPrice": 450,
+    "compare_at_price": 450,
+    "cost_price": 175,
+    "discount": 11,
+    "tax_rate": 18,
+    "hsn_code": "39269099",
+    "stock": 55,
+    "low_stock_threshold": 5,
+    "inStock": true,
+    "in_stock": true,
+    "status": "active",
+    "isActive": true,
+    "is_active": true,
+    "rating": 4.92,
+    "reviewsCount": 78,
+    "reviews_count": 78,
+    "ratio": "N/A",
+    "viscosity": "low",
+    "cureTime": "24h",
+    "potLife": "30m",
+    "image": "https://res.cloudinary.com/ecugysfd/image/upload/v1792353832/catalog_cata1_mould_4in1_flower_1792353830.png",
+    "gallery": [
+      "https://res.cloudinary.com/ecugysfd/image/upload/v1792353832/catalog_cata1_mould_4in1_flower_1792353830.png"
+    ],
+    "images": [
+      "https://res.cloudinary.com/ecugysfd/image/upload/v1792353832/catalog_cata1_mould_4in1_flower_1792353830.png"
+    ],
+    "variants": [
+      {
+        "id": "var-flw4-full",
+        "label": "Complete 4-in-1 Nested Flower Mould Set",
+        "price": 399,
+        "regularPrice": 450,
+        "stock": 55,
+        "sku": "VK-FLW4-SET"
+      }
+    ],
+    "specs": {
+      "mixRatioWeight": "Single Component",
+      "dynamicViscosity": "low",
+      "fullGlassCure": "24h",
+      "workingPotLife": "30m",
+      "finish": "Optical Gloss Diamond Clear",
+      "uvStability": "ASTM D1003 Lightfast HALS + UV400"
+    },
+    "colors": [],
+    "shapes": [
+      "Cherry Blossom Flower"
+    ],
+    "sizes": [
+      "4-in-1 Tiered Set"
+    ],
+    "gender": "all",
+    "genderAffinity": "neutral",
+    "gender_affinity": "neutral",
+    "giftingTags": [
+      "flower-mold",
+      "ring-dish",
+      "botanical-resin"
+    ],
+    "gifting_tags": [
+      "flower-mold",
+      "ring-dish",
+      "botanical-resin"
+    ],
+    "description": "Versatile 4-in-1 silicone floral mold featuring nested cherry blossom petal silhouettes. Perfect for creating matching multi-size coaster sets, vanity ring trays, and candle bases with crystal edges."
+  },
+  {
+    "id": "vk-cat-acc-sili",
+    "sku": "VK-ACC-MAG-SIL",
+    "name": "Magic Flower Drying Color-Indicating Silica Gel Crystals (1000g / 1Kg)",
+    "shortName": "Magic Silica Gel 1Kg",
+    "short_name": "Magic Silica Gel 1Kg",
+    "subtitle": "Fine-Grain Non-Crushing Desiccant Crystals for Wedding Flower Preservation",
+    "brand": "Vistāra Krafts",
+    "category": "accessories",
+    "subCategory": "Botanical Preservation",
+    "subcategory": "Botanical Preservation",
+    "badge": "Real Flower Keeper",
+    "price": 599,
+    "regularPrice": 699,
+    "compare_at_price": 699,
+    "cost_price": 270,
+    "discount": 14,
+    "tax_rate": 18,
+    "hsn_code": "28112200",
+    "stock": 65,
+    "low_stock_threshold": 5,
+    "inStock": true,
+    "in_stock": true,
+    "status": "active",
+    "isActive": true,
+    "is_active": true,
+    "rating": 4.96,
+    "reviewsCount": 143,
+    "reviews_count": 143,
+    "ratio": "N/A",
+    "viscosity": "low",
+    "cureTime": "24h",
+    "potLife": "30m",
+    "image": "https://res.cloudinary.com/ecugysfd/image/upload/v1792353842/catalog_cata1_magic_silica_gel_1792353840.png",
+    "gallery": [
+      "https://res.cloudinary.com/ecugysfd/image/upload/v1792353842/catalog_cata1_magic_silica_gel_1792353840.png"
+    ],
+    "images": [
+      "https://res.cloudinary.com/ecugysfd/image/upload/v1792353842/catalog_cata1_magic_silica_gel_1792353840.png"
+    ],
+    "variants": [
+      {
+        "id": "var-sil-1kg",
+        "label": "1000g (1 Kg) Airtight Resealable Pouch",
+        "price": 599,
+        "regularPrice": 699,
+        "stock": 45,
+        "sku": "VK-SIL-1KG"
+      },
+      {
+        "id": "var-sil-2kg",
+        "label": "2000g (2 Kg) Studio Value Pouch",
+        "price": 1099,
+        "regularPrice": 1398,
+        "stock": 20,
+        "sku": "VK-SIL-2KG"
+      }
+    ],
+    "specs": {
+      "mixRatioWeight": "Single Component",
+      "dynamicViscosity": "low",
+      "fullGlassCure": "24h",
+      "workingPotLife": "30m",
+      "finish": "Optical Gloss Diamond Clear",
+      "uvStability": "ASTM D1003 Lightfast HALS + UV400"
+    },
+    "colors": [
+      {
+        "id": "c-sil-blue",
+        "label": "Indicating Cobalt Blue",
+        "hex": "#2563EB"
+      }
+    ],
+    "shapes": [],
+    "sizes": [
+      "1 Kg Pouch",
+      "2 Kg Studio Pack"
+    ],
+    "gender": "all",
+    "genderAffinity": "neutral",
+    "gender_affinity": "neutral",
+    "giftingTags": [
+      "flower-drying",
+      "varmala-preservation",
+      "silica-crystals"
+    ],
+    "gifting_tags": [
+      "flower-drying",
+      "varmala-preservation",
+      "silica-crystals"
+    ],
+    "description": "Ultra-fine sand-like silica gel crystals designed to seep between delicate flower petals without flattening their three-dimensional structure. Retains authentic flower colors and botanical integrity for wedding varmala time-capsules."
+  },
+  {
+    "id": "vk-cat-mld-ag6c",
+    "sku": "VK-MLD-6CV-AGT",
+    "name": "6-Cavity Production Batch Agate Geode Coaster Silicone Mold",
+    "shortName": "6 Cavity Agate Mould",
+    "short_name": "6 Cavity Agate Mould",
+    "subtitle": "Commercial Studio Multi-Cavity Mold for Simultaneous Coaster Set Casting",
+    "brand": "Vistāra Krafts",
+    "category": "molds",
+    "subCategory": "Production Batch Molds",
+    "subcategory": "Production Batch Molds",
+    "badge": "Production Ready",
+    "price": 649,
+    "regularPrice": 749,
+    "compare_at_price": 749,
+    "cost_price": 280,
+    "discount": 13,
+    "tax_rate": 18,
+    "hsn_code": "39269099",
+    "stock": 45,
+    "low_stock_threshold": 5,
+    "inStock": true,
+    "in_stock": true,
+    "status": "active",
+    "isActive": true,
+    "is_active": true,
+    "rating": 4.94,
+    "reviewsCount": 88,
+    "reviews_count": 88,
+    "ratio": "N/A",
+    "viscosity": "low",
+    "cureTime": "24h",
+    "potLife": "30m",
+    "image": "https://res.cloudinary.com/ecugysfd/image/upload/v1792353835/catalog_cata1_mould_6cavity_agate_1792353833.png",
+    "gallery": [
+      "https://res.cloudinary.com/ecugysfd/image/upload/v1792353835/catalog_cata1_mould_6cavity_agate_1792353833.png"
+    ],
+    "images": [
+      "https://res.cloudinary.com/ecugysfd/image/upload/v1792353835/catalog_cata1_mould_6cavity_agate_1792353833.png"
+    ],
+    "variants": [
+      {
+        "id": "var-ag6c-single",
+        "label": "Single 6-Cavity Commercial Mold Tray",
+        "price": 649,
+        "regularPrice": 749,
+        "stock": 45,
+        "sku": "VK-AG6C-TRAY"
+      }
+    ],
+    "specs": {
+      "mixRatioWeight": "Single Component",
+      "dynamicViscosity": "low",
+      "fullGlassCure": "24h",
+      "workingPotLife": "30m",
+      "finish": "Optical Gloss Diamond Clear",
+      "uvStability": "ASTM D1003 Lightfast HALS + UV400"
+    },
+    "colors": [],
+    "shapes": [
+      "Agate Scalloped Hex-Set"
+    ],
+    "sizes": [
+      "6-Cavity Tray"
+    ],
+    "gender": "all",
+    "genderAffinity": "neutral",
+    "gender_affinity": "neutral",
+    "giftingTags": [
+      "batch-molds",
+      "coaster-sets",
+      "commercial-silicone"
+    ],
+    "gifting_tags": [
+      "batch-molds",
+      "coaster-sets",
+      "commercial-silicone"
+    ],
+    "description": "Commercial-grade thick-walled silicone tray containing 6 individual scalloped agate coaster cavities. Allows busy resin studios to pour and cure an entire 6-piece dining coaster set in a single session."
+  },
+  {
+    "id": "vk-cat-mld-bkm6",
+    "sku": "VK-MLD-BKM-6IN",
+    "name": "Slimline 6-Inch Rectangular Bookmark Silicone Mold with Tassel Hole",
+    "shortName": "6\" Bookmark Mould",
+    "short_name": "6\" Bookmark Mould",
+    "subtitle": "Crystal Finish Reading Bookmark Mold with Built-In Tassel Peg",
+    "brand": "Vistāra Krafts",
+    "category": "molds",
+    "subCategory": "Stationery & Gift Molds",
+    "subcategory": "Stationery & Gift Molds",
+    "badge": "Gift Maker",
+    "price": 149,
+    "regularPrice": 199,
+    "compare_at_price": 199,
+    "cost_price": 55,
+    "discount": 25,
+    "tax_rate": 18,
+    "hsn_code": "39269099",
+    "stock": 110,
+    "low_stock_threshold": 5,
+    "inStock": true,
+    "in_stock": true,
+    "status": "active",
+    "isActive": true,
+    "is_active": true,
+    "rating": 4.88,
+    "reviewsCount": 92,
+    "reviews_count": 92,
+    "ratio": "N/A",
+    "viscosity": "low",
+    "cureTime": "24h",
+    "potLife": "30m",
+    "image": "https://res.cloudinary.com/ecugysfd/image/upload/v1792353839/catalog_cata1_mould_bookmark_6in_1792353836.png",
+    "gallery": [
+      "https://res.cloudinary.com/ecugysfd/image/upload/v1792353839/catalog_cata1_mould_bookmark_6in_1792353836.png"
+    ],
+    "images": [
+      "https://res.cloudinary.com/ecugysfd/image/upload/v1792353839/catalog_cata1_mould_bookmark_6in_1792353836.png"
+    ],
+    "variants": [
+      {
+        "id": "var-bkm-single",
+        "label": "Single 6-Inch Bookmark Mould",
+        "price": 149,
+        "regularPrice": 199,
+        "stock": 70,
+        "sku": "VK-BKM-6IN-SGL"
+      },
+      {
+        "id": "var-bkm-trio",
+        "label": "Trio Pack (3 Bookmark Molds + 10 Silk Tassels)",
+        "price": 399,
+        "regularPrice": 549,
+        "stock": 40,
+        "sku": "VK-BKM-6IN-TRIO"
+      }
+    ],
+    "specs": {
+      "mixRatioWeight": "Single Component",
+      "dynamicViscosity": "low",
+      "fullGlassCure": "24h",
+      "workingPotLife": "30m",
+      "finish": "Optical Gloss Diamond Clear",
+      "uvStability": "ASTM D1003 Lightfast HALS + UV400"
+    },
+    "colors": [],
+    "shapes": [
+      "Rectangular Bookmark"
+    ],
+    "sizes": [
+      "6 Inch"
+    ],
+    "gender": "all",
+    "genderAffinity": "neutral",
+    "gender_affinity": "neutral",
+    "giftingTags": [
+      "bookmarks",
+      "stationery-crafts",
+      "tassels"
+    ],
+    "gifting_tags": [
+      "bookmarks",
+      "stationery-crafts",
+      "tassels"
+    ],
+    "description": "High-flexibility translucent silicone bookmark mold. Features an integrated silicone peg that casts a clean top eyelet for attaching silk tassels, ribbons, and metallic charms."
+  },
+  {
+    "id": "vk-cat-res-uvcs",
+    "sku": "VK-RES-UV-FAST",
+    "name": "Crystal-Clear Hard-Type Optical UV Cure Resin (10g, 25g, 100g)",
+    "shortName": "Crystal UV Resin",
+    "short_name": "Crystal UV Resin",
+    "subtitle": "Instant 1-Part UV Curing Resin for Jewelry Bezels, Doming & Rapid Bonds",
+    "brand": "Vistāra Krafts",
+    "category": "casting",
+    "subCategory": "UV Curable Resin",
+    "subcategory": "UV Curable Resin",
+    "badge": "Instant Cure",
+    "price": 199,
+    "regularPrice": 249,
+    "compare_at_price": 249,
+    "cost_price": 80,
+    "discount": 20,
+    "tax_rate": 18,
+    "hsn_code": "39073010",
+    "stock": 90,
+    "low_stock_threshold": 5,
+    "inStock": true,
+    "in_stock": true,
+    "status": "active",
+    "isActive": true,
+    "is_active": true,
+    "rating": 4.93,
+    "reviewsCount": 105,
+    "reviews_count": 105,
+    "ratio": "1-part",
+    "viscosity": "low",
+    "cureTime": "90s UV",
+    "potLife": "30m",
+    "image": "https://res.cloudinary.com/ecugysfd/image/upload/v1792353851/catalog_cata1_uv_resin_25g_box_1792353847.png",
+    "gallery": [
+      "https://res.cloudinary.com/ecugysfd/image/upload/v1792353851/catalog_cata1_uv_resin_25g_box_1792353847.png",
+      "https://res.cloudinary.com/ecugysfd/image/upload/v1792353846/catalog_cata1_uv_resin_10g_1792353843.png",
+      "https://res.cloudinary.com/ecugysfd/image/upload/v1792353856/catalog_cata1_uv_resin_100g_1792353852.png"
+    ],
+    "images": [
+      "https://res.cloudinary.com/ecugysfd/image/upload/v1792353851/catalog_cata1_uv_resin_25g_box_1792353847.png",
+      "https://res.cloudinary.com/ecugysfd/image/upload/v1792353846/catalog_cata1_uv_resin_10g_1792353843.png",
+      "https://res.cloudinary.com/ecugysfd/image/upload/v1792353856/catalog_cata1_uv_resin_100g_1792353852.png"
+    ],
+    "variants": [
+      {
+        "id": "var-uv-10g",
+        "label": "10g Precision Needle Dropper Bottle",
+        "price": 199,
+        "regularPrice": 249,
+        "stock": 35,
+        "sku": "VK-UV-10G"
+      },
+      {
+        "id": "var-uv-25g",
+        "label": "25g Retail Box Edition with Dropper Nozzle",
+        "price": 349,
+        "regularPrice": 429,
+        "stock": 35,
+        "sku": "VK-UV-25G"
+      },
+      {
+        "id": "var-uv-100g",
+        "label": "100g Studio Workshop Squeeze Bottle",
+        "price": 799,
+        "regularPrice": 949,
+        "stock": 20,
+        "sku": "VK-UV-100G"
+      }
+    ],
+    "specs": {
+      "mixRatioWeight": "Single Component",
+      "dynamicViscosity": "low",
+      "fullGlassCure": "90s UV",
+      "workingPotLife": "30m",
+      "finish": "Optical Gloss Diamond Clear",
+      "uvStability": "ASTM D1003 Lightfast HALS + UV400"
+    },
+    "colors": [],
+    "shapes": [],
+    "sizes": [
+      "10g",
+      "25g",
+      "100g"
+    ],
+    "gender": "all",
+    "genderAffinity": "neutral",
+    "gender_affinity": "neutral",
+    "giftingTags": [
+      "uv-resin",
+      "instant-cure",
+      "resin-jewelry"
+    ],
+    "gifting_tags": [
+      "uv-resin",
+      "instant-cure",
+      "resin-jewelry"
+    ],
+    "description": "Premium crystal-clear resin with fast UV curing, delivering a durable, high-gloss finish for professional crafting and jewelry applications. Requires no measuring or mixing — cures rock-hard within minutes under sunlight or UV lamp."
+  },
+  {
+    "id": "vk-cat-mld-leaf",
+    "sku": "VK-MLD-BOT-LEAF",
+    "name": "Botanical Multi-Leaf Organic Silicone Mold Collection",
+    "shortName": "Botanical Leaf Mould",
+    "short_name": "Botanical Leaf Mould",
+    "subtitle": "Realistic Veined Monstera, Maple & Woodland Foliage Casting Silicone Mold",
+    "brand": "Vistāra Krafts",
+    "category": "molds",
+    "subCategory": "Botanical & Foliage Molds",
+    "subcategory": "Botanical & Foliage Molds",
+    "badge": "Natural Textures",
+    "price": 299,
+    "regularPrice": 349,
+    "compare_at_price": 349,
+    "cost_price": 130,
+    "discount": 14,
+    "tax_rate": 18,
+    "hsn_code": "39269099",
+    "stock": 65,
+    "low_stock_threshold": 5,
+    "inStock": true,
+    "in_stock": true,
+    "status": "active",
+    "isActive": true,
+    "is_active": true,
+    "rating": 4.89,
+    "reviewsCount": 57,
+    "reviews_count": 57,
+    "ratio": "N/A",
+    "viscosity": "low",
+    "cureTime": "24h",
+    "potLife": "30m",
+    "image": "https://res.cloudinary.com/ecugysfd/image/upload/v1792353865/catalog_cata1_leaf_mould_1_1792353857.png",
+    "gallery": [
+      "https://res.cloudinary.com/ecugysfd/image/upload/v1792353865/catalog_cata1_leaf_mould_1_1792353857.png",
+      "https://res.cloudinary.com/ecugysfd/image/upload/v1792353871/catalog_cata1_leaf_mould_2_1792353866.png"
+    ],
+    "images": [
+      "https://res.cloudinary.com/ecugysfd/image/upload/v1792353865/catalog_cata1_leaf_mould_1_1792353857.png",
+      "https://res.cloudinary.com/ecugysfd/image/upload/v1792353871/catalog_cata1_leaf_mould_2_1792353866.png"
+    ],
+    "variants": [
+      {
+        "id": "var-leaf-m1",
+        "label": "Mould 1 - Monstera & Maple Foliage",
+        "price": 299,
+        "regularPrice": 349,
+        "stock": 35,
+        "sku": "VK-MLD-LF-M1"
+      },
+      {
+        "id": "var-leaf-m2",
+        "label": "Mould 2 - Textured Woodland Veined Leaves",
+        "price": 329,
+        "regularPrice": 379,
+        "stock": 30,
+        "sku": "VK-MLD-LF-M2"
+      },
+      {
+        "id": "var-leaf-set",
+        "label": "Complete Botanical Leaf Pair (Mould 1 + Mould 2)",
+        "price": 579,
+        "regularPrice": 728,
+        "stock": 20,
+        "sku": "VK-MLD-LF-SET"
+      }
+    ],
+    "specs": {
+      "mixRatioWeight": "Single Component",
+      "dynamicViscosity": "low",
+      "fullGlassCure": "24h",
+      "workingPotLife": "30m",
+      "finish": "Optical Gloss Diamond Clear",
+      "uvStability": "ASTM D1003 Lightfast HALS + UV400"
+    },
+    "colors": [],
+    "shapes": [
+      "Monstera Leaf",
+      "Maple Leaf",
+      "Woodland Leaves"
+    ],
+    "sizes": [
+      "Mould 1",
+      "Mould 2",
+      "Both Moulds Set"
+    ],
+    "gender": "all",
+    "genderAffinity": "neutral",
+    "gender_affinity": "neutral",
+    "giftingTags": [
+      "leaf-mold",
+      "botanical-resin",
+      "nature-crafts"
+    ],
+    "gifting_tags": [
+      "leaf-mold",
+      "botanical-resin",
+      "nature-crafts"
+    ],
+    "description": "Botanical silicone leaf molds capturing exquisite leaf veins, ridges, and serrated contours. Exceptional for casting resin jewelry charms, nature hairpins, coaster embellishments, and autumn keepsake inclusions."
+  },
+  {
+    "id": "vk-cat-acc-smfl",
+    "sku": "VK-ACC-SML-FLWR",
+    "name": "Artisanal Miniature Resin Flower Inclusions & Cabochons (Small Flowers)",
+    "shortName": "Small Flower Inclusions",
+    "short_name": "Small Flower Inclusions",
+    "subtitle": "Delicate Cast Blossom Cabochons with Gold Rim Accents & Iridescent Pearl Glaze",
+    "brand": "Vistāra Krafts",
+    "category": "accessories",
+    "subCategory": "Floral Inclusions & Shaker Elements",
+    "subcategory": "Floral Inclusions & Shaker Elements",
+    "badge": "Handmade Filler",
+    "price": 199,
+    "regularPrice": 249,
+    "compare_at_price": 249,
+    "cost_price": 70,
+    "discount": 20,
+    "tax_rate": 18,
+    "hsn_code": "39269099",
+    "stock": 120,
+    "low_stock_threshold": 5,
+    "inStock": true,
+    "in_stock": true,
+    "status": "active",
+    "isActive": true,
+    "is_active": true,
+    "rating": 4.96,
+    "reviewsCount": 118,
+    "reviews_count": 118,
+    "ratio": "N/A",
+    "viscosity": "low",
+    "cureTime": "24h",
+    "potLife": "30m",
+    "image": "https://res.cloudinary.com/ecugysfd/image/upload/v1792353895/catalog_cata1_small_flowers_03_1792353883.png",
+    "gallery": [
+      "https://res.cloudinary.com/ecugysfd/image/upload/v1792353895/catalog_cata1_small_flowers_03_1792353883.png",
+      "https://res.cloudinary.com/ecugysfd/image/upload/v1792353883/catalog_cata1_small_flowers_06_1792353873.png",
+      "https://res.cloudinary.com/ecugysfd/image/upload/v1792353914/catalog_cata1_small_flowers_15_1792353896.png",
+      "https://res.cloudinary.com/ecugysfd/image/upload/v1792353924/catalog_cata1_small_flowers_07_1792353915.png",
+      "https://res.cloudinary.com/ecugysfd/image/upload/v1792353929/catalog_cata1_small_flowers_17_1792353925.jpg",
+      "https://res.cloudinary.com/ecugysfd/image/upload/v1792353933/catalog_cata1_small_flowers_11_1792353930.png"
+    ],
+    "images": [
+      "https://res.cloudinary.com/ecugysfd/image/upload/v1792353895/catalog_cata1_small_flowers_03_1792353883.png",
+      "https://res.cloudinary.com/ecugysfd/image/upload/v1792353883/catalog_cata1_small_flowers_06_1792353873.png",
+      "https://res.cloudinary.com/ecugysfd/image/upload/v1792353914/catalog_cata1_small_flowers_15_1792353896.png",
+      "https://res.cloudinary.com/ecugysfd/image/upload/v1792353924/catalog_cata1_small_flowers_07_1792353915.png",
+      "https://res.cloudinary.com/ecugysfd/image/upload/v1792353929/catalog_cata1_small_flowers_17_1792353925.jpg",
+      "https://res.cloudinary.com/ecugysfd/image/upload/v1792353933/catalog_cata1_small_flowers_11_1792353930.png"
+    ],
+    "variants": [
+      {
+        "id": "var-flw-03",
+        "label": "Shade 03: Soft Lilac with Gold Rim (Pack of 50)",
+        "price": 199,
+        "regularPrice": 249,
+        "stock": 25,
+        "sku": "VK-FLW-SH-03"
+      },
+      {
+        "id": "var-flw-06",
+        "label": "Shade 06: Pastel Violet & White Blend (Pack of 50)",
+        "price": 199,
+        "regularPrice": 249,
+        "stock": 25,
+        "sku": "VK-FLW-SH-06"
+      },
+      {
+        "id": "var-flw-07",
+        "label": "Shade 07: Mint Blue & Frost White (Pack of 50)",
+        "price": 199,
+        "regularPrice": 249,
+        "stock": 25,
+        "sku": "VK-FLW-SH-07"
+      },
+      {
+        "id": "var-flw-11",
+        "label": "Shade 11: Sunset Coral & Peach (Pack of 50)",
+        "price": 199,
+        "regularPrice": 249,
+        "stock": 25,
+        "sku": "VK-FLW-SH-11"
+      },
+      {
+        "id": "var-flw-15",
+        "label": "Shade 15: Cherry Blossom Pink (Pack of 50)",
+        "price": 199,
+        "regularPrice": 249,
+        "stock": 25,
+        "sku": "VK-FLW-SH-15"
+      },
+      {
+        "id": "var-flw-17",
+        "label": "Shade 17: Marigold Shimmer Yellow (Pack of 50)",
+        "price": 199,
+        "regularPrice": 249,
+        "stock": 25,
+        "sku": "VK-FLW-SH-17"
+      },
+      {
+        "id": "var-flw-all",
+        "label": "Master Rainbow Florist Collector Set (All 6 Packs / 300 Pcs)",
+        "price": 999,
+        "regularPrice": 1194,
+        "stock": 15,
+        "sku": "VK-FLW-ALL-6"
+      }
+    ],
+    "specs": {
+      "mixRatioWeight": "Single Component",
+      "dynamicViscosity": "low",
+      "fullGlassCure": "24h",
+      "workingPotLife": "30m",
+      "finish": "Optical Gloss Diamond Clear",
+      "uvStability": "ASTM D1003 Lightfast HALS + UV400"
+    },
+    "colors": [
+      {
+        "id": "flw-03",
+        "label": "Shade 03 (Soft Lilac / Gold Trim)",
+        "hex": "#D8B4E2"
+      },
+      {
+        "id": "flw-06",
+        "label": "Shade 06 (Pastel Violet & White)",
+        "hex": "#E9D5FF"
+      },
+      {
+        "id": "flw-07",
+        "label": "Shade 07 (Mint Blue & White)",
+        "hex": "#BAE6FD"
+      },
+      {
+        "id": "flw-11",
+        "label": "Shade 11 (Sunset Coral & Warm White)",
+        "hex": "#FED7AA"
+      },
+      {
+        "id": "flw-15",
+        "label": "Shade 15 (Cherry Blossom Pink / Gold Trim)",
+        "hex": "#FDA4AF"
+      },
+      {
+        "id": "flw-17",
+        "label": "Shade 17 (Marigold Golden Shimmer)",
+        "hex": "#FDE047"
+      }
+    ],
+    "shapes": [
+      "Miniature Blossom"
+    ],
+    "sizes": [
+      "Pack of 50",
+      "Master 6-Pack (300 Pcs)"
+    ],
+    "gender": "all",
+    "genderAffinity": "neutral",
+    "gender_affinity": "neutral",
+    "giftingTags": [
+      "flower-cabochons",
+      "shaker-fillers",
+      "resin-inclusions"
+    ],
+    "gifting_tags": [
+      "flower-cabochons",
+      "shaker-fillers",
+      "resin-inclusions"
+    ],
+    "description": "Handcrafted miniature blossom cabochons treated with fine golden edge gilding and pearl luster glazes. Created as charming decorative inclusions for clear resin coasters, shaker keychains, ring holders, phone cases, and jewelry."
+  }
+];
+
 export default TEST_PRODUCTS;

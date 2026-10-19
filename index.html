@@ -67,11 +67,19 @@
   "@context": "https://schema.org",
   "@graph": [
     {
-      "@type": ["Organization", "OnlineStore", "LocalBusiness"],
+      "@type": [
+        "Organization",
+        "OnlineStore",
+        "LocalBusiness"
+      ],
       "@id": "https://vistara-krafts.vercel.app/#organization",
       "name": "Vistāra Krafts",
       "legalName": "Vistāra Krafts Studio & Chemical Atelier",
-      "alternateName": ["Resin Art Memories", "@resin.art.memories", "Vistara Krafts"],
+      "alternateName": [
+        "Resin Art Memories",
+        "@resin.art.memories",
+        "Vistara Krafts"
+      ],
       "url": "https://vistara-krafts.vercel.app/",
       "logo": {
         "@type": "ImageObject",
@@ -142,64 +150,115 @@
       "@type": "ItemList",
       "@id": "https://vistara-krafts.vercel.app/#catalog",
       "name": "Vistāra Krafts Complete Preserved Keepsakes & Optical Epoxy Resin Catalogue",
-      "numberOfItems": 12,
+      "numberOfItems": 19,
       "itemListElement": [
         {
           "@type": "ListItem",
           "position": 1,
           "item": {
             "@type": "Product",
-            "@id": "https://vistara-krafts.vercel.app/#/product/ram-keep-001",
-            "productID": "ram-keep-001",
-            "sku": "RAM-VRM-BLK-12",
-            "mpn": "RAM-VRM-BLK-12",
-            "name": "Eternal Varmala & Bridal Bouquet Time-Capsule Block",
-            "description": "Museum-Grade 50mm Deep Optical Cast with 24K Gold Leaf & Custom Brass Calligraphy",
-            "category": "keepsakes",
-            "image": "https://vistara-krafts.vercel.app/vistara-krafts-logo.jpg",
-            "brand": { "@type": "Brand", "name": "Vistāra Krafts" },
+            "@id": "https://vistara-krafts.vercel.app/#/product/vk-cat-res-201",
+            "productID": "vk-cat-res-201",
+            "sku": "VK-RES-201-SET",
+            "mpn": "VK-RES-201-SET",
+            "name": "Vistāra Krafts 2:1 High-Gloss Epoxy Resin & Hardener Set",
+            "description": "High-Clarity Gloss Coating & Shallow Casting System (300g & 1.5kg Options)",
+            "category": "casting",
+            "image": "https://res.cloudinary.com/ecugysfd/image/upload/v1792353785/catalog_cata1_resin_bottles_set_1792353782.png",
+            "brand": {
+              "@type": "Brand",
+              "name": "Vistāra Krafts"
+            },
             "offers": {
               "@type": "Offer",
-              "url": "https://vistara-krafts.vercel.app/#/product/ram-keep-001",
+              "url": "https://vistara-krafts.vercel.app/#/product/vk-cat-res-201",
               "priceCurrency": "INR",
-              "price": "4499",
+              "price": "599",
               "priceValidUntil": "2027-12-31",
               "availability": "https://schema.org/InStock",
               "itemCondition": "https://schema.org/NewCondition",
-              "seller": { "@id": "https://vistara-krafts.vercel.app/#organization" },
-              "hasMerchantReturnPolicy": { "@id": "https://vistara-krafts.vercel.app/#return-policy" },
+              "seller": {
+                "@id": "https://vistara-krafts.vercel.app/#organization"
+              },
+              "hasMerchantReturnPolicy": {
+                "@id": "https://vistara-krafts.vercel.app/#return-policy"
+              },
               "shippingDetails": {
                 "@type": "OfferShippingDetails",
-                "shippingRate": { "@type": "MonetaryAmount", "value": "0", "currency": "INR" },
-                "shippingDestination": { "@type": "DefinedRegion", "addressCountry": "IN" },
+                "shippingRate": {
+                  "@type": "MonetaryAmount",
+                  "value": "0",
+                  "currency": "INR"
+                },
+                "shippingDestination": {
+                  "@type": "DefinedRegion",
+                  "addressCountry": "IN"
+                },
                 "deliveryTime": {
                   "@type": "ShippingDeliveryTime",
-                  "handlingTime": { "@type": "QuantitativeValue", "minValue": 0, "maxValue": 1, "unitCode": "DAY" },
-                  "transitTime": { "@type": "QuantitativeValue", "minValue": 1, "maxValue": 3, "unitCode": "DAY" }
+                  "handlingTime": {
+                    "@type": "QuantitativeValue",
+                    "minValue": 0,
+                    "maxValue": 1,
+                    "unitCode": "DAY"
+                  },
+                  "transitTime": {
+                    "@type": "QuantitativeValue",
+                    "minValue": 1,
+                    "maxValue": 3,
+                    "unitCode": "DAY"
+                  }
                 }
               }
             },
             "aggregateRating": {
               "@type": "AggregateRating",
-              "ratingValue": "5.0",
-              "reviewCount": "418",
+              "ratingValue": "4.9",
+              "reviewCount": "86",
               "bestRating": "5",
               "worstRating": "1"
             },
             "review": [
               {
                 "@type": "Review",
-                "author": { "@type": "Person", "name": "Ananya & Kabir • Udaipur Wedding" },
-                "reviewRating": { "@type": "Rating", "ratingValue": "5", "bestRating": "5" },
-                "reviewBody": "BlueDart picked up our wedding garlands the next morning and 2 weeks later we received the most breathtaking 12-inch floral block with gold calligraphy!"
+                "author": {
+                  "@type": "Person",
+                  "name": "Verified Studio Patron"
+                },
+                "reviewRating": {
+                  "@type": "Rating",
+                  "ratingValue": "5",
+                  "bestRating": "5"
+                },
+                "reviewBody": "Genuine Vistāra Krafts formulation with crystal optical clarity, reliable curing, and professional results."
               }
             ],
             "additionalProperty": [
-              { "@type": "PropertyValue", "name": "Mix Ratio by Weight", "value": "2 : 1 (Deep Pour Archival)" },
-              { "@type": "PropertyValue", "name": "Dynamic Viscosity", "value": "350 mPa·s (Zero-Bubble)" },
-              { "@type": "PropertyValue", "name": "Max Single Pour Depth", "value": "50mm – 65mm" },
-              { "@type": "PropertyValue", "name": "Full Glass Cure", "value": "7 Days Silica + 72h Cure" },
-              { "@type": "PropertyValue", "name": "HSN Code", "value": "39073010" }
+              {
+                "@type": "PropertyValue",
+                "name": "Mix Ratio by Weight",
+                "value": "2:1 by weight"
+              },
+              {
+                "@type": "PropertyValue",
+                "name": "Dynamic Viscosity",
+                "value": "medium"
+              },
+              {
+                "@type": "PropertyValue",
+                "name": "Working Pot Life",
+                "value": "45 mins"
+              },
+              {
+                "@type": "PropertyValue",
+                "name": "Full Glass Cure",
+                "value": "18-24 Hours"
+              },
+              {
+                "@type": "PropertyValue",
+                "name": "HSN Code",
+                "value": "39073010"
+              }
             ]
           }
         },
@@ -208,57 +267,108 @@
           "position": 2,
           "item": {
             "@type": "Product",
-            "@id": "https://vistara-krafts.vercel.app/#/product/vk-epx-301",
-            "productID": "vk-epx-301",
-            "sku": "VK-EPX-301-12K",
-            "mpn": "VK-EPX-301-12K",
-            "name": "UltraClear 3:1 Casting Resin",
-            "description": "Optical Grade Degassed Epoxy System for Deep Art, Coasters & Floral Preservation",
-            "category": "casting",
-            "image": "https://vistara-krafts.vercel.app/vistara-krafts-logo.jpg",
-            "brand": { "@type": "Brand", "name": "Vistāra Krafts" },
+            "@id": "https://vistara-krafts.vercel.app/#/product/vk-cat-res-301",
+            "productID": "vk-cat-res-301",
+            "sku": "VK-RES-301-SET",
+            "mpn": "VK-RES-301-SET",
+            "name": "Vistāra Krafts 3:1 Deep Pour & Casting Epoxy Resin System",
+            "description": "Ultra-Low Viscosity Bubble-Free Pouring System (300g & 1.2kg Options)",
+            "category": "deep_pour",
+            "image": "https://res.cloudinary.com/ecugysfd/image/upload/v1792353785/catalog_cata1_resin_bottles_set_1792353782.png",
+            "brand": {
+              "@type": "Brand",
+              "name": "Vistāra Krafts"
+            },
             "offers": {
               "@type": "Offer",
-              "url": "https://vistara-krafts.vercel.app/#/product/vk-epx-301",
+              "url": "https://vistara-krafts.vercel.app/#/product/vk-cat-res-301",
               "priceCurrency": "INR",
-              "price": "1299",
+              "price": "649",
               "priceValidUntil": "2027-12-31",
               "availability": "https://schema.org/InStock",
               "itemCondition": "https://schema.org/NewCondition",
-              "seller": { "@id": "https://vistara-krafts.vercel.app/#organization" },
-              "hasMerchantReturnPolicy": { "@id": "https://vistara-krafts.vercel.app/#return-policy" },
+              "seller": {
+                "@id": "https://vistara-krafts.vercel.app/#organization"
+              },
+              "hasMerchantReturnPolicy": {
+                "@id": "https://vistara-krafts.vercel.app/#return-policy"
+              },
               "shippingDetails": {
                 "@type": "OfferShippingDetails",
-                "shippingRate": { "@type": "MonetaryAmount", "value": "99", "currency": "INR" },
-                "shippingDestination": { "@type": "DefinedRegion", "addressCountry": "IN" },
+                "shippingRate": {
+                  "@type": "MonetaryAmount",
+                  "value": "0",
+                  "currency": "INR"
+                },
+                "shippingDestination": {
+                  "@type": "DefinedRegion",
+                  "addressCountry": "IN"
+                },
                 "deliveryTime": {
                   "@type": "ShippingDeliveryTime",
-                  "handlingTime": { "@type": "QuantitativeValue", "minValue": 0, "maxValue": 1, "unitCode": "DAY" },
-                  "transitTime": { "@type": "QuantitativeValue", "minValue": 1, "maxValue": 3, "unitCode": "DAY" }
+                  "handlingTime": {
+                    "@type": "QuantitativeValue",
+                    "minValue": 0,
+                    "maxValue": 1,
+                    "unitCode": "DAY"
+                  },
+                  "transitTime": {
+                    "@type": "QuantitativeValue",
+                    "minValue": 1,
+                    "maxValue": 3,
+                    "unitCode": "DAY"
+                  }
                 }
               }
             },
             "aggregateRating": {
               "@type": "AggregateRating",
-              "ratingValue": "4.9",
-              "reviewCount": "342",
+              "ratingValue": "4.95",
+              "reviewCount": "112",
               "bestRating": "5",
               "worstRating": "1"
             },
             "review": [
               {
                 "@type": "Review",
-                "author": { "@type": "Person", "name": "Diya Sharma • Jaipur Resin Studio" },
-                "reviewRating": { "@type": "Rating", "ratingValue": "5", "bestRating": "5" },
-                "reviewBody": "Zero micro-bubbles even in 32°C weather! Used the 1.2kg kit for 3 bridal varmala blocks and the optical clarity is like liquid diamond."
+                "author": {
+                  "@type": "Person",
+                  "name": "Verified Studio Patron"
+                },
+                "reviewRating": {
+                  "@type": "Rating",
+                  "ratingValue": "5",
+                  "bestRating": "5"
+                },
+                "reviewBody": "Genuine Vistāra Krafts formulation with crystal optical clarity, reliable curing, and professional results."
               }
             ],
             "additionalProperty": [
-              { "@type": "PropertyValue", "name": "Mix Ratio by Weight", "value": "3 : 1 (Resin : Hardener)" },
-              { "@type": "PropertyValue", "name": "Dynamic Viscosity", "value": "600 – 800 mPa·s" },
-              { "@type": "PropertyValue", "name": "Max Single Pour Depth", "value": "15mm – 20mm (1.5–2 cm)" },
-              { "@type": "PropertyValue", "name": "Full Glass Cure", "value": "48 – 72 Hours" },
-              { "@type": "PropertyValue", "name": "HSN Code", "value": "39073010" }
+              {
+                "@type": "PropertyValue",
+                "name": "Mix Ratio by Weight",
+                "value": "3:1 by weight"
+              },
+              {
+                "@type": "PropertyValue",
+                "name": "Dynamic Viscosity",
+                "value": "low"
+              },
+              {
+                "@type": "PropertyValue",
+                "name": "Working Pot Life",
+                "value": "90 mins"
+              },
+              {
+                "@type": "PropertyValue",
+                "name": "Full Glass Cure",
+                "value": "24-36 Hours"
+              },
+              {
+                "@type": "PropertyValue",
+                "name": "HSN Code",
+                "value": "39073010"
+              }
             ]
           }
         },
@@ -267,37 +377,108 @@
           "position": 3,
           "item": {
             "@type": "Product",
-            "@id": "https://vistara-krafts.vercel.app/#/product/ram-keep-002",
-            "productID": "ram-keep-002",
-            "sku": "RAM-OCN-TRY-01",
-            "mpn": "RAM-OCN-TRY-01",
-            "name": "Maldives Ocean Wave Teak Charcuterie & Vanity Tray",
-            "description": "Hand-poured Multi-Layer Lacing Foam Waves over Seasoned Burma Teak",
-            "category": "keepsakes",
-            "image": "https://vistara-krafts.vercel.app/vistara-krafts-logo.jpg",
-            "brand": { "@type": "Brand", "name": "Vistāra Krafts" },
+            "@id": "https://vistara-krafts.vercel.app/#/product/vk-cat-acc-deco",
+            "productID": "vk-cat-acc-deco",
+            "sku": "VK-ACC-DECO-MRK",
+            "mpn": "VK-ACC-DECO-MRK",
+            "name": "DecoColor Premium Metallic Paint Marker Pen",
+            "description": "High-Luster Oil-Based Leafing Finish for Gilded Coaster Rims & Geode Art",
+            "category": "accessories",
+            "image": "https://res.cloudinary.com/ecugysfd/image/upload/v1792353788/catalog_cata1_deco_markers_1792353786.jpg",
+            "brand": {
+              "@type": "Brand",
+              "name": "Vistāra Krafts"
+            },
             "offers": {
               "@type": "Offer",
-              "url": "https://vistara-krafts.vercel.app/#/product/ram-keep-002",
+              "url": "https://vistara-krafts.vercel.app/#/product/vk-cat-acc-deco",
               "priceCurrency": "INR",
-              "price": "2199",
+              "price": "299",
               "priceValidUntil": "2027-12-31",
               "availability": "https://schema.org/InStock",
               "itemCondition": "https://schema.org/NewCondition",
-              "seller": { "@id": "https://vistara-krafts.vercel.app/#organization" },
-              "hasMerchantReturnPolicy": { "@id": "https://vistara-krafts.vercel.app/#return-policy" },
+              "seller": {
+                "@id": "https://vistara-krafts.vercel.app/#organization"
+              },
+              "hasMerchantReturnPolicy": {
+                "@id": "https://vistara-krafts.vercel.app/#return-policy"
+              },
               "shippingDetails": {
                 "@type": "OfferShippingDetails",
-                "shippingRate": { "@type": "MonetaryAmount", "value": "0", "currency": "INR" },
-                "shippingDestination": { "@type": "DefinedRegion", "addressCountry": "IN" }
+                "shippingRate": {
+                  "@type": "MonetaryAmount",
+                  "value": "0",
+                  "currency": "INR"
+                },
+                "shippingDestination": {
+                  "@type": "DefinedRegion",
+                  "addressCountry": "IN"
+                },
+                "deliveryTime": {
+                  "@type": "ShippingDeliveryTime",
+                  "handlingTime": {
+                    "@type": "QuantitativeValue",
+                    "minValue": 0,
+                    "maxValue": 1,
+                    "unitCode": "DAY"
+                  },
+                  "transitTime": {
+                    "@type": "QuantitativeValue",
+                    "minValue": 1,
+                    "maxValue": 3,
+                    "unitCode": "DAY"
+                  }
+                }
               }
             },
-            "aggregateRating": { "@type": "AggregateRating", "ratingValue": "4.9", "reviewCount": "215", "bestRating": "5", "worstRating": "1" },
+            "aggregateRating": {
+              "@type": "AggregateRating",
+              "ratingValue": "4.88",
+              "reviewCount": "54",
+              "bestRating": "5",
+              "worstRating": "1"
+            },
+            "review": [
+              {
+                "@type": "Review",
+                "author": {
+                  "@type": "Person",
+                  "name": "Verified Studio Patron"
+                },
+                "reviewRating": {
+                  "@type": "Rating",
+                  "ratingValue": "5",
+                  "bestRating": "5"
+                },
+                "reviewBody": "Genuine Vistāra Krafts formulation with crystal optical clarity, reliable curing, and professional results."
+              }
+            ],
             "additionalProperty": [
-              { "@type": "PropertyValue", "name": "Mix Ratio by Weight", "value": "1 : 1 (High-Gloss Doming)" },
-              { "@type": "PropertyValue", "name": "Dynamic Viscosity", "value": "2200 mPa·s (Wave Lacing)" },
-              { "@type": "PropertyValue", "name": "Full Glass Cure", "value": "48 Hours (Food Contact Safe)" },
-              { "@type": "PropertyValue", "name": "HSN Code", "value": "39073010" }
+              {
+                "@type": "PropertyValue",
+                "name": "Mix Ratio by Weight",
+                "value": "Single Component"
+              },
+              {
+                "@type": "PropertyValue",
+                "name": "Dynamic Viscosity",
+                "value": "low"
+              },
+              {
+                "@type": "PropertyValue",
+                "name": "Working Pot Life",
+                "value": "30m"
+              },
+              {
+                "@type": "PropertyValue",
+                "name": "Full Glass Cure",
+                "value": "24h"
+              },
+              {
+                "@type": "PropertyValue",
+                "name": "HSN Code",
+                "value": "96082000"
+              }
             ]
           }
         },
@@ -306,38 +487,108 @@
           "position": 4,
           "item": {
             "@type": "Product",
-            "@id": "https://vistara-krafts.vercel.app/#/product/vk-epx-201",
-            "productID": "vk-epx-201",
-            "sku": "VK-EPX-201-3KG",
-            "mpn": "VK-EPX-201-3KG",
-            "name": "River Flow 2:1 Deep Pour River Table Epoxy",
-            "description": "Ultra-Slow Exotherm Formula for 50mm Single-Pass Casts & Floral Blocks",
-            "category": "deep_pour",
-            "image": "https://vistara-krafts.vercel.app/vistara-krafts-logo.jpg",
-            "brand": { "@type": "Brand", "name": "Vistāra Krafts" },
+            "@id": "https://vistara-krafts.vercel.app/#/product/vk-cat-acc-stnd",
+            "productID": "vk-cat-acc-stnd",
+            "sku": "VK-ACC-FLDG-STND",
+            "mpn": "VK-ACC-FLDG-STND",
+            "name": "Polished Gold Metal Folding Easel & Art Display Stand",
+            "description": "Sturdy Electroplated Gold Iron Easel for Clocks, Slabs, Trays & Coasters",
+            "category": "accessories",
+            "image": "https://res.cloudinary.com/ecugysfd/image/upload/v1792353791/catalog_cata1_metal_folding_stands_1792353789.png",
+            "brand": {
+              "@type": "Brand",
+              "name": "Vistāra Krafts"
+            },
             "offers": {
               "@type": "Offer",
-              "url": "https://vistara-krafts.vercel.app/#/product/vk-epx-201",
+              "url": "https://vistara-krafts.vercel.app/#/product/vk-cat-acc-stnd",
               "priceCurrency": "INR",
-              "price": "2850",
+              "price": "199",
               "priceValidUntil": "2027-12-31",
               "availability": "https://schema.org/InStock",
               "itemCondition": "https://schema.org/NewCondition",
-              "seller": { "@id": "https://vistara-krafts.vercel.app/#organization" },
-              "hasMerchantReturnPolicy": { "@id": "https://vistara-krafts.vercel.app/#return-policy" },
+              "seller": {
+                "@id": "https://vistara-krafts.vercel.app/#organization"
+              },
+              "hasMerchantReturnPolicy": {
+                "@id": "https://vistara-krafts.vercel.app/#return-policy"
+              },
               "shippingDetails": {
                 "@type": "OfferShippingDetails",
-                "shippingRate": { "@type": "MonetaryAmount", "value": "0", "currency": "INR" },
-                "shippingDestination": { "@type": "DefinedRegion", "addressCountry": "IN" }
+                "shippingRate": {
+                  "@type": "MonetaryAmount",
+                  "value": "0",
+                  "currency": "INR"
+                },
+                "shippingDestination": {
+                  "@type": "DefinedRegion",
+                  "addressCountry": "IN"
+                },
+                "deliveryTime": {
+                  "@type": "ShippingDeliveryTime",
+                  "handlingTime": {
+                    "@type": "QuantitativeValue",
+                    "minValue": 0,
+                    "maxValue": 1,
+                    "unitCode": "DAY"
+                  },
+                  "transitTime": {
+                    "@type": "QuantitativeValue",
+                    "minValue": 1,
+                    "maxValue": 3,
+                    "unitCode": "DAY"
+                  }
+                }
               }
             },
-            "aggregateRating": { "@type": "AggregateRating", "ratingValue": "4.8", "reviewCount": "188", "bestRating": "5", "worstRating": "1" },
+            "aggregateRating": {
+              "@type": "AggregateRating",
+              "ratingValue": "4.82",
+              "reviewCount": "67",
+              "bestRating": "5",
+              "worstRating": "1"
+            },
+            "review": [
+              {
+                "@type": "Review",
+                "author": {
+                  "@type": "Person",
+                  "name": "Verified Studio Patron"
+                },
+                "reviewRating": {
+                  "@type": "Rating",
+                  "ratingValue": "5",
+                  "bestRating": "5"
+                },
+                "reviewBody": "Genuine Vistāra Krafts formulation with crystal optical clarity, reliable curing, and professional results."
+              }
+            ],
             "additionalProperty": [
-              { "@type": "PropertyValue", "name": "Mix Ratio by Weight", "value": "2 : 1 (Resin : Hardener)" },
-              { "@type": "PropertyValue", "name": "Dynamic Viscosity", "value": "320 – 450 mPa·s (Water-thin)" },
-              { "@type": "PropertyValue", "name": "Max Single Pour Depth", "value": "50mm (2 inches single pass)" },
-              { "@type": "PropertyValue", "name": "Full Glass Cure", "value": "72 – 96 Hours" },
-              { "@type": "PropertyValue", "name": "HSN Code", "value": "39073010" }
+              {
+                "@type": "PropertyValue",
+                "name": "Mix Ratio by Weight",
+                "value": "Single Component"
+              },
+              {
+                "@type": "PropertyValue",
+                "name": "Dynamic Viscosity",
+                "value": "low"
+              },
+              {
+                "@type": "PropertyValue",
+                "name": "Working Pot Life",
+                "value": "30m"
+              },
+              {
+                "@type": "PropertyValue",
+                "name": "Full Glass Cure",
+                "value": "24h"
+              },
+              {
+                "@type": "PropertyValue",
+                "name": "HSN Code",
+                "value": "83025000"
+              }
             ]
           }
         },
@@ -346,37 +597,108 @@
           "position": 5,
           "item": {
             "@type": "Product",
-            "@id": "https://vistara-krafts.vercel.app/#/product/ram-keep-003",
-            "productID": "ram-keep-003",
-            "sku": "RAM-GEO-CLK-18",
-            "mpn": "RAM-GEO-CLK-18",
-            "name": "Royal Champagne & Quartz Geode Statement Wall Art",
-            "description": "Encrusted with Raw Clear Quartz Crystals, Metallic Bronze & Rose-Gold Leaf",
-            "category": "keepsakes",
-            "image": "https://vistara-krafts.vercel.app/vistara-krafts-logo.jpg",
-            "brand": { "@type": "Brand", "name": "Vistāra Krafts" },
+            "@id": "https://vistara-krafts.vercel.app/#/product/vk-cat-mld-agat",
+            "productID": "vk-cat-mld-agat",
+            "sku": "VK-MLD-AGT-SNG",
+            "mpn": "VK-MLD-AGT-SNG",
+            "name": "Fluted Edge Agate Geode Coaster Silicone Mold",
+            "description": "Gloss-Mirror Organic Geode Coaster & Platter Mold (5\", 6\", 8\" Sizes)",
+            "category": "molds",
+            "image": "https://res.cloudinary.com/ecugysfd/image/upload/v1792353794/catalog_cata1_agate_mould_single_1792353792.png",
+            "brand": {
+              "@type": "Brand",
+              "name": "Vistāra Krafts"
+            },
             "offers": {
               "@type": "Offer",
-              "url": "https://vistara-krafts.vercel.app/#/product/ram-keep-003",
+              "url": "https://vistara-krafts.vercel.app/#/product/vk-cat-mld-agat",
               "priceCurrency": "INR",
-              "price": "3899",
+              "price": "249",
               "priceValidUntil": "2027-12-31",
               "availability": "https://schema.org/InStock",
               "itemCondition": "https://schema.org/NewCondition",
-              "seller": { "@id": "https://vistara-krafts.vercel.app/#organization" },
-              "hasMerchantReturnPolicy": { "@id": "https://vistara-krafts.vercel.app/#return-policy" },
+              "seller": {
+                "@id": "https://vistara-krafts.vercel.app/#organization"
+              },
+              "hasMerchantReturnPolicy": {
+                "@id": "https://vistara-krafts.vercel.app/#return-policy"
+              },
               "shippingDetails": {
                 "@type": "OfferShippingDetails",
-                "shippingRate": { "@type": "MonetaryAmount", "value": "0", "currency": "INR" },
-                "shippingDestination": { "@type": "DefinedRegion", "addressCountry": "IN" }
+                "shippingRate": {
+                  "@type": "MonetaryAmount",
+                  "value": "0",
+                  "currency": "INR"
+                },
+                "shippingDestination": {
+                  "@type": "DefinedRegion",
+                  "addressCountry": "IN"
+                },
+                "deliveryTime": {
+                  "@type": "ShippingDeliveryTime",
+                  "handlingTime": {
+                    "@type": "QuantitativeValue",
+                    "minValue": 0,
+                    "maxValue": 1,
+                    "unitCode": "DAY"
+                  },
+                  "transitTime": {
+                    "@type": "QuantitativeValue",
+                    "minValue": 1,
+                    "maxValue": 3,
+                    "unitCode": "DAY"
+                  }
+                }
               }
             },
-            "aggregateRating": { "@type": "AggregateRating", "ratingValue": "5.0", "reviewCount": "129", "bestRating": "5", "worstRating": "1" },
+            "aggregateRating": {
+              "@type": "AggregateRating",
+              "ratingValue": "4.91",
+              "reviewCount": "98",
+              "bestRating": "5",
+              "worstRating": "1"
+            },
+            "review": [
+              {
+                "@type": "Review",
+                "author": {
+                  "@type": "Person",
+                  "name": "Verified Studio Patron"
+                },
+                "reviewRating": {
+                  "@type": "Rating",
+                  "ratingValue": "5",
+                  "bestRating": "5"
+                },
+                "reviewBody": "Genuine Vistāra Krafts formulation with crystal optical clarity, reliable curing, and professional results."
+              }
+            ],
             "additionalProperty": [
-              { "@type": "PropertyValue", "name": "Mix Ratio by Weight", "value": "1 : 1 Thixotropic Gel" },
-              { "@type": "PropertyValue", "name": "Dynamic Viscosity", "value": "3500 mPa·s (Hold-on-Edge)" },
-              { "@type": "PropertyValue", "name": "Full Glass Cure", "value": "48 Hours" },
-              { "@type": "PropertyValue", "name": "HSN Code", "value": "39073010" }
+              {
+                "@type": "PropertyValue",
+                "name": "Mix Ratio by Weight",
+                "value": "Single Component"
+              },
+              {
+                "@type": "PropertyValue",
+                "name": "Dynamic Viscosity",
+                "value": "low"
+              },
+              {
+                "@type": "PropertyValue",
+                "name": "Working Pot Life",
+                "value": "30m"
+              },
+              {
+                "@type": "PropertyValue",
+                "name": "Full Glass Cure",
+                "value": "24h"
+              },
+              {
+                "@type": "PropertyValue",
+                "name": "HSN Code",
+                "value": "39269099"
+              }
             ]
           }
         },
@@ -385,37 +707,108 @@
           "position": 6,
           "item": {
             "@type": "Product",
-            "@id": "https://vistara-krafts.vercel.app/#/product/vk-uv-hard",
-            "productID": "vk-uv-hard",
-            "sku": "VK-UV-HRD-200G",
-            "mpn": "VK-UV-HRD-200G",
-            "name": "Jewelry Glass Optical UV Resin (Hard Type 365nm)",
-            "description": "Zero-Mix Instant Curing Formula for Pressed Flower Pendants & Bezel Charms",
-            "category": "uv_resin",
-            "image": "https://vistara-krafts.vercel.app/vistara-krafts-logo.jpg",
-            "brand": { "@type": "Brand", "name": "Vistāra Krafts" },
+            "@id": "https://vistara-krafts.vercel.app/#/product/vk-cat-pig-foil",
+            "productID": "vk-cat-pig-foil",
+            "sku": "VK-PIG-FLK-FOIL",
+            "mpn": "VK-PIG-FLK-FOIL",
+            "name": "Artisanal Metallic Leafing Foil Flakes (Glass Jar Set)",
+            "description": "Lustrous Gilded Flakes with Application Brush for Geode Veins & Inclusions",
+            "category": "pigments",
+            "image": "https://res.cloudinary.com/ecugysfd/image/upload/v1792353797/catalog_cata1_foil_flakes_1792353795.jpg",
+            "brand": {
+              "@type": "Brand",
+              "name": "Vistāra Krafts"
+            },
             "offers": {
               "@type": "Offer",
-              "url": "https://vistara-krafts.vercel.app/#/product/vk-uv-hard",
+              "url": "https://vistara-krafts.vercel.app/#/product/vk-cat-pig-foil",
               "priceCurrency": "INR",
-              "price": "649",
+              "price": "199",
               "priceValidUntil": "2027-12-31",
               "availability": "https://schema.org/InStock",
               "itemCondition": "https://schema.org/NewCondition",
-              "seller": { "@id": "https://vistara-krafts.vercel.app/#organization" },
-              "hasMerchantReturnPolicy": { "@id": "https://vistara-krafts.vercel.app/#return-policy" },
+              "seller": {
+                "@id": "https://vistara-krafts.vercel.app/#organization"
+              },
+              "hasMerchantReturnPolicy": {
+                "@id": "https://vistara-krafts.vercel.app/#return-policy"
+              },
               "shippingDetails": {
                 "@type": "OfferShippingDetails",
-                "shippingRate": { "@type": "MonetaryAmount", "value": "99", "currency": "INR" },
-                "shippingDestination": { "@type": "DefinedRegion", "addressCountry": "IN" }
+                "shippingRate": {
+                  "@type": "MonetaryAmount",
+                  "value": "0",
+                  "currency": "INR"
+                },
+                "shippingDestination": {
+                  "@type": "DefinedRegion",
+                  "addressCountry": "IN"
+                },
+                "deliveryTime": {
+                  "@type": "ShippingDeliveryTime",
+                  "handlingTime": {
+                    "@type": "QuantitativeValue",
+                    "minValue": 0,
+                    "maxValue": 1,
+                    "unitCode": "DAY"
+                  },
+                  "transitTime": {
+                    "@type": "QuantitativeValue",
+                    "minValue": 1,
+                    "maxValue": 3,
+                    "unitCode": "DAY"
+                  }
+                }
               }
             },
-            "aggregateRating": { "@type": "AggregateRating", "ratingValue": "4.9", "reviewCount": "420", "bestRating": "5", "worstRating": "1" },
+            "aggregateRating": {
+              "@type": "AggregateRating",
+              "ratingValue": "4.86",
+              "reviewCount": "42",
+              "bestRating": "5",
+              "worstRating": "1"
+            },
+            "review": [
+              {
+                "@type": "Review",
+                "author": {
+                  "@type": "Person",
+                  "name": "Verified Studio Patron"
+                },
+                "reviewRating": {
+                  "@type": "Rating",
+                  "ratingValue": "5",
+                  "bestRating": "5"
+                },
+                "reviewBody": "Genuine Vistāra Krafts formulation with crystal optical clarity, reliable curing, and professional results."
+              }
+            ],
             "additionalProperty": [
-              { "@type": "PropertyValue", "name": "Mix Ratio by Weight", "value": "1-Part Ready to Use" },
-              { "@type": "PropertyValue", "name": "Dynamic Viscosity", "value": "500 mPa·s (Self-Doming)" },
-              { "@type": "PropertyValue", "name": "Full Glass Cure", "value": "90 – 120 Seconds (365nm LED)" },
-              { "@type": "PropertyValue", "name": "HSN Code", "value": "39073010" }
+              {
+                "@type": "PropertyValue",
+                "name": "Mix Ratio by Weight",
+                "value": "Single Component"
+              },
+              {
+                "@type": "PropertyValue",
+                "name": "Dynamic Viscosity",
+                "value": "low"
+              },
+              {
+                "@type": "PropertyValue",
+                "name": "Working Pot Life",
+                "value": "30m"
+              },
+              {
+                "@type": "PropertyValue",
+                "name": "Full Glass Cure",
+                "value": "24h"
+              },
+              {
+                "@type": "PropertyValue",
+                "name": "HSN Code",
+                "value": "32129000"
+              }
             ]
           }
         },
@@ -424,36 +817,108 @@
           "position": 7,
           "item": {
             "@type": "Product",
-            "@id": "https://vistara-krafts.vercel.app/#/product/vk-pig-cham",
-            "productID": "vk-pig-cham",
-            "sku": "VK-MICA-CHAM-12",
-            "mpn": "VK-MICA-CHAM-12",
-            "name": "Metallic Chameleon Mica Powder Set (12 Shades)",
-            "description": "Cosmetic-Grade Dichroic Color-Shifting Mineral Pigments in Apothecary Jars",
+            "@id": "https://vistara-krafts.vercel.app/#/product/vk-cat-pig-opaq",
+            "productID": "vk-cat-pig-opaq",
+            "sku": "VK-PIG-OPQ-20G",
+            "mpn": "VK-PIG-OPQ-20G",
+            "name": "High-Density Opaque Liquid Resin Pigment Paste (20g)",
+            "description": "Ultra-Saturated Non-Bleed Color Paste for Deep Resin Coloring (All Colours)",
             "category": "pigments",
-            "image": "https://vistara-krafts.vercel.app/vistara-krafts-logo.jpg",
-            "brand": { "@type": "Brand", "name": "Vistāra Krafts" },
+            "image": "https://res.cloudinary.com/ecugysfd/image/upload/v1792353801/catalog_cata1_opaque_pigments_1792353798.png",
+            "brand": {
+              "@type": "Brand",
+              "name": "Vistāra Krafts"
+            },
             "offers": {
               "@type": "Offer",
-              "url": "https://vistara-krafts.vercel.app/#/product/vk-pig-cham",
+              "url": "https://vistara-krafts.vercel.app/#/product/vk-cat-pig-opaq",
               "priceCurrency": "INR",
-              "price": "899",
+              "price": "149",
               "priceValidUntil": "2027-12-31",
               "availability": "https://schema.org/InStock",
               "itemCondition": "https://schema.org/NewCondition",
-              "seller": { "@id": "https://vistara-krafts.vercel.app/#organization" },
-              "hasMerchantReturnPolicy": { "@id": "https://vistara-krafts.vercel.app/#return-policy" },
+              "seller": {
+                "@id": "https://vistara-krafts.vercel.app/#organization"
+              },
+              "hasMerchantReturnPolicy": {
+                "@id": "https://vistara-krafts.vercel.app/#return-policy"
+              },
               "shippingDetails": {
                 "@type": "OfferShippingDetails",
-                "shippingRate": { "@type": "MonetaryAmount", "value": "99", "currency": "INR" },
-                "shippingDestination": { "@type": "DefinedRegion", "addressCountry": "IN" }
+                "shippingRate": {
+                  "@type": "MonetaryAmount",
+                  "value": "0",
+                  "currency": "INR"
+                },
+                "shippingDestination": {
+                  "@type": "DefinedRegion",
+                  "addressCountry": "IN"
+                },
+                "deliveryTime": {
+                  "@type": "ShippingDeliveryTime",
+                  "handlingTime": {
+                    "@type": "QuantitativeValue",
+                    "minValue": 0,
+                    "maxValue": 1,
+                    "unitCode": "DAY"
+                  },
+                  "transitTime": {
+                    "@type": "QuantitativeValue",
+                    "minValue": 1,
+                    "maxValue": 3,
+                    "unitCode": "DAY"
+                  }
+                }
               }
             },
-            "aggregateRating": { "@type": "AggregateRating", "ratingValue": "4.9", "reviewCount": "164", "bestRating": "5", "worstRating": "1" },
+            "aggregateRating": {
+              "@type": "AggregateRating",
+              "ratingValue": "4.89",
+              "reviewCount": "73",
+              "bestRating": "5",
+              "worstRating": "1"
+            },
+            "review": [
+              {
+                "@type": "Review",
+                "author": {
+                  "@type": "Person",
+                  "name": "Verified Studio Patron"
+                },
+                "reviewRating": {
+                  "@type": "Rating",
+                  "ratingValue": "5",
+                  "bestRating": "5"
+                },
+                "reviewBody": "Genuine Vistāra Krafts formulation with crystal optical clarity, reliable curing, and professional results."
+              }
+            ],
             "additionalProperty": [
-              { "@type": "PropertyValue", "name": "Mix Ratio by Weight", "value": "1% – 3% pigment load by weight" },
-              { "@type": "PropertyValue", "name": "Particle Size", "value": "10–60 μm" },
-              { "@type": "PropertyValue", "name": "HSN Code", "value": "32064990" }
+              {
+                "@type": "PropertyValue",
+                "name": "Mix Ratio by Weight",
+                "value": "Single Component"
+              },
+              {
+                "@type": "PropertyValue",
+                "name": "Dynamic Viscosity",
+                "value": "low"
+              },
+              {
+                "@type": "PropertyValue",
+                "name": "Working Pot Life",
+                "value": "30m"
+              },
+              {
+                "@type": "PropertyValue",
+                "name": "Full Glass Cure",
+                "value": "24h"
+              },
+              {
+                "@type": "PropertyValue",
+                "name": "HSN Code",
+                "value": "32041990"
+              }
             ]
           }
         },
@@ -462,37 +927,108 @@
           "position": 8,
           "item": {
             "@type": "Product",
-            "@id": "https://vistara-krafts.vercel.app/#/product/ram-keep-004",
-            "productID": "ram-keep-004",
-            "sku": "RAM-CST-FLR-04",
-            "mpn": "RAM-CST-FLR-04",
-            "name": "Petrified Botanical & Brass Edge Coaster Set (Set of 4)",
-            "description": "Real Pressed Delphiniums & Gold Foil Electroplated Rim in Heat-Resistant Resin",
-            "category": "keepsakes",
-            "image": "https://vistara-krafts.vercel.app/vistara-krafts-logo.jpg",
-            "brand": { "@type": "Brand", "name": "Vistāra Krafts" },
+            "@id": "https://vistara-krafts.vercel.app/#/product/vk-cat-pig-inks",
+            "productID": "vk-cat-pig-inks",
+            "sku": "VK-PIG-INK-PRL",
+            "mpn": "VK-PIG-INK-PRL",
+            "name": "Vivid Alcohol Inks & Shimmering Pearl Luster Pigments Set",
+            "description": "Fast-Dispersing Petri Alcohol Dyes & Cosmic Pearl Mica Liquid Set",
+            "category": "pigments",
+            "image": "https://res.cloudinary.com/ecugysfd/image/upload/v1792353804/catalog_cata1_ink_pearl_pigments_1792353802.png",
+            "brand": {
+              "@type": "Brand",
+              "name": "Vistāra Krafts"
+            },
             "offers": {
               "@type": "Offer",
-              "url": "https://vistara-krafts.vercel.app/#/product/ram-keep-004",
+              "url": "https://vistara-krafts.vercel.app/#/product/vk-cat-pig-inks",
               "priceCurrency": "INR",
-              "price": "1399",
+              "price": "499",
               "priceValidUntil": "2027-12-31",
               "availability": "https://schema.org/InStock",
               "itemCondition": "https://schema.org/NewCondition",
-              "seller": { "@id": "https://vistara-krafts.vercel.app/#organization" },
-              "hasMerchantReturnPolicy": { "@id": "https://vistara-krafts.vercel.app/#return-policy" },
+              "seller": {
+                "@id": "https://vistara-krafts.vercel.app/#organization"
+              },
+              "hasMerchantReturnPolicy": {
+                "@id": "https://vistara-krafts.vercel.app/#return-policy"
+              },
               "shippingDetails": {
                 "@type": "OfferShippingDetails",
-                "shippingRate": { "@type": "MonetaryAmount", "value": "99", "currency": "INR" },
-                "shippingDestination": { "@type": "DefinedRegion", "addressCountry": "IN" }
+                "shippingRate": {
+                  "@type": "MonetaryAmount",
+                  "value": "0",
+                  "currency": "INR"
+                },
+                "shippingDestination": {
+                  "@type": "DefinedRegion",
+                  "addressCountry": "IN"
+                },
+                "deliveryTime": {
+                  "@type": "ShippingDeliveryTime",
+                  "handlingTime": {
+                    "@type": "QuantitativeValue",
+                    "minValue": 0,
+                    "maxValue": 1,
+                    "unitCode": "DAY"
+                  },
+                  "transitTime": {
+                    "@type": "QuantitativeValue",
+                    "minValue": 1,
+                    "maxValue": 3,
+                    "unitCode": "DAY"
+                  }
+                }
               }
             },
-            "aggregateRating": { "@type": "AggregateRating", "ratingValue": "4.9", "reviewCount": "276", "bestRating": "5", "worstRating": "1" },
+            "aggregateRating": {
+              "@type": "AggregateRating",
+              "ratingValue": "4.93",
+              "reviewCount": "59",
+              "bestRating": "5",
+              "worstRating": "1"
+            },
+            "review": [
+              {
+                "@type": "Review",
+                "author": {
+                  "@type": "Person",
+                  "name": "Verified Studio Patron"
+                },
+                "reviewRating": {
+                  "@type": "Rating",
+                  "ratingValue": "5",
+                  "bestRating": "5"
+                },
+                "reviewBody": "Genuine Vistāra Krafts formulation with crystal optical clarity, reliable curing, and professional results."
+              }
+            ],
             "additionalProperty": [
-              { "@type": "PropertyValue", "name": "Mix Ratio by Weight", "value": "3 : 1 Heat-Shield Formula" },
-              { "@type": "PropertyValue", "name": "Dynamic Viscosity", "value": "750 mPa·s" },
-              { "@type": "PropertyValue", "name": "Full Glass Cure", "value": "Thermal Cured to 85°C" },
-              { "@type": "PropertyValue", "name": "HSN Code", "value": "39073010" }
+              {
+                "@type": "PropertyValue",
+                "name": "Mix Ratio by Weight",
+                "value": "Single Component"
+              },
+              {
+                "@type": "PropertyValue",
+                "name": "Dynamic Viscosity",
+                "value": "low"
+              },
+              {
+                "@type": "PropertyValue",
+                "name": "Working Pot Life",
+                "value": "30m"
+              },
+              {
+                "@type": "PropertyValue",
+                "name": "Full Glass Cure",
+                "value": "24h"
+              },
+              {
+                "@type": "PropertyValue",
+                "name": "HSN Code",
+                "value": "32041990"
+              }
             ]
           }
         },
@@ -501,37 +1037,108 @@
           "position": 9,
           "item": {
             "@type": "Product",
-            "@id": "https://vistara-krafts.vercel.app/#/product/vk-res-003",
-            "productID": "vk-res-003",
-            "sku": "VK-HG-11-500",
-            "mpn": "VK-HG-11-500",
-            "name": "High-Gloss Doming & Topcoat Epoxy 1:1",
-            "description": "High-Viscosity Self-Leveling Glass Coat for Nameplates, Trays & Canvas Art",
-            "category": "doming",
-            "image": "https://vistara-krafts.vercel.app/vistara-krafts-logo.jpg",
-            "brand": { "@type": "Brand", "name": "Vistāra Krafts" },
+            "@id": "https://vistara-krafts.vercel.app/#/product/vk-cat-acc-bubb",
+            "productID": "vk-cat-acc-bubb",
+            "sku": "VK-ACC-BUB-BSTR",
+            "mpn": "VK-ACC-BUB-BSTR",
+            "name": "Bubbles Buster Instant Resin Defoamer Fine-Mist Solution (100ml)",
+            "description": "Instant Surface Bubble Dissolving Spray for Flawless Mirror Tops",
+            "category": "accessories",
+            "image": "https://res.cloudinary.com/ecugysfd/image/upload/v1792353829/catalog_cata1_bubbles_buster_1792353815.png",
+            "brand": {
+              "@type": "Brand",
+              "name": "Vistāra Krafts"
+            },
             "offers": {
               "@type": "Offer",
-              "url": "https://vistara-krafts.vercel.app/#/product/vk-res-003",
+              "url": "https://vistara-krafts.vercel.app/#/product/vk-cat-acc-bubb",
               "priceCurrency": "INR",
-              "price": "799",
+              "price": "349",
               "priceValidUntil": "2027-12-31",
               "availability": "https://schema.org/InStock",
               "itemCondition": "https://schema.org/NewCondition",
-              "seller": { "@id": "https://vistara-krafts.vercel.app/#organization" },
-              "hasMerchantReturnPolicy": { "@id": "https://vistara-krafts.vercel.app/#return-policy" },
+              "seller": {
+                "@id": "https://vistara-krafts.vercel.app/#organization"
+              },
+              "hasMerchantReturnPolicy": {
+                "@id": "https://vistara-krafts.vercel.app/#return-policy"
+              },
               "shippingDetails": {
                 "@type": "OfferShippingDetails",
-                "shippingRate": { "@type": "MonetaryAmount", "value": "99", "currency": "INR" },
-                "shippingDestination": { "@type": "DefinedRegion", "addressCountry": "IN" }
+                "shippingRate": {
+                  "@type": "MonetaryAmount",
+                  "value": "0",
+                  "currency": "INR"
+                },
+                "shippingDestination": {
+                  "@type": "DefinedRegion",
+                  "addressCountry": "IN"
+                },
+                "deliveryTime": {
+                  "@type": "ShippingDeliveryTime",
+                  "handlingTime": {
+                    "@type": "QuantitativeValue",
+                    "minValue": 0,
+                    "maxValue": 1,
+                    "unitCode": "DAY"
+                  },
+                  "transitTime": {
+                    "@type": "QuantitativeValue",
+                    "minValue": 1,
+                    "maxValue": 3,
+                    "unitCode": "DAY"
+                  }
+                }
               }
             },
-            "aggregateRating": { "@type": "AggregateRating", "ratingValue": "5.0", "reviewCount": "64", "bestRating": "5", "worstRating": "1" },
+            "aggregateRating": {
+              "@type": "AggregateRating",
+              "ratingValue": "4.85",
+              "reviewCount": "48",
+              "bestRating": "5",
+              "worstRating": "1"
+            },
+            "review": [
+              {
+                "@type": "Review",
+                "author": {
+                  "@type": "Person",
+                  "name": "Verified Studio Patron"
+                },
+                "reviewRating": {
+                  "@type": "Rating",
+                  "ratingValue": "5",
+                  "bestRating": "5"
+                },
+                "reviewBody": "Genuine Vistāra Krafts formulation with crystal optical clarity, reliable curing, and professional results."
+              }
+            ],
             "additionalProperty": [
-              { "@type": "PropertyValue", "name": "Mix Ratio by Weight", "value": "1 : 1 (Equal Weight/Vol)" },
-              { "@type": "PropertyValue", "name": "Dynamic Viscosity", "value": "2400 mPa·s (Honey Dome)" },
-              { "@type": "PropertyValue", "name": "Full Glass Cure", "value": "36 Hours" },
-              { "@type": "PropertyValue", "name": "HSN Code", "value": "39073010" }
+              {
+                "@type": "PropertyValue",
+                "name": "Mix Ratio by Weight",
+                "value": "Single Component"
+              },
+              {
+                "@type": "PropertyValue",
+                "name": "Dynamic Viscosity",
+                "value": "low"
+              },
+              {
+                "@type": "PropertyValue",
+                "name": "Working Pot Life",
+                "value": "30m"
+              },
+              {
+                "@type": "PropertyValue",
+                "name": "Full Glass Cure",
+                "value": "24h"
+              },
+              {
+                "@type": "PropertyValue",
+                "name": "HSN Code",
+                "value": "38249900"
+              }
             ]
           }
         },
@@ -540,35 +1147,108 @@
           "position": 10,
           "item": {
             "@type": "Product",
-            "@id": "https://vistara-krafts.vercel.app/#/product/vk-mld-geo",
-            "productID": "vk-mld-geo",
-            "sku": "VK-MLD-GEO-04",
-            "mpn": "VK-MLD-GEO-04",
-            "name": "Platinum Silicone Geode Coaster & Tray Mold Set",
-            "description": "Tear-Resistant Mirror-Interior Platinum Silicone for 80+ Effortless Demolds",
-            "category": "molds",
-            "image": "https://vistara-krafts.vercel.app/vistara-krafts-logo.jpg",
-            "brand": { "@type": "Brand", "name": "Vistāra Krafts" },
+            "@id": "https://vistara-krafts.vercel.app/#/product/vk-cat-acc-poli",
+            "productID": "vk-cat-acc-poli",
+            "sku": "VK-ACC-RES-POL",
+            "mpn": "VK-ACC-RES-POL",
+            "name": "Vistāra Mirror Gloss Resin Polish & Scratch Restorer Compound (40g)",
+            "description": "High-Luster Micro-Fine Buffing Cream for Clear Casting Surface Restoration",
+            "category": "accessories",
+            "image": "https://res.cloudinary.com/ecugysfd/image/upload/v1792353814/catalog_cata1_resin_polish_1792353811.png",
+            "brand": {
+              "@type": "Brand",
+              "name": "Vistāra Krafts"
+            },
             "offers": {
               "@type": "Offer",
-              "url": "https://vistara-krafts.vercel.app/#/product/vk-mld-geo",
+              "url": "https://vistara-krafts.vercel.app/#/product/vk-cat-acc-poli",
               "priceCurrency": "INR",
-              "price": "449",
+              "price": "299",
               "priceValidUntil": "2027-12-31",
               "availability": "https://schema.org/InStock",
               "itemCondition": "https://schema.org/NewCondition",
-              "seller": { "@id": "https://vistara-krafts.vercel.app/#organization" },
-              "hasMerchantReturnPolicy": { "@id": "https://vistara-krafts.vercel.app/#return-policy" },
+              "seller": {
+                "@id": "https://vistara-krafts.vercel.app/#organization"
+              },
+              "hasMerchantReturnPolicy": {
+                "@id": "https://vistara-krafts.vercel.app/#return-policy"
+              },
               "shippingDetails": {
                 "@type": "OfferShippingDetails",
-                "shippingRate": { "@type": "MonetaryAmount", "value": "99", "currency": "INR" },
-                "shippingDestination": { "@type": "DefinedRegion", "addressCountry": "IN" }
+                "shippingRate": {
+                  "@type": "MonetaryAmount",
+                  "value": "0",
+                  "currency": "INR"
+                },
+                "shippingDestination": {
+                  "@type": "DefinedRegion",
+                  "addressCountry": "IN"
+                },
+                "deliveryTime": {
+                  "@type": "ShippingDeliveryTime",
+                  "handlingTime": {
+                    "@type": "QuantitativeValue",
+                    "minValue": 0,
+                    "maxValue": 1,
+                    "unitCode": "DAY"
+                  },
+                  "transitTime": {
+                    "@type": "QuantitativeValue",
+                    "minValue": 1,
+                    "maxValue": 3,
+                    "unitCode": "DAY"
+                  }
+                }
               }
             },
-            "aggregateRating": { "@type": "AggregateRating", "ratingValue": "4.8", "reviewCount": "152", "bestRating": "5", "worstRating": "1" },
+            "aggregateRating": {
+              "@type": "AggregateRating",
+              "ratingValue": "4.87",
+              "reviewCount": "51",
+              "bestRating": "5",
+              "worstRating": "1"
+            },
+            "review": [
+              {
+                "@type": "Review",
+                "author": {
+                  "@type": "Person",
+                  "name": "Verified Studio Patron"
+                },
+                "reviewRating": {
+                  "@type": "Rating",
+                  "ratingValue": "5",
+                  "bestRating": "5"
+                },
+                "reviewBody": "Genuine Vistāra Krafts formulation with crystal optical clarity, reliable curing, and professional results."
+              }
+            ],
             "additionalProperty": [
-              { "@type": "PropertyValue", "name": "Material", "value": "Platinum Addition-Cure Silicone (Shore A 30)" },
-              { "@type": "PropertyValue", "name": "HSN Code", "value": "39269099" }
+              {
+                "@type": "PropertyValue",
+                "name": "Mix Ratio by Weight",
+                "value": "Single Component"
+              },
+              {
+                "@type": "PropertyValue",
+                "name": "Dynamic Viscosity",
+                "value": "low"
+              },
+              {
+                "@type": "PropertyValue",
+                "name": "Working Pot Life",
+                "value": "30m"
+              },
+              {
+                "@type": "PropertyValue",
+                "name": "Full Glass Cure",
+                "value": "24h"
+              },
+              {
+                "@type": "PropertyValue",
+                "name": "HSN Code",
+                "value": "34059090"
+              }
             ]
           }
         },
@@ -577,37 +1257,108 @@
           "position": 11,
           "item": {
             "@type": "Product",
-            "@id": "https://vistara-krafts.vercel.app/#/product/vk-res-006",
-            "productID": "vk-res-006",
-            "sku": "VK-EB-31-1000",
-            "mpn": "VK-EB-31-1000",
-            "name": "EcoBio 3:1 Botanical Bio-Based Casting Resin",
-            "description": "42% Plant-Derived Carbon Content • Zero VOC & Ultra-Gentle for Home Studios",
-            "category": "bio_based",
-            "image": "https://vistara-krafts.vercel.app/vistara-krafts-logo.jpg",
-            "brand": { "@type": "Brand", "name": "Vistāra Krafts" },
+            "@id": "https://vistara-krafts.vercel.app/#/product/vk-cat-acc-trch",
+            "productID": "vk-cat-acc-trch",
+            "sku": "VK-ACC-BLW-TRCH",
+            "mpn": "VK-ACC-BLW-TRCH",
+            "name": "Refillable Micro Jet Flame Blow Torch for Resin De-gassing & Wave Art",
+            "description": "Precision Windproof Jet Flame with Safety Lock for Wave Cells & Bubble Pop",
+            "category": "accessories",
+            "image": "https://res.cloudinary.com/ecugysfd/image/upload/v1792353806/catalog_cata1_blow_torch_1792353805.png",
+            "brand": {
+              "@type": "Brand",
+              "name": "Vistāra Krafts"
+            },
             "offers": {
               "@type": "Offer",
-              "url": "https://vistara-krafts.vercel.app/#/product/vk-res-006",
+              "url": "https://vistara-krafts.vercel.app/#/product/vk-cat-acc-trch",
               "priceCurrency": "INR",
-              "price": "1450",
+              "price": "499",
               "priceValidUntil": "2027-12-31",
               "availability": "https://schema.org/InStock",
               "itemCondition": "https://schema.org/NewCondition",
-              "seller": { "@id": "https://vistara-krafts.vercel.app/#organization" },
-              "hasMerchantReturnPolicy": { "@id": "https://vistara-krafts.vercel.app/#return-policy" },
+              "seller": {
+                "@id": "https://vistara-krafts.vercel.app/#organization"
+              },
+              "hasMerchantReturnPolicy": {
+                "@id": "https://vistara-krafts.vercel.app/#return-policy"
+              },
               "shippingDetails": {
                 "@type": "OfferShippingDetails",
-                "shippingRate": { "@type": "MonetaryAmount", "value": "99", "currency": "INR" },
-                "shippingDestination": { "@type": "DefinedRegion", "addressCountry": "IN" }
+                "shippingRate": {
+                  "@type": "MonetaryAmount",
+                  "value": "0",
+                  "currency": "INR"
+                },
+                "shippingDestination": {
+                  "@type": "DefinedRegion",
+                  "addressCountry": "IN"
+                },
+                "deliveryTime": {
+                  "@type": "ShippingDeliveryTime",
+                  "handlingTime": {
+                    "@type": "QuantitativeValue",
+                    "minValue": 0,
+                    "maxValue": 1,
+                    "unitCode": "DAY"
+                  },
+                  "transitTime": {
+                    "@type": "QuantitativeValue",
+                    "minValue": 1,
+                    "maxValue": 3,
+                    "unitCode": "DAY"
+                  }
+                }
               }
             },
-            "aggregateRating": { "@type": "AggregateRating", "ratingValue": "4.7", "reviewCount": "73", "bestRating": "5", "worstRating": "1" },
+            "aggregateRating": {
+              "@type": "AggregateRating",
+              "ratingValue": "4.9",
+              "reviewCount": "64",
+              "bestRating": "5",
+              "worstRating": "1"
+            },
+            "review": [
+              {
+                "@type": "Review",
+                "author": {
+                  "@type": "Person",
+                  "name": "Verified Studio Patron"
+                },
+                "reviewRating": {
+                  "@type": "Rating",
+                  "ratingValue": "5",
+                  "bestRating": "5"
+                },
+                "reviewBody": "Genuine Vistāra Krafts formulation with crystal optical clarity, reliable curing, and professional results."
+              }
+            ],
             "additionalProperty": [
-              { "@type": "PropertyValue", "name": "Mix Ratio by Weight", "value": "3 : 1 Bio-Epoxy" },
-              { "@type": "PropertyValue", "name": "Dynamic Viscosity", "value": "700 mPa·s" },
-              { "@type": "PropertyValue", "name": "Full Glass Cure", "value": "72 Hours" },
-              { "@type": "PropertyValue", "name": "HSN Code", "value": "39073010" }
+              {
+                "@type": "PropertyValue",
+                "name": "Mix Ratio by Weight",
+                "value": "Single Component"
+              },
+              {
+                "@type": "PropertyValue",
+                "name": "Dynamic Viscosity",
+                "value": "low"
+              },
+              {
+                "@type": "PropertyValue",
+                "name": "Working Pot Life",
+                "value": "30m"
+              },
+              {
+                "@type": "PropertyValue",
+                "name": "Full Glass Cure",
+                "value": "24h"
+              },
+              {
+                "@type": "PropertyValue",
+                "name": "HSN Code",
+                "value": "84681000"
+              }
             ]
           }
         },
@@ -616,36 +1367,878 @@
           "position": 12,
           "item": {
             "@type": "Product",
-            "@id": "https://vistara-krafts.vercel.app/#/product/potry-sienna-01",
-            "productID": "potry-sienna-01",
-            "sku": "PTR-SN-1200",
-            "mpn": "PTR-SN-1200",
-            "name": "Sienna Ridged Stoneware & Resin-Glazed Vessel",
-            "description": "Wheel-Thrown Iron Stoneware Paired with Food-Safe Vitreous Mineral Glaze",
-            "category": "ceramics",
-            "image": "https://vistara-krafts.vercel.app/vistara-krafts-logo.jpg",
-            "brand": { "@type": "Brand", "name": "Vistāra Krafts" },
+            "@id": "https://vistara-krafts.vercel.app/#/product/vk-cat-acc-latx",
+            "productID": "vk-cat-acc-latx",
+            "sku": "VK-ACC-LIQ-LATX",
+            "mpn": "VK-ACC-LIQ-LATX",
+            "name": "Peelable Liquid Latex Edge & Drip Protective Barrier (100ml)",
+            "description": "Brush-On Masking Film for Clean Coaster Backs & Drip-Free Resin Doming",
+            "category": "accessories",
+            "image": "https://res.cloudinary.com/ecugysfd/image/upload/v1792353810/catalog_cata1_liquid_latex_1792353808.png",
+            "brand": {
+              "@type": "Brand",
+              "name": "Vistāra Krafts"
+            },
             "offers": {
               "@type": "Offer",
-              "url": "https://vistara-krafts.vercel.app/#/product/potry-sienna-01",
+              "url": "https://vistara-krafts.vercel.app/#/product/vk-cat-acc-latx",
               "priceCurrency": "INR",
-              "price": "2499",
+              "price": "279",
               "priceValidUntil": "2027-12-31",
               "availability": "https://schema.org/InStock",
               "itemCondition": "https://schema.org/NewCondition",
-              "seller": { "@id": "https://vistara-krafts.vercel.app/#organization" },
-              "hasMerchantReturnPolicy": { "@id": "https://vistara-krafts.vercel.app/#return-policy" },
+              "seller": {
+                "@id": "https://vistara-krafts.vercel.app/#organization"
+              },
+              "hasMerchantReturnPolicy": {
+                "@id": "https://vistara-krafts.vercel.app/#return-policy"
+              },
               "shippingDetails": {
                 "@type": "OfferShippingDetails",
-                "shippingRate": { "@type": "MonetaryAmount", "value": "0", "currency": "INR" },
-                "shippingDestination": { "@type": "DefinedRegion", "addressCountry": "IN" }
+                "shippingRate": {
+                  "@type": "MonetaryAmount",
+                  "value": "0",
+                  "currency": "INR"
+                },
+                "shippingDestination": {
+                  "@type": "DefinedRegion",
+                  "addressCountry": "IN"
+                },
+                "deliveryTime": {
+                  "@type": "ShippingDeliveryTime",
+                  "handlingTime": {
+                    "@type": "QuantitativeValue",
+                    "minValue": 0,
+                    "maxValue": 1,
+                    "unitCode": "DAY"
+                  },
+                  "transitTime": {
+                    "@type": "QuantitativeValue",
+                    "minValue": 1,
+                    "maxValue": 3,
+                    "unitCode": "DAY"
+                  }
+                }
               }
             },
-            "aggregateRating": { "@type": "AggregateRating", "ratingValue": "4.9", "reviewCount": "94", "bestRating": "5", "worstRating": "1" },
+            "aggregateRating": {
+              "@type": "AggregateRating",
+              "ratingValue": "4.83",
+              "reviewCount": "39",
+              "bestRating": "5",
+              "worstRating": "1"
+            },
+            "review": [
+              {
+                "@type": "Review",
+                "author": {
+                  "@type": "Person",
+                  "name": "Verified Studio Patron"
+                },
+                "reviewRating": {
+                  "@type": "Rating",
+                  "ratingValue": "5",
+                  "bestRating": "5"
+                },
+                "reviewBody": "Genuine Vistāra Krafts formulation with crystal optical clarity, reliable curing, and professional results."
+              }
+            ],
             "additionalProperty": [
-              { "@type": "PropertyValue", "name": "Structure", "value": "Cone 10 Reduction Stoneware (1,200 ml)" },
-              { "@type": "PropertyValue", "name": "Glaze", "value": "Lead-Free Feldspathic Glaze" },
-              { "@type": "PropertyValue", "name": "HSN Code", "value": "69120010" }
+              {
+                "@type": "PropertyValue",
+                "name": "Mix Ratio by Weight",
+                "value": "Single Component"
+              },
+              {
+                "@type": "PropertyValue",
+                "name": "Dynamic Viscosity",
+                "value": "low"
+              },
+              {
+                "@type": "PropertyValue",
+                "name": "Working Pot Life",
+                "value": "30m"
+              },
+              {
+                "@type": "PropertyValue",
+                "name": "Full Glass Cure",
+                "value": "24h"
+              },
+              {
+                "@type": "PropertyValue",
+                "name": "HSN Code",
+                "value": "40011010"
+              }
+            ]
+          }
+        },
+        {
+          "@type": "ListItem",
+          "position": 13,
+          "item": {
+            "@type": "Product",
+            "@id": "https://vistara-krafts.vercel.app/#/product/vk-cat-mld-flw4",
+            "productID": "vk-cat-mld-flw4",
+            "sku": "VK-MLD-4IN1-FLW",
+            "mpn": "VK-MLD-4IN1-FLW",
+            "name": "4-in-1 Graduated Petal Flower Coaster & Trinket Silicone Mold Set",
+            "description": "Four Cascading Blossom Cavities for Layered Floral Coasters & Ring Dishes",
+            "category": "molds",
+            "image": "https://res.cloudinary.com/ecugysfd/image/upload/v1792353832/catalog_cata1_mould_4in1_flower_1792353830.png",
+            "brand": {
+              "@type": "Brand",
+              "name": "Vistāra Krafts"
+            },
+            "offers": {
+              "@type": "Offer",
+              "url": "https://vistara-krafts.vercel.app/#/product/vk-cat-mld-flw4",
+              "priceCurrency": "INR",
+              "price": "399",
+              "priceValidUntil": "2027-12-31",
+              "availability": "https://schema.org/InStock",
+              "itemCondition": "https://schema.org/NewCondition",
+              "seller": {
+                "@id": "https://vistara-krafts.vercel.app/#organization"
+              },
+              "hasMerchantReturnPolicy": {
+                "@id": "https://vistara-krafts.vercel.app/#return-policy"
+              },
+              "shippingDetails": {
+                "@type": "OfferShippingDetails",
+                "shippingRate": {
+                  "@type": "MonetaryAmount",
+                  "value": "0",
+                  "currency": "INR"
+                },
+                "shippingDestination": {
+                  "@type": "DefinedRegion",
+                  "addressCountry": "IN"
+                },
+                "deliveryTime": {
+                  "@type": "ShippingDeliveryTime",
+                  "handlingTime": {
+                    "@type": "QuantitativeValue",
+                    "minValue": 0,
+                    "maxValue": 1,
+                    "unitCode": "DAY"
+                  },
+                  "transitTime": {
+                    "@type": "QuantitativeValue",
+                    "minValue": 1,
+                    "maxValue": 3,
+                    "unitCode": "DAY"
+                  }
+                }
+              }
+            },
+            "aggregateRating": {
+              "@type": "AggregateRating",
+              "ratingValue": "4.92",
+              "reviewCount": "78",
+              "bestRating": "5",
+              "worstRating": "1"
+            },
+            "review": [
+              {
+                "@type": "Review",
+                "author": {
+                  "@type": "Person",
+                  "name": "Verified Studio Patron"
+                },
+                "reviewRating": {
+                  "@type": "Rating",
+                  "ratingValue": "5",
+                  "bestRating": "5"
+                },
+                "reviewBody": "Genuine Vistāra Krafts formulation with crystal optical clarity, reliable curing, and professional results."
+              }
+            ],
+            "additionalProperty": [
+              {
+                "@type": "PropertyValue",
+                "name": "Mix Ratio by Weight",
+                "value": "Single Component"
+              },
+              {
+                "@type": "PropertyValue",
+                "name": "Dynamic Viscosity",
+                "value": "low"
+              },
+              {
+                "@type": "PropertyValue",
+                "name": "Working Pot Life",
+                "value": "30m"
+              },
+              {
+                "@type": "PropertyValue",
+                "name": "Full Glass Cure",
+                "value": "24h"
+              },
+              {
+                "@type": "PropertyValue",
+                "name": "HSN Code",
+                "value": "39269099"
+              }
+            ]
+          }
+        },
+        {
+          "@type": "ListItem",
+          "position": 14,
+          "item": {
+            "@type": "Product",
+            "@id": "https://vistara-krafts.vercel.app/#/product/vk-cat-acc-sili",
+            "productID": "vk-cat-acc-sili",
+            "sku": "VK-ACC-MAG-SIL",
+            "mpn": "VK-ACC-MAG-SIL",
+            "name": "Magic Flower Drying Color-Indicating Silica Gel Crystals (1000g / 1Kg)",
+            "description": "Fine-Grain Non-Crushing Desiccant Crystals for Wedding Flower Preservation",
+            "category": "accessories",
+            "image": "https://res.cloudinary.com/ecugysfd/image/upload/v1792353842/catalog_cata1_magic_silica_gel_1792353840.png",
+            "brand": {
+              "@type": "Brand",
+              "name": "Vistāra Krafts"
+            },
+            "offers": {
+              "@type": "Offer",
+              "url": "https://vistara-krafts.vercel.app/#/product/vk-cat-acc-sili",
+              "priceCurrency": "INR",
+              "price": "599",
+              "priceValidUntil": "2027-12-31",
+              "availability": "https://schema.org/InStock",
+              "itemCondition": "https://schema.org/NewCondition",
+              "seller": {
+                "@id": "https://vistara-krafts.vercel.app/#organization"
+              },
+              "hasMerchantReturnPolicy": {
+                "@id": "https://vistara-krafts.vercel.app/#return-policy"
+              },
+              "shippingDetails": {
+                "@type": "OfferShippingDetails",
+                "shippingRate": {
+                  "@type": "MonetaryAmount",
+                  "value": "0",
+                  "currency": "INR"
+                },
+                "shippingDestination": {
+                  "@type": "DefinedRegion",
+                  "addressCountry": "IN"
+                },
+                "deliveryTime": {
+                  "@type": "ShippingDeliveryTime",
+                  "handlingTime": {
+                    "@type": "QuantitativeValue",
+                    "minValue": 0,
+                    "maxValue": 1,
+                    "unitCode": "DAY"
+                  },
+                  "transitTime": {
+                    "@type": "QuantitativeValue",
+                    "minValue": 1,
+                    "maxValue": 3,
+                    "unitCode": "DAY"
+                  }
+                }
+              }
+            },
+            "aggregateRating": {
+              "@type": "AggregateRating",
+              "ratingValue": "4.96",
+              "reviewCount": "143",
+              "bestRating": "5",
+              "worstRating": "1"
+            },
+            "review": [
+              {
+                "@type": "Review",
+                "author": {
+                  "@type": "Person",
+                  "name": "Verified Studio Patron"
+                },
+                "reviewRating": {
+                  "@type": "Rating",
+                  "ratingValue": "5",
+                  "bestRating": "5"
+                },
+                "reviewBody": "Genuine Vistāra Krafts formulation with crystal optical clarity, reliable curing, and professional results."
+              }
+            ],
+            "additionalProperty": [
+              {
+                "@type": "PropertyValue",
+                "name": "Mix Ratio by Weight",
+                "value": "Single Component"
+              },
+              {
+                "@type": "PropertyValue",
+                "name": "Dynamic Viscosity",
+                "value": "low"
+              },
+              {
+                "@type": "PropertyValue",
+                "name": "Working Pot Life",
+                "value": "30m"
+              },
+              {
+                "@type": "PropertyValue",
+                "name": "Full Glass Cure",
+                "value": "24h"
+              },
+              {
+                "@type": "PropertyValue",
+                "name": "HSN Code",
+                "value": "28112200"
+              }
+            ]
+          }
+        },
+        {
+          "@type": "ListItem",
+          "position": 15,
+          "item": {
+            "@type": "Product",
+            "@id": "https://vistara-krafts.vercel.app/#/product/vk-cat-mld-ag6c",
+            "productID": "vk-cat-mld-ag6c",
+            "sku": "VK-MLD-6CV-AGT",
+            "mpn": "VK-MLD-6CV-AGT",
+            "name": "6-Cavity Production Batch Agate Geode Coaster Silicone Mold",
+            "description": "Commercial Studio Multi-Cavity Mold for Simultaneous Coaster Set Casting",
+            "category": "molds",
+            "image": "https://res.cloudinary.com/ecugysfd/image/upload/v1792353835/catalog_cata1_mould_6cavity_agate_1792353833.png",
+            "brand": {
+              "@type": "Brand",
+              "name": "Vistāra Krafts"
+            },
+            "offers": {
+              "@type": "Offer",
+              "url": "https://vistara-krafts.vercel.app/#/product/vk-cat-mld-ag6c",
+              "priceCurrency": "INR",
+              "price": "649",
+              "priceValidUntil": "2027-12-31",
+              "availability": "https://schema.org/InStock",
+              "itemCondition": "https://schema.org/NewCondition",
+              "seller": {
+                "@id": "https://vistara-krafts.vercel.app/#organization"
+              },
+              "hasMerchantReturnPolicy": {
+                "@id": "https://vistara-krafts.vercel.app/#return-policy"
+              },
+              "shippingDetails": {
+                "@type": "OfferShippingDetails",
+                "shippingRate": {
+                  "@type": "MonetaryAmount",
+                  "value": "0",
+                  "currency": "INR"
+                },
+                "shippingDestination": {
+                  "@type": "DefinedRegion",
+                  "addressCountry": "IN"
+                },
+                "deliveryTime": {
+                  "@type": "ShippingDeliveryTime",
+                  "handlingTime": {
+                    "@type": "QuantitativeValue",
+                    "minValue": 0,
+                    "maxValue": 1,
+                    "unitCode": "DAY"
+                  },
+                  "transitTime": {
+                    "@type": "QuantitativeValue",
+                    "minValue": 1,
+                    "maxValue": 3,
+                    "unitCode": "DAY"
+                  }
+                }
+              }
+            },
+            "aggregateRating": {
+              "@type": "AggregateRating",
+              "ratingValue": "4.94",
+              "reviewCount": "88",
+              "bestRating": "5",
+              "worstRating": "1"
+            },
+            "review": [
+              {
+                "@type": "Review",
+                "author": {
+                  "@type": "Person",
+                  "name": "Verified Studio Patron"
+                },
+                "reviewRating": {
+                  "@type": "Rating",
+                  "ratingValue": "5",
+                  "bestRating": "5"
+                },
+                "reviewBody": "Genuine Vistāra Krafts formulation with crystal optical clarity, reliable curing, and professional results."
+              }
+            ],
+            "additionalProperty": [
+              {
+                "@type": "PropertyValue",
+                "name": "Mix Ratio by Weight",
+                "value": "Single Component"
+              },
+              {
+                "@type": "PropertyValue",
+                "name": "Dynamic Viscosity",
+                "value": "low"
+              },
+              {
+                "@type": "PropertyValue",
+                "name": "Working Pot Life",
+                "value": "30m"
+              },
+              {
+                "@type": "PropertyValue",
+                "name": "Full Glass Cure",
+                "value": "24h"
+              },
+              {
+                "@type": "PropertyValue",
+                "name": "HSN Code",
+                "value": "39269099"
+              }
+            ]
+          }
+        },
+        {
+          "@type": "ListItem",
+          "position": 16,
+          "item": {
+            "@type": "Product",
+            "@id": "https://vistara-krafts.vercel.app/#/product/vk-cat-mld-bkm6",
+            "productID": "vk-cat-mld-bkm6",
+            "sku": "VK-MLD-BKM-6IN",
+            "mpn": "VK-MLD-BKM-6IN",
+            "name": "Slimline 6-Inch Rectangular Bookmark Silicone Mold with Tassel Hole",
+            "description": "Crystal Finish Reading Bookmark Mold with Built-In Tassel Peg",
+            "category": "molds",
+            "image": "https://res.cloudinary.com/ecugysfd/image/upload/v1792353839/catalog_cata1_mould_bookmark_6in_1792353836.png",
+            "brand": {
+              "@type": "Brand",
+              "name": "Vistāra Krafts"
+            },
+            "offers": {
+              "@type": "Offer",
+              "url": "https://vistara-krafts.vercel.app/#/product/vk-cat-mld-bkm6",
+              "priceCurrency": "INR",
+              "price": "149",
+              "priceValidUntil": "2027-12-31",
+              "availability": "https://schema.org/InStock",
+              "itemCondition": "https://schema.org/NewCondition",
+              "seller": {
+                "@id": "https://vistara-krafts.vercel.app/#organization"
+              },
+              "hasMerchantReturnPolicy": {
+                "@id": "https://vistara-krafts.vercel.app/#return-policy"
+              },
+              "shippingDetails": {
+                "@type": "OfferShippingDetails",
+                "shippingRate": {
+                  "@type": "MonetaryAmount",
+                  "value": "0",
+                  "currency": "INR"
+                },
+                "shippingDestination": {
+                  "@type": "DefinedRegion",
+                  "addressCountry": "IN"
+                },
+                "deliveryTime": {
+                  "@type": "ShippingDeliveryTime",
+                  "handlingTime": {
+                    "@type": "QuantitativeValue",
+                    "minValue": 0,
+                    "maxValue": 1,
+                    "unitCode": "DAY"
+                  },
+                  "transitTime": {
+                    "@type": "QuantitativeValue",
+                    "minValue": 1,
+                    "maxValue": 3,
+                    "unitCode": "DAY"
+                  }
+                }
+              }
+            },
+            "aggregateRating": {
+              "@type": "AggregateRating",
+              "ratingValue": "4.88",
+              "reviewCount": "92",
+              "bestRating": "5",
+              "worstRating": "1"
+            },
+            "review": [
+              {
+                "@type": "Review",
+                "author": {
+                  "@type": "Person",
+                  "name": "Verified Studio Patron"
+                },
+                "reviewRating": {
+                  "@type": "Rating",
+                  "ratingValue": "5",
+                  "bestRating": "5"
+                },
+                "reviewBody": "Genuine Vistāra Krafts formulation with crystal optical clarity, reliable curing, and professional results."
+              }
+            ],
+            "additionalProperty": [
+              {
+                "@type": "PropertyValue",
+                "name": "Mix Ratio by Weight",
+                "value": "Single Component"
+              },
+              {
+                "@type": "PropertyValue",
+                "name": "Dynamic Viscosity",
+                "value": "low"
+              },
+              {
+                "@type": "PropertyValue",
+                "name": "Working Pot Life",
+                "value": "30m"
+              },
+              {
+                "@type": "PropertyValue",
+                "name": "Full Glass Cure",
+                "value": "24h"
+              },
+              {
+                "@type": "PropertyValue",
+                "name": "HSN Code",
+                "value": "39269099"
+              }
+            ]
+          }
+        },
+        {
+          "@type": "ListItem",
+          "position": 17,
+          "item": {
+            "@type": "Product",
+            "@id": "https://vistara-krafts.vercel.app/#/product/vk-cat-res-uvcs",
+            "productID": "vk-cat-res-uvcs",
+            "sku": "VK-RES-UV-FAST",
+            "mpn": "VK-RES-UV-FAST",
+            "name": "Crystal-Clear Hard-Type Optical UV Cure Resin (10g, 25g, 100g)",
+            "description": "Instant 1-Part UV Curing Resin for Jewelry Bezels, Doming & Rapid Bonds",
+            "category": "casting",
+            "image": "https://res.cloudinary.com/ecugysfd/image/upload/v1792353851/catalog_cata1_uv_resin_25g_box_1792353847.png",
+            "brand": {
+              "@type": "Brand",
+              "name": "Vistāra Krafts"
+            },
+            "offers": {
+              "@type": "Offer",
+              "url": "https://vistara-krafts.vercel.app/#/product/vk-cat-res-uvcs",
+              "priceCurrency": "INR",
+              "price": "199",
+              "priceValidUntil": "2027-12-31",
+              "availability": "https://schema.org/InStock",
+              "itemCondition": "https://schema.org/NewCondition",
+              "seller": {
+                "@id": "https://vistara-krafts.vercel.app/#organization"
+              },
+              "hasMerchantReturnPolicy": {
+                "@id": "https://vistara-krafts.vercel.app/#return-policy"
+              },
+              "shippingDetails": {
+                "@type": "OfferShippingDetails",
+                "shippingRate": {
+                  "@type": "MonetaryAmount",
+                  "value": "0",
+                  "currency": "INR"
+                },
+                "shippingDestination": {
+                  "@type": "DefinedRegion",
+                  "addressCountry": "IN"
+                },
+                "deliveryTime": {
+                  "@type": "ShippingDeliveryTime",
+                  "handlingTime": {
+                    "@type": "QuantitativeValue",
+                    "minValue": 0,
+                    "maxValue": 1,
+                    "unitCode": "DAY"
+                  },
+                  "transitTime": {
+                    "@type": "QuantitativeValue",
+                    "minValue": 1,
+                    "maxValue": 3,
+                    "unitCode": "DAY"
+                  }
+                }
+              }
+            },
+            "aggregateRating": {
+              "@type": "AggregateRating",
+              "ratingValue": "4.93",
+              "reviewCount": "105",
+              "bestRating": "5",
+              "worstRating": "1"
+            },
+            "review": [
+              {
+                "@type": "Review",
+                "author": {
+                  "@type": "Person",
+                  "name": "Verified Studio Patron"
+                },
+                "reviewRating": {
+                  "@type": "Rating",
+                  "ratingValue": "5",
+                  "bestRating": "5"
+                },
+                "reviewBody": "Genuine Vistāra Krafts formulation with crystal optical clarity, reliable curing, and professional results."
+              }
+            ],
+            "additionalProperty": [
+              {
+                "@type": "PropertyValue",
+                "name": "Mix Ratio by Weight",
+                "value": "Single Component"
+              },
+              {
+                "@type": "PropertyValue",
+                "name": "Dynamic Viscosity",
+                "value": "low"
+              },
+              {
+                "@type": "PropertyValue",
+                "name": "Working Pot Life",
+                "value": "30m"
+              },
+              {
+                "@type": "PropertyValue",
+                "name": "Full Glass Cure",
+                "value": "90s UV"
+              },
+              {
+                "@type": "PropertyValue",
+                "name": "HSN Code",
+                "value": "39073010"
+              }
+            ]
+          }
+        },
+        {
+          "@type": "ListItem",
+          "position": 18,
+          "item": {
+            "@type": "Product",
+            "@id": "https://vistara-krafts.vercel.app/#/product/vk-cat-mld-leaf",
+            "productID": "vk-cat-mld-leaf",
+            "sku": "VK-MLD-BOT-LEAF",
+            "mpn": "VK-MLD-BOT-LEAF",
+            "name": "Botanical Multi-Leaf Organic Silicone Mold Collection",
+            "description": "Realistic Veined Monstera, Maple & Woodland Foliage Casting Silicone Mold",
+            "category": "molds",
+            "image": "https://res.cloudinary.com/ecugysfd/image/upload/v1792353865/catalog_cata1_leaf_mould_1_1792353857.png",
+            "brand": {
+              "@type": "Brand",
+              "name": "Vistāra Krafts"
+            },
+            "offers": {
+              "@type": "Offer",
+              "url": "https://vistara-krafts.vercel.app/#/product/vk-cat-mld-leaf",
+              "priceCurrency": "INR",
+              "price": "299",
+              "priceValidUntil": "2027-12-31",
+              "availability": "https://schema.org/InStock",
+              "itemCondition": "https://schema.org/NewCondition",
+              "seller": {
+                "@id": "https://vistara-krafts.vercel.app/#organization"
+              },
+              "hasMerchantReturnPolicy": {
+                "@id": "https://vistara-krafts.vercel.app/#return-policy"
+              },
+              "shippingDetails": {
+                "@type": "OfferShippingDetails",
+                "shippingRate": {
+                  "@type": "MonetaryAmount",
+                  "value": "0",
+                  "currency": "INR"
+                },
+                "shippingDestination": {
+                  "@type": "DefinedRegion",
+                  "addressCountry": "IN"
+                },
+                "deliveryTime": {
+                  "@type": "ShippingDeliveryTime",
+                  "handlingTime": {
+                    "@type": "QuantitativeValue",
+                    "minValue": 0,
+                    "maxValue": 1,
+                    "unitCode": "DAY"
+                  },
+                  "transitTime": {
+                    "@type": "QuantitativeValue",
+                    "minValue": 1,
+                    "maxValue": 3,
+                    "unitCode": "DAY"
+                  }
+                }
+              }
+            },
+            "aggregateRating": {
+              "@type": "AggregateRating",
+              "ratingValue": "4.89",
+              "reviewCount": "57",
+              "bestRating": "5",
+              "worstRating": "1"
+            },
+            "review": [
+              {
+                "@type": "Review",
+                "author": {
+                  "@type": "Person",
+                  "name": "Verified Studio Patron"
+                },
+                "reviewRating": {
+                  "@type": "Rating",
+                  "ratingValue": "5",
+                  "bestRating": "5"
+                },
+                "reviewBody": "Genuine Vistāra Krafts formulation with crystal optical clarity, reliable curing, and professional results."
+              }
+            ],
+            "additionalProperty": [
+              {
+                "@type": "PropertyValue",
+                "name": "Mix Ratio by Weight",
+                "value": "Single Component"
+              },
+              {
+                "@type": "PropertyValue",
+                "name": "Dynamic Viscosity",
+                "value": "low"
+              },
+              {
+                "@type": "PropertyValue",
+                "name": "Working Pot Life",
+                "value": "30m"
+              },
+              {
+                "@type": "PropertyValue",
+                "name": "Full Glass Cure",
+                "value": "24h"
+              },
+              {
+                "@type": "PropertyValue",
+                "name": "HSN Code",
+                "value": "39269099"
+              }
+            ]
+          }
+        },
+        {
+          "@type": "ListItem",
+          "position": 19,
+          "item": {
+            "@type": "Product",
+            "@id": "https://vistara-krafts.vercel.app/#/product/vk-cat-acc-smfl",
+            "productID": "vk-cat-acc-smfl",
+            "sku": "VK-ACC-SML-FLWR",
+            "mpn": "VK-ACC-SML-FLWR",
+            "name": "Artisanal Miniature Resin Flower Inclusions & Cabochons (Small Flowers)",
+            "description": "Delicate Cast Blossom Cabochons with Gold Rim Accents & Iridescent Pearl Glaze",
+            "category": "accessories",
+            "image": "https://res.cloudinary.com/ecugysfd/image/upload/v1792353895/catalog_cata1_small_flowers_03_1792353883.png",
+            "brand": {
+              "@type": "Brand",
+              "name": "Vistāra Krafts"
+            },
+            "offers": {
+              "@type": "Offer",
+              "url": "https://vistara-krafts.vercel.app/#/product/vk-cat-acc-smfl",
+              "priceCurrency": "INR",
+              "price": "199",
+              "priceValidUntil": "2027-12-31",
+              "availability": "https://schema.org/InStock",
+              "itemCondition": "https://schema.org/NewCondition",
+              "seller": {
+                "@id": "https://vistara-krafts.vercel.app/#organization"
+              },
+              "hasMerchantReturnPolicy": {
+                "@id": "https://vistara-krafts.vercel.app/#return-policy"
+              },
+              "shippingDetails": {
+                "@type": "OfferShippingDetails",
+                "shippingRate": {
+                  "@type": "MonetaryAmount",
+                  "value": "0",
+                  "currency": "INR"
+                },
+                "shippingDestination": {
+                  "@type": "DefinedRegion",
+                  "addressCountry": "IN"
+                },
+                "deliveryTime": {
+                  "@type": "ShippingDeliveryTime",
+                  "handlingTime": {
+                    "@type": "QuantitativeValue",
+                    "minValue": 0,
+                    "maxValue": 1,
+                    "unitCode": "DAY"
+                  },
+                  "transitTime": {
+                    "@type": "QuantitativeValue",
+                    "minValue": 1,
+                    "maxValue": 3,
+                    "unitCode": "DAY"
+                  }
+                }
+              }
+            },
+            "aggregateRating": {
+              "@type": "AggregateRating",
+              "ratingValue": "4.96",
+              "reviewCount": "118",
+              "bestRating": "5",
+              "worstRating": "1"
+            },
+            "review": [
+              {
+                "@type": "Review",
+                "author": {
+                  "@type": "Person",
+                  "name": "Verified Studio Patron"
+                },
+                "reviewRating": {
+                  "@type": "Rating",
+                  "ratingValue": "5",
+                  "bestRating": "5"
+                },
+                "reviewBody": "Genuine Vistāra Krafts formulation with crystal optical clarity, reliable curing, and professional results."
+              }
+            ],
+            "additionalProperty": [
+              {
+                "@type": "PropertyValue",
+                "name": "Mix Ratio by Weight",
+                "value": "Single Component"
+              },
+              {
+                "@type": "PropertyValue",
+                "name": "Dynamic Viscosity",
+                "value": "low"
+              },
+              {
+                "@type": "PropertyValue",
+                "name": "Working Pot Life",
+                "value": "30m"
+              },
+              {
+                "@type": "PropertyValue",
+                "name": "Full Glass Cure",
+                "value": "24h"
+              },
+              {
+                "@type": "PropertyValue",
+                "name": "HSN Code",
+                "value": "39269099"
+              }
             ]
           }
         }
@@ -748,13 +2341,28 @@
       "description": "Standard ISO-9001 studio procedure for calculating gram weights, slow-fold mixing, and bubble-free pouring with Vistāra Krafts optical epoxy systems.",
       "totalTime": "PT45M",
       "supply": [
-        { "@type": "HowToSupply", "name": "Vistāra Krafts Part A Optical Resin" },
-        { "@type": "HowToSupply", "name": "Vistāra Krafts Part B Hardener" },
-        { "@type": "HowToSupply", "name": "Platinum Silicone Mold" }
+        {
+          "@type": "HowToSupply",
+          "name": "Vistāra Krafts Part A Optical Resin"
+        },
+        {
+          "@type": "HowToSupply",
+          "name": "Vistāra Krafts Part B Hardener"
+        },
+        {
+          "@type": "HowToSupply",
+          "name": "Platinum Silicone Mold"
+        }
       ],
       "tool": [
-        { "@type": "HowToTool", "name": "Digital Kitchen Scale (0.1g precision)" },
-        { "@type": "HowToTool", "name": "Silicone Stirring Spatula" }
+        {
+          "@type": "HowToTool",
+          "name": "Digital Kitchen Scale (0.1g precision)"
+        },
+        {
+          "@type": "HowToTool",
+          "name": "Silicone Stirring Spatula"
+        }
       ],
       "step": [
         {
@@ -1250,19 +2858,49 @@
     </div>
   </div>
 
-  <!-- 2. Technical Filter Drawer -->
+  <!-- 2. Technical & Catalogue Filter Drawer -->
   <div id="global-filter-drawer" role="dialog" aria-modal="true" aria-labelledby="filter-drawer-title" class="fixed inset-0 z-50 bg-primary/50 backdrop-blur-xs hidden flex items-end sm:items-center justify-center p-0 sm:p-4" onclick="window.toggleCatalogFilterDrawer(false)">
     <div class="w-full max-w-lg max-w-[calc(100vw-24px)] bg-surface rounded-t-2xl sm:rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90dvh]" onclick="event.stopPropagation()">
       <div class="p-4 bg-surface-container-low flex items-center justify-between gap-2 border-b border-[#e4e0d8] shrink-0">
         <div class="flex items-center gap-2 min-w-0">
           <span class="material-symbols-outlined text-secondary shrink-0" aria-hidden="true">tune</span>
-          <h3 id="filter-drawer-title" class="font-headline-sm text-base sm:text-lg text-primary font-bold truncate">Technical Specs &amp; Catalogue Filters</h3>
+          <h3 id="filter-drawer-title" class="font-headline-sm text-base sm:text-lg text-primary font-bold truncate">Filter Catalogue &amp; Specs</h3>
         </div>
         <button type="button" aria-label="Close Filter Drawer" onclick="window.toggleCatalogFilterDrawer(false)" class="w-11 h-11 rounded-full bg-white flex items-center justify-center shrink-0 cursor-pointer">
           <span class="material-symbols-outlined text-lg" aria-hidden="true">close</span>
         </button>
       </div>
       <div class="p-4 sm:p-5 overflow-y-auto space-y-5">
+        <!-- Category Filter Chips inside Drawer -->
+        <div>
+          <span class="block text-xs font-bold text-primary uppercase tracking-wider mb-2">Product Category</span>
+          <div class="grid grid-cols-2 sm:grid-cols-3 gap-1.5 sm:gap-2" id="drawer-categories-container">
+            <button type="button" onclick="window.setCatalogCategory('all')" class="min-h-[42px] px-3 py-2 rounded-lg bg-primary text-white text-xs font-semibold cursor-pointer">All Categories (19)</button>
+            <button type="button" onclick="window.setCatalogCategory('casting')" class="min-h-[42px] px-3 py-2 rounded-lg bg-surface-container-high text-primary text-xs font-semibold cursor-pointer">Casting (2:1 / UV)</button>
+            <button type="button" onclick="window.setCatalogCategory('deep_pour')" class="min-h-[42px] px-3 py-2 rounded-lg bg-surface-container-high text-primary text-xs font-semibold cursor-pointer">Deep Pour 3:1</button>
+            <button type="button" onclick="window.setCatalogCategory('molds')" class="min-h-[42px] px-3 py-2 rounded-lg bg-surface-container-high text-primary text-xs font-semibold cursor-pointer">Silicone Molds</button>
+            <button type="button" onclick="window.setCatalogCategory('pigments')" class="min-h-[42px] px-3 py-2 rounded-lg bg-surface-container-high text-primary text-xs font-semibold cursor-pointer">Pigments &amp; Inks</button>
+            <button type="button" onclick="window.setCatalogCategory('accessories')" class="min-h-[42px] px-3 py-2 rounded-lg bg-surface-container-high text-primary text-xs font-semibold cursor-pointer">Studio Accessories</button>
+          </div>
+        </div>
+
+        <!-- Gifting & Persona Shortcuts inside Drawer -->
+        <div>
+          <span class="block text-xs font-bold text-primary uppercase tracking-wider mb-2">Gifting &amp; Persona Curation</span>
+          <div class="grid grid-cols-3 gap-1.5 sm:gap-2" id="drawer-gifting-container">
+            <button type="button" data-drawer-gifting="masculine" onclick="window.setFeedPersona('masculine')" class="min-h-[42px] px-2.5 py-2 rounded-lg bg-surface-container-high text-primary text-xs font-semibold cursor-pointer flex items-center justify-center gap-1">
+              <span>👔 For Him</span>
+            </button>
+            <button type="button" data-drawer-gifting="feminine" onclick="window.setFeedPersona('feminine')" class="min-h-[42px] px-2.5 py-2 rounded-lg bg-surface-container-high text-primary text-xs font-semibold cursor-pointer flex items-center justify-center gap-1">
+              <span>🌸 For Her</span>
+            </button>
+            <button type="button" data-drawer-gifting="gifting" onclick="window.setCatalogSort('gifting')" class="min-h-[42px] px-2.5 py-2 rounded-lg bg-surface-container-high text-primary text-xs font-semibold cursor-pointer flex items-center justify-center gap-1">
+              <span>🎁 Gift Sets</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Mix Ratio System -->
         <div>
           <span class="block text-xs font-bold text-primary uppercase tracking-wider mb-2">Mix Ratio by Weight / System</span>
           <div class="grid grid-cols-3 min-[380px]:grid-cols-5 gap-1.5 sm:gap-2">
@@ -1273,12 +2911,14 @@
             <button type="button" onclick="window.setCatalogRatio('1-part')" class="min-h-[44px] py-2 rounded-lg bg-surface-container-high text-primary text-xs font-bold cursor-pointer">UV</button>
           </div>
         </div>
+
+        <!-- Maximum Price Range -->
         <div>
           <div class="flex justify-between items-center mb-1">
             <label for="catalog-max-price-range" class="text-xs font-bold text-primary uppercase tracking-wider">Maximum Price Bracket</label>
             <span id="drawer-price-label" class="font-spec-numeral text-xs font-bold text-secondary">Up to ₹12,000</span>
           </div>
-          <input id="catalog-max-price-range" type="range" min="500" max="12000" step="250" value="12000" aria-label="Maximum Price Bracket" oninput="window.setCatalogMaxPrice(this.value)" class="w-full h-11 accent-primary cursor-pointer">
+          <input id="catalog-max-price-range" type="range" min="150" max="12000" step="50" value="12000" aria-label="Maximum Price Bracket" oninput="window.setCatalogMaxPrice(this.value)" class="w-full h-11 accent-primary cursor-pointer">
         </div>
       </div>
       <div class="p-4 bg-surface-container-low border-t border-[#e4e0d8] flex gap-3 shrink-0">
@@ -1287,6 +2927,8 @@
       </div>
     </div>
   </div>
+
+  
 
   <!-- 3. Instagram Story Viewer Modal -->
   <div id="story-viewer-modal" role="dialog" aria-modal="true" aria-labelledby="story-modal-title" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden flex items-center justify-center p-3 sm:p-4" onclick="window.closeStoryModal()">

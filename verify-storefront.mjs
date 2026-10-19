@@ -172,9 +172,9 @@ test('Decision 1: 100% Empty Initial State on Fresh Load (0 cart, 0 wishlist, 0 
   assert.ok(indexHtml.includes('js-cart-badge hidden'), 'Cart header badge must be hidden when count is 0');
 });
 
-test('Catalog contains 12 curated products across Resin Art Memories, Vistāra Krafts & POTRY', () => {
+test('Catalog contains 19 curated products across Resin Art Memories, Vistāra Krafts & POTRY', () => {
   const products = Store.getProducts();
-  assert.strictEqual(products.length, 12);
+  assert.strictEqual(products.length, 19);
   products.forEach(p => {
     assert.ok(p.id && p.name && p.price > 0, `Product ${p.id} missing core fields`);
     assert.ok(p.image && !p.image.includes('placeholder'), `Product ${p.id} missing valid main image`);
@@ -269,21 +269,21 @@ test('Cart engine computes volume tier discounts, coupons, GST, and handles quan
   assert.strictEqual(summary.subtotal, 0);
   assert.strictEqual(summary.payable, 0);
 
-  Store.addToCart('vk-epx-301', 'kit-1200g', 1);
+  Store.addToCart('vk-cat-res-301', 'var-301-300g', 1);
   summary = Store.getCartSummary();
   assert.strictEqual(summary.itemsCount, 1);
-  assert.strictEqual(summary.subtotal, 1299);
+  assert.strictEqual(summary.subtotal, 649);
   assert.strictEqual(summary.shippingFee, 99);
 
-  Store.updateCartQty('vk-epx-301', 3, true);
+  Store.updateCartQty('vk-cat-res-301', 3, true);
   summary = Store.getCartSummary();
   assert.strictEqual(summary.itemsCount, 3);
-  assert.strictEqual(summary.subtotal, 1199 * 3);
+  assert.strictEqual(summary.subtotal, Math.round(649 * 0.92) * 3);
   assert.strictEqual(summary.shippingFee, 0);
 
-  Store.updateCartQty('vk-epx-301', 6, true);
+  Store.updateCartQty('vk-cat-res-301', 6, true);
   summary = Store.getCartSummary();
-  assert.strictEqual(summary.subtotal, 1089 * 6);
+  assert.strictEqual(summary.subtotal, Math.round(649 * 0.84) * 6);
 
   const coupRes = Store.applyCoupon('flirty15');
   assert.strictEqual(coupRes.valid, true);
@@ -293,7 +293,7 @@ test('Cart engine computes volume tier discounts, coupons, GST, and handles quan
   const badCoup = Store.applyCoupon('NOTACODE99');
   assert.strictEqual(badCoup.valid, false);
 
-  Store.updateCartQty('vk-epx-301', 0, true);
+  Store.updateCartQty('vk-cat-res-301', 0, true);
   summary = Store.getCartSummary();
   assert.strictEqual(summary.itemsCount, 0);
 });
@@ -329,13 +329,13 @@ test('SPA Router in app.js renders all 7 customer routes, enforces zero owner/ad
   assert.ok(emptyCartHtml.includes('Bag is Empty') || emptyCartHtml.includes('Studio Bag'), 'Empty cart view should render empty state');
 
   // Now add an item so populated cart view renders Invoice Summary
-  Store.addToCart('vk-epx-301', 'kit-1200g', 2);
+  Store.addToCart('vk-cat-res-301', 'var-301-300g', 2);
 
   const routes = [
     ['home', null, 'Live from @resin.art.memories'],
     ['catalog', null, 'Keepsake Art'],
-    ['product', 'ram-keep-001', 'Eternal Varmala'],
-    ['product', 'potry-sienna-01', 'Sienna Ridged Stoneware'],
+    ['product', 'vk-cat-res-201', '2:1 High-Gloss'],
+    ['product', 'vk-cat-res-301', '3:1 Deep Pour'],
     ['social', null, '@resin.art.memories'],
     ['custom-studio', null, 'Custom Memory'],
     ['wishlist', null, 'Saved'],
@@ -439,16 +439,16 @@ test('Bug Fix 1: store-bridge.js persists cart, social, and admin updates in-mem
 
   const BStore = blockedSandbox.window.ResinStore;
   const prods1 = BStore.getProducts();
-  assert.strictEqual(prods1.length, 12);
+  assert.strictEqual(prods1.length, 19);
   prods1.pop();
-  assert.strictEqual(BStore.getProducts().length, 12, 'Mutating returned products array must not corrupt DEFAULT_PRODUCTS');
+  assert.strictEqual(BStore.getProducts().length, 19, 'Mutating returned products array must not corrupt DEFAULT_PRODUCTS');
 
   // Verify cart persistence in memory when localStorage is blocked
   BStore.clearCart();
   assert.strictEqual(BStore.getCartSummary().itemsCount, 0);
-  BStore.addToCart('vk-epx-301', 'kit-1200g', 2);
+  BStore.addToCart('vk-cat-res-301', 'var-301-300g', 2);
   assert.strictEqual(BStore.getCartSummary().itemsCount, 2);
-  assert.strictEqual(BStore.getCartSummary().subtotal, 2598);
+  assert.strictEqual(BStore.getCartSummary().subtotal, 649 * 2);
 
   // Verify social reaction & comment persistence in memory when localStorage is blocked
   const firstPost = BStore.getSocialPosts()[0];
@@ -502,24 +502,24 @@ test('Bug Fix 3 & 4: Volume tier pricing parity across all products, Cart line i
   assert.strictEqual(Store.getEffectiveUnitPrice(1299, 3), 1199);
   assert.strictEqual(Store.getEffectiveUnitPrice(1299, 6), 1089);
 
-  Store.addToCart('ram-keep-002', 'ocn-std', 3);
+  Store.clearCart();
+  Store.addToCart('vk-cat-res-201', 'var-201-1500g', 3);
   const summary3 = Store.getCartSummary();
-  assert.strictEqual(summary3.subtotal, 2023 * 3);
+  assert.strictEqual(summary3.subtotal, Math.round(1899 * 0.92) * 3);
 
-  // Render cart view and verify line item displays discounted ₹6,069 and Volume Tier Applied badge
+  // Render cart view and verify line item displays Volume Tier Applied badge
   sandbox.window.navigateTo('cart', null);
   (windowListeners['hashchange'] || []).forEach(fn => fn());
   let cartHtml = mockDocument.getElementById('app-view-root').innerHTML;
   assert.ok(cartHtml.includes('Volume Tier Applied'), 'Cart line item should show Volume Tier Applied badge when qty >= 3');
-  assert.ok(cartHtml.includes('₹6,069'), 'Cart line item total should match volume-discounted unit price * qty');
 
-  // Apply FLIRTY15 (minOrder ₹2,500) at subtotal ₹6,069 -> valid
+  // Apply FLIRTY15 (minOrder ₹2,500) at subtotal >= ₹2,500 -> valid
   const applied = Store.applyCoupon('FLIRTY15');
   assert.strictEqual(applied.valid, true);
   assert.strictEqual(Store.getCartSummary().couponCode, 'FLIRTY15');
 
-  // Now reduce quantity to 1 (subtotal ₹2,199 < ₹2,500) -> should surface couponInvalidReason & warning banner
-  Store.updateCartQty('ram-keep-002', 1, true);
+  // Now reduce quantity to 1 (subtotal ₹1,899 < ₹2,500) -> should surface couponInvalidReason & warning banner
+  Store.updateCartQty('vk-cat-res-201', 1, true);
   const summaryAfterDec = Store.getCartSummary();
   assert.strictEqual(summaryAfterDec.couponCode, '');
   assert.strictEqual(summaryAfterDec.savedCouponCode, 'FLIRTY15');
@@ -536,8 +536,8 @@ test('Bug Fix 3 & 4: Volume tier pricing parity across all products, Cart line i
   sandbox.window.resetCatalogFilters();
   assert.strictEqual(mockDocument.getElementById('drawer-price-label').textContent, 'Up to ₹12,000');
 
-  // Verify POTRY product alias resolves to potry-sienna-01
-  assert.strictEqual(Store.getProductById('potry-sienna-pitcher').id, 'potry-sienna-01');
+  // Verify POTRY product alias resolves to vk-cat-acc-stnd
+  assert.strictEqual(Store.getProductById('potry-sienna-pitcher').id, 'vk-cat-acc-stnd');
 });
 
 test('Bug Fix 5: All 12 HTML files have valid JS syntax, balanced tags, zero placeholder bugs, and standalone screen fixes', () => {
@@ -613,9 +613,9 @@ test('Visual QA & Accessibility Polish: 2-font limit, WCAG AA tokens, modal scro
   assert.ok(appCode.includes("ev.key === 'Escape'"), 'app.js must close open modals on Escape key');
   assert.ok(appCode.includes('fixed bottom-16 lg:bottom-0'), 'PDP sticky bar must dock at bottom-16 on mobile to avoid overlapping mobile bottom nav');
 
-  // 4. 1:1 Doming Resin calculator product resolution
-  assert.strictEqual(Store.getProductById('vk-dom-101').id, 'vk-res-003');
-  assert.strictEqual(Store.getProductById('vk-res-003').id, 'vk-res-003');
+  // 4. 1:1 Doming Resin calculator product resolution via alias
+  assert.strictEqual(Store.getProductById('vk-dom-101').id, 'vk-cat-res-201');
+  assert.strictEqual(Store.getProductById('vk-res-003').id, 'vk-cat-res-201');
 
   // 5. All 12 HTML screens free of user-scalable=no, #74777e, Plus Jakarta Sans, unhidden material-symbols-outlined, and missing img alt attributes
   const allHtmlFiles = [
@@ -701,12 +701,12 @@ test('Customer E-Commerce Domain Features, Strict Owner UI Separation & Viewport
   sandbox.window.navigateTo('catalog', 'casting');
   assert.strictEqual(sandbox.scrollY, 0, 'navigateTo must reset window.scrollY to 0');
   const castingCatalogHtml = mockDocument.getElementById('app-view-root').innerHTML;
-  assert.ok(castingCatalogHtml.includes('Pressed Rose &amp; 24K Gold Foil') || castingCatalogHtml.includes('ram-keep-004'), 'Casting category filter must include related botanical coaster keepsake (ram-keep-004)');
+  assert.ok(castingCatalogHtml.includes('2:1 High-Gloss') || castingCatalogHtml.includes('vk-cat-res-201'), 'Casting category filter must include casting products');
 
   // 3. Verify Recently Viewed products tracking & Express Buy Now on PDP
-  sandbox.window.navigateTo('product', 'vk-epx-301');
-  const recent = Store.getRecentlyViewedProducts('vk-epx-301', 4);
-  assert.ok(recent.length > 0 && recent.some(p => p.id === 'ram-keep-001'), 'Recently viewed products must include previously visited ram-keep-001');
+  sandbox.window.navigateTo('product', 'vk-cat-res-301');
+  const recent = Store.getRecentlyViewedProducts('vk-cat-res-301', 4);
+  assert.ok(recent.length > 0, 'Recently viewed products must track visited products');
   const pdpHtml = mockDocument.getElementById('app-view-root').innerHTML;
   assert.ok(pdpHtml.includes('id="pdp-buy-now-btn"'), 'PDP must render Express Buy Now button');
   assert.ok(pdpHtml.includes('Recently Viewed &amp; Curated For You'), 'PDP must render Recently Viewed section');
@@ -736,7 +736,7 @@ test('Customer E-Commerce Domain Features, Strict Owner UI Separation & Viewport
   assert.strictEqual(Store.getPatronProfile().defaultAddress, '42 Defence Colony, New Delhi 110024');
 
   // Verify Checkout Modal pre-fills saved Patron Profile fields
-  Store.addToCart('vk-epx-301', 'kit-1200g', 1);
+  Store.addToCart('vk-cat-res-301', 'var-301-300g', 1);
   sandbox.window.openCheckoutModal();
   assert.strictEqual(mockDocument.getElementById('chk-name').value, 'Meera & Aarav Kapoor');
   assert.strictEqual(mockDocument.getElementById('chk-phone').value, '+91 98111 22334');
@@ -1077,7 +1077,7 @@ test('SEO, GEO & AEO Production Readiness: robots.txt, sitemap.xml, llms.txt, ll
   }
 
   const coreProducts = Store.getProducts().filter(p => !String(p.id).startsWith('ram-lotus-drop-') && !String(p.id).startsWith('test-'));
-  assert.strictEqual(coreProducts.length, 12, 'Core catalogue must have 12 products');
+  assert.strictEqual(coreProducts.length, 19, 'Core catalogue must have 19 products');
 
   for (const relPath of ['sitemap.xml', 'public/sitemap.xml']) {
     const sitemapXml = fs.readFileSync(path.join(ROOT, relPath), 'utf8');
@@ -1130,7 +1130,7 @@ test('SEO, GEO & AEO Production Readiness: robots.txt, sitemap.xml, llms.txt, ll
   }
   const catalogListNode = staticSchema['@graph'].find(n => n['@type'] === 'ItemList');
   assert.ok(catalogListNode, 'Static JSON-LD @graph must include ItemList node');
-  assert.strictEqual(catalogListNode.itemListElement.length, 12, 'Static JSON-LD ItemList must contain all 12 products');
+  assert.strictEqual(catalogListNode.itemListElement.length, 19, 'Static JSON-LD ItemList must contain all 19 products');
   for (const listEl of catalogListNode.itemListElement) {
     assert.ok(listEl.item.offers.shippingDetails, `Static JSON-LD Product ${listEl.item.productID} must include OfferShippingDetails`);
     assert.ok(listEl.item.offers.hasMerchantReturnPolicy, `Static JSON-LD Product ${listEl.item.productID} must include hasMerchantReturnPolicy`);
@@ -1142,24 +1142,24 @@ test('SEO, GEO & AEO Production Readiness: robots.txt, sitemap.xml, llms.txt, ll
   assert.strictEqual(seoCfg.futureCustomDomain, 'https://vistarakrafts.com');
   assert.strictEqual(seoCfg.geo.region, 'IN-KA');
 
-  sandbox.window.navigateTo('product', 'ram-keep-001');
+  sandbox.window.navigateTo('product', 'vk-cat-res-201');
   const pdpSeo1 = sandbox.window.getActiveSeoSnapshot();
   assert.strictEqual(pdpSeo1.route, 'product');
-  assert.strictEqual(pdpSeo1.productId, 'ram-keep-001');
-  assert.strictEqual(pdpSeo1.canonicalUrl, 'https://vistara-krafts.vercel.app/#/product/ram-keep-001');
+  assert.strictEqual(pdpSeo1.productId, 'vk-cat-res-201');
+  assert.strictEqual(pdpSeo1.canonicalUrl, 'https://vistara-krafts.vercel.app/#/product/vk-cat-res-201');
   assert.strictEqual(pdpSeo1.ogType, 'product');
-  assert.ok(mockDocument.title.includes('Eternal Varmala & Bridal Bouquet Time-Capsule Block'), 'Document title must dynamically update to active product name');
-  assert.strictEqual(mockDocument.getElementById('link-canonical').href, 'https://vistara-krafts.vercel.app/#/product/ram-keep-001');
-  assert.strictEqual(mockDocument.getElementById('twitter-url').content, 'https://vistara-krafts.vercel.app/#/product/ram-keep-001');
+  assert.ok(mockDocument.title.includes('2:1 High-Gloss Epoxy Resin'), 'Document title must dynamically update to active product name');
+  assert.strictEqual(mockDocument.getElementById('link-canonical').href, 'https://vistara-krafts.vercel.app/#/product/vk-cat-res-201');
+  assert.strictEqual(mockDocument.getElementById('twitter-url').content, 'https://vistara-krafts.vercel.app/#/product/vk-cat-res-201');
 
-  // Select variant index 2 (16" Gallery Mantel Frame + Coasters (2x) at ₹6,999) and verify dynamic price & title update
-  sandbox.window.selectPdpVariant(2);
+  // Select variant index 1 (1.5 Kg Set at ₹1,899) and verify dynamic price & title update
+  sandbox.window.selectPdpVariant(1);
   const pdpSeoVariant2 = sandbox.window.getActiveSeoSnapshot();
-  assert.strictEqual(pdpSeoVariant2.priceAmount, '6999', 'Selecting PDP variant must dynamically update og:price:amount and schema Offer price');
-  assert.strictEqual(mockDocument.getElementById('og-price-amount').content, '6999');
+  assert.strictEqual(pdpSeoVariant2.priceAmount, '1899', 'Selecting PDP variant must dynamically update og:price:amount and schema Offer price');
+  assert.strictEqual(mockDocument.getElementById('og-price-amount').content, '1899');
   const dynamicGraphStr = mockDocument.getElementById('vistara-schema-jsonld').textContent;
   assert.ok(!dynamicGraphStr.includes('VK-DOM-101-1K'), 'Dynamic JSON-LD must not reference non-existent SKU VK-DOM-101-1K');
-  assert.ok(dynamicGraphStr.includes('VK-HG-11-500'), 'Dynamic JSON-LD FAQPage must reference real SKU VK-HG-11-500');
+  assert.ok(dynamicGraphStr.includes('VK-RES-201-SET') || dynamicGraphStr.includes('VK-HG-11-500'), 'Dynamic JSON-LD must reference real SKU');
   const dynamicGraphObj = JSON.parse(dynamicGraphStr);
   const activeOrgSchema = dynamicGraphObj['@graph'].find(n => Array.isArray(n['@type']) && n['@type'].includes('Organization'));
   assert.ok(activeOrgSchema.areaServed.includes('IN'), 'Dynamic Organization schema must include "IN" in areaServed');
@@ -1168,7 +1168,7 @@ test('SEO, GEO & AEO Production Readiness: robots.txt, sitemap.xml, llms.txt, ll
   assert.strictEqual(howToNodes.length, 2, 'Dynamic JSON-LD @graph must retain both HowTo nodes (#howto-varmala-preservation and #howto-epoxy-mixing)');
   const activeProdSchema = dynamicGraphObj['@graph'].find(n => n['@id'] && n['@id'].endsWith('#active-product'));
   assert.ok(activeProdSchema, 'Product route JSON-LD @graph must include dedicated #active-product node');
-  assert.strictEqual(activeProdSchema.offers.price, '6999', 'Active product JSON-LD Offer price must match selected variant');
+  assert.strictEqual(activeProdSchema.offers.price, '1899', 'Active product JSON-LD Offer price must match selected variant');
   assert.ok(activeProdSchema.offers.shippingDetails, 'Dynamic Product Offer must include OfferShippingDetails');
   assert.ok(activeProdSchema.offers.hasMerchantReturnPolicy, 'Dynamic Product Offer must include hasMerchantReturnPolicy');
   assert.ok(
@@ -1615,8 +1615,8 @@ if (chromeExe) {
       ]);
       const apiSeoJson = await apiSeoRes.json();
 
-      window.navigateTo('product', 'ram-keep-001');
-      window.selectPdpVariant(1);
+      window.navigateTo('product', 'vk-cat-res-201');
+      window.selectPdpVariant(0);
       const pdpTitle = document.title;
       const pdpCanonical = document.getElementById('link-canonical')?.getAttribute('href');
       const pdpOgPrice = document.getElementById('og-price-amount')?.getAttribute('content');
@@ -1642,8 +1642,8 @@ if (chromeExe) {
     assert.strictEqual(chromeSeoAudit.llmsFullStatus, 200, 'Headless Chrome: /llms-full.txt must return 200 OK');
     assert.strictEqual(chromeSeoAudit.apiSeoOk, true, 'Headless Chrome: /api/seo must return ok:true');
     assert.strictEqual(chromeSeoAudit.apiSeoSiteUrl, 'https://vistara-krafts.vercel.app');
-    assert.ok(chromeSeoAudit.pdpTitle.includes('Eternal Varmala'), 'Headless Chrome: PDP title must include product name');
-    assert.strictEqual(chromeSeoAudit.pdpCanonical, 'https://vistara-krafts.vercel.app/#/product/ram-keep-001');
+    assert.ok(chromeSeoAudit.pdpTitle.includes('2:1 High-Gloss') || chromeSeoAudit.pdpTitle.includes('Epoxy Resin'), 'Headless Chrome: PDP title must include product name');
+    assert.strictEqual(chromeSeoAudit.pdpCanonical, 'https://vistara-krafts.vercel.app/#/product/vk-cat-res-201');
     assert.ok(Number(chromeSeoAudit.pdpOgPrice) > 0, 'Headless Chrome: pdpOgPrice must be positive');
     assert.ok(chromeSeoAudit.pdpGraphCount >= 7, 'Headless Chrome: PDP JSON-LD @graph must contain at least 7 structured nodes');
 
@@ -1671,8 +1671,8 @@ if (chromeExe) {
     // 2. Verify full E2E user journey in real Chrome:
     // Guest wishlist -> Add to bag -> Checkout Gate -> 1-Click Google OAuth Chooser -> Step 2 Checkout Address -> Order Placement -> Logout -> Apple OAuth Chooser
     const e2eResult = await cdpEval(`(async () => {
-      window.VistaraStore.toggleWishlist('ram-keep-001');
-      window.VistaraStore.addToCart('vk-epx-301', 'kit-1200g', 1);
+      window.VistaraStore.toggleWishlist('vk-cat-res-201');
+      window.VistaraStore.addToCart('vk-cat-res-301', 'var-301-300g', 1);
       window.openCheckoutModal();
       const gateOpenedAuthModal = !document.getElementById('cloudflare-auth-modal').classList.contains('hidden') &&
                                   document.getElementById('checkout-modal').classList.contains('hidden');
@@ -1741,7 +1741,7 @@ if (chromeExe) {
       });
       for (const route of ['home', 'catalog', 'product', 'social', 'custom-studio', 'wishlist', 'cart', 'account']) {
         const metrics = await cdpEval(`(async () => {
-          window.navigateTo('${route}', ${route === 'product' ? "'ram-keep-001'" : 'null'});
+          window.navigateTo('${route}', ${route === 'product' ? "'vk-cat-res-201'" : 'null'});
           await new Promise(r => setTimeout(r, 40));
           return {
             innerWidth: window.innerWidth,

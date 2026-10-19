@@ -32,35 +32,55 @@
     DYNAMIC_COUPONS: 'ram_vk_dynamic_coupons_v2'
   };
 
-  // Verified studio & product photography from the Stitch archive
+  // Verified studio & product photography from Cloudinary CDN
   const IMAGES = {
     logoVistara: './vistara-krafts-logo.jpg',
-    logoPotry: 'https://lh3.googleusercontent.com/aida/AEtjO1UL_yv7CTSIh8DKMJSJyoEYV6KxkBv-vKrFle0GDCkSpaAqW6NgAOHRFgnmdA8w4H2gwXZOcRM-pCA3X5qDVsa1CQTVwxmaMPMsdc2iRpZlnIY37B_Odr_E0inLU4jSiTjX-EQA0Agmjtt1KTwPei-xB5SFz-_Vz8FO8ZaxhrSn_qoOWRpZzE0n60032HCsmPdzpGhw6WMTp64N4O1PkEPVu-x-tvp-wjJtQkxP3sXTtaDy59arIJ3cDp2L',
-    avatarPatron: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBEfH5pmgXdOI0mnnN25k9DHn4iZNDO6wW_YERKWNba2tdwUuopMefjulnjWQYyOtpO5PbWkiW9CmteZIRsPaPSZtGU_1WhgAGSj2NWg7e-8uCvKEkCHAWRLBPtIQYKdVhEDObJsA5letw3AbZTj1f26XSfoItEh4s-fkfu0rzR5lKs8brHwg-aa_t4YvHAzr7zuSxFyPvlwlBRY3wtWrTwqKk9Bpf3wOErpjYhoS0BYtQqpSjFGEvDig',
-    floralCube: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBXW-CtxPaQNBpLYiDkZiAh_3HctPzR3wSCDa6iBBPevbe8OYTRQh3MBrygeRClgewcRXZmXbGFcwCAJ8voXhr1Gis32c3Xd7f9MpmY8HuxABgInUPnavbPeSPIZtwzwMcmwPtXzx7Z63sTUGuH0-iZ0MPSphmGmleYJW3_njEtUfcbKOPB1icNTEcuIPrr9seRXtiWbBpXV0TUCSnKGRmIqqDcgv5vapJcyIzP8GkKndOeGidcCWTJWg',
-    jewelryBezel: 'https://lh3.googleusercontent.com/aida-public/AB6AXuASdeQkmmEQPW1Z1FyFDZPlt23GxEkA8qw-6gKoevLZuY8N4qtgN57MB84sc4y-C75qu3m8ZM_U-BxwLhYMruaXqI5K-9mJhbsKj2LFJr4EpbT4A95tXrmqdaBaIjaIQF2LST_9XGeT7fwu1uKsQVQnCfzYQg5S_JXVGkfisqaGm9DXUD_ByN6qw9ALWJ-YGOsHiDgGXipcupCHC6FdeJJTqCLfvSjRGbT5E0ecbxW5lPpBED8lSQlSRQ',
-    coasterSet: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBsuKGlgeujHuiaSQZYD5K6m5pg8ytyYXi0H5vJHZe16JcOZ6svtWNiWU-mfxqfk50B69TOKcCuP7J6f3k23HD_e3dxYrJDJtnL5X0iAaVvGJ04gmvEtD3Tthf9RTj4zbo3zgxswTFcX2Bebgm9l1SgfA-srRH4LMuzyDqwJa-Y3zduspBI9VQK8JPLTTUr40gJUzZVE-LhN-k9ek2ki2kGuvpJC790Xs6K040523SkYk-rhQV_IStqIg',
-    oceanWave: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAjzZFFaUlhkp3iunRIf4XTsGHQEnqYHu6pE65tBztKE7OolcCbUmdQivWEjR7Iw3kWILrY-SOL_WmRhZu9EvoUpa07FYLMMcOX4LFL9SAM8vS0iiyzGKVHV5g1yGZRA_heWpGcVykSqFyKi5Nq-kqaEqzkN_BuB4tzxCuGgOjGh1ChjcyrLAFbKcMMvhAQ2MxMA05f5fuhuKzbs1o3iByY2g2xxrgf7FqrVQmZOtXXHtlmMiEzdzwMjQ',
-    geodeCanvas: 'https://lh3.googleusercontent.com/aida-public/AB6AXuA8cz82Qgt63X11PW-NF0BP3BK10qS00sh3LcoIFfylPxnOCd_ulVRhrI58Ms6bzijA-vM_HfUG0IIFHdpDCTYC40_A5Qxc8VlBEgemP5Ylp5_Bkb7xyt20aiMk9cq23_g8Pllm6ObQyqRCRDYVfM5iFG9Rze05F1405nzoC9vGogMjnnY-K4qpPb0ZIDtOTFtPODyRFBdyVOGYU5-plWn-1Mp-QGmX0Dcnufa9wOT7J7EE2ITnEaJ9mw',
-    riverTable: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAVZ1vB45YWVjK0W4fMNGjw_QSz0ZlQbt6dWPHPnvtzqYLCn9msP_EdC9KD1007bWb2sD3mFCtvV7pPy0B-gdCUmOm4pwNb56xsKyGI5hhpbN0RRsSKICHspRvKOO8RLg5xYRvGhPtjeChcyxBnp7EtmG9ZVj8W-Nxw9hZjkKu1eUdAPpQ-_Nqt7BEaFxdHJCbjgOWzXqTc_TrNxhAOvFZ_bwUALL8CXHbh8Wbzz1sEQUOl5rF-ltu43g',
-    ultraclearMain: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBRDycw3YoY4kwqRgc2RIKed3egGLaRRPS-s_Rj31II52yPo9mDwes-hs9trRWTLBtNK3kTpXaTRhlSVuTdOCl9dbdO_WTG2X7GPf1I7HYJSKSGD-a3Fgl7B6c8ro6jp7dFha0mHMnnRi-QtFlnFZ4ndGGuGaiAFgz667F1dX9gmHFfhqzuZqqbfuY7BUnC2X8WuzXjYz_F6yqBPS7AOMwiLvJ_ZgwVyGjt1XfOSW2V6nLeNup72rQpSw',
-    ultraclearThumb1: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAQWPIc9RjjOm562dw3ddz6mENg7B79L8sE2vd8DXSPWjCkWBCtZKyexl_l-8s30_zToPodAS1phxSqY0nnzQm46KbX4zIIlWVcqAMUZUxTu8aXo6wvOhzgnrtxzNhJ4p8IcsNDvujKOfqx2bD5zxFyCTJsxlJllbFak3BCMsI5-K6pHgOq8f1YZRylmTnljwQMFSsYaT7CYTXj6yxL5v6Vo4kMOGvNksBROF_YEXqD2-Fp9Y88Nea_xg',
-    ultraclearThumb2: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAmtDwFwE9dI4651IT8Cp51-KbxaO8kyaG1KWkJJfY6So_X7JydXTJGJYxcqFHm4qFRVfdLRiQCgDlTa3BnhgAhwu9vgXxvNtgkzk1wC10cAiYPPUvn4R1zy57bSpVpejzjN9U0krunXqre8ZXUetkJW2eVwtU20ubwTUkLJdgBuoClanQobEINLZHxgNqYmZwdhu85NX_SOJkHxK7AO7HPqaTlflxNzIgv1HuAUXZnmVwry2iGcQcGkg',
-    ultraclearThumb3: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBkroz5hIPjPYisInSbhSaH6GGWT5c69cF66lGSYiMLZxKLTdEp46j7K0ZNRFrWxqjcMAyJALQRq5BwfeOLdjvhy6m-87tfKJQ9vAy00Y8GHQmI-8SCiaqGW2KgbejJjorqxJwUIQarDMnE-X88JfDD5EStpvETeg1NWUEIEh449YfqUGpKoiWl-mjZsyySo2XEk4EecUjs2uatr0YqyVnOjo6cT4BpwIwLcOCk-iXHBMMpFJ1nfc2_nw',
-    ultraclearThumb4: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBdvPZuR6YS_G_8p9poYabe8eAhEapid_YXjI0B_Jk8UPPPJz5jkFfgGp7i84_5vUjZU2LKgNwgyUjZwUrQp9u0E5JFnGvTFLhDTX6lqx4qH7uLKQZQKTMHRuZdrokjEPAIw0DHVIubmGXta72_SNZg0gQtfIOh_S-uBtYQreovIq9DpZpkmWl7HRNQ8YHcWRkSflNk0Zrugt1jnHxsk3TzgI2YTwUzpU8PusCBVvtfKohphqv7Uz7Z2Q',
-    deepPour21: 'https://lh3.googleusercontent.com/aida-public/AB6AXuB5W0RxlC_qbCLiogOunZQJLwCIARNblOCu547tssvch4KcHjyQidb2Pqj42y6UPDqVUOLtfhsZVKJ8Hdx30t3WMpTJe11isaKisC_alp6Yk49cvuJIipcEzkaIHBWHiU3QefrMpytDplh-cEsce41ZOUIUGDrb6TPU5xXCEnrqTzHokQTZ0HjkbBevAv4o_E-JsEjGeJa0dnZWvbyMV104YVX9OokN7wPg58kHdnJCLaBPTQSPbqa_dg',
-    doming11: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDqlb7IBVOOKGQdlkshli66LfxK7ksTEDNrC0A4BuDzUBO4egoX6orddeLfRtAR6L_5SLGg5BSHYvThMgNhOA5h5Cfga6As7bsfs42pWHzk9CuzEhGL9lTfiWedVZZ1HJ96wchvuWBMJT_g7ZpK_ahAx-rhIN-uGz208_cF4LpKNbL_Ur9lD_Ci4rW3HXnyRrTA99WnfyljdtAa2j0MwdsUdmMZsGkf-uFYPKv4-nhR9XRnHNogow_I7w',
-    quickSet11: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCbnasnTSVLu2hYLiKrH6kzNDqjHUkXxfpcPPeLilSr7B48NPpbAxdm6E02JNZ03Xky30q9AeiEspvr-xXV5QWjAozM3lC1rzEjTywCCPZdThUrSzTFGrIFXLU6N6RrNiUgljvEX1kFPdEJcC5ABZSjwrAJDXtNhIIlhDiHyq6PmdhLjksG_focqOi7ob6FHBeABTUhzAHiK1AdQDGF4ilUmnlSic3H_Fb1GHUMjeTS8FncO2-d75qL6w',
-    uvHard: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCWu96XXw_-a6fZfaVzPObJ7VcVkqEVYlCBb3_3E1N3M9-80ipFCOkRbb2f6AlfdeClKEwuX6KY1oL-YpWsi-pw_ymNDNTKelCiwpi5ki3KFW0VF7hXZdrc4skHdyVj1EQPRt6v4znohGzQcEZs4pCiqtEJ3fJv3RRzUwfsB2AFFJZIFyxk054ZJ33xk4OLEvOkO9jMLm4ZfN6xNvY9bz2YNuMgOAq75Nu-IcUyL2OzokyvipFhtmN_8w',
-    micaChameleon: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBsHygVQDC1PnFOM3bOHAJacAtodwre1FixR4hSycrhmG-F77MrskbkW2XcwL7ueawATyKCEyn1zGfWKW0u4qlBpzlo9yLqgRIf9YKzhrXNqcNxOLaCw_ID7b39Paw4KsYdkznjBV6kZikiaukQlA9VARAbHMFh-CQzYhth8LjrvcUWUFDvsv5EP0cq8ahNhihjMYhugsBrImA5bh9A-aPrJGVio28WEyvpUTiav1TvqOVONuJ4CbYZCQ',
-    ecoBio: 'https://lh3.googleusercontent.com/aida-public/AB6AXuANQCZGg-SkRfOiXEX6GoK6R4JzoffbtS_-7ihkpfk4_6-PKbJfeycqVeNBorpqLKkHT8CSN8LLwnh5CFJkrlxowWNHnIL6oM0K3DLLzDTKgChRABfAZTPZsFqnaPto_gXdT9h_JmHNBteQGsjQpvjPdu94oKru9YzOyxlvOIyUZ9kMEz62WOHFaWNkCQBR91aoBGnVdjOafD3h1rjhU9BDEUqtzPIKS5XWzvFd6vpslHLZEzLjC5hA8Q',
-    geodeMold: 'https://lh3.googleusercontent.com/aida-public/AB6AXuALJpk3c80a1Mrf3flcRflAc828a5vcaeDV9qEpcoBm1MbDH4Y-bxGb74HPWWhNakHOEuqyW5O13zPv1s3-qmZzS8Do6MFzTpA6iF5syIOWNkt0GFBYmnLlfqBsq0BKW01eDGhAzky-UlNqL-HNmdBYEmNx5CeziUnLuAH8tovtJpetmWIK7eaibXjdWY1rHHnuoP9knfzaZ3_HrEZF6juyZi8Cv38pE2bJy5E_JfMtRMoqkkt7zFKLpA',
-    siennaPitcher: 'https://lh3.googleusercontent.com/aida-public/AB6AXuC4v5UEoHMPUfjyZvw-pRB5rieXSJVcdqHO5bwDOia0NN0jpnEQZRqGdhiZnBw5FQ2yiK4mTV7_APtHo1HJq94rbc1bRq_Y5OUjiheJZSNo3h9e5XpGNVQsbfnMDtASMIoLWPHI4SVHVtNyZmNRkEzf5-Fggr6BkQ57D-g2NKbtWLpS7Q6OKGh5oWQQfxdadZNLHLGqEfv1F98rtipSdWG3XCVAo73iFagCjml30rbmzqI81c5YxGjoAw',
-    siennaSpout: 'https://lh3.googleusercontent.com/aida-public/AB6AXuD-EJ1o1ePHpsz_O8r-Ik9eOFMyJRNsgMm96ZbZdCAZqAgrxJBJh3DX6gGdCUR-EJxf8_I--NSskOUfi_iqs_Cv2DYHhk8tdZdXwZcIFuTS3ysh-Jm8cxdO_Ft71jKUjtZdlAcyAam4_RYy3HJRGnGwCXQgLeYUFfQILDID-xUx4HY5MjksU80HKSXfEups8Yafyz1_7HlrqiW8p77Jlogu-213R9fmmPBfq9MmJeSfKD_xCN1Z7TM0Hg',
-    siennaTable: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBBnNxDST6TF_hJ4W9GT9nTVXG_271qfy4djrhvCFPEM3yQoyNOSKRCpk1BMiTeKP-w_h1rAZgCK_5EO5Ms-8upoZhtGku0aNIF25aENPF4BKBggOHk9yOUqUNLZQm8J1QYAKOnnNYiqzkcjA0DI5STfc4iwQtXb9MMr_u2n_u6bPRPNjNkT9G-jk92O-QxgQrrHYyV3hAIRNqr67zlvUfbqZlS-h98ogVUkxufmiDfT9AX0r-DeUe_xg',
-    siennaStamp: 'https://lh3.googleusercontent.com/aida-public/AB6AXuA-3yjdCvZfDryc1Y0tgNw_J_Pt26rjf0w-jHczKYeSKIeXR-wXkZvoQW2CcbCxBdCc_mJkJo_tkon4isgXwUTWVP1gFoYT4Si1iU9rjmWWi5N0lU8qtjKGuHZG0nOMNXB2RXHoQA4PzC6ROibYI0Od1NGz6hdAr-E9jKpWQ_cWn9eWRtTGDi0ztXVkB98hrjPhRixK06TocWZnBrN0M6GA_XOkWs30yrjAxAksend7s4YoIWNaleHu3w',
-    oceanMicaJar: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCR2fNybe2S7ETdDIR2E5TctJDdHepjAMeq0qTSs_XGpEKEUOlL3gw_8cBxwtXoiS2ZNX9uUtBwU82leSsjwvpXkVwSoa5mLDTm5MxuTxLkP9aXwO7xX4ymWgORnLYcCT2aA2QqPLzllinMpy7nC-Z_c4JMp9gb8JVMeXtlVpr6zGIMADlqD84MYeEtTe2cLA7DIzN1tP6T9FvCg5Z6sjMthqahJbxzBX6h6ZoNawRZV2xByGmFTuKfpQ',
-    siliconeMold4x: 'https://lh3.googleusercontent.com/aida-public/AB6AXuA2ZTMF-WsUhnpK0cw0PI3jx7iyCBNcRQMBPZv0TZZnbDiSZQpUubqRmRqF9oAzyjLtW8TGShVhC0p7zZ3A6M6wloNYrVJTfR3SOfSeDMn0g7AaOnzKXd4UV0kt-9HKzT9AXamagVHVH5FQQeAJgcCRwc5z2BjUJ8Vq0HCt9GMBkcO2RU81_TMAA6mRy0XHh2ivX2txHiD8BhNa_nCMFXNhmT8xOdWZAN_5zYRHdj-CYhQP0e8u3itN_g'
+    logoPotry: './vistara-krafts-logo.jpg',
+    avatarPatron: 'https://res.cloudinary.com/ecugysfd/image/upload/v1792353785/catalog_cata1_resin_bottles_set_1792353782.png',
+    resin201: 'https://res.cloudinary.com/ecugysfd/image/upload/v1792353785/catalog_cata1_resin_bottles_set_1792353782.png',
+    resin301: 'https://res.cloudinary.com/ecugysfd/image/upload/v1792353785/catalog_cata1_resin_bottles_set_1792353782.png',
+    uvResin: 'https://res.cloudinary.com/ecugysfd/image/upload/v1792353851/catalog_cata1_uv_resin_25g_box_1792353847.png',
+    decoMarkers: 'https://res.cloudinary.com/ecugysfd/image/upload/v1792353788/catalog_cata1_deco_markers_1792353786.jpg',
+    metalStand: 'https://res.cloudinary.com/ecugysfd/image/upload/v1792353791/catalog_cata1_metal_folding_stands_1792353789.png',
+    agateMold: 'https://res.cloudinary.com/ecugysfd/image/upload/v1792353794/catalog_cata1_agate_mould_single_1792353792.png',
+    foilFlakes: 'https://res.cloudinary.com/ecugysfd/image/upload/v1792353797/catalog_cata1_foil_flakes_1792353795.jpg',
+    opaquePigments: 'https://res.cloudinary.com/ecugysfd/image/upload/v1792353801/catalog_cata1_opaque_pigments_1792353798.png',
+    inkPearlPigments: 'https://res.cloudinary.com/ecugysfd/image/upload/v1792353804/catalog_cata1_ink_pearl_pigments_1792353802.png',
+    bubblesBuster: 'https://res.cloudinary.com/ecugysfd/image/upload/v1792353829/catalog_cata1_bubbles_buster_1792353815.png',
+    resinPolish: 'https://res.cloudinary.com/ecugysfd/image/upload/v1792353814/catalog_cata1_resin_polish_1792353811.png',
+    blowTorch: 'https://res.cloudinary.com/ecugysfd/image/upload/v1792353806/catalog_cata1_blow_torch_1792353805.png',
+    liquidLatex: 'https://res.cloudinary.com/ecugysfd/image/upload/v1792353810/catalog_cata1_liquid_latex_1792353808.png',
+    flowerMold4in1: 'https://res.cloudinary.com/ecugysfd/image/upload/v1792353832/catalog_cata1_mould_4in1_flower_1792353830.png',
+    magicSilicaGel: 'https://res.cloudinary.com/ecugysfd/image/upload/v1792353842/catalog_cata1_magic_silica_gel_1792353840.png',
+    mould6CavityAgate: 'https://res.cloudinary.com/ecugysfd/image/upload/v1792353835/catalog_cata1_mould_6cavity_agate_1792353833.png',
+    bookmarkMold: 'https://res.cloudinary.com/ecugysfd/image/upload/v1792353839/catalog_cata1_mould_bookmark_6in_1792353836.png',
+    leafMold: 'https://res.cloudinary.com/ecugysfd/image/upload/v1792353865/catalog_cata1_leaf_mould_1_1792353857.png',
+    smallFlowers: 'https://res.cloudinary.com/ecugysfd/image/upload/v1792353895/catalog_cata1_small_flowers_03_1792353883.png',
+    // Backwards-compatible aliases pointing to official Cloudinary photography
+    floralCube: 'https://res.cloudinary.com/ecugysfd/image/upload/v1792353842/catalog_cata1_magic_silica_gel_1792353840.png',
+    jewelryBezel: 'https://res.cloudinary.com/ecugysfd/image/upload/v1792353851/catalog_cata1_uv_resin_25g_box_1792353847.png',
+    coasterSet: 'https://res.cloudinary.com/ecugysfd/image/upload/v1792353794/catalog_cata1_agate_mould_single_1792353792.png',
+    oceanWave: 'https://res.cloudinary.com/ecugysfd/image/upload/v1792353804/catalog_cata1_ink_pearl_pigments_1792353802.png',
+    geodeCanvas: 'https://res.cloudinary.com/ecugysfd/image/upload/v1792353797/catalog_cata1_foil_flakes_1792353795.jpg',
+    riverTable: 'https://res.cloudinary.com/ecugysfd/image/upload/v1792353785/catalog_cata1_resin_bottles_set_1792353782.png',
+    ultraclearMain: 'https://res.cloudinary.com/ecugysfd/image/upload/v1792353785/catalog_cata1_resin_bottles_set_1792353782.png',
+    ultraclearThumb1: 'https://res.cloudinary.com/ecugysfd/image/upload/v1792353785/catalog_cata1_resin_bottles_set_1792353782.png',
+    ultraclearThumb2: 'https://res.cloudinary.com/ecugysfd/image/upload/v1792353829/catalog_cata1_bubbles_buster_1792353815.png',
+    ultraclearThumb3: 'https://res.cloudinary.com/ecugysfd/image/upload/v1792353814/catalog_cata1_resin_polish_1792353811.png',
+    ultraclearThumb4: 'https://res.cloudinary.com/ecugysfd/image/upload/v1792353806/catalog_cata1_blow_torch_1792353805.png',
+    deepPour21: 'https://res.cloudinary.com/ecugysfd/image/upload/v1792353785/catalog_cata1_resin_bottles_set_1792353782.png',
+    doming11: 'https://res.cloudinary.com/ecugysfd/image/upload/v1792353785/catalog_cata1_resin_bottles_set_1792353782.png',
+    quickSet11: 'https://res.cloudinary.com/ecugysfd/image/upload/v1792353785/catalog_cata1_resin_bottles_set_1792353782.png',
+    uvHard: 'https://res.cloudinary.com/ecugysfd/image/upload/v1792353851/catalog_cata1_uv_resin_25g_box_1792353847.png',
+    micaChameleon: 'https://res.cloudinary.com/ecugysfd/image/upload/v1792353804/catalog_cata1_ink_pearl_pigments_1792353802.png',
+    ecoBio: 'https://res.cloudinary.com/ecugysfd/image/upload/v1792353785/catalog_cata1_resin_bottles_set_1792353782.png',
+    geodeMold: 'https://res.cloudinary.com/ecugysfd/image/upload/v1792353794/catalog_cata1_agate_mould_single_1792353792.png',
+    siennaPitcher: 'https://res.cloudinary.com/ecugysfd/image/upload/v1792353791/catalog_cata1_metal_folding_stands_1792353789.png',
+    siennaSpout: 'https://res.cloudinary.com/ecugysfd/image/upload/v1792353791/catalog_cata1_metal_folding_stands_1792353789.png',
+    siennaTable: 'https://res.cloudinary.com/ecugysfd/image/upload/v1792353791/catalog_cata1_metal_folding_stands_1792353789.png',
+    siennaStamp: 'https://res.cloudinary.com/ecugysfd/image/upload/v1792353791/catalog_cata1_metal_folding_stands_1792353789.png',
+    oceanMicaJar: 'https://res.cloudinary.com/ecugysfd/image/upload/v1792353804/catalog_cata1_ink_pearl_pigments_1792353802.png',
+    siliconeMold4x: 'https://res.cloudinary.com/ecugysfd/image/upload/v1792353832/catalog_cata1_mould_4in1_flower_1792353830.png'
   };
 
   const DEFAULT_PRODUCTS = (typeof global !== 'undefined' && Array.isArray(global.__VK_TEST_FIXTURES__))
@@ -77,18 +97,18 @@
       avatar: IMAGES.avatarPatron,
       location: 'Mumbai & Bengaluru Studio',
       timeAgo: '2h ago',
-      tag: 'BridalVarmala',
+      tag: 'StudioFormulas',
       badge: 'Reel • 148K views',
-      image: IMAGES.floralCube,
-      caption: 'When she sent us her wedding varmala from Udaipur, the roses were already 4 days old 🌹✨ After 14 days of gentle silica-gel dehydration and 4 crystal-clear pours using our Deep Pour 2:1 formula, her memories are now frozen in glass forever! Drop a 💕 if you want your wedding flowers preserved!',
+      image: IMAGES.resin201,
+      caption: 'Testing the self-degassing bubble release on our 2:1 High-Gloss Epoxy formula ✨ Crystal-clear diamond finish, zero surface haze, and maximum UV stabilization for Indian ambient temperatures! Drop a 💕 if you want pristine clarity in every pour!',
       likes: 2842,
       saved: false,
       liked: false,
-      productId: 'ram-keep-001',
+      productId: 'vk-cat-res-201',
       comments: [
-        { user: '@meera.kapoor', text: 'I literally cried opening my varmala block yesterday!! The clarity is unreal 😭💖', time: '1h' },
-        { user: '@craft_by_ria', text: 'Which resin system did you use for zero bubbles around the rose petals?', time: '45m' },
-        { user: '@resin.art.memories', text: '@craft_by_ria We seal first with UltraClear 3:1 and cast the block with River Flow 2:1 Deep Pour! Both tagged right here ✨', time: '30m' }
+        { user: '@meera.kapoor', text: 'I switched to Vistāra 2:1 last week and the clarity is unreal 😭💖 Zero bubbles!', time: '1h' },
+        { user: '@craft_by_ria', text: 'Which mold was used for the fluted coasters in the video?', time: '45m' },
+        { user: '@resin.art.memories', text: '@craft_by_ria Tagged right here! Our Fluted Agate Mold paired with Bubbles Buster defoamer ✨', time: '30m' }
       ]
     },
     {
@@ -98,16 +118,16 @@
       avatar: IMAGES.avatarPatron,
       location: 'Goa Coastal Collection',
       timeAgo: '6h ago',
-      tag: 'OceanArt',
+      tag: 'DeepCasting',
       badge: 'Shoppable Post',
-      image: IMAGES.oceanWave,
-      caption: 'That lacing cell action though 🌊🤍 Three layers of turquoise, deep navy, and our high-viscosity 1:1 Doming Epoxy blown over seasoned Burma teak. Perfect for cheese platters, vanity trays, or anniversary gifts!',
+      image: IMAGES.resin301,
+      caption: 'Deep casting perfection 🌊🤍 Our 3:1 Deep Pour system allows thick pours up to 50mm in a single batch with ultra-slow exothermic cure to avoid shrinkage or yellowing. Essential for floral blocks and river pours!',
       likes: 1654,
       saved: false,
       liked: false,
-      productId: 'ram-keep-002',
+      productId: 'vk-cat-res-301',
       comments: [
-        { user: '@arjun_interiors', text: 'Ordered 3 of these for our coastal villa project in Alibaug. Stunning finish!', time: '4h' }
+        { user: '@arjun_interiors', text: 'Best pot life in 34°C weather! Poured a whole batch yesterday without heat peaks.', time: '4h' }
       ]
     },
     {
@@ -115,18 +135,18 @@
       handle: '@resin.art.memories',
       authorName: 'Vistāra Formulation Lab',
       avatar: IMAGES.avatarPatron,
-      location: 'ISO 9001 Lab • Batch #VK-25-C38',
+      location: 'ISO 9001 Lab • Batch #VK-2026-C',
       timeAgo: '1d ago',
-      tag: 'ResinFormulas',
+      tag: 'StudioTools',
       badge: 'Lab Tested 99.4% Clarity',
-      image: IMAGES.ultraclearThumb2,
-      caption: 'Look at the millimeter grid through a solid 50mm cured disc of our UltraClear 3:1 & Deep Pour systems 🔍 Zero optical distortion, zero micro-bubbles without a vacuum chamber, and fortified with HALS UV stabilizers for Indian summers.',
+      image: IMAGES.bubblesBuster,
+      caption: 'Say goodbye to stubborn micro-bubbles 👋 Bubbles Buster fine-mist defoamer breaks surface tension in 15 seconds without heat torching or cratering. Pure wizardry for delicate mold casting!',
       likes: 3190,
       saved: false,
       liked: false,
-      productId: 'vk-epx-301',
+      productId: 'vk-cat-acc-bubb',
       comments: [
-        { user: '@studio_kaveri', text: 'Switched my entire workshop to Vistāra 4kg kits last month. Best pot life in 34°C weather!', time: '18h' }
+        { user: '@studio_kaveri', text: 'A total game changer for coasters! One quick spritz and poof, crystal glass.', time: '18h' }
       ]
     },
     {
@@ -134,38 +154,37 @@
       handle: '@resin.art.memories',
       authorName: 'Aanya • Lead Preservation Artist',
       avatar: IMAGES.avatarPatron,
-      location: 'Jaipur Royal Commissions',
+      location: 'Jaipur Atelier',
       timeAgo: '2d ago',
-      tag: 'ClientLove',
-      badge: 'Custom Geode Art',
-      image: IMAGES.geodeCanvas,
-      caption: 'Champagne gold, raw Himalayan quartz crystals, and chameleon bronze mica ✨ Hand-sculpted for a couple’snew living room in South Delhi. Every geode catches morning sunlight like liquid jewelry.',
-      likes: 1920,
+      tag: 'PrecisionMolds',
+      badge: 'Studio Classic',
+      image: IMAGES.agateMold,
+      caption: 'Fluted edge agate molds in tear-resistant platinum silicone 💎 High flex, glossy inner cavity, and hundreds of demolds without clouding or stretching.',
+      likes: 2420,
       saved: false,
       liked: false,
-      productId: 'ram-keep-003',
+      productId: 'vk-cat-mld-agat',
       comments: [
-        { user: '@nisha_designs', text: 'Can we customize the colors to emerald and antique brass?', time: '1d' },
-        { user: '@resin.art.memories', text: '@nisha_designs Yes! Use our Custom Memory Studio tab to pick your exact palette 🎨', time: '1d' }
+        { user: '@rohit_designs', text: 'Edges come out razor sharp every single time!', time: '1d' }
       ]
     },
     {
       id: 'post-005',
       handle: '@resin.art.memories',
-      authorName: 'Botanical Jewelry Bar',
+      authorName: 'Resin Art Memories Studio',
       avatar: IMAGES.avatarPatron,
-      location: 'Bengaluru Atelier',
+      location: 'Bengaluru Workshop',
       timeAgo: '3d ago',
-      tag: 'BridalVarmala',
-      badge: '90-Sec UV Cure',
-      image: IMAGES.jewelryBezel,
-      caption: 'Turned leftover petals from a bride’s bouquet into 6 matching gold bezel pendants for her bridesmaids 💐💫 Cured in 90 seconds flat with our Optical UV Hard Resin!',
-      likes: 4105,
+      tag: 'MetallicAccents',
+      badge: 'High Impact Foil',
+      image: IMAGES.foilFlakes,
+      caption: 'Artisanal metallic leafing flakes in glass jars ✨ Pure gold, silver & rose leafing that floats seamlessly in resin without oxidizing or sinking to the bottom.',
+      likes: 1890,
       saved: false,
       liked: false,
-      productId: 'vk-uv-hard',
+      productId: 'vk-cat-pig-foil',
       comments: [
-        { user: '@shruti_weds_rohan', text: 'Such a thoughtful bridesmaid gift idea!! Booking mine now!', time: '2d' }
+        { user: '@divya.creates', text: 'The gold flake jar set is huge! Lasts so many pours 💛', time: '2d' }
       ]
     },
     {
@@ -175,74 +194,74 @@
       avatar: IMAGES.avatarPatron,
       location: 'Hyderabad Studio',
       timeAgo: '4d ago',
-      tag: 'ClientLove',
-      badge: 'Bestselling Gift',
-      image: IMAGES.coasterSet,
-      caption: 'Petrified alcohol-ink blooms + real pressed florals edged in antique brass ✨ Set of 4 coasters that turn every coffee date into a little flirtation with art ☕💛',
+      tag: 'FloralPreservation',
+      badge: 'Bestselling Kit',
+      image: IMAGES.magicSilicaGel,
+      caption: 'Magic color-indicating silica gel crystals 🌸 Protect the natural vivid hues of bridal roses and orchids before casting in liquid glass. Reusable for dozens of dryings!',
       likes: 2280,
       saved: false,
       liked: false,
-      productId: 'ram-keep-004',
+      productId: 'vk-cat-acc-sili',
       comments: [
-        { user: '@tanvi.m', text: 'Got these for my best friend’s housewarming and she’s obsessed!', time: '3d' }
+        { user: '@tanvi.m', text: 'Preserved my anniversary orchids with this, colors stayed 100% vibrant!', time: '3d' }
       ]
     }
   ];
 
   const DEFAULT_STORIES = [
     {
-      id: 'story-varmala',
-      title: 'Varmala ✨',
-      subtitle: 'Bridal Preservation Process',
-      image: IMAGES.floralCube,
-      productId: 'ram-keep-001',
-      caption: 'Step inside our 14-day silica floral preservation ritual — from doorstep pickup across India to museum-grade 50mm crystal encapsulation.',
-      ctaText: 'Book Varmala Block • ₹4,499'
+      id: 'story-201',
+      title: 'Varmala 2:1 ✨',
+      subtitle: 'High Gloss Diamond Finish',
+      image: IMAGES.resin201,
+      productId: 'vk-cat-res-201',
+      caption: 'Our signature 2:1 High-Gloss Epoxy Resin set delivers crystal clarity with robust bubble-release kinetics.',
+      ctaText: 'Shop 2:1 Resin • ₹599'
     },
     {
-      id: 'story-ocean',
-      title: 'Ocean Pour 🌊',
-      subtitle: 'Lacing Wave Technique',
-      image: IMAGES.oceanWave,
-      productId: 'ram-keep-002',
-      caption: 'Watch how our 2400 mPa·s Doming Epoxy creates authentic foaming white-water cells over Burma teak.',
-      ctaText: 'Shop Ocean Tray • ₹2,199'
+      id: 'story-301',
+      title: '3:1 Deep Pour 🧪',
+      subtitle: 'Low Heat 50mm Casts',
+      image: IMAGES.resin301,
+      productId: 'vk-cat-res-301',
+      caption: 'Formulated for deep casting, river pours, and floral preservation blocks with zero shrinkage.',
+      ctaText: 'Shop 3:1 Deep Pour • ₹649'
     },
     {
-      id: 'story-ultraclear',
-      title: '3:1 Secret 🧪',
-      subtitle: 'Zero Bubble Guarantee',
-      image: IMAGES.ultraclearMain,
-      productId: 'vk-epx-301',
-      caption: 'Why 3,400+ Indian resin artists switched to Vistāra UltraClear 3:1 — self-degassing formula calibrated for 25°C–35°C.',
-      ctaText: 'Shop 1.2kg Kit • ₹1,299'
+      id: 'story-agate',
+      title: 'Agate Molds 💎',
+      subtitle: 'Fluted Geode Edges',
+      image: IMAGES.agateMold,
+      productId: 'vk-cat-mld-agat',
+      caption: 'Tear-resistant platinum silicone molds with mirror-smooth interior cavities for sparkling geode coasters.',
+      ctaText: 'Shop Agate Mold • ₹249'
     },
     {
-      id: 'story-geode',
-      title: 'Geode Luxe 💎',
-      subtitle: '24K Gold & Raw Quartz',
-      image: IMAGES.geodeCanvas,
-      productId: 'ram-keep-003',
-      caption: 'Hand-placed natural quartz clusters with our Chameleon Mica pigments.',
-      ctaText: 'Shop Geode Art • ₹3,899'
+      id: 'story-bubbles',
+      title: 'Bubble Buster 💨',
+      subtitle: 'Instant Surface Defoamer',
+      image: IMAGES.bubblesBuster,
+      productId: 'vk-cat-acc-bubb',
+      caption: 'Spray over fresh resin pours to eliminate surface bubbles in 15 seconds without heat torching.',
+      ctaText: 'Shop Defoamer • ₹349'
     },
     {
-      id: 'story-jewelry',
-      title: 'Petal Gems 🌹',
-      subtitle: '90s UV Resin Charms',
-      image: IMAGES.jewelryBezel,
-      productId: 'vk-uv-hard',
-      caption: 'Make crystal-clear botanical pendants in 90 seconds under 365nm UV light.',
-      ctaText: 'Get UV Resin • ₹649'
+      id: 'story-foil',
+      title: 'Gold Foil ✨',
+      subtitle: 'Metallic Leafing Set',
+      image: IMAGES.foilFlakes,
+      productId: 'vk-cat-pig-foil',
+      caption: 'Ultra-lightweight metallic leafing flakes that suspend in crystal epoxy without oxidizing.',
+      ctaText: 'Shop Foil Set • ₹199'
     },
     {
-      id: 'story-ceramics',
-      title: 'Potry × RAM 🏺',
-      subtitle: 'Stoneware & Glaze',
-      image: IMAGES.siennaPitcher,
-      productId: 'potry-sienna-01',
-      caption: 'Limited collaboration: Wheel-thrown Red Hook stoneware vessels with mineral ash glazes.',
-      ctaText: 'Shop Sienna Pitcher • ₹2,499'
+      id: 'story-silica',
+      title: 'Flower Drying 🌸',
+      subtitle: 'Color-Indicating Silica',
+      image: IMAGES.magicSilicaGel,
+      productId: 'vk-cat-acc-sili',
+      caption: 'Preserve wedding varmalas and botanical flowers with reusable moisture-indicating silica crystals.',
+      ctaText: 'Shop Silica Gel • ₹599'
     }
   ];
 
@@ -421,7 +440,20 @@
 
     getProductById(id, fallbackToFirst = false) {
       if (!id) return fallbackToFirst ? (this.getProducts()[0] || null) : null;
-      const aliasMap = { 'potry-sienna-pitcher': 'potry-sienna-01', 'vk-dom-101': 'vk-res-003' };
+      const aliasMap = {
+        'potry-sienna-pitcher': 'vk-cat-acc-stnd',
+        'potry-sienna-01': 'vk-cat-acc-stnd',
+        'vk-epx-301': 'vk-cat-res-301',
+        'ram-keep-001': 'vk-cat-res-201',
+        'ram-keep-002': 'vk-cat-res-301',
+        'ram-keep-003': 'vk-cat-pig-foil',
+        'ram-keep-004': 'vk-cat-mld-agat',
+        'vk-mld-geo': 'vk-cat-mld-agat',
+        'vk-uv-hard': 'vk-cat-res-uvcs',
+        'vk-epx-201': 'vk-cat-res-201',
+        'vk-res-003': 'vk-cat-res-201',
+        'vk-dom-101': 'vk-cat-res-201'
+      };
       const resolvedId = aliasMap[id] || id;
       const list = this.getProducts();
       let p = list.find(item => item.id === resolvedId) || (fallbackToFirst ? list[0] : null);
@@ -507,12 +539,12 @@
         timeAgo: 'Just now',
         tag: tag || 'ClientLove',
         badge: 'Community Memory',
-        image: image || IMAGES.floralCube,
+        image: image || IMAGES.resin201,
         caption: caption || 'Preserved our special memories forever with @resin.art.memories!',
         likes: 1,
         saved: false,
         liked: true,
-        productId: productId || 'ram-keep-001',
+        productId: productId || 'vk-cat-res-201',
         comments: []
       };
       const updated = [newPost, ...posts];
@@ -578,7 +610,7 @@
         cart.push({
           cartItemId: 'item_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6),
           itemKey,
-          productId: productId || 'vk-epx-301',
+          productId: productId || 'vk-cat-res-301',
           sku: sku || (product ? product.sku : 'VK-STD-01'),
           name: targetName,
           variantLabel: targetVariant,
@@ -1151,7 +1183,7 @@
       if (!productId) return [];
       const prod = this.getProductById(productId);
       const resolvedId = prod ? prod.id : productId;
-      const current = safeRead(STORAGE_KEYS.RECENTLY_VIEWED, ['ram-keep-001', 'vk-epx-301', 'ram-keep-002', 'vk-epx-201']);
+      const current = safeRead(STORAGE_KEYS.RECENTLY_VIEWED, ['vk-cat-res-201', 'vk-cat-res-301', 'vk-cat-acc-bubb', 'vk-cat-mld-agat']);
       const list = Array.isArray(current) ? current.filter(id => id !== resolvedId) : [];
       list.unshift(resolvedId);
       const trimmed = list.slice(0, 6);
@@ -1160,7 +1192,7 @@
     },
 
     getRecentlyViewedProducts(excludeId = null, limit = 4) {
-      const ids = safeRead(STORAGE_KEYS.RECENTLY_VIEWED, ['ram-keep-001', 'vk-epx-301', 'ram-keep-002', 'vk-epx-201']);
+      const ids = safeRead(STORAGE_KEYS.RECENTLY_VIEWED, ['vk-cat-res-201', 'vk-cat-res-301', 'vk-cat-acc-bubb', 'vk-cat-mld-agat']);
       const all = this.getProducts();
       const matched = [];
       (Array.isArray(ids) ? ids : []).forEach(id => {
@@ -1314,7 +1346,7 @@
         stageIndex: 1,
         stages: ['Order Confirmed', 'Flowers / Materials Prepped', 'Silica & Vacuum Degassing', 'Deep Optical Cast Pour', 'Diamond Polish & Dispatch'],
         items: summary.cart.map(i => ({
-          productId: i.productId || 'vk-epx-301',
+          productId: i.productId || 'vk-cat-res-301',
           name: `${i.name} (${i.variantLabel || 'Standard'})`,
           productName: i.name,
           variantLabel: i.variantLabel || 'Standard Edition',
@@ -2213,8 +2245,8 @@
             cureTime: row.cure_time || specs.cureTime || '',
             specs: specs,
             variants: Array.isArray(variants) ? variants : [],
-            image: row.image || (Array.isArray(row.gallery) && row.gallery[0]) || (Array.isArray(row.images) && row.images[0]) || IMAGES.floralCube,
-            images: (Array.isArray(row.gallery) && row.gallery.length > 0) ? row.gallery : (Array.isArray(row.images) && row.images.length > 0 ? row.images : (row.image ? [row.image] : [IMAGES.floralCube])),
+            image: row.image || (Array.isArray(row.gallery) && row.gallery[0]) || (Array.isArray(row.images) && row.images[0]) || IMAGES.resin201,
+            images: (Array.isArray(row.gallery) && row.gallery.length > 0) ? row.gallery : (Array.isArray(row.images) && row.images.length > 0 ? row.images : (row.image ? [row.image] : [IMAGES.resin201])),
             colors: Array.isArray(row.colors) ? row.colors : [],
             shapes: Array.isArray(row.shapes) ? row.shapes : [],
             sizes: Array.isArray(row.sizes) ? row.sizes : [],

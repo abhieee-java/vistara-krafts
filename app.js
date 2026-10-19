@@ -1114,24 +1114,24 @@
 
             <!-- Hero Right Showcase Card (5 cols) -->
             <div class="lg:col-span-5 min-w-0">
-              <div class="relative rounded-2xl overflow-hidden shadow-xl border border-[#b08d57]/40 bg-primary group cursor-pointer" onclick="window.navigateTo('product', 'ram-keep-001')">
+              <div class="relative rounded-2xl overflow-hidden shadow-xl border border-[#b08d57]/40 bg-primary group cursor-pointer" onclick="window.navigateTo('product', 'vk-cat-res-201')">
                 <div class="aspect-[4/4] sm:aspect-[4/3] lg:aspect-[4/4] w-full overflow-hidden">
-                  <img src="${esc(Store.IMAGES.floralCube)}" alt="Bridal Bouquet Preserved in Crystal Clear Resin" class="w-full h-full object-cover object-center scale-[1.22] group-hover:scale-[1.26] transition-transform duration-700">
+                  <img src="${esc(Store.IMAGES.resin201)}" alt="Vistāra Krafts 2:1 High-Gloss Epoxy Resin Set" class="w-full h-full object-cover object-center scale-[1.05] group-hover:scale-[1.1] transition-transform duration-700">
                 </div>
                 <div class="absolute inset-x-0 bottom-0 bg-primary/90 bg-gradient-to-t from-primary via-primary/95 to-primary/70 flex flex-col justify-end p-4 sm:p-5 text-white">
                   <div class="flex items-center justify-between gap-2 mb-1 flex-wrap">
-                    <span class="px-2.5 py-0.5 rounded-full bg-[#9e3322] text-white text-[10px] font-bold uppercase tracking-wider truncate">Most Loved on @resin.art.memories</span>
-                    <span class="font-spec-numeral text-xs bg-black/50 backdrop-blur-xs px-2.5 py-0.5 rounded-full shrink-0">★ 5.0 (418)</span>
+                    <span class="px-2.5 py-0.5 rounded-full bg-[#9e3322] text-white text-[10px] font-bold uppercase tracking-wider truncate">Studio Bestseller • Batch 2026-C</span>
+                    <span class="font-spec-numeral text-xs bg-black/50 backdrop-blur-xs px-2.5 py-0.5 rounded-full shrink-0">★ 4.9 (86)</span>
                   </div>
-                  <h2 class="font-headline-sm text-lg sm:text-2xl font-bold break-words">Eternal Varmala &amp; Rose Keepsake Block</h2>
-                  <p class="text-xs text-white/90 mt-1 break-words">Includes silica-gel cryo-drying, 24K gold leaf &amp; couple name engraving</p>
+                  <h2 class="font-headline-sm text-lg sm:text-2xl font-bold break-words">2:1 High-Gloss Epoxy Resin &amp; Hardener Set</h2>
+                  <p class="text-xs text-white/90 mt-1 break-words">Optical clarity gloss casting system with HALS UV400 non-yellowing protection</p>
                   <div class="mt-3 pt-3 border-t border-white/15 flex flex-wrap items-center justify-between gap-2">
                     <div class="flex items-baseline gap-1.5">
-                      <span class="font-spec-numeral text-lg sm:text-xl font-bold text-[#ffd79b]">₹4,499</span>
-                      <span class="font-spec-numeral text-xs line-through text-white/80">₹5,499</span>
+                      <span class="font-spec-numeral text-lg sm:text-xl font-bold text-[#ffd79b]">₹599</span>
+                      <span class="font-spec-numeral text-xs line-through text-white/80">₹699</span>
                     </div>
                     <span class="inline-flex items-center gap-1 min-h-[44px] text-xs font-semibold bg-white text-primary px-3 py-2 rounded-lg shrink-0">
-                      <span>Customize Piece</span>
+                      <span>View Formula</span>
                       <span class="material-symbols-outlined text-sm" aria-hidden="true">arrow_forward</span>
                     </span>
                   </div>
@@ -1304,7 +1304,7 @@
           <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-2">
             <div>
               <span class="font-label-sm text-[11px] uppercase tracking-widest text-[#9e3322] font-bold">Real Flower Preservation</span>
-              <h2 class="font-headline-sm text-2xl sm:text-3xl text-primary font-bold tracking-tight">21-Day Floral Transformation</h2>
+              <h2 class="font-headline-sm text-2xl sm:text-3xl text-primary font-bold tracking-tight">21-Day Cryo-Silica Floral Transformation</h2>
               <p class="text-xs sm:text-sm text-on-surface-variant mt-0.5">Drag the slider to compare real wedding flowers with our clear crystal keepsake block.</p>
             </div>
             <div class="flex items-center gap-2 self-start sm:self-auto shrink-0">
@@ -1609,10 +1609,10 @@
 
           <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
             ${[
-              { id: 'vk-epx-301', ratio: '3:1 by Weight', name: 'UltraClear 3:1 Casting', depth: 'Up to 20mm', cure: '24 Hours', bestFor: 'Coasters, Trays, Clock Faces & Sealing Petals', price: 'From ₹549' },
-              { id: 'vk-epx-201', ratio: '2:1 by Weight', name: 'River Flow 2:1 Deep Pour', depth: 'Up to 50mm', cure: '48–72 Hours', bestFor: 'Bridal Varmala Blocks & Live-Edge River Tables', price: 'From ₹2,850' },
-              { id: 'vk-res-003', ratio: '1:1 Equal Part', name: 'High-Gloss 1:1 Doming', depth: '6mm Topcoat', cure: '12 Hours', bestFor: 'Ocean Wave Lacing Cells, Canvas Art & Nameplates', price: 'From ₹799' },
-              { id: 'vk-uv-hard', ratio: '1-Part UV LED', name: 'Optical UV Hard Resin', depth: '5mm / Layer', cure: '90 Seconds', bestFor: 'Pressed Petal Pendants, Bezel Charms & Earrings', price: 'From ₹379' }
+              { id: 'vk-cat-res-301', ratio: '3:1 by Weight', name: 'UltraClear 3:1 Deep Pour', depth: 'Up to 50mm', cure: '24–36 Hours', bestFor: 'Deep Casting, Floral Encapsulation & River Tables', price: 'From ₹649' },
+              { id: 'vk-cat-res-201', ratio: '2:1 by Weight', name: 'High-Gloss 2:1 Epoxy Set', depth: 'Up to 20mm', cure: '18–24 Hours', bestFor: 'Coasters, Trays, Clock Faces & Gloss Topcoats', price: 'From ₹599' },
+              { id: 'vk-cat-res-uvcs', ratio: '1-Part UV LED', name: 'Optical UV Hard Cure Resin', depth: '5mm / Layer', cure: '90 Seconds', bestFor: 'Pressed Petal Jewelry, Bezels & Doming Accents', price: 'From ₹199' },
+              { id: 'vk-cat-acc-bubb', ratio: 'Fine-Mist Spray', name: 'Bubbles Buster Defoamer', depth: 'Instant Action', cure: 'Immediate', bestFor: 'Bubble Release & Zero-Void Surface Finishing', price: 'From ₹349' }
             ].map(sys => `
               <div class="ram-card p-4 bg-white flex flex-col justify-between gap-3">
                 <div class="flex flex-col gap-1.5">
@@ -1679,41 +1679,41 @@
     if (goal === 'preserve') {
       return `
         <div class="flex items-center gap-3">
-          <img src="${esc(Store.IMAGES.floralCube)}" alt="Varmala Block" class="w-12 h-12 rounded-lg object-cover shrink-0">
+          <img src="${esc(Store.IMAGES.magicSilicaGel || Store.IMAGES.floralCube)}" alt="Silica Gel Crystals" class="w-12 h-12 rounded-lg object-cover shrink-0">
           <div>
-            <span class="text-[10px] uppercase tracking-wider text-[#ffd79b] font-bold">98% Match for Brides &amp; Anniversaries</span>
-            <p class="text-xs sm:text-sm font-bold text-white">Eternal Varmala &amp; Bridal Bouquet 12" Time-Capsule Block (₹4,499)</p>
+            <span class="text-[10px] uppercase tracking-wider text-[#ffd79b] font-bold">98% Match for Bridal Keepsake Preparation</span>
+            <p class="text-xs sm:text-sm font-bold text-white">Magic Flower Drying Silica Gel Crystals (1000g) (₹599)</p>
           </div>
         </div>
         <div class="flex items-center gap-2 shrink-0 w-full sm:w-auto">
-          <button type="button" onclick="window.navigateTo('product', 'ram-keep-001')" class="flex-1 sm:flex-initial min-h-[44px] px-4 py-2 rounded-lg bg-[#9e3322] text-white text-xs font-bold cursor-pointer">Customize Now</button>
+          <button type="button" onclick="window.navigateTo('product', 'vk-cat-acc-sili')" class="flex-1 sm:flex-initial min-h-[44px] px-4 py-2 rounded-lg bg-[#9e3322] text-white text-xs font-bold cursor-pointer">View Details</button>
         </div>
       `;
     }
     if (goal === 'decor') {
       return `
         <div class="flex items-center gap-3">
-          <img src="${esc(Store.IMAGES.oceanWave)}" alt="Ocean Tray" class="w-12 h-12 rounded-lg object-cover shrink-0">
+          <img src="${esc(Store.IMAGES.agateMold || Store.IMAGES.oceanWave)}" alt="Agate Mold" class="w-12 h-12 rounded-lg object-cover shrink-0">
           <div>
-            <span class="text-[10px] uppercase tracking-wider text-[#ffd79b] font-bold">Top Hand-Poured Home &amp; Gift Piece</span>
-            <p class="text-xs sm:text-sm font-bold text-white">Maldives Ocean Wave Burma Teak Tray &amp; Coasters (₹2,199)</p>
+            <span class="text-[10px] uppercase tracking-wider text-[#ffd79b] font-bold">Top Handcrafted Mold for Coasters</span>
+            <p class="text-xs sm:text-sm font-bold text-white">Fluted Edge Agate Geode Coaster Silicone Mold (₹249)</p>
           </div>
         </div>
         <div class="flex items-center gap-2 shrink-0 w-full sm:w-auto">
-          <button type="button" onclick="window.navigateTo('product', 'ram-keep-002')" class="flex-1 sm:flex-initial min-h-[44px] px-4 py-2 rounded-lg bg-secondary text-white text-xs font-bold cursor-pointer">View Piece</button>
+          <button type="button" onclick="window.navigateTo('product', 'vk-cat-mld-agat')" class="flex-1 sm:flex-initial min-h-[44px] px-4 py-2 rounded-lg bg-secondary text-white text-xs font-bold cursor-pointer">View Mold</button>
         </div>
       `;
     }
     return `
       <div class="flex items-center gap-3">
-        <img src="${esc(Store.IMAGES.ultraclearMain)}" alt="UltraClear 3:1" class="w-12 h-12 rounded-lg object-cover shrink-0">
+        <img src="${esc(Store.IMAGES.resin301 || Store.IMAGES.ultraclearMain)}" alt="Deep Pour 3:1" class="w-12 h-12 rounded-lg object-cover shrink-0">
         <div>
           <span class="text-[10px] uppercase tracking-wider text-[#ffd79b] font-bold">#1 Studio Formulation</span>
-          <p class="text-xs sm:text-sm font-bold text-white">UltraClear 3:1 Casting Resin 1.2kg Studio Kit (₹1,299)</p>
+          <p class="text-xs sm:text-sm font-bold text-white">3:1 Deep Pour &amp; Casting Epoxy Resin System (₹649)</p>
         </div>
       </div>
       <div class="flex items-center gap-2 shrink-0 w-full sm:w-auto">
-        <button type="button" onclick="window.navigateTo('product', 'vk-epx-301')" class="flex-1 sm:flex-initial min-h-[44px] px-4 py-2 rounded-lg bg-secondary text-white text-xs font-bold cursor-pointer">View Specs</button>
+        <button type="button" onclick="window.navigateTo('product', 'vk-cat-res-301')" class="flex-1 sm:flex-initial min-h-[44px] px-4 py-2 rounded-lg bg-secondary text-white text-xs font-bold cursor-pointer">View Specs</button>
       </div>
     `;
   }
@@ -1782,17 +1782,11 @@
   function renderCatalogView() {
     const filtered = getFilteredCatalogProducts();
     const visible = filtered.slice(0, AppState.catalogVisibleCount);
-    const categories = [
-      { id: 'all', label: `All (${Store.getProducts().length})` },
-      { id: 'keepsakes', label: '✨ Floral & Art Keepsakes' },
-      { id: 'casting', label: 'Casting 3:1' },
-      { id: 'deep_pour', label: 'Deep Pour 2:1' },
-      { id: 'doming', label: 'Doming 1:1' },
-      { id: 'uv_resin', label: 'UV Jewelry' },
-      { id: 'pigments', label: 'Mica Pigments' },
-      { id: 'molds', label: 'Silicone Molds' },
-      { id: 'ceramics', label: 'Stoneware Vessels' }
-    ];
+
+    const hasActiveFilters = AppState.catalogCategory !== 'all' ||
+      AppState.catalogRatioFilter !== 'all' ||
+      AppState.catalogMaxPrice < 12000 ||
+      Boolean(AppState.catalogSearch);
 
     return `
       <div class="route-view-enter flex flex-col w-full max-w-7xl mx-auto px-3 sm:px-8 py-3 sm:py-5 pb-44 sm:pb-28 gap-3 sm:gap-4">
@@ -1810,83 +1804,74 @@
           </div>
         </nav>
 
-        <!-- 2. Catalogue Header & Dedicated Properly Aligned Certification Badge -->
-        <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-2.5 pt-0.5">
-          <div class="flex flex-col gap-1 max-w-2xl min-w-0">
-            <h1 class="font-headline-lg text-2xl sm:text-3xl lg:text-4xl text-primary font-bold tracking-tight leading-snug break-words">
-              Keepsake Art &amp; Epoxy Resin Supplies
-            </h1>
-            <p class="text-xs sm:text-sm text-on-surface-variant leading-relaxed">
-              Handcrafted flower preservation, ocean decor, and quality 3:1, 2:1 &amp; UV resin formulas.
-            </p>
-          </div>
-          <!-- Separate Properly Aligned Certification Badge Element -->
-          <div class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-surface-container-low border border-[#e4e0d8] text-xs text-primary font-semibold self-start sm:self-end shrink-0 shadow-2xs">
-            <span class="material-symbols-outlined text-secondary text-base" aria-hidden="true">verified</span>
-            <span>Tested &amp; Certified • Batch 2026-C</span>
-          </div>
+        <!-- 2. Clean, Uncluttered Catalogue Header -->
+        <div class="flex flex-col gap-1 max-w-2xl min-w-0 pt-0.5">
+          <h1 class="font-headline-lg text-2xl sm:text-3xl lg:text-4xl text-primary font-bold tracking-tight leading-snug break-words">
+            Keepsake Art &amp; Epoxy Resin Supplies
+          </h1>
+          <p class="text-xs sm:text-sm text-on-surface-variant leading-relaxed">
+            Handcrafted flower preservation, ocean decor, and quality 3:1, 2:1 &amp; UV resin formulas.
+          </p>
         </div>
 
-        <!-- 3. Distinct Category Filter Rail -->
-        <div class="flex flex-col gap-1.5 pt-1">
-          <div class="flex items-center justify-between">
-            <span class="text-[11px] font-bold uppercase tracking-wider text-on-surface-variant/90">Categories</span>
-            <span class="text-[10px] text-outline hidden sm:inline">Swipe horizontally to explore</span>
-          </div>
-          <div class="relative w-full min-w-0">
-            <div class="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5 scroll-smooth overscroll-x-contain touch-pan-x [mask-image:linear-gradient(to_right,black_calc(100%-28px),transparent)] sm:[mask-image:none]">
-              ${categories.map(cat => `
-                <button type="button" onclick="window.setCatalogCategory('${cat.id}')" class="h-8.5 px-3.5 rounded-full font-label-sm text-xs whitespace-nowrap shrink-0 transition-all cursor-pointer ${AppState.catalogCategory === cat.id ? 'bg-primary text-on-primary font-bold shadow-2xs' : 'bg-surface-container-low text-primary border border-[#e4e0d8] hover:border-secondary font-medium'}">
-                  ${esc(cat.label)}
+        <!-- 3. Search & Specs Filter Controls (Compact on Mobile, Right Above Product Grid) -->
+        <div class="md:sticky md:top-[93px] z-30 bg-surface/95 backdrop-blur-md py-1.5 flex flex-col gap-2 w-full min-w-0">
+          <div class="flex items-center gap-2 w-full min-w-0">
+            <!-- Primary Search Input -->
+            <div class="relative flex-1 min-w-0">
+              <label for="catalog-search-input" class="sr-only">Search catalogue products</label>
+              <span class="material-symbols-outlined text-on-surface-variant text-[18px] absolute left-3 top-2.5 pointer-events-none" aria-hidden="true">search</span>
+              <input id="catalog-search-input" type="text" aria-label="Search catalogue products" value="${esc(AppState.catalogSearch)}" oninput="window.setCatalogSearch(this.value)" placeholder="Search keepsakes, resin, pigments..." class="w-full h-10 pl-9 pr-8 rounded-xl bg-white border border-[#e4e0d8] shadow-2xs text-xs sm:text-sm text-primary placeholder:text-outline/70 focus:outline-none focus:border-primary">
+              ${AppState.catalogSearch ? `
+                <button type="button" aria-label="Clear search" onclick="window.setCatalogSearch('')" class="w-8 h-8 absolute right-1 top-1 flex items-center justify-center text-outline hover:text-primary cursor-pointer">
+                  <span class="material-symbols-outlined text-sm" aria-hidden="true">close</span>
                 </button>
-              `).join('')}
+              ` : ''}
             </div>
-          </div>
-        </div>
 
-        <!-- 4. Distinct Gifting Shortcuts Rail (Cleanly Separated) -->
-        <div class="flex items-center gap-2 overflow-x-auto no-scrollbar py-1 shrink-0 border-t border-[#e4e0d8]/60 pt-2">
-          <span class="text-[11px] font-bold uppercase tracking-wider text-secondary flex items-center gap-1 shrink-0">
-            <span class="material-symbols-outlined text-[15px]" aria-hidden="true">featured_seasonal_and_gifts</span>
-            <span>Gifts:</span>
-          </span>
-          <button type="button" onclick="window.setFeedPersona('masculine')" class="h-8 px-3 rounded-full text-xs font-bold transition flex items-center gap-1.5 shrink-0 cursor-pointer ${AppState.feedPersona === 'masculine' || AppState.catalogSort === 'gifts_him' ? 'bg-primary text-white shadow-2xs' : 'bg-surface-container-low text-primary border border-[#e4e0d8] hover:border-secondary'}">
-            <span>👔 For Him</span>
-          </button>
-          <button type="button" onclick="window.setFeedPersona('feminine')" class="h-8 px-3 rounded-full text-xs font-bold transition flex items-center gap-1.5 shrink-0 cursor-pointer ${AppState.feedPersona === 'feminine' || AppState.catalogSort === 'gifts_her' ? 'bg-primary text-white shadow-2xs' : 'bg-surface-container-low text-primary border border-[#e4e0d8] hover:border-secondary'}">
-            <span>🌸 For Her</span>
-          </button>
-          <button type="button" onclick="window.setCatalogSort('gifting')" class="h-8 px-3 rounded-full text-xs font-bold transition flex items-center gap-1.5 shrink-0 cursor-pointer ${AppState.catalogSort === 'gifting' ? 'bg-secondary text-white shadow-2xs' : 'bg-surface-container-low text-primary border border-[#e4e0d8] hover:border-secondary'}">
-            <span class="material-symbols-outlined text-[14px]" aria-hidden="true">featured_seasonal_and_gifts</span>
-            <span>🎁 Gift Sets</span>
-          </button>
-        </div>
-
-        <!-- 5. Search (Primary Control) & Specs Filter (Compact Secondary Control) -->
-        <div class="md:sticky md:top-[93px] z-30 bg-surface/95 backdrop-blur-md py-1.5 flex items-center gap-2 w-full min-w-0">
-          <!-- Primary Search Input -->
-          <div class="relative flex-1 min-w-0">
-            <label for="catalog-search-input" class="sr-only">Search catalogue products</label>
-            <span class="material-symbols-outlined text-on-surface-variant text-[18px] absolute left-3 top-2.5 pointer-events-none" aria-hidden="true">search</span>
-            <input id="catalog-search-input" type="text" aria-label="Search catalogue products" value="${esc(AppState.catalogSearch)}" oninput="window.setCatalogSearch(this.value)" placeholder="Search keepsakes, resin, pigments..." class="w-full h-10 pl-9 pr-8 rounded-xl bg-white border border-[#e4e0d8] shadow-2xs text-xs sm:text-sm text-primary placeholder:text-outline/70 focus:outline-none focus:border-primary">
-            ${AppState.catalogSearch ? `
-              <button type="button" aria-label="Clear search" onclick="window.setCatalogSearch('')" class="w-8 h-8 absolute right-1 top-1 flex items-center justify-center text-outline hover:text-primary cursor-pointer">
-                <span class="material-symbols-outlined text-sm" aria-hidden="true">close</span>
-              </button>
-            ` : ''}
+            <!-- Compact Specs & Category Filter Trigger -->
+            <button type="button" onclick="window.toggleCatalogFilterDrawer(true)" class="h-10 px-3 sm:px-3.5 rounded-xl bg-surface-container-low hover:bg-surface-container border border-[#e4e0d8] hover:border-primary text-primary font-label-sm text-xs font-semibold flex items-center justify-center gap-1.5 transition-all cursor-pointer shrink-0 shadow-2xs">
+              <span class="material-symbols-outlined text-[17px] text-secondary" aria-hidden="true">tune</span>
+              <span class="whitespace-nowrap">Specs Filter</span>
+              ${hasActiveFilters ? `
+                <span class="w-2 h-2 rounded-full bg-[#9e3322]"></span>
+              ` : ''}
+            </button>
           </div>
 
-          <!-- Compact Secondary Specs Filter -->
-          <button type="button" onclick="window.toggleCatalogFilterDrawer(true)" class="h-10 px-3 sm:px-3.5 rounded-xl bg-surface-container-low hover:bg-surface-container border border-[#e4e0d8] hover:border-primary text-primary font-label-sm text-xs font-semibold flex items-center justify-center gap-1.5 transition-all cursor-pointer shrink-0 shadow-2xs">
-            <span class="material-symbols-outlined text-[17px] text-secondary" aria-hidden="true">tune</span>
-            <span class="whitespace-nowrap">Specs Filter</span>
-            ${(AppState.catalogRatioFilter !== 'all' || AppState.catalogMaxPrice < 12000) ? `
-              <span class="w-1.5 h-1.5 rounded-full bg-[#9e3322]"></span>
-            ` : ''}
-          </button>
+          <!-- Active Filter Tags (if any active filters applied) -->
+          ${hasActiveFilters ? `
+            <div class="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5">
+              ${AppState.catalogCategory !== 'all' ? `
+                <button type="button" onclick="window.setCatalogCategory('all')" class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-primary text-white text-[11px] font-medium shrink-0 cursor-pointer">
+                  <span>Category: ${esc(AppState.catalogCategory)}</span>
+                  <span class="material-symbols-outlined text-[12px]" aria-hidden="true">close</span>
+                </button>
+              ` : ''}
+              ${AppState.catalogRatioFilter !== 'all' ? `
+                <button type="button" onclick="window.setCatalogRatio('all')" class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-primary text-white text-[11px] font-medium shrink-0 cursor-pointer">
+                  <span>Ratio: ${esc(AppState.catalogRatioFilter)}</span>
+                  <span class="material-symbols-outlined text-[12px]" aria-hidden="true">close</span>
+                </button>
+              ` : ''}
+              ${AppState.catalogMaxPrice < 12000 ? `
+                <button type="button" onclick="window.setCatalogMaxPrice(12000)" class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-primary text-white text-[11px] font-medium shrink-0 cursor-pointer">
+                  <span>Max: ${formatINR(AppState.catalogMaxPrice)}</span>
+                  <span class="material-symbols-outlined text-[12px]" aria-hidden="true">close</span>
+                </button>
+              ` : ''}
+              ${AppState.catalogSearch ? `
+                <button type="button" onclick="window.setCatalogSearch('')" class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-primary text-white text-[11px] font-medium shrink-0 cursor-pointer">
+                  <span>"${esc(AppState.catalogSearch)}"</span>
+                  <span class="material-symbols-outlined text-[12px]" aria-hidden="true">close</span>
+                </button>
+              ` : ''}
+              <button type="button" onclick="window.resetCatalogFilters()" class="text-[11px] text-[#9e3322] font-semibold underline shrink-0 px-1 cursor-pointer">Reset All</button>
+            </div>
+          ` : ''}
         </div>
 
-        <!-- 6. Streamlined Metadata & Sort Bar -->
+        <!-- 4. Streamlined Metadata & Sort Bar (Immediately above product grid) -->
         <div class="flex items-center justify-between gap-2 text-xs py-1 border-b border-[#e4e0d8]/80">
           <div class="flex items-center gap-1.5 min-w-0">
             <span class="font-spec-numeral font-bold text-primary shrink-0">${filtered.length} Products</span>
@@ -1924,7 +1909,7 @@
           </div>
         </div>
 
-        <!-- 7. Product Grid or Empty State -->
+        <!-- 5. Product Grid or Empty State -->
         ${filtered.length === 0 ? `
           <div class="ram-card p-10 text-center flex flex-col items-center gap-3.5 my-4 bg-white">
             <div class="relative w-24 h-24 flex items-center justify-center lottie-anim-float">
@@ -1966,6 +1951,46 @@
             </button>
           </div>
         ` : ''}
+
+        <!-- 6. Quality & Trust Section (Moved from Header to below Product Grid) -->
+        <section class="mt-8 pt-8 border-t border-[#e4e0d8] flex flex-col gap-5">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div class="flex items-center gap-2">
+              <div class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-surface-container-low border border-[#e4e0d8] text-xs text-primary font-bold shadow-2xs">
+                <span class="material-symbols-outlined text-secondary text-base" aria-hidden="true">verified</span>
+                <span>Tested &amp; Certified • Batch 2026-C</span>
+              </div>
+              <span class="text-xs text-on-surface-variant font-medium hidden sm:inline">• ISO 9001:2015 Chemical Atelier Quality Assurance</span>
+            </div>
+            <button type="button" onclick="window.openTdsModal('tds')" class="self-start sm:self-auto text-xs text-secondary hover:underline font-semibold flex items-center gap-1">
+              <span>View Full Lab COA Certificate</span>
+              <span class="material-symbols-outlined text-sm" aria-hidden="true">arrow_forward</span>
+            </button>
+          </div>
+
+          <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+            <div class="p-4 rounded-xl bg-white border border-[#e4e0d8] shadow-2xs flex flex-col gap-1.5">
+              <span class="material-symbols-outlined text-[#9e3322] text-xl" aria-hidden="true">eco</span>
+              <h4 class="text-xs font-bold text-primary">Zero VOC &amp; Low Odor</h4>
+              <p class="text-[11px] text-on-surface-variant leading-relaxed">ASTM D6866 tested formula, safe for residential artist studios and boutiques.</p>
+            </div>
+            <div class="p-4 rounded-xl bg-white border border-[#e4e0d8] shadow-2xs flex flex-col gap-1.5">
+              <span class="material-symbols-outlined text-secondary text-xl" aria-hidden="true">shield</span>
+              <h4 class="text-xs font-bold text-primary">HALS UV-400 Protection</h4>
+              <p class="text-[11px] text-on-surface-variant leading-relaxed">Dual UV inhibitors prevent yellowing and keep deep castings clear for 10+ years.</p>
+            </div>
+            <div class="p-4 rounded-xl bg-white border border-[#e4e0d8] shadow-2xs flex flex-col gap-1.5">
+              <span class="material-symbols-outlined text-primary text-xl" aria-hidden="true">visibility</span>
+              <h4 class="text-xs font-bold text-primary">99.4% Optical Transmission</h4>
+              <p class="text-[11px] text-on-surface-variant leading-relaxed">Crystal refractive index matching museum display glass with zero bubble entrapment.</p>
+            </div>
+            <div class="p-4 rounded-xl bg-white border border-[#e4e0d8] shadow-2xs flex flex-col gap-1.5">
+              <span class="material-symbols-outlined text-[#266b4e] text-xl" aria-hidden="true">local_shipping</span>
+              <h4 class="text-xs font-bold text-primary">Pan-India Express Transit</h4>
+              <p class="text-[11px] text-on-surface-variant leading-relaxed">Doorstep 24h floral pickup and insured express shipping across 19,000+ PIN codes.</p>
+            </div>
+          </div>
+        </section>
       </div>
     `;
   }
@@ -2688,7 +2713,7 @@
       depthCm: AppState.calcDepth,
       ratioSystem: AppState.calcSystem
     });
-    const recommendedProdId = AppState.calcSystem === '2:1' ? 'vk-epx-201' : (AppState.calcSystem === '1:1' ? 'vk-res-003' : 'vk-epx-301');
+    const recommendedProdId = AppState.calcSystem === '2:1' ? 'vk-cat-res-201' : (AppState.calcSystem === '1:1' ? 'vk-cat-res-201' : 'vk-cat-res-301');
     const recommendedProd = Store.getProductById(recommendedProdId);
 
     return `
@@ -4781,6 +4806,32 @@
   function syncGlobalFilterDrawerDom() {
     const drawer = document.getElementById('global-filter-drawer');
     if (!drawer) return;
+
+    // Sync Category buttons in drawer
+    drawer.querySelectorAll('button[onclick^="window.setCatalogCategory"]').forEach(btn => {
+      const match = (btn.getAttribute('onclick') || '').match(/'([^']+)'/);
+      const btnCat = match ? match[1] : '';
+      if (btnCat === AppState.catalogCategory) {
+        btn.className = 'min-h-[42px] px-3 py-2 rounded-lg bg-primary text-white text-xs font-semibold cursor-pointer';
+      } else {
+        btn.className = 'min-h-[42px] px-3 py-2 rounded-lg bg-surface-container-high text-primary text-xs font-semibold cursor-pointer hover:bg-surface-container-highest';
+      }
+    });
+
+    // Sync Gifting buttons in drawer
+    drawer.querySelectorAll('#drawer-gifting-container button').forEach(btn => {
+      const type = btn.getAttribute('data-drawer-gifting');
+      const isActive = (type === 'masculine' && (AppState.feedPersona === 'masculine' || AppState.catalogSort === 'gifts_him')) ||
+                       (type === 'feminine' && (AppState.feedPersona === 'feminine' || AppState.catalogSort === 'gifts_her')) ||
+                       (type === 'gifting' && AppState.catalogSort === 'gifting');
+      if (isActive) {
+        btn.className = 'min-h-[42px] px-2.5 py-2 rounded-lg bg-primary text-white text-xs font-bold cursor-pointer flex items-center justify-center gap-1';
+      } else {
+        btn.className = 'min-h-[42px] px-2.5 py-2 rounded-lg bg-surface-container-high text-primary text-xs font-semibold cursor-pointer flex items-center justify-center gap-1 hover:bg-surface-container-highest';
+      }
+    });
+
+    // Sync Ratio buttons in drawer
     drawer.querySelectorAll('button[onclick^="window.setCatalogRatio"]').forEach(btn => {
       const match = (btn.getAttribute('onclick') || '').match(/'([^']+)'/);
       const btnRatio = match ? match[1] : '';
@@ -4790,6 +4841,7 @@
         btn.className = 'min-h-[44px] py-2.5 rounded-lg bg-surface-container-low text-primary font-spec-numeral text-xs font-semibold border border-[#e4e0d8] cursor-pointer';
       }
     });
+
     const rangeInput = drawer.querySelector('input[type="range"]');
     if (rangeInput) rangeInput.value = String(AppState.catalogMaxPrice);
     const labelEl = document.getElementById('drawer-price-label');
@@ -4800,6 +4852,7 @@
   window.setCatalogCategory = function (cat) {
     AppState.catalogCategory = cat;
     AppState.catalogVisibleCount = 8;
+    syncGlobalFilterDrawerDom();
     renderActiveView();
   };
 
@@ -4815,6 +4868,7 @@
 
   window.setCatalogSort = function (sortVal) {
     AppState.catalogSort = sortVal;
+    syncGlobalFilterDrawerDom();
     renderActiveView();
   };
 
@@ -4855,9 +4909,14 @@
   window.toggleCatalogFilterDrawer = function (show) {
     const drawer = document.getElementById('global-filter-drawer');
     if (!drawer) return;
-    syncGlobalFilterDrawerDom();
-    drawer.classList.toggle('hidden', !show);
-    syncBodyModalLock();
+    if (show) {
+      syncGlobalFilterDrawerDom();
+      drawer.classList.remove('hidden');
+      syncBodyModalLock(true);
+    } else {
+      drawer.classList.add('hidden');
+      syncBodyModalLock(false);
+    }
   };
 
   // PDP handlers

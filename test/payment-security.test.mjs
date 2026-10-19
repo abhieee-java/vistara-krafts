@@ -31,7 +31,8 @@ await test('Security: Client-tampered price of ₹1 is completely ignored and ov
   const result = await PriceCalculator.calculateAuthoritativeOrder({
     items: [
       {
-        productId: 'ram-keep-001', // Authoritative price is ₹4,499
+        productId: 'vk-cat-res-301',
+        variantId: 'var-301-1200g', // Authoritative price is ₹1,749
         qty: 1,
         price: 1, // Attacker tamper attempt: ₹1
         total: 1,
@@ -40,27 +41,28 @@ await test('Security: Client-tampered price of ₹1 is completely ignored and ov
     ]
   });
 
-  assert.strictEqual(result.items[0].unitPrice, 4499, 'Unit price must be ₹4,499 from database');
-  assert.strictEqual(result.subtotal, 4499, 'Subtotal must be ₹4,499');
+  assert.strictEqual(result.items[0].unitPrice, 1749, 'Unit price must be ₹1,749 from database');
+  assert.strictEqual(result.subtotal, 1749, 'Subtotal must be ₹1,749');
   assert.strictEqual(result.isFreeShipping, true, 'Orders >= ₹1,499 qualify for free shipping');
   assert.strictEqual(result.shippingFee, 0, 'Shipping must be ₹0');
-  assert.strictEqual(result.total, 4499, 'Payable amount must be ₹4,499, NOT ₹1');
-  assert.strictEqual(result.amountPaise, 449900, 'Razorpay amount must be 449900 paise');
+  assert.strictEqual(result.total, 1749, 'Payable amount must be ₹1,749, NOT ₹1');
+  assert.strictEqual(result.amountPaise, 174900, 'Razorpay amount must be 174900 paise');
 });
 
 await test('Security: Multiple items price tampering with ₹0 and negative numbers are rejected or overridden', async () => {
   const result = await PriceCalculator.calculateAuthoritativeOrder({
     items: [
-      { productId: 'vk-epx-301', qty: 2, price: 0 }, // Authoritative ₹1,299
-      { productId: 'vk-mld-geo', qty: 1, price: -500 } // Authoritative ₹449
+      { productId: 'vk-cat-res-301', qty: 2, price: 0 }, // Authoritative ₹649
+      { productId: 'vk-cat-mld-agat', qty: 1, price: -500 } // Authoritative ₹249
     ]
   });
 
-  // 2 * 1299 = 2598; 1 * 449 = 449; Subtotal = 3047
-  assert.strictEqual(result.subtotal, 3047, 'Subtotal must correctly aggregate authoritative prices');
-  assert.strictEqual(result.total, 3047, 'Payable amount must ignore client tampering');
+  // 2 * 649 = 1298; 1 * 249 = 249; Subtotal = 1547
+  assert.strictEqual(result.subtotal, 1547, 'Subtotal must correctly aggregate authoritative prices');
+  assert.strictEqual(result.total, 1547, 'Payable amount must ignore client tampering');
 });
 
+// ----------------------------------------------------------------------------
 // ----------------------------------------------------------------------------
 // 2. Quantity & Validation Boundary Tests
 // ----------------------------------------------------------------------------
@@ -68,7 +70,7 @@ await test('Security: Quantity zero, negative quantity, or excessive quantity (>
   await assert.rejects(
     async () => {
       await PriceCalculator.calculateAuthoritativeOrder({
-        items: [{ productId: 'vk-epx-301', qty: 0 }]
+        items: [{ productId: 'vk-cat-res-301', qty: 0 }]
       });
     },
     /invalid quantity/,
@@ -78,7 +80,7 @@ await test('Security: Quantity zero, negative quantity, or excessive quantity (>
   await assert.rejects(
     async () => {
       await PriceCalculator.calculateAuthoritativeOrder({
-        items: [{ productId: 'vk-epx-301', qty: -5 }]
+        items: [{ productId: 'vk-cat-res-301', qty: -5 }]
       });
     },
     /invalid quantity/,
@@ -88,7 +90,7 @@ await test('Security: Quantity zero, negative quantity, or excessive quantity (>
   await assert.rejects(
     async () => {
       await PriceCalculator.calculateAuthoritativeOrder({
-        items: [{ productId: 'vk-epx-301', qty: 90 }] // Fallback stock is 50
+        items: [{ productId: 'vk-cat-res-301', qty: 90 }] // Fallback stock is 40
       });
     },
     /insufficient stock/,
@@ -120,39 +122,39 @@ await test('Security: Empty items array or non-existent product ID is strictly r
 // 3. Volume Tier Discount & Coupon Rules
 // ----------------------------------------------------------------------------
 await test('Business Logic: Volume tier discounts are calculated server-side accurately', async () => {
-  // UltraClear 3:1 (vk-epx-301) base price 1299
-  // 3-5 units: ₹1,199 / unit (8% off)
-  // 6+ units: ₹1,089 / unit (16% off)
+  // Deep Pour 3:1 (vk-cat-res-301) base price 649
+  // 3-5 units: Math.round(649 * 0.92) = 597
+  // 6+ units: Math.round(649 * 0.84) = 545
   const calc3 = await PriceCalculator.calculateAuthoritativeOrder({
-    items: [{ productId: 'vk-epx-301', qty: 3 }]
+    items: [{ productId: 'vk-cat-res-301', qty: 3 }]
   });
-  assert.strictEqual(calc3.items[0].unitPrice, 1199, '3 units should trigger ₹1,199/unit volume tier');
-  assert.strictEqual(calc3.subtotal, 3597, 'Subtotal should be 3 * 1199 = 3597');
+  assert.strictEqual(calc3.items[0].unitPrice, 597, '3 units should trigger ₹597/unit volume tier');
+  assert.strictEqual(calc3.subtotal, 1791, 'Subtotal should be 3 * 597 = 1791');
 
   const calc6 = await PriceCalculator.calculateAuthoritativeOrder({
-    items: [{ productId: 'vk-epx-301', qty: 6 }]
+    items: [{ productId: 'vk-cat-res-301', qty: 6 }]
   });
-  assert.strictEqual(calc6.items[0].unitPrice, 1089, '6 units should trigger ₹1,089/unit volume tier');
-  assert.strictEqual(calc6.subtotal, 6534, 'Subtotal should be 6 * 1089 = 6534');
+  assert.strictEqual(calc6.items[0].unitPrice, 545, '6 units should trigger ₹545/unit volume tier');
+  assert.strictEqual(calc6.subtotal, 3270, 'Subtotal should be 6 * 545 = 3270');
 });
 
 await test('Business Logic: Coupon STUDIO10 (10% off, min order 1500) applies only when threshold is satisfied', async () => {
-  // vk-epx-301 = 1299 (below 1500 threshold)
+  // 1 unit vk-cat-res-301 = 649 (below 1500 threshold)
   const calcUnder = await PriceCalculator.calculateAuthoritativeOrder({
-    items: [{ productId: 'vk-epx-301', qty: 1 }],
+    items: [{ productId: 'vk-cat-res-301', qty: 1 }],
     couponCode: 'STUDIO10'
   });
   assert.strictEqual(calcUnder.couponDiscount, 0, 'No discount should apply if subtotal < minOrder');
   assert.strictEqual(calcUnder.shippingFee, 99, 'Shipping should be ₹99 for subtotal < 1499');
 
-  // 2 units = 2598 (above 1500 threshold)
+  // 3 units vk-cat-res-301 = 3 * 597 = 1791 (above 1500 threshold)
   const calcOver = await PriceCalculator.calculateAuthoritativeOrder({
-    items: [{ productId: 'vk-epx-301', qty: 2 }],
+    items: [{ productId: 'vk-cat-res-301', qty: 3 }],
     couponCode: 'STUDIO10'
   });
-  assert.strictEqual(calcOver.couponDiscount, 260, '10% of 2598 is 260');
+  assert.strictEqual(calcOver.couponDiscount, 179, '10% of 1791 is 179');
   assert.strictEqual(calcOver.shippingFee, 0, 'Shipping should be free for subtotal >= 1499');
-  assert.strictEqual(calcOver.total, 2598 - 260, 'Total should be 2338');
+  assert.strictEqual(calcOver.total, 1791 - 179, 'Total should be 1612');
 });
 
 // ----------------------------------------------------------------------------
@@ -165,15 +167,15 @@ await test('Razorpay: Successfully creates real order on Razorpay Test Gateway w
     address: '42 Craft Enclave, Indiranagar',
     pincode: '560001',
     email: 'aanya.sharma@test.com',
-    items: [{ productId: 'vk-epx-301', qty: 1 }],
+    items: [{ productId: 'vk-cat-res-201', qty: 1 }],
     couponCode: ''
   });
 
   assert.strictEqual(result.success, true, 'Order creation must succeed');
   assert.ok(result.orderId.startsWith('VK-'), 'orderId must start with VK-');
   assert.ok(result.razorpayOrderId.startsWith('order_'), 'razorpayOrderId must be a valid Razorpay order reference');
-  // Subtotal 1299 + shipping 99 = 1398 -> 139800 paise
-  assert.strictEqual(result.amount, 139800, 'Amount must match server calculated total in paise');
+  // Subtotal 599 + shipping 99 = 698 -> 69800 paise
+  assert.strictEqual(result.amount, 69800, 'Amount must match server calculated total in paise');
   assert.strictEqual(result.keyId, CONFIG.RAZORPAY_KEY_ID, 'Returned Key ID must match test mode key');
 });
 
@@ -269,7 +271,7 @@ await test('OrderService: verifyPayment captures valid payment, checks currency,
     pincode: '560001',
     email: 'kabir@test.com',
     userId: 'usr_patron_test_123',
-    items: [{ productId: 'vk-epx-301', qty: 1 }],
+    items: [{ productId: 'vk-cat-res-201', qty: 1 }],
     couponCode: ''
   });
 
@@ -391,7 +393,7 @@ await test('Webhook: Amount and currency mismatch rejected; failed event cannot 
     address: '12 Palm Grove, Kochi',
     pincode: '682001',
     email: 'pooja@test.com',
-    items: [{ productId: 'vk-mld-geo', qty: 1 }]
+    items: [{ productId: 'vk-cat-mld-agat', qty: 1 }]
   });
 
   const rzpOrderId = orderRes.razorpayOrderId;
@@ -483,7 +485,7 @@ await test('Webhook: Amount and currency mismatch rejected; failed event cannot 
     phone: '9988776655',
     address: '12 Palm Grove',
     pincode: '682001',
-    items: [{ productId: 'vk-mld-geo', qty: 1 }]
+    items: [{ productId: 'vk-cat-mld-agat', qty: 1 }]
   });
   assert.ok(reLookup.orderId);
 });
