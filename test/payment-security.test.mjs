@@ -157,6 +157,125 @@ await test('Business Logic: Coupon STUDIO10 (10% off, min order 1500) applies on
   assert.strictEqual(calcOver.total, 1791 - 179, 'Total should be 1612');
 });
 
+await test('Security & Validation: Order checkout strictly rejects invalid, disabled, or expired coupon codes', async () => {
+  // 1. Non-existent coupon code
+  await assert.rejects(
+    async () => {
+      await OrderService.createCheckoutOrder({
+        name: 'Pooja Nair',
+        phone: '9876543210',
+        address: '14 MG Road',
+        pincode: '560001',
+        items: [{ productId: 'vk-cat-res-301', qty: 3 }],
+        couponCode: 'NONEXISTENT_CODE_999'
+      });
+    },
+    (err) => {
+      assert.match(err.message, /is invalid, inactive, or has expired/);
+      return true;
+    },
+    'Non-existent coupon code must be rejected'
+  );
+
+  // 2. Disabled coupon code
+  PriceCalculator.registerAuthoritativeCoupon({
+    code: 'INACTIVE_TEST',
+    type: 'percent',
+    value: 20,
+    minOrder: 500,
+    isActive: false
+  });
+
+  await assert.rejects(
+    async () => {
+      await OrderService.createCheckoutOrder({
+        name: 'Pooja Nair',
+        phone: '9876543210',
+        address: '14 MG Road',
+        pincode: '560001',
+        items: [{ productId: 'vk-cat-res-301', qty: 3 }],
+        couponCode: 'INACTIVE_TEST'
+      });
+    },
+    (err) => {
+      assert.match(err.message, /is invalid, inactive, or has expired/);
+      return true;
+    },
+    'Disabled coupon code must be rejected'
+  );
+
+  // 3. Expired coupon code
+  PriceCalculator.registerAuthoritativeCoupon({
+    code: 'EXPIRED_TEST',
+    type: 'flat',
+    value: 100,
+    minOrder: 500,
+    isActive: true,
+    expiresAt: '2023-01-01T00:00:00Z'
+  });
+
+  await assert.rejects(
+    async () => {
+      await OrderService.createCheckoutOrder({
+        name: 'Pooja Nair',
+        phone: '9876543210',
+        address: '14 MG Road',
+        pincode: '560001',
+        items: [{ productId: 'vk-cat-res-301', qty: 3 }],
+        couponCode: 'EXPIRED_TEST'
+      });
+    },
+    (err) => {
+      assert.match(err.message, /is invalid, inactive, or has expired/);
+      return true;
+    },
+    'Expired coupon code must be rejected'
+  );
+
+  PriceCalculator.clearAuthoritativeCoupon('INACTIVE_TEST');
+  PriceCalculator.clearAuthoritativeCoupon('EXPIRED_TEST');
+});
+
+await test('Security & Validation: Order checkout strictly rejects coupon when subtotal is below minimum order requirement', async () => {
+  // 1 unit vk-cat-res-301 = ₹649, but STUDIO10 requires ₹1,500
+  await assert.rejects(
+    async () => {
+      await OrderService.createCheckoutOrder({
+        name: 'Pooja Nair',
+        phone: '9876543210',
+        address: '14 MG Road',
+        pincode: '560001',
+        items: [{ productId: 'vk-cat-res-301', qty: 1 }],
+        couponCode: 'STUDIO10'
+      });
+    },
+    (err) => {
+      assert.match(err.message, /requires a minimum order amount of ₹1,500/);
+      return true;
+    },
+    'Coupon checkout below minimum order threshold must be rejected'
+  );
+});
+
+await test('Business Logic: Valid coupon checkout applies discount and reduces Razorpay gateway amount accurately', async () => {
+  // 3 units vk-cat-res-301 = 3 * 597 = ₹1,791. 10% discount = ₹179. Subtotal >= 1499 -> Free shipping. Total = ₹1,612 (161200 paise)
+  const orderRes = await OrderService.createCheckoutOrder({
+    name: 'Pooja Nair',
+    phone: '9876543210',
+    address: '14 MG Road',
+    pincode: '560001',
+    email: 'pooja.nair@test.com',
+    items: [{ productId: 'vk-cat-res-301', qty: 3 }],
+    couponCode: 'STUDIO10'
+  });
+
+  assert.strictEqual(orderRes.success, true);
+  assert.strictEqual(orderRes.amount, 161200, 'Razorpay order amount must be exactly 161200 paise (₹1,612)');
+  assert.strictEqual(orderRes.summary.discount, 179, 'Authoritative summary discount must be 179');
+  assert.strictEqual(orderRes.summary.total, 1612, 'Authoritative summary total must be 1612');
+  assert.strictEqual(orderRes.summary.couponCode, 'STUDIO10');
+});
+
 // ----------------------------------------------------------------------------
 // 4. Real Razorpay Test Gateway Order Creation
 // ----------------------------------------------------------------------------

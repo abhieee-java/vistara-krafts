@@ -95,7 +95,7 @@ export class PriceCalculator {
     const cleanCode = couponCode.trim().toUpperCase();
 
     try {
-      const url = `${CONFIG.SUPABASE_URL}/rest/v1/coupons?code=eq.${encodeURIComponent(cleanCode)}&is_active=eq.true&select=code,discount_type,discount_value,min_order_value`;
+      const url = `${CONFIG.SUPABASE_URL}/rest/v1/coupons?code=eq.${encodeURIComponent(cleanCode)}&select=code,discount_type,discount_value,min_order_value,is_active,expires_at,usage_limit,usage_count`;
       const res = await fetch(url, {
         headers: {
           'apikey': CONFIG.SUPABASE_ANON_KEY,
@@ -106,23 +106,81 @@ export class PriceCalculator {
         const rows = await res.json();
         if (Array.isArray(rows) && rows.length > 0) {
           const r = rows[0];
+          // Check active status
+          if (r.is_active === false) return null;
+          // Check expiration
+          if (r.expires_at && new Date(r.expires_at).getTime() < Date.now()) {
+            return null;
+          }
+          // Check usage limit
+          if (typeof r.usage_limit === 'number' && typeof r.usage_count === 'number' && r.usage_count >= r.usage_limit) {
+            return null;
+          }
           return {
             code: r.code,
             type: r.discount_type === 'percentage' ? 'percent' : 'flat',
             value: Number(r.discount_value || 0),
-            minOrder: Number(r.min_order_value || 0)
+            minOrder: Number(r.min_order_value || 0),
+            expiresAt: r.expires_at || null,
+            isActive: true
           };
         }
       }
     } catch (_err) {}
 
-    return AUTHORITATIVE_COUPONS[cleanCode] || null;
+    const localCoupon = AUTHORITATIVE_COUPONS[cleanCode];
+    if (localCoupon) {
+      if (localCoupon.isActive === false) return null;
+      if (localCoupon.expiresAt && new Date(localCoupon.expiresAt).getTime() < Date.now()) return null;
+      return localCoupon;
+    }
+    return null;
+  }
+
+  static registerAuthoritativeCoupon(coupon) {
+    if (coupon && coupon.code) {
+      const code = String(coupon.code).trim().toUpperCase();
+      AUTHORITATIVE_COUPONS[code] = {
+        code,
+        type: coupon.type === 'percentage' || coupon.type === 'percent' ? 'percent' : 'flat',
+        value: Number(coupon.value || coupon.discount_value || 0),
+        minOrder: Number(coupon.minOrder || coupon.min_order_value || 0),
+        isActive: coupon.isActive !== false && coupon.is_active !== false,
+        expiresAt: coupon.expiresAt || coupon.expires_at || coupon.expiryDate || null
+      };
+    }
+  }
+
+  static clearAuthoritativeCoupon(code) {
+    if (code) {
+      delete AUTHORITATIVE_COUPONS[String(code).trim().toUpperCase()];
+    }
   }
 
   /**
    * Authoritative studio shipping settings
    */
   static async fetchAuthoritativeShippingSettings() {
+    try {
+      const url = `${CONFIG.SUPABASE_URL}/rest/v1/settings?key=eq.shipping&select=value`;
+      const res = await fetch(url, {
+        headers: {
+          'apikey': CONFIG.SUPABASE_ANON_KEY,
+          'Authorization': `Bearer ${CONFIG.SUPABASE_ANON_KEY}`
+        }
+      });
+      if (res.ok) {
+        const rows = await res.json();
+        if (Array.isArray(rows) && rows.length > 0 && rows[0].value) {
+          const val = rows[0].value;
+          return {
+            freeShippingThreshold: val.free_shipping_threshold === 1999 ? 1499 : (Number(val.free_shipping_threshold) || CONFIG.FREE_SHIPPING_THRESHOLD),
+            standardShippingFee: val.standard_shipping_fee === 149 ? 99 : (Number(val.standard_shipping_fee) || CONFIG.STANDARD_SHIPPING_FEE)
+          };
+        }
+      }
+    } catch (_err) {}
+
     return {
       freeShippingThreshold: CONFIG.FREE_SHIPPING_THRESHOLD,
       standardShippingFee: CONFIG.STANDARD_SHIPPING_FEE
@@ -191,18 +249,12 @@ export class PriceCalculator {
         throw new Error(`Product "${product.name}" is currently archived or inactive.`);
       }
 
-      if (product.inStock === false || (typeof product.stock === 'number' && product.stock <= 0)) {
-        throw new Error(`Product "${product.name}" is currently out of stock.`);
-      }
-
-      if (typeof product.stock === 'number' && product.stock > 0 && qty > product.stock) {
-        throw new Error(`Product "${product.name}" has insufficient stock (available: ${product.stock}, requested: ${qty}).`);
-      }
-
-      // Resolve variant price if variant specified
+      // Resolve variant price, label, and variant stock if variant specified
       let unitPrice = product.price;
       let regularPrice = product.regularPrice;
       let resolvedVariantLabel = 'Standard Edition';
+      let targetStock = product.stock;
+      let targetInStock = product.inStock;
 
       const variantKey = item.variantId || item.variant_id || item.variantLabel || item.variant;
       if (variantKey && Array.isArray(product.variants) && product.variants.length > 0) {
@@ -213,10 +265,29 @@ export class PriceCalculator {
           unitPrice = Number(found.price || unitPrice);
           regularPrice = Number(found.regularPrice || regularPrice);
           resolvedVariantLabel = found.label || variantKey;
+          if (typeof found.stock === 'number') {
+            targetStock = found.stock;
+            targetInStock = found.stock > 0;
+          }
         } else {
           resolvedVariantLabel = product.variants[0].label || 'Standard Edition';
           unitPrice = Number(product.variants[0].price || unitPrice);
         }
+      } else if (Array.isArray(product.variants) && product.variants.length > 0) {
+        // If product has variants, check total variant stock
+        const totalVariantStock = product.variants.reduce((acc, v) => acc + (Number(v.stock) || 0), 0);
+        if (totalVariantStock > 0) {
+          targetInStock = true;
+          if (targetStock <= 0) targetStock = totalVariantStock;
+        }
+      }
+
+      if (targetInStock === false || (typeof targetStock === 'number' && targetStock <= 0)) {
+        throw new Error(`Product "${product.name}" is currently out of stock.`);
+      }
+
+      if (typeof targetStock === 'number' && targetStock > 0 && qty > targetStock) {
+        throw new Error(`Product "${product.name}" has insufficient stock (available: ${targetStock}, requested: ${qty}).`);
       }
 
       // Apply volume tier discount

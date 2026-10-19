@@ -279,7 +279,13 @@
 
   function getAllCoupons() {
     const cached = safeRead(STORAGE_KEYS.DYNAMIC_COUPONS, {});
-    return { ...COUPONS, ...(cached || {}), ...DYNAMIC_COUPONS };
+    const merged = { ...COUPONS, ...(cached || {}), ...DYNAMIC_COUPONS };
+    const result = {};
+    for (const [k, v] of Object.entries(merged)) {
+      if (!v || v.isDeleted) continue;
+      result[k] = v;
+    }
+    return result;
   }
 
   const PINCODE_DIRECTORY = {
@@ -401,6 +407,13 @@
 
     resetMemoryFallback() {
       memoryStorage.clear();
+    },
+
+    resetDynamicCoupons() {
+      for (const k of Object.keys(DYNAMIC_COUPONS)) {
+        delete DYNAMIC_COUPONS[k];
+      }
+      safeWrite(STORAGE_KEYS.DYNAMIC_COUPONS, {});
     },
 
     getEffectiveUnitPrice(priceOrItem, qtyArg) {
@@ -738,6 +751,15 @@
       if (!coupon) {
         return { valid: false, ok: false, message: `Invalid voucher code "${normalized}". Try STUDIO10, WELCOME250, or KRAFTFIRST.` };
       }
+      if (coupon.isActive === false) {
+        return { valid: false, ok: false, message: `Voucher code "${normalized}" is currently disabled.` };
+      }
+      const isExpired = coupon.isExpired ||
+        (coupon.expiryDate && new Date(coupon.expiryDate).getTime() < Date.now()) ||
+        (coupon.expires_at && new Date(coupon.expires_at).getTime() < Date.now());
+      if (isExpired) {
+        return { valid: false, ok: false, message: `Voucher code "${normalized}" has expired.` };
+      }
       const subtotal = this.getCart().reduce((sum, i) => sum + (this.getEffectiveUnitPrice(i) * i.qty), 0);
       if (subtotal < coupon.minOrder) {
         return { valid: false, ok: false, message: `Code ${normalized} requires a minimum bag of ₹${coupon.minOrder.toLocaleString('en-IN')}.` };
@@ -763,15 +785,23 @@
       let couponMinOrderShortfall = 0;
       let couponInvalidReason = '';
       if (couponObj && subtotal > 0) {
-        if (subtotal >= couponObj.minOrder) {
-          if (couponObj.type === 'flat') {
-            couponDiscount = Math.min(subtotal, couponObj.value);
-          } else if (couponObj.type === 'percent') {
-            couponDiscount = Math.round((subtotal * couponObj.value) / 100);
+        const isExpired = couponObj.isExpired ||
+          (couponObj.expiryDate && new Date(couponObj.expiryDate).getTime() < Date.now()) ||
+          (couponObj.expires_at && new Date(couponObj.expires_at).getTime() < Date.now());
+
+        if (couponObj.isActive !== false && !isExpired) {
+          if (subtotal >= couponObj.minOrder) {
+            if (couponObj.type === 'flat') {
+              couponDiscount = Math.min(subtotal, couponObj.value);
+            } else if (couponObj.type === 'percent') {
+              couponDiscount = Math.round((subtotal * couponObj.value) / 100);
+            }
+          } else {
+            couponMinOrderShortfall = couponObj.minOrder - subtotal;
+            couponInvalidReason = `Coupon ${activeCode} requires a ₹${couponObj.minOrder.toLocaleString('en-IN')} minimum bag (add ₹${couponMinOrderShortfall.toLocaleString('en-IN')} more to activate).`;
           }
         } else {
-          couponMinOrderShortfall = couponObj.minOrder - subtotal;
-          couponInvalidReason = `Coupon ${activeCode} requires a ₹${couponObj.minOrder.toLocaleString('en-IN')} minimum bag (add ₹${couponMinOrderShortfall.toLocaleString('en-IN')} more to activate).`;
+          couponInvalidReason = isExpired ? `Coupon ${activeCode} has expired.` : `Coupon ${activeCode} is inactive.`;
         }
       }
 
@@ -1868,24 +1898,43 @@
       try {
         const { data, error } = await client
           .from('coupons')
-          .select('*')
-          .eq('is_active', true);
+          .select('*');
 
         if (error || !Array.isArray(data)) return;
 
+        for (const k of Object.keys(DYNAMIC_COUPONS)) {
+          delete DYNAMIC_COUPONS[k];
+        }
+
         data.forEach(c => {
           const code = String(c.code).trim().toUpperCase();
+          const isExpired = c.expires_at ? new Date(c.expires_at).getTime() < Date.now() : false;
           DYNAMIC_COUPONS[code] = {
             code,
             type: c.discount_type === 'percentage' ? 'percent' : 'flat',
             value: Number(c.discount_value || 0),
             minOrder: Number(c.min_order_value || 0),
+            isActive: c.is_active !== false,
+            isExpired,
+            expiryDate: c.expires_at || null,
             desc: c.discount_type === 'percentage'
               ? `${c.discount_value}% Studio Promo discount applied!`
               : `₹${c.discount_value} flat off on your studio bag!`
           };
         });
         safeWrite(STORAGE_KEYS.DYNAMIC_COUPONS, DYNAMIC_COUPONS);
+
+        // Auto-reconcile active cart coupon if it was deleted, disabled, or expired
+        const activeCoupon = this.getCouponCode();
+        if (activeCoupon) {
+          const all = getAllCoupons();
+          const target = all[activeCoupon];
+          const isTargetExpired = target && (target.isExpired || (target.expiryDate && new Date(target.expiryDate).getTime() < Date.now()));
+          if (!target || target.isActive === false || isTargetExpired) {
+            safeWrite(STORAGE_KEYS.COUPON, '');
+            this.notify('cart_updated', this.getCartSummary());
+          }
+        }
       } catch (e) {}
     },
 
@@ -1911,16 +1960,23 @@
         const infoRow = data.find(r => r.key === 'store_info');
 
         const currentSettings = safeRead(STORAGE_KEYS.SETTINGS, {});
+        const localUpdated = currentSettings.updated_at ? new Date(currentSettings.updated_at).getTime() : 0;
         const nextSettings = { ...currentSettings };
 
         if (barRow && barRow.value) {
-          const barText = barRow.value.text ? String(barRow.value.text).replace('₹1,999', '₹1,499') : nextSettings.announcementBarText;
-          nextSettings.announcementBarText = barText;
-          nextSettings.announcementBarActive = barRow.value.enabled !== false;
-          this.applyAnnouncementBar(barText, barRow.value.enabled !== false);
+          const barDbUpdated = barRow.updated_at ? new Date(barRow.updated_at).getTime() : 0;
+          if (barDbUpdated >= localUpdated || !currentSettings.announcementBarText) {
+            const barText = barRow.value.text ? String(barRow.value.text).replace('₹1,999', '₹1,499') : nextSettings.announcementBarText;
+            nextSettings.announcementBarText = barText;
+            nextSettings.announcementBarActive = barRow.value.enabled !== false;
+            this.applyAnnouncementBar(barText, barRow.value.enabled !== false);
+          }
         }
         if (shipRow && shipRow.value) {
-          nextSettings.freeShippingThreshold = shipRow.value.free_shipping_threshold === 1999 ? 1499 : (Number(shipRow.value.free_shipping_threshold) || 1499);
+          const shipDbUpdated = shipRow.updated_at ? new Date(shipRow.updated_at).getTime() : 0;
+          if (shipDbUpdated >= localUpdated || !currentSettings.freeShippingThreshold) {
+            nextSettings.freeShippingThreshold = shipRow.value.free_shipping_threshold === 1999 ? 1499 : (Number(shipRow.value.free_shipping_threshold) || 1499);
+          }
         }
         if (sectionsRow && sectionsRow.value) {
           nextSettings.enableFloralTransformationSection = Boolean(sectionsRow.value.enable_floral_transformation);
@@ -2095,7 +2151,7 @@
 
       if (payload.type === 'SETTINGS_UPDATED' && payload.settings) {
         const cur = safeRead(STORAGE_KEYS.SETTINGS, {});
-        const merged = { ...cur, ...payload.settings };
+        const merged = { ...cur, ...payload.settings, updated_at: payload.settings.updated_at || new Date().toISOString() };
         safeWrite(STORAGE_KEYS.SETTINGS, merged);
         if (merged.announcementBarText !== undefined) {
           this.applyAnnouncementBar(merged.announcementBarText, merged.announcementBarActive);
@@ -2104,17 +2160,44 @@
       }
 
       if (payload.type === 'COUPONS_UPDATED' && Array.isArray(payload.coupons)) {
+        const nextCodes = new Set(payload.coupons.map(c => String(c.code).trim().toUpperCase()));
+        for (const k of Object.keys(DYNAMIC_COUPONS)) {
+          if (!nextCodes.has(k)) {
+            DYNAMIC_COUPONS[k] = { code: k, isDeleted: true, isActive: false };
+          }
+        }
+        if (payload.deletedCode) {
+          const del = String(payload.deletedCode).trim().toUpperCase();
+          DYNAMIC_COUPONS[del] = { code: del, isDeleted: true, isActive: false };
+        }
         payload.coupons.forEach(c => {
           const code = String(c.code).trim().toUpperCase();
+          const isExpired = c.expiryDate ? new Date(c.expiryDate).getTime() < Date.now() : false;
           DYNAMIC_COUPONS[code] = {
             code,
             type: c.discountType === 'percentage' ? 'percent' : 'flat',
             value: Number(c.discountValue || 0),
             minOrder: Number(c.minOrderValue || 0),
+            isActive: c.isActive !== false,
+            isExpired,
+            expiryDate: c.expiryDate || null,
             desc: c.discountType === 'percentage' ? `${c.discountValue}% Studio Discount applied!` : `₹${c.discountValue} flat off applied!`
           };
         });
         safeWrite(STORAGE_KEYS.DYNAMIC_COUPONS, DYNAMIC_COUPONS);
+
+        // Auto-reconcile active cart coupon if it was deleted, disabled, or expired
+        const activeCoupon = this.getCouponCode();
+        if (activeCoupon) {
+          const all = getAllCoupons();
+          const target = all[activeCoupon];
+          const isTargetExpired = target && (target.isExpired || (target.expiryDate && new Date(target.expiryDate).getTime() < Date.now()));
+          if (!target || target.isActive === false || isTargetExpired) {
+            safeWrite(STORAGE_KEYS.COUPON, '');
+            this.notify('cart_updated', this.getCartSummary());
+          }
+        }
+
         this.notify('coupons_updated', DYNAMIC_COUPONS);
       }
 

@@ -293,6 +293,42 @@ test('Cart engine computes volume tier discounts, coupons, GST, and handles quan
   const badCoup = Store.applyCoupon('NOTACODE99');
   assert.strictEqual(badCoup.valid, false);
 
+  // Test dynamic push: expired, disabled, and deletion auto-clear
+  Store.receiveStudioPush({
+    action: 'COUPONS_UPDATED',
+    type: 'COUPONS_UPDATED',
+    coupons: [
+      { code: 'ACTIVE10', discountType: 'percentage', discountValue: 10, minOrderValue: 500, isActive: true },
+      { code: 'EXPIRED10', discountType: 'percentage', discountValue: 10, minOrderValue: 500, isActive: true, expiryDate: '2020-01-01' },
+      { code: 'DISABLED10', discountType: 'percentage', discountValue: 10, minOrderValue: 500, isActive: false }
+    ]
+  });
+
+  const expiredRes = Store.applyCoupon('EXPIRED10');
+  assert.strictEqual(expiredRes.valid, false);
+  assert.match(expiredRes.message, /expired/i);
+
+  const disabledRes = Store.applyCoupon('DISABLED10');
+  assert.strictEqual(disabledRes.valid, false);
+  assert.match(disabledRes.message, /disabled/i);
+
+  const activeRes = Store.applyCoupon('ACTIVE10');
+  assert.strictEqual(activeRes.valid, true);
+  assert.strictEqual(Store.getCouponCode(), 'ACTIVE10');
+
+  // Deleting ACTIVE10 via admin push must auto-clear it from active cart
+  Store.receiveStudioPush({
+    action: 'COUPONS_UPDATED',
+    type: 'COUPONS_UPDATED',
+    coupons: [
+      { code: 'OTHER20', discountType: 'percentage', discountValue: 20, minOrderValue: 500, isActive: true }
+    ]
+  });
+  assert.strictEqual(Store.getCouponCode(), '', 'Deleted coupon ACTIVE10 must be auto-cleared from cart');
+
+  // Clean up dynamic test coupons to return to clean baseline state
+  Store.resetDynamicCoupons();
+
   Store.updateCartQty('vk-cat-res-301', 0, true);
   summary = Store.getCartSummary();
   assert.strictEqual(summary.itemsCount, 0);

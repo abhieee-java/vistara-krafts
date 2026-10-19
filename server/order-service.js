@@ -85,6 +85,18 @@ export class OrderService {
       throw new Error('Order total must be greater than zero.');
     }
 
+    // Explicitly validate promotional code if supplied by client
+    if (couponCode && typeof couponCode === 'string' && couponCode.trim()) {
+      const cleanCoupon = couponCode.trim().toUpperCase();
+      const couponObj = await PriceCalculator.fetchAuthoritativeCoupon(cleanCoupon);
+      if (!couponObj) {
+        throw new Error(`Promotional voucher "${cleanCoupon}" is invalid, inactive, or has expired.`);
+      }
+      if (calc.subtotal < couponObj.minOrder) {
+        throw new Error(`Voucher "${couponObj.code}" requires a minimum order amount of ₹${couponObj.minOrder.toLocaleString('en-IN')}.`);
+      }
+    }
+
     // 3. Generate Canonical Identifiers
     const year = new Date().getFullYear();
     const random4 = Math.floor(1000 + Math.random() * 9000);
@@ -326,30 +338,57 @@ export class OrderService {
     if (!order || !Array.isArray(order.items) || order.inventory_deducted) return;
     order.inventory_deducted = true;
 
+    // Do not mutate live database on mock/test orders
+    if (order.order_number && (order.order_number.startsWith('VK-TEST') || order.order_number.includes('MOCK'))) {
+      return;
+    }
+
     for (const item of order.items) {
       const productId = item.productId || item.id;
       const qty = item.qty || item.quantity || 1;
       const sku = item.sku || 'VK-STD';
+      const variantKey = item.variantId || item.variant_id || item.variantLabel;
 
       if (!productId) continue;
 
       try {
-        const prodLookup = await this.supabaseRequest(`products?id=eq.${encodeURIComponent(productId)}&select=id,stock,in_stock`);
+        const prodLookup = await this.supabaseRequest(`products?id=eq.${encodeURIComponent(productId)}&select=id,stock,in_stock,variants`);
         let currentStock = 50;
+        let variants = [];
         if (prodLookup.data && Array.isArray(prodLookup.data) && prodLookup.data.length > 0) {
           currentStock = Number(prodLookup.data[0].stock ?? 50);
+          variants = Array.isArray(prodLookup.data[0].variants) ? prodLookup.data[0].variants : [];
         }
         const newStock = Math.max(0, currentStock - qty);
 
+        // Deduct specific variant stock if found
+        if (variantKey && variants.length > 0) {
+          variants = variants.map(v => {
+            if (v.id === variantKey || v.label === variantKey) {
+              const vStock = Math.max(0, (Number(v.stock) || 0) - qty);
+              return { ...v, stock: vStock };
+            }
+            return v;
+          });
+        }
+
+        const anyVariantInStock = variants.length > 0 && variants.some(v => (Number(v.stock) || 0) > 0);
+        const isStillInStock = newStock > 0 || anyVariantInStock;
+
         // Update authoritative product stock in database
+        const updatePayload = {
+          stock: newStock,
+          in_stock: isStillInStock,
+          updated_at: new Date().toISOString()
+        };
+        if (variants.length > 0) {
+          updatePayload.variants = variants;
+        }
+
         await this.supabaseRequest(
           `products?id=eq.${encodeURIComponent(productId)}`,
           'PATCH',
-          {
-            stock: newStock,
-            in_stock: newStock > 0,
-            updated_at: new Date().toISOString()
-          }
+          updatePayload
         );
 
         const logRecord = {
