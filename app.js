@@ -1432,15 +1432,6 @@
             </button>
           </div>
         </section>
-                Explore our full professional range: 3:1 Deep Pour epoxy, 2:1 high-gloss resin, UV cure resin, precision agate &amp; floral molds, leafing foils, and magic silica drying crystals.
-              </p>
-            </div>
-            <button type="button" onclick="window.navigateTo('catalog', 'all')" class="btn-shimmer min-h-[46px] px-6 py-2.5 rounded-xl bg-primary text-white text-xs font-bold inline-flex items-center justify-center gap-2 shadow-xs cursor-pointer shrink-0">
-              <span>View Full Catalogue (${Store.getProducts().length})</span>
-              <span class="material-symbols-outlined text-base" aria-hidden="true">arrow_forward</span>
-            </button>
-          </div>
-        </section>
 
         <!-- Social Commerce Teaser Strip (@resin.art.memories) -->
         <section class="px-4 sm:px-8 py-8 bg-[#fdf6f3] border-y border-[#e4e0d8] flex flex-col gap-5">
