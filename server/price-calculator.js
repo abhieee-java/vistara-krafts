@@ -120,6 +120,16 @@ export class PriceCalculator {
   }
 
   /**
+   * Authoritative studio shipping settings
+   */
+  static async fetchAuthoritativeShippingSettings() {
+    return {
+      freeShippingThreshold: CONFIG.FREE_SHIPPING_THRESHOLD,
+      standardShippingFee: CONFIG.STANDARD_SHIPPING_FEE
+    };
+  }
+
+  /**
    * Calculate effective unit price applying volume tier discounts
    * @param {number} basePrice
    * @param {number} qty
@@ -254,8 +264,9 @@ export class PriceCalculator {
     }
 
     // Shipping rules
-    const isFreeShipping = subtotal >= CONFIG.FREE_SHIPPING_THRESHOLD || subtotal === 0;
-    const shippingFee = isFreeShipping ? 0 : CONFIG.STANDARD_SHIPPING_FEE;
+    const shippingSettings = await this.fetchAuthoritativeShippingSettings();
+    const isFreeShipping = subtotal >= shippingSettings.freeShippingThreshold || subtotal === 0;
+    const shippingFee = isFreeShipping ? 0 : shippingSettings.standardShippingFee;
 
     // Final payable calculation
     const totalPayable = Math.max(0, subtotal - couponDiscount + shippingFee);

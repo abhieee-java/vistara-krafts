@@ -1889,6 +1889,15 @@
       } catch (e) {}
     },
 
+    getSettings() {
+      return safeRead(STORAGE_KEYS.SETTINGS, {
+        freeShippingThreshold: 1499,
+        announcementBarActive: true,
+        announcementBarText: 'Complimentary Pan-India Express Air Shipping on orders over ₹1,499 • 100% Optical Glass Purity Guarantee',
+        enableFloralTransformationSection: false
+      });
+    },
+
     async syncSettingsFromSupabase() {
       if (!global.VistaraSupabase || !global.VistaraSupabase.isConfigured()) return;
       const client = global.VistaraSupabase.getClient();
@@ -1898,16 +1907,34 @@
         if (error || !Array.isArray(data)) return;
         const barRow = data.find(r => r.key === 'announcement_bar');
         const shipRow = data.find(r => r.key === 'shipping');
-        const nextSettings = {};
+        const sectionsRow = data.find(r => r.key === 'storefront_sections');
+        const infoRow = data.find(r => r.key === 'store_info');
+
+        const currentSettings = safeRead(STORAGE_KEYS.SETTINGS, {});
+        const nextSettings = { ...currentSettings };
+
         if (barRow && barRow.value) {
-          nextSettings.announcementBarText = barRow.value.text;
+          const barText = barRow.value.text ? String(barRow.value.text).replace('₹1,999', '₹1,499') : nextSettings.announcementBarText;
+          nextSettings.announcementBarText = barText;
           nextSettings.announcementBarActive = barRow.value.enabled !== false;
-          this.applyAnnouncementBar(barRow.value.text, barRow.value.enabled !== false);
+          this.applyAnnouncementBar(barText, barRow.value.enabled !== false);
         }
         if (shipRow && shipRow.value) {
-          nextSettings.freeShippingThreshold = shipRow.value.free_shipping_threshold;
+          nextSettings.freeShippingThreshold = shipRow.value.free_shipping_threshold === 1999 ? 1499 : (Number(shipRow.value.free_shipping_threshold) || 1499);
         }
+        if (sectionsRow && sectionsRow.value) {
+          nextSettings.enableFloralTransformationSection = Boolean(sectionsRow.value.enable_floral_transformation);
+        }
+        if (infoRow && infoRow.value) {
+          nextSettings.storeName = infoRow.value.name || nextSettings.storeName;
+          nextSettings.contactEmail = infoRow.value.email || nextSettings.contactEmail;
+          nextSettings.contactPhone = infoRow.value.phone || nextSettings.contactPhone;
+          nextSettings.brandTagline = infoRow.value.tagline || nextSettings.brandTagline;
+          nextSettings.instagramHandle = infoRow.value.instagram || nextSettings.instagramHandle;
+        }
+
         safeWrite(STORAGE_KEYS.SETTINGS, nextSettings);
+        this.notify('settings_updated', nextSettings);
       } catch (e) {}
     },
 
@@ -2067,11 +2094,13 @@
       }
 
       if (payload.type === 'SETTINGS_UPDATED' && payload.settings) {
-        safeWrite(STORAGE_KEYS.SETTINGS, payload.settings);
-        if (payload.settings.announcementBarText !== undefined) {
-          this.applyAnnouncementBar(payload.settings.announcementBarText, payload.settings.announcementBarActive);
+        const cur = safeRead(STORAGE_KEYS.SETTINGS, {});
+        const merged = { ...cur, ...payload.settings };
+        safeWrite(STORAGE_KEYS.SETTINGS, merged);
+        if (merged.announcementBarText !== undefined) {
+          this.applyAnnouncementBar(merged.announcementBarText, merged.announcementBarActive);
         }
-        this.notify('settings_updated', payload.settings);
+        this.notify('settings_updated', merged);
       }
 
       if (payload.type === 'COUPONS_UPDATED' && Array.isArray(payload.coupons)) {
@@ -2368,6 +2397,14 @@
   }
 
   Store.syncFromSupabase = syncFromSupabase;
+
+  // Apply cached announcement ribbon settings immediately on startup
+  try {
+    const cachedSettings = safeRead(STORAGE_KEYS.SETTINGS, null);
+    if (cachedSettings && cachedSettings.announcementBarText !== undefined) {
+      Store.applyAnnouncementBar(cachedSettings.announcementBarText, cachedSettings.announcementBarActive);
+    }
+  } catch (_e) {}
 
   const isTestContext = (typeof global !== 'undefined' && (global.__VK_TEST_ENV__ || global.__VK_TEST_FIXTURES__ || global.__VK_DISABLE_SUPABASE_AUTO_SYNC__)) ||
                         (typeof window !== 'undefined' && (window.__VK_TEST_ENV__ || window.__VK_TEST_FIXTURES__ || window.__VK_DISABLE_SUPABASE_AUTO_SYNC__));

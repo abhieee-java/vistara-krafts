@@ -368,6 +368,8 @@
     const loupe = document.getElementById('pdp-specimen-loupe');
     const inner = document.getElementById('pdp-loupe-inner');
     if (!stage || !loupe || !inner) return;
+    if (stage._sotdLoupeBound) return;
+    stage._sotdLoupeBound = true;
 
     stage.addEventListener('mouseenter', () => {
       loupe.classList.remove('hidden');
@@ -1022,6 +1024,8 @@
     const featuredSupplies = nonEpoxyProducts.slice(0, 8);
     const pinInfo = Store.getPincodeInfo();
     const socialPosts = Store.getSocialPosts().slice(0, 3);
+    const storeSettings = (typeof Store !== 'undefined' && typeof Store.getSettings === 'function' ? Store.getSettings() : null) || {};
+    const showFloralTransformation = Boolean(storeSettings.enableFloralTransformationSection);
 
     return `
       <div class="route-view-enter flex flex-col w-full max-w-7xl mx-auto">
@@ -1618,6 +1622,56 @@
             `).join('')}
           </div>
         </section>
+
+        ${showFloralTransformation ? `
+        <!-- Interactive Before & After: 21-Day Cryo-Silica Floral Transformation Slider -->
+        <section class="px-4 sm:px-8 py-8 bg-surface border-t border-[#e4e0d8] flex flex-col gap-4" id="home-floral-transformation-section">
+          <div class="ram-card p-5 sm:p-6 bg-white flex flex-col gap-4">
+            <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-2 border-b border-surface-container pb-3">
+              <div>
+                <span class="font-label-sm text-[11px] uppercase tracking-widest text-[#9e3322] font-bold">Heirloom Preservation Science</span>
+                <h2 class="font-headline-sm text-xl text-primary font-bold">21-Day Cryo-Silica Floral Transformation</h2>
+                <p class="text-xs text-on-surface-variant mt-0.5">Drag the slider horizontally to view how fresh bridal varmalas transform through 21-day cryo-silica dehydration into optical 85D diamond resin.</p>
+              </div>
+              <span class="px-2.5 py-1 rounded-full bg-secondary-container/50 text-on-secondary-container font-spec-numeral text-xs font-bold shrink-0">
+                Split: <span class="sotd-slider-pct">50%</span>
+              </span>
+            </div>
+
+            <div class="sotd-dehydration-slider relative w-full aspect-[4/3] sm:aspect-[16/7] rounded-2xl overflow-hidden border border-[#b08d57]/40 shadow-md select-none" data-split="50">
+              <!-- After Layer (Preserved Optical Block) -->
+              <div class="absolute inset-0 w-full h-full bg-primary">
+                <img src="${esc(Store.IMAGES.floralCube)}" alt="After: Preserved 50mm Crystal Optical Block" class="w-full h-full object-cover">
+                <div class="absolute top-3 right-3 px-3 py-1 rounded-full bg-primary/90 backdrop-blur-md text-[#ffd79b] text-[11px] font-bold uppercase tracking-wider shadow-sm border border-white/15">
+                  ✨ Day 21: Preserved 50mm Optical Block
+                </div>
+                <div class="absolute bottom-3 right-3 px-3 py-1.5 rounded-lg bg-black/60 backdrop-blur-xs text-white text-[11px] hidden sm:block">
+                  0% Moisture • 95% Natural Color Retained • 85D Mirror Glass
+                </div>
+              </div>
+
+              <!-- Before Layer (Clipped - Fresh Wedding Garlands) -->
+              <div class="sotd-before-layer absolute inset-0 w-1/2 h-full bg-surface-container overflow-hidden border-r-2 border-white shadow-2xl">
+                <img src="${esc(Store.IMAGES.bridalVarmalaFresh)}" alt="Before: Fresh Bridal Varmalas &amp; Roses" class="w-full h-full object-cover">
+                <div class="absolute top-3 left-3 px-3 py-1 rounded-full bg-black/75 backdrop-blur-md text-white text-[11px] font-bold uppercase tracking-wider shadow-sm border border-white/15">
+                  🌸 Day 01: Fresh Wedding Garlands
+                </div>
+                <div class="absolute bottom-3 left-3 px-3 py-1.5 rounded-lg bg-black/60 backdrop-blur-xs text-white text-[11px] hidden sm:block">
+                  Fresh Petals • High Moisture • Organic Pigment
+                </div>
+              </div>
+
+              <!-- Slider Range Controller -->
+              <input type="range" min="0" max="100" value="50" aria-label="Slide to compare raw garland with preserved 85D optical keepsake" oninput="window.updateSotdSlider(this)" class="sotd-slider-range absolute inset-0 w-full h-full opacity-0 cursor-ew-resize z-20">
+              <div class="sotd-slider-divider absolute top-0 bottom-0 left-1/2 -translate-x-1/2 w-1 bg-white shadow-lg pointer-events-none z-10 flex items-center justify-center">
+                <div class="w-8 h-8 rounded-full bg-white text-primary shadow-xl border-2 border-[#b08d57] flex items-center justify-center font-bold text-xs pointer-events-none">
+                  ↔
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+        ` : ''}
 
         <!-- Vistāra Krafts Epoxy Formulation Comparison Matrix -->
         <section class="px-4 sm:px-8 py-8 bg-surface border-t border-[#e4e0d8] flex flex-col gap-4">
@@ -6721,7 +6775,7 @@
   // Subscribe to StorefrontBridge programmatic events so external cross-tab / postMessage updates re-render live
   if (Store && typeof Store.subscribe === 'function') {
     Store.subscribe((event) => {
-      if (event === 'studio_push_received' || event === 'admin_push_received' || event === 'catalog_reset') {
+      if (event === 'studio_push_received' || event === 'admin_push_received' || event === 'catalog_reset' || event === 'settings_updated' || event === 'coupons_updated') {
         renderActiveView();
         updateGlobalBadges();
       }
