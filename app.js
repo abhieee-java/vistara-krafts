@@ -9,7 +9,7 @@
 
   const AppState = {
     currentRoute: 'home',
-    currentProductId: 'vk-epx-301',
+    currentProductId: 'vk-cat-res-301',
     selectedVariantIdx: 1,
     pdpQty: 1,
     pdpGalleryIdx: 0,
@@ -56,12 +56,16 @@
     activeStoryIdx: null,
     storyTimer: null,
     reviews: {
-      'vk-epx-301': [
-        { author: ' Diya Sharma • Jaipur Resin Studio', rating: 5, date: '2 days ago', verified: true, text: 'Zero micro-bubbles even in 32°C weather! Used the 1.2kg kit for 3 bridal varmala blocks and the optical clarity is like liquid diamond.' },
+      'vk-cat-res-301': [
+        { author: 'Diya Sharma • Jaipur Resin Studio', rating: 5, date: '2 days ago', verified: true, text: 'Zero micro-bubbles even in 32°C weather! Used the 1.2kg kit for 3 bridal varmala blocks and the optical clarity is like liquid diamond.' },
         { author: 'Rohan Kulkarni • Pune Woodworks', rating: 5, date: '1 week ago', verified: true, text: 'The 3:1 weight ratio is super forgiving when weighed on a digital kitchen scale. Hardens to a rock-solid 82D finish without any amine blush.' }
       ],
-      'ram-keep-001': [
-        { author: 'Ananya & Kabir • Udaipur Wedding', rating: 5, date: '3 days ago', verified: true, text: 'BlueDart picked up our wedding garlands the next morning and 2 weeks later we received the most breathtaking 12-inch floral block with gold calligraphy!' }
+      'vk-cat-res-201': [
+        { author: 'Ananya & Kabir • Udaipur Wedding', rating: 5, date: '3 days ago', verified: true, text: 'BlueDart picked up our wedding garlands the next morning and 2 weeks later we received the most breathtaking 12-inch floral block with gold calligraphy!' },
+        { author: 'Pooja Iyer • Bengaluru Atelier', rating: 5, date: '5 days ago', verified: true, text: 'Crystal clear finish with the 2:1 formula. Fast cure and flawless surface gloss for high-end coaster sets.' }
+      ],
+      'vk-epx-301': [
+        { author: 'Diya Sharma • Jaipur Resin Studio', rating: 5, date: '2 days ago', verified: true, text: 'Zero micro-bubbles even in 32°C weather! Used the 1.2kg kit for 3 bridal varmala blocks and the optical clarity is like liquid diamond.' }
       ]
     }
   };
@@ -1237,63 +1241,63 @@
           </div>
 
           <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
-            <button type="button" onclick="window.navigateTo('catalog', 'keepsakes')" class="ram-card p-2.5 text-left flex flex-col gap-2 group cursor-pointer">
-              <div class="w-full h-28 rounded-lg overflow-hidden bg-surface-container">
-                <img src="${esc(Store.IMAGES.floralCube)}" alt="Preserved Florals" class="w-full h-full object-cover group-hover:scale-105 transition-transform">
-              </div>
-              <div>
-                <span class="font-title-md text-xs font-bold text-primary block truncate">Bridal Varmala</span>
-                <span class="font-label-sm text-[11px] text-[#9e3322] block">50mm Deep Cast</span>
-              </div>
-            </button>
-
             <button type="button" onclick="window.navigateTo('catalog', 'casting')" class="ram-card p-2.5 text-left flex flex-col gap-2 group cursor-pointer">
               <div class="w-full h-28 rounded-lg overflow-hidden bg-surface-container">
-                <img src="${esc(Store.IMAGES.coasterSet)}" alt="Coaster Sets" class="w-full h-full object-cover group-hover:scale-105 transition-transform">
+                <img src="${esc(Store.IMAGES.resin201)}" alt="2:1 Epoxy Resin" class="w-full h-full object-cover group-hover:scale-105 transition-transform">
               </div>
               <div>
-                <span class="font-title-md text-xs font-bold text-primary block truncate">Botanical Coasters</span>
-                <span class="font-label-sm text-[11px] text-on-surface-variant block">Heat-Shield 3:1</span>
-              </div>
-            </button>
-
-            <button type="button" onclick="window.navigateTo('catalog', 'keepsakes')" class="ram-card p-2.5 text-left flex flex-col gap-2 group cursor-pointer">
-              <div class="w-full h-28 rounded-lg overflow-hidden bg-surface-container">
-                <img src="${esc(Store.IMAGES.oceanWave)}" alt="Ocean & Wave Art" class="w-full h-full object-cover group-hover:scale-105 transition-transform">
-              </div>
-              <div>
-                <span class="font-title-md text-xs font-bold text-primary block truncate">Ocean &amp; Wave Art</span>
-                <span class="font-label-sm text-[11px] text-on-surface-variant block">High Viscosity 1:1</span>
-              </div>
-            </button>
-
-            <button type="button" onclick="window.navigateTo('catalog', 'pigments')" class="ram-card p-2.5 text-left flex flex-col gap-2 group cursor-pointer">
-              <div class="w-full h-28 rounded-lg overflow-hidden bg-surface-container">
-                <img src="${esc(Store.IMAGES.geodeCanvas)}" alt="Geode Canvas" class="w-full h-full object-cover group-hover:scale-105 transition-transform">
-              </div>
-              <div>
-                <span class="font-title-md text-xs font-bold text-primary block truncate">Geode Wall Art</span>
-                <span class="font-label-sm text-[11px] text-on-surface-variant block">Quartz &amp; Mica</span>
+                <span class="font-title-md text-xs font-bold text-primary block truncate">2:1 High-Gloss</span>
+                <span class="font-label-sm text-[11px] text-[#9e3322] block">Shallow Casting &amp; Top</span>
               </div>
             </button>
 
             <button type="button" onclick="window.navigateTo('catalog', 'deep_pour')" class="ram-card p-2.5 text-left flex flex-col gap-2 group cursor-pointer">
               <div class="w-full h-28 rounded-lg overflow-hidden bg-surface-container">
-                <img src="${esc(Store.IMAGES.riverTable)}" alt="Deep Cast Tables" class="w-full h-full object-cover group-hover:scale-105 transition-transform">
+                <img src="${esc(Store.IMAGES.resin301)}" alt="3:1 Deep Pour Epoxy" class="w-full h-full object-cover group-hover:scale-105 transition-transform">
               </div>
               <div>
-                <span class="font-title-md text-xs font-bold text-primary block truncate">Deep River Tables</span>
-                <span class="font-label-sm text-[11px] text-on-surface-variant block">Ultra Slow 2:1 Pour</span>
+                <span class="font-title-md text-xs font-bold text-primary block truncate">3:1 Deep Pour</span>
+                <span class="font-label-sm text-[11px] text-on-surface-variant block">River Tables &amp; Blocks</span>
               </div>
             </button>
 
-            <button type="button" onclick="window.navigateTo('catalog', 'uv_resin')" class="ram-card p-2.5 text-left flex flex-col gap-2 group cursor-pointer">
+            <button type="button" onclick="window.navigateTo('catalog', 'casting')" class="ram-card p-2.5 text-left flex flex-col gap-2 group cursor-pointer">
               <div class="w-full h-28 rounded-lg overflow-hidden bg-surface-container">
-                <img src="${esc(Store.IMAGES.jewelryBezel)}" alt="Jewelry & Bezels" class="w-full h-full object-cover group-hover:scale-105 transition-transform">
+                <img src="${esc(Store.IMAGES.uvResin)}" alt="UV Curable Resin" class="w-full h-full object-cover group-hover:scale-105 transition-transform">
               </div>
               <div>
-                <span class="font-title-md text-xs font-bold text-primary block truncate">Jewelry &amp; Bezels</span>
-                <span class="font-label-sm text-[11px] text-on-surface-variant block">90s Hard UV Cure</span>
+                <span class="font-title-md text-xs font-bold text-primary block truncate">UV Cure Resin</span>
+                <span class="font-label-sm text-[11px] text-on-surface-variant block">90s Optical Hard Cure</span>
+              </div>
+            </button>
+
+            <button type="button" onclick="window.navigateTo('catalog', 'molds')" class="ram-card p-2.5 text-left flex flex-col gap-2 group cursor-pointer">
+              <div class="w-full h-28 rounded-lg overflow-hidden bg-surface-container">
+                <img src="${esc(Store.IMAGES.agateMold)}" alt="Silicone Molds" class="w-full h-full object-cover group-hover:scale-105 transition-transform">
+              </div>
+              <div>
+                <span class="font-title-md text-xs font-bold text-primary block truncate">Silicone Molds</span>
+                <span class="font-label-sm text-[11px] text-on-surface-variant block">Agate, Flora &amp; Leaves</span>
+              </div>
+            </button>
+
+            <button type="button" onclick="window.navigateTo('catalog', 'pigments')" class="ram-card p-2.5 text-left flex flex-col gap-2 group cursor-pointer">
+              <div class="w-full h-28 rounded-lg overflow-hidden bg-surface-container">
+                <img src="${esc(Store.IMAGES.foilFlakes)}" alt="Foils & Pigments" class="w-full h-full object-cover group-hover:scale-105 transition-transform">
+              </div>
+              <div>
+                <span class="font-title-md text-xs font-bold text-primary block truncate">Foils &amp; Pigments</span>
+                <span class="font-label-sm text-[11px] text-on-surface-variant block">Inks &amp; Metallic Flakes</span>
+              </div>
+            </button>
+
+            <button type="button" onclick="window.navigateTo('catalog', 'accessories')" class="ram-card p-2.5 text-left flex flex-col gap-2 group cursor-pointer">
+              <div class="w-full h-28 rounded-lg overflow-hidden bg-surface-container">
+                <img src="${esc(Store.IMAGES.magicSilicaGel)}" alt="Preservation Accessories" class="w-full h-full object-cover group-hover:scale-105 transition-transform">
+              </div>
+              <div>
+                <span class="font-title-md text-xs font-bold text-primary block truncate">Preservation Care</span>
+                <span class="font-label-sm text-[11px] text-on-surface-variant block">Silica, Torches &amp; Polish</span>
               </div>
             </button>
           </div>
@@ -1321,9 +1325,9 @@
           <div class="sotd-dehydration-slider relative w-full aspect-[4/3] sm:aspect-[16/7] rounded-2xl overflow-hidden border border-[#b08d57]/40 shadow-xl select-none" data-split="50">
             <!-- After Layer (Preserved Optical Block) -->
             <div class="absolute inset-0 w-full h-full bg-primary">
-              <img src="${esc(Store.IMAGES.floralCube)}" alt="After: Preserved 50mm Crystal Optical Block" class="w-full h-full object-cover">
+              <img src="${esc(Store.IMAGES.flowerMold4in1)}" alt="After: Preserved High-Clarity Floral Casting" class="w-full h-full object-cover">
               <div class="absolute top-3 right-3 px-3 py-1 rounded-full bg-primary/90 backdrop-blur-md text-[#ffd79b] text-[11px] font-bold uppercase tracking-wider shadow-sm border border-white/15">
-                ✨ Day 21: Preserved 50mm Optical Block
+                ✨ Day 21: Preserved Optical Crystal Casting
               </div>
               <div class="absolute bottom-3 right-3 px-3 py-1.5 rounded-lg bg-black/60 backdrop-blur-xs text-white text-[11px] hidden sm:block">
                 0% Moisture • 95% Natural Color Retained • 85D Mirror Glass
@@ -1332,12 +1336,12 @@
 
             <!-- Before Layer (Clipped - Fresh Wedding Garlands) -->
             <div class="sotd-before-layer absolute inset-0 h-full overflow-hidden" style="width: 50%;">
-              <img src="${esc(Store.IMAGES.jewelryBezel)}" alt="Before: Fresh Bridal Wedding Garland" class="w-full h-full object-cover max-w-none" style="width: 100%; min-width: 100%;">
+              <img src="${esc(Store.IMAGES.smallFlowers)}" alt="Before: Real Botanical Flowers" class="w-full h-full object-cover max-w-none" style="width: 100%; min-width: 100%;">
               <div class="absolute top-3 left-3 px-3 py-1 rounded-full bg-black/75 backdrop-blur-md text-white text-[11px] font-bold uppercase tracking-wider shadow-sm border border-white/15">
-                🌸 Day 0: Fresh Wedding Garland
+                🌸 Day 0: Delicate Botanical Flowers
               </div>
               <div class="absolute bottom-3 left-3 px-3 py-1.5 rounded-lg bg-black/60 backdrop-blur-xs text-white text-[11px] hidden sm:block">
-                85% Moisture • Highly Perishable • 24h Express Cryo Pickup
+                Natural Fresh Petals • Pre-encapsulation Moisture Extraction
               </div>
             </div>
 
@@ -1367,9 +1371,9 @@
               <h2 class="font-headline-sm text-2xl sm:text-3xl text-primary font-bold tracking-tight">Bestselling Keepsakes &amp; Epoxy Kits</h2>
             </div>
             <div class="flex flex-wrap items-center gap-2">
-              <button type="button" onclick="window.navigateTo('catalog', 'keepsakes')" class="min-h-[44px] px-4 py-2 rounded-full bg-[#ffe4de] text-[#9e3322] font-label-sm text-xs font-bold hover:opacity-90 inline-flex items-center cursor-pointer">Preserved Keepsakes</button>
-              <button type="button" onclick="window.navigateTo('catalog', 'casting')" class="min-h-[44px] px-4 py-2 rounded-full bg-surface-container-high text-primary font-label-sm text-xs font-semibold hover:bg-secondary-container inline-flex items-center cursor-pointer">Epoxy Kits</button>
-              <button type="button" onclick="window.navigateTo('catalog', 'all')" class="min-h-[44px] px-4 py-2 rounded-full bg-primary text-on-primary font-label-sm text-xs font-semibold inline-flex items-center cursor-pointer">All (${Store.getProducts().length})</button>
+              <button type="button" onclick="window.navigateTo('catalog', 'casting')" class="min-h-[44px] px-4 py-2 rounded-full bg-surface-container-high text-primary font-label-sm text-xs font-semibold hover:bg-secondary-container inline-flex items-center cursor-pointer">Resin Systems</button>
+              <button type="button" onclick="window.navigateTo('catalog', 'molds')" class="min-h-[44px] px-4 py-2 rounded-full bg-surface-container-high text-primary font-label-sm text-xs font-semibold hover:bg-secondary-container inline-flex items-center cursor-pointer">Silicone Molds</button>
+              <button type="button" onclick="window.navigateTo('catalog', 'all')" class="min-h-[44px] px-4 py-2 rounded-full bg-primary text-on-primary font-label-sm text-xs font-semibold inline-flex items-center cursor-pointer">All Formulations (${Store.getProducts().length})</button>
             </div>
           </div>
 
@@ -1408,6 +1412,24 @@
                 </button>
               </div>
             ` : featuredProducts.map(p => renderProductCard(p, false)).join('')}
+          </div>
+
+          <!-- Full Catalog Discovery Callout Banner -->
+          <div class="p-5 sm:p-6 rounded-2xl bg-gradient-to-r from-surface-container-lowest via-white to-surface-container-low border border-[#e4e0d8] flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-sm mt-2">
+            <div class="space-y-1">
+              <div class="inline-flex items-center gap-1.5 text-secondary font-label-sm text-[11px] uppercase tracking-wider font-bold">
+                <span class="material-symbols-outlined text-sm" aria-hidden="true">science</span>
+                <span>100% Authentic Studio Formulations</span>
+              </div>
+              <h3 class="font-headline-sm text-lg sm:text-xl font-bold text-primary">Discover the Complete 19-Piece Atelier Collection</h3>
+              <p class="text-xs text-on-surface-variant max-w-xl leading-relaxed">
+                Explore our full professional range: 3:1 Deep Pour epoxy, 2:1 high-gloss resin, UV cure resin, precision agate &amp; floral molds, leafing foils, and magic silica drying crystals.
+              </p>
+            </div>
+            <button type="button" onclick="window.navigateTo('catalog', 'all')" class="btn-shimmer min-h-[46px] px-6 py-2.5 rounded-xl bg-primary text-white text-xs font-bold inline-flex items-center justify-center gap-2 shadow-xs cursor-pointer shrink-0">
+              <span>View Full Catalogue (${Store.getProducts().length})</span>
+              <span class="material-symbols-outlined text-base" aria-hidden="true">arrow_forward</span>
+            </button>
           </div>
         </section>
 
@@ -1725,11 +1747,25 @@
     let list = [...Store.getProducts()];
 
     if (AppState.catalogCategory && AppState.catalogCategory !== 'all') {
-      list = list.filter(p =>
-        p.category === AppState.catalogCategory ||
-        p.subCategory === AppState.catalogCategory ||
-        (Array.isArray(p.relatedCategories) && p.relatedCategories.includes(AppState.catalogCategory))
-      );
+      const activeCat = String(AppState.catalogCategory).toLowerCase().trim();
+      list = list.filter(p => {
+        const prodCat = (p.category || '').toLowerCase();
+        const prodSub = (p.subCategory || p.subcategory || '').toLowerCase();
+        const related = Array.isArray(p.relatedCategories) ? p.relatedCategories.map(c => String(c).toLowerCase()) : [];
+        if (prodCat === activeCat || prodSub === activeCat || related.includes(activeCat)) return true;
+
+        // Intelligent category alias fallbacks to prevent empty state when navigating from marketing or keepsake links
+        if (activeCat === 'keepsakes' || activeCat === 'preservation' || activeCat === 'floral') {
+          return p.id === 'vk-cat-acc-sili' || p.id === 'vk-cat-res-301' || p.id === 'vk-cat-acc-smfl' || p.id === 'vk-cat-mld-flw4' || p.id === 'vk-cat-acc-bubb';
+        }
+        if (activeCat === 'uv_resin' || activeCat === 'uv' || activeCat === 'jewelry') {
+          return p.id === 'vk-cat-res-uvcs' || prodSub.includes('uv') || p.id === 'vk-cat-mld-bkm6';
+        }
+        if (activeCat === 'pottery') {
+          return p.id === 'vk-cat-acc-stnd' || p.id === 'vk-cat-acc-deco' || p.id === 'vk-cat-acc-poli';
+        }
+        return false;
+      });
     }
 
     if (AppState.catalogRatioFilter && AppState.catalogRatioFilter !== 'all') {
@@ -2046,7 +2082,7 @@
     const activeImg = gallery[AppState.pdpGalleryIdx] || gallery[0];
     const isFav = Store.isWishlisted(product.id);
     const pinInfo = Store.getPincodeInfo();
-    const prodReviews = AppState.reviews[product.id] || AppState.reviews['vk-epx-301'] || [];
+    const prodReviews = AppState.reviews[product.id] || AppState.reviews['vk-cat-res-301'] || AppState.reviews['vk-epx-301'] || [];
 
     return `
       <div class="route-view-enter flex flex-col w-full max-w-7xl mx-auto pb-36 lg:pb-24">
@@ -2072,7 +2108,7 @@
             <ol class="flex items-center gap-1 overflow-x-auto no-scrollbar whitespace-nowrap">
               <li><button type="button" onclick="window.navigateTo('home')" class="min-h-[44px] px-1.5 inline-flex items-center justify-center hover:text-primary cursor-pointer">Home</button></li>
               <li>/</li>
-              <li><button type="button" onclick="window.navigateTo('catalog', '${esc(product.category || 'keepsakes')}')" class="min-h-[44px] px-1.5 inline-flex items-center justify-center hover:text-primary capitalize cursor-pointer">${esc(String(product.category || 'keepsakes').replace(/_/g, ' '))}</button></li>
+              <li><button type="button" onclick="window.navigateTo('catalog', '${esc(product.category || 'casting')}')" class="min-h-[44px] px-1.5 inline-flex items-center justify-center hover:text-primary capitalize cursor-pointer">${esc(String(product.category || 'casting').replace(/_/g, ' '))}</button></li>
               <li>/</li>
               <li class="text-primary font-bold truncate pl-1">${esc(product.shortName || product.name)}</li>
             </ol>
@@ -2425,14 +2461,14 @@
               </div>
               <span class="material-symbols-outlined text-secondary" aria-hidden="true">add</span>
               <div class="flex flex-col items-center text-center w-24 shrink-0">
-                <img src="${esc(Store.IMAGES.siliconeMold4x)}" alt="Silicone Molds" class="w-16 h-16 rounded-lg object-cover border border-[#e4e0d8] bg-white p-0.5">
-                <span class="text-[11px] font-semibold text-primary mt-1 truncate w-full">Geode Molds (4x)</span>
+                <img src="${esc(Store.IMAGES.agateMold)}" alt="Agate Mold" class="w-16 h-16 rounded-lg object-cover border border-[#e4e0d8] bg-white p-0.5">
+                <span class="text-[11px] font-semibold text-primary mt-1 truncate w-full">Agate Mold</span>
                 <span class="font-spec-numeral text-xs text-secondary font-bold">₹449</span>
               </div>
               <span class="material-symbols-outlined text-secondary" aria-hidden="true">add</span>
               <div class="flex flex-col items-center text-center w-24 shrink-0">
-                <img src="${esc(Store.IMAGES.oceanMicaJar)}" alt="Chameleon Mica" class="w-16 h-16 rounded-lg object-cover border border-[#e4e0d8] bg-white p-0.5">
-                <span class="text-[11px] font-semibold text-primary mt-1 truncate w-full">Chameleon Mica</span>
+                <img src="${esc(Store.IMAGES.foilFlakes)}" alt="Foil Flakes" class="w-16 h-16 rounded-lg object-cover border border-[#e4e0d8] bg-white p-0.5">
+                <span class="text-[11px] font-semibold text-primary mt-1 truncate w-full">Foil Flakes</span>
                 <span class="font-spec-numeral text-xs text-secondary font-bold">₹899</span>
               </div>
             </div>
@@ -2442,7 +2478,7 @@
                   <span class="font-spec-numeral text-lg font-bold text-primary">₹2,298</span>
                   <span class="font-spec-numeral text-xs line-through text-outline">₹2,647</span>
                 </div>
-                <p class="text-[11px] text-secondary font-medium">Complete resin + 4x geode molds + 12x mica combo</p>
+                <p class="text-[11px] text-secondary font-medium">Complete 3:1 resin + agate mold + foil flakes combo</p>
               </div>
               <button type="button" onclick="window.addStudioBundle()" class="min-h-[44px] px-4 py-2.5 rounded-lg bg-secondary hover:opacity-95 text-on-secondary text-xs font-bold flex items-center gap-1.5 shadow-xs cursor-pointer shrink-0">
                 <span class="material-symbols-outlined text-base" aria-hidden="true">shopping_bag</span>
@@ -2566,7 +2602,7 @@
         <div class="ram-card p-5 sm:p-6 !bg-[#031a38] bg-gradient-to-r from-[#031a38] via-[#1b2f4e] to-[#2c1e21] text-white flex flex-col md:flex-row items-start md:items-center justify-between gap-5">
           <div class="flex flex-col sm:flex-row items-start sm:items-center gap-4">
             <div class="story-ring w-20 h-20 sm:w-24 sm:h-24 shrink-0">
-              <img src="${esc(Store.IMAGES.floralCube)}" alt="@resin.art.memories" class="w-full h-full rounded-full object-cover border-2 border-[#031a38]">
+              <img src="${esc(Store.IMAGES.logoVistara)}" alt="@resin.art.memories" class="w-full h-full rounded-full object-cover border-2 border-[#031a38]">
             </div>
             <div>
               <div class="flex items-center gap-2 flex-wrap">
@@ -4598,6 +4634,7 @@
     }
     const label = valid === 'masculine' ? '👔 Gifts for Him' : (valid === 'feminine' ? '🌸 Gifts for Her' : 'Curated Studio Collections');
     window.showToast(`Feed Curated: ${label}`, 'Catalogue order adjusted to your preferred aesthetic & gifting style.');
+    syncGlobalFilterDrawerDom();
     renderActiveView({ preserveScroll: false });
   };
 
@@ -4795,7 +4832,7 @@
   };
 
   window.addRecommendedCalcKitToCart = function () {
-    const recommendedProdId = AppState.calcSystem === '2:1' ? 'vk-epx-201' : (AppState.calcSystem === '1:1' ? 'vk-res-003' : 'vk-epx-301');
+    const recommendedProdId = AppState.calcSystem === '2:1' ? 'vk-cat-res-201' : (AppState.calcSystem === '1:1' ? 'vk-cat-res-uvcs' : 'vk-cat-res-301');
     const prod = Store.getProductById(recommendedProdId);
     if (!prod) return;
     Store.addToCart(prod.id, null, 1);
@@ -4895,6 +4932,10 @@
     AppState.catalogSort = 'popular';
     AppState.catalogRatioFilter = 'all';
     AppState.catalogMaxPrice = 12000;
+    AppState.feedPersona = 'all';
+    if (typeof Store.setPersonaPreference === 'function') {
+      Store.setPersonaPreference('all');
+    }
     AppState.catalogVisibleCount = 12;
     syncGlobalFilterDrawerDom();
     renderActiveView();
@@ -5000,9 +5041,9 @@
   };
 
   window.addStudioBundle = function () {
-    Store.addToCart({ productId: 'vk-epx-301', variantLabel: '1.2kg Kit (Bundle)', price: 1149, regularPrice: 1299, qty: 1 });
-    Store.addToCart({ productId: 'vk-mld-geo', variantLabel: 'Set of 4 Geode Molds (Bundle)', price: 399, regularPrice: 449, qty: 1 });
-    Store.addToCart({ productId: 'vk-pig-cham', variantLabel: '12 Shades Mica Set (Bundle)', price: 750, regularPrice: 899, qty: 1 });
+    Store.addToCart({ productId: 'vk-cat-res-301', variantLabel: '1.2kg Kit (Bundle)', price: 1149, regularPrice: 1299, qty: 1 });
+    Store.addToCart({ productId: 'vk-cat-mld-agat', variantLabel: 'Agate Geode Coaster Mold (Bundle)', price: 399, regularPrice: 449, qty: 1 });
+    Store.addToCart({ productId: 'vk-cat-pig-foil', variantLabel: 'Artisanal Foil Flakes (Bundle)', price: 750, regularPrice: 899, qty: 1 });
     updateGlobalBadges();
     window.showToast('Added 3-Piece Studio Bundle to Bag!', 'Saved ₹349 on combo');
   };
@@ -5124,14 +5165,14 @@
     const total = b.shapePrice + b.sourceAddon + b.metallicAddon + secondaryCost + (b.ledBase ? 499 : 0);
     const addonSuffix = b.secondaryKeepsake && !b.secondaryKeepsake.startsWith('None') ? ` + ${b.secondaryKeepsake}` : '';
     Store.addToCart({
-      productId: 'ram-keep-001',
+      productId: 'vk-cat-res-301',
       sku: 'RAM-CUSTOM-KEEP',
       name: `Custom Preserved Keepsake (${b.shape})`,
       variantLabel: `${b.metallic}${addonSuffix}${b.ledBase ? ' + Warm LED Stand' : ''}`,
       price: total,
       regularPrice: total + 1000,
       qty: 1,
-      image: Store.IMAGES.floralCube,
+      image: Store.IMAGES.resin301,
       customNote: `${b.engraving} | Source: ${b.flowerSource} | Pickup: ${b.eventDate} (${b.pickupSlot})`
     });
     updateGlobalBadges();
@@ -5349,7 +5390,7 @@
     const handle = document.getElementById('mem-author-handle')?.value.trim();
     const tag = document.getElementById('mem-tag')?.value || 'ClientLove';
     const caption = document.getElementById('mem-caption')?.value.trim();
-    const productId = document.getElementById('mem-product')?.value || 'ram-keep-001';
+    const productId = document.getElementById('mem-product')?.value || 'vk-cat-res-301';
 
     Store.addCustomerPost({
       authorName,
@@ -5357,7 +5398,7 @@
       tag,
       caption,
       productId,
-      image: Store.IMAGES.floralCube
+      image: Store.IMAGES.resin301
     });
     document.getElementById('share-memory-modal')?.classList.add('hidden');
     syncBodyModalLock();

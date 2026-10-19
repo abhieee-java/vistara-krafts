@@ -4,6 +4,21 @@ import { TEST_PRODUCTS } from '../test-fixtures.js';
 // Authoritative fallback catalog mapping for ultra-fast or offline fallback
 const FALLBACK_CATALOG = new Map(TEST_PRODUCTS.map(p => [p.id, p]));
 
+// Canonical legacy product ID mapping for seamless backward compatibility
+const LEGACY_ID_MAP = {
+  'vk-epx-301': 'vk-cat-res-301',
+  'ram-keep-001': 'vk-cat-res-201',
+  'ram-keep-002': 'vk-cat-res-301',
+  'ram-keep-003': 'vk-cat-pig-foil',
+  'ram-keep-004': 'vk-cat-mld-agat',
+  'vk-mld-geo': 'vk-cat-mld-agat',
+  'vk-epx-201': 'vk-cat-res-201',
+  'vk-res-003': 'vk-cat-res-201',
+  'vk-dom-101': 'vk-cat-res-201',
+  'vk-pig-cham': 'vk-cat-pig-foil',
+  'vk-uv-hard': 'vk-cat-res-uvcs'
+};
+
 // Canonical coupon dictionary
 const AUTHORITATIVE_COUPONS = {
   STUDIO10: { code: 'STUDIO10', type: 'percent', value: 10, minOrder: 1500 },
@@ -22,9 +37,10 @@ export class PriceCalculator {
    */
   static async fetchAuthoritativeProduct(productId) {
     if (!productId || typeof productId !== 'string') return null;
+    const resolvedId = LEGACY_ID_MAP[productId] || productId;
 
     try {
-      const url = `${CONFIG.SUPABASE_URL}/rest/v1/products?id=eq.${encodeURIComponent(productId)}&select=id,sku,name,price,compare_at_price,stock,in_stock,is_active,variants`;
+      const url = `${CONFIG.SUPABASE_URL}/rest/v1/products?id=eq.${encodeURIComponent(resolvedId)}&select=id,sku,name,price,compare_at_price,stock,in_stock,is_active,variants`;
       const res = await fetch(url, {
         headers: {
           'apikey': CONFIG.SUPABASE_ANON_KEY,
@@ -54,7 +70,7 @@ export class PriceCalculator {
       // In case Supabase network drops, fallback to authoritative internal catalog
     }
 
-    const fallback = FALLBACK_CATALOG.get(productId);
+    const fallback = FALLBACK_CATALOG.get(resolvedId);
     if (!fallback) return null;
 
     return {

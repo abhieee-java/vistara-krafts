@@ -109,7 +109,13 @@ export const TEST_PRODUCTS = [
       "resin-art",
       "bestseller"
     ],
-    "description": "Professional 2:1 mixing ratio epoxy resin & hardener system formulated specifically for resin artists, coaster creators, and tray makers. Delivers high optical clarity, excellent self-leveling capabilities, and robust bubble-release kinetics with advanced UV resistance against yellowing."
+    "description": "Professional 2:1 mixing ratio epoxy resin & hardener system formulated specifically for resin artists, coaster creators, and tray makers. Delivers high optical clarity, excellent self-leveling capabilities, and robust bubble-release kinetics with advanced UV resistance against yellowing.",
+    "relatedCategories": [
+      "casting",
+      "coating",
+      "keepsakes",
+      "tabletop"
+    ]
   },
   {
     "id": "vk-cat-res-301",
@@ -196,7 +202,14 @@ export const TEST_PRODUCTS = [
       "deep-pour",
       "botanical-encapsulation"
     ],
-    "description": "Engineered for deep-cavity casting, river tables, large botanical encapsulation blocks, and geode platters. Its slow-curing exothermic profile suppresses thermal cracking and bubble retention, yielding water-clear glasslike depth."
+    "description": "Engineered for deep-cavity casting, river tables, large botanical encapsulation blocks, and geode platters. Its slow-curing exothermic profile suppresses thermal cracking and bubble retention, yielding water-clear glasslike depth.",
+    "relatedCategories": [
+      "deep_pour",
+      "casting",
+      "river_tables",
+      "keepsakes",
+      "preservation"
+    ]
   },
   {
     "id": "vk-cat-acc-deco",
@@ -302,7 +315,13 @@ export const TEST_PRODUCTS = [
       "gold-rims",
       "calligraphy"
     ],
-    "description": "Premium oil-based metallic paint marker with opaque, liquid-metal reflectivity. Specially formulated for outlining cured resin coasters, painting geode crystal rim edges, glass detailing, and luxury gold-leaf accentuation."
+    "description": "Premium oil-based metallic paint marker with opaque, liquid-metal reflectivity. Specially formulated for outlining cured resin coasters, painting geode crystal rim edges, glass detailing, and luxury gold-leaf accentuation.",
+    "relatedCategories": [
+      "accessories",
+      "detailing",
+      "gilding",
+      "pottery"
+    ]
   },
   {
     "id": "vk-cat-acc-stnd",
@@ -413,7 +432,13 @@ export const TEST_PRODUCTS = [
       "art-display",
       "plate-stand"
     ],
-    "description": "Heavy-gauge electroplated gold metal folding easel stand with protective ball-feet tips. Provides steady, anti-tip support for geode agate coasters, custom resin wall clocks, ceramic display plates, and wedding keepsakes."
+    "description": "Heavy-gauge electroplated gold metal folding easel stand with protective ball-feet tips. Provides steady, anti-tip support for geode agate coasters, custom resin wall clocks, ceramic display plates, and wedding keepsakes.",
+    "relatedCategories": [
+      "accessories",
+      "display",
+      "easels",
+      "pottery"
+    ]
   },
   {
     "id": "vk-cat-mld-agat",
@@ -511,7 +536,13 @@ export const TEST_PRODUCTS = [
       "geode-coasters",
       "diy-crafts"
     ],
-    "description": "High-tear strength translucent silicone coaster mold with organic wave fluting. The ultra-smooth mirror cavity replicates natural crystalline geode formations without requiring surface sanding or recoating."
+    "description": "High-tear strength translucent silicone coaster mold with organic wave fluting. The ultra-smooth mirror cavity replicates natural crystalline geode formations without requiring surface sanding or recoating.",
+    "relatedCategories": [
+      "molds",
+      "coasters",
+      "geode",
+      "trays"
+    ]
   },
   {
     "id": "vk-cat-pig-foil",
@@ -617,7 +648,13 @@ export const TEST_PRODUCTS = [
       "leafing",
       "metallic-resin"
     ],
-    "description": "Delicate metallic gold and silver leaf flakes that disperse seamlessly into resin matrices or adhere to tacky borders. Perfect for geode art fractures, crystal core clusters, jewelry pendants, and resin bookends."
+    "description": "Delicate metallic gold and silver leaf flakes that disperse seamlessly into resin matrices or adhere to tacky borders. Perfect for geode art fractures, crystal core clusters, jewelry pendants, and resin bookends.",
+    "relatedCategories": [
+      "pigments",
+      "leafing",
+      "metallic",
+      "accents"
+    ]
   },
   {
     "id": "vk-cat-pig-opaq",
@@ -734,7 +771,13 @@ export const TEST_PRODUCTS = [
       "color-paste",
       "solid-resin"
     ],
-    "description": "Micro-ground resin paste formulation providing 100% solid opacity with a single drop. Will not thin out resin viscosity or interfere with curing ratios. Creates crisp solid coastlines, geode outer layers, and marble veins."
+    "description": "Micro-ground resin paste formulation providing 100% solid opacity with a single drop. Will not thin out resin viscosity or interfere with curing ratios. Creates crisp solid coastlines, geode outer layers, and marble veins.",
+    "relatedCategories": [
+      "pigments",
+      "colors",
+      "opaque",
+      "pastes"
+    ]
   },
   {
     "id": "vk-cat-pig-inks",
@@ -830,7 +873,13 @@ export const TEST_PRODUCTS = [
       "petri-dishes",
       "pearl-mica"
     ],
-    "description": "Dynamic dual-purpose color studio set. Includes concentrated alcohol dropper inks for mesmerizing petri blooms and smoke tendrils, plus high-intensity pearl luster pigments for metallic 3D wave and geode river textures."
+    "description": "Dynamic dual-purpose color studio set. Includes concentrated alcohol dropper inks for mesmerizing petri blooms and smoke tendrils, plus high-intensity pearl luster pigments for metallic 3D wave and geode river textures.",
+    "relatedCategories": [
+      "pigments",
+      "alcohol_inks",
+      "pearl",
+      "dyes"
+    ]
   },
   {
     "id": "vk-cat-acc-bubb",
@@ -917,7 +966,13 @@ export const TEST_PRODUCTS = [
       "anti-bubble",
       "surface-spray"
     ],
-    "description": "Specially engineered surface-tension breaking formula. Spray 1-2 fine pumps over wet freshly poured epoxy to immediately collapse microbubbles and surface foam without heat or scorching sensitive silicone molds."
+    "description": "Specially engineered surface-tension breaking formula. Spray 1-2 fine pumps over wet freshly poured epoxy to immediately collapse microbubbles and surface foam without heat or scorching sensitive silicone molds.",
+    "relatedCategories": [
+      "accessories",
+      "defoamer",
+      "surface_care",
+      "preservation"
+    ]
   },
   {
     "id": "vk-cat-acc-poli",
@@ -1004,7 +1059,13 @@ export const TEST_PRODUCTS = [
       "scratch-remover",
       "buffing"
     ],
-    "description": "Ultra-fine abrasive polishing compound that clears micro-scratches, dull haze, and demolding marks from cured resin surfaces. Leaves behind a crystalline, fingerprint-resistant, diamond-hard gloss finish."
+    "description": "Ultra-fine abrasive polishing compound that clears micro-scratches, dull haze, and demolding marks from cured resin surfaces. Leaves behind a crystalline, fingerprint-resistant, diamond-hard gloss finish.",
+    "relatedCategories": [
+      "accessories",
+      "polishing",
+      "restoration",
+      "pottery"
+    ]
   },
   {
     "id": "vk-cat-acc-trch",
@@ -1097,7 +1158,13 @@ export const TEST_PRODUCTS = [
       "heat-gun",
       "wave-art"
     ],
-    "description": "Professional ergonomic studio blow torch. Emits an adjustable concentrated blue needle flame to burst stubborn deep-seated air bubbles in wet resin within seconds, and activates delicate ocean wave cell lacing."
+    "description": "Professional ergonomic studio blow torch. Emits an adjustable concentrated blue needle flame to burst stubborn deep-seated air bubbles in wet resin within seconds, and activates delicate ocean wave cell lacing.",
+    "relatedCategories": [
+      "accessories",
+      "tools",
+      "degassing",
+      "flame"
+    ]
   },
   {
     "id": "vk-cat-acc-latx",
@@ -1184,7 +1251,13 @@ export const TEST_PRODUCTS = [
       "clean-edges",
       "peel-off"
     ],
-    "description": "Easy brush-on liquid latex solution. Coat the reverse side and edges of coasters, trays, or wood slabs prior to resin pouring. Catches all accidental drips and peels off smoothly in one piece after curing."
+    "description": "Easy brush-on liquid latex solution. Coat the reverse side and edges of coasters, trays, or wood slabs prior to resin pouring. Catches all accidental drips and peels off smoothly in one piece after curing.",
+    "relatedCategories": [
+      "accessories",
+      "masking",
+      "protection",
+      "cleanup"
+    ]
   },
   {
     "id": "vk-cat-mld-flw4",
@@ -1264,7 +1337,14 @@ export const TEST_PRODUCTS = [
       "ring-dish",
       "botanical-resin"
     ],
-    "description": "Versatile 4-in-1 silicone floral mold featuring nested cherry blossom petal silhouettes. Perfect for creating matching multi-size coaster sets, vanity ring trays, and candle bases with crystal edges."
+    "description": "Versatile 4-in-1 silicone floral mold featuring nested cherry blossom petal silhouettes. Perfect for creating matching multi-size coaster sets, vanity ring trays, and candle bases with crystal edges.",
+    "relatedCategories": [
+      "molds",
+      "floral",
+      "botanical",
+      "keepsakes",
+      "coasters"
+    ]
   },
   {
     "id": "vk-cat-acc-sili",
@@ -1357,7 +1437,14 @@ export const TEST_PRODUCTS = [
       "varmala-preservation",
       "silica-crystals"
     ],
-    "description": "Ultra-fine sand-like silica gel crystals designed to seep between delicate flower petals without flattening their three-dimensional structure. Retains authentic flower colors and botanical integrity for wedding varmala time-capsules."
+    "description": "Ultra-fine sand-like silica gel crystals designed to seep between delicate flower petals without flattening their three-dimensional structure. Retains authentic flower colors and botanical integrity for wedding varmala time-capsules.",
+    "relatedCategories": [
+      "accessories",
+      "botanical",
+      "preservation",
+      "keepsakes",
+      "drying"
+    ]
   },
   {
     "id": "vk-cat-mld-ag6c",
@@ -1437,7 +1524,13 @@ export const TEST_PRODUCTS = [
       "coaster-sets",
       "commercial-silicone"
     ],
-    "description": "Commercial-grade thick-walled silicone tray containing 6 individual scalloped agate coaster cavities. Allows busy resin studios to pour and cure an entire 6-piece dining coaster set in a single session."
+    "description": "Commercial-grade thick-walled silicone tray containing 6 individual scalloped agate coaster cavities. Allows busy resin studios to pour and cure an entire 6-piece dining coaster set in a single session.",
+    "relatedCategories": [
+      "molds",
+      "production",
+      "coasters",
+      "batch"
+    ]
   },
   {
     "id": "vk-cat-mld-bkm6",
@@ -1525,7 +1618,13 @@ export const TEST_PRODUCTS = [
       "stationery-crafts",
       "tassels"
     ],
-    "description": "High-flexibility translucent silicone bookmark mold. Features an integrated silicone peg that casts a clean top eyelet for attaching silk tassels, ribbons, and metallic charms."
+    "description": "High-flexibility translucent silicone bookmark mold. Features an integrated silicone peg that casts a clean top eyelet for attaching silk tassels, ribbons, and metallic charms.",
+    "relatedCategories": [
+      "molds",
+      "stationery",
+      "bookmarks",
+      "gifts"
+    ]
   },
   {
     "id": "vk-cat-res-uvcs",
@@ -1625,7 +1724,13 @@ export const TEST_PRODUCTS = [
       "instant-cure",
       "resin-jewelry"
     ],
-    "description": "Premium crystal-clear resin with fast UV curing, delivering a durable, high-gloss finish for professional crafting and jewelry applications. Requires no measuring or mixing — cures rock-hard within minutes under sunlight or UV lamp."
+    "description": "Premium crystal-clear resin with fast UV curing, delivering a durable, high-gloss finish for professional crafting and jewelry applications. Requires no measuring or mixing — cures rock-hard within minutes under sunlight or UV lamp.",
+    "relatedCategories": [
+      "casting",
+      "uv_resin",
+      "jewelry",
+      "bezels"
+    ]
   },
   {
     "id": "vk-cat-mld-leaf",
@@ -1727,7 +1832,13 @@ export const TEST_PRODUCTS = [
       "botanical-resin",
       "nature-crafts"
     ],
-    "description": "Botanical silicone leaf molds capturing exquisite leaf veins, ridges, and serrated contours. Exceptional for casting resin jewelry charms, nature hairpins, coaster embellishments, and autumn keepsake inclusions."
+    "description": "Botanical silicone leaf molds capturing exquisite leaf veins, ridges, and serrated contours. Exceptional for casting resin jewelry charms, nature hairpins, coaster embellishments, and autumn keepsake inclusions.",
+    "relatedCategories": [
+      "molds",
+      "botanical",
+      "foliage",
+      "leaves"
+    ]
   },
   {
     "id": "vk-cat-acc-smfl",
@@ -1897,8 +2008,13 @@ export const TEST_PRODUCTS = [
       "shaker-fillers",
       "resin-inclusions"
     ],
-    "description": "Handcrafted miniature blossom cabochons treated with fine golden edge gilding and pearl luster glazes. Created as charming decorative inclusions for clear resin coasters, shaker keychains, ring holders, phone cases, and jewelry."
+    "description": "Handcrafted miniature blossom cabochons treated with fine golden edge gilding and pearl luster glazes. Created as charming decorative inclusions for clear resin coasters, shaker keychains, ring holders, phone cases, and jewelry.",
+    "relatedCategories": [
+      "accessories",
+      "floral",
+      "inclusions",
+      "keepsakes",
+      "botanical"
+    ]
   }
 ];
-
-export default TEST_PRODUCTS;

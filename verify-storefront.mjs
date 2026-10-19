@@ -879,8 +879,8 @@ test('Decisions 2, 3 & 4: 2-Step Auth vs Checkout Address, 1-Click Google/Apple 
   assert.strictEqual(Store.getWishlist().length, 0, 'Guest wishlist must be empty after logout');
 
   // Guest hearts 2 items while unauthenticated
-  Store.toggleWishlist('ram-keep-001');
-  Store.toggleWishlist('vk-epx-301');
+  Store.toggleWishlist('vk-cat-res-201');
+  Store.toggleWishlist('vk-cat-res-301');
   assert.strictEqual(Store.getWishlist().length, 2, 'Guest must be able to heart items freely');
 
   // Decision 2 & 3: 1-Click Google OAuth Sign-In WITHOUT upfront shipping address merges guest wishlist into account
@@ -895,7 +895,7 @@ test('Decisions 2, 3 & 4: 2-Step Auth vs Checkout Address, 1-Click Google/Apple 
   assert.strictEqual(Store.isAuthenticated(), true, '1-Click Google Account Chooser must immediately authenticate user without requiring street address');
   assert.strictEqual(Store.getAuthSession().provider, 'google');
   assert.strictEqual(Store.getAuthSession().name, 'Kavya Nair');
-  assert.deepStrictEqual(Store.getWishlist(), ['ram-keep-001', 'vk-epx-301'], 'Guest wishlist must merge into authenticated user account');
+  assert.deepStrictEqual(Store.getWishlist(), ['vk-cat-res-201', 'vk-cat-res-301'], 'Guest wishlist must merge into authenticated user account');
 
   // Logout resets active guest wishlist to [] while preserving Kavya's saved wishlist
   sandbox.window.handlePatronLogout();
@@ -905,12 +905,12 @@ test('Decisions 2, 3 & 4: 2-Step Auth vs Checkout Address, 1-Click Google/Apple 
   // When Kavya logs back in via 1-click Google, her saved wishlist is restored
   sandbox.window.completeOAuthChooserAccount('google', 'kavya.nair@gmail.com', 'Kavya Nair');
   assert.strictEqual(Store.isAuthenticated(), true);
-  assert.deepStrictEqual(Store.getWishlist(), ['ram-keep-001', 'vk-epx-301'], 'Returning user login must restore saved account wishlist');
+  assert.deepStrictEqual(Store.getWishlist(), ['vk-cat-res-201', 'vk-cat-res-301'], 'Returning user login must restore saved account wishlist');
   sandbox.window.handlePatronLogout();
 
   // 4. Test Guest Checkout Gate -> Step 1 (Sign In) -> Step 2 (Delivery Address at Checkout)
   Store.clearCart();
-  Store.addToCart('vk-epx-301', 'kit-1200g', 1);
+  Store.addToCart('vk-cat-res-301', 'kit-1200g', 1);
   const blockedOrder = Store.placeOrder({ name: 'Test', phone: '9999999999', address: 'Bengaluru 560001' });
   assert.strictEqual(blockedOrder.success, false, 'Unauthenticated Store.placeOrder must be rejected');
   assert.strictEqual(blockedOrder.requiresAuth, true, 'Unauthenticated Store.placeOrder must set requiresAuth: true');
@@ -1041,7 +1041,7 @@ test('Decisions 2, 3 & 4: 2-Step Auth vs Checkout Address, 1-Click Google/Apple 
 
   // - Verify repeat order with modified PIN does not duplicate "- PIN" suffix
   sandbox.window.completeOAuthChooserAccount('google', 'devika.menon@vistara.in', 'Devika Menon');
-  Store.addToCart('vk-epx-301', 'kit-1200g', 1);
+  Store.addToCart('vk-cat-res-301', 'kit-1200g', 1);
   const repeatOrder = Store.placeOrder({
     name: 'Devika Menon',
     phone: '+91 98200 55443',
@@ -1264,7 +1264,7 @@ test('Awwwards SOTD (Site of the Day): Dynamic Cursor, 3D Tilt, Specimen Loupe, 
   assert.ok(studioHtml.includes('sotd-dehydration-slider'), 'Custom Studio view must contain flower transformation slider');
 
   // 5. Specimen Inspection Loupe on PDP
-  sandbox.window.navigateTo('product', 'ram-keep-001');
+  sandbox.window.navigateTo('product', 'vk-cat-res-201');
   const pdpHtml = mockDocument.getElementById('app-view-root').innerHTML;
   assert.ok(pdpHtml.includes('id="pdp-specimen-stage"'), 'PDP view must define #pdp-specimen-stage');
   assert.ok(pdpHtml.includes('id="pdp-specimen-loupe"'), 'PDP view must define #pdp-specimen-loupe macro zoom');
@@ -1297,7 +1297,7 @@ test('QA Audit & UX Reliability: Accessible Back Navigation on Subpages, Custom 
   // 4. Verify Accessible Back Buttons on Subpages
   const subpages = [
     { route: 'catalog', param: 'all', backText: 'Back to Discover' },
-    { route: 'product', param: 'vk-epx-301', backText: 'Back' },
+    { route: 'product', param: 'vk-cat-res-301', backText: 'Back' },
     { route: 'custom-studio', param: null, backText: 'Back to Discover' },
     { route: 'wishlist', param: null, backText: 'Back' },
     { route: 'cart', param: null, backText: 'Back to Shopping' },
@@ -1731,8 +1731,8 @@ if (chromeExe) {
     assert.strictEqual(e2eResult.guestProfileAddrAfterLogout, '', 'Headless Chrome: Logout must clear guest profile address');
     assert.strictEqual(e2eResult.appleChooserVisible, true, 'Headless Chrome: Clicking Continue with Apple after logout must display #cf-oauth-chooser-sheet');
 
-    // 3. Verify zero horizontal overflow across all 8 SPA routes and modals at 320x568, 375x812, and 1280x800
-    for (const vp of [{ width: 320, height: 568 }, { width: 375, height: 812 }, { width: 1280, height: 800 }]) {
+    // 3. Verify zero horizontal overflow across all 8 SPA routes and modals at 320x568, 375x812, 390x844 (iPhone 14), 428x926, and 1280x800
+    for (const vp of [{ width: 320, height: 568 }, { width: 375, height: 812 }, { width: 390, height: 844 }, { width: 428, height: 926 }, { width: 1280, height: 800 }]) {
       await cdpSend('Emulation.setDeviceMetricsOverride', {
         width: vp.width,
         height: vp.height,
@@ -1770,7 +1770,7 @@ if (chromeExe) {
         .filter(el => el.offsetParent !== null)
         .map(el => ({ id: el.id || el.textContent.trim().slice(0, 20), h: Math.round(el.getBoundingClientRect().height), right: Math.round(el.getBoundingClientRect().right) }));
       window.completeOAuthChooserAccount('google', 'aarav.mehta@gmail.com', 'Aarav Mehta');
-      window.StorefrontBridge.addToCart('vk-epx-301', 'kit-1200g', 1);
+      window.StorefrontBridge.addToCart('vk-cat-res-301', 'kit-1200g', 1);
       window.openCheckoutModal();
       await new Promise(r => setTimeout(r, 40));
       const pinRect = document.getElementById('chk-pincode').getBoundingClientRect();
@@ -1804,7 +1804,7 @@ if (chromeExe) {
     server.close();
     try { fs.rmSync(userDataDir, { recursive: true, force: true }); } catch (_e) { /* ignore */ }
 
-    console.log('✅ PASS: Real Headless Chrome E2E & Multi-Viewport Layout Verification (320px, 375px, 1280px)');
+    console.log('✅ PASS: Real Headless Chrome E2E & Multi-Viewport Layout Verification (320px, 375px, 390px, 428px, 1280px)');
     passed++;
   } catch (err) {
     console.error('❌ FAIL: Real Headless Chrome E2E verification');
@@ -1860,7 +1860,7 @@ try {
 
   // 6. Test placeOrderAsync resilient local preservation
   const testCartItem = {
-    productId: 'vk-epx-301',
+    productId: 'vk-cat-res-301',
     variantLabel: '1.2kg Kit (Bundle)',
     price: 1149,
     regularPrice: 1299,

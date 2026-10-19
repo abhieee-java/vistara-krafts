@@ -452,7 +452,8 @@
         'vk-uv-hard': 'vk-cat-res-uvcs',
         'vk-epx-201': 'vk-cat-res-201',
         'vk-res-003': 'vk-cat-res-201',
-        'vk-dom-101': 'vk-cat-res-201'
+        'vk-dom-101': 'vk-cat-res-201',
+        'vk-pig-cham': 'vk-cat-pig-foil'
       };
       const resolvedId = aliasMap[id] || id;
       const list = this.getProducts();
