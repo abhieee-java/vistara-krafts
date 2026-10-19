@@ -6333,6 +6333,29 @@
   let isPaymentSubmissionPending = false;
   let lastCheckoutSubmissionPayload = null;
 
+  window.clearActivePaymentTimeout = function () {
+    if (activePaymentTimeoutId) {
+      clearTimeout(activePaymentTimeoutId);
+      activePaymentTimeoutId = null;
+    }
+    const timeoutBox = document.getElementById('pay-timeout-actions');
+    if (timeoutBox) timeoutBox.classList.add('hidden');
+  };
+
+  window.startVerificationTimeout = function (ms = 30000) {
+    window.clearActivePaymentTimeout();
+    const timeoutBox = document.getElementById('pay-timeout-actions');
+    const statusEl = document.getElementById('pay-proc-status');
+    activePaymentTimeoutId = setTimeout(() => {
+      if (isPaymentSubmissionPending && timeoutBox) {
+        timeoutBox.classList.remove('hidden');
+        if (statusEl) {
+          statusEl.innerHTML = '<span class="w-2 h-2 rounded-full bg-[#9e3322] animate-ping"></span><span class="text-[#9e3322]">Gateway Response Delayed</span>';
+        }
+      }
+    }, ms);
+  };
+
   window.submitCheckoutOrder = async function (ev) {
     if (ev && typeof ev.preventDefault === 'function') ev.preventDefault();
     if (isPaymentSubmissionPending) return;
@@ -6425,16 +6448,8 @@
     if (procModal) procModal.classList.remove('hidden');
     syncBodyModalLock();
 
-    // Emergency safety timeout (10 seconds)
-    if (activePaymentTimeoutId) clearTimeout(activePaymentTimeoutId);
-    activePaymentTimeoutId = setTimeout(() => {
-      if (isPaymentSubmissionPending && timeoutBox) {
-        timeoutBox.classList.remove('hidden');
-        if (statusEl) {
-          statusEl.innerHTML = '<span class="w-2 h-2 rounded-full bg-[#9e3322] animate-ping"></span><span class="text-[#9e3322]">Gateway Response Delayed</span>';
-        }
-      }
-    }, 10000);
+    // Safety timeout for order preparation & gateway initialization (30 seconds)
+    window.startVerificationTimeout(30000);
 
     try {
       const placeFn = (Store && typeof Store.placeOrderAsync === 'function')

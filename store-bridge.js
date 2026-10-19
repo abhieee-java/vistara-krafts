@@ -1624,6 +1624,9 @@
           }
 
           if (procModal) procModal.classList.add('hidden');
+          if (typeof window.clearActivePaymentTimeout === 'function') {
+            window.clearActivePaymentTimeout();
+          }
 
           if (typeof window.Razorpay !== 'function') {
             return {
@@ -1650,10 +1653,15 @@
                 color: '#031a38'
               },
               handler: async (response) => {
+                if (typeof window.startVerificationTimeout === 'function') {
+                  window.startVerificationTimeout(35000);
+                }
                 if (procModal) {
                   const statusEl = document.getElementById('pay-proc-status');
+                  const timeoutBox = document.getElementById('pay-timeout-actions');
+                  if (timeoutBox) timeoutBox.classList.add('hidden');
                   if (statusEl) {
-                    statusEl.innerHTML = '<span class="w-2 h-2 rounded-full bg-secondary animate-ping"></span><span>Verifying Payment Signature...</span>';
+                    statusEl.innerHTML = '<span class="w-2 h-2 rounded-full bg-emerald-600 animate-ping"></span><span class="text-emerald-700 font-bold">Verifying Payment Signature...</span>';
                   }
                   procModal.classList.remove('hidden');
                 }
@@ -1720,19 +1728,31 @@
                     this.clearCart();
                     this.notify('order_placed', confirmedOrder);
                     this.clearCheckoutDraft();
+                    if (typeof window.clearActivePaymentTimeout === 'function') {
+                      window.clearActivePaymentTimeout();
+                    }
                     if (procModal) procModal.classList.add('hidden');
                     resolve({ success: true, order: confirmedOrder, verifiedByServer: true });
                   } else {
+                    if (typeof window.clearActivePaymentTimeout === 'function') {
+                      window.clearActivePaymentTimeout();
+                    }
                     if (procModal) procModal.classList.add('hidden');
                     resolve({ success: false, message: vData.error || 'Payment signature verification failed.' });
                   }
                 } catch (verErr) {
+                  if (typeof window.clearActivePaymentTimeout === 'function') {
+                    window.clearActivePaymentTimeout();
+                  }
                   if (procModal) procModal.classList.add('hidden');
                   resolve({ success: false, message: 'Payment verification network error: ' + verErr.message });
                 }
               },
               modal: {
                 ondismiss: () => {
+                  if (typeof window.clearActivePaymentTimeout === 'function') {
+                    window.clearActivePaymentTimeout();
+                  }
                   if (procModal) procModal.classList.add('hidden');
                   resolve({ success: false, cancelled: true, message: 'Payment window was closed. Your cart and draft address have been preserved.' });
                 }
