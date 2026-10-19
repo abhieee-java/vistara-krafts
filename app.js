@@ -1017,7 +1017,9 @@
         return bScore - aScore || b.reviewsCount - a.reviewsCount;
       });
     }
-    const featuredProducts = homeProducts.slice(0, 8);
+    const epoxyKits = products.filter(p => p.id.startsWith('vk-cat-res-') || p.category === 'casting' || p.category === 'deep_pour' || p.category === 'uv_resin');
+    const nonEpoxyProducts = homeProducts.filter(p => !(p.id.startsWith('vk-cat-res-') || p.category === 'casting' || p.category === 'deep_pour' || p.category === 'uv_resin'));
+    const featuredSupplies = nonEpoxyProducts.slice(0, 8);
     const pinInfo = Store.getPincodeInfo();
     const socialPosts = Store.getSocialPosts().slice(0, 3);
 
@@ -1221,7 +1223,7 @@
             <div id="home-pincode-result" class="p-3 rounded-lg bg-surface-container-low flex items-start gap-2 text-xs">
               <span class="material-symbols-outlined text-base text-[#266b4e] shrink-0 mt-0.5" aria-hidden="true">check_circle</span>
               <span id="home-pincode-msg" class="text-primary leading-relaxed">
-                <strong>PIN ${esc(pinInfo.pin)} (${esc(pinInfo.city)})</strong> — Express Delivery in <strong>${esc(pinInfo.days)}</strong> via ${esc(pinInfo.courier)}. Doorstep Floral Pickup &amp; COD active.
+                <strong>PIN ${esc(pinInfo.pin)} (${esc(pinInfo.city)})</strong> — Express Delivery in <strong>${esc(pinInfo.days)}</strong> via ${esc(pinInfo.courier)}. Express Air Delivery &amp; Instant UPI active.
               </span>
             </div>
           </div>
@@ -1303,77 +1305,75 @@
           </div>
         </section>
 
-        <!-- Interactive Before & After: 21-Day Cryo-Silica Floral Transformation Slider -->
-        <section class="px-4 sm:px-8 py-7 bg-surface flex flex-col gap-4 border-b border-[#e4e0d8]">
+        <!-- Decorative Art Deco Divider -->
+        <div class="px-8"><div class="deco-divider"><span class="deco-diamond"></span></div></div>
+
+        <!-- Section 1: Professional Epoxy Resin Kits & Systems (Strictly Epoxy Kits) -->
+        <section class="px-4 sm:px-8 py-7 bg-surface flex flex-col gap-5" id="home-epoxy-kits">
           <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-2">
             <div>
-              <span class="font-label-sm text-[11px] uppercase tracking-widest text-[#9e3322] font-bold">Real Flower Preservation</span>
-              <h2 class="font-headline-sm text-2xl sm:text-3xl text-primary font-bold tracking-tight">21-Day Cryo-Silica Floral Transformation</h2>
-              <p class="text-xs sm:text-sm text-on-surface-variant mt-0.5">Drag the slider to compare real wedding flowers with our clear crystal keepsake block.</p>
+              <div class="inline-flex items-center gap-1.5 text-secondary font-label-sm text-xs uppercase tracking-wider mb-1 font-bold">
+                <span class="material-symbols-outlined text-sm" aria-hidden="true">science</span>
+                <span>Pure Chemical Formulations</span>
+              </div>
+              <h2 class="font-headline-sm text-2xl sm:text-3xl text-primary font-bold tracking-tight">Professional Epoxy Resin Kits</h2>
+              <p class="text-xs sm:text-sm text-on-surface-variant mt-0.5">High-gloss optical casting systems, bubble-free deep pour formulas, and instant UV cure resins.</p>
             </div>
-            <div class="flex items-center gap-2 self-start sm:self-auto shrink-0">
-              <span class="px-2.5 py-1 rounded-full bg-secondary-container/50 text-on-secondary-container font-spec-numeral text-xs font-bold">
-                Comparison: <span class="sotd-slider-pct">50%</span>
-              </span>
-              <button type="button" onclick="window.navigateTo('custom-studio')" class="btn-shimmer sotd-magnetic min-h-[44px] px-3.5 py-2 rounded-xl bg-primary text-white text-xs font-bold inline-flex items-center gap-1.5 shadow-sm cursor-pointer">
-                <span>Commission Keepsake</span>
-                <span class="material-symbols-outlined text-sm" aria-hidden="true">arrow_forward</span>
-              </button>
+            <button type="button" onclick="window.navigateTo('catalog', 'casting')" class="min-h-[44px] px-4 py-2 rounded-full bg-primary text-on-primary font-label-sm text-xs font-semibold inline-flex items-center gap-1.5 cursor-pointer shrink-0">
+              <span>View All Resin Kits (${epoxyKits.length})</span>
+              <span class="material-symbols-outlined text-sm" aria-hidden="true">arrow_forward</span>
+            </button>
+          </div>
+
+          <!-- Technical Feature Badges -->
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
+            <div class="p-3 rounded-xl bg-surface-container-low border border-[#e4e0d8] flex items-center gap-2.5">
+              <span class="w-8 h-8 rounded-lg bg-primary text-white flex items-center justify-center shrink-0 font-bold text-xs">2:1</span>
+              <div>
+                <p class="font-bold text-primary">2:1 High-Gloss System</p>
+                <p class="text-[11px] text-on-surface-variant">Top-coat gloss &amp; shallow casts up to 20mm</p>
+              </div>
+            </div>
+            <div class="p-3 rounded-xl bg-surface-container-low border border-[#e4e0d8] flex items-center gap-2.5">
+              <span class="w-8 h-8 rounded-lg bg-secondary text-primary flex items-center justify-center shrink-0 font-bold text-xs">3:1</span>
+              <div>
+                <p class="font-bold text-primary">3:1 Deep Pour System</p>
+                <p class="text-[11px] text-on-surface-variant">Low-exotherm for river tables up to 50mm</p>
+              </div>
+            </div>
+            <div class="p-3 rounded-xl bg-surface-container-low border border-[#e4e0d8] flex items-center gap-2.5">
+              <span class="w-8 h-8 rounded-lg bg-[#9e3322] text-white flex items-center justify-center shrink-0 font-bold text-xs">UV</span>
+              <div>
+                <p class="font-bold text-primary">Optical UV Hard Cure</p>
+                <p class="text-[11px] text-on-surface-variant">1-part formula, zero mix, 90-second LED cure</p>
+              </div>
             </div>
           </div>
 
-          <div class="sotd-dehydration-slider relative w-full aspect-[4/3] sm:aspect-[16/7] rounded-2xl overflow-hidden border border-[#b08d57]/40 shadow-xl select-none" data-split="50">
-            <!-- After Layer (Preserved Optical Block) -->
-            <div class="absolute inset-0 w-full h-full bg-primary">
-              <img src="${esc(Store.IMAGES.flowerMold4in1)}" alt="After: Preserved High-Clarity Floral Casting" class="w-full h-full object-cover">
-              <div class="absolute top-3 right-3 px-3 py-1 rounded-full bg-primary/90 backdrop-blur-md text-[#ffd79b] text-[11px] font-bold uppercase tracking-wider shadow-sm border border-white/15">
-                ✨ Day 21: Preserved Optical Crystal Casting
-              </div>
-              <div class="absolute bottom-3 right-3 px-3 py-1.5 rounded-lg bg-black/60 backdrop-blur-xs text-white text-[11px] hidden sm:block">
-                0% Moisture • 95% Natural Color Retained • 85D Mirror Glass
-              </div>
-            </div>
-
-            <!-- Before Layer (Clipped - Fresh Wedding Garlands) -->
-            <div class="sotd-before-layer absolute inset-0 h-full overflow-hidden" style="width: 50%;">
-              <img src="${esc(Store.IMAGES.smallFlowers)}" alt="Before: Real Botanical Flowers" class="w-full h-full object-cover max-w-none" style="width: 100%; min-width: 100%;">
-              <div class="absolute top-3 left-3 px-3 py-1 rounded-full bg-black/75 backdrop-blur-md text-white text-[11px] font-bold uppercase tracking-wider shadow-sm border border-white/15">
-                🌸 Day 0: Delicate Botanical Flowers
-              </div>
-              <div class="absolute bottom-3 left-3 px-3 py-1.5 rounded-lg bg-black/60 backdrop-blur-xs text-white text-[11px] hidden sm:block">
-                Natural Fresh Petals • Pre-encapsulation Moisture Extraction
-              </div>
-            </div>
-
-            <!-- Divider Line & Drag Handle -->
-            <div class="sotd-slider-divider absolute top-0 bottom-0 w-0.5 bg-white pointer-events-none" style="left: 50%;">
-              <div class="sotd-slider-handle absolute top-1/2 -translate-y-1/2 -translate-x-1/2">
-                <span class="material-symbols-outlined text-lg" aria-hidden="true">drag_indicator</span>
-              </div>
-            </div>
-
-            <!-- Accessible Native Range Input -->
-            <input type="range" min="0" max="100" value="50" aria-label="Floral preservation before and after comparison slider" class="sotd-slider-range" oninput="window.updateSotdSlider(this)">
+          <!-- Epoxy Kits Cards Grid (Only Epoxy Kits) -->
+          <div id="home-epoxy-kits-grid" class="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
+            ${epoxyKits.map(p => renderProductCard(p, false)).join('')}
           </div>
         </section>
 
         <!-- Decorative Art Deco Divider -->
         <div class="px-8"><div class="deco-divider"><span class="deco-diamond"></span></div></div>
 
-        <!-- Bestselling Keepsakes & Archival Resin Systems Grid -->
+        <!-- Section 2: Precision Silicone Molds & Studio Essentials Grid -->
         <section class="px-4 sm:px-8 py-7 bg-surface flex flex-col gap-5" id="home-catalogue">
           <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-2">
             <div>
               <div class="inline-flex items-center gap-1.5 text-secondary font-label-sm text-xs uppercase tracking-wider mb-1 font-bold">
                 <span class="material-symbols-outlined text-sm" aria-hidden="true">diamond</span>
-                <span>Featured Keepsakes &amp; Supplies</span>
+                <span>Studio Molds &amp; Materials</span>
               </div>
-              <h2 class="font-headline-sm text-2xl sm:text-3xl text-primary font-bold tracking-tight">Bestselling Keepsakes &amp; Epoxy Kits</h2>
+              <h2 class="font-headline-sm text-2xl sm:text-3xl text-primary font-bold tracking-tight">Precision Silicone Molds &amp; Studio Essentials</h2>
             </div>
             <div class="flex flex-wrap items-center gap-2">
-              <button type="button" onclick="window.navigateTo('catalog', 'casting')" class="min-h-[44px] px-4 py-2 rounded-full bg-surface-container-high text-primary font-label-sm text-xs font-semibold hover:bg-secondary-container inline-flex items-center cursor-pointer">Resin Systems</button>
               <button type="button" onclick="window.navigateTo('catalog', 'molds')" class="min-h-[44px] px-4 py-2 rounded-full bg-surface-container-high text-primary font-label-sm text-xs font-semibold hover:bg-secondary-container inline-flex items-center cursor-pointer">Silicone Molds</button>
-              <button type="button" onclick="window.navigateTo('catalog', 'all')" class="min-h-[44px] px-4 py-2 rounded-full bg-primary text-on-primary font-label-sm text-xs font-semibold inline-flex items-center cursor-pointer">All Formulations (${Store.getProducts().length})</button>
+              <button type="button" onclick="window.navigateTo('catalog', 'pigments')" class="min-h-[44px] px-4 py-2 rounded-full bg-surface-container-high text-primary font-label-sm text-xs font-semibold hover:bg-secondary-container inline-flex items-center cursor-pointer">Pigments &amp; Foils</button>
+              <button type="button" onclick="window.navigateTo('catalog', 'accessories')" class="min-h-[44px] px-4 py-2 rounded-full bg-surface-container-high text-primary font-label-sm text-xs font-semibold hover:bg-secondary-container inline-flex items-center cursor-pointer">Artisan Tools</button>
+              <button type="button" onclick="window.navigateTo('catalog', 'all')" class="min-h-[44px] px-4 py-2 rounded-full bg-primary text-on-primary font-label-sm text-xs font-semibold inline-flex items-center cursor-pointer">All Products (${Store.getProducts().length})</button>
             </div>
           </div>
 
@@ -1401,7 +1401,7 @@
           </div>
 
           <div class="grid grid-cols-1 min-[360px]:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3.5 sm:gap-5">
-            ${featuredProducts.length === 0 ? `
+            ${featuredSupplies.length === 0 ? `
               <div class="col-span-full ram-card p-8 text-center bg-white flex flex-col items-center gap-3">
                 <span class="material-symbols-outlined text-4xl text-[#cda851]" aria-hidden="true">inventory_2</span>
                 <h3 class="font-headline-sm text-lg font-bold text-primary">Live Database Catalog Connected</h3>
@@ -1411,7 +1411,7 @@
                   <span>Sync Database</span>
                 </button>
               </div>
-            ` : featuredProducts.map(p => renderProductCard(p, false)).join('')}
+            ` : featuredSupplies.map(p => renderProductCard(p, false)).join('')}
           </div>
 
           <!-- Full Catalog Discovery Callout Banner -->
@@ -1423,6 +1423,15 @@
               </div>
               <h3 class="font-headline-sm text-lg sm:text-xl font-bold text-primary">Discover the Complete 19-Piece Atelier Collection</h3>
               <p class="text-xs text-on-surface-variant max-w-xl leading-relaxed">
+                Explore our full professional range: 3:1 Deep Pour epoxy, 2:1 high-gloss resin, UV cure resin, precision agate &amp; floral molds, leafing foils, and magic silica drying crystals.
+              </p>
+            </div>
+            <button type="button" onclick="window.navigateTo('catalog', 'all')" class="btn-shimmer min-h-[46px] px-6 py-2.5 rounded-xl bg-primary text-white text-xs font-bold inline-flex items-center justify-center gap-2 shadow-xs cursor-pointer shrink-0">
+              <span>View Full Catalogue (${Store.getProducts().length})</span>
+              <span class="material-symbols-outlined text-base" aria-hidden="true">arrow_forward</span>
+            </button>
+          </div>
+        </section>
                 Explore our full professional range: 3:1 Deep Pour epoxy, 2:1 high-gloss resin, UV cure resin, precision agate &amp; floral molds, leafing foils, and magic silica drying crystals.
               </p>
             </div>
@@ -2351,7 +2360,7 @@
               </div>
               <button type="button" onclick="window.buyNowPdp()" class="w-full h-12 px-4 rounded-xl bg-[#9e3322] hover:opacity-95 text-white font-title-md text-xs sm:text-sm font-bold flex items-center justify-center gap-2 shadow-sm cursor-pointer">
                 <span class="material-symbols-outlined text-lg shrink-0" aria-hidden="true">bolt</span>
-                <span>Express Buy Now (UPI / Card / COD)</span>
+                <span>Express Buy Now (Instant UPI / Cards)</span>
               </button>
             </div>
 
@@ -2442,7 +2451,7 @@
               </form>
               <div id="pdp-pincode-result" class="p-2.5 rounded-lg bg-white text-xs text-primary flex items-start gap-2">
                 <span class="material-symbols-outlined text-[#266b4e] text-base shrink-0 mt-0.5" aria-hidden="true">verified_user</span>
-                <span><strong>${esc(pinInfo.pin)} (${esc(pinInfo.city)})</strong> — Delivery in <strong>${esc(pinInfo.days)}</strong> via ${esc(pinInfo.courier)}. Cash on Delivery &amp; UPI supported.</span>
+                <span><strong>${esc(pinInfo.pin)} (${esc(pinInfo.city)})</strong> — Delivery in <strong>${esc(pinInfo.days)}</strong> via ${esc(pinInfo.courier)}. Instant UPI &amp; Cards supported.</span>
               </div>
             </div>
           </div>
@@ -3215,6 +3224,15 @@
                           </div>
                         ` : ''}
                         ${item.customNote ? `<p class="text-[11px] text-[#9e3322] font-medium mt-1 break-anywhere">✨ Note: “${esc(item.customNote)}”</p>` : ''}
+                        ${item.isOutOfStock ? `
+                          <div class="mt-2 p-2 rounded-lg bg-[#ffe4de] text-[#9e3322] border border-[#f5c2b7] text-xs font-semibold flex items-center justify-between gap-2">
+                            <div class="flex items-center gap-1.5 min-w-0">
+                              <span class="material-symbols-outlined text-sm shrink-0" aria-hidden="true">inventory_2</span>
+                              <span class="truncate">${esc(item.stockWarning || 'Currently Out of Stock')}</span>
+                            </div>
+                            <button type="button" onclick="window.handleCartRemove('${esc(item.cartItemId)}')" class="font-bold underline cursor-pointer shrink-0">Remove</button>
+                          </div>
+                        ` : ''}
                       </div>
                       <div class="flex flex-wrap items-baseline gap-1.5 sm:gap-2 mt-2">
                         <span class="font-spec-numeral text-sm sm:text-base font-bold text-primary" data-line-total="${effectiveUnit * item.qty}">${formatINR(effectiveUnit * item.qty)}</span>
@@ -3341,13 +3359,29 @@
                   <span class="font-spec-numeral text-2xl font-bold text-primary">${formatINR(summary.payable)}</span>
                 </div>
 
-                <button type="button" onclick="window.openCheckoutModal()" class="btn-shimmer w-full h-12 mt-2 rounded-xl bg-primary hover:bg-primary-container text-on-primary font-title-md text-sm font-bold flex items-center justify-center gap-2 shadow-md cursor-pointer">
-                  <span>Proceed to Secure Checkout • ${formatINR(summary.payable)}</span>
-                  <span class="material-symbols-outlined text-lg" aria-hidden="true">arrow_forward</span>
-                </button>
+                ${summary.hasOutOfStock ? `
+                  <div class="mt-3 p-3 rounded-xl bg-[#ffe4de] border border-[#f5c2b7] text-[#9e3322] text-xs flex flex-col gap-2">
+                    <div class="flex items-center gap-1.5 font-bold">
+                      <span class="material-symbols-outlined text-base" aria-hidden="true">warning</span>
+                      <span>Out-of-Stock Items in Bag (${summary.outOfStockCount})</span>
+                    </div>
+                    <p class="text-[11px] leading-relaxed">One or more items in your bag are currently out of stock. Please remove them to proceed with your order.</p>
+                    <button type="button" onclick="window.handleRemoveAllOutOfStock()" class="w-full py-2 px-3 rounded-lg bg-[#9e3322] text-white font-bold text-xs hover:opacity-95 cursor-pointer">
+                      Remove Out-of-Stock Items
+                    </button>
+                  </div>
+                  <button type="button" disabled class="w-full h-12 mt-2 rounded-xl bg-primary/40 text-on-primary/60 font-title-md text-sm font-bold flex items-center justify-center gap-2 cursor-not-allowed">
+                    <span>Remove Out-of-Stock Items to Checkout</span>
+                  </button>
+                ` : `
+                  <button type="button" onclick="window.openCheckoutModal()" class="btn-shimmer w-full h-12 mt-2 rounded-xl bg-primary hover:bg-primary-container text-on-primary font-title-md text-sm font-bold flex items-center justify-center gap-2 shadow-md cursor-pointer">
+                    <span>Proceed to Secure Checkout • ${formatINR(summary.payable)}</span>
+                    <span class="material-symbols-outlined text-lg" aria-hidden="true">arrow_forward</span>
+                  </button>
+                `}
 
                 <p class="text-[11px] text-center text-on-surface-variant pt-1">
-                  🔒 100% Encrypted via <strong>Razorpay Payment Gateway</strong> • UPI, Cards, NetBanking &amp; COD
+                  🔒 100% Encrypted via <strong>Razorpay Payment Gateway</strong> • UPI, Cards &amp; NetBanking
                 </p>
               </div>
             </div>
@@ -3673,7 +3707,7 @@
       telephone: '+91-80-4890-7210',
       priceRange: '₹299 - ₹12,999',
       currenciesAccepted: 'INR',
-      paymentAccepted: 'UPI, Google Pay, PhonePe, Paytm, Credit Card, Debit Card, NetBanking, Cash on Delivery (COD)',
+      paymentAccepted: 'UPI, Google Pay, PhonePe, Paytm, Credit Card, Debit Card, NetBanking',
       address: {
         '@type': 'PostalAddress',
         streetAddress: '42 Craft Enclave, Indiranagar 100 Feet Road',
@@ -3909,10 +3943,10 @@
         },
         {
           '@type': 'Question',
-          name: 'Do you provide GST tax invoices, Cash on Delivery (COD), and express shipping in India?',
+          name: 'Do you provide GST tax invoices, express shipping, and instant UPI payments in India?',
           acceptedAnswer: {
             '@type': 'Answer',
-            text: 'Yes. Every order includes an official 18% GST Tax Invoice (HSN 39073010 for epoxy resins) for B2B input tax credit. Orders above ₹1,499 qualify for free express shipping via BlueDart and Delhivery across 28,000+ Indian PIN codes, with UPI, Card, and Cash on Delivery (COD) available.'
+            text: 'Yes. Every order includes an official 18% GST Tax Invoice (HSN 39073010 for epoxy resins) for B2B input tax credit. Orders above ₹1,499 qualify for free express shipping via BlueDart and Delhivery across 28,000+ Indian PIN codes, with instant UPI, Credit/Debit Cards, and NetBanking supported.'
           }
         }
       ]
@@ -4750,7 +4784,7 @@
         iconEl.classList.remove('text-error');
         iconEl.classList.add('text-[#266b4e]');
       }
-      msgEl.innerHTML = `<strong>PIN ${esc(res.pin)} (${esc(res.city)})</strong> — Express Delivery in <strong>${esc(res.days)}</strong> via ${esc(res.courier)}. Doorstep Floral Pickup &amp; COD active.`;
+      msgEl.innerHTML = `<strong>PIN ${esc(res.pin)} (${esc(res.city)})</strong> — Express Delivery in <strong>${esc(res.days)}</strong> via ${esc(res.courier)}. Express Air Delivery &amp; Instant UPI active.`;
       window.showToast(`PIN ${res.pin} Serviceable!`, `${res.city} • ${res.courier}`);
     }
   };
@@ -5057,7 +5091,7 @@
       if (!res.valid) {
         box.innerHTML = `<span class="material-symbols-outlined text-error text-base shrink-0 mt-0.5" aria-hidden="true">error</span><span class="text-error font-semibold">${esc(res.message)}</span>`;
       } else {
-        box.innerHTML = `<span class="material-symbols-outlined text-[#266b4e] text-base shrink-0 mt-0.5" aria-hidden="true">verified_user</span><span><strong>${esc(res.pin)} (${esc(res.city)})</strong> — Delivery in <strong>${esc(res.days)}</strong> via ${esc(res.courier)}. COD &amp; UPI available.</span>`;
+        box.innerHTML = `<span class="material-symbols-outlined text-[#266b4e] text-base shrink-0 mt-0.5" aria-hidden="true">verified_user</span><span><strong>${esc(res.pin)} (${esc(res.city)})</strong> — Delivery in <strong>${esc(res.days)}</strong> via ${esc(res.courier)}. Instant UPI &amp; Cards available.</span>`;
       }
     }
   };
@@ -5215,6 +5249,15 @@
     updateGlobalBadges();
     renderActiveView();
     window.showToast('Item Removed from Studio Bag');
+  };
+
+  window.handleRemoveAllOutOfStock = function () {
+    if (Store && typeof Store.removeOutOfStockItems === 'function') {
+      Store.removeOutOfStockItems();
+      updateGlobalBadges();
+      renderActiveView();
+      window.showToast('Out-of-Stock Items Removed', 'Your studio bag has been refreshed.');
+    }
   };
 
   window.handleSaveForLater = function (cartItemId, productId) {
@@ -6218,6 +6261,11 @@
     const summary = Store.getCartSummary();
     if (summary.itemsCount === 0) {
       window.showToast('Your Studio Bag is Empty');
+      return;
+    }
+
+    if (summary.hasOutOfStock) {
+      window.showToast('Out-of-Stock Items in Bag', 'Please remove out-of-stock items to continue to checkout.');
       return;
     }
 

@@ -683,7 +683,7 @@ test('Customer E-Commerce Domain Features, Strict Owner UI Separation & Viewport
   assert.ok(!appCode.includes('href="#pdp-reviews"'), 'app.js PDP must not use <a href="#pdp-reviews"> which hijacks SPA location.hash');
   assert.ok(appCode.includes("window.scrollToSection('pdp-reviews')"), 'app.js PDP must use window.scrollToSection for review anchor scrolling');
   assert.ok(appCode.includes('md:sticky md:top-[93px]'), 'Catalog search/filter bar must be sticky only on md+ viewports to prevent mobile viewport crushing');
-  assert.ok(appCode.includes('Express Buy Now (UPI / Card / COD)'), 'PDP right column must include inline primary conversion actions');
+  assert.ok(appCode.includes('Express Buy Now (Instant UPI / Cards)'), 'PDP right column must include inline primary conversion actions');
 
   // Verify in-place re-render preserves window.scrollY while route change (both navigateTo and raw hashchange) resets scrollY to 0
   sandbox.window.navigateTo('product', 'ram-keep-001');
@@ -1252,16 +1252,16 @@ test('Awwwards SOTD (Site of the Day): Dynamic Cursor, 3D Tilt, Specimen Loupe, 
   assert.ok(stylesCss.includes('.sotd-ripple-effect'), 'styles.css must define .sotd-ripple-effect');
   assert.ok(stylesCss.includes('.sotd-burst-particle'), 'styles.css must define .sotd-burst-particle');
 
-  // 4. Interactive Before/After Flower Dehydration Slider in Home & Custom Studio
+  // 4. Curated Epoxy Kits Section on Home & Interactive Flower Transformation Slider in Custom Studio
   sandbox.window.navigateTo('home');
   const homeHtml = mockDocument.getElementById('app-view-root').innerHTML;
-  assert.ok(homeHtml.includes('sotd-dehydration-slider'), 'Home view must contain interactive flower dehydration slider');
-  assert.ok(homeHtml.includes('21-Day Cryo-Silica Floral Transformation'), 'Home view must display transformation title');
-  assert.ok(homeHtml.includes('type="range"'), 'Dehydration slider must use accessible range input');
+  assert.ok(homeHtml.includes('Professional Epoxy Resin Kits') || homeHtml.includes('Choose the Right Vistāra Epoxy System'), 'Home view must display curated epoxy kits section');
+  assert.ok(!homeHtml.includes('21-Day Cryo-Silica Floral Transformation'), 'Home view must NOT display removed cryo-silica floral transformation per owner request');
 
   sandbox.window.navigateTo('custom-studio');
   const studioHtml = mockDocument.getElementById('app-view-root').innerHTML;
   assert.ok(studioHtml.includes('sotd-dehydration-slider'), 'Custom Studio view must contain flower transformation slider');
+  assert.ok(studioHtml.includes('type="range"'), 'Dehydration slider must use accessible range input');
 
   // 5. Specimen Inspection Loupe on PDP
   sandbox.window.navigateTo('product', 'vk-cat-res-201');
@@ -1648,25 +1648,34 @@ if (chromeExe) {
     assert.ok(chromeSeoAudit.pdpGraphCount >= 7, 'Headless Chrome: PDP JSON-LD @graph must contain at least 7 structured nodes');
 
     // 1c. Verify clean native cursor (no bubbles), zero fake awards, and interactive elements in real Headless Chrome
-    const sotdAudit = await cdpEval(`(() => {
+    const sotdAudit = await cdpEval(`(async () => {
       const cursorDot = document.getElementById('sotd-cursor-dot');
       const cursorRing = document.getElementById('sotd-cursor-ring');
       const ribbonText = document.querySelector('header aside')?.textContent || '';
-      const slider = document.querySelector('.sotd-dehydration-slider');
-      const sliderInput = document.querySelector('.sotd-slider-range');
+      const epoxyKitsGrid = document.getElementById('home-epoxy-kits-grid');
+
+      // Navigate to custom-studio to verify interactive flower transformation slider
+      window.navigateTo('custom-studio');
+      await new Promise(r => setTimeout(r, 60));
+      const studioSlider = document.querySelector('.sotd-dehydration-slider');
+      const studioSliderInput = document.querySelector('.sotd-slider-range');
+      window.navigateTo('home');
+
       return {
         hasCursorDot: Boolean(cursorDot),
         hasCursorRing: Boolean(cursorRing),
         hasFakeAward: ribbonText.includes('Awwwards'),
-        hasSlider: Boolean(slider),
-        hasSliderInput: Boolean(sliderInput)
+        hasEpoxyKits: Boolean(epoxyKitsGrid),
+        hasStudioSlider: Boolean(studioSlider),
+        hasStudioSliderInput: Boolean(studioSliderInput)
       };
     })()`);
     assert.strictEqual(sotdAudit.hasCursorDot, false, 'Headless Chrome: #sotd-cursor-dot must NOT exist in DOM (clean native cursor restored)');
     assert.strictEqual(sotdAudit.hasCursorRing, false, 'Headless Chrome: #sotd-cursor-ring must NOT exist in DOM');
     assert.strictEqual(sotdAudit.hasFakeAward, false, 'Headless Chrome: Header ribbon must NOT contain fake award claims');
-    assert.strictEqual(sotdAudit.hasSlider, true, 'Headless Chrome: Home view must mount .sotd-dehydration-slider');
-    assert.strictEqual(sotdAudit.hasSliderInput, true, 'Headless Chrome: .sotd-dehydration-slider must have range input');
+    assert.strictEqual(sotdAudit.hasEpoxyKits, true, 'Headless Chrome: Home view must mount #home-epoxy-kits-grid');
+    assert.strictEqual(sotdAudit.hasStudioSlider, true, 'Headless Chrome: Custom Studio view must mount .sotd-dehydration-slider');
+    assert.strictEqual(sotdAudit.hasStudioSliderInput, true, 'Headless Chrome: .sotd-dehydration-slider must have range input');
 
     // 2. Verify full E2E user journey in real Chrome:
     // Guest wishlist -> Add to bag -> Checkout Gate -> 1-Click Google OAuth Chooser -> Step 2 Checkout Address -> Order Placement -> Logout -> Apple OAuth Chooser

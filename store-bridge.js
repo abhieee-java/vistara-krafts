@@ -555,16 +555,83 @@
     },
 
     getCart() {
-      const saved = safeRead(STORAGE_KEYS.CART, null);
-      if (saved && Array.isArray(saved)) return saved;
-      const initial = cloneFallback(DEFAULT_CART);
-      safeWrite(STORAGE_KEYS.CART, initial);
-      return initial;
+      const saved = safeRead(STORAGE_KEYS.CART, []);
+      if (!Array.isArray(saved)) return [];
+
+      const products = this.getProducts();
+      let hasChanges = false;
+
+      const reconciled = saved.map(item => {
+        const product = products.find(p => p.id === item.productId || (p.sku && p.sku === item.sku));
+        if (!product) {
+          return {
+            ...item,
+            isOutOfStock: true,
+            stockQuantity: 0,
+            stockStatus: 'discontinued',
+            stockWarning: 'Item no longer active in atelier catalog.'
+          };
+        }
+
+        // Match variant if applicable
+        let matchedVar = null;
+        if (product.variants && product.variants.length > 0) {
+          matchedVar = product.variants.find(v =>
+            (item.variantId && (v.id === item.variantId || v.sku === item.variantId)) ||
+            (item.variantLabel && (v.label === item.variantLabel || v.title === item.variantLabel || v.name === item.variantLabel)) ||
+            (item.sku && v.sku === item.sku)
+          ) || product.variants[0];
+        }
+
+        let sizeDelta = 0;
+        if (item.size && Array.isArray(product.sizes)) {
+          const matchedSize = product.sizes.find(s => (s.label === item.size || s.id === item.size || s === item.size));
+          if (matchedSize && matchedSize.priceDelta) {
+            sizeDelta = Number(matchedSize.priceDelta) || 0;
+          }
+        }
+
+        const authoritativePrice = (matchedVar ? Number(matchedVar.price) : Number(product.price)) + sizeDelta;
+        const authoritativeRegular = (matchedVar ? Number(matchedVar.regularPrice || authoritativePrice) : Number(product.regularPrice || authoritativePrice)) + sizeDelta;
+        const authoritativeStock = matchedVar ? Number(matchedVar.stock ?? 10) : Number(product.stockQuantity ?? 10);
+        const isOutOfStock = Boolean(!product.inStock || authoritativeStock <= 0 || product.status === 'out_of_stock' || product.status === 'archived');
+
+        const updatedItem = {
+          ...item,
+          name: product.name,
+          image: item.image || product.image,
+          price: authoritativePrice,
+          regularPrice: authoritativeRegular,
+          stockQuantity: authoritativeStock,
+          isOutOfStock,
+          stockStatus: isOutOfStock ? 'out_of_stock' : 'in_stock',
+          stockWarning: isOutOfStock ? 'Currently Out of Stock in Studio Batch' : ''
+        };
+
+        if (updatedItem.price !== item.price || updatedItem.isOutOfStock !== item.isOutOfStock) {
+          hasChanges = true;
+        }
+
+        return updatedItem;
+      });
+
+      if (hasChanges) {
+        safeWrite(STORAGE_KEYS.CART, reconciled);
+      }
+
+      return reconciled;
     },
 
     saveCart(cart) {
       safeWrite(STORAGE_KEYS.CART, cart);
       this.notify('cart_updated', this.getCartSummary());
+    },
+
+    removeOutOfStockItems() {
+      const current = this.getCart();
+      const filtered = current.filter(item => !item.isOutOfStock);
+      this.saveCart(filtered);
+      return filtered;
     },
 
     addToCart(arg1, variantIdOrLabel, qtyArg) {
@@ -718,9 +785,14 @@
       const shippingProgress = subtotal <= 0 ? 0 : Math.min(100, Math.round((subtotal / freeShippingThreshold) * 100));
       const amountToFreeShipping = Math.max(0, freeShippingThreshold - subtotal);
 
+      const hasOutOfStock = cart.some(item => Boolean(item.isOutOfStock));
+      const outOfStockCount = cart.filter(item => Boolean(item.isOutOfStock)).length;
+
       return {
         cart,
         itemsCount,
+        hasOutOfStock,
+        outOfStockCount,
         subtotal,
         regularTotal,
         couponCode: couponDiscount > 0 ? activeCode : '',
@@ -834,7 +906,7 @@
       return {
         valid: true,
         ...record,
-        message: `${pin} (${record.city}) — Delivery in ${record.days} via ${record.courier}. COD, UPI & 24h Floral Pickup supported.`
+        message: `${pin} (${record.city}) — Delivery in ${record.days} via ${record.courier}. Instant UPI, Cards & Air Express.`
       };
     },
 
