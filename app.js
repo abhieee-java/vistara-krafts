@@ -423,11 +423,12 @@
     return orders.map(ord => {
       const stages = ord.stages || ['Order Confirmed', 'Materials Prepped', 'Silica Dehydration', 'Deep Cast Pour', 'Polish & Dispatch'];
       const stageIdx = Number(ord.stageIndex ?? 1);
+      const cleanOrderId = String(ord.orderId || ord.orderNumber || ord.id || '').replace(/^#/, '');
       return `
         <div class="p-3 rounded-xl bg-surface-container-low border border-[#e4e0d8] space-y-2">
           <div class="flex items-start justify-between gap-2">
             <div class="min-w-0 flex-1">
-              <span class="font-spec-numeral text-xs font-bold text-primary whitespace-nowrap block tracking-tight">#${esc(ord.orderId)}</span>
+              <span class="font-spec-numeral text-xs font-bold text-primary whitespace-nowrap block tracking-tight shrink-0">#${esc(cleanOrderId)}</span>
               <span class="text-[10px] text-on-surface-variant block whitespace-nowrap mt-0.5">${esc(ord.date || 'Active Batch')} • <strong class="text-primary font-semibold">${formatINR(ord.total)}</strong></span>
             </div>
             <span class="px-2 py-0.5 rounded-full bg-secondary-container/50 text-on-secondary-container text-[10px] font-bold truncate shrink-0 max-w-[115px] sm:max-w-[160px] text-right" title="${esc(ord.status)}">${esc(ord.status)}</span>
@@ -3586,12 +3587,14 @@
                 <button type="button" onclick="window.setAccountOrderSearch('')" class="min-h-[48px] px-5 py-2.5 rounded-xl bg-primary text-white text-xs font-bold mt-1 shadow-xs cursor-pointer">Show All Orders</button>
               `}
             </div>
-          ` : filteredOrders.map(ord => `
-            <div class="ram-card p-5 bg-white flex flex-col gap-4" data-order-id="${esc(ord.orderId)}">
+          ` : filteredOrders.map(ord => {
+            const cleanOrderId = String(ord.orderId || ord.orderNumber || ord.id || '').replace(/^#/, '');
+            return `
+            <div class="ram-card p-5 bg-white flex flex-col gap-4" data-order-id="${esc(cleanOrderId)}">
               <div class="flex flex-wrap items-center justify-between gap-2 border-b border-surface-container pb-3">
                 <div>
                   <div class="flex flex-wrap items-center gap-2">
-                    <span class="font-spec-numeral text-xs font-bold text-secondary whitespace-nowrap">ORDER #${esc(ord.orderId)}</span>
+                    <span class="font-spec-numeral text-xs font-bold text-secondary whitespace-nowrap">ORDER #${esc(cleanOrderId)}</span>
                     ${ord.orderStatus === 'cancelled' || ord.orderStatus === 'refunded' ? `
                       <span class="px-2 py-0.5 rounded-full bg-red-100 text-red-800 text-[10px] font-bold uppercase tracking-wider">Cancelled</span>
                     ` : (ord.orderStatus === 'delivered' ? `
@@ -3716,9 +3719,9 @@
                     <span>Reorder to Bag</span>
                   </button>
                 </div>
-              </div>
             </div>
-          `).join('')}
+          `;
+          }).join('')}
         </div>
 
         <!-- Customer Bridal Flower Packing & Resin Care Vault -->
@@ -6239,7 +6242,8 @@
     if (!modal || !title || !body) return;
 
     const gstAmt = Number(ord.gstAmount) || Number((ord.total * (18 / 118)).toFixed(2));
-    title.textContent = `GST Tax Invoice — Order #${ord.orderId}`;
+    const cleanId = String(ord.orderId || ord.orderNumber || ord.id || '').replace(/^#/, '');
+    title.textContent = `GST Tax Invoice — Order #${cleanId}`;
     body.innerHTML = `
       <div class="flex flex-col gap-3 text-xs text-primary">
         <div class="flex flex-wrap justify-between gap-2 p-3 rounded-lg bg-surface-container-low border border-[#e4e0d8]">

@@ -1821,15 +1821,19 @@ if (chromeExe) {
       const pinRect = document.getElementById('chk-pincode').getBoundingClientRect();
       const addrRect = document.getElementById('chk-address').getBoundingClientRect();
       window.closeModalById('checkout-modal');
+      window.StorefrontBridge.placeOrder({ name: 'Aarav Mehta', phone: '+91 98450 12345', address: '108 MG Road, Bengaluru 560001' });
       window.openAccountBarModal();
       await new Promise(r => setTimeout(r, 40));
       const barBtns = Array.from(document.querySelectorAll('#account-bar-modal button, #account-bar-modal input'))
         .filter(el => el.offsetParent !== null)
         .map(el => ({ id: el.id || el.textContent.trim().slice(0, 20), h: Math.round(el.getBoundingClientRect().height), right: Math.round(el.getBoundingClientRect().right) }));
+      const orderSpan = document.querySelector('#bar-account-orders-list span.font-spec-numeral');
+      const orderSpanRect = orderSpan ? { h: Math.round(orderSpan.getBoundingClientRect().height), right: Math.round(orderSpan.getBoundingClientRect().right) } : null;
       window.closeModalById('account-bar-modal');
       return {
         authBtns,
         barBtns,
+        orderSpanRect,
         pinWidth: Math.round(pinRect.width),
         addrWidth: Math.round(addrRect.width),
         pinHeight: Math.round(pinRect.height)
@@ -1837,6 +1841,10 @@ if (chromeExe) {
     })()`);
     assert.ok(modalRects320.pinWidth >= 240 && modalRects320.pinWidth === modalRects320.addrWidth, `Headless Chrome: #chk-pincode must stack full-width at 320px (got ${modalRects320.pinWidth}px vs ${modalRects320.addrWidth}px)`);
     assert.ok(modalRects320.pinHeight >= 44, `Headless Chrome: #chk-pincode height must be >= 44px (got ${modalRects320.pinHeight}px)`);
+    if (modalRects320.orderSpanRect) {
+      assert.ok(modalRects320.orderSpanRect.h <= 24, `Headless Chrome: Order ID in bar modal must be single-line (height <= 24px, got ${modalRects320.orderSpanRect.h}px)`);
+      assert.ok(modalRects320.orderSpanRect.right <= 320, `Headless Chrome: Order ID in bar modal must not overflow 320px viewport (right=${modalRects320.orderSpanRect.right}px)`);
+    }
     for (const item of [...modalRects320.authBtns, ...modalRects320.barBtns]) {
       assert.ok(item.h >= 44, `Headless Chrome: Modal control "${item.id}" must have height >= 44px (got ${item.h}px)`);
       assert.ok(item.right <= 320, `Headless Chrome: Modal control "${item.id}" must not overflow 320px viewport (right=${item.right}px)`);
@@ -2176,7 +2184,7 @@ test('Mobile Screen Single-Line Order ID & Hamburger Drawer Architecture (Hick\'
   // Check account view has whitespace-nowrap on order ID
   sandbox.window.navigateTo('account');
   const accountHtml = mockDocument.getElementById('app-view-root').innerHTML;
-  assert.ok(accountHtml.includes('whitespace-nowrap">ORDER #' + activeOrderId), 'Order ID on account page must have whitespace-nowrap');
+  assert.ok(accountHtml.includes('whitespace-nowrap">ORDER #' + activeOrderId.replace(/^#/, '')), 'Order ID on account page must have whitespace-nowrap');
 
   // Check drawer account slot when logged in
   sandbox.window.completeOAuthChooserAccount('google', 'test.patron@example.com', 'Test Patron');
