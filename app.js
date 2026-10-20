@@ -801,6 +801,7 @@
                 <span class="px-2 py-0.5 rounded bg-surface-container-high text-primary font-spec-numeral text-[11px]">Ratio: ${esc(p.ratio)}</span>
                 <span class="px-2 py-0.5 rounded bg-secondary-container/40 text-on-secondary-container font-spec-numeral text-[11px]">Depth: ${esc(p.pourDepth)}</span>
                 <span class="px-2 py-0.5 rounded bg-surface-container-high text-on-surface-variant font-spec-numeral text-[11px]">${esc(p.unitPriceLabel)}</span>
+                ${p.sku ? `<span class="px-2 py-0.5 rounded bg-surface-container-high font-mono text-[10.5px] sku-badge whitespace-nowrap shrink-0 text-primary border border-[#e4e0d8]" data-sku="${esc(p.sku)}">SKU: ${esc(p.sku)}</span>` : ''}
               </div>
             </div>
             <div class="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-surface-container">
@@ -903,8 +904,7 @@
             <span class="font-medium text-primary">${p.category === 'keepsakes' ? 'Custom Keepsake' : 'Ratio ' + esc(p.ratio)}</span>
             <span class="text-outline/40">•</span>
             <span>Depth ${esc(p.pourDepth)}</span>
-            <span class="text-outline/40">•</span>
-            <span class="text-on-surface-variant truncate max-w-[90px]">${esc(p.unitPriceLabel)}</span>
+            ${p.sku ? `<span class="text-outline/40">•</span><span class="sku-badge font-mono text-[10px] text-primary whitespace-nowrap shrink-0" data-sku="${esc(p.sku)}">SKU: ${esc(p.sku)}</span>` : ''}
           </div>
         </div>
         <div class="pt-2 mt-1.5 border-t border-surface-container flex flex-col gap-1.5">
@@ -2141,12 +2141,14 @@
     return `
       <div class="route-view-enter flex flex-col w-full max-w-7xl mx-auto pb-36 lg:pb-24">
         <!-- Logistics & Batch Ribbon -->
-        <div class="bg-primary text-on-primary px-4 sm:px-8 py-2 flex flex-wrap items-center justify-between gap-2 text-[11px] font-label-sm">
-          <div class="flex items-center gap-1.5">
-            <span class="material-symbols-outlined text-secondary-fixed text-sm" aria-hidden="true">science</span>
-            <span class="font-spec-numeral">SKU: ${esc(product.sku)} • Batch VK-26-C38 Lab Certified</span>
+        <div class="bg-primary text-on-primary px-4 sm:px-8 py-2 flex flex-wrap sm:flex-nowrap items-center justify-between gap-2 text-[11px] font-label-sm overflow-hidden">
+          <div class="flex items-center gap-1.5 min-w-0">
+            <span class="material-symbols-outlined text-secondary-fixed text-sm shrink-0" aria-hidden="true">science</span>
+            <span class="font-spec-numeral sku-badge whitespace-nowrap shrink-0 truncate">SKU: ${esc(product.sku)}</span>
+            <span class="text-white/60 hidden sm:inline">•</span>
+            <span class="text-white/80 whitespace-nowrap hidden sm:inline">Batch VK-26-C38 Lab Certified</span>
           </div>
-          <span class="text-secondary-fixed flex items-center gap-1 font-semibold">
+          <span class="text-secondary-fixed flex items-center gap-1 font-semibold whitespace-nowrap shrink-0">
             <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 inline-block animate-pulse"></span>
             Fresh Studio Allocation
           </span>
@@ -2251,6 +2253,13 @@
                     <span>✨</span> Universal (All Genders)
                   </span>
                 `)}
+              </div>
+              <div class="flex items-center gap-2 mt-2.5">
+                <span class="sku-badge sku-pill inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-surface-container-high border border-[#e4e0d8] text-xs font-mono font-medium text-primary whitespace-nowrap shrink-0" data-sku="${esc(product.sku)}">
+                  <span class="text-on-surface-variant text-[11px] uppercase tracking-wider font-sans font-semibold">SKU:</span>
+                  <span class="sku-text font-bold text-primary whitespace-nowrap">${esc(product.sku)}</span>
+                </span>
+                <span class="text-on-surface-variant text-[11px] whitespace-nowrap">• 100% Optical Glass Purity</span>
               </div>
             </div>
 
@@ -2445,6 +2454,7 @@
               </div>
               <div class="rounded-xl overflow-hidden border border-[#e4e0d8] bg-white text-xs">
                 ${Object.entries({
+                  'Manufacturer SKU': product.sku || 'VK-EPX-STUDIO',
                   'Mix Ratio / Structure': (product.specs && product.specs.mixRatioWeight) || `${product.ratio || '3:1'} by Weight`,
                   'Volume Ratio': (product.specs && product.specs.mixRatioVolume) || '2.6 : 1',
                   'Working Pot Life': (product.specs && product.specs.workingPotLife) || product.potLife || '45 Minutes',
@@ -2457,7 +2467,7 @@
                 }).map(([k, v], i) => `
                   <div class="flex flex-wrap sm:flex-nowrap items-center justify-between gap-2 p-3 ${i % 2 === 0 ? 'bg-surface-container-low' : 'bg-white'} min-w-0">
                     <span class="font-medium text-on-surface-variant break-words">${esc(k)}</span>
-                    <span class="font-spec-numeral font-bold text-primary text-left sm:text-right break-words">${esc(v)}</span>
+                    <span class="font-spec-numeral font-bold text-primary text-left sm:text-right break-words ${k.includes('SKU') ? 'sku-badge whitespace-nowrap shrink-0' : ''}">${esc(v)}</span>
                   </div>
                 `).join('')}
               </div>
@@ -3260,7 +3270,11 @@
                             <span class="material-symbols-outlined text-lg" aria-hidden="true">close</span>
                           </button>
                         </div>
-                        <p class="text-xs text-on-surface-variant break-words">${esc(item.variantLabel)} • SKU: ${esc(item.sku)}</p>
+                        <p class="text-xs text-on-surface-variant flex items-center flex-wrap gap-1.5 my-0.5">
+                          ${item.variantLabel ? `<span>${esc(item.variantLabel)}</span>` : ''}
+                          ${item.variantLabel && item.sku ? `<span class="text-outline">•</span>` : ''}
+                          ${item.sku ? `<span class="sku-badge sku-pill font-mono text-[11px] px-1.5 py-0.5 rounded bg-surface-container-high border border-[#e4e0d8] text-primary whitespace-nowrap shrink-0" data-sku="${esc(item.sku)}">SKU: <span class="sku-text font-bold">${esc(item.sku)}</span></span>` : ''}
+                        </p>
                         ${(item.color || item.shape || item.size) ? `
                           <div class="flex flex-wrap items-center gap-1.5 my-1 text-[11px]">
                             ${item.color ? `<span class="px-2 py-0.5 rounded-full bg-surface-container-high text-primary font-semibold border border-[#e4e0d8]">🎨 ${esc(item.color)}</span>` : ''}
@@ -3567,6 +3581,11 @@
                 <div>
                   <div class="flex flex-wrap items-center gap-2">
                     <span class="font-spec-numeral text-xs font-bold text-secondary">ORDER #${esc(ord.orderId)}</span>
+                    ${ord.orderStatus === 'cancelled' || ord.orderStatus === 'refunded' ? `
+                      <span class="px-2 py-0.5 rounded-full bg-red-100 text-red-800 text-[10px] font-bold uppercase tracking-wider">Cancelled</span>
+                    ` : (ord.orderStatus === 'delivered' ? `
+                      <span class="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[10px] font-bold uppercase tracking-wider">Delivered</span>
+                    ` : '')}
                     ${ord.giftWrap ? `<span class="px-2 py-0.5 rounded-full bg-[#fdf6f3] border border-[#9e3322]/30 text-[#9e3322] text-[10px] font-bold">🎁 Silk Potli Gift Wrap</span>` : ''}
                   </div>
                   <h3 class="text-sm font-bold text-primary mt-0.5">${esc(ord.status)}</h3>
@@ -3584,18 +3603,52 @@
                 </div>
               </div>
 
-              <!-- 5-Stage Progress Stepper -->
-              <div class="grid grid-cols-1 sm:grid-cols-5 gap-2">
-                ${(ord.stages || []).map((st, idx) => {
-                  const done = idx <= (ord.stageIndex || 1);
-                  return `
-                    <div class="p-2.5 rounded-xl border ${done ? 'bg-primary text-white border-primary' : 'bg-surface-container-low text-on-surface-variant border-[#e4e0d8]'} flex items-center gap-2">
-                      <span class="material-symbols-outlined text-base ${done ? 'text-[#ffd79b]' : 'text-outline'}" aria-hidden="true">${done ? 'check_circle' : 'radio_button_unchecked'}</span>
+              <!-- Status Display & Stepper -->
+              ${(ord.orderStatus === 'cancelled' || ord.orderStatus === 'refunded') ? `
+                <div class="p-3.5 rounded-xl bg-red-50 border border-red-200 text-red-900 flex items-center justify-between gap-3">
+                  <div class="flex items-center gap-2.5">
+                    <span class="material-symbols-outlined text-red-600 text-xl shrink-0" aria-hidden="true">cancel</span>
+                    <div>
+                      <p class="text-xs font-bold text-red-800">Order Cancelled ${ord.orderStatus === 'refunded' ? '& Refund Processed' : ''}</p>
+                      <p class="text-[11px] text-red-700">${esc(ord.notes || 'This order has been cancelled by studio administration.')}</p>
+                    </div>
+                  </div>
+                  <span class="px-2.5 py-1 rounded-full bg-red-200/80 text-red-900 text-[10px] font-bold uppercase tracking-wider shrink-0">Cancelled</span>
+                </div>
+              ` : (ord.orderStatus === 'delivered' ? `
+                <div class="p-3.5 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-900 flex items-center justify-between gap-3">
+                  <div class="flex items-center gap-2.5">
+                    <span class="material-symbols-outlined text-emerald-600 text-xl shrink-0" aria-hidden="true">verified</span>
+                    <div>
+                      <p class="text-xs font-bold text-emerald-900">Keepsake Delivered Successfully</p>
+                      <p class="text-[11px] text-emerald-800">Your bespoke bridal keepsake has been safely delivered and verified.</p>
+                    </div>
+                  </div>
+                  <span class="px-2.5 py-1 rounded-full bg-emerald-200 text-emerald-900 text-[10px] font-bold uppercase tracking-wider shrink-0">Delivered</span>
+                </div>
+                <!-- 5-Stage Complete Stepper -->
+                <div class="grid grid-cols-1 sm:grid-cols-5 gap-2">
+                  ${(ord.stages || []).map((st) => `
+                    <div class="p-2.5 rounded-xl border bg-emerald-800 text-white border-emerald-800 flex items-center gap-2">
+                      <span class="material-symbols-outlined text-base text-emerald-300" aria-hidden="true">check_circle</span>
                       <span class="text-[11px] font-semibold leading-tight">${esc(st)}</span>
                     </div>
-                  `;
-                }).join('')}
-              </div>
+                  `).join('')}
+                </div>
+              ` : `
+                <!-- 5-Stage Progress Stepper -->
+                <div class="grid grid-cols-1 sm:grid-cols-5 gap-2">
+                  ${(ord.stages || []).map((st, idx) => {
+                    const done = idx <= (ord.stageIndex || 1);
+                    return `
+                      <div class="p-2.5 rounded-xl border ${done ? 'bg-primary text-white border-primary' : 'bg-surface-container-low text-on-surface-variant border-[#e4e0d8]'} flex items-center gap-2">
+                        <span class="material-symbols-outlined text-base ${done ? 'text-[#ffd79b]' : 'text-outline'}" aria-hidden="true">${done ? 'check_circle' : 'radio_button_unchecked'}</span>
+                        <span class="text-[11px] font-semibold leading-tight">${esc(st)}</span>
+                      </div>
+                    `;
+                  }).join('')}
+                </div>
+              `)}
 
               <!-- Pre-Pour Digital Layout Mockup Approval Banner -->
               <div class="p-3.5 rounded-xl ${ord.mockupApproved ? 'bg-[#e8f5e9] border border-[#266b4e]/30' : 'bg-[#fdf6f3] border border-[#9e3322]/30'} flex flex-col sm:flex-row sm:items-center justify-between gap-3">
@@ -4465,6 +4518,9 @@
           break;
         case 'account':
           root.innerHTML = renderAccountView();
+          if (Store && typeof Store.syncOrdersFromSupabase === 'function') {
+            Store.syncOrdersFromSupabase().catch(() => {});
+          }
           break;
         case '404':
           root.innerHTML = render404View();
@@ -7055,11 +7111,65 @@
     }
   }, true);
 
+  // Dynamic Storefront Settings Applier
+  window.applyStorefrontSettings = function (settings) {
+    if (!settings || typeof settings !== 'object') return;
+
+    // Header & Mobile Top Bar
+    const headerName = document.getElementById('header-brand-name');
+    const headerTagline = document.getElementById('header-brand-tagline');
+    if (headerName && settings.storeName) headerName.textContent = settings.storeName;
+    if (headerTagline && settings.brandTagline) headerTagline.textContent = settings.brandTagline;
+
+    // Drawer Menu
+    const drawerName = document.getElementById('drawer-brand-name');
+    const drawerTagline = document.getElementById('drawer-brand-tagline');
+    const drawerInsta = document.getElementById('drawer-instagram-link');
+    if (drawerName && settings.storeName) drawerName.textContent = settings.storeName;
+    if (drawerTagline && settings.brandTagline) drawerTagline.textContent = settings.brandTagline;
+    if (drawerInsta && settings.instagramHandle) {
+      const cleanHandle = settings.instagramHandle.replace(/^@/, '');
+      drawerInsta.href = `https://www.instagram.com/${cleanHandle}?utm_source=qr`;
+      drawerInsta.textContent = `instagram.com/${cleanHandle} →`;
+    }
+
+    // Footer
+    const footerName = document.getElementById('footer-brand-name');
+    const footerDesc = document.getElementById('footer-brand-description');
+    const footerInsta = document.getElementById('footer-instagram-link');
+    const footerHandle = document.getElementById('footer-instagram-handle');
+    const footerEmail = document.getElementById('footer-support-email');
+    const footerPhone = document.getElementById('footer-support-phone');
+
+    if (footerName && settings.storeName) footerName.textContent = settings.storeName;
+    if (footerDesc && (settings.brandTagline || settings.storeName)) {
+      footerDesc.textContent = `${settings.storeName || 'Vistāra Krafts'} (${settings.brandTagline || '@resin.art.memories'}) — India’s premier bridal varmala & floral memory preservation atelier.`;
+    }
+    if (settings.instagramHandle) {
+      const cleanHandle = settings.instagramHandle.replace(/^@/, '');
+      if (footerInsta) footerInsta.href = `https://www.instagram.com/${cleanHandle}?utm_source=qr`;
+      if (footerHandle) footerHandle.textContent = `@${cleanHandle}`;
+    }
+    if (footerEmail && settings.contactEmail) {
+      footerEmail.textContent = settings.contactEmail;
+      footerEmail.href = `mailto:${settings.contactEmail}`;
+    }
+    if (footerPhone && settings.contactPhone) {
+      footerPhone.textContent = settings.contactPhone;
+      footerPhone.href = `tel:${settings.contactPhone.replace(/\s+/g, '')}`;
+    }
+  };
+
   // Initialize on DOMContentLoaded
   window.addEventListener('hashchange', handleRouteChange);
   document.addEventListener('DOMContentLoaded', () => {
     initNetworkMonitor();
     handleRouteChange();
+
+    if (Store && typeof Store.getSettings === 'function') {
+      window.applyStorefrontSettings(Store.getSettings());
+    }
+
     // Start auto-dismiss timer for Vistāra Krafts vector splash animation (1.0s animation + 0.3s fade = 1.3s total)
     vkSplashTimer = setTimeout(() => {
       window.dismissVkSplash();
@@ -7076,9 +7186,14 @@
       console.warn('DPDP consent init:', e);
     }
 
-    // Live store subscriptions (products, orders, carts updated from admin)
+    // Live store subscriptions (products, orders, carts, settings updated from admin)
     Store.subscribe((event) => {
-      if (event === 'products_updated' || event === 'studio_push_received' || event === 'orders_updated' || event === 'order_updated' || event === 'settings_updated') {
+      if (event === 'settings_updated') {
+        if (Store && typeof Store.getSettings === 'function') {
+          window.applyStorefrontSettings(Store.getSettings());
+        }
+      }
+      if (event === 'products_updated' || event === 'studio_push_received' || event === 'orders_updated' || event === 'order_updated' || event === 'order_status_changed' || event === 'settings_updated') {
         renderActiveView({ preserveScroll: true });
       }
     });

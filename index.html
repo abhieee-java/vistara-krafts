@@ -2645,8 +2645,8 @@
             <img src="./vistara-krafts-logo.jpg" alt="Vistāra Krafts Official VK Logo" class="w-full h-full object-contain">
           </span>
           <div class="flex flex-col min-w-0 overflow-hidden justify-center">
-            <span class="font-serif text-[14.5px] sm:text-lg xl:text-xl text-primary font-bold tracking-tight leading-none truncate">Vistāra Krafts</span>
-            <span class="text-[8.5px] sm:text-[10px] uppercase tracking-wider text-[#9e3322] font-semibold leading-tight mt-0.5 truncate hidden min-[360px]:inline">@resin.art.memories</span>
+            <span id="header-brand-name" class="font-serif text-[14.5px] sm:text-lg xl:text-xl text-primary font-bold tracking-tight leading-none truncate">Vistāra Krafts</span>
+            <span id="header-brand-tagline" class="text-[8.5px] sm:text-[10px] uppercase tracking-wider text-[#9e3322] font-semibold leading-tight mt-0.5 truncate hidden min-[360px]:inline">@resin.art.memories</span>
           </div>
         </a>
       </div>
@@ -2666,6 +2666,10 @@
         <button type="button" data-nav-route="social" onclick="window.navigateTo('social')" class="desktop-nav-item h-full px-1.5 text-[11px] xl:text-xs uppercase tracking-wider flex items-center gap-1 whitespace-nowrap cursor-pointer">
           <span class="w-1.5 h-1.5 rounded-full bg-[#9e3322] shrink-0"></span>
           <span>Social Feed</span>
+        </button>
+        <button type="button" data-nav-route="account" onclick="window.navigateTo('account')" class="desktop-nav-item h-full px-1.5 text-[11px] xl:text-xs uppercase tracking-wider flex items-center gap-1 whitespace-nowrap cursor-pointer">
+          <span class="material-symbols-outlined text-sm text-secondary" aria-hidden="true">package_2</span>
+          <span>Orders</span>
         </button>
       </nav>
 
@@ -2708,15 +2712,19 @@
         <div class="flex flex-col gap-2.5">
           <div class="flex items-center gap-2.5">
             <img src="./vistara-krafts-logo.jpg" alt="Vistāra Krafts VK Logo" class="w-9 h-9 rounded-lg border border-[#e4e0d8] bg-white p-0.5 object-contain shrink-0">
-            <span class="font-headline-sm text-xl text-primary font-bold">Vistāra Krafts</span>
+            <span id="footer-brand-name" class="font-headline-sm text-xl text-primary font-bold">Vistāra Krafts</span>
           </div>
-          <p class="text-xs text-on-surface-variant leading-relaxed">
+          <p id="footer-brand-description" class="text-xs text-on-surface-variant leading-relaxed">
             India’s premier bridal varmala &amp; floral memory preservation atelier (@resin.art.memories) and ISO-9001 optical epoxy supplier. Handcrafted to hold your moments in crystal glass forever.
           </p>
-          <a href="https://www.instagram.com/resin.art.memories?utm_source=qr" target="_blank" rel="noopener noreferrer" class="min-h-[44px] text-xs font-bold text-[#9e3322] hover:underline inline-flex items-center gap-1 mt-1">
-            <span>Instagram: @resin.art.memories</span>
+          <a id="footer-instagram-link" href="https://www.instagram.com/resin.art.memories?utm_source=qr" target="_blank" rel="noopener noreferrer" class="min-h-[44px] text-xs font-bold text-[#9e3322] hover:underline inline-flex items-center gap-1 mt-1">
+            <span id="footer-instagram-handle">Instagram: @resin.art.memories</span>
             <span class="material-symbols-outlined text-sm" aria-hidden="true">open_in_new</span>
           </a>
+          <div class="flex flex-col gap-1 text-[11px] text-on-surface-variant pt-1 border-t border-[#e4e0d8]/60">
+            <span id="footer-support-email">Email: <a href="mailto:studio@vistarakrafts.com" class="text-primary font-semibold hover:underline">studio@vistarakrafts.com</a></span>
+            <span id="footer-support-phone">Phone: <a href="tel:+919876543210" class="text-primary font-semibold hover:underline">+91 98765 43210</a></span>
+          </div>
         </div>
 
         <div class="flex flex-col gap-1 text-xs">
@@ -2772,23 +2780,23 @@
   <!-- Mobile Fixed Bottom Tab Navigation Bar -->
   <nav aria-label="Mobile Bottom Navigation" class="lg:hidden fixed bottom-0 inset-x-0 z-40 pb-safe bg-white/95 backdrop-blur-xl border-t border-[#e4e0d8] shadow-[0_-2px_12px_rgba(3,26,56,0.06)] max-w-full overflow-x-clip">
     <div class="flex justify-around items-center h-14 px-1 max-w-full">
-      <button type="button" data-nav-route="home" onclick="window.navigateTo('home')" class="bottom-tab-item flex-1 min-w-0 max-w-[72px] flex flex-col items-center justify-center h-11 text-primary font-bold cursor-pointer">
+      <button type="button" data-nav-route="home" onclick="window.navigateTo('home')" class="bottom-tab-item flex-1 min-w-0 max-w-[64px] flex flex-col items-center justify-center h-11 text-primary font-bold cursor-pointer">
         <span class="material-symbols-outlined text-[20px]" aria-hidden="true">storefront</span>
         <span class="text-[9.5px] mt-0.5 truncate max-w-full px-0.5 leading-none">Home</span>
       </button>
-      <button type="button" data-nav-route="catalog" onclick="window.navigateTo('catalog', 'all')" class="bottom-tab-item flex-1 min-w-0 max-w-[72px] flex flex-col items-center justify-center h-11 text-on-surface-variant cursor-pointer">
+      <button type="button" data-nav-route="catalog" onclick="window.navigateTo('catalog', 'all')" class="bottom-tab-item flex-1 min-w-0 max-w-[64px] flex flex-col items-center justify-center h-11 text-on-surface-variant cursor-pointer">
         <span class="material-symbols-outlined text-[20px]" aria-hidden="true">grid_view</span>
         <span class="text-[9.5px] mt-0.5 truncate max-w-full px-0.5 leading-none">Catalogue</span>
       </button>
-      <button type="button" data-nav-route="custom-studio" onclick="window.navigateTo('custom-studio')" class="bottom-tab-item flex-1 min-w-0 max-w-[72px] flex flex-col items-center justify-center h-11 text-on-surface-variant cursor-pointer">
+      <button type="button" data-nav-route="account" onclick="window.navigateTo('account')" class="bottom-tab-item flex-1 min-w-0 max-w-[64px] flex flex-col items-center justify-center h-11 text-on-surface-variant cursor-pointer">
+        <span class="material-symbols-outlined text-[20px] text-secondary" aria-hidden="true">package_2</span>
+        <span class="text-[9.5px] mt-0.5 truncate max-w-full px-0.5 leading-none">Orders</span>
+      </button>
+      <button type="button" data-nav-route="custom-studio" onclick="window.navigateTo('custom-studio')" class="bottom-tab-item flex-1 min-w-0 max-w-[64px] flex flex-col items-center justify-center h-11 text-on-surface-variant cursor-pointer">
         <span class="material-symbols-outlined text-[20px] text-[#9e3322]" aria-hidden="true">auto_awesome</span>
         <span class="text-[9.5px] mt-0.5 truncate max-w-full px-0.5 leading-none">Custom</span>
       </button>
-      <button type="button" data-nav-route="social" onclick="window.navigateTo('social')" class="bottom-tab-item flex-1 min-w-0 max-w-[72px] flex flex-col items-center justify-center h-11 text-on-surface-variant cursor-pointer">
-        <span class="material-symbols-outlined text-[20px]" aria-hidden="true">photo_camera</span>
-        <span class="text-[9.5px] mt-0.5 truncate max-w-full px-0.5 leading-none">Social IG</span>
-      </button>
-      <button type="button" data-nav-route="cart" onclick="window.navigateTo('cart')" class="bottom-tab-item relative flex-1 min-w-0 max-w-[72px] flex flex-col items-center justify-center h-11 text-on-surface-variant cursor-pointer">
+      <button type="button" data-nav-route="cart" onclick="window.navigateTo('cart')" class="bottom-tab-item relative flex-1 min-w-0 max-w-[64px] flex flex-col items-center justify-center h-11 text-on-surface-variant cursor-pointer">
         <span class="material-symbols-outlined text-[20px]" aria-hidden="true">shopping_bag</span>
         <span class="text-[9.5px] mt-0.5 truncate max-w-full px-0.5 leading-none">Bag</span>
       </button>
@@ -2807,8 +2815,8 @@
           <div class="flex items-center gap-2.5 min-w-0">
             <img src="./vistara-krafts-logo.jpg" alt="Vistāra Krafts VK Logo" class="w-9 h-9 rounded-lg border border-[#e4e0d8] bg-white p-0.5 object-contain shrink-0">
             <div class="min-w-0">
-              <span class="font-serif text-base font-bold text-primary block truncate">Vistāra Krafts</span>
-              <span class="text-[10px] uppercase tracking-widest text-[#9e3322] font-bold block truncate">@resin.art.memories</span>
+              <span id="drawer-brand-name" class="font-serif text-base font-bold text-primary block truncate">Vistāra Krafts</span>
+              <span id="drawer-brand-tagline" class="text-[10px] uppercase tracking-widest text-[#9e3322] font-bold block truncate">@resin.art.memories</span>
             </div>
           </div>
           <button type="button" aria-label="Close Navigation Drawer" onclick="window.closeModalById('mobile-menu-drawer')" class="w-11 h-11 rounded-full bg-surface-container flex items-center justify-center shrink-0 cursor-pointer">
@@ -2819,7 +2827,33 @@
         <!-- Account Details Inside the Bar (Dynamic Guest / Logged-In Card) -->
         <div id="bar-drawer-account-slot" class="rounded-xl bg-white border border-[#e4e0d8] p-3 shadow-2xs"></div>
 
+        <!-- Dedicated Orders & Tracking Section under the Menu Button -->
+        <div class="p-3.5 rounded-xl bg-surface-container-low border border-[#e4e0d8] flex flex-col gap-2">
+          <div class="flex items-center justify-between">
+            <span class="text-[11px] font-bold text-primary uppercase tracking-wider flex items-center gap-1.5">
+              <span class="material-symbols-outlined text-base text-secondary" aria-hidden="true">package_2</span>
+              <span>Orders &amp; Tracking</span>
+            </span>
+            <span class="text-[10px] text-[#266b4e] font-semibold bg-[#e8f5e9] px-2 py-0.5 rounded-full">Live Atelier</span>
+          </div>
+          <p class="text-[11px] text-on-surface-variant">Track your active orders, view bridal preservation timelines, and access tax invoices.</p>
+          <button type="button" onclick="window.navigateTo('account'); window.closeModalById('mobile-menu-drawer');" class="min-h-[44px] px-3.5 py-2 rounded-lg bg-primary hover:bg-primary-container text-white text-xs font-bold flex items-center justify-between cursor-pointer shadow-xs">
+            <span class="flex items-center gap-1.5">
+              <span class="material-symbols-outlined text-sm text-[#ffd79b]" aria-hidden="true">local_shipping</span>
+              <span>View My Orders &amp; Timeline</span>
+            </span>
+            <span class="material-symbols-outlined text-sm" aria-hidden="true">arrow_forward</span>
+          </button>
+        </div>
+
         <div class="flex flex-col gap-1">
+          <button type="button" onclick="window.navigateTo('account'); window.closeModalById('mobile-menu-drawer');" class="min-h-[44px] p-2.5 rounded-xl text-left text-xs font-bold text-primary bg-surface-container-low hover:bg-surface-container flex items-center justify-between cursor-pointer border border-[#e4e0d8]">
+            <span class="flex items-center gap-2">
+              <span class="material-symbols-outlined text-base text-secondary" aria-hidden="true">package_2</span>
+              <span>My Orders &amp; Floral Timeline</span>
+            </span>
+            <span class="material-symbols-outlined text-base text-outline" aria-hidden="true">chevron_right</span>
+          </button>
           <button type="button" onclick="window.navigateTo('home'); window.closeModalById('mobile-menu-drawer');" class="min-h-[44px] p-2.5 rounded-xl text-left text-xs font-semibold text-primary hover:bg-surface-container flex items-center justify-between cursor-pointer">
             <span>Storefront Home</span>
             <span class="material-symbols-outlined text-base" aria-hidden="true">chevron_right</span>
@@ -2845,7 +2879,7 @@
             <span class="material-symbols-outlined text-base" aria-hidden="true">bookmarks</span>
           </button>
           <button type="button" onclick="window.closeModalById('mobile-menu-drawer'); window.openAccountBarModal();" class="min-h-[44px] p-2.5 rounded-xl text-left text-xs font-semibold text-primary hover:bg-surface-container flex items-center justify-between cursor-pointer">
-            <span>Account Details &amp; Order Tracker</span>
+            <span>Account Details &amp; Quick Dispatch Bar</span>
             <span class="material-symbols-outlined text-base" aria-hidden="true">local_shipping</span>
           </button>
         </div>
@@ -2853,7 +2887,7 @@
 
       <div class="p-3 rounded-xl bg-surface-container-low border border-[#e4e0d8] text-xs mt-3 shrink-0">
         <p class="font-bold text-primary">Instagram Direct</p>
-        <a href="https://www.instagram.com/resin.art.memories?utm_source=qr" target="_blank" rel="noopener noreferrer" class="min-h-[44px] inline-flex items-center text-[#9e3322] font-semibold hover:underline mt-0.5">instagram.com/resin.art.memories →</a>
+        <a id="drawer-instagram-link" href="https://www.instagram.com/resin.art.memories?utm_source=qr" target="_blank" rel="noopener noreferrer" class="min-h-[44px] inline-flex items-center text-[#9e3322] font-semibold hover:underline mt-0.5">instagram.com/resin.art.memories →</a>
       </div>
     </div>
   </div>

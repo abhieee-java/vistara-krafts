@@ -1826,68 +1826,116 @@
       };
     },
 
+    normalizeStorefrontOrder(row) {
+      if (!row || typeof row !== 'object') return null;
+      const ordStatus = String(row.order_status || row.orderStatus || 'new').toLowerCase();
+      const courierName = row.courier || row.carrier || 'Delhivery';
+      const trackingNum = row.tracking_number || row.trackingNumber || '';
+      const statusText = ordStatus === 'shipped'
+        ? `Dispatched via ${courierName} (AWB: ${trackingNum || 'Pending'})`
+        : (ordStatus === 'delivered'
+          ? 'Order Delivered • Handcrafted Keepsake Received'
+          : (ordStatus === 'cancelled'
+            ? 'Order Cancelled'
+            : (ordStatus === 'refunded'
+              ? 'Order Cancelled & Refunded'
+              : (ordStatus === 'packed'
+                ? 'Packed & Ready for Courier Dispatch'
+                : (ordStatus === 'curing'
+                  ? 'Deep Optical Cast Pour & Curing in Progress'
+                  : (ordStatus === 'processing'
+                    ? 'Flowers / Materials Prepped in Studio'
+                    : 'Order Confirmed • Studio Batch Allocated'))))));
+
+      const stageIdx = ordStatus === 'delivered' ? 4 : (ordStatus === 'shipped' ? 4 : (ordStatus === 'packed' ? 3 : (ordStatus === 'curing' ? 2 : (ordStatus === 'processing' ? 1 : (ordStatus === 'cancelled' || ordStatus === 'refunded' ? -1 : 0)))));
+
+      const dateStr = (row.date) || ((row.created_at || row.createdAt)
+        ? new Date(row.created_at || row.createdAt).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })
+        : new Date().toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }));
+
+      return {
+        orderId: row.order_number || row.orderNumber || row.orderId || row.id,
+        id: row.id || row.order_number || row.orderNumber || row.orderId,
+        orderNumber: row.order_number || row.orderNumber || row.orderId || row.id,
+        date: dateStr,
+        total: Number(row.total ?? row.totalAmount ?? row.total_amount ?? 0),
+        subtotal: Number(row.subtotal || 0),
+        discount: Number(row.discount ?? row.discountAmount ?? row.discount_amount ?? 0),
+        couponCode: row.coupon_code || row.couponCode || '',
+        gstAmount: Number(row.gst_amount ?? row.gstAmount ?? 0),
+        shippingFee: Number(row.shipping_fee ?? row.shippingFee ?? 0),
+        paymentMethod: row.payment_method || row.paymentMethod || 'UPI / Razorpay',
+        customerName: row.customer_name || row.customerName || (row.shippingAddress && row.shippingAddress.fullName) || 'Valued Patron',
+        phone: row.phone || row.customerPhone || (row.shippingAddress && row.shippingAddress.phone) || '',
+        address: row.address || (row.shippingAddress && row.shippingAddress.street) || '',
+        pincode: row.pincode || (row.shippingAddress && row.shippingAddress.pincode) || '',
+        giftWrap: Boolean(row.gift_wrap ?? row.giftWrap),
+        mockupApproved: Boolean(row.mockup_approved ?? row.mockupApproved),
+        status: (row.status && !['new','pending','processing','curing','packed','shipped','delivered','cancelled','refunded'].includes(String(row.status).toLowerCase())) ? row.status : statusText,
+        orderStatus: ordStatus,
+        stageIndex: stageIdx,
+        stages: ['Order Confirmed', 'Flowers / Materials Prepped', 'Silica & Vacuum Degassing', 'Deep Optical Cast Pour', 'Diamond Polish & Dispatch'],
+        items: Array.isArray(row.items) ? row.items.map(it => ({
+          name: it.productName || it.name,
+          productName: it.productName || it.name,
+          qty: it.quantity || it.qty || 1,
+          variantLabel: it.variantLabel || '',
+          price: it.unitPrice || it.price || 0,
+          totalPrice: it.totalPrice || (Number(it.unitPrice || it.price || 0) * Number(it.quantity || it.qty || 1)),
+          color: it.color || '',
+          shape: it.shape || '',
+          size: it.size || '',
+          sku: it.sku || ''
+        })) : [],
+        courier: courierName,
+        carrier: courierName,
+        trackingNumber: trackingNum,
+        tracking_number: trackingNum,
+        notes: row.notes || ''
+      };
+    },
+
     async syncOrdersFromSupabase() {
-      const auth = this.getAuthSession();
-      if (!auth || !auth.email) return this.getOrders();
-      if (!global.VistaraSupabase || !global.VistaraSupabase.isConfigured()) return this.getOrders();
+      const currentOrders = this.getOrders();
+      if (!global.VistaraSupabase || !global.VistaraSupabase.isConfigured()) return currentOrders;
       const client = global.VistaraSupabase.getClient();
-      if (!client) return this.getOrders();
+      if (!client) return currentOrders;
+
+      const auth = this.getAuthSession();
+      const userEmail = (auth && auth.email) ? String(auth.email).trim().toLowerCase() : '';
+      const localIds = currentOrders.map(o => o.orderId || o.orderNumber || o.id).filter(Boolean);
 
       try {
-        const { data, error } = await client
-          .from('orders')
-          .select('*')
-          .eq('customer_email', auth.email.toLowerCase())
-          .order('created_at', { ascending: false });
+        let query = client.from('orders').select('*').order('created_at', { ascending: false });
 
-        if (error || !Array.isArray(data)) return this.getOrders();
+        if (userEmail && localIds.length > 0) {
+          query = query.or(`customer_email.ilike.${userEmail},order_number.in.(${localIds.join(',')})`);
+        } else if (userEmail) {
+          query = query.ilike('customer_email', userEmail);
+        } else if (localIds.length > 0) {
+          query = query.in('order_number', localIds);
+        } else {
+          query = query.limit(25);
+        }
 
-        const mapped = data.map(row => {
-          const rawStage = Number(row.stage_index || 1);
-          const statusText = row.order_status === 'shipped'
-            ? `Dispatched via ${row.courier || 'Express Air'} (AWB: ${row.tracking_number || 'Pending'})`
-            : (row.order_status === 'delivered'
-              ? 'Order Delivered'
-              : (row.order_status === 'processing'
-                ? 'Flowers / Materials Prepped in Studio'
-                : (row.order_status === 'packed'
-                  ? 'Packed & Ready for Courier Dispatch'
-                  : 'Order Confirmed • Studio Batch Allocated')));
+        const { data, error } = await query;
+        if (error || !Array.isArray(data)) return currentOrders;
 
-          return {
-            orderId: row.order_number || row.id,
-            id: row.id,
-            orderNumber: row.order_number,
-            date: new Date(row.created_at).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }),
-            total: Number(row.total || 0),
-            subtotal: Number(row.subtotal || 0),
-            discount: Number(row.discount || 0),
-            couponCode: row.coupon_code || '',
-            gstAmount: Number(row.gst_amount || 0),
-            shippingFee: Number(row.shipping_fee || 0),
-            paymentMethod: row.payment_method || 'UPI / Razorpay',
-            customerName: row.customer_name,
-            phone: row.phone,
-            address: row.address,
-            pincode: row.pincode,
-            giftWrap: Boolean(row.gift_wrap),
-            mockupApproved: Boolean(row.mockup_approved),
-            status: statusText,
-            orderStatus: row.order_status,
-            stageIndex: rawStage,
-            stages: ['Order Confirmed', 'Flowers / Materials Prepped', 'Silica & Vacuum Degassing', 'Deep Optical Cast Pour', 'Diamond Polish & Dispatch'],
-            items: Array.isArray(row.items) ? row.items : [],
-            courier: row.courier || 'BlueDart Priority Air',
-            trackingNumber: row.tracking_number || '',
-            tracking_number: row.tracking_number || ''
-          };
+        const mapped = data.map(r => this.normalizeStorefrontOrder(r)).filter(Boolean);
+        const mergedMap = new Map();
+        mapped.forEach(o => mergedMap.set(o.orderId, o));
+        currentOrders.forEach(o => {
+          if (!mergedMap.has(o.orderId)) {
+            mergedMap.set(o.orderId, o);
+          }
         });
 
-        safeWrite(STORAGE_KEYS.ORDERS, mapped);
-        this.notify('orders_updated', mapped);
-        return mapped;
+        const mergedList = Array.from(mergedMap.values());
+        safeWrite(STORAGE_KEYS.ORDERS, mergedList);
+        this.notify('orders_updated', mergedList);
+        return mergedList;
       } catch (e) {
-        return this.getOrders();
+        return currentOrders;
       }
     },
 
@@ -1966,7 +2014,7 @@
         if (barRow && barRow.value) {
           const barDbUpdated = barRow.updated_at ? new Date(barRow.updated_at).getTime() : 0;
           if (barDbUpdated >= localUpdated || !currentSettings.announcementBarText) {
-            const barText = barRow.value.text ? String(barRow.value.text).replace('₹1,999', '₹1,499') : nextSettings.announcementBarText;
+            const barText = barRow.value.text || nextSettings.announcementBarText;
             nextSettings.announcementBarText = barText;
             nextSettings.announcementBarActive = barRow.value.enabled !== false;
             this.applyAnnouncementBar(barText, barRow.value.enabled !== false);
@@ -1975,7 +2023,12 @@
         if (shipRow && shipRow.value) {
           const shipDbUpdated = shipRow.updated_at ? new Date(shipRow.updated_at).getTime() : 0;
           if (shipDbUpdated >= localUpdated || !currentSettings.freeShippingThreshold) {
-            nextSettings.freeShippingThreshold = shipRow.value.free_shipping_threshold === 1999 ? 1499 : (Number(shipRow.value.free_shipping_threshold) || 1499);
+            nextSettings.freeShippingThreshold = (shipRow.value.free_shipping_threshold !== undefined && !isNaN(Number(shipRow.value.free_shipping_threshold)))
+              ? Number(shipRow.value.free_shipping_threshold)
+              : 1499;
+            if (shipRow.value.default_courier) {
+              nextSettings.defaultCourier = shipRow.value.default_courier;
+            }
           }
         }
         if (sectionsRow && sectionsRow.value) {
@@ -1990,6 +2043,9 @@
         }
 
         safeWrite(STORAGE_KEYS.SETTINGS, nextSettings);
+        if (typeof global.applyStorefrontSettings === 'function') {
+          global.applyStorefrontSettings(nextSettings);
+        }
         this.notify('settings_updated', nextSettings);
       } catch (e) {}
     },
@@ -2130,23 +2186,56 @@
       }
 
       const targetOrder = payload.order || (payload.action === 'STUDIO_UPDATE_ORDER_STATUS' || payload.action === 'ADMIN_UPDATE_ORDER_STATUS' ? payload.payload : null);
-      if (targetOrder && (targetOrder.orderId || targetOrder.orderNumber || targetOrder.id)) {
-        const targetId = targetOrder.orderId || targetOrder.orderNumber || targetOrder.id;
-        const orders = this.getOrders().slice();
-        const idx = orders.findIndex(o => o.orderId === targetId || o.orderNumber === targetId || o.id === targetId);
-        if (idx > -1) {
-          orders[idx] = { ...orders[idx], ...targetOrder };
-        } else {
-          orders.unshift(targetOrder);
+      if (payload.type === 'ORDER_STATUS_CHANGED' || (targetOrder && (targetOrder.orderId || targetOrder.orderNumber || targetOrder.id))) {
+        const rawOrd = targetOrder || payload;
+        const norm = this.normalizeStorefrontOrder(rawOrd);
+        if (norm) {
+          const targetId = norm.orderId || payload.orderId;
+          const orders = this.getOrders().slice();
+          const idx = orders.findIndex(o => (o.orderId && o.orderId === targetId) || (o.orderNumber && o.orderNumber === targetId) || (o.id && o.id === targetId));
+          if (idx > -1) {
+            const existing = orders[idx];
+            const merged = { ...existing };
+            if (rawOrd.status) merged.status = rawOrd.status;
+            else if (rawOrd.order_status || rawOrd.orderStatus) merged.status = norm.status;
+            if (rawOrd.order_status || rawOrd.orderStatus) merged.orderStatus = norm.orderStatus;
+            if (rawOrd.stage_index !== undefined || rawOrd.stageIndex !== undefined) merged.stageIndex = norm.stageIndex;
+            else if (rawOrd.order_status || rawOrd.orderStatus) merged.stageIndex = norm.stageIndex;
+
+            if (rawOrd.tracking_number || rawOrd.trackingNumber) {
+              merged.trackingNumber = norm.trackingNumber;
+              merged.tracking_number = norm.tracking_number;
+            }
+            if (rawOrd.courier || rawOrd.carrier) {
+              merged.courier = norm.courier;
+              merged.carrier = norm.carrier;
+            }
+            if (rawOrd.notes !== undefined) merged.notes = norm.notes;
+            if (rawOrd.mockup_approved !== undefined || rawOrd.mockupApproved !== undefined) merged.mockupApproved = norm.mockupApproved;
+            if (rawOrd.gift_wrap !== undefined || rawOrd.giftWrap !== undefined) merged.giftWrap = norm.giftWrap;
+            if (rawOrd.total !== undefined || rawOrd.totalAmount !== undefined || rawOrd.total_amount !== undefined) merged.total = norm.total;
+            if (Array.isArray(rawOrd.items) && rawOrd.items.length > 0) merged.items = norm.items;
+            orders[idx] = merged;
+          } else {
+            orders.unshift(norm);
+          }
+          safeWrite(STORAGE_KEYS.ORDERS, orders);
+          this.notify('order_updated', norm);
+          this.notify('orders_updated', orders);
         }
-        safeWrite(STORAGE_KEYS.ORDERS, orders);
-        this.notify('order_updated', targetOrder);
-        this.notify('orders_updated', orders);
       }
 
       if (payload.type === 'ORDERS_UPDATED' && Array.isArray(payload.orders)) {
-        safeWrite(STORAGE_KEYS.ORDERS, payload.orders);
-        this.notify('orders_updated', payload.orders);
+        const currentOrders = this.getOrders();
+        const mappedList = payload.orders.map(r => this.normalizeStorefrontOrder(r)).filter(Boolean);
+        const mergedMap = new Map();
+        mappedList.forEach(o => mergedMap.set(o.orderId, o));
+        currentOrders.forEach(o => {
+          if (!mergedMap.has(o.orderId)) mergedMap.set(o.orderId, o);
+        });
+        const finalOrders = Array.from(mergedMap.values());
+        safeWrite(STORAGE_KEYS.ORDERS, finalOrders);
+        this.notify('orders_updated', finalOrders);
       }
 
       if (payload.type === 'SETTINGS_UPDATED' && payload.settings) {
@@ -2155,6 +2244,9 @@
         safeWrite(STORAGE_KEYS.SETTINGS, merged);
         if (merged.announcementBarText !== undefined) {
           this.applyAnnouncementBar(merged.announcementBarText, merged.announcementBarActive);
+        }
+        if (typeof global.applyStorefrontSettings === 'function') {
+          global.applyStorefrontSettings(merged);
         }
         this.notify('settings_updated', merged);
       }

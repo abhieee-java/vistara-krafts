@@ -1053,5 +1053,22 @@ textarea:disabled {
   transform: translateX(-50%);
 }
 
+/* =========================================================================
+   SKU SINGLE-LINE DISPLAY GUARANTEE (Zero-Wrap on all mobile viewports)
+   ========================================================================= */
+.sku-badge,
+.sku-pill,
+.sku-text,
+[data-sku] {
+  white-space: nowrap !important;
+  word-break: keep-all !important;
+  overflow-wrap: normal !important;
+  display: inline-flex !important;
+  align-items: center;
+  flex-shrink: 0 !important;
+  max-width: 100%;
+}
+
+
 
 
