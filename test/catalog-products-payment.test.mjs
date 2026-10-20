@@ -228,4 +228,20 @@ console.log('\n================================================================'
 console.log(`Catalog Payment Suite: ${passed} passed, ${failed} failed`);
 console.log('================================================================');
 
+// Teardown: Clean up test orders created during tests so live Supabase order ledger is not polluted
+try {
+  const supaKey = CONFIG.SUPABASE_ANON_KEY;
+  const supaUrl = CONFIG.SUPABASE_URL;
+  if (supaKey && supaUrl) {
+    await fetch(`${supaUrl}/rest/v1/orders?customer_email=ilike.*test.com`, {
+      method: 'DELETE',
+      headers: { apikey: supaKey, Authorization: `Bearer ${supaKey}` }
+    });
+    await fetch(`${supaUrl}/rest/v1/orders?customer_email=eq.patron@vistarakrafts.com`, {
+      method: 'DELETE',
+      headers: { apikey: supaKey, Authorization: `Bearer ${supaKey}` }
+    });
+  }
+} catch (_err) {}
+
 if (failed > 0) process.exit(1);

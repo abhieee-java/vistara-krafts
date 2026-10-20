@@ -300,6 +300,7 @@
   };
 
   const memoryStorage = new Map();
+  let isSyncingOrders = false;
 
   function cloneFallback(val) {
     if (val && typeof val === 'object') {
@@ -1896,13 +1897,22 @@
     },
 
     async syncOrdersFromSupabase() {
+      if (isSyncingOrders) return this.getOrders();
+      isSyncingOrders = true;
       const currentOrders = this.getOrders();
-      if (!global.VistaraSupabase || !global.VistaraSupabase.isConfigured()) return currentOrders;
+      if (!global.VistaraSupabase || !global.VistaraSupabase.isConfigured()) {
+        isSyncingOrders = false;
+        return currentOrders;
+      }
       const client = global.VistaraSupabase.getClient();
-      if (!client) return currentOrders;
+      if (!client) {
+        isSyncingOrders = false;
+        return currentOrders;
+      }
 
       const auth = this.getAuthSession();
-      const userEmail = (auth && auth.email) ? String(auth.email).trim().toLowerCase() : '';
+      const profile = this.getPatronProfile();
+      const userEmail = (auth && auth.email) ? String(auth.email).trim().toLowerCase() : ((profile && profile.email) ? String(profile.email).trim().toLowerCase() : '');
       const localIds = currentOrders.map(o => o.orderId || o.orderNumber || o.id).filter(Boolean);
 
       try {
@@ -1931,11 +1941,20 @@
         });
 
         const mergedList = Array.from(mergedMap.values());
-        safeWrite(STORAGE_KEYS.ORDERS, mergedList);
-        this.notify('orders_updated', mergedList);
+        const hasChanged = currentOrders.length !== mergedList.length || mergedList.some((mo, idx) => {
+          const co = currentOrders[idx];
+          return !co || co.orderId !== mo.orderId || co.orderStatus !== mo.orderStatus || co.status !== mo.status || co.trackingNumber !== mo.trackingNumber || co.total !== mo.total;
+        });
+
+        if (hasChanged) {
+          safeWrite(STORAGE_KEYS.ORDERS, mergedList);
+          this.notify('orders_updated', mergedList);
+        }
         return mergedList;
       } catch (e) {
         return currentOrders;
+      } finally {
+        isSyncingOrders = false;
       }
     },
 
@@ -1987,18 +2006,55 @@
     },
 
     getSettings() {
-      return safeRead(STORAGE_KEYS.SETTINGS, {
+      const v2 = safeRead(STORAGE_KEYS.SETTINGS, null);
+      if (v2 && typeof v2 === 'object' && Object.keys(v2).length > 0) {
+        return v2;
+      }
+      const v1 = safeRead('vk_settings_v1', null);
+      if (v1 && typeof v1 === 'object' && Object.keys(v1).length > 0) {
+        return v1;
+      }
+      return {
+        storeName: 'Vistāra Krafts',
+        brandTagline: '@resin.art.memories',
+        instagramHandle: '@vistarakrafts',
+        contactEmail: 'studio@vistarakrafts.com',
+        contactPhone: '+91 98765 43210',
         freeShippingThreshold: 1499,
         announcementBarActive: true,
         announcementBarText: 'Complimentary Pan-India Express Air Shipping on orders over ₹1,499 • 100% Optical Glass Purity Guarantee',
         enableFloralTransformationSection: false
-      });
+      };
     },
 
     async syncSettingsFromSupabase() {
       if (!global.VistaraSupabase || !global.VistaraSupabase.isConfigured()) return;
       const client = global.VistaraSupabase.getClient();
       if (!client) return;
+
+      try {
+        const catRes = await client.from('categories').select('description').eq('id', 'store_settings_payload').single();
+        if (catRes && catRes.data && catRes.data.description) {
+          try {
+            const parsed = JSON.parse(catRes.data.description);
+            if (parsed && typeof parsed === 'object') {
+              const currentSettings = safeRead(STORAGE_KEYS.SETTINGS, {});
+              const nextSettings = { ...currentSettings, ...parsed };
+              safeWrite(STORAGE_KEYS.SETTINGS, nextSettings);
+              safeWrite('vk_settings_v1', nextSettings);
+              if (nextSettings.announcementBarText !== undefined) {
+                this.applyAnnouncementBar(nextSettings.announcementBarText, nextSettings.announcementBarActive);
+              }
+              if (typeof global.applyStorefrontSettings === 'function') {
+                global.applyStorefrontSettings(nextSettings);
+              }
+              this.notify('settings_updated', nextSettings);
+              return;
+            }
+          } catch (_) {}
+        }
+      } catch (_) {}
+
       try {
         const { data, error } = await client.from('settings').select('*');
         if (error || !Array.isArray(data)) return;
@@ -2043,6 +2099,7 @@
         }
 
         safeWrite(STORAGE_KEYS.SETTINGS, nextSettings);
+        safeWrite('vk_settings_v1', nextSettings);
         if (typeof global.applyStorefrontSettings === 'function') {
           global.applyStorefrontSettings(nextSettings);
         }
@@ -2597,7 +2654,8 @@
       setInterval(() => {
         syncFromSupabase();
         if (typeof Store.syncSettingsFromSupabase === 'function') Store.syncSettingsFromSupabase();
-      }, 5000);
+        if (typeof Store.syncOrdersFromSupabase === 'function') Store.syncOrdersFromSupabase();
+      }, 6000);
     }
     if (typeof window.addEventListener === 'function') {
       window.addEventListener('focus', () => {
@@ -2606,6 +2664,24 @@
         if (typeof Store.syncOrdersFromSupabase === 'function') Store.syncOrdersFromSupabase();
       });
     }
+
+    // Supabase Realtime Channel for orders & categories
+    try {
+      if (global.VistaraSupabase && typeof global.VistaraSupabase.getClient === 'function') {
+        const sbClient = global.VistaraSupabase.getClient();
+        if (sbClient && typeof sbClient.channel === 'function') {
+          sbClient
+            .channel('public:orders:realtime')
+            .on('postgres_changes', { event: '*', schema: 'public', table: 'orders' }, () => {
+              if (typeof Store.syncOrdersFromSupabase === 'function') Store.syncOrdersFromSupabase();
+            })
+            .on('postgres_changes', { event: '*', schema: 'public', table: 'categories' }, () => {
+              if (typeof Store.syncSettingsFromSupabase === 'function') Store.syncSettingsFromSupabase();
+            })
+            .subscribe();
+        }
+      }
+    } catch (_) {}
   }
 
   // Setup Cross-Window / BroadcastChannel Listener for Live Studio Drops

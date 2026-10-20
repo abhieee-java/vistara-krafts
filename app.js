@@ -714,6 +714,10 @@
     updateNavHighlight();
     updateGlobalBadges();
     syncBodyModalLock();
+
+    if (AppState.currentRoute === 'account' && Store && typeof Store.syncOrdersFromSupabase === 'function') {
+      Store.syncOrdersFromSupabase().catch(() => {});
+    }
   }
   window.handleRouteChange = handleRouteChange;
 
@@ -801,7 +805,7 @@
                 <span class="px-2 py-0.5 rounded bg-surface-container-high text-primary font-spec-numeral text-[11px]">Ratio: ${esc(p.ratio)}</span>
                 <span class="px-2 py-0.5 rounded bg-secondary-container/40 text-on-secondary-container font-spec-numeral text-[11px]">Depth: ${esc(p.pourDepth)}</span>
                 <span class="px-2 py-0.5 rounded bg-surface-container-high text-on-surface-variant font-spec-numeral text-[11px]">${esc(p.unitPriceLabel)}</span>
-                ${p.sku ? `<span class="px-2 py-0.5 rounded bg-surface-container-high font-mono text-[10.5px] sku-badge whitespace-nowrap shrink-0 text-primary border border-[#e4e0d8]" data-sku="${esc(p.sku)}">SKU: ${esc(p.sku)}</span>` : ''}
+                ${p.sku ? `<span class="px-2 py-0.5 rounded bg-surface-container-high font-mono text-[10px] sm:text-[10.5px] sku-badge whitespace-nowrap shrink-0 text-primary border border-[#e4e0d8]" data-sku="${esc(p.sku)}">SKU:&nbsp;<span class="sku-text font-bold">${esc(p.sku)}</span></span>` : ''}
               </div>
             </div>
             <div class="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-surface-container">
@@ -904,7 +908,7 @@
             <span class="font-medium text-primary">${p.category === 'keepsakes' ? 'Custom Keepsake' : 'Ratio ' + esc(p.ratio)}</span>
             <span class="text-outline/40">•</span>
             <span>Depth ${esc(p.pourDepth)}</span>
-            ${p.sku ? `<span class="text-outline/40">•</span><span class="sku-badge font-mono text-[10px] text-primary whitespace-nowrap shrink-0" data-sku="${esc(p.sku)}">SKU: ${esc(p.sku)}</span>` : ''}
+            ${p.sku ? `<span class="text-outline/40">•</span><span class="sku-badge font-mono text-[9.5px] min-[360px]:text-[10px] text-primary whitespace-nowrap shrink-0" data-sku="${esc(p.sku)}">SKU:&nbsp;<span class="sku-text font-bold">${esc(p.sku)}</span></span>` : ''}
           </div>
         </div>
         <div class="pt-2 mt-1.5 border-t border-surface-container flex flex-col gap-1.5">
@@ -2144,7 +2148,7 @@
         <div class="bg-primary text-on-primary px-4 sm:px-8 py-2 flex flex-wrap sm:flex-nowrap items-center justify-between gap-2 text-[11px] font-label-sm overflow-hidden">
           <div class="flex items-center gap-1.5 min-w-0">
             <span class="material-symbols-outlined text-secondary-fixed text-sm shrink-0" aria-hidden="true">science</span>
-            <span class="font-spec-numeral sku-badge whitespace-nowrap shrink-0 truncate">SKU: ${esc(product.sku)}</span>
+            <span class="font-spec-numeral sku-badge whitespace-nowrap shrink-0 truncate">SKU:&nbsp;${esc(product.sku)}</span>
             <span class="text-white/60 hidden sm:inline">•</span>
             <span class="text-white/80 whitespace-nowrap hidden sm:inline">Batch VK-26-C38 Lab Certified</span>
           </div>
@@ -2254,9 +2258,9 @@
                   </span>
                 `)}
               </div>
-              <div class="flex items-center gap-2 mt-2.5">
-                <span class="sku-badge sku-pill inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-surface-container-high border border-[#e4e0d8] text-xs font-mono font-medium text-primary whitespace-nowrap shrink-0" data-sku="${esc(product.sku)}">
-                  <span class="text-on-surface-variant text-[11px] uppercase tracking-wider font-sans font-semibold">SKU:</span>
+              <div class="flex flex-wrap items-center gap-2 mt-2.5">
+                <span class="sku-badge sku-pill inline-flex items-center px-2.5 py-1 rounded-md bg-surface-container-high border border-[#e4e0d8] text-xs font-mono font-medium text-primary whitespace-nowrap shrink-0" data-sku="${esc(product.sku)}">
+                  <span class="text-on-surface-variant text-[11px] uppercase tracking-wider font-sans font-semibold mr-1.5">SKU:</span>
                   <span class="sku-text font-bold text-primary whitespace-nowrap">${esc(product.sku)}</span>
                 </span>
                 <span class="text-on-surface-variant text-[11px] whitespace-nowrap">• 100% Optical Glass Purity</span>
@@ -2467,7 +2471,7 @@
                 }).map(([k, v], i) => `
                   <div class="flex flex-wrap sm:flex-nowrap items-center justify-between gap-2 p-3 ${i % 2 === 0 ? 'bg-surface-container-low' : 'bg-white'} min-w-0">
                     <span class="font-medium text-on-surface-variant break-words">${esc(k)}</span>
-                    <span class="font-spec-numeral font-bold text-primary text-left sm:text-right break-words ${k.includes('SKU') ? 'sku-badge whitespace-nowrap shrink-0' : ''}">${esc(v)}</span>
+                    <span class="font-spec-numeral font-bold text-primary text-left sm:text-right ${k.includes('SKU') ? 'sku-badge whitespace-nowrap shrink-0' : 'break-words'}">${esc(v)}</span>
                   </div>
                 `).join('')}
               </div>
@@ -3273,7 +3277,7 @@
                         <p class="text-xs text-on-surface-variant flex items-center flex-wrap gap-1.5 my-0.5">
                           ${item.variantLabel ? `<span>${esc(item.variantLabel)}</span>` : ''}
                           ${item.variantLabel && item.sku ? `<span class="text-outline">•</span>` : ''}
-                          ${item.sku ? `<span class="sku-badge sku-pill font-mono text-[11px] px-1.5 py-0.5 rounded bg-surface-container-high border border-[#e4e0d8] text-primary whitespace-nowrap shrink-0" data-sku="${esc(item.sku)}">SKU: <span class="sku-text font-bold">${esc(item.sku)}</span></span>` : ''}
+                          ${item.sku ? `<span class="sku-badge sku-pill font-mono text-[10.5px] sm:text-[11px] px-1.5 py-0.5 rounded bg-surface-container-high border border-[#e4e0d8] text-primary whitespace-nowrap shrink-0" data-sku="${esc(item.sku)}">SKU:&nbsp;<span class="sku-text font-bold">${esc(item.sku)}</span></span>` : ''}
                         </p>
                         ${(item.color || item.shape || item.size) ? `
                           <div class="flex flex-wrap items-center gap-1.5 my-1 text-[11px]">
@@ -4518,9 +4522,6 @@
           break;
         case 'account':
           root.innerHTML = renderAccountView();
-          if (Store && typeof Store.syncOrdersFromSupabase === 'function') {
-            Store.syncOrdersFromSupabase().catch(() => {});
-          }
           break;
         case '404':
           root.innerHTML = render404View();
@@ -7151,12 +7152,19 @@
       if (footerHandle) footerHandle.textContent = `@${cleanHandle}`;
     }
     if (footerEmail && settings.contactEmail) {
-      footerEmail.textContent = settings.contactEmail;
-      footerEmail.href = `mailto:${settings.contactEmail}`;
+      footerEmail.innerHTML = `Email: <a href="mailto:${esc(settings.contactEmail)}" class="text-primary font-semibold hover:underline">${esc(settings.contactEmail)}</a>`;
     }
     if (footerPhone && settings.contactPhone) {
-      footerPhone.textContent = settings.contactPhone;
-      footerPhone.href = `tel:${settings.contactPhone.replace(/\s+/g, '')}`;
+      const cleanPhone = settings.contactPhone.replace(/\s+/g, '');
+      footerPhone.innerHTML = `Phone: <a href="tel:${esc(cleanPhone)}" class="text-primary font-semibold hover:underline">${esc(settings.contactPhone)}</a>`;
+    }
+
+    // Top Announcement Bar Free Shipping & Store Name
+    const announcementText = document.getElementById('announcement-text');
+    if (announcementText) {
+      const storeName = settings.storeName || 'Vistāra Krafts';
+      const threshold = settings.freeShippingThreshold != null ? Number(settings.freeShippingThreshold) : 1499;
+      announcementText.innerHTML = `<strong>${esc(storeName)}</strong> • 24h Bridal Varmala Pickup • Free Express Shipping &gt; ₹${threshold.toLocaleString('en-IN')}<span class="hidden sm:inline"> • 18% GST ITC</span>`;
     }
   };
 

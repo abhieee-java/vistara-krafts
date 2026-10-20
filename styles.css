@@ -1063,11 +1063,27 @@ textarea:disabled {
   white-space: nowrap !important;
   word-break: keep-all !important;
   overflow-wrap: normal !important;
+  hyphens: none !important;
+  -webkit-hyphens: none !important;
   display: inline-flex !important;
-  align-items: center;
+  flex-direction: row !important;
+  flex-wrap: nowrap !important;
+  align-items: center !important;
   flex-shrink: 0 !important;
   max-width: 100%;
 }
+
+.sku-badge *,
+.sku-pill *,
+[data-sku] * {
+  white-space: nowrap !important;
+  word-break: keep-all !important;
+  overflow-wrap: normal !important;
+  hyphens: none !important;
+  -webkit-hyphens: none !important;
+  display: inline !important;
+}
+
 
 
 

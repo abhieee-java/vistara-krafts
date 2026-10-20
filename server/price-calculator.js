@@ -162,6 +162,30 @@ export class PriceCalculator {
    */
   static async fetchAuthoritativeShippingSettings() {
     try {
+      // 1. Check dynamic store settings payload saved by Admin
+      const catUrl = `${CONFIG.SUPABASE_URL}/rest/v1/categories?id=eq.store_settings_payload&select=description`;
+      const catRes = await fetch(catUrl, {
+        headers: {
+          'apikey': CONFIG.SUPABASE_ANON_KEY,
+          'Authorization': `Bearer ${CONFIG.SUPABASE_ANON_KEY}`
+        }
+      });
+      if (catRes.ok) {
+        const catRows = await catRes.json();
+        if (Array.isArray(catRows) && catRows.length > 0 && catRows[0].description) {
+          try {
+            const parsed = JSON.parse(catRows[0].description);
+            if (parsed && parsed.freeShippingThreshold !== undefined && !isNaN(Number(parsed.freeShippingThreshold))) {
+              return {
+                freeShippingThreshold: Number(parsed.freeShippingThreshold),
+                standardShippingFee: CONFIG.STANDARD_SHIPPING_FEE
+              };
+            }
+          } catch (_) {}
+        }
+      }
+
+      // 2. Fallback to settings table
       const url = `${CONFIG.SUPABASE_URL}/rest/v1/settings?key=eq.shipping&select=value`;
       const res = await fetch(url, {
         headers: {
@@ -174,8 +198,8 @@ export class PriceCalculator {
         if (Array.isArray(rows) && rows.length > 0 && rows[0].value) {
           const val = rows[0].value;
           return {
-            freeShippingThreshold: val.free_shipping_threshold === 1999 ? 1499 : (Number(val.free_shipping_threshold) || CONFIG.FREE_SHIPPING_THRESHOLD),
-            standardShippingFee: val.standard_shipping_fee === 149 ? 99 : (Number(val.standard_shipping_fee) || CONFIG.STANDARD_SHIPPING_FEE)
+            freeShippingThreshold: Number(val.free_shipping_threshold) || CONFIG.FREE_SHIPPING_THRESHOLD,
+            standardShippingFee: Number(val.standard_shipping_fee) || CONFIG.STANDARD_SHIPPING_FEE
           };
         }
       }
