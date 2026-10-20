@@ -2139,6 +2139,70 @@ test('Persona Preference, Masculine/Feminine Feed Curation, Gifting Sort & Produ
   sandbox.window.navigateTo('home');
 });
 
+test('Mobile Screen Single-Line Order ID & Hamburger Drawer Architecture (Hick\'s Law & Zero Duplicates)', () => {
+  // 1. Verify index.html contains distinct Account section and distinct Orders & Live Tracking section
+  assert.ok(indexHtml.includes('id="bar-drawer-account-slot"'), 'Drawer must include dedicated account slot');
+  assert.ok(indexHtml.includes('Orders &amp; Live Tracking'), 'Drawer must include distinct Orders & Live Tracking card');
+  assert.ok(indexHtml.includes('5-Stage Telemetry'), 'Drawer Orders card must display 5-Stage Telemetry badge');
+
+  // 2. Verify Zero duplicate action buttons in mobile-menu-drawer
+  const drawerMatch = indexHtml.match(/<div id="mobile-menu-drawer"[\s\S]*?<!-- 2\. Technical/);
+  assert.ok(drawerMatch, 'Must find mobile-menu-drawer markup');
+  const drawerHtml = drawerMatch[0];
+
+  const navOnclicks = Array.from(drawerHtml.matchAll(/onclick="([^"]+)"/g)).map(m => m[1]);
+  const accountNavs = navOnclicks.filter(c => c.includes("navigateTo('account')"));
+  assert.strictEqual(accountNavs.length, 1, 'Drawer must have exactly ONE button navigating to account (no duplicates)');
+
+  const catalogNavs = navOnclicks.filter(c => c.includes("navigateTo('catalog'"));
+  assert.strictEqual(catalogNavs.length, 1, 'Drawer must have exactly ONE button navigating to catalog (no duplicates)');
+
+  const staticBarModalNavs = drawerHtml.slice(drawerHtml.indexOf('Store Navigation')).match(/openAccountBarModal/g) || [];
+  assert.strictEqual(staticBarModalNavs.length, 0, 'Navigation list must not have duplicate openAccountBarModal button');
+
+  // 3. Verify Single-Line Order ID rendering in renderBarOrdersHtml & app.js
+  const sampleOrder = {
+    orderId: 'VK-2026-9097',
+    orderNumber: 'VK-2026-9097',
+    date: '19 Oct 2026',
+    total: 548,
+    status: 'Order Confirmed • Studio Batch',
+    stageIndex: 1,
+    stages: ['Order Confirmed', 'Materials Prepped', 'Silica Dehydration', 'Deep Cast Pour', 'Polish & Dispatch'],
+    courier: 'BlueDart Priority Air',
+    trackingNumber: '7810283941',
+    mockupApproved: true
+  };
+  Store.receiveStudioPush({
+    action: 'STUDIO_RECORD_ORDER',
+    payload: sampleOrder
+  });
+
+  sandbox.window.openAccountBarModal();
+  const barModalContent = mockDocument.getElementById('account-bar-modal-body').innerHTML;
+  assert.ok(barModalContent.includes('VK-2026-9097'), 'Account bar modal must render sample order VK-2026-9097');
+  assert.ok(barModalContent.includes('whitespace-nowrap'), 'Order ID in account bar modal must have whitespace-nowrap to guarantee single-line display');
+  assert.ok(barModalContent.includes('shrink-0 max-w-[115px]') || barModalContent.includes('shrink-0 max-w-[120px]'), 'Status badge must have shrink-0 and max-width restraint to prevent squishing order ID');
+
+  // Check account view has whitespace-nowrap on order ID
+  sandbox.window.navigateTo('account');
+  const accountHtml = mockDocument.getElementById('app-view-root').innerHTML;
+  assert.ok(accountHtml.includes('ORDER #VK-2026-9097'), 'Account view must display sample order ID');
+  assert.ok(accountHtml.includes('whitespace-nowrap">ORDER #'), 'Order ID on account page must have whitespace-nowrap');
+
+  // Check drawer account slot when logged in
+  sandbox.window.completeOAuthChooserAccount('google', 'test.patron@example.com', 'Test Patron');
+  sandbox.window.updateGlobalBadges();
+  const drawerSlotHtml = mockDocument.getElementById('bar-drawer-account-slot').innerHTML;
+  assert.ok(drawerSlotHtml.includes('Manage Profile &amp; Address'), 'Authenticated drawer slot must offer Manage Profile & Address');
+  assert.ok(!drawerSlotHtml.includes('>Edit<'), 'Authenticated drawer slot must not have redundant Edit button');
+  assert.ok(drawerSlotHtml.includes('Sign Out'), 'Authenticated drawer slot must offer Sign Out');
+
+  // Clean up
+  sandbox.window.handlePatronLogout();
+  sandbox.window.navigateTo('home');
+});
+
 console.log(`\n========================================`);
 console.log(`Verification Summary: ${passed} passed, ${failed} failed`);
 console.log(`========================================`);
