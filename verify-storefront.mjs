@@ -2162,35 +2162,21 @@ test('Mobile Screen Single-Line Order ID & Hamburger Drawer Architecture (Hick\'
   assert.strictEqual(staticBarModalNavs.length, 0, 'Navigation list must not have duplicate openAccountBarModal button');
 
   // 3. Verify Single-Line Order ID rendering in renderBarOrdersHtml & app.js
-  const sampleOrder = {
-    orderId: 'VK-2026-9097',
-    orderNumber: 'VK-2026-9097',
-    date: '19 Oct 2026',
-    total: 548,
-    status: 'Order Confirmed • Studio Batch',
-    stageIndex: 1,
-    stages: ['Order Confirmed', 'Materials Prepped', 'Silica Dehydration', 'Deep Cast Pour', 'Polish & Dispatch'],
-    courier: 'BlueDart Priority Air',
-    trackingNumber: '7810283941',
-    mockupApproved: true
-  };
-  mockLocalStorage.setItem('ram_vk_orders_v2', JSON.stringify([sampleOrder]));
-  Store.receiveAdminPush({
-    type: 'ADMIN_UPDATE_ORDER_STATUS',
-    order: sampleOrder
-  });
+  const existingOrders = Store.getOrders();
+  assert.ok(existingOrders.length > 0, 'Orders should exist in store from prior checkout test');
+  const activeOrder = existingOrders[0];
+  const activeOrderId = activeOrder.orderId;
 
   sandbox.window.openAccountBarModal();
   const barModalContent = mockDocument.getElementById('account-bar-modal-body').innerHTML;
-  assert.ok(barModalContent.includes('VK-2026-9097'), 'Account bar modal must render sample order VK-2026-9097');
-  assert.ok(barModalContent.includes('whitespace-nowrap'), 'Order ID in account bar modal must have whitespace-nowrap to guarantee single-line display');
-  assert.ok(barModalContent.includes('shrink-0 max-w-[115px]') || barModalContent.includes('shrink-0 max-w-[120px]'), 'Status badge must have shrink-0 and max-width restraint to prevent squishing order ID');
+  assert.ok(barModalContent.includes(activeOrderId), `Account bar modal must render order ${activeOrderId}`);
+  assert.ok(barModalContent.includes('whitespace-nowrap block tracking-tight'), 'Order ID in account bar modal must have whitespace-nowrap to guarantee single-line display');
+  assert.ok(barModalContent.includes('shrink-0 max-w-[115px]'), 'Status badge must have shrink-0 and max-width restraint to prevent squishing order ID');
 
   // Check account view has whitespace-nowrap on order ID
   sandbox.window.navigateTo('account');
   const accountHtml = mockDocument.getElementById('app-view-root').innerHTML;
-  assert.ok(accountHtml.includes('ORDER #VK-2026-9097'), 'Account view must display sample order ID');
-  assert.ok(accountHtml.includes('whitespace-nowrap">ORDER #'), 'Order ID on account page must have whitespace-nowrap');
+  assert.ok(accountHtml.includes('whitespace-nowrap">ORDER #' + activeOrderId), 'Order ID on account page must have whitespace-nowrap');
 
   // Check drawer account slot when logged in
   sandbox.window.completeOAuthChooserAccount('google', 'test.patron@example.com', 'Test Patron');
