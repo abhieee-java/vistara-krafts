@@ -425,12 +425,12 @@
       const stageIdx = Number(ord.stageIndex ?? 1);
       return `
         <div class="p-3 rounded-xl bg-surface-container-low border border-[#e4e0d8] space-y-2">
-          <div class="flex items-center justify-between gap-2">
-            <div>
-              <span class="font-spec-numeral text-xs font-bold text-primary">#${esc(ord.orderId)}</span>
-              <span class="text-[10px] text-on-surface-variant block">${esc(ord.date || 'Active Batch')} • ${formatINR(ord.total)}</span>
+          <div class="flex items-start justify-between gap-2">
+            <div class="min-w-0 flex-1">
+              <span class="font-spec-numeral text-xs font-bold text-primary whitespace-nowrap block tracking-tight">#${esc(ord.orderId)}</span>
+              <span class="text-[10px] text-on-surface-variant block whitespace-nowrap mt-0.5">${esc(ord.date || 'Active Batch')} • <strong class="text-primary font-semibold">${formatINR(ord.total)}</strong></span>
             </div>
-            <span class="px-2 py-0.5 rounded-full bg-secondary-container/50 text-on-secondary-container text-[10px] font-bold truncate max-w-[165px]">${esc(ord.status)}</span>
+            <span class="px-2 py-0.5 rounded-full bg-secondary-container/50 text-on-secondary-container text-[10px] font-bold truncate shrink-0 max-w-[115px] sm:max-w-[160px] text-right" title="${esc(ord.status)}">${esc(ord.status)}</span>
           </div>
           <div class="grid grid-cols-5 gap-1 pt-0.5">
             ${stages.map((st, idx) => `
@@ -510,21 +510,27 @@
               ${auth.email ? `<p class="text-[11px] text-on-surface-variant truncate">${esc(auth.email)}</p>` : ''}
               ${addrText ? `<p class="text-[11px] text-on-surface-variant line-clamp-2 mt-1">📍 ${esc(addrText)}</p>` : ''}
             </div>
-            <button type="button" onclick="window.closeModalById('mobile-menu-drawer'); window.openAccountBarModal();" class="min-h-[44px] min-w-[44px] px-2.5 py-1.5 rounded-lg bg-white border border-[#e4e0d8] text-[11px] font-bold text-primary shrink-0 cursor-pointer">Edit</button>
+            <span class="material-symbols-outlined text-secondary text-xl shrink-0 mt-0.5" aria-hidden="true">account_circle</span>
           </div>
-          <div class="flex items-center gap-2 pt-1 border-t border-[#e4e0d8]">
-            <button type="button" onclick="window.closeModalById('mobile-menu-drawer'); window.openAccountBarModal();" class="flex-1 min-h-[44px] px-2.5 py-1.5 rounded-lg bg-primary text-white text-[11px] font-bold cursor-pointer">Orders &amp; Address</button>
-            <button type="button" onclick="window.handlePatronLogout()" class="min-h-[44px] px-3 py-1.5 rounded-lg bg-white border border-[#e4e0d8] text-[#9e3322] text-[11px] font-bold cursor-pointer">Sign Out</button>
+          <div class="flex items-center gap-2 pt-2 border-t border-[#e4e0d8] mt-2">
+            <button type="button" onclick="window.closeModalById('mobile-menu-drawer'); window.openAccountBarModal();" class="flex-1 min-h-[44px] px-3 py-2 rounded-lg bg-primary text-white text-[11px] font-bold cursor-pointer flex items-center justify-center gap-1.5 shadow-xs">
+              <span class="material-symbols-outlined text-sm" aria-hidden="true">badge</span>
+              <span>Manage Profile &amp; Address</span>
+            </button>
+            <button type="button" onclick="window.handlePatronLogout()" class="min-h-[44px] px-3 py-1.5 rounded-lg bg-white border border-[#e4e0d8] text-[#9e3322] hover:bg-[#ffe4de]/40 text-[11px] font-bold cursor-pointer shrink-0">Sign Out</button>
           </div>
         `;
       } else {
         drawerSlot.innerHTML = `
           <div class="flex items-center justify-between gap-2">
-            <span class="text-[10px] uppercase tracking-wider font-bold text-secondary">Guest Session</span>
-            <span class="text-[10px] px-2 py-0.5 rounded-full bg-[#ffe4de] text-[#9e3322] font-bold">Sign In to Order</span>
+            <span class="text-[10px] uppercase tracking-wider font-bold text-secondary flex items-center gap-1">
+              <span class="material-symbols-outlined text-sm text-secondary" aria-hidden="true">account_circle</span>
+              <span>Patron Profile</span>
+            </span>
+            <span class="text-[10px] px-2 py-0.5 rounded-full bg-[#ffe4de] text-[#9e3322] font-bold">Guest Mode</span>
           </div>
-          <p class="text-[11px] text-on-surface-variant leading-snug">Browse keepsakes &amp; calculate epoxy pours freely. Sign in with Google, Apple, or Email to sync your wishlist and place an order.</p>
-          <button type="button" onclick="window.closeModalById('mobile-menu-drawer'); window.openCloudflareAuthModal(false);" class="w-full min-h-[44px] px-3 py-2 rounded-xl bg-primary text-white text-xs font-bold flex items-center justify-center gap-1.5 cursor-pointer">
+          <p class="text-[11px] text-on-surface-variant leading-snug">Sign in to sync your bespoke keepsakes, manage verified shipping addresses, and review active orders.</p>
+          <button type="button" onclick="window.closeModalById('mobile-menu-drawer'); window.openCloudflareAuthModal(false);" class="w-full min-h-[44px] px-3 py-2 rounded-xl bg-primary text-white text-xs font-bold flex items-center justify-center gap-1.5 cursor-pointer shadow-xs">
             <span class="material-symbols-outlined text-base" aria-hidden="true">login</span>
             <span>Sign In (Google / Apple / Email)</span>
           </button>
@@ -3584,7 +3590,7 @@
               <div class="flex flex-wrap items-center justify-between gap-2 border-b border-surface-container pb-3">
                 <div>
                   <div class="flex flex-wrap items-center gap-2">
-                    <span class="font-spec-numeral text-xs font-bold text-secondary">ORDER #${esc(ord.orderId)}</span>
+                    <span class="font-spec-numeral text-xs font-bold text-secondary whitespace-nowrap">ORDER #${esc(ord.orderId)}</span>
                     ${ord.orderStatus === 'cancelled' || ord.orderStatus === 'refunded' ? `
                       <span class="px-2 py-0.5 rounded-full bg-red-100 text-red-800 text-[10px] font-bold uppercase tracking-wider">Cancelled</span>
                     ` : (ord.orderStatus === 'delivered' ? `
