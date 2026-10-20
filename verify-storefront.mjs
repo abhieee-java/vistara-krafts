@@ -376,7 +376,9 @@ test('SPA Router in app.js renders all 7 customer routes, enforces zero owner/ad
     ['custom-studio', null, 'Custom Memory'],
     ['wishlist', null, 'Saved'],
     ['cart', null, 'Invoice Summary'],
-    ['account', null, 'Studio Account &amp; Order Tracker']
+    ['account', null, 'Active Orders &amp; Varmala Preservation Timeline'],
+    ['orders', null, 'Active Orders &amp; Varmala Preservation Timeline'],
+    ['profile', null, 'Patron Profile &amp; Shipping Address']
   ];
 
   const forbiddenOwnerTerms = [
@@ -399,8 +401,8 @@ test('SPA Router in app.js renders all 7 customer routes, enforces zero owner/ad
     (windowListeners['hashchange'] || []).forEach(fn => fn());
     const rendered = mockDocument.getElementById('app-view-root').innerHTML;
     assert.ok(rendered.includes(expectedSubstring), `Route #/${route} did not render "${expectedSubstring}"`);
-    if (route === 'account') {
-      assert.ok(rendered.includes('Will be collected at checkout'), 'Guest Account view must indicate dispatch address is collected at checkout');
+    if (route === 'profile') {
+      assert.ok(rendered.includes('Will be collected at checkout') || rendered.includes('Default Delivery &amp; Flower Pickup Address'), 'Guest Profile view must indicate dispatch address details');
     }
     for (const term of forbiddenOwnerTerms) {
       assert.ok(!rendered.includes(term), `Customer route #/${route} must not expose owner/admin UI text "${term}"`);
@@ -758,10 +760,9 @@ test('Customer E-Commerce Domain Features, Strict Owner UI Separation & Viewport
   assert.ok(studioHtml.includes('Essential Post-Wedding Flower Care Protocol'), 'Custom Studio must display Bridal Flower Care Protocol');
 
   // 5. Verify Patron Profile editing, Checkout Modal Profile Sync, Order Lookup, Pre-Pour Layout Mockup Approval, GST Invoice modal & Live Bridge Order Status Push
-  sandbox.window.navigateTo('account', null);
-  sandbox.window.toggleAccountProfileEdit();
+  sandbox.window.navigateTo('profile', null);
   let accHtml = mockDocument.getElementById('app-view-root').innerHTML;
-  assert.ok(accHtml.includes('id="account-profile-form"'), 'Account view must toggle Patron Profile edit form');
+  assert.ok(accHtml.includes('id="account-profile-form"'), 'Profile view must provide Patron Profile edit form');
 
   mockDocument.getElementById('acc-prof-name').value = 'Meera & Aarav Kapoor';
   mockDocument.getElementById('acc-prof-phone').value = '+91 98111 22334';
@@ -779,6 +780,7 @@ test('Customer E-Commerce Domain Features, Strict Owner UI Separation & Viewport
   assert.strictEqual(mockDocument.getElementById('chk-address').value, '42 Defence Colony, New Delhi 110024');
 
   // Seed order RAM-2025-8841 via Studio Push (since initial orders start at 0) and test Pre-Pour Layout Mockup Approval
+  sandbox.window.navigateTo('orders', null);
   Store.receiveAdminPush({
     type: 'ADMIN_UPDATE_ORDER_STATUS',
     order: {
@@ -1017,11 +1019,11 @@ test('Decisions 2, 3 & 4: 2-Step Auth vs Checkout Address, 1-Click Google/Apple 
   assert.strictEqual(appleRes.valid, true, '1-Click Apple login without upfront shipping address must succeed');
   assert.strictEqual(Store.getAuthSession().provider, 'apple');
 
-  // 6. Verify Top-Bar Account Modal (#account-bar-modal) includes live 5-Stage Order Tracker & GST Invoice popups
+  // 6. Verify Manage Profile & Address modal (#account-bar-modal) renders profile & address details and excludes orders
   sandbox.window.openAccountBarModal();
   const barModalHtml = mockDocument.getElementById('account-bar-modal-body').innerHTML;
-  assert.ok(barModalHtml.includes('id="bar-account-orders-list"'), 'Top-bar account modal must render in-bar order tracker (#bar-account-orders-list)');
-  assert.ok(barModalHtml.includes('openOrderInvoiceModal('), 'Top-bar account modal must provide GST Invoice popup button');
+  assert.ok(barModalHtml.includes('bar-prof-name'), 'Manage Profile modal must render address update form');
+  assert.ok(!barModalHtml.includes('id="bar-account-orders-list"'), 'Manage Profile modal must NOT render orders list (strictly profile & address only)');
   assert.ok(barModalHtml.includes('Arjun Singhania'), 'Top-bar account modal must display authenticated customer name');
 
   // 7. Verify zero plaintext passwords or bearer tokens stored in localStorage & zero fake customer defaults in codebase
@@ -2160,8 +2162,8 @@ test('Mobile Screen Single-Line Order ID & Hamburger Drawer Architecture (Hick\'
   const drawerHtml = drawerMatch[0];
 
   const navOnclicks = Array.from(drawerHtml.matchAll(/onclick="([^"]+)"/g)).map(m => m[1]);
-  const accountNavs = navOnclicks.filter(c => c.includes("navigateTo('account')"));
-  assert.strictEqual(accountNavs.length, 1, 'Drawer must have exactly ONE button navigating to account (no duplicates)');
+  const ordersNavs = navOnclicks.filter(c => c.includes("navigateTo('orders')") || c.includes("navigateTo('account')"));
+  assert.strictEqual(ordersNavs.length, 1, 'Drawer must have exactly ONE button navigating to orders (no duplicates)');
 
   const catalogNavs = navOnclicks.filter(c => c.includes("navigateTo('catalog'"));
   assert.strictEqual(catalogNavs.length, 1, 'Drawer must have exactly ONE button navigating to catalog (no duplicates)');
@@ -2169,22 +2171,23 @@ test('Mobile Screen Single-Line Order ID & Hamburger Drawer Architecture (Hick\'
   const staticBarModalNavs = drawerHtml.slice(drawerHtml.indexOf('Store Navigation')).match(/openAccountBarModal/g) || [];
   assert.strictEqual(staticBarModalNavs.length, 0, 'Navigation list must not have duplicate openAccountBarModal button');
 
-  // 3. Verify Single-Line Order ID rendering in renderBarOrdersHtml & app.js
+  // 3. Verify Single-Line Order ID rendering in Orders view & app.js
   const existingOrders = Store.getOrders();
   assert.ok(existingOrders.length > 0, 'Orders should exist in store from prior checkout test');
   const activeOrder = existingOrders[0];
   const activeOrderId = activeOrder.orderId;
 
-  sandbox.window.openAccountBarModal();
-  const barModalContent = mockDocument.getElementById('account-bar-modal-body').innerHTML;
-  assert.ok(barModalContent.includes(activeOrderId), `Account bar modal must render order ${activeOrderId}`);
-  assert.ok(barModalContent.includes('whitespace-nowrap block tracking-tight'), 'Order ID in account bar modal must have whitespace-nowrap to guarantee single-line display');
-  assert.ok(barModalContent.includes('shrink-0 max-w-[115px]'), 'Status badge must have shrink-0 and max-width restraint to prevent squishing order ID');
+  // Check orders view has whitespace-nowrap on order ID and strictly excludes profile edit form
+  sandbox.window.navigateTo('orders');
+  const ordersHtml = mockDocument.getElementById('app-view-root').innerHTML;
+  assert.ok(ordersHtml.includes('whitespace-nowrap">ORDER #' + activeOrderId.replace(/^#/, '')), 'Order ID on orders page must have whitespace-nowrap');
+  assert.ok(!ordersHtml.includes('id="account-profile-form"'), 'Orders view must strictly NOT show profile form');
 
-  // Check account view has whitespace-nowrap on order ID
-  sandbox.window.navigateTo('account');
-  const accountHtml = mockDocument.getElementById('app-view-root').innerHTML;
-  assert.ok(accountHtml.includes('whitespace-nowrap">ORDER #' + activeOrderId.replace(/^#/, '')), 'Order ID on account page must have whitespace-nowrap');
+  // Check profile view strictly includes profile form and excludes orders
+  sandbox.window.navigateTo('profile');
+  const profileHtml = mockDocument.getElementById('app-view-root').innerHTML;
+  assert.ok(profileHtml.includes('id="account-profile-form"'), 'Profile view must show profile edit form');
+  assert.ok(!profileHtml.includes('data-order-id='), 'Profile view must strictly NOT show orders list');
 
   // Check drawer account slot when logged in
   sandbox.window.completeOAuthChooserAccount('google', 'test.patron@example.com', 'Test Patron');

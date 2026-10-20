@@ -264,7 +264,7 @@
         const activeTag = document.activeElement ? document.activeElement.tagName : '';
         const isEditable = document.activeElement && (document.activeElement.isContentEditable || ['INPUT', 'TEXTAREA', 'SELECT'].includes(activeTag));
         if (!isEditable) {
-          const nonHomeRoutes = ['catalog', 'product', 'social', 'custom-studio', 'wishlist', 'cart', 'account', '404'];
+          const nonHomeRoutes = ['catalog', 'product', 'social', 'custom-studio', 'wishlist', 'cart', 'account', 'orders', 'profile', '404'];
           if (nonHomeRoutes.includes(AppState.currentRoute)) {
             e.preventDefault();
             window.handleBackButton('home');
@@ -514,7 +514,7 @@
             <span class="material-symbols-outlined text-secondary text-xl shrink-0 mt-0.5" aria-hidden="true">account_circle</span>
           </div>
           <div class="flex items-center gap-2 pt-2 border-t border-[#e4e0d8] mt-2">
-            <button type="button" onclick="window.closeModalById('mobile-menu-drawer'); window.openAccountBarModal();" class="flex-1 min-h-[44px] px-3 py-2 rounded-lg bg-primary text-white text-[11px] font-bold cursor-pointer flex items-center justify-center gap-1.5 shadow-xs">
+            <button type="button" onclick="window.closeModalById('mobile-menu-drawer'); window.navigateTo('profile');" class="flex-1 min-h-[44px] px-3 py-2 rounded-lg bg-primary text-white text-[11px] font-bold cursor-pointer flex items-center justify-center gap-1.5 shadow-xs">
               <span class="material-symbols-outlined text-sm" aria-hidden="true">badge</span>
               <span>Manage Profile &amp; Address</span>
             </button>
@@ -531,18 +531,23 @@
             <span class="text-[10px] px-2 py-0.5 rounded-full bg-[#ffe4de] text-[#9e3322] font-bold">Guest Mode</span>
           </div>
           <p class="text-[11px] text-on-surface-variant leading-snug">Sign in to sync your bespoke keepsakes, manage verified shipping addresses, and review active orders.</p>
-          <button type="button" onclick="window.closeModalById('mobile-menu-drawer'); window.openCloudflareAuthModal(false);" class="w-full min-h-[44px] px-3 py-2 rounded-xl bg-primary text-white text-xs font-bold flex items-center justify-center gap-1.5 cursor-pointer shadow-xs">
-            <span class="material-symbols-outlined text-base" aria-hidden="true">login</span>
-            <span>Sign In (Google / Apple / Email)</span>
-          </button>
+          <div class="flex items-center gap-2 pt-1">
+            <button type="button" onclick="window.closeModalById('mobile-menu-drawer'); window.openCloudflareAuthModal(false);" class="flex-1 min-h-[44px] px-3 py-2 rounded-xl bg-primary text-white text-xs font-bold flex items-center justify-center gap-1.5 cursor-pointer shadow-xs">
+              <span class="material-symbols-outlined text-base" aria-hidden="true">login</span>
+              <span>Sign In (Google / Apple / Email)</span>
+            </button>
+            <button type="button" onclick="window.closeModalById('mobile-menu-drawer'); window.navigateTo('profile');" class="min-h-[44px] px-3 py-2 rounded-xl bg-surface-container-low hover:bg-surface-container border border-[#e4e0d8] text-primary text-xs font-bold flex items-center justify-center gap-1 cursor-pointer shrink-0">
+              <span class="material-symbols-outlined text-sm" aria-hidden="true">badge</span>
+              <span>Profile</span>
+            </button>
+          </div>
         `;
       }
     }
 
-    // Update Top-Bar Account & Shipping Popup Drawer (#account-bar-modal-body)
+    // Update Top-Bar Account & Shipping Popup Drawer (#account-bar-modal-body) - Strictly Profile & Address ONLY
     const barModalBody = document.getElementById('account-bar-modal-body');
     if (barModalBody) {
-      const orders = Store.getOrders();
       if (isAuth) {
         const providerBadge = String(auth.provider || 'email').toUpperCase();
         const curName = auth.name || profile.name || '';
@@ -585,14 +590,14 @@
             <button type="submit" class="w-full min-h-[44px] py-2 rounded-xl bg-primary text-white text-xs font-bold cursor-pointer">Save Account Details</button>
           </form>
 
-          <div class="p-3.5 rounded-xl bg-white border border-[#e4e0d8] space-y-2.5">
-            <div class="flex items-center justify-between gap-2">
-              <h4 class="text-xs font-bold text-primary uppercase tracking-wider">Live Order Tracker (${orders.length})</h4>
-              <span class="text-[10px] font-spec-numeral text-secondary">5-Stage Telemetry</span>
-            </div>
-            <div id="bar-account-orders-list" class="space-y-2.5">
-              ${renderBarOrdersHtml(orders)}
-            </div>
+          <div class="pt-2 border-t border-[#e4e0d8]">
+            <button type="button" onclick="window.closeModalById('account-bar-modal'); window.navigateTo('orders');" class="w-full min-h-[44px] py-2 px-3 rounded-xl bg-surface-container-low hover:bg-surface-container border border-[#e4e0d8] text-primary text-xs font-bold flex items-center justify-between cursor-pointer">
+              <span class="flex items-center gap-1.5">
+                <span class="material-symbols-outlined text-base text-secondary" aria-hidden="true">package_2</span>
+                <span>Looking for Orders? Track Orders &amp; Floral Timeline</span>
+              </span>
+              <span class="material-symbols-outlined text-sm" aria-hidden="true">arrow_forward</span>
+            </button>
           </div>
         `;
       } else {
@@ -611,14 +616,14 @@
             </button>
           </div>
 
-          <div class="p-3.5 rounded-xl bg-white border border-[#e4e0d8] space-y-2.5">
-            <div class="flex items-center justify-between gap-2">
-              <h4 class="text-xs font-bold text-primary uppercase tracking-wider">Studio Batch Tracker (${orders.length})</h4>
-              <span class="text-[10px] font-spec-numeral text-secondary">Order History</span>
-            </div>
-            <div id="bar-account-orders-list" class="space-y-2.5">
-              ${renderBarOrdersHtml(orders)}
-            </div>
+          <div class="pt-2 border-t border-[#e4e0d8]">
+            <button type="button" onclick="window.closeModalById('account-bar-modal'); window.navigateTo('orders');" class="w-full min-h-[44px] py-2 px-3 rounded-xl bg-surface-container-low hover:bg-surface-container border border-[#e4e0d8] text-primary text-xs font-bold flex items-center justify-between cursor-pointer">
+              <span class="flex items-center gap-1.5">
+                <span class="material-symbols-outlined text-base text-secondary" aria-hidden="true">package_2</span>
+                <span>Track Orders &amp; Floral Timeline</span>
+              </span>
+              <span class="material-symbols-outlined text-sm" aria-hidden="true">arrow_forward</span>
+            </button>
           </div>
         `;
       }
@@ -681,7 +686,7 @@
 
   function handleRouteChange(forceResetScroll = false) {
     const { route, param, queryParams } = parseHash();
-    const validRoutes = ['home', 'catalog', 'product', 'social', 'custom-studio', 'wishlist', 'cart', 'account', '404', '500'];
+    const validRoutes = ['home', 'catalog', 'product', 'social', 'custom-studio', 'wishlist', 'cart', 'account', 'orders', 'profile', '404', '500'];
 
     if (!validRoutes.includes(route)) {
       AppState.currentRoute = '404';
@@ -723,7 +728,7 @@
     updateGlobalBadges();
     syncBodyModalLock();
 
-    if (AppState.currentRoute === 'account' && Store && typeof Store.syncOrdersFromSupabase === 'function') {
+    if ((AppState.currentRoute === 'account' || AppState.currentRoute === 'orders') && Store && typeof Store.syncOrdersFromSupabase === 'function') {
       Store.syncOrdersFromSupabase().catch(() => {});
     }
   }
@@ -733,7 +738,10 @@
     const active = AppState.currentRoute;
     document.querySelectorAll('[data-nav-route]').forEach(btn => {
       const r = btn.getAttribute('data-nav-route');
-      const isCurrent = (r === active) || (active === 'product' && r === 'catalog');
+      const isCurrent = (r === active) || 
+                        (active === 'product' && r === 'catalog') || 
+                        (r === 'orders' && (active === 'orders' || active === 'account')) ||
+                        (r === 'account' && (active === 'account' || active === 'orders'));
       if (btn.classList.contains('bottom-tab-item')) {
         btn.classList.toggle('text-primary', isCurrent);
         btn.classList.toggle('font-bold', isCurrent);
@@ -1097,15 +1105,11 @@
                 From preserving wedding varmalas &amp; anniversary roses in museum-grade 50mm blocks to supplying India’s purest 3:1 &amp; 2:1 optical epoxy systems by <strong>Vistāra Krafts</strong>.
               </p>
 
-              <!-- Primary & Secondary Conversion CTAs -->
+              <!-- Primary Conversion CTA -->
               <div class="flex flex-col sm:flex-row w-full sm:w-auto gap-2.5 sm:gap-3 pt-1">
-                <button type="button" onclick="window.navigateTo('catalog', 'all')" class="btn-shimmer min-h-[48px] w-full sm:w-auto px-4 sm:px-6 rounded-xl bg-primary hover:bg-primary-container text-on-primary font-title-md text-xs sm:text-sm font-semibold flex items-center justify-center gap-2 shadow-md active:scale-[0.98] transition-all cursor-pointer">
-                  <span>Shop Keepsakes &amp; Epoxy Kits</span>
+                <button type="button" onclick="window.navigateTo('catalog', 'all')" class="btn-shimmer min-h-[48px] w-full sm:w-auto px-6 sm:px-8 rounded-xl bg-primary hover:bg-primary-container text-on-primary font-title-md text-sm sm:text-base font-semibold flex items-center justify-center gap-2.5 shadow-md active:scale-[0.98] transition-all cursor-pointer">
+                  <span>Explore Complete 19-Piece Catalogue</span>
                   <span class="material-symbols-outlined text-lg" aria-hidden="true">arrow_forward</span>
-                </button>
-                <button type="button" onclick="window.navigateTo('custom-studio')" class="min-h-[48px] w-full sm:w-auto px-4 sm:px-6 rounded-xl bg-white hover:bg-[#fdf6f3] text-primary border border-[#b08d57] font-title-md text-xs sm:text-sm font-semibold flex items-center justify-center gap-2 shadow-xs active:scale-[0.98] transition-all cursor-pointer">
-                  <span class="material-symbols-outlined text-lg text-[#9e3322]" aria-hidden="true">auto_awesome</span>
-                  <span class="truncate">Custom Keepsake &amp; Calculator</span>
                 </button>
               </div>
 
@@ -1591,7 +1595,7 @@
                 <span class="material-symbols-outlined text-lg" aria-hidden="true">download</span>
                 <span>View Wholesale Slab &amp; COA Sheet</span>
               </button>
-              <button type="button" onclick="window.navigateTo('account')" class="min-h-[44px] px-4 rounded-xl bg-white/10 hover:bg-white/20 text-white font-label-md text-xs font-semibold flex items-center gap-1.5 cursor-pointer">
+              <button type="button" onclick="window.navigateTo('orders')" class="min-h-[44px] px-4 rounded-xl bg-white/10 hover:bg-white/20 text-white font-label-md text-xs font-semibold flex items-center gap-1.5 cursor-pointer">
                 <span class="material-symbols-outlined text-base" aria-hidden="true">receipt_long</span>
                 <span>Track Studio Orders &amp; GST Invoices</span>
               </button>
@@ -3463,90 +3467,24 @@
   }
 
   // =========================================================================
-  // 8. CUSTOMER ACCOUNT, ORDER TRACKER, MOCKUP APPROVAL & CARE VAULT
+  // 8. DEDICATED ORDERS & LIVE TELEMETRY TRACKER (STRICTLY ORDERS ONLY)
   // =========================================================================
-  function renderAccountView() {
+  function renderOrdersView() {
     const allOrders = Store.getOrders();
     const filteredOrders = Store.findOrder(AppState.orderSearchQuery);
-    const profile = Store.getPatronProfile();
-    const gstInfo = Store.getGstInfo();
-    const isAuth = typeof Store.isAuthenticated === 'function' ? Store.isAuthenticated() : false;
-    const auth = (typeof Store.getAuthSession === 'function' && Store.getAuthSession()) || {};
 
     return `
       <div class="route-view-enter flex flex-col w-full max-w-7xl mx-auto px-4 sm:px-8 py-6 gap-6">
-        <!-- Back Navigation Button -->
-        <div class="flex items-center">
+        <!-- Back Navigation & Profile Switcher -->
+        <div class="flex items-center justify-between gap-3">
           <button type="button" onclick="window.handleBackButton('home')" aria-label="Go back to previous page" class="inline-flex items-center gap-1.5 text-xs font-semibold text-primary/80 hover:text-primary min-h-[44px] py-1 px-3 rounded-lg bg-surface-container-low hover:bg-surface-container transition-colors cursor-pointer w-fit">
             <span class="material-symbols-outlined text-sm" aria-hidden="true">arrow_back</span>
             <span>Back to Storefront</span>
           </button>
-        </div>
-
-        <!-- Patron Profile & Account Banner -->
-        <div class="ram-card p-5 bg-white flex flex-col gap-4">
-          <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 min-w-0">
-            <div class="flex items-center gap-3 sm:gap-4 min-w-0 flex-1">
-              <img src="${esc(Store.IMAGES.logoVistara)}" alt="Vistāra Krafts Patron Emblem" class="w-14 h-14 sm:w-16 sm:h-16 rounded-xl object-cover ring-2 ring-secondary shrink-0">
-              <div class="min-w-0 flex-1">
-                <div class="flex flex-wrap items-center gap-1.5 sm:gap-2">
-                  <span class="px-2.5 py-0.5 rounded-full bg-secondary-container/60 text-on-secondary-container text-[10px] font-bold uppercase truncate">${esc(profile.memberTier || 'Atelier Patron')}</span>
-                  <span class="px-2.5 py-0.5 rounded-full ${isAuth ? 'bg-[#e8f5e9] text-[#266b4e]' : 'bg-[#ffe4de] text-[#9e3322]'} font-spec-numeral text-[10px] font-bold shrink-0">
-                    ${isAuth ? `Verified (${esc(String(auth.provider || 'email').toUpperCase())})` : 'Guest Session • Sign In to Order'}
-                  </span>
-                  <span class="px-2.5 py-0.5 rounded-full bg-surface-container-high text-primary font-spec-numeral text-[10px] font-bold shrink-0">${Number(profile.loyaltyPoints || 250)} Krafts Credits</span>
-                </div>
-                <h1 class="font-headline-sm text-base sm:text-2xl text-primary font-bold mt-0.5 break-words">${esc(isAuth && auth.name ? auth.name : profile.name)} — Studio Account &amp; Order Tracker</h1>
-                <p class="text-xs text-on-surface-variant break-words">${esc([isAuth && auth.phone ? auth.phone : profile.phone, isAuth && auth.email ? auth.email : profile.email, gstInfo.gstin ? `GSTIN: ${gstInfo.gstin}` : ''].filter(Boolean).join(' • ') || 'Sign in with Google, Apple, or Email to sync your wishlist and orders')}</p>
-                <p class="text-[11px] text-on-surface-variant break-words mt-0.5">📍 Default Dispatch: ${esc((isAuth && auth.address) || profile.defaultAddress || 'Will be collected at checkout')}</p>
-              </div>
-            </div>
-            <div class="flex flex-col min-[380px]:flex-row flex-wrap items-stretch min-[380px]:items-center gap-2 w-full sm:w-auto shrink-0">
-              ${isAuth ? `
-                <button type="button" onclick="window.handlePatronLogout()" class="min-h-[44px] px-3.5 py-2.5 rounded-xl bg-white hover:bg-[#fdf6f3] border border-[#9e3322]/30 text-[#9e3322] text-xs font-bold flex items-center justify-center gap-1.5 cursor-pointer">
-                  <span class="material-symbols-outlined text-base" aria-hidden="true">logout</span>
-                  <span>Sign Out</span>
-                </button>
-              ` : `
-                <button type="button" onclick="window.openCloudflareAuthModal(false)" class="min-h-[44px] px-3.5 py-2.5 rounded-xl bg-primary hover:bg-primary-container text-white text-xs font-bold flex items-center justify-center gap-1.5 cursor-pointer">
-                  <span class="material-symbols-outlined text-base" aria-hidden="true">login</span>
-                  <span>Sign In (Google / Apple / Email)</span>
-                </button>
-              `}
-              <button type="button" id="account-edit-profile-btn" onclick="window.toggleAccountProfileEdit()" class="flex-1 min-[380px]:flex-initial min-h-[44px] px-3.5 sm:px-4 py-2.5 rounded-xl bg-surface-container-low hover:bg-surface-container-high border border-[#e4e0d8] text-primary text-xs font-bold flex items-center justify-center gap-1.5 cursor-pointer">
-                <span class="material-symbols-outlined text-base text-secondary" aria-hidden="true">edit</span>
-                <span>${AppState.editingAccountProfile ? 'Close Editor' : 'Edit Profile & Address'}</span>
-              </button>
-              <button type="button" onclick="window.navigateTo('custom-studio')" class="flex-1 min-[380px]:flex-initial min-h-[44px] px-4 py-2.5 rounded-xl bg-[#9e3322] hover:opacity-95 text-white text-xs font-bold flex items-center justify-center gap-1.5 shadow-xs cursor-pointer">
-                <span class="material-symbols-outlined text-base" aria-hidden="true">local_florist</span>
-                <span>New Booking</span>
-              </button>
-            </div>
-          </div>
-
-          ${AppState.editingAccountProfile ? `
-            <form id="account-profile-form" onsubmit="window.saveAccountProfile(event)" class="pt-4 border-t border-surface-container grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <div>
-                <label for="acc-prof-name" class="text-xs font-bold text-primary block mb-1">Full Name</label>
-                <input id="acc-prof-name" type="text" required value="${esc(isAuth ? (auth.name || profile.name) : '')}" placeholder="Enter your full name" class="w-full h-12 px-3 rounded-lg bg-surface-container-low border border-[#e4e0d8] text-xs text-primary">
-              </div>
-              <div>
-                <label for="acc-prof-phone" class="text-xs font-bold text-primary block mb-1">WhatsApp / Mobile Number</label>
-                <input id="acc-prof-phone" type="tel" required value="${esc(isAuth ? (auth.phone || profile.phone) : '')}" placeholder="+91 98765 43210" class="w-full h-12 px-3 rounded-lg bg-surface-container-low border border-[#e4e0d8] font-spec-numeral text-xs text-primary">
-              </div>
-              <div>
-                <label for="acc-prof-email" class="text-xs font-bold text-primary block mb-1">Email Address (for COA &amp; GST Invoices)</label>
-                <input id="acc-prof-email" type="email" required value="${esc(isAuth ? (auth.email || profile.email) : '')}" placeholder="you@example.com" class="w-full h-12 px-3 rounded-lg bg-surface-container-low border border-[#e4e0d8] text-xs text-primary">
-              </div>
-              <div>
-                <label for="acc-prof-address" class="text-xs font-bold text-primary block mb-1">Default Delivery &amp; Flower Pickup Address</label>
-                <input id="acc-prof-address" type="text" required value="${esc(isAuth ? (auth.address || profile.defaultAddress) : '')}" placeholder="Street address, City &amp; 6-digit PIN" class="w-full h-12 px-3 rounded-lg bg-surface-container-low border border-[#e4e0d8] text-xs text-primary">
-              </div>
-              <div class="sm:col-span-2 flex justify-end gap-2 pt-1">
-                <button type="submit" class="min-h-[48px] px-5 py-2.5 rounded-xl bg-primary text-white text-xs font-bold cursor-pointer">Save Patron Details</button>
-              </div>
-            </form>
-          ` : ''}
+          <button type="button" onclick="window.navigateTo('profile')" class="inline-flex items-center gap-1.5 text-xs font-bold text-secondary hover:text-primary min-h-[44px] py-1 px-3 rounded-lg bg-white border border-[#e4e0d8] hover:bg-surface-container transition-colors cursor-pointer">
+            <span class="material-symbols-outlined text-sm" aria-hidden="true">badge</span>
+            <span>Manage Profile &amp; Address →</span>
+          </button>
         </div>
 
         <!-- Live Orders & 5-Stage Floral Preservation Tracker -->
@@ -3554,7 +3492,8 @@
           <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div>
               <span class="font-label-sm text-xs uppercase tracking-wider text-secondary font-bold">Real-Time Atelier Telemetry</span>
-              <h2 class="font-headline-sm text-xl text-primary font-bold">Active Orders &amp; Varmala Preservation Timeline (${filteredOrders.length} of ${allOrders.length})</h2>
+              <h1 class="font-headline-sm text-xl text-primary font-bold">Active Orders &amp; Varmala Preservation Timeline (${filteredOrders.length} of ${allOrders.length})</h1>
+              <p class="text-xs text-on-surface-variant mt-0.5">Live 5-stage keepsake curing status, consignment tracking &amp; GST tax invoices.</p>
             </div>
             <div class="w-full sm:w-80">
               <label for="account-order-search" class="sr-only">Search orders by Order ID, item, or courier</label>
@@ -3766,6 +3705,105 @@
         </div>
       </div>
     `;
+  }
+
+  // =========================================================================
+  // 8B. DEDICATED PATRON PROFILE & ADDRESS VIEW (STRICTLY PROFILE & ADDRESS ONLY)
+  // =========================================================================
+  function renderProfileView() {
+    const profile = Store.getPatronProfile();
+    const gstInfo = Store.getGstInfo();
+    const isAuth = typeof Store.isAuthenticated === 'function' ? Store.isAuthenticated() : false;
+    const auth = (typeof Store.getAuthSession === 'function' && Store.getAuthSession()) || {};
+
+    return `
+      <div class="route-view-enter flex flex-col w-full max-w-4xl mx-auto px-4 sm:px-8 py-6 gap-6">
+        <!-- Back Navigation & Orders Switcher -->
+        <div class="flex items-center justify-between gap-3">
+          <button type="button" onclick="window.handleBackButton('home')" aria-label="Go back to previous page" class="inline-flex items-center gap-1.5 text-xs font-semibold text-primary/80 hover:text-primary min-h-[44px] py-1 px-3 rounded-lg bg-surface-container-low hover:bg-surface-container transition-colors cursor-pointer w-fit">
+            <span class="material-symbols-outlined text-sm" aria-hidden="true">arrow_back</span>
+            <span>Back to Storefront</span>
+          </button>
+          <button type="button" onclick="window.navigateTo('orders')" class="inline-flex items-center gap-1.5 text-xs font-bold text-secondary hover:text-primary min-h-[44px] py-1 px-3 rounded-lg bg-white border border-[#e4e0d8] hover:bg-surface-container transition-colors cursor-pointer">
+            <span class="material-symbols-outlined text-sm" aria-hidden="true">package_2</span>
+            <span>Track Orders &amp; Timeline →</span>
+          </button>
+        </div>
+
+        <!-- Patron Profile & Address Card -->
+        <div class="ram-card p-5 sm:p-6 bg-white flex flex-col gap-5">
+          <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 min-w-0">
+            <div class="flex items-center gap-3 sm:gap-4 min-w-0 flex-1">
+              <img src="${esc(Store.IMAGES.logoVistara)}" alt="Vistāra Krafts Patron Emblem" class="w-14 h-14 sm:w-16 sm:h-16 rounded-xl object-cover ring-2 ring-secondary shrink-0">
+              <div class="min-w-0 flex-1">
+                <div class="flex flex-wrap items-center gap-1.5 sm:gap-2">
+                  <span class="px-2.5 py-0.5 rounded-full bg-secondary-container/60 text-on-secondary-container text-[10px] font-bold uppercase truncate">${esc(profile.memberTier || 'Atelier Patron')}</span>
+                  <span class="px-2.5 py-0.5 rounded-full ${isAuth ? 'bg-[#e8f5e9] text-[#266b4e]' : 'bg-[#ffe4de] text-[#9e3322]'} font-spec-numeral text-[10px] font-bold shrink-0">
+                    ${isAuth ? `Verified (${esc(String(auth.provider || 'email').toUpperCase())})` : 'Guest Session • Sign In to Save Profile'}
+                  </span>
+                  <span class="px-2.5 py-0.5 rounded-full bg-surface-container-high text-primary font-spec-numeral text-[10px] font-bold shrink-0">${Number(profile.loyaltyPoints || 250)} Krafts Credits</span>
+                </div>
+                <h1 class="font-headline-sm text-lg sm:text-2xl text-primary font-bold mt-1 break-words">Patron Profile &amp; Shipping Address</h1>
+                <p class="text-xs text-on-surface-variant break-words mt-0.5">${esc([isAuth && auth.phone ? auth.phone : profile.phone, isAuth && auth.email ? auth.email : profile.email, gstInfo.gstin ? `GSTIN: ${gstInfo.gstin}` : ''].filter(Boolean).join(' • ') || 'Sign in with Google, Apple, or Email to sync your profile across devices')}</p>
+              </div>
+            </div>
+            <div class="flex items-center gap-2 w-full sm:w-auto shrink-0">
+              ${isAuth ? `
+                <button type="button" onclick="window.handlePatronLogout()" class="min-h-[44px] px-4 py-2 rounded-xl bg-white hover:bg-[#fdf6f3] border border-[#9e3322]/30 text-[#9e3322] text-xs font-bold flex items-center justify-center gap-1.5 cursor-pointer">
+                  <span class="material-symbols-outlined text-base" aria-hidden="true">logout</span>
+                  <span>Sign Out</span>
+                </button>
+              ` : `
+                <button type="button" onclick="window.openCloudflareAuthModal(false)" class="min-h-[44px] px-4 py-2 rounded-xl bg-primary hover:bg-primary-container text-white text-xs font-bold flex items-center justify-center gap-1.5 cursor-pointer">
+                  <span class="material-symbols-outlined text-base" aria-hidden="true">login</span>
+                  <span>Sign In (Google / Apple / Email)</span>
+                </button>
+              `}
+            </div>
+          </div>
+
+          <!-- Saved Address Preview Box -->
+          <div class="p-3.5 rounded-xl bg-surface-container-low border border-[#e4e0d8] flex items-start gap-3">
+            <span class="material-symbols-outlined text-secondary text-xl shrink-0 mt-0.5" aria-hidden="true">location_on</span>
+            <div class="min-w-0 flex-1">
+              <strong class="block text-xs font-bold text-primary uppercase tracking-wider mb-0.5">Saved Delivery &amp; Flower Pickup Address</strong>
+              <p class="text-xs text-on-surface-variant break-words">${esc((isAuth && auth.address) || profile.defaultAddress || 'No address saved yet. Will be collected at checkout or you can enter it below.')}</p>
+            </div>
+          </div>
+
+          <!-- Direct Edit Profile & Delivery Address Form -->
+          <form id="account-profile-form" onsubmit="window.saveAccountProfile(event)" class="pt-2 border-t border-surface-container grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div class="sm:col-span-2">
+              <h2 class="text-xs font-bold uppercase tracking-wider text-primary">Update Profile &amp; Shipping Details</h2>
+              <p class="text-[11px] text-on-surface-variant">Changes saved here will be automatically applied to your checkout and flower pickup consignments.</p>
+            </div>
+            <div>
+              <label for="acc-prof-name" class="text-xs font-bold text-primary block mb-1">Full Name *</label>
+              <input id="acc-prof-name" type="text" required value="${esc(isAuth ? (auth.name || profile.name) : (profile.name || ''))}" placeholder="Enter your full name" class="w-full h-12 px-3 rounded-lg bg-surface-container-low border border-[#e4e0d8] text-xs text-primary">
+            </div>
+            <div>
+              <label for="acc-prof-phone" class="text-xs font-bold text-primary block mb-1">WhatsApp / Mobile Number *</label>
+              <input id="acc-prof-phone" type="tel" required value="${esc(isAuth ? (auth.phone || profile.phone) : (profile.phone || ''))}" placeholder="+91 98765 43210" class="w-full h-12 px-3 rounded-lg bg-surface-container-low border border-[#e4e0d8] font-spec-numeral text-xs text-primary">
+            </div>
+            <div>
+              <label for="acc-prof-email" class="text-xs font-bold text-primary block mb-1">Email Address (for COA &amp; GST Invoices) *</label>
+              <input id="acc-prof-email" type="email" required value="${esc(isAuth ? (auth.email || profile.email) : (profile.email || ''))}" placeholder="you@example.com" class="w-full h-12 px-3 rounded-lg bg-surface-container-low border border-[#e4e0d8] text-xs text-primary">
+            </div>
+            <div>
+              <label for="acc-prof-address" class="text-xs font-bold text-primary block mb-1">Default Delivery &amp; Flower Pickup Address *</label>
+              <input id="acc-prof-address" type="text" required value="${esc(isAuth ? (auth.address || profile.defaultAddress) : (profile.defaultAddress || ''))}" placeholder="Street address, City &amp; 6-digit PIN" class="w-full h-12 px-3 rounded-lg bg-surface-container-low border border-[#e4e0d8] text-xs text-primary">
+            </div>
+            <div class="sm:col-span-2 flex justify-end gap-2 pt-1">
+              <button type="submit" class="min-h-[48px] px-6 py-2.5 rounded-xl bg-primary text-white text-xs font-bold cursor-pointer hover:bg-primary-container transition shadow-xs">Save Patron Details</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    `;
+  }
+
+  function renderAccountView() {
+    return renderOrdersView();
   }
 
   // =========================================================================
@@ -4420,12 +4458,14 @@
           { name: '@resin.art.memories Community Feed', url: canonicalUrl }
         ]
       };
-    } else if (route === 'wishlist' || route === 'cart' || route === 'account') {
+    } else if (route === 'wishlist' || route === 'cart' || route === 'account' || route === 'orders' || route === 'profile') {
       const canonicalUrl = `${siteUrl}/#/${route}`;
       const routeLabels = {
         wishlist: 'Saved Atelier Wishlist & Studio Reels',
         cart: 'Studio Shopping Bag & Instant GST/UPI Checkout',
-        account: 'Patron Concierge Account & Live Order Tracker'
+        account: 'Patron Concierge Account & Live Order Tracker',
+        orders: 'Active Orders & Live Floral Preservation Telemetry',
+        profile: 'Patron Profile & Verified Shipping Address'
       };
       routeMeta = {
         ...routeMeta,
@@ -4529,6 +4569,12 @@
           break;
         case 'cart':
           root.innerHTML = renderCartView();
+          break;
+        case 'orders':
+          root.innerHTML = renderOrdersView();
+          break;
+        case 'profile':
+          root.innerHTML = renderProfileView();
           break;
         case 'account':
           root.innerHTML = renderAccountView();
@@ -6614,7 +6660,7 @@
             `Total Paid: ${formatINR(res.order.total)} via ${paymentMethod}`
           );
         }
-        window.navigateTo('account');
+        window.navigateTo('orders');
       } else if (res.requiresAuth) {
         if (modal) modal.classList.remove('hidden');
         syncBodyModalLock();
