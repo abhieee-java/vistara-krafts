@@ -7208,12 +7208,25 @@
       if (footerInsta) footerInsta.href = `https://www.instagram.com/${cleanHandle}?utm_source=qr`;
       if (footerHandle) footerHandle.textContent = `@${cleanHandle}`;
     }
-    if (footerEmail && settings.contactEmail) {
-      footerEmail.innerHTML = `Email: <a href="mailto:${esc(settings.contactEmail)}" class="text-primary font-semibold hover:underline">${esc(settings.contactEmail)}</a>`;
+    const resolvedEmail = settings.contactEmail || settings.supportEmail || settings.email || settings.support_email || settings.contact_email;
+    const resolvedPhone = settings.contactPhone || settings.supportPhone || settings.phone || settings.support_phone || settings.contact_phone;
+
+    if (footerEmail && resolvedEmail) {
+      footerEmail.innerHTML = `Email: <a href="mailto:${esc(resolvedEmail)}" class="text-primary font-semibold hover:underline">${esc(resolvedEmail)}</a>`;
     }
-    if (footerPhone && settings.contactPhone) {
-      const cleanPhone = settings.contactPhone.replace(/\s+/g, '');
-      footerPhone.innerHTML = `Phone: <a href="tel:${esc(cleanPhone)}" class="text-primary font-semibold hover:underline">${esc(settings.contactPhone)}</a>`;
+    if (footerPhone && resolvedPhone) {
+      const cleanPhone = resolvedPhone.replace(/\s+/g, '');
+      footerPhone.innerHTML = `Phone: <a href="tel:${esc(cleanPhone)}" class="text-primary font-semibold hover:underline">${esc(resolvedPhone)}</a>`;
+    }
+
+    const drawerEmail = document.getElementById('drawer-support-email');
+    const drawerPhone = document.getElementById('drawer-support-phone');
+    if (drawerEmail && resolvedEmail) {
+      drawerEmail.innerHTML = `Email: <a href="mailto:${esc(resolvedEmail)}" class="text-primary font-semibold hover:underline">${esc(resolvedEmail)}</a>`;
+    }
+    if (drawerPhone && resolvedPhone) {
+      const cleanPhone = resolvedPhone.replace(/\s+/g, '');
+      drawerPhone.innerHTML = `Phone: <a href="tel:${esc(cleanPhone)}" class="text-primary font-semibold hover:underline">${esc(resolvedPhone)}</a>`;
     }
 
     // Top Announcement Bar Free Shipping & Store Name

@@ -2870,9 +2870,26 @@
         </div>
       </div>
 
-      <div class="p-3 rounded-xl bg-surface-container-low border border-[#e4e0d8] text-xs mt-3 shrink-0">
-        <p class="font-bold text-primary">Instagram Direct</p>
-        <a id="drawer-instagram-link" href="https://www.instagram.com/resin.art.memories?utm_source=qr" target="_blank" rel="noopener noreferrer" class="min-h-[44px] inline-flex items-center text-[#9e3322] font-semibold hover:underline mt-0.5">instagram.com/resin.art.memories →</a>
+      <div class="p-3 rounded-xl bg-surface-container-low border border-[#e4e0d8] text-xs mt-3 shrink-0 space-y-2">
+        <div>
+          <p class="font-bold text-primary flex items-center gap-1.5">
+            <span class="material-symbols-outlined text-sm text-[#9e3322]" aria-hidden="true">headset_mic</span>
+            <span>Studio Concierge &amp; Support</span>
+          </p>
+          <div id="drawer-support-email" class="text-[11px] text-on-surface-variant mt-1">
+            Email: <a href="mailto:studio@vistarakrafts.com" class="text-primary font-semibold hover:underline">studio@vistarakrafts.com</a>
+          </div>
+          <div id="drawer-support-phone" class="text-[11px] text-on-surface-variant mt-0.5">
+            Phone: <a href="tel:+917002270886" class="text-primary font-semibold hover:underline">+91 70022 70886</a>
+          </div>
+        </div>
+        <div class="pt-2 border-t border-[#e4e0d8]/70">
+          <p class="font-bold text-primary flex items-center gap-1.5">
+            <span class="material-symbols-outlined text-sm text-[#9e3322]" aria-hidden="true">photo_camera</span>
+            <span>Instagram Direct</span>
+          </p>
+          <a id="drawer-instagram-link" href="https://www.instagram.com/resin.art.memories?utm_source=qr" target="_blank" rel="noopener noreferrer" class="min-h-[36px] inline-flex items-center text-[#9e3322] font-semibold hover:underline mt-0.5">instagram.com/resin.art.memories →</a>
+        </div>
       </div>
     </div>
   </div>
@@ -3854,6 +3871,7 @@
     </div>
   </div>
 
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="./supabase-config.js"></script>
   <script src="./cloudinary-config.js"></script>
   <script src="./store-bridge.js"></script>

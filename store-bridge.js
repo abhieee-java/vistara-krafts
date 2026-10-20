@@ -2015,12 +2015,15 @@
         return v1;
       }
       return {
-        storeName: 'Vistāra Krafts',
-        brandTagline: '@resin.art.memories',
+        storeName: 'Vistāra Krafts Studio',
+        brandTagline: 'Curated Resin Art & Museum-Grade Preservation',
         instagramHandle: '@vistarakrafts',
-        contactEmail: 'studio@vistarakrafts.com',
-        contactPhone: '+91 98765 43210',
+        contactEmail: 'support@vistarakrafts.com',
+        supportEmail: 'support@vistarakrafts.com',
+        contactPhone: '+91 70022 70886',
+        supportPhone: '+91 70022 70886',
         freeShippingThreshold: 1499,
+        defaultCourier: 'Delhivery Express',
         announcementBarActive: true,
         announcementBarText: 'Complimentary Pan-India Express Air Shipping on orders over ₹1,499 • 100% Optical Glass Purity Guarantee',
         enableFloralTransformationSection: false
@@ -2028,83 +2031,112 @@
     },
 
     async syncSettingsFromSupabase() {
-      if (!global.VistaraSupabase || !global.VistaraSupabase.isConfigured()) return;
-      const client = global.VistaraSupabase.getClient();
-      if (!client) return;
+      const url = (backendConfig && backendConfig.supabase && backendConfig.supabase.url) || global.SUPABASE_URL || 'https://niamxrskqhjvzwxomxrx.supabase.co';
+      const key = (backendConfig && backendConfig.supabase && backendConfig.supabase.anonKey) || global.SUPABASE_ANON_KEY || 'sb_publishable_gK22Lr7xNqKI7VFAfnsQTA_7UD0S2iu';
+      if (!url || !key || url.includes('xyzcompany')) return;
+
+      const headers = { 'apikey': key, 'Authorization': 'Bearer ' + key };
 
       try {
-        const catRes = await client.from('categories').select('description').eq('id', 'store_settings_payload').single();
-        if (catRes && catRes.data && catRes.data.description) {
-          try {
-            const parsed = JSON.parse(catRes.data.description);
-            if (parsed && typeof parsed === 'object') {
-              const currentSettings = safeRead(STORAGE_KEYS.SETTINGS, {});
-              const nextSettings = { ...currentSettings, ...parsed };
-              safeWrite(STORAGE_KEYS.SETTINGS, nextSettings);
-              safeWrite('vk_settings_v1', nextSettings);
-              if (nextSettings.announcementBarText !== undefined) {
-                this.applyAnnouncementBar(nextSettings.announcementBarText, nextSettings.announcementBarActive);
-              }
-              if (typeof global.applyStorefrontSettings === 'function') {
-                global.applyStorefrontSettings(nextSettings);
-              }
-              this.notify('settings_updated', nextSettings);
-              return;
-            }
-          } catch (_) {}
+        const [catRes, setRes] = await Promise.allSettled([
+          fetch(url + '/rest/v1/categories?id=eq.store_settings_payload&select=*', { headers }).then(r => r.ok ? r.json() : null),
+          fetch(url + '/rest/v1/settings?select=*', { headers }).then(r => r.ok ? r.json() : null)
+        ]);
+
+        let catPayload = null;
+        if (catRes.status === 'fulfilled' && Array.isArray(catRes.value) && catRes.value[0]?.description) {
+          try { catPayload = JSON.parse(catRes.value[0].description); } catch (_) {}
         }
-      } catch (_) {}
 
-      try {
-        const { data, error } = await client.from('settings').select('*');
-        if (error || !Array.isArray(data)) return;
-        const barRow = data.find(r => r.key === 'announcement_bar');
-        const shipRow = data.find(r => r.key === 'shipping');
-        const sectionsRow = data.find(r => r.key === 'storefront_sections');
-        const infoRow = data.find(r => r.key === 'store_info');
+        let settingsRows = [];
+        if (setRes.status === 'fulfilled' && Array.isArray(setRes.value)) {
+          settingsRows = setRes.value;
+        }
+
+        const infoRow = settingsRows.find(r => r.key === 'store_info');
+        const shipRow = settingsRows.find(r => r.key === 'shipping');
+        const barRow = settingsRows.find(r => r.key === 'announcement_bar');
+        const sectionsRow = settingsRows.find(r => r.key === 'storefront_sections');
 
         const currentSettings = safeRead(STORAGE_KEYS.SETTINGS, {});
         const localUpdated = currentSettings.updated_at ? new Date(currentSettings.updated_at).getTime() : 0;
-        const nextSettings = { ...currentSettings };
+        const barDbUpdated = barRow?.updated_at ? new Date(barRow.updated_at).getTime() : 0;
+        const shipDbUpdated = shipRow?.updated_at ? new Date(shipRow.updated_at).getTime() : 0;
+        const infoDbUpdated = infoRow?.updated_at ? new Date(infoRow.updated_at).getTime() : 0;
+        const catDbUpdated = catPayload?.updated_at ? new Date(catPayload.updated_at).getTime() : 0;
 
-        if (barRow && barRow.value) {
-          const barDbUpdated = barRow.updated_at ? new Date(barRow.updated_at).getTime() : 0;
-          if (barDbUpdated >= localUpdated || !currentSettings.announcementBarText) {
-            const barText = barRow.value.text || nextSettings.announcementBarText;
-            nextSettings.announcementBarText = barText;
-            nextSettings.announcementBarActive = barRow.value.enabled !== false;
-            this.applyAnnouncementBar(barText, barRow.value.enabled !== false);
+        let resolvedEmail = currentSettings.contactEmail || currentSettings.supportEmail || 'support@vistarakrafts.com';
+        let resolvedPhone = currentSettings.contactPhone || currentSettings.supportPhone || '+91 70022 70886';
+        let resolvedName = currentSettings.storeName || 'Vistāra Krafts Studio';
+        let resolvedTagline = currentSettings.brandTagline || 'Curated Resin Art & Museum-Grade Preservation';
+        let resolvedInstagram = currentSettings.instagramHandle || '@vistarakrafts';
+
+        if (infoDbUpdated >= catDbUpdated) {
+          if (infoRow && infoRow.value) {
+            resolvedEmail = infoRow.value.email || infoRow.value.contactEmail || infoRow.value.supportEmail || catPayload?.contactEmail || resolvedEmail;
+            resolvedPhone = infoRow.value.phone || infoRow.value.contactPhone || infoRow.value.supportPhone || catPayload?.contactPhone || resolvedPhone;
+            resolvedName = infoRow.value.name || catPayload?.storeName || resolvedName;
+            resolvedTagline = infoRow.value.tagline || catPayload?.brandTagline || resolvedTagline;
+            resolvedInstagram = infoRow.value.instagram || catPayload?.instagramHandle || resolvedInstagram;
+          }
+        } else {
+          if (catPayload) {
+            resolvedEmail = catPayload.contactEmail || catPayload.supportEmail || infoRow?.value?.email || resolvedEmail;
+            resolvedPhone = catPayload.contactPhone || catPayload.supportPhone || infoRow?.value?.phone || resolvedPhone;
+            resolvedName = catPayload.storeName || infoRow?.value?.name || resolvedName;
+            resolvedTagline = catPayload.brandTagline || infoRow?.value?.tagline || resolvedTagline;
+            resolvedInstagram = catPayload.instagramHandle || infoRow?.value?.instagram || resolvedInstagram;
           }
         }
-        if (shipRow && shipRow.value) {
-          const shipDbUpdated = shipRow.updated_at ? new Date(shipRow.updated_at).getTime() : 0;
-          if (shipDbUpdated >= localUpdated || !currentSettings.freeShippingThreshold) {
-            nextSettings.freeShippingThreshold = (shipRow.value.free_shipping_threshold !== undefined && !isNaN(Number(shipRow.value.free_shipping_threshold)))
+
+        const nextSettings = {
+          ...currentSettings,
+          storeName: resolvedName,
+          brandTagline: resolvedTagline,
+          contactEmail: resolvedEmail,
+          supportEmail: resolvedEmail,
+          contactPhone: resolvedPhone,
+          supportPhone: resolvedPhone,
+          instagramHandle: resolvedInstagram,
+          ...(barRow && barRow.value && (barDbUpdated >= localUpdated || !currentSettings.announcementBarText) ? {
+            announcementBarText: barRow.value.text || currentSettings.announcementBarText,
+            announcementBarActive: barRow.value.enabled !== false
+          } : (catPayload?.announcementBarText ? {
+            announcementBarText: catPayload.announcementBarText,
+            announcementBarActive: catPayload.announcementBarActive !== false
+          } : {})),
+          ...(shipRow && shipRow.value && (shipDbUpdated >= localUpdated || !currentSettings.freeShippingThreshold) ? {
+            freeShippingThreshold: (shipRow.value.free_shipping_threshold !== undefined && !isNaN(Number(shipRow.value.free_shipping_threshold)))
               ? Number(shipRow.value.free_shipping_threshold)
-              : 1499;
-            if (shipRow.value.default_courier) {
-              nextSettings.defaultCourier = shipRow.value.default_courier;
-            }
-          }
-        }
-        if (sectionsRow && sectionsRow.value) {
-          nextSettings.enableFloralTransformationSection = Boolean(sectionsRow.value.enable_floral_transformation);
-        }
-        if (infoRow && infoRow.value) {
-          nextSettings.storeName = infoRow.value.name || nextSettings.storeName;
-          nextSettings.contactEmail = infoRow.value.email || nextSettings.contactEmail;
-          nextSettings.contactPhone = infoRow.value.phone || nextSettings.contactPhone;
-          nextSettings.brandTagline = infoRow.value.tagline || nextSettings.brandTagline;
-          nextSettings.instagramHandle = infoRow.value.instagram || nextSettings.instagramHandle;
+              : (catPayload?.freeShippingThreshold || 1499),
+            defaultCourier: shipRow.value.default_courier || catPayload?.defaultCourier || 'Delhivery Express'
+          } : (catPayload?.freeShippingThreshold ? {
+            freeShippingThreshold: Number(catPayload.freeShippingThreshold),
+            defaultCourier: catPayload.defaultCourier || 'Delhivery Express'
+          } : {})),
+          ...(sectionsRow && sectionsRow.value ? {
+            enableFloralTransformationSection: Boolean(sectionsRow.value.enable_floral_transformation)
+          } : (catPayload?.enableFloralTransformationSection !== undefined ? {
+            enableFloralTransformationSection: Boolean(catPayload.enableFloralTransformationSection)
+          } : {})),
+          updated_at: new Date(Math.max(infoDbUpdated, catDbUpdated, barDbUpdated, shipDbUpdated, localUpdated) || Date.now()).toISOString()
+        };
+
+        if (nextSettings.announcementBarText !== undefined) {
+          this.applyAnnouncementBar(nextSettings.announcementBarText, nextSettings.announcementBarActive);
         }
 
         safeWrite(STORAGE_KEYS.SETTINGS, nextSettings);
         safeWrite('vk_settings_v1', nextSettings);
+        safeWrite('ram_vk_settings_v2', nextSettings);
+
         if (typeof global.applyStorefrontSettings === 'function') {
           global.applyStorefrontSettings(nextSettings);
         }
         this.notify('settings_updated', nextSettings);
-      } catch (e) {}
+      } catch (e) {
+        // Graceful offline fallback
+      }
     },
 
     applyAnnouncementBar(text, enabled) {
@@ -2678,6 +2710,9 @@
             .on('postgres_changes', { event: '*', schema: 'public', table: 'categories' }, () => {
               if (typeof Store.syncSettingsFromSupabase === 'function') Store.syncSettingsFromSupabase();
             })
+            .on('postgres_changes', { event: '*', schema: 'public', table: 'settings' }, () => {
+              if (typeof Store.syncSettingsFromSupabase === 'function') Store.syncSettingsFromSupabase();
+            })
             .subscribe();
         }
       }
@@ -2697,6 +2732,19 @@
         Store.receiveStudioPush(ev.data.payload);
       }
     });
+
+    if (typeof window !== 'undefined' && typeof window.addEventListener === 'function') {
+      window.addEventListener('storage', (ev) => {
+        if (!ev || !ev.key) return;
+        if (ev.key === 'ram_vk_settings_v2' || ev.key === 'vk_settings_v1' || ev.key === 'vk_admin_settings_v1') {
+          const fresh = Store.getSettings();
+          if (typeof global.applyStorefrontSettings === 'function') {
+            global.applyStorefrontSettings(fresh);
+          }
+          Store.notify('settings_updated', fresh);
+        }
+      });
+    }
   } catch (e) {
     // ignore in restricted environments
   }
