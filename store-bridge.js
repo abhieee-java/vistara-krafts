@@ -2122,18 +2122,28 @@
           updated_at: new Date(Math.max(infoDbUpdated, catDbUpdated, barDbUpdated, shipDbUpdated, localUpdated) || Date.now()).toISOString()
         };
 
+        const keysToCompare = [
+          'storeName', 'brandTagline', 'contactEmail', 'supportEmail',
+          'contactPhone', 'supportPhone', 'instagramHandle',
+          'announcementBarText', 'announcementBarActive',
+          'freeShippingThreshold', 'defaultCourier', 'enableFloralTransformationSection'
+        ];
+        const isChanged = keysToCompare.some(k => currentSettings[k] !== nextSettings[k]);
+
         if (nextSettings.announcementBarText !== undefined) {
           this.applyAnnouncementBar(nextSettings.announcementBarText, nextSettings.announcementBarActive);
         }
 
-        safeWrite(STORAGE_KEYS.SETTINGS, nextSettings);
-        safeWrite('vk_settings_v1', nextSettings);
-        safeWrite('ram_vk_settings_v2', nextSettings);
+        if (isChanged) {
+          safeWrite(STORAGE_KEYS.SETTINGS, nextSettings);
+          safeWrite('vk_settings_v1', nextSettings);
+          safeWrite('ram_vk_settings_v2', nextSettings);
 
-        if (typeof global.applyStorefrontSettings === 'function') {
-          global.applyStorefrontSettings(nextSettings);
+          if (typeof global.applyStorefrontSettings === 'function') {
+            global.applyStorefrontSettings(nextSettings);
+          }
+          this.notify('settings_updated', nextSettings);
         }
-        this.notify('settings_updated', nextSettings);
       } catch (e) {
         // Graceful offline fallback
       }
@@ -2687,7 +2697,7 @@
         syncFromSupabase();
         if (typeof Store.syncSettingsFromSupabase === 'function') Store.syncSettingsFromSupabase();
         if (typeof Store.syncOrdersFromSupabase === 'function') Store.syncOrdersFromSupabase();
-      }, 6000);
+      }, 25000);
     }
     if (typeof window.addEventListener === 'function') {
       window.addEventListener('focus', () => {

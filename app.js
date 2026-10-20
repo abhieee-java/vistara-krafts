@@ -745,6 +745,7 @@
       if (btn.classList.contains('bottom-tab-item')) {
         btn.classList.toggle('text-primary', isCurrent);
         btn.classList.toggle('font-bold', isCurrent);
+        btn.classList.toggle('bg-[#9e3322]/10', isCurrent);
         btn.classList.toggle('text-on-surface-variant', !isCurrent);
         const icon = btn.querySelector('.material-symbols-outlined');
         if (icon) icon.style.fontVariationSettings = isCurrent ? "'FILL' 1" : "'FILL' 0";
@@ -6889,8 +6890,8 @@
   // Subscribe to StorefrontBridge programmatic events so external cross-tab / postMessage updates re-render live
   if (Store && typeof Store.subscribe === 'function') {
     Store.subscribe((event) => {
-      if (event === 'studio_push_received' || event === 'admin_push_received' || event === 'catalog_reset' || event === 'settings_updated' || event === 'coupons_updated') {
-        renderActiveView();
+      if (event === 'studio_push_received' || event === 'admin_push_received' || event === 'catalog_reset' || event === 'coupons_updated') {
+        renderActiveView({ preserveScroll: true });
         updateGlobalBadges();
       }
     });
@@ -7269,9 +7270,10 @@
       if (event === 'settings_updated') {
         if (Store && typeof Store.getSettings === 'function') {
           window.applyStorefrontSettings(Store.getSettings());
+          updateGlobalBadges();
         }
       }
-      if (event === 'products_updated' || event === 'studio_push_received' || event === 'orders_updated' || event === 'order_updated' || event === 'order_status_changed' || event === 'settings_updated') {
+      if (event === 'products_updated' || event === 'orders_updated' || event === 'order_updated' || event === 'order_status_changed') {
         renderActiveView({ preserveScroll: true });
       }
     });
