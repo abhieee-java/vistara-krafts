@@ -5086,13 +5086,22 @@
     renderActiveView();
   };
 
-  window.setCatalogSearch = function (val) {
+  let catalogSearchDebounceTimer = null;
+  window.setCatalogSearch = function (val, immediate = false) {
     AppState.catalogSearch = val;
-    renderActiveView();
-    const input = document.getElementById('catalog-search-input');
-    if (input) {
-      if (typeof input.focus === 'function') input.focus();
-      if (typeof input.setSelectionRange === 'function') input.setSelectionRange(input.value.length, input.value.length);
+    clearTimeout(catalogSearchDebounceTimer);
+    const updateSearch = () => {
+      renderActiveView({ preserveScroll: true });
+      const input = document.getElementById('catalog-search-input');
+      if (input && document.activeElement !== input) {
+        if (typeof input.focus === 'function') input.focus();
+        if (typeof input.setSelectionRange === 'function') input.setSelectionRange(input.value.length, input.value.length);
+      }
+    };
+    if (immediate || !val) {
+      updateSearch();
+    } else {
+      catalogSearchDebounceTimer = setTimeout(updateSearch, 250);
     }
   };
 
@@ -6260,13 +6269,22 @@
     window.showToast('Signed Out', 'You are now browsing in Guest Mode');
   };
 
-  window.setAccountOrderSearch = function (val) {
+  let orderSearchDebounceTimer = null;
+  window.setAccountOrderSearch = function (val, immediate = false) {
     AppState.orderSearchQuery = val;
-    renderActiveView();
-    const input = document.getElementById('account-order-search');
-    if (input) {
-      if (typeof input.focus === 'function') input.focus();
-      if (typeof input.setSelectionRange === 'function') input.setSelectionRange(input.value.length, input.value.length);
+    clearTimeout(orderSearchDebounceTimer);
+    const updateOrders = () => {
+      renderActiveView({ preserveScroll: true });
+      const input = document.getElementById('account-order-search');
+      if (input && document.activeElement !== input) {
+        if (typeof input.focus === 'function') input.focus();
+        if (typeof input.setSelectionRange === 'function') input.setSelectionRange(input.value.length, input.value.length);
+      }
+    };
+    if (immediate || !val) {
+      updateOrders();
+    } else {
+      orderSearchDebounceTimer = setTimeout(updateOrders, 250);
     }
   };
 

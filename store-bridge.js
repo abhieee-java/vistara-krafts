@@ -2705,9 +2705,14 @@
         if (typeof Store.syncSettingsFromSupabase === 'function') Store.syncSettingsFromSupabase();
         if (typeof Store.syncOrdersFromSupabase === 'function') Store.syncOrdersFromSupabase();
       });
+      window.addEventListener('online', () => {
+        syncFromSupabase();
+        if (typeof Store.syncSettingsFromSupabase === 'function') Store.syncSettingsFromSupabase();
+        if (typeof Store.syncOrdersFromSupabase === 'function') Store.syncOrdersFromSupabase();
+      });
     }
 
-    // Supabase Realtime Channel for orders & categories
+    // Supabase Realtime Channel for orders, products, categories & settings
     try {
       if (global.VistaraSupabase && typeof global.VistaraSupabase.getClient === 'function') {
         const sbClient = global.VistaraSupabase.getClient();
@@ -2716,6 +2721,9 @@
             .channel('public:orders:realtime')
             .on('postgres_changes', { event: '*', schema: 'public', table: 'orders' }, () => {
               if (typeof Store.syncOrdersFromSupabase === 'function') Store.syncOrdersFromSupabase();
+            })
+            .on('postgres_changes', { event: '*', schema: 'public', table: 'products' }, () => {
+              syncFromSupabase();
             })
             .on('postgres_changes', { event: '*', schema: 'public', table: 'categories' }, () => {
               if (typeof Store.syncSettingsFromSupabase === 'function') Store.syncSettingsFromSupabase();
