@@ -2140,6 +2140,7 @@ test('Persona Preference, Masculine/Feminine Feed Curation, Gifting Sort & Produ
 });
 
 test('Mobile Screen Single-Line Order ID & Hamburger Drawer Architecture (Hick\'s Law & Zero Duplicates)', () => {
+  const indexHtml = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8');
   // 1. Verify index.html contains distinct Account section and distinct Orders & Live Tracking section
   assert.ok(indexHtml.includes('id="bar-drawer-account-slot"'), 'Drawer must include dedicated account slot');
   assert.ok(indexHtml.includes('Orders &amp; Live Tracking'), 'Drawer must include distinct Orders & Live Tracking card');
@@ -2173,9 +2174,10 @@ test('Mobile Screen Single-Line Order ID & Hamburger Drawer Architecture (Hick\'
     trackingNumber: '7810283941',
     mockupApproved: true
   };
-  Store.receiveStudioPush({
-    action: 'STUDIO_RECORD_ORDER',
-    payload: sampleOrder
+  mockLocalStorage.setItem('ram_vk_orders_v2', JSON.stringify([sampleOrder]));
+  Store.receiveAdminPush({
+    type: 'ADMIN_UPDATE_ORDER_STATUS',
+    order: sampleOrder
   });
 
   sandbox.window.openAccountBarModal();

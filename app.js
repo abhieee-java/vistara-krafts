@@ -623,6 +623,7 @@
       }
     }
   }
+  window.updateGlobalBadges = updateGlobalBadges;
 
   let lastRenderedRouteKey = '';
 
