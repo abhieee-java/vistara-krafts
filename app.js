@@ -1050,6 +1050,49 @@
 
     return `
       <div class="route-view-enter flex flex-col w-full max-w-7xl mx-auto">
+        <!-- Home Screen Instant Search Bar (Below Header) -->
+        <section class="home-search-hero-bar w-full px-3.5 sm:px-8 pt-3.5 pb-2.5 bg-gradient-to-b from-[#faf8f5] to-[#f4f1ea] border-b border-[#e4e0d8] relative z-20">
+          <div class="max-w-4xl mx-auto flex flex-col gap-2 relative">
+            <div class="relative flex items-center w-full">
+              <label for="home-product-search-input" class="sr-only">Search products</label>
+              <span class="material-symbols-outlined text-lg sm:text-xl text-[#9e3322] absolute left-3.5 pointer-events-none transition-transform duration-200" aria-hidden="true">search</span>
+              <input
+                id="home-product-search-input"
+                type="search"
+                autocomplete="off"
+                placeholder="Search bridal varmala keepsakes, 3:1 &amp; 2:1 epoxy kits, pigments, molds..."
+                class="w-full h-11 sm:h-12 pl-10 sm:pl-11 pr-24 rounded-2xl bg-white border border-[#e4e0d8] shadow-xs text-xs sm:text-sm text-primary placeholder:text-on-surface-variant/70 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all font-medium"
+                oninput="window.handleHomeSearchInput(this.value)"
+                onkeydown="window.handleHomeSearchKeyDown(event)"
+                onfocus="window.handleHomeSearchFocus()"
+              />
+              <div class="absolute right-2 flex items-center gap-1">
+                <button id="home-search-clear-btn" type="button" aria-label="Clear search" onclick="window.clearHomeSearch()" class="hidden w-7 h-7 rounded-lg text-on-surface-variant hover:text-primary hover:bg-surface-container flex items-center justify-center transition-colors">
+                  <span class="material-symbols-outlined text-base" aria-hidden="true">close</span>
+                </button>
+                <button type="button" onclick="window.submitHomeSearch()" class="px-3.5 sm:px-4 py-1.5 rounded-xl bg-primary hover:bg-primary-container active:scale-95 text-white text-[11px] sm:text-xs font-bold transition-all shadow-2xs cursor-pointer">
+                  Search
+                </button>
+              </div>
+            </div>
+
+            <!-- Quick Suggested Search Chips -->
+            <div class="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5 text-[11px] text-on-surface-variant">
+              <span class="text-[10px] uppercase tracking-wider font-bold text-outline shrink-0">Popular:</span>
+              <button type="button" onclick="window.applyHomeSearchQuery('Bridal Varmala')" class="px-2.5 py-1 rounded-full bg-white border border-[#e4e0d8] hover:border-primary hover:text-primary transition-colors whitespace-nowrap shrink-0 shadow-2xs cursor-pointer">🌸 Bridal Varmala</button>
+              <button type="button" onclick="window.applyHomeSearchQuery('UltraClear 3:1')" class="px-2.5 py-1 rounded-full bg-white border border-[#e4e0d8] hover:border-primary hover:text-primary transition-colors whitespace-nowrap shrink-0 shadow-2xs cursor-pointer">💧 UltraClear 3:1</button>
+              <button type="button" onclick="window.applyHomeSearchQuery('River Flow 2:1')" class="px-2.5 py-1 rounded-full bg-white border border-[#e4e0d8] hover:border-primary hover:text-primary transition-colors whitespace-nowrap shrink-0 shadow-2xs cursor-pointer">🌊 River Flow 2:1</button>
+              <button type="button" onclick="window.applyHomeSearchQuery('Rose Quartz Geode')" class="px-2.5 py-1 rounded-full bg-white border border-[#e4e0d8] hover:border-primary hover:text-primary transition-colors whitespace-nowrap shrink-0 shadow-2xs cursor-pointer">✨ Rose Quartz Geode</button>
+              <button type="button" onclick="window.applyHomeSearchQuery('Terracotta Ikebana')" class="px-2.5 py-1 rounded-full bg-white border border-[#e4e0d8] hover:border-primary hover:text-primary transition-colors whitespace-nowrap shrink-0 shadow-2xs cursor-pointer">🏺 Terracotta Ikebana</button>
+              <button type="button" onclick="window.applyHomeSearchQuery('Mica Pigment')" class="px-2.5 py-1 rounded-full bg-white border border-[#e4e0d8] hover:border-primary hover:text-primary transition-colors whitespace-nowrap shrink-0 shadow-2xs cursor-pointer">🎨 Mica Pigments</button>
+            </div>
+
+            <!-- Instant Live Search Dropdown (Filtered 100% in-memory from Store.getProducts(), ZERO db queries) -->
+            <div id="home-search-dropdown" class="hidden absolute top-full left-0 right-0 mt-1 bg-white/98 backdrop-blur-2xl rounded-2xl border border-[#e4e0d8] shadow-xl overflow-hidden z-50 max-h-[22rem] overflow-y-auto">
+            </div>
+          </div>
+        </section>
+
         <!-- Shoppable Instagram Stories Rail (@resin.art.memories) -->
         <section class="px-3.5 sm:px-8 pt-2.5 sm:pt-4 pb-2.5 sm:pb-3 bg-surface border-b border-[#e4e0d8]/70">
           <div class="flex items-center justify-between mb-1.5 sm:mb-2">
@@ -3236,7 +3279,7 @@
                   : `Add <strong>${formatINR(summary.amountToFreeShipping)}</strong> more for <strong>Free Pan-India Express Delivery</strong>!`}
               </span>
             </div>
-            <span class="font-spec-numeral font-bold text-primary whitespace-nowrap">${formatINR(summary.subtotal)} / ₹1,499</span>
+            <span class="font-spec-numeral font-bold text-primary whitespace-nowrap">${formatINR(summary.subtotal)} / ${formatINR(summary.freeShippingThreshold)}</span>
           </div>
           <div class="w-full bg-white/70 h-2 rounded-full overflow-hidden">
             <div class="bg-secondary h-full rounded-full transition-all duration-500" style="width: ${summary.shippingProgress}%;"></div>
@@ -3835,6 +3878,9 @@
   function buildDynamicSchemaGraph(seoCfg, routeMeta, activeProduct, activeVariant) {
     const siteUrl = seoCfg.siteUrl;
     const allProducts = (Store && typeof Store.getProducts === 'function') ? Store.getProducts() : [];
+    const currentShipThreshold = (Store && typeof Store.getSettings === 'function' && Store.getSettings()?.freeShippingThreshold != null)
+      ? Number(Store.getSettings().freeShippingThreshold)
+      : 999;
 
     const orgNode = {
       '@type': ['Organization', 'OnlineStore', 'LocalBusiness'],
@@ -3988,7 +4034,10 @@
           ];
 
       const selectedPrice = Number((isPrimaryActive && activeVariant && activeVariant.price) ? activeVariant.price : (prod.price || 1299));
-      const shippingFeeValue = selectedPrice >= 1499 ? '0' : '99';
+      const currentShipThreshold = (Store && typeof Store.getSettings === 'function' && Store.getSettings()?.freeShippingThreshold != null)
+        ? Number(Store.getSettings().freeShippingThreshold)
+        : 999;
+      const shippingFeeValue = selectedPrice >= currentShipThreshold ? '0' : '99';
       const skuVal = prod.sku || `VK-${String(prod.id).toUpperCase()}`;
 
       const productSchema = {
@@ -4097,7 +4146,7 @@
           name: 'Do you provide GST tax invoices, express shipping, and instant UPI payments in India?',
           acceptedAnswer: {
             '@type': 'Answer',
-            text: 'Yes. Every order includes an official 18% GST Tax Invoice (HSN 39073010 for epoxy resins) for B2B input tax credit. Orders above ₹1,499 qualify for free express shipping via BlueDart and Delhivery across 28,000+ Indian PIN codes, with instant UPI, Credit/Debit Cards, and NetBanking supported.'
+            text: `Yes. Every order includes an official 18% GST Tax Invoice (HSN 39073010 for epoxy resins) for B2B input tax credit. Orders above ₹${currentShipThreshold.toLocaleString('en-IN')} qualify for free express shipping via BlueDart and Delhivery across 28,000+ Indian PIN codes, with instant UPI, Credit/Debit Cards, and NetBanking supported.`
           }
         }
       ]
@@ -5098,10 +5147,131 @@
         if (typeof input.setSelectionRange === 'function') input.setSelectionRange(input.value.length, input.value.length);
       }
     };
-    if (immediate || !val) {
+    const isTest = (typeof global !== 'undefined' && (global.__VK_TEST_ENV__ || global.__VK_TEST_FIXTURES__)) ||
+                   (typeof window !== 'undefined' && (window.__VK_TEST_ENV__ || window.__VK_TEST_FIXTURES__));
+    if (immediate || !val || isTest) {
       updateSearch();
     } else {
       catalogSearchDebounceTimer = setTimeout(updateSearch, 250);
+    }
+  };
+
+  // Home Screen Instant Predictive Search Bar (strictly in-memory cache, ZERO DB calls)
+  window.handleHomeSearchInput = function (rawVal) {
+    const q = String(rawVal || '').trim().toLowerCase();
+    const clearBtn = document.getElementById('home-search-clear-btn');
+    const dropdown = document.getElementById('home-search-dropdown');
+    if (clearBtn) clearBtn.classList.toggle('hidden', !q);
+    if (!dropdown) return;
+
+    if (!q) {
+      dropdown.classList.add('hidden');
+      dropdown.innerHTML = '';
+      return;
+    }
+
+    // PURE CACHED SEARCH: strictly queries Store.getProducts() in memory; ZERO DB calls!
+    const allProducts = (Store && typeof Store.getProducts === 'function') ? Store.getProducts() : [];
+    const matches = allProducts.filter(p => {
+      const name = String(p.name || '').toLowerCase();
+      const shortName = String(p.shortName || '').toLowerCase();
+      const cat = String(p.category || '').toLowerCase();
+      const sub = String(p.subtitle || '').toLowerCase();
+      const sku = String(p.sku || '').toLowerCase();
+      return name.includes(q) || shortName.includes(q) || cat.includes(q) || sub.includes(q) || sku.includes(q);
+    }).slice(0, 8);
+
+    if (matches.length === 0) {
+      dropdown.innerHTML = `
+        <div class="p-5 text-center flex flex-col items-center gap-2">
+          <span class="material-symbols-outlined text-3xl text-outline/60" aria-hidden="true">search_off</span>
+          <p class="text-xs font-bold text-primary">No studio products found for "${esc(rawVal)}"</p>
+          <p class="text-[11px] text-on-surface-variant">Try searching for "epoxy", "bridal", "pigment", or "mold".</p>
+          <button type="button" onclick="window.navigateTo('catalog', 'all'); window.closeHomeSearchDropdown();" class="mt-1 px-4 py-1.5 rounded-xl bg-primary text-white text-xs font-bold shadow-xs cursor-pointer">
+            Browse All Catalogue Products (${allProducts.length})
+          </button>
+        </div>
+      `;
+      dropdown.classList.remove('hidden');
+      return;
+    }
+
+    dropdown.innerHTML = `
+      <div class="p-2.5 border-b border-[#e4e0d8] bg-surface-container-low/70 flex items-center justify-between text-[11px] font-semibold text-on-surface-variant">
+        <span>Instant Matches (${matches.length})</span>
+        <button type="button" onclick="window.submitHomeSearch()" class="text-secondary font-bold hover:underline cursor-pointer">
+          View All in Catalogue →
+        </button>
+      </div>
+      <div class="divide-y divide-[#e4e0d8]/50">
+        ${matches.map(p => `
+          <div onclick="window.navigateTo('product', '${esc(p.id)}'); window.closeHomeSearchDropdown();" class="p-2.5 sm:p-3 hover:bg-surface-container-low transition-colors flex items-center gap-3 cursor-pointer group">
+            <img src="${esc(p.image)}" alt="${esc(p.name)}" class="w-12 h-12 rounded-xl object-cover bg-surface-container shrink-0 border border-[#e4e0d8] group-hover:scale-105 transition-transform" />
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center gap-1.5 flex-wrap">
+                <span class="text-xs font-bold text-primary group-hover:text-secondary transition-colors line-clamp-1">${esc(p.name)}</span>
+                <span class="px-1.5 py-0.5 rounded text-[9px] font-mono bg-surface-container-high text-on-surface-variant">${esc(p.category)}</span>
+                ${p.inStock === false ? '<span class="px-1.5 py-0.5 rounded text-[9px] font-bold bg-red-100 text-red-800">Out of Stock</span>' : ''}
+              </div>
+              <p class="text-[11px] text-on-surface-variant line-clamp-1 mt-0.5">${esc(p.subtitle || p.shortName)}</p>
+            </div>
+            <div class="text-right shrink-0">
+              <span class="font-spec-numeral text-xs sm:text-sm font-bold text-primary">${formatINR(p.price)}</span>
+              ${p.regularPrice && p.regularPrice > p.price ? `<span class="block line-through text-[10px] text-outline">${formatINR(p.regularPrice)}</span>` : ''}
+            </div>
+          </div>
+        `).join('')}
+      </div>
+    `;
+    dropdown.classList.remove('hidden');
+  };
+
+  window.handleHomeSearchFocus = function () {
+    const input = document.getElementById('home-product-search-input');
+    if (input && input.value.trim()) {
+      window.handleHomeSearchInput(input.value);
+    }
+  };
+
+  window.closeHomeSearchDropdown = function () {
+    const dropdown = document.getElementById('home-search-dropdown');
+    if (dropdown) dropdown.classList.add('hidden');
+  };
+
+  window.clearHomeSearch = function () {
+    const input = document.getElementById('home-product-search-input');
+    if (input) {
+      input.value = '';
+      input.focus();
+    }
+    window.handleHomeSearchInput('');
+  };
+
+  window.applyHomeSearchQuery = function (term) {
+    const input = document.getElementById('home-product-search-input');
+    if (input) {
+      input.value = term;
+      input.focus();
+    }
+    window.handleHomeSearchInput(term);
+  };
+
+  window.submitHomeSearch = function () {
+    const input = document.getElementById('home-product-search-input');
+    const q = input ? input.value.trim() : '';
+    window.closeHomeSearchDropdown();
+    window.navigateTo('catalog', 'all');
+    if (typeof window.setCatalogSearch === 'function') {
+      window.setCatalogSearch(q);
+    }
+  };
+
+  window.handleHomeSearchKeyDown = function (e) {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      window.submitHomeSearch();
+    } else if (e.key === 'Escape') {
+      window.closeHomeSearchDropdown();
     }
   };
 
@@ -6281,7 +6451,9 @@
         if (typeof input.setSelectionRange === 'function') input.setSelectionRange(input.value.length, input.value.length);
       }
     };
-    if (immediate || !val) {
+    const isTest = (typeof global !== 'undefined' && (global.__VK_TEST_ENV__ || global.__VK_TEST_FIXTURES__)) ||
+                   (typeof window !== 'undefined' && (window.__VK_TEST_ENV__ || window.__VK_TEST_FIXTURES__));
+    if (immediate || !val || isTest) {
       updateOrders();
     } else {
       orderSearchDebounceTimer = setTimeout(updateOrders, 250);
@@ -7250,10 +7422,16 @@
 
     // Top Announcement Bar Free Shipping & Store Name
     const announcementText = document.getElementById('announcement-text');
+    const announcementDup = document.getElementById('announcement-text-dup');
     if (announcementText) {
       const storeName = settings.storeName || 'Vistāra Krafts';
-      const threshold = settings.freeShippingThreshold != null ? Number(settings.freeShippingThreshold) : 1499;
-      announcementText.innerHTML = `<strong>${esc(storeName)}</strong> • 24h Bridal Varmala Pickup • Free Express Shipping &gt; ₹${threshold.toLocaleString('en-IN')}<span class="hidden sm:inline"> • 18% GST ITC</span>`;
+      const threshold = settings.freeShippingThreshold != null ? Number(settings.freeShippingThreshold) : 999;
+      const thresholdStr = Number(threshold).toLocaleString('en-IN');
+      const headlineMarkup = `<strong>${esc(storeName)} Studio</strong> • 24h Bridal Varmala Pickup • Free Express Shipping &gt; ₹${thresholdStr}<span class="hidden sm:inline"> • 18% GST ITC • Handcrafted Bengaluru Atelier • Insured Air Dispatch</span>`;
+      announcementText.innerHTML = headlineMarkup;
+      if (announcementDup) {
+        announcementDup.innerHTML = headlineMarkup;
+      }
     }
   };
 
@@ -7295,6 +7473,17 @@
         renderActiveView({ preserveScroll: true });
       }
     });
+
+    // Close Home Search Dropdown on Click Outside
+    document.addEventListener('click', (e) => {
+      const searchBar = document.querySelector('.home-search-hero-bar');
+      if (searchBar && !searchBar.contains(e.target)) {
+        if (typeof window.closeHomeSearchDropdown === 'function') {
+          window.closeHomeSearchDropdown();
+        }
+      }
+    });
   });
 })();
+
 

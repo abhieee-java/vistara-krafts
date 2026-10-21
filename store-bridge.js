@@ -806,8 +806,10 @@
         }
       }
 
-      const storeSettings = safeRead(STORAGE_KEYS.SETTINGS, { freeShippingThreshold: 1499 });
-      const freeShippingThreshold = Number(storeSettings.freeShippingThreshold) || 1499;
+      const storeSettings = (this.getSettings && this.getSettings()) || safeRead(STORAGE_KEYS.SETTINGS, { freeShippingThreshold: 999 });
+      const freeShippingThreshold = (storeSettings && storeSettings.freeShippingThreshold != null && !isNaN(Number(storeSettings.freeShippingThreshold)))
+        ? Number(storeSettings.freeShippingThreshold)
+        : 999;
       const isFreeShipping = subtotal >= freeShippingThreshold || subtotal === 0;
       const shippingFee = isFreeShipping ? 0 : 99;
       const payable = Math.max(0, subtotal - couponDiscount + shippingFee);
@@ -2022,10 +2024,10 @@
         supportEmail: 'support@vistarakrafts.com',
         contactPhone: '+91 70022 70886',
         supportPhone: '+91 70022 70886',
-        freeShippingThreshold: 1499,
+        freeShippingThreshold: 999,
         defaultCourier: 'Delhivery Express',
         announcementBarActive: true,
-        announcementBarText: 'Complimentary Pan-India Express Air Shipping on orders over ₹1,499 • 100% Optical Glass Purity Guarantee',
+        announcementBarText: 'Vistāra Krafts Studio • 24h Bridal Varmala Pickup • Free Express Shipping > ₹999 • 18% GST ITC • Handcrafted Bengaluru Atelier • Insured Air Dispatch',
         enableFloralTransformationSection: false
       };
     },
@@ -2057,6 +2059,12 @@
         const shipRow = settingsRows.find(r => r.key === 'shipping');
         const barRow = settingsRows.find(r => r.key === 'announcement_bar');
         const sectionsRow = settingsRows.find(r => r.key === 'storefront_sections');
+        const versionRow = settingsRows.find(r => r.key === 'store_published_version');
+
+        if (versionRow && versionRow.value) {
+          const dbVer = Number(versionRow.value.version || versionRow.value || 0);
+          if (dbVer > 0) safeWrite('vk_store_published_version', dbVer);
+        }
 
         const currentSettings = safeRead(STORAGE_KEYS.SETTINGS, {});
         const localUpdated = currentSettings.updated_at ? new Date(currentSettings.updated_at).getTime() : 0;
@@ -2108,7 +2116,7 @@
           ...(shipRow && shipRow.value && (shipDbUpdated >= localUpdated || !currentSettings.freeShippingThreshold) ? {
             freeShippingThreshold: (shipRow.value.free_shipping_threshold !== undefined && !isNaN(Number(shipRow.value.free_shipping_threshold)))
               ? Number(shipRow.value.free_shipping_threshold)
-              : (catPayload?.freeShippingThreshold || 1499),
+              : (catPayload?.freeShippingThreshold || 999),
             defaultCourier: shipRow.value.default_courier || catPayload?.defaultCourier || 'Delhivery Express'
           } : (catPayload?.freeShippingThreshold ? {
             freeShippingThreshold: Number(catPayload.freeShippingThreshold),
@@ -2153,6 +2161,7 @@
       if (typeof document === 'undefined') return;
       const barEl = document.getElementById('top-announcement-bar');
       const textEl = document.getElementById('announcement-text');
+      const dupEl = document.getElementById('announcement-text-dup');
       if (barEl) {
         if (enabled === false) {
           barEl.style.display = 'none';
@@ -2162,6 +2171,40 @@
       }
       if (textEl && text) {
         textEl.textContent = text;
+      }
+      if (dupEl && text) {
+        dupEl.textContent = text;
+      }
+    },
+
+    async refreshCatalog({ smooth = true, manual = false } = {}) {
+      try {
+        if (typeof syncFromSupabase === 'function') await syncFromSupabase();
+        if (typeof this.syncSettingsFromSupabase === 'function') await this.syncSettingsFromSupabase();
+        if (typeof this.syncCouponsFromSupabase === 'function') await this.syncCouponsFromSupabase();
+        const updatedSettings = this.getSettings();
+        if (typeof global.applyStorefrontSettings === 'function') {
+          global.applyStorefrontSettings(updatedSettings);
+        }
+        if (typeof global.renderActiveView === 'function') {
+          global.renderActiveView({ preserveScroll: true });
+        }
+        if (manual && typeof global.showToast === 'function') {
+          global.showToast('Catalogue Refreshed ✨', 'Latest studio pieces and pricing loaded in-place');
+        }
+        return { success: true };
+      } catch (err) {
+        return { success: false, error: err.message };
+      }
+    },
+
+    async verifyCheckoutProducts() {
+      // Authoritative database check: executed strictly ONCE when entering checkout / placing order
+      try {
+        if (typeof syncFromSupabase === 'function') await syncFromSupabase();
+        return { verified: true };
+      } catch (_) {
+        return { verified: false };
       }
     },
 
@@ -2182,6 +2225,18 @@
         type: payload.type || payload.action || 'CATALOG_AND_SOCIAL_SYNC',
         summary: payload.summary || 'Studio catalogue & order state updated'
       };
+
+      if (payload.type === 'STORE_PUBLISHED' || payload.action === 'STORE_PUBLISHED') {
+        const incomingVersion = Number(payload.version || 0);
+        const cachedVersion = Number(safeRead('vk_store_published_version', 0));
+        if (incomingVersion > cachedVersion) {
+          safeWrite('vk_store_published_version', incomingVersion);
+          this.refreshCatalog({ smooth: true });
+        }
+        log.unshift(entry);
+        safeWrite(STORAGE_KEYS.STUDIO_SYNC_LOG, log.slice(0, 20));
+        return { ok: true, version: incomingVersion };
+      }
 
       if ((payload.type === 'PRODUCTS_UPDATED' || payload.action === 'PRODUCTS_UPDATED') && Array.isArray(payload.products)) {
         safeWrite(STORAGE_KEYS.PRODUCTS, payload.products);
@@ -2684,6 +2739,7 @@
                         (typeof window !== 'undefined' && (window.__VK_TEST_ENV__ || window.__VK_TEST_FIXTURES__ || window.__VK_DISABLE_SUPABASE_AUTO_SYNC__));
 
   if (typeof window !== 'undefined' && typeof fetch === 'function' && !isTestContext) {
+    // 1. Initial Load at Start of Web: Single Initial Catalog & Settings Ingestion
     if (typeof setTimeout === 'function') {
       setTimeout(() => {
         syncFromSupabase();
@@ -2692,44 +2748,31 @@
         if (typeof Store.syncOrdersFromSupabase === 'function') Store.syncOrdersFromSupabase();
       }, 300);
     }
-    if (typeof setInterval === 'function') {
-      setInterval(() => {
-        syncFromSupabase();
-        if (typeof Store.syncSettingsFromSupabase === 'function') Store.syncSettingsFromSupabase();
-        if (typeof Store.syncOrdersFromSupabase === 'function') Store.syncOrdersFromSupabase();
-      }, 25000);
-    }
-    if (typeof window.addEventListener === 'function') {
-      window.addEventListener('focus', () => {
-        syncFromSupabase();
-        if (typeof Store.syncSettingsFromSupabase === 'function') Store.syncSettingsFromSupabase();
-        if (typeof Store.syncOrdersFromSupabase === 'function') Store.syncOrdersFromSupabase();
-      });
-      window.addEventListener('online', () => {
-        syncFromSupabase();
-        if (typeof Store.syncSettingsFromSupabase === 'function') Store.syncSettingsFromSupabase();
-        if (typeof Store.syncOrdersFromSupabase === 'function') Store.syncOrdersFromSupabase();
-      });
-    }
 
-    // Supabase Realtime Channel for orders, products, categories & settings
+    // 2. ZERO PERIODIC POLLING / ZERO TIMERS:
+    // Completely stripped setInterval background polling loops and focus/online re-evaluations.
+    // The customer's browser loads the catalog once, caches it in memory/localStorage, and
+    // only updates in-place when store_published_version changes or at checkout.
+
+    // 3. Supabase Realtime Channel: Listen strictly for store_published_version updates
     try {
       if (global.VistaraSupabase && typeof global.VistaraSupabase.getClient === 'function') {
         const sbClient = global.VistaraSupabase.getClient();
         if (sbClient && typeof sbClient.channel === 'function') {
           sbClient
-            .channel('public:orders:realtime')
-            .on('postgres_changes', { event: '*', schema: 'public', table: 'orders' }, () => {
-              if (typeof Store.syncOrdersFromSupabase === 'function') Store.syncOrdersFromSupabase();
-            })
-            .on('postgres_changes', { event: '*', schema: 'public', table: 'products' }, () => {
-              syncFromSupabase();
-            })
-            .on('postgres_changes', { event: '*', schema: 'public', table: 'categories' }, () => {
-              if (typeof Store.syncSettingsFromSupabase === 'function') Store.syncSettingsFromSupabase();
-            })
-            .on('postgres_changes', { event: '*', schema: 'public', table: 'settings' }, () => {
-              if (typeof Store.syncSettingsFromSupabase === 'function') Store.syncSettingsFromSupabase();
+            .channel('public:store_published_version:realtime')
+            .on('postgres_changes', { event: '*', schema: 'public', table: 'settings' }, (payload) => {
+              const record = payload.new || {};
+              if (record.key === 'store_published_version') {
+                const incomingVersion = Number(record.value?.version || record.value || 0);
+                const cachedVersion = Number(safeRead('vk_store_published_version', 0));
+                if (incomingVersion > cachedVersion) {
+                  safeWrite('vk_store_published_version', incomingVersion);
+                  if (typeof Store.refreshCatalog === 'function') {
+                    Store.refreshCatalog({ smooth: true });
+                  }
+                }
+              }
             })
             .subscribe();
         }
@@ -2737,12 +2780,24 @@
     } catch (_) {}
   }
 
-  // Setup Cross-Window / BroadcastChannel Listener for Live Studio Drops
+  // Setup Cross-Window / BroadcastChannel Listener for Live Studio Drops & Version Publishing
   try {
     if (typeof BroadcastChannel !== 'undefined') {
       const channel = new BroadcastChannel('RAM_STUDIO_LIVE_DROP_CHANNEL');
       channel.onmessage = (ev) => {
-        if (ev && ev.data) Store.receiveStudioPush(ev.data);
+        if (!ev || !ev.data) return;
+        if (ev.data.type === 'STORE_PUBLISHED') {
+          const incomingVersion = Number(ev.data.version || 0);
+          const cachedVersion = Number(safeRead('vk_store_published_version', 0));
+          if (incomingVersion > cachedVersion) {
+            safeWrite('vk_store_published_version', incomingVersion);
+            if (typeof Store.refreshCatalog === 'function') {
+              Store.refreshCatalog({ smooth: true });
+            }
+          }
+        } else {
+          Store.receiveStudioPush(ev.data);
+        }
       };
     }
     global.addEventListener('message', (ev) => {
@@ -2754,7 +2809,16 @@
     if (typeof window !== 'undefined' && typeof window.addEventListener === 'function') {
       window.addEventListener('storage', (ev) => {
         if (!ev || !ev.key) return;
-        if (ev.key === 'ram_vk_settings_v2' || ev.key === 'vk_settings_v1' || ev.key === 'vk_admin_settings_v1') {
+        if (ev.key === 'vk_store_published_version' || ev.key === 'vk_admin_published_version') {
+          const incomingVersion = Number(ev.newValue || 0);
+          const cachedVersion = Number(safeRead('vk_store_published_version', 0));
+          if (incomingVersion > cachedVersion) {
+            safeWrite('vk_store_published_version', incomingVersion);
+            if (typeof Store.refreshCatalog === 'function') {
+              Store.refreshCatalog({ smooth: true });
+            }
+          }
+        } else if (ev.key === 'ram_vk_settings_v2' || ev.key === 'vk_settings_v1' || ev.key === 'vk_admin_settings_v1') {
           const fresh = Store.getSettings();
           if (typeof global.applyStorefrontSettings === 'function') {
             global.applyStorefrontSettings(fresh);

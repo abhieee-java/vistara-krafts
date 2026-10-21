@@ -1084,6 +1084,73 @@ textarea:disabled {
   display: inline !important;
 }
 
+/* =========================================================================
+   NEWS HEADLINE MARQUEE TICKER (Left to Right) & ZERO-JANK GPU MOTION
+   ========================================================================= */
+@keyframes newsTickerLeftToRight {
+  0% {
+    transform: translate3d(-50%, 0, 0);
+  }
+  100% {
+    transform: translate3d(0%, 0, 0);
+  }
+}
+
+.news-ticker-container {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  mask-image: linear-gradient(to right, transparent, black 16px, black calc(100% - 16px), transparent);
+  -webkit-mask-image: linear-gradient(to right, transparent, black 16px, black calc(100% - 16px), transparent);
+}
+
+.news-ticker-track {
+  display: inline-flex;
+  align-items: center;
+  width: max-content;
+  white-space: nowrap;
+  animation: newsTickerLeftToRight 32s linear infinite;
+  will-change: transform;
+}
+
+.news-ticker-track:hover {
+  animation-play-state: paused;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .news-ticker-track {
+    animation: none;
+    transform: none;
+    justify-content: center;
+    width: 100%;
+  }
+}
+
+.news-ticker-item {
+  display: inline-flex;
+  align-items: center;
+  padding: 0 1.5rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+}
+
+/* Home Screen Search Hero Bar */
+.home-search-hero-bar {
+  position: relative;
+  transition: all 0.2s ease-in-out;
+}
+
+#home-search-dropdown::-webkit-scrollbar {
+  width: 6px;
+}
+#home-search-dropdown::-webkit-scrollbar-thumb {
+  background: #d4cebe;
+  border-radius: 9999px;
+}
+
+
 
 
 
