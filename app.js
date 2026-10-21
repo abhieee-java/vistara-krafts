@@ -1088,32 +1088,6 @@
           </div>
         </section>
 
-        <!-- Shoppable Instagram Stories Rail (@resin.art.memories) -->
-        <section class="px-3.5 sm:px-8 pt-2.5 sm:pt-4 pb-2.5 sm:pb-3 bg-surface border-b border-[#e4e0d8]/70">
-          <div class="flex items-center justify-between mb-1.5 sm:mb-2">
-            <div class="flex items-center gap-2">
-              <span class="w-2 h-2 rounded-full bg-[#9e3322] animate-pulse"></span>
-              <span class="font-label-sm text-xs uppercase tracking-wider text-primary font-bold">Live from @resin.art.memories</span>
-            </div>
-            <a href="https://www.instagram.com/resin.art.memories?utm_source=qr" target="_blank" rel="noopener noreferrer" class="min-h-[44px] text-xs font-semibold text-[#9e3322] hover:underline inline-flex items-center gap-1">
-              <span>Open Instagram</span>
-              <span class="material-symbols-outlined text-sm" aria-hidden="true">open_in_new</span>
-            </a>
-          </div>
-          <div class="flex items-center gap-4 overflow-x-auto no-scrollbar pb-1">
-            ${Store.DEFAULT_STORIES.map((st, idx) => `
-              <button type="button" onclick="window.openStoryModal(${idx})" class="flex flex-col items-center gap-1.5 shrink-0 group cursor-pointer">
-                <div class="story-ring w-16 h-16 sm:w-20 sm:h-20">
-                  <div class="w-full h-full rounded-full overflow-hidden border-2 border-surface bg-surface-container">
-                    <img src="${esc(st.image)}" alt="${esc(st.title)}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300">
-                  </div>
-                </div>
-                <span class="font-label-sm text-[11px] text-primary font-semibold tracking-tight">${esc(st.title)}</span>
-              </button>
-            `).join('')}
-          </div>
-        </section>
-
         <!-- Editorial Hero Section (60/30/10 High-RT Architecture) -->
         <section class="relative px-3.5 sm:px-8 py-4 sm:py-10 bg-gradient-to-br from-[#faf8f5] via-[#fdf6f3] to-[#f3f1ec] overflow-hidden border-b border-[#e4e0d8]">
           <div aria-hidden="true" class="absolute inset-0 pointer-events-none opacity-[0.04]">

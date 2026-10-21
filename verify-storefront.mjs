@@ -368,7 +368,7 @@ test('SPA Router in app.js renders all 7 customer routes, enforces zero owner/ad
   Store.addToCart('vk-cat-res-301', 'var-301-300g', 2);
 
   const routes = [
-    ['home', null, 'Live from @resin.art.memories'],
+    ['home', null, 'Hold Your Most Intimate Memories'],
     ['catalog', null, 'Keepsake Art'],
     ['product', 'vk-cat-res-201', '2:1 High-Gloss'],
     ['product', 'vk-cat-res-301', '3:1 Deep Pour'],
