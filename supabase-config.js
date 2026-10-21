@@ -95,12 +95,39 @@
         return { data: { provider, url: null }, error: null };
       }
 
+      const redirectUri = typeof window !== 'undefined'
+        ? (window.location.origin + window.location.pathname)
+        : 'https://www.vistarakrafts.com/';
+
       return await sb.auth.signInWithOAuth({
         provider,
         options: {
-          redirectTo: window.location.origin
+          redirectTo: redirectUri
         }
       });
+    },
+
+    async verifyOtp(email, token, type = 'signup') {
+      const sb = this.getClient();
+      if (!this.isConfigured() || !sb) {
+        console.warn('[Vistāra Supabase] Staged mode: Simulating OTP verification for', email);
+        return {
+          data: {
+            user: { id: 'usr_patron_01', email, user_metadata: { full_name: 'Vistāra Patron' } },
+            session: { access_token: 'mock_token_' + Date.now() }
+          },
+          error: null
+        };
+      }
+      return await sb.auth.verifyOtp({ email, token, type });
+    },
+
+    async resendOtp(email, type = 'signup') {
+      const sb = this.getClient();
+      if (!this.isConfigured() || !sb) {
+        return { data: {}, error: null };
+      }
+      return await sb.auth.resend({ type, email });
     },
 
     async signOut() {

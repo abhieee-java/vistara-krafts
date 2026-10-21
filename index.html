@@ -3707,6 +3707,56 @@
           </div>
         </div>
 
+        <!-- PART 1.5: 6-Digit Email Verification OTP Step -->
+        <div id="cf-auth-step-otp" class="hidden flex-col justify-between gap-3 flex-1 py-1">
+          <!-- Top Action Bar -->
+          <div class="flex items-center justify-between gap-2 shrink-0">
+            <button type="button" aria-label="Go Back" onclick="window.showAuthStep('credentials')" style="height: 44px; min-height: 44px; width: 44px; min-width: 44px;" class="w-11 h-11 min-w-[44px] min-h-[44px] rounded-full bg-surface-container-low hover:bg-surface-container text-on-surface-variant hover:text-primary flex items-center justify-center shrink-0 transition cursor-pointer">
+              <span class="material-symbols-outlined text-lg" aria-hidden="true">arrow_back</span>
+            </button>
+            <div class="flex items-center gap-2 min-w-0">
+              <img src="./vistara-krafts-logo.jpg" alt="Vistāra Krafts Logo" class="w-7 h-7 rounded-lg object-cover border border-[#725a19]/25 shrink-0">
+              <span class="text-xs uppercase tracking-wider text-secondary font-bold truncate">Vistāra Krafts</span>
+            </div>
+            <button type="button" aria-label="Close" onclick="window.closeModalById('cloudflare-auth-modal')" style="height: 44px; min-height: 44px; width: 44px; min-width: 44px;" class="w-11 h-11 min-w-[44px] min-h-[44px] rounded-full bg-surface-container-low hover:bg-surface-container text-on-surface-variant hover:text-primary flex items-center justify-center shrink-0 transition cursor-pointer">
+              <span class="material-symbols-outlined text-lg" aria-hidden="true">close</span>
+            </button>
+          </div>
+
+          <div class="text-center shrink-0 py-2">
+            <div class="w-12 h-12 rounded-full bg-secondary/10 text-secondary mx-auto flex items-center justify-center mb-2">
+              <span class="material-symbols-outlined text-2xl" aria-hidden="true">mark_email_read</span>
+            </div>
+            <h3 class="font-headline-sm text-xl sm:text-2xl font-bold text-primary tracking-tight">Verify Your Email</h3>
+            <p class="text-xs text-on-surface-variant mt-1 leading-relaxed">
+              We sent a 6-digit verification code to <strong id="cf-auth-otp-email-label" class="text-primary font-bold">your email</strong>.
+            </p>
+          </div>
+
+          <!-- 6-Digit OTP Form -->
+          <form id="cf-auth-otp-form" onsubmit="window.submitEmailOtp(event)" class="flex flex-col gap-3 shrink-0">
+            <div>
+              <label for="cf-auth-otp-input" class="text-[11px] font-bold text-primary block mb-1.5 text-center">Enter 6-Digit Code</label>
+              <input id="cf-auth-otp-input" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="6" required autocomplete="one-time-code" placeholder="123456" style="min-height: 48px; height: 48px;" class="w-full h-12 min-h-[48px] px-4 rounded-xl bg-surface-container-low border border-[#e4e0d8] text-primary text-center font-mono text-xl tracking-[0.5em] font-bold focus:border-primary focus:ring-1 focus:ring-primary/20 outline-none transition box-border">
+            </div>
+
+            <p id="cf-auth-otp-error" role="alert" class="hidden text-xs text-error font-semibold text-center"></p>
+
+            <button type="submit" id="cf-auth-otp-submit-btn" style="min-height: 48px; height: 48px;" class="btn-shimmer w-full min-h-[48px] h-12 rounded-xl bg-primary text-white text-xs font-bold tracking-wide shadow-md hover:bg-primary/95 active:scale-[0.99] transition cursor-pointer">
+              Verify &amp; Continue
+            </button>
+
+            <div class="flex items-center justify-between text-xs pt-1 px-1">
+              <button type="button" onclick="window.resendEmailOtp()" class="text-secondary font-bold hover:text-primary hover:underline cursor-pointer">
+                Resend Code
+              </button>
+              <button type="button" onclick="window.showAuthStep('credentials')" class="text-on-surface-variant hover:text-primary hover:underline cursor-pointer">
+                Change Email
+              </button>
+            </div>
+          </form>
+        </div>
+
         <!-- PART 2: Curation Selection (Male or Female only, shown after account is done) -->
         <div id="cf-auth-step-curation" class="hidden flex-col justify-between gap-4 flex-1 py-1">
           <!-- Top Action Bar -->
