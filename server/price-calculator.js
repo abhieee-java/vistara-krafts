@@ -185,8 +185,8 @@ export class PriceCalculator {
         }
       }
 
-      // 2. Fallback to settings table
-      const url = `${CONFIG.SUPABASE_URL}/rest/v1/settings?key=eq.shipping&select=value`;
+      // 2. Fallback to settings table: shipping or store_published_version
+      const url = `${CONFIG.SUPABASE_URL}/rest/v1/settings?key=in.(shipping,store_published_version)&select=key,value`;
       const res = await fetch(url, {
         headers: {
           'apikey': CONFIG.SUPABASE_ANON_KEY,
@@ -195,12 +195,28 @@ export class PriceCalculator {
       });
       if (res.ok) {
         const rows = await res.json();
-        if (Array.isArray(rows) && rows.length > 0 && rows[0].value) {
-          const val = rows[0].value;
-          return {
-            freeShippingThreshold: Number(val.free_shipping_threshold) || CONFIG.FREE_SHIPPING_THRESHOLD,
-            standardShippingFee: Number(val.standard_shipping_fee) || CONFIG.STANDARD_SHIPPING_FEE
-          };
+        if (Array.isArray(rows) && rows.length > 0) {
+          const shipRow = rows.find(r => r.key === 'shipping');
+          if (shipRow && shipRow.value) {
+            const val = shipRow.value;
+            return {
+              freeShippingThreshold: Number(val.free_shipping_threshold) || CONFIG.FREE_SHIPPING_THRESHOLD,
+              standardShippingFee: Number(val.standard_shipping_fee) || CONFIG.STANDARD_SHIPPING_FEE
+            };
+          }
+          const verRow = rows.find(r => r.key === 'store_published_version');
+          if (verRow && verRow.value) {
+            let val = verRow.value;
+            if (typeof val === 'string') {
+              try { val = JSON.parse(val); } catch (_) {}
+            }
+            if (val && val.freeShippingThreshold !== undefined && !isNaN(Number(val.freeShippingThreshold))) {
+              return {
+                freeShippingThreshold: Number(val.freeShippingThreshold),
+                standardShippingFee: CONFIG.STANDARD_SHIPPING_FEE
+              };
+            }
+          }
         }
       }
     } catch (_err) {}

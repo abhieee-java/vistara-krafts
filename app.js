@@ -4600,6 +4600,11 @@
     const preserveScroll = !options || !options.resetScroll;
     const prevScrollY = preserveScroll ? window.scrollY : 0;
 
+    const activeEl = typeof document !== 'undefined' ? document.activeElement : null;
+    const activeId = (activeEl && activeEl.id) ? activeEl.id : null;
+    const selStart = (activeEl && typeof activeEl.selectionStart === 'number') ? activeEl.selectionStart : null;
+    const selEnd = (activeEl && typeof activeEl.selectionEnd === 'number') ? activeEl.selectionEnd : null;
+
     try {
       switch (AppState.currentRoute) {
         case 'catalog':
@@ -4664,7 +4669,20 @@
         window.scrollTo(0, 0);
       }
     }
+
+    if (activeId) {
+      try {
+        const restored = document.getElementById(activeId);
+        if (restored && typeof restored.focus === 'function') {
+          restored.focus();
+          if (selStart !== null && typeof restored.setSelectionRange === 'function') {
+            restored.setSelectionRange(selStart, selEnd);
+          }
+        }
+      } catch (_) {}
+    }
   }
+  window.renderActiveView = renderActiveView;
 
   // Interactive Controllers Exposed to Window
   window.handleQuickAdd = function (btnEl, productId) {
@@ -5260,10 +5278,24 @@
     const input = document.getElementById('home-product-search-input');
     const q = input ? input.value.trim() : '';
     window.closeHomeSearchDropdown();
-    window.navigateTo('catalog', 'all');
-    if (typeof window.setCatalogSearch === 'function') {
-      window.setCatalogSearch(q);
+    AppState.catalogCategory = 'all';
+    AppState.catalogSearch = q;
+    const targetHash = q ? `#/catalog?q=${encodeURIComponent(q)}` : '#/catalog';
+    if (window.location.hash !== targetHash) {
+      window.location.hash = targetHash;
     }
+    handleRouteChange(true);
+    if (typeof window.setCatalogSearch === 'function') {
+      window.setCatalogSearch(q, true);
+    }
+  };
+
+  window.manualRefreshCatalog = async function () {
+    if (Store && typeof Store.refreshCatalog === 'function') {
+      const res = await Store.refreshCatalog({ smooth: true, manual: true });
+      return res;
+    }
+    return { success: false };
   };
 
   window.handleHomeSearchKeyDown = function (e) {
@@ -6608,6 +6640,12 @@
 
   // Checkout Modal (Step 2: Collect Delivery Address & Confirm Payment after Sign-In)
   window.openCheckoutModal = function () {
+    const isTest = (typeof global !== 'undefined' && (global.__VK_TEST_ENV__ || global.__VK_TEST_FIXTURES__)) ||
+                   (typeof window !== 'undefined' && (window.__VK_TEST_ENV__ || window.__VK_TEST_FIXTURES__));
+    if (!isTest && Store && typeof Store.verifyCheckoutProducts === 'function') {
+      Store.verifyCheckoutProducts().catch(() => {});
+    }
+
     const summary = Store.getCartSummary();
     if (summary.itemsCount === 0) {
       window.showToast('Your Studio Bag is Empty');
@@ -7421,18 +7459,14 @@
     }
 
     // Top Announcement Bar Free Shipping & Store Name
-    const announcementText = document.getElementById('announcement-text');
-    const announcementDup = document.getElementById('announcement-text-dup');
-    if (announcementText) {
-      const storeName = settings.storeName || 'Vistāra Krafts';
-      const threshold = settings.freeShippingThreshold != null ? Number(settings.freeShippingThreshold) : 999;
-      const thresholdStr = Number(threshold).toLocaleString('en-IN');
-      const headlineMarkup = `<strong>${esc(storeName)} Studio</strong> • 24h Bridal Varmala Pickup • Free Express Shipping &gt; ₹${thresholdStr}<span class="hidden sm:inline"> • 18% GST ITC • Handcrafted Bengaluru Atelier • Insured Air Dispatch</span>`;
-      announcementText.innerHTML = headlineMarkup;
-      if (announcementDup) {
-        announcementDup.innerHTML = headlineMarkup;
-      }
-    }
+    const storeName = settings.storeName || 'Vistāra Krafts';
+    const threshold = settings.freeShippingThreshold != null ? Number(settings.freeShippingThreshold) : 999;
+    const thresholdStr = Number(threshold).toLocaleString('en-IN');
+    const headlineMarkup = `<strong>${esc(storeName)} Studio</strong> • 24h Bridal Varmala Pickup • Free Express Shipping &gt; ₹${thresholdStr}<span class="hidden sm:inline"> • 18% GST ITC • Handcrafted Bengaluru Atelier • Insured Air Dispatch</span>`;
+    const announcementHeadlineEls = document.querySelectorAll('.js-announcement-headline, #announcement-text, #announcement-text-dup');
+    announcementHeadlineEls.forEach(el => {
+      el.innerHTML = headlineMarkup;
+    });
   };
 
   // Initialize on DOMContentLoaded

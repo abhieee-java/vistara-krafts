@@ -44,6 +44,6 @@
 ## Geo-Targeting, Shipping, GST & Offers
 
 - **Headquarters & Lab**: Vistāra Krafts Studio & Chemical Atelier, Bengaluru, Karnataka 560001, India (`geo.region: IN-KA`, `12.9716, 77.5946`).
-- **Pan-India Express Air Delivery**: Free shipping on orders above ₹1,499 (₹99 below ₹1,499). Priority 1–3 day transit to Bengaluru (`560001`), Mumbai (`400001`), New Delhi (`110001`), Hyderabad (`500001`), Chennai (`600001`), Pune (`411001`), Jaipur (`302001`), Kolkata (`700001`), and 19,000+ PIN codes via BlueDart & Delhivery.
+- **Pan-India Express Air Delivery**: Free shipping on orders above ₹999 (₹99 below ₹999). Priority 1–3 day transit to Bengaluru (`560001`), Mumbai (`400001`), New Delhi (`110001`), Hyderabad (`500001`), Chennai (`600001`), Pune (`411001`), Jaipur (`302001`), Kolkata (`700001`), and 19,000+ PIN codes via BlueDart & Delhivery.
 - **Volume Discounts & Coupons**: Save 8% on 3–5 units, 16% on 6+ units. Active vouchers: `KRAFTFIRST` (₹150 off min ₹500), `MEMORIES10` (10% off min ₹1,000), `FLIRTY15` (15% off min ₹2,500), `STUDIO20` (20% off min ₹5,000).
 - **Tax & Compliance**: HSN `39073010` (Epoxy Resins in Primary Forms) & `69120010` (Ceramic Stoneware), 18% GST inclusive with B2B Input Tax Credit (ITC) tax invoices, ISO 9001:2015 & ISO 11014 SDS certified.

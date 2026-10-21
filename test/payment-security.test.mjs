@@ -43,7 +43,7 @@ await test('Security: Client-tampered price of ₹1 is completely ignored and ov
 
   assert.strictEqual(result.items[0].unitPrice, 1749, 'Unit price must be ₹1,749 from database');
   assert.strictEqual(result.subtotal, 1749, 'Subtotal must be ₹1,749');
-  assert.strictEqual(result.isFreeShipping, true, 'Orders >= ₹1,499 qualify for free shipping');
+  assert.strictEqual(result.isFreeShipping, true, 'Orders >= ₹999 qualify for free shipping');
   assert.strictEqual(result.shippingFee, 0, 'Shipping must be ₹0');
   assert.strictEqual(result.total, 1749, 'Payable amount must be ₹1,749, NOT ₹1');
   assert.strictEqual(result.amountPaise, 174900, 'Razorpay amount must be 174900 paise');
@@ -145,7 +145,7 @@ await test('Business Logic: Coupon STUDIO10 (10% off, min order 1500) applies on
     couponCode: 'STUDIO10'
   });
   assert.strictEqual(calcUnder.couponDiscount, 0, 'No discount should apply if subtotal < minOrder');
-  assert.strictEqual(calcUnder.shippingFee, 99, 'Shipping should be ₹99 for subtotal < 1499');
+  assert.strictEqual(calcUnder.shippingFee, 99, 'Shipping should be ₹99 for subtotal < 999');
 
   // 3 units vk-cat-res-301 = 3 * 597 = 1791 (above 1500 threshold)
   const calcOver = await PriceCalculator.calculateAuthoritativeOrder({
@@ -153,8 +153,28 @@ await test('Business Logic: Coupon STUDIO10 (10% off, min order 1500) applies on
     couponCode: 'STUDIO10'
   });
   assert.strictEqual(calcOver.couponDiscount, 179, '10% of 1791 is 179');
-  assert.strictEqual(calcOver.shippingFee, 0, 'Shipping should be free for subtotal >= 1499');
+  assert.strictEqual(calcOver.shippingFee, 0, 'Shipping should be free for subtotal >= 999');
   assert.strictEqual(calcOver.total, 1791 - 179, 'Total should be 1612');
+});
+
+await test('Business Logic: Unified Free Shipping Threshold of ₹999 applies across checkout (subtotal ₹1,198 gets free shipping)', async () => {
+  // 1 unit vk-cat-res-201 = ₹599 (< ₹999) -> shipping fee ₹99
+  const calcBelow = await PriceCalculator.calculateAuthoritativeOrder({
+    items: [{ productId: 'vk-cat-res-201', qty: 1 }]
+  });
+  assert.strictEqual(calcBelow.subtotal, 599);
+  assert.strictEqual(calcBelow.isFreeShipping, false);
+  assert.strictEqual(calcBelow.shippingFee, 99);
+  assert.strictEqual(calcBelow.total, 698);
+
+  // 2 units vk-cat-res-201 = ₹1,198 (> ₹999, but < legacy ₹1,499) -> free shipping (₹0)
+  const calcAbove = await PriceCalculator.calculateAuthoritativeOrder({
+    items: [{ productId: 'vk-cat-res-201', qty: 2 }]
+  });
+  assert.strictEqual(calcAbove.subtotal, 1198);
+  assert.strictEqual(calcAbove.isFreeShipping, true, 'Subtotal ₹1,198 must qualify for free shipping above ₹999');
+  assert.strictEqual(calcAbove.shippingFee, 0, 'Shipping fee must be ₹0 for subtotal >= ₹999');
+  assert.strictEqual(calcAbove.total, 1198);
 });
 
 await test('Security & Validation: Order checkout strictly rejects invalid, disabled, or expired coupon codes', async () => {

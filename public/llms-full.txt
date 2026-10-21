@@ -21,7 +21,7 @@
   - `411001` — Pune, MH (2 business days, BlueDart Express, 24h Floral Pickup active)
   - `302001` — Jaipur, RJ (2–3 business days, Delhivery Express, 24h Floral Pickup active)
   - `700001` — Kolkata, WB (3 business days, BlueDart Air Cargo, 24h Floral Pickup active)
-- **Shipping Policy**: Free express shipping across India on orders of ₹1,499 or above; flat ₹99 shipping fee on orders below ₹1,499.
+- **Shipping Policy**: Free express shipping across India on orders of ₹999 or above; flat ₹99 shipping fee on orders below ₹999.
 - **Payment Methods**: UPI Instant (GPay, PhonePe, Paytm), Credit/Debit Cards (Visa, Mastercard, RuPay), No-Cost 3-Month EMI, NetBanking/Corporate NEFT, and Cash on Delivery (BlueDart COD).
 - **GST & Tax Compliance**: All prices are in Indian Rupees (`INR`) inclusive of 18% GST. B2B patrons can claim 18% GST Input Tax Credit (ITC) with GSTIN and Trade Name at checkout. Primary HSN codes: `39073010` (Epoxy Resins / Polyacetals in Primary Forms & Castings) and `69120010` (Ceramic Stoneware Tableware).
 

@@ -1551,6 +1551,12 @@
     },
 
     async placeOrderAsync(checkoutDetails = {}) {
+      const isTestEnv = (typeof global !== 'undefined' && global.__VK_TEST_ENV__) ||
+                        (typeof window !== 'undefined' && window.__VK_TEST_ENV__);
+      if (!isTestEnv && typeof this.verifyCheckoutProducts === 'function') {
+        try { await this.verifyCheckoutProducts(); } catch (_) {}
+      }
+
       const summary = this.getCartSummary();
       if (summary.itemsCount === 0) {
         return { success: false, message: 'Your Studio Bag is empty.' };
@@ -1605,9 +1611,6 @@
         defaultAddress: customerAddress,
         pincode: resolvedPin || this.getPincodeInfo().pin
       });
-
-      const isTestEnv = (typeof global !== 'undefined' && global.__VK_TEST_ENV__) ||
-                        (typeof window !== 'undefined' && window.__VK_TEST_ENV__);
 
       // In browser runtime with Razorpay SDK and server available
       if (!isTestEnv && typeof window !== 'undefined' && typeof window.fetch === 'function') {
@@ -2008,15 +2011,7 @@
     },
 
     getSettings() {
-      const v2 = safeRead(STORAGE_KEYS.SETTINGS, null);
-      if (v2 && typeof v2 === 'object' && Object.keys(v2).length > 0) {
-        return v2;
-      }
-      const v1 = safeRead('vk_settings_v1', null);
-      if (v1 && typeof v1 === 'object' && Object.keys(v1).length > 0) {
-        return v1;
-      }
-      return {
+      const defaults = {
         storeName: 'Vistāra Krafts Studio',
         brandTagline: 'Curated Resin Art & Museum-Grade Preservation',
         instagramHandle: '@vistarakrafts',
@@ -2030,6 +2025,15 @@
         announcementBarText: 'Vistāra Krafts Studio • 24h Bridal Varmala Pickup • Free Express Shipping > ₹999 • 18% GST ITC • Handcrafted Bengaluru Atelier • Insured Air Dispatch',
         enableFloralTransformationSection: false
       };
+      const v2 = safeRead(STORAGE_KEYS.SETTINGS, null);
+      if (v2 && typeof v2 === 'object' && Object.keys(v2).length > 0) {
+        return { ...defaults, ...v2 };
+      }
+      const v1 = safeRead('vk_settings_v1', null);
+      if (v1 && typeof v1 === 'object' && Object.keys(v1).length > 0) {
+        return { ...defaults, ...v1 };
+      }
+      return defaults;
     },
 
     async syncSettingsFromSupabase() {
@@ -2160,8 +2164,6 @@
     applyAnnouncementBar(text, enabled) {
       if (typeof document === 'undefined') return;
       const barEl = document.getElementById('top-announcement-bar');
-      const textEl = document.getElementById('announcement-text');
-      const dupEl = document.getElementById('announcement-text-dup');
       if (barEl) {
         if (enabled === false) {
           barEl.style.display = 'none';
@@ -2169,12 +2171,37 @@
           barEl.style.display = '';
         }
       }
-      if (textEl && text) {
-        textEl.textContent = text;
+      if (!text) return;
+
+      const settings = (this.getSettings && this.getSettings()) || {};
+      const storeName = settings.storeName || 'Vistāra Krafts';
+      const threshold = settings.freeShippingThreshold != null ? Number(settings.freeShippingThreshold) : 999;
+      const thresholdStr = Number(threshold).toLocaleString('en-IN');
+
+      let markup = text;
+      if (!/<[a-z][\s\S]*>/i.test(text)) {
+        let dynamicText = text
+          .replace(/>\s*₹?\s*1[,.]?000/gi, `> ₹${thresholdStr}`)
+          .replace(/above\s*₹?\s*1[,.]?000/gi, `above ₹${thresholdStr}`)
+          .replace(/>\s*₹?\s*1[,.]?499/gi, `> ₹${thresholdStr}`)
+          .replace(/above\s*₹?\s*1[,.]?499/gi, `above ₹${thresholdStr}`);
+
+        if (dynamicText.includes(' • ')) {
+          const parts = dynamicText.split(' • ');
+          const firstPart = parts[0];
+          const remaining = parts.slice(1);
+          const mainSlice = remaining.slice(0, 2).join(' • ');
+          const desktopExtra = remaining.slice(2).join(' • ');
+          markup = `<strong>${firstPart}</strong>${mainSlice ? ' • ' + mainSlice : ''}${desktopExtra ? `<span class="hidden sm:inline"> • ${desktopExtra}</span>` : ''}`;
+        } else {
+          markup = `<strong>${storeName} Studio</strong> • ${dynamicText}`;
+        }
       }
-      if (dupEl && text) {
-        dupEl.textContent = text;
-      }
+
+      const elements = document.querySelectorAll('.js-announcement-headline, #announcement-text, #announcement-text-dup');
+      elements.forEach(el => {
+        el.innerHTML = markup;
+      });
     },
 
     async refreshCatalog({ smooth = true, manual = false } = {}) {
@@ -2759,19 +2786,33 @@
       if (global.VistaraSupabase && typeof global.VistaraSupabase.getClient === 'function') {
         const sbClient = global.VistaraSupabase.getClient();
         if (sbClient && typeof sbClient.channel === 'function') {
+          const handleIncomingVersion = (rawVal) => {
+            let val = rawVal;
+            if (typeof val === 'string') {
+              try { val = JSON.parse(val); } catch (_) {}
+            }
+            const incomingVersion = Number(val?.version || val || 0);
+            const cachedVersion = Number(safeRead('vk_store_published_version', 0));
+            if (incomingVersion > cachedVersion) {
+              safeWrite('vk_store_published_version', incomingVersion);
+              if (typeof Store.refreshCatalog === 'function') {
+                Store.refreshCatalog({ smooth: true });
+              }
+            }
+          };
+
           sbClient
             .channel('public:store_published_version:realtime')
             .on('postgres_changes', { event: '*', schema: 'public', table: 'settings' }, (payload) => {
               const record = payload.new || {};
               if (record.key === 'store_published_version') {
-                const incomingVersion = Number(record.value?.version || record.value || 0);
-                const cachedVersion = Number(safeRead('vk_store_published_version', 0));
-                if (incomingVersion > cachedVersion) {
-                  safeWrite('vk_store_published_version', incomingVersion);
-                  if (typeof Store.refreshCatalog === 'function') {
-                    Store.refreshCatalog({ smooth: true });
-                  }
-                }
+                handleIncomingVersion(record.value);
+              }
+            })
+            .on('postgres_changes', { event: '*', schema: 'public', table: 'categories' }, (payload) => {
+              const record = payload.new || {};
+              if (record.id === 'store_published_version' && record.description) {
+                handleIncomingVersion(record.description);
               }
             })
             .subscribe();
