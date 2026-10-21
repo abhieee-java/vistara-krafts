@@ -7464,12 +7464,12 @@
 
     // Top Announcement Bar: Check if custom announcementBarText is published/configured
     const rawAnnouncement = settings.announcementBarText || (typeof Store !== 'undefined' && typeof Store.getSettings === 'function' ? Store.getSettings()?.announcementBarText : null);
+    const threshold = settings.freeShippingThreshold != null ? Number(settings.freeShippingThreshold) : (typeof Store !== 'undefined' && typeof Store.getSettings === 'function' ? Number(Store.getSettings()?.freeShippingThreshold || 999) : 999);
     if (rawAnnouncement && typeof Store !== 'undefined' && typeof Store.applyAnnouncementBar === 'function') {
-      Store.applyAnnouncementBar(rawAnnouncement, settings.announcementBarActive);
+      Store.applyAnnouncementBar(rawAnnouncement, settings.announcementBarActive, threshold);
     } else {
       const storeName = settings.storeName || 'Vistāra Krafts';
       const cleanStoreName = storeName.replace(/\s+Studio$/i, '');
-      const threshold = settings.freeShippingThreshold != null ? Number(settings.freeShippingThreshold) : 999;
       const thresholdStr = Number(threshold).toLocaleString('en-IN');
       const headlineMarkup = `<strong>${esc(cleanStoreName)}</strong> • 24h Bridal Varmala Pickup • Free Express Shipping &gt; ₹${thresholdStr}<span class="hidden sm:inline"> • 18% GST ITC • Handcrafted Bengaluru Atelier • Insured Air Dispatch</span>`;
       const announcementHeadlineEls = document.querySelectorAll('.js-announcement-headline, #announcement-text, #announcement-text-dup');

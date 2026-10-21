@@ -335,6 +335,44 @@
     }
   }
 
+  function syncDeliveryPriceInAnnouncement(str, thresh) {
+    if (!str) return '';
+    const threshNum = Number(thresh) || 999;
+    const threshStr = threshNum.toLocaleString('en-IN');
+
+    // Case 1: 'orders (over|above|exceeding|>|&gt;) [₹]X'
+    let updated = str.replace(
+      /(orders?\s+(?:over|above|exceeding|>|&gt;)\s*(?:₹|rs\.?|inr)?\s*)[\d,]+/gi,
+      (m, p1) => p1.replace(/(?:₹|rs\.?|inr)?\s*$/i, '') + '₹' + threshStr
+    );
+
+    // Case 2: '(free ... shipping|delivery|dispatch) (over|above|exceeding|>|&gt;) [₹]X'
+    updated = updated.replace(
+      /((?:free\s+[\w\s-]*?(?:shipping|delivery|dispatch))\s*(?:>|&gt;|above|over|exceeding)\s*)(?:₹|rs\.?|inr)?\s*[\d,]+/gi,
+      (m, p1) => p1.trimEnd() + ' ₹' + threshStr
+    );
+
+    // Case 3: 'shipping|delivery|dispatch ... (>|&gt;) [₹]X'
+    updated = updated.replace(
+      /((?:shipping|delivery|dispatch)[^•<]*?(?:>|&gt;)\s*)(?:₹|rs\.?|inr)?\s*[\d,]+/gi,
+      (m, p1) => p1.trimEnd() + ' ₹' + threshStr
+    );
+
+    // Case 4: Any remaining '(>|&gt;)\s*[₹]X'
+    updated = updated.replace(
+      /(>|&gt;)\s*(?:₹|rs\.?|inr)?\s*[\d,]+/gi,
+      '> ₹' + threshStr
+    );
+
+    // Case 5: Any remaining '(above|over)\s*[₹]X'
+    updated = updated.replace(
+      /\b(above|over)\s+(?:₹|rs\.?|inr)?\s*[\d,]+/gi,
+      (m, p1) => p1 + ' ₹' + threshStr
+    );
+
+    return updated;
+  }
+
   // Initialize default wishlist, cart, and orders as empty arrays for new visitors
   const DEFAULT_WISHLIST = [];
 
@@ -2010,6 +2048,8 @@
       } catch (e) {}
     },
 
+    syncDeliveryPriceInAnnouncement,
+
     getSettings() {
       const defaults = {
         storeName: 'Vistāra Krafts',
@@ -2027,11 +2067,19 @@
       };
       const v2 = safeRead(STORAGE_KEYS.SETTINGS, null);
       if (v2 && typeof v2 === 'object' && Object.keys(v2).length > 0) {
-        return { ...defaults, ...v2 };
+        const merged = { ...defaults, ...v2 };
+        if (merged.announcementBarText) {
+          merged.announcementBarText = syncDeliveryPriceInAnnouncement(merged.announcementBarText, merged.freeShippingThreshold);
+        }
+        return merged;
       }
       const v1 = safeRead('vk_settings_v1', null);
       if (v1 && typeof v1 === 'object' && Object.keys(v1).length > 0) {
-        return { ...defaults, ...v1 };
+        const merged = { ...defaults, ...v1 };
+        if (merged.announcementBarText) {
+          merged.announcementBarText = syncDeliveryPriceInAnnouncement(merged.announcementBarText, merged.freeShippingThreshold);
+        }
+        return merged;
       }
       return defaults;
     },
@@ -2117,15 +2165,14 @@
             announcementBarText: catPayload.announcementBarText,
             announcementBarActive: catPayload.announcementBarActive !== false
           } : {})),
-          ...(shipRow && shipRow.value && (shipDbUpdated >= localUpdated || !currentSettings.freeShippingThreshold) ? {
-            freeShippingThreshold: (shipRow.value.free_shipping_threshold !== undefined && !isNaN(Number(shipRow.value.free_shipping_threshold)))
-              ? Number(shipRow.value.free_shipping_threshold)
-              : (catPayload?.freeShippingThreshold || 999),
-            defaultCourier: shipRow.value.default_courier || catPayload?.defaultCourier || 'Delhivery Express'
-          } : (catPayload?.freeShippingThreshold ? {
-            freeShippingThreshold: Number(catPayload.freeShippingThreshold),
-            defaultCourier: catPayload.defaultCourier || 'Delhivery Express'
-          } : {})),
+          freeShippingThreshold: (shipRow && shipRow.value && shipRow.value.free_shipping_threshold !== undefined && !isNaN(Number(shipRow.value.free_shipping_threshold)))
+            ? Number(shipRow.value.free_shipping_threshold)
+            : (versionRow && versionRow.value && versionRow.value.freeShippingThreshold !== undefined && !isNaN(Number(versionRow.value.freeShippingThreshold)))
+              ? Number(versionRow.value.freeShippingThreshold)
+              : (catPayload?.freeShippingThreshold !== undefined && !isNaN(Number(catPayload.freeShippingThreshold)))
+                ? Number(catPayload.freeShippingThreshold)
+                : (currentSettings.freeShippingThreshold !== undefined ? Number(currentSettings.freeShippingThreshold) : 999),
+          defaultCourier: shipRow?.value?.default_courier || catPayload?.defaultCourier || currentSettings.defaultCourier || 'Delhivery Express',
           ...(sectionsRow && sectionsRow.value ? {
             enableFloralTransformationSection: Boolean(sectionsRow.value.enable_floral_transformation)
           } : (catPayload?.enableFloralTransformationSection !== undefined ? {
@@ -2143,7 +2190,7 @@
         const isChanged = keysToCompare.some(k => currentSettings[k] !== nextSettings[k]);
 
         if (nextSettings.announcementBarText !== undefined) {
-          this.applyAnnouncementBar(nextSettings.announcementBarText, nextSettings.announcementBarActive);
+          this.applyAnnouncementBar(nextSettings.announcementBarText, nextSettings.announcementBarActive, nextSettings.freeShippingThreshold);
         }
 
         if (isChanged) {
@@ -2161,7 +2208,7 @@
       }
     },
 
-    applyAnnouncementBar(text, enabled) {
+    applyAnnouncementBar(text, enabled, customThreshold) {
       if (typeof document === 'undefined') return;
       const barEl = document.getElementById('top-announcement-bar');
       if (barEl) {
@@ -2176,18 +2223,15 @@
       const settings = (this.getSettings && this.getSettings()) || {};
       const storeName = settings.storeName || 'Vistāra Krafts';
       const cleanStoreName = storeName.replace(/\s+Studio$/i, '');
-      const threshold = settings.freeShippingThreshold != null ? Number(settings.freeShippingThreshold) : 999;
+      const threshold = customThreshold != null ? Number(customThreshold) : (settings.freeShippingThreshold != null ? Number(settings.freeShippingThreshold) : 999);
       const thresholdStr = Number(threshold).toLocaleString('en-IN');
 
-      let markup = text;
-      if (!/<[a-z][\s\S]*>/i.test(text)) {
-        let dynamicText = text
-          .replace(/>\s*₹?\s*1[,.]?000/gi, `> ₹${thresholdStr}`)
-          .replace(/above\s*₹?\s*1[,.]?000/gi, `above ₹${thresholdStr}`)
-          .replace(/>\s*₹?\s*1[,.]?499/gi, `> ₹${thresholdStr}`)
-          .replace(/above\s*₹?\s*1[,.]?499/gi, `above ₹${thresholdStr}`);
+      // Strictly sync the delivery price / free shipping threshold into the announcement text
+      const dynamicText = syncDeliveryPriceInAnnouncement(text, threshold);
 
-        // If the custom text already contains the brand name, don't prepend "Studio Studio"
+      let markup = dynamicText;
+      if (!/<[a-z][\s\S]*>/i.test(dynamicText)) {
+        // If the custom text already contains the brand name, don't prepend duplicate brand name
         if (dynamicText.toLowerCase().includes(cleanStoreName.toLowerCase())) {
           if (dynamicText.includes(' • ')) {
             const parts = dynamicText.split(' • ');
@@ -2437,7 +2481,7 @@
         const merged = { ...cur, ...payload.settings, updated_at: payload.settings.updated_at || new Date().toISOString() };
         safeWrite(STORAGE_KEYS.SETTINGS, merged);
         if (merged.announcementBarText !== undefined) {
-          this.applyAnnouncementBar(merged.announcementBarText, merged.announcementBarActive);
+          this.applyAnnouncementBar(merged.announcementBarText, merged.announcementBarActive, merged.freeShippingThreshold);
         }
         if (typeof global.applyStorefrontSettings === 'function') {
           global.applyStorefrontSettings(merged);
@@ -2808,14 +2852,17 @@
             const cachedVersion = Number(safeRead('vk_store_published_version', 0));
             if (incomingVersion > cachedVersion) {
               safeWrite('vk_store_published_version', incomingVersion);
-              if (val && typeof val === 'object' && val.announcementBarText) {
+              if (val && typeof val === 'object') {
                 const curr = Store.getSettings();
-                curr.announcementBarText = val.announcementBarText;
+                if (val.announcementBarText) curr.announcementBarText = val.announcementBarText;
                 if (val.announcementBarActive !== undefined) curr.announcementBarActive = val.announcementBarActive;
+                if (val.freeShippingThreshold !== undefined && !isNaN(Number(val.freeShippingThreshold))) {
+                  curr.freeShippingThreshold = Number(val.freeShippingThreshold);
+                }
                 safeWrite(STORAGE_KEYS.SETTINGS, curr);
                 safeWrite('vk_settings_v1', curr);
                 safeWrite('ram_vk_settings_v2', curr);
-                Store.applyAnnouncementBar(val.announcementBarText, val.announcementBarActive);
+                Store.applyAnnouncementBar(curr.announcementBarText, curr.announcementBarActive, curr.freeShippingThreshold);
               }
               if (typeof Store.refreshCatalog === 'function') {
                 Store.refreshCatalog({ smooth: true });
@@ -2854,15 +2901,17 @@
           const cachedVersion = Number(safeRead('vk_store_published_version', 0));
           if (incomingVersion > cachedVersion) {
             safeWrite('vk_store_published_version', incomingVersion);
+            const curr = Store.getSettings();
             const pubText = ev.data.settings?.announcementBarText || ev.data.announcementBarText;
-            if (pubText) {
-              const curr = Store.getSettings();
-              curr.announcementBarText = pubText;
-              safeWrite(STORAGE_KEYS.SETTINGS, curr);
-              safeWrite('vk_settings_v1', curr);
-              safeWrite('ram_vk_settings_v2', curr);
-              Store.applyAnnouncementBar(pubText, curr.announcementBarActive);
+            const pubThreshold = ev.data.settings?.freeShippingThreshold || ev.data.freeShippingThreshold;
+            if (pubText) curr.announcementBarText = pubText;
+            if (pubThreshold !== undefined && !isNaN(Number(pubThreshold))) {
+              curr.freeShippingThreshold = Number(pubThreshold);
             }
+            safeWrite(STORAGE_KEYS.SETTINGS, curr);
+            safeWrite('vk_settings_v1', curr);
+            safeWrite('ram_vk_settings_v2', curr);
+            Store.applyAnnouncementBar(curr.announcementBarText, curr.announcementBarActive, curr.freeShippingThreshold);
             if (typeof Store.refreshCatalog === 'function') {
               Store.refreshCatalog({ smooth: true });
             }
