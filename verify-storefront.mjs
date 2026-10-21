@@ -205,9 +205,9 @@ test('Pour Calculator computes 3:1, 2:1, and 1:1 ratios accurately and handles <
 });
 
 test('PIN code verifier validates 6-digit Indian PINs and rejects invalid inputs', () => {
-  const blr = Store.verifyPincode('560001');
+  const blr = Store.verifyPincode('781001');
   assert.strictEqual(blr.valid, true);
-  assert.ok(blr.city.includes('Bengaluru'));
+  assert.ok(blr.city.includes('Guwahati'));
 
   assert.strictEqual(Store.verifyPincode('').valid, false);
   assert.strictEqual(Store.verifyPincode('012345').valid, false);
@@ -1111,7 +1111,7 @@ test('SEO, GEO & AEO Production Readiness: robots.txt, sitemap.xml, llms.txt, ll
     assert.ok(robotsTxt.includes('User-agent: ClaudeBot'), `${relPath} must explicitly allow ClaudeBot for GEO`);
     assert.ok(robotsTxt.includes('User-agent: PerplexityBot'), `${relPath} must explicitly allow PerplexityBot for GEO`);
     assert.ok(robotsTxt.includes('User-agent: Google-Extended'), `${relPath} must explicitly allow Google-Extended for GEO`);
-    assert.ok(robotsTxt.includes('Sitemap: https://vistara-krafts.vercel.app/sitemap.xml'), `${relPath} must reference https://vistara-krafts.vercel.app/sitemap.xml`);
+    assert.ok(robotsTxt.includes('Sitemap: https://www.vistarakrafts.com/sitemap.xml'), `${relPath} must reference https://www.vistarakrafts.com/sitemap.xml`);
   }
 
   const coreProducts = Store.getProducts().filter(p => !String(p.id).startsWith('ram-lotus-drop-') && !String(p.id).startsWith('test-'));
@@ -1120,37 +1120,37 @@ test('SEO, GEO & AEO Production Readiness: robots.txt, sitemap.xml, llms.txt, ll
   for (const relPath of ['sitemap.xml', 'public/sitemap.xml']) {
     const sitemapXml = fs.readFileSync(path.join(ROOT, relPath), 'utf8');
     assert.ok(sitemapXml.startsWith('<?xml version="1.0" encoding="UTF-8"?>'), `${relPath} must be valid XML`);
-    assert.ok(sitemapXml.includes('<loc>https://vistara-krafts.vercel.app/</loc>'), `${relPath} must include root canonical URL`);
+    assert.ok(sitemapXml.includes('<loc>https://www.vistarakrafts.com/</loc>'), `${relPath} must include root canonical URL`);
     assert.ok(sitemapXml.includes('hreflang="en-IN"'), `${relPath} must include hreflang="en-IN" alternate links`);
     for (const prod of coreProducts) {
       assert.ok(
-        sitemapXml.includes(`<loc>https://vistara-krafts.vercel.app/#/product/${prod.id}</loc>`),
+        sitemapXml.includes(`<loc>https://www.vistarakrafts.com/#/product/${prod.id}</loc>`),
         `${relPath} must include product URL for ${prod.id}`
       );
     }
-    assert.ok(sitemapXml.includes('<loc>https://vistara-krafts.vercel.app/llms.txt</loc>'), `${relPath} must index /llms.txt`);
-    assert.ok(sitemapXml.includes('<loc>https://vistara-krafts.vercel.app/llms-full.txt</loc>'), `${relPath} must index /llms-full.txt`);
+    assert.ok(sitemapXml.includes('<loc>https://www.vistarakrafts.com/llms.txt</loc>'), `${relPath} must index /llms.txt`);
+    assert.ok(sitemapXml.includes('<loc>https://www.vistarakrafts.com/llms-full.txt</loc>'), `${relPath} must index /llms-full.txt`);
   }
 
   for (const relPath of ['llms.txt', 'public/llms.txt', 'llms-full.txt', 'public/llms-full.txt']) {
     const llmsContent = fs.readFileSync(path.join(ROOT, relPath), 'utf8');
     assert.ok(llmsContent.includes('Vistāra Krafts'), `${relPath} must include brand identity Vistāra Krafts`);
     assert.ok(llmsContent.includes('@resin.art.memories'), `${relPath} must include Instagram handle @resin.art.memories`);
-    assert.ok(llmsContent.includes('https://vistara-krafts.vercel.app'), `${relPath} must reference https://vistara-krafts.vercel.app`);
+    assert.ok(llmsContent.includes('https://www.vistarakrafts.com'), `${relPath} must reference https://www.vistarakrafts.com`);
     assert.ok(llmsContent.includes('https://vistarakrafts.com'), `${relPath} must document future custom domain https://vistarakrafts.com`);
     for (const prod of coreProducts) {
       assert.ok(llmsContent.includes(prod.sku), `${relPath} must include SKU ${prod.sku}`);
     }
   }
 
-  // 2. Verify index.html <head> SEO, Geo-Targeting (Bengaluru/Pan-India), OpenGraph, Twitter Card, and initial JSON-LD @graph
+  // 2. Verify index.html <head> SEO, Geo-Targeting (Guwahati/Pan-India), OpenGraph, Twitter Card, and initial JSON-LD @graph
   const indexHtml = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8');
   assert.ok(indexHtml.includes('lang="en-IN"'), 'index.html must declare lang="en-IN"');
-  assert.ok(indexHtml.includes('name="geo.region" content="IN-KA"'), 'index.html must include geo.region="IN-KA"');
-  assert.ok(indexHtml.includes('name="geo.placename" content="Bengaluru, Karnataka, India"'), 'index.html must include geo.placename="Bengaluru, Karnataka, India"');
-  assert.ok(indexHtml.includes('name="geo.position" content="12.9716;77.5946"'), 'index.html must include geo.position="12.9716;77.5946"');
-  assert.ok(indexHtml.includes('name="ICBM" content="12.9716, 77.5946"'), 'index.html must include ICBM="12.9716, 77.5946"');
-  assert.ok(indexHtml.includes('rel="canonical" href="https://vistara-krafts.vercel.app/"'), 'index.html must include canonical link to https://vistara-krafts.vercel.app/');
+  assert.ok(indexHtml.includes('name="geo.region" content="IN-AS"'), 'index.html must include geo.region="IN-AS"');
+  assert.ok(indexHtml.includes('name="geo.placename" content="Guwahati, Assam, India"'), 'index.html must include geo.placename="Guwahati, Assam, India"');
+  assert.ok(indexHtml.includes('name="geo.position" content="26.1445;91.7362"'), 'index.html must include geo.position="26.1445;91.7362"');
+  assert.ok(indexHtml.includes('name="ICBM" content="26.1445, 91.7362"'), 'index.html must include ICBM="26.1445, 91.7362"');
+  assert.ok(indexHtml.includes('rel="canonical" href="https://www.vistarakrafts.com/"'), 'index.html must include canonical link to https://www.vistarakrafts.com/');
   assert.ok(indexHtml.includes('hreflang="en-IN"'), 'index.html must include hreflang="en-IN" link');
   assert.ok(indexHtml.includes('rel="alternate" type="text/plain" href="/llms.txt"'), 'index.html must link to /llms.txt for AI/LLM discovery');
   assert.ok(indexHtml.includes('rel="alternate" type="text/plain" href="/llms-full.txt"'), 'index.html must link to /llms-full.txt for AI/LLM discovery');
@@ -1176,19 +1176,19 @@ test('SEO, GEO & AEO Production Readiness: robots.txt, sitemap.xml, llms.txt, ll
 
   // 3. Verify Store.getSeoConfig() and dynamic per-route / per-product / per-variant SEO updates in app.js
   const seoCfg = Store.getSeoConfig();
-  assert.strictEqual(seoCfg.siteUrl, 'https://vistara-krafts.vercel.app');
+  assert.strictEqual(seoCfg.siteUrl, 'https://www.vistarakrafts.com');
   assert.strictEqual(seoCfg.futureCustomDomain, 'https://vistarakrafts.com');
-  assert.strictEqual(seoCfg.geo.region, 'IN-KA');
+  assert.strictEqual(seoCfg.geo.region, 'IN-AS');
 
   sandbox.window.navigateTo('product', 'vk-cat-res-201');
   const pdpSeo1 = sandbox.window.getActiveSeoSnapshot();
   assert.strictEqual(pdpSeo1.route, 'product');
   assert.strictEqual(pdpSeo1.productId, 'vk-cat-res-201');
-  assert.strictEqual(pdpSeo1.canonicalUrl, 'https://vistara-krafts.vercel.app/#/product/vk-cat-res-201');
+  assert.strictEqual(pdpSeo1.canonicalUrl, 'https://www.vistarakrafts.com/#/product/vk-cat-res-201');
   assert.strictEqual(pdpSeo1.ogType, 'product');
   assert.ok(mockDocument.title.includes('2:1 High-Gloss Epoxy Resin'), 'Document title must dynamically update to active product name');
-  assert.strictEqual(mockDocument.getElementById('link-canonical').href, 'https://vistara-krafts.vercel.app/#/product/vk-cat-res-201');
-  assert.strictEqual(mockDocument.getElementById('twitter-url').content, 'https://vistara-krafts.vercel.app/#/product/vk-cat-res-201');
+  assert.strictEqual(mockDocument.getElementById('link-canonical').href, 'https://www.vistarakrafts.com/#/product/vk-cat-res-201');
+  assert.strictEqual(mockDocument.getElementById('twitter-url').content, 'https://www.vistarakrafts.com/#/product/vk-cat-res-201');
 
   // Select variant index 1 (1.5 Kg Set at ₹1,899) and verify dynamic price & title update
   sandbox.window.selectPdpVariant(1);
@@ -1262,7 +1262,7 @@ test('SEO, GEO & AEO Production Readiness: robots.txt, sitemap.xml, llms.txt, ll
   // Reset back to default Vercel domain and #/home
   delete sandbox.window.VISTARA_SITE_URL;
   sandbox.window.navigateTo('home');
-  assert.strictEqual(mockDocument.getElementById('link-canonical').href, 'https://vistara-krafts.vercel.app/');
+  assert.strictEqual(mockDocument.getElementById('link-canonical').href, 'https://www.vistarakrafts.com/');
 });
 
 test('Awwwards SOTD (Site of the Day): Dynamic Cursor, 3D Tilt, Specimen Loupe, Before/After Slider, Ripple & Heart-Burst (Zero Audio E-Commerce Only)', () => {
@@ -1509,7 +1509,7 @@ if (chromeExe) {
           res.setHeader('Content-Type', 'application/json');
           res.setHeader('Cross-Origin-Opener-Policy', 'same-origin-allow-popups');
           if (u.pathname.includes('/seo')) {
-            res.end(JSON.stringify({ ok: true, siteUrl: 'https://vistara-krafts.vercel.app', futureCustomDomain: 'https://vistarakrafts.com' }));
+            res.end(JSON.stringify({ ok: true, siteUrl: 'https://www.vistarakrafts.com', futureCustomDomain: 'https://vistarakrafts.com' }));
           } else {
             res.end(JSON.stringify({ ok: true, token: 'sb_e2e_token', authenticated: true, user: { id: 'usr_e2e', name: 'Rohan Mehta' } }));
           }
@@ -1679,9 +1679,9 @@ if (chromeExe) {
     assert.strictEqual(chromeSeoAudit.llmsStatus, 200, 'Headless Chrome: /llms.txt must return 200 OK');
     assert.strictEqual(chromeSeoAudit.llmsFullStatus, 200, 'Headless Chrome: /llms-full.txt must return 200 OK');
     assert.strictEqual(chromeSeoAudit.apiSeoOk, true, 'Headless Chrome: /api/seo must return ok:true');
-    assert.strictEqual(chromeSeoAudit.apiSeoSiteUrl, 'https://vistara-krafts.vercel.app');
+    assert.strictEqual(chromeSeoAudit.apiSeoSiteUrl, 'https://www.vistarakrafts.com');
     assert.ok(chromeSeoAudit.pdpTitle.includes('2:1 High-Gloss') || chromeSeoAudit.pdpTitle.includes('Epoxy Resin'), 'Headless Chrome: PDP title must include product name');
-    assert.strictEqual(chromeSeoAudit.pdpCanonical, 'https://vistara-krafts.vercel.app/#/product/vk-cat-res-201');
+    assert.strictEqual(chromeSeoAudit.pdpCanonical, 'https://www.vistarakrafts.com/#/product/vk-cat-res-201');
     assert.ok(Number(chromeSeoAudit.pdpOgPrice) > 0, 'Headless Chrome: pdpOgPrice must be positive');
     assert.ok(chromeSeoAudit.pdpGraphCount >= 7, 'Headless Chrome: PDP JSON-LD @graph must contain at least 7 structured nodes');
 

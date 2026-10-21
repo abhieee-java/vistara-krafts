@@ -4,275 +4,275 @@
         xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
   <!-- Storefront Root & Home Discovery -->
   <url>
-    <loc>https://vistara-krafts.vercel.app/</loc>
-    <lastmod>2026-10-19</lastmod>
+    <loc>https://www.vistarakrafts.com/</loc>
+    <lastmod>2026-10-22</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
-    <xhtml:link rel="alternate" hreflang="en-IN" href="https://vistara-krafts.vercel.app/" />
-    <xhtml:link rel="alternate" hreflang="en" href="https://vistara-krafts.vercel.app/" />
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://vistara-krafts.vercel.app/" />
+    <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.vistarakrafts.com/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.vistarakrafts.com/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.vistarakrafts.com/" />
     <image:image>
-      <image:loc>https://vistara-krafts.vercel.app/vistara-krafts-logo.jpg</image:loc>
+      <image:loc>https://www.vistarakrafts.com/vistara-krafts-logo.jpg</image:loc>
       <image:title>Vistāra Krafts Official VK Monogram — Bridal Varmala Preservation &amp; Optical Epoxy Atelier</image:title>
     </image:image>
   </url>
   <url>
-    <loc>https://vistara-krafts.vercel.app/#/home</loc>
-    <lastmod>2026-10-19</lastmod>
+    <loc>https://www.vistarakrafts.com/#/home</loc>
+    <lastmod>2026-10-22</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.95</priority>
-    <xhtml:link rel="alternate" hreflang="en-IN" href="https://vistara-krafts.vercel.app/#/home" />
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://vistara-krafts.vercel.app/#/home" />
+    <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.vistarakrafts.com/#/home" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.vistarakrafts.com/#/home" />
   </url>
   <url>
-    <loc>https://vistara-krafts.vercel.app/#/catalog</loc>
-    <lastmod>2026-10-19</lastmod>
+    <loc>https://www.vistarakrafts.com/#/catalog</loc>
+    <lastmod>2026-10-22</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.95</priority>
-    <xhtml:link rel="alternate" hreflang="en-IN" href="https://vistara-krafts.vercel.app/#/catalog" />
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://vistara-krafts.vercel.app/#/catalog" />
+    <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.vistarakrafts.com/#/catalog" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.vistarakrafts.com/#/catalog" />
   </url>
   <url>
-    <loc>https://vistara-krafts.vercel.app/#/custom-studio</loc>
-    <lastmod>2026-10-19</lastmod>
+    <loc>https://www.vistarakrafts.com/#/custom-studio</loc>
+    <lastmod>2026-10-22</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.90</priority>
-    <xhtml:link rel="alternate" hreflang="en-IN" href="https://vistara-krafts.vercel.app/#/custom-studio" />
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://vistara-krafts.vercel.app/#/custom-studio" />
+    <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.vistarakrafts.com/#/custom-studio" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.vistarakrafts.com/#/custom-studio" />
   </url>
   <url>
-    <loc>https://vistara-krafts.vercel.app/#/social</loc>
-    <lastmod>2026-10-19</lastmod>
+    <loc>https://www.vistarakrafts.com/#/social</loc>
+    <lastmod>2026-10-22</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.85</priority>
-    <xhtml:link rel="alternate" hreflang="en-IN" href="https://vistara-krafts.vercel.app/#/social" />
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://vistara-krafts.vercel.app/#/social" />
+    <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.vistarakrafts.com/#/social" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.vistarakrafts.com/#/social" />
   </url>
 
   <!-- 19 Curated Vistāra Krafts Catalog Products -->
   <url>
-    <loc>https://vistara-krafts.vercel.app/#/product/vk-cat-res-201</loc>
-    <lastmod>2026-10-19</lastmod>
+    <loc>https://www.vistarakrafts.com/#/product/vk-cat-res-201</loc>
+    <lastmod>2026-10-22</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.85</priority>
-    <xhtml:link rel="alternate" hreflang="en-IN" href="https://vistara-krafts.vercel.app/#/product/vk-cat-res-201" />
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://vistara-krafts.vercel.app/#/product/vk-cat-res-201" />
+    <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.vistarakrafts.com/#/product/vk-cat-res-201" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.vistarakrafts.com/#/product/vk-cat-res-201" />
     <image:image>
       <image:loc>https://res.cloudinary.com/ecugysfd/image/upload/v1792353785/catalog_cata1_resin_bottles_set_1792353782.png</image:loc>
       <image:title>Vistāra Krafts 2:1 High-Gloss Epoxy Resin &amp; Hardener Set</image:title>
     </image:image>
   </url>
   <url>
-    <loc>https://vistara-krafts.vercel.app/#/product/vk-cat-res-301</loc>
-    <lastmod>2026-10-19</lastmod>
+    <loc>https://www.vistarakrafts.com/#/product/vk-cat-res-301</loc>
+    <lastmod>2026-10-22</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.85</priority>
-    <xhtml:link rel="alternate" hreflang="en-IN" href="https://vistara-krafts.vercel.app/#/product/vk-cat-res-301" />
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://vistara-krafts.vercel.app/#/product/vk-cat-res-301" />
+    <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.vistarakrafts.com/#/product/vk-cat-res-301" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.vistarakrafts.com/#/product/vk-cat-res-301" />
     <image:image>
       <image:loc>https://res.cloudinary.com/ecugysfd/image/upload/v1792353785/catalog_cata1_resin_bottles_set_1792353782.png</image:loc>
       <image:title>Vistāra Krafts 3:1 Deep Pour &amp; Casting Epoxy Resin System</image:title>
     </image:image>
   </url>
   <url>
-    <loc>https://vistara-krafts.vercel.app/#/product/vk-cat-acc-deco</loc>
-    <lastmod>2026-10-19</lastmod>
+    <loc>https://www.vistarakrafts.com/#/product/vk-cat-acc-deco</loc>
+    <lastmod>2026-10-22</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.85</priority>
-    <xhtml:link rel="alternate" hreflang="en-IN" href="https://vistara-krafts.vercel.app/#/product/vk-cat-acc-deco" />
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://vistara-krafts.vercel.app/#/product/vk-cat-acc-deco" />
+    <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.vistarakrafts.com/#/product/vk-cat-acc-deco" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.vistarakrafts.com/#/product/vk-cat-acc-deco" />
     <image:image>
       <image:loc>https://res.cloudinary.com/ecugysfd/image/upload/v1792353788/catalog_cata1_deco_markers_1792353786.jpg</image:loc>
       <image:title>DecoColor Premium Metallic Paint Marker Pen</image:title>
     </image:image>
   </url>
   <url>
-    <loc>https://vistara-krafts.vercel.app/#/product/vk-cat-acc-stnd</loc>
-    <lastmod>2026-10-19</lastmod>
+    <loc>https://www.vistarakrafts.com/#/product/vk-cat-acc-stnd</loc>
+    <lastmod>2026-10-22</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.85</priority>
-    <xhtml:link rel="alternate" hreflang="en-IN" href="https://vistara-krafts.vercel.app/#/product/vk-cat-acc-stnd" />
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://vistara-krafts.vercel.app/#/product/vk-cat-acc-stnd" />
+    <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.vistarakrafts.com/#/product/vk-cat-acc-stnd" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.vistarakrafts.com/#/product/vk-cat-acc-stnd" />
     <image:image>
       <image:loc>https://res.cloudinary.com/ecugysfd/image/upload/v1792353791/catalog_cata1_metal_folding_stands_1792353789.png</image:loc>
       <image:title>Polished Gold Metal Folding Easel &amp; Art Display Stand</image:title>
     </image:image>
   </url>
   <url>
-    <loc>https://vistara-krafts.vercel.app/#/product/vk-cat-mld-agat</loc>
-    <lastmod>2026-10-19</lastmod>
+    <loc>https://www.vistarakrafts.com/#/product/vk-cat-mld-agat</loc>
+    <lastmod>2026-10-22</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.85</priority>
-    <xhtml:link rel="alternate" hreflang="en-IN" href="https://vistara-krafts.vercel.app/#/product/vk-cat-mld-agat" />
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://vistara-krafts.vercel.app/#/product/vk-cat-mld-agat" />
+    <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.vistarakrafts.com/#/product/vk-cat-mld-agat" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.vistarakrafts.com/#/product/vk-cat-mld-agat" />
     <image:image>
       <image:loc>https://res.cloudinary.com/ecugysfd/image/upload/v1792353794/catalog_cata1_agate_mould_single_1792353792.png</image:loc>
       <image:title>Fluted Edge Agate Geode Coaster Silicone Mold</image:title>
     </image:image>
   </url>
   <url>
-    <loc>https://vistara-krafts.vercel.app/#/product/vk-cat-pig-foil</loc>
-    <lastmod>2026-10-19</lastmod>
+    <loc>https://www.vistarakrafts.com/#/product/vk-cat-pig-foil</loc>
+    <lastmod>2026-10-22</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.85</priority>
-    <xhtml:link rel="alternate" hreflang="en-IN" href="https://vistara-krafts.vercel.app/#/product/vk-cat-pig-foil" />
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://vistara-krafts.vercel.app/#/product/vk-cat-pig-foil" />
+    <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.vistarakrafts.com/#/product/vk-cat-pig-foil" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.vistarakrafts.com/#/product/vk-cat-pig-foil" />
     <image:image>
       <image:loc>https://res.cloudinary.com/ecugysfd/image/upload/v1792353797/catalog_cata1_foil_flakes_1792353795.jpg</image:loc>
       <image:title>Artisanal Metallic Leafing Foil Flakes (Glass Jar Set)</image:title>
     </image:image>
   </url>
   <url>
-    <loc>https://vistara-krafts.vercel.app/#/product/vk-cat-pig-opaq</loc>
-    <lastmod>2026-10-19</lastmod>
+    <loc>https://www.vistarakrafts.com/#/product/vk-cat-pig-opaq</loc>
+    <lastmod>2026-10-22</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.85</priority>
-    <xhtml:link rel="alternate" hreflang="en-IN" href="https://vistara-krafts.vercel.app/#/product/vk-cat-pig-opaq" />
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://vistara-krafts.vercel.app/#/product/vk-cat-pig-opaq" />
+    <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.vistarakrafts.com/#/product/vk-cat-pig-opaq" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.vistarakrafts.com/#/product/vk-cat-pig-opaq" />
     <image:image>
       <image:loc>https://res.cloudinary.com/ecugysfd/image/upload/v1792353801/catalog_cata1_opaque_pigments_1792353798.png</image:loc>
       <image:title>High-Density Opaque Liquid Resin Pigment Paste (20g)</image:title>
     </image:image>
   </url>
   <url>
-    <loc>https://vistara-krafts.vercel.app/#/product/vk-cat-pig-inks</loc>
-    <lastmod>2026-10-19</lastmod>
+    <loc>https://www.vistarakrafts.com/#/product/vk-cat-pig-inks</loc>
+    <lastmod>2026-10-22</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.85</priority>
-    <xhtml:link rel="alternate" hreflang="en-IN" href="https://vistara-krafts.vercel.app/#/product/vk-cat-pig-inks" />
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://vistara-krafts.vercel.app/#/product/vk-cat-pig-inks" />
+    <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.vistarakrafts.com/#/product/vk-cat-pig-inks" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.vistarakrafts.com/#/product/vk-cat-pig-inks" />
     <image:image>
       <image:loc>https://res.cloudinary.com/ecugysfd/image/upload/v1792353804/catalog_cata1_ink_pearl_pigments_1792353802.png</image:loc>
       <image:title>Vivid Alcohol Inks &amp; Shimmering Pearl Luster Pigments Set</image:title>
     </image:image>
   </url>
   <url>
-    <loc>https://vistara-krafts.vercel.app/#/product/vk-cat-acc-bubb</loc>
-    <lastmod>2026-10-19</lastmod>
+    <loc>https://www.vistarakrafts.com/#/product/vk-cat-acc-bubb</loc>
+    <lastmod>2026-10-22</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.85</priority>
-    <xhtml:link rel="alternate" hreflang="en-IN" href="https://vistara-krafts.vercel.app/#/product/vk-cat-acc-bubb" />
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://vistara-krafts.vercel.app/#/product/vk-cat-acc-bubb" />
+    <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.vistarakrafts.com/#/product/vk-cat-acc-bubb" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.vistarakrafts.com/#/product/vk-cat-acc-bubb" />
     <image:image>
       <image:loc>https://res.cloudinary.com/ecugysfd/image/upload/v1792353829/catalog_cata1_bubbles_buster_1792353815.png</image:loc>
       <image:title>Bubbles Buster Instant Resin Defoamer Fine-Mist Solution (100ml)</image:title>
     </image:image>
   </url>
   <url>
-    <loc>https://vistara-krafts.vercel.app/#/product/vk-cat-acc-poli</loc>
-    <lastmod>2026-10-19</lastmod>
+    <loc>https://www.vistarakrafts.com/#/product/vk-cat-acc-poli</loc>
+    <lastmod>2026-10-22</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.85</priority>
-    <xhtml:link rel="alternate" hreflang="en-IN" href="https://vistara-krafts.vercel.app/#/product/vk-cat-acc-poli" />
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://vistara-krafts.vercel.app/#/product/vk-cat-acc-poli" />
+    <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.vistarakrafts.com/#/product/vk-cat-acc-poli" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.vistarakrafts.com/#/product/vk-cat-acc-poli" />
     <image:image>
       <image:loc>https://res.cloudinary.com/ecugysfd/image/upload/v1792353814/catalog_cata1_resin_polish_1792353811.png</image:loc>
       <image:title>Vistāra Mirror Gloss Resin Polish &amp; Scratch Restorer Compound (40g)</image:title>
     </image:image>
   </url>
   <url>
-    <loc>https://vistara-krafts.vercel.app/#/product/vk-cat-acc-trch</loc>
-    <lastmod>2026-10-19</lastmod>
+    <loc>https://www.vistarakrafts.com/#/product/vk-cat-acc-trch</loc>
+    <lastmod>2026-10-22</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.85</priority>
-    <xhtml:link rel="alternate" hreflang="en-IN" href="https://vistara-krafts.vercel.app/#/product/vk-cat-acc-trch" />
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://vistara-krafts.vercel.app/#/product/vk-cat-acc-trch" />
+    <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.vistarakrafts.com/#/product/vk-cat-acc-trch" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.vistarakrafts.com/#/product/vk-cat-acc-trch" />
     <image:image>
       <image:loc>https://res.cloudinary.com/ecugysfd/image/upload/v1792353806/catalog_cata1_blow_torch_1792353805.png</image:loc>
       <image:title>Refillable Micro Jet Flame Blow Torch for Resin De-gassing &amp; Wave Art</image:title>
     </image:image>
   </url>
   <url>
-    <loc>https://vistara-krafts.vercel.app/#/product/vk-cat-acc-latx</loc>
-    <lastmod>2026-10-19</lastmod>
+    <loc>https://www.vistarakrafts.com/#/product/vk-cat-acc-latx</loc>
+    <lastmod>2026-10-22</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.85</priority>
-    <xhtml:link rel="alternate" hreflang="en-IN" href="https://vistara-krafts.vercel.app/#/product/vk-cat-acc-latx" />
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://vistara-krafts.vercel.app/#/product/vk-cat-acc-latx" />
+    <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.vistarakrafts.com/#/product/vk-cat-acc-latx" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.vistarakrafts.com/#/product/vk-cat-acc-latx" />
     <image:image>
       <image:loc>https://res.cloudinary.com/ecugysfd/image/upload/v1792353810/catalog_cata1_liquid_latex_1792353808.png</image:loc>
       <image:title>Peelable Liquid Latex Edge &amp; Drip Protective Barrier (100ml)</image:title>
     </image:image>
   </url>
   <url>
-    <loc>https://vistara-krafts.vercel.app/#/product/vk-cat-mld-flw4</loc>
-    <lastmod>2026-10-19</lastmod>
+    <loc>https://www.vistarakrafts.com/#/product/vk-cat-mld-flw4</loc>
+    <lastmod>2026-10-22</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.85</priority>
-    <xhtml:link rel="alternate" hreflang="en-IN" href="https://vistara-krafts.vercel.app/#/product/vk-cat-mld-flw4" />
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://vistara-krafts.vercel.app/#/product/vk-cat-mld-flw4" />
+    <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.vistarakrafts.com/#/product/vk-cat-mld-flw4" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.vistarakrafts.com/#/product/vk-cat-mld-flw4" />
     <image:image>
       <image:loc>https://res.cloudinary.com/ecugysfd/image/upload/v1792353832/catalog_cata1_mould_4in1_flower_1792353830.png</image:loc>
       <image:title>4-in-1 Graduated Petal Flower Coaster &amp; Trinket Silicone Mold Set</image:title>
     </image:image>
   </url>
   <url>
-    <loc>https://vistara-krafts.vercel.app/#/product/vk-cat-acc-sili</loc>
-    <lastmod>2026-10-19</lastmod>
+    <loc>https://www.vistarakrafts.com/#/product/vk-cat-acc-sili</loc>
+    <lastmod>2026-10-22</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.85</priority>
-    <xhtml:link rel="alternate" hreflang="en-IN" href="https://vistara-krafts.vercel.app/#/product/vk-cat-acc-sili" />
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://vistara-krafts.vercel.app/#/product/vk-cat-acc-sili" />
+    <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.vistarakrafts.com/#/product/vk-cat-acc-sili" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.vistarakrafts.com/#/product/vk-cat-acc-sili" />
     <image:image>
       <image:loc>https://res.cloudinary.com/ecugysfd/image/upload/v1792353842/catalog_cata1_magic_silica_gel_1792353840.png</image:loc>
       <image:title>Magic Flower Drying Color-Indicating Silica Gel Crystals (1000g / 1Kg)</image:title>
     </image:image>
   </url>
   <url>
-    <loc>https://vistara-krafts.vercel.app/#/product/vk-cat-mld-ag6c</loc>
-    <lastmod>2026-10-19</lastmod>
+    <loc>https://www.vistarakrafts.com/#/product/vk-cat-mld-ag6c</loc>
+    <lastmod>2026-10-22</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.85</priority>
-    <xhtml:link rel="alternate" hreflang="en-IN" href="https://vistara-krafts.vercel.app/#/product/vk-cat-mld-ag6c" />
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://vistara-krafts.vercel.app/#/product/vk-cat-mld-ag6c" />
+    <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.vistarakrafts.com/#/product/vk-cat-mld-ag6c" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.vistarakrafts.com/#/product/vk-cat-mld-ag6c" />
     <image:image>
       <image:loc>https://res.cloudinary.com/ecugysfd/image/upload/v1792353835/catalog_cata1_mould_6cavity_agate_1792353833.png</image:loc>
       <image:title>6-Cavity Production Batch Agate Geode Coaster Silicone Mold</image:title>
     </image:image>
   </url>
   <url>
-    <loc>https://vistara-krafts.vercel.app/#/product/vk-cat-mld-bkm6</loc>
-    <lastmod>2026-10-19</lastmod>
+    <loc>https://www.vistarakrafts.com/#/product/vk-cat-mld-bkm6</loc>
+    <lastmod>2026-10-22</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.85</priority>
-    <xhtml:link rel="alternate" hreflang="en-IN" href="https://vistara-krafts.vercel.app/#/product/vk-cat-mld-bkm6" />
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://vistara-krafts.vercel.app/#/product/vk-cat-mld-bkm6" />
+    <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.vistarakrafts.com/#/product/vk-cat-mld-bkm6" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.vistarakrafts.com/#/product/vk-cat-mld-bkm6" />
     <image:image>
       <image:loc>https://res.cloudinary.com/ecugysfd/image/upload/v1792353839/catalog_cata1_mould_bookmark_6in_1792353836.png</image:loc>
       <image:title>Slimline 6-Inch Rectangular Bookmark Silicone Mold with Tassel Hole</image:title>
     </image:image>
   </url>
   <url>
-    <loc>https://vistara-krafts.vercel.app/#/product/vk-cat-res-uvcs</loc>
-    <lastmod>2026-10-19</lastmod>
+    <loc>https://www.vistarakrafts.com/#/product/vk-cat-res-uvcs</loc>
+    <lastmod>2026-10-22</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.85</priority>
-    <xhtml:link rel="alternate" hreflang="en-IN" href="https://vistara-krafts.vercel.app/#/product/vk-cat-res-uvcs" />
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://vistara-krafts.vercel.app/#/product/vk-cat-res-uvcs" />
+    <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.vistarakrafts.com/#/product/vk-cat-res-uvcs" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.vistarakrafts.com/#/product/vk-cat-res-uvcs" />
     <image:image>
       <image:loc>https://res.cloudinary.com/ecugysfd/image/upload/v1792353851/catalog_cata1_uv_resin_25g_box_1792353847.png</image:loc>
       <image:title>Crystal-Clear Hard-Type Optical UV Cure Resin (10g, 25g, 100g)</image:title>
     </image:image>
   </url>
   <url>
-    <loc>https://vistara-krafts.vercel.app/#/product/vk-cat-mld-leaf</loc>
-    <lastmod>2026-10-19</lastmod>
+    <loc>https://www.vistarakrafts.com/#/product/vk-cat-mld-leaf</loc>
+    <lastmod>2026-10-22</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.85</priority>
-    <xhtml:link rel="alternate" hreflang="en-IN" href="https://vistara-krafts.vercel.app/#/product/vk-cat-mld-leaf" />
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://vistara-krafts.vercel.app/#/product/vk-cat-mld-leaf" />
+    <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.vistarakrafts.com/#/product/vk-cat-mld-leaf" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.vistarakrafts.com/#/product/vk-cat-mld-leaf" />
     <image:image>
       <image:loc>https://res.cloudinary.com/ecugysfd/image/upload/v1792353865/catalog_cata1_leaf_mould_1_1792353857.png</image:loc>
       <image:title>Botanical Multi-Leaf Organic Silicone Mold Collection</image:title>
     </image:image>
   </url>
   <url>
-    <loc>https://vistara-krafts.vercel.app/#/product/vk-cat-acc-smfl</loc>
-    <lastmod>2026-10-19</lastmod>
+    <loc>https://www.vistarakrafts.com/#/product/vk-cat-acc-smfl</loc>
+    <lastmod>2026-10-22</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.85</priority>
-    <xhtml:link rel="alternate" hreflang="en-IN" href="https://vistara-krafts.vercel.app/#/product/vk-cat-acc-smfl" />
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://vistara-krafts.vercel.app/#/product/vk-cat-acc-smfl" />
+    <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.vistarakrafts.com/#/product/vk-cat-acc-smfl" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.vistarakrafts.com/#/product/vk-cat-acc-smfl" />
     <image:image>
       <image:loc>https://res.cloudinary.com/ecugysfd/image/upload/v1792353895/catalog_cata1_small_flowers_03_1792353883.png</image:loc>
       <image:title>Artisanal Miniature Resin Flower Inclusions &amp; Cabochons (Small Flowers)</image:title>
@@ -281,14 +281,14 @@
 
   <!-- Machine-Readable LLM Knowledge Feeds (GEO / AEO Discovery) -->
   <url>
-    <loc>https://vistara-krafts.vercel.app/llms.txt</loc>
-    <lastmod>2026-10-19</lastmod>
+    <loc>https://www.vistarakrafts.com/llms.txt</loc>
+    <lastmod>2026-10-22</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.80</priority>
   </url>
   <url>
-    <loc>https://vistara-krafts.vercel.app/llms-full.txt</loc>
-    <lastmod>2026-10-19</lastmod>
+    <loc>https://www.vistarakrafts.com/llms-full.txt</loc>
+    <lastmod>2026-10-22</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.80</priority>
   </url>

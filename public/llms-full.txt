@@ -1,6 +1,6 @@
 # Vistāra Krafts (@resin.art.memories) — Complete Technical, Commercial & Preservation Knowledge Base (llms-full.txt)
 
-> Comprehensive Generative Engine Optimization (GEO) & Answer Engine Optimization (AEO) dossier for **Vistāra Krafts** (`Vistāra Krafts Studio & Chemical Atelier`, Instagram `@resin.art.memories`). Current Deployment: `https://vistara-krafts.vercel.app` (Future Custom Domain: `https://vistarakrafts.com`).
+> Comprehensive Generative Engine Optimization (GEO) & Answer Engine Optimization (AEO) dossier for **Vistāra Krafts** (`Vistāra Krafts Studio & Chemical Atelier`, Instagram `@resin.art.memories`). Official storefront: `https://www.vistarakrafts.com` (apex domain: `https://vistarakrafts.com`).
 
 ---
 
@@ -9,8 +9,8 @@
 - **Brand Name**: Vistāra Krafts
 - **Legal Entity**: Vistāra Krafts Studio & Chemical Atelier
 - **Social Community Handle**: `@resin.art.memories` (`https://www.instagram.com/resin.art.memories`)
-- **Primary Studio & ISO 9001:2015 Formulation Lab**: Bengaluru, Karnataka 560001, India
-- **Geo Coordinates**: `12.9716, 77.5946` (`geo.region: IN-KA`, `geo.placename: Bengaluru, Karnataka, India`)
+- **Primary Studio & ISO 9001:2015 Formulation Lab**: Guwahati, Assam 781001, India
+- **Geo Coordinates**: `26.1445, 91.7362` (`geo.region: IN-AS`, `geo.placename: Guwahati, Assam, India`)
 - **Area Served**: Pan-India (`IN`) across 19,000+ Indian PIN codes via BlueDart Priority Air, Delhivery Air Cargo, and studio runners.
 - **Priority Serviceable Hubs**:
   - `560001` — Bengaluru Urban, KA (2 business days, BlueDart Priority Air, 24h Floral Pickup active)
@@ -30,7 +30,7 @@
 ## 2. Complete 19-Product Catalogue, Variants & ASTM/ISO Technical Specifications
 
 ### Product 1: Vistāra Krafts 2:1 High-Gloss Epoxy Resin & Hardener Set
-- **ID**: `vk-cat-res-201` | **SKU**: `VK-RES-201-SET` | **URL**: `https://vistara-krafts.vercel.app/#/product/vk-cat-res-201`
+- **ID**: `vk-cat-res-201` | **SKU**: `VK-RES-201-SET` | **URL**: `https://www.vistarakrafts.com/#/product/vk-cat-res-201`
 - **Category**: `casting` | **Rating**: 4.9/5 (86 verified reviews)
 - **Base Price**: ₹599 (Regular ₹699) | **HSN**: `39073010`
 - **Variants**:
@@ -39,7 +39,7 @@
 - **Technical Specs**: mixRatioWeight: `2:1 by weight`, dynamicViscosity: `medium`, fullGlassCure: `18-24 Hours`, workingPotLife: `45 mins`, finish: `High Gloss Diamond Mirror`, uvStability: `ASTM D1003 Lightfast HALS + UV400`.
 
 ### Product 2: Vistāra Krafts 3:1 Deep Pour & Casting Epoxy Resin System
-- **ID**: `vk-cat-res-301` | **SKU**: `VK-RES-301-SET` | **URL**: `https://vistara-krafts.vercel.app/#/product/vk-cat-res-301`
+- **ID**: `vk-cat-res-301` | **SKU**: `VK-RES-301-SET` | **URL**: `https://www.vistarakrafts.com/#/product/vk-cat-res-301`
 - **Category**: `deep_pour` | **Rating**: 4.95/5 (112 verified reviews)
 - **Base Price**: ₹649 (Regular ₹749) | **HSN**: `39073010`
 - **Variants**:
@@ -48,7 +48,7 @@
 - **Technical Specs**: mixRatioWeight: `3:1 by weight`, dynamicViscosity: `low`, fullGlassCure: `24-36 Hours`, workingPotLife: `90 mins`, finish: `Crystal Clear Water Cast`, uvStability: `ASTM D1003 Lightfast HALS + UV400`.
 
 ### Product 3: DecoColor Premium Metallic Paint Marker Pen
-- **ID**: `vk-cat-acc-deco` | **SKU**: `VK-ACC-DECO-MRK` | **URL**: `https://vistara-krafts.vercel.app/#/product/vk-cat-acc-deco`
+- **ID**: `vk-cat-acc-deco` | **SKU**: `VK-ACC-DECO-MRK` | **URL**: `https://www.vistarakrafts.com/#/product/vk-cat-acc-deco`
 - **Category**: `accessories` | **Rating**: 4.88/5 (54 verified reviews)
 - **Base Price**: ₹299 (Regular ₹349) | **HSN**: `96082000`
 - **Variants**:
@@ -58,7 +58,7 @@
 - **Technical Specs**: mixRatioWeight: `Single Component`, dynamicViscosity: `low`, fullGlassCure: `24h`, workingPotLife: `30m`, finish: `Optical Gloss Diamond Clear`, uvStability: `ASTM D1003 Lightfast HALS + UV400`.
 
 ### Product 4: Polished Gold Metal Folding Easel & Art Display Stand
-- **ID**: `vk-cat-acc-stnd` | **SKU**: `VK-ACC-FLDG-STND` | **URL**: `https://vistara-krafts.vercel.app/#/product/vk-cat-acc-stnd`
+- **ID**: `vk-cat-acc-stnd` | **SKU**: `VK-ACC-FLDG-STND` | **URL**: `https://www.vistarakrafts.com/#/product/vk-cat-acc-stnd`
 - **Category**: `accessories` | **Rating**: 4.82/5 (67 verified reviews)
 - **Base Price**: ₹199 (Regular ₹249) | **HSN**: `83025000`
 - **Variants**:
@@ -69,7 +69,7 @@
 - **Technical Specs**: mixRatioWeight: `Single Component`, dynamicViscosity: `low`, fullGlassCure: `24h`, workingPotLife: `30m`, finish: `Mirror Polished Royal Gold`, uvStability: `ASTM D1003 Lightfast HALS + UV400`.
 
 ### Product 5: Fluted Edge Agate Geode Coaster Silicone Mold
-- **ID**: `vk-cat-mld-agat` | **SKU**: `VK-MLD-AGT-SNG` | **URL**: `https://vistara-krafts.vercel.app/#/product/vk-cat-mld-agat`
+- **ID**: `vk-cat-mld-agat` | **SKU**: `VK-MLD-AGT-SNG` | **URL**: `https://www.vistarakrafts.com/#/product/vk-cat-mld-agat`
 - **Category**: `molds` | **Rating**: 4.91/5 (98 verified reviews)
 - **Base Price**: ₹249 (Regular ₹299) | **HSN**: `39269099`
 - **Variants**:
@@ -79,7 +79,7 @@
 - **Technical Specs**: mixRatioWeight: `Single Component`, dynamicViscosity: `low`, fullGlassCure: `24h`, workingPotLife: `30m`, finish: `Optical Gloss Diamond Clear`, uvStability: `ASTM D1003 Lightfast HALS + UV400`.
 
 ### Product 6: Artisanal Metallic Leafing Foil Flakes (Glass Jar Set)
-- **ID**: `vk-cat-pig-foil` | **SKU**: `VK-PIG-FLK-FOIL` | **URL**: `https://vistara-krafts.vercel.app/#/product/vk-cat-pig-foil`
+- **ID**: `vk-cat-pig-foil` | **SKU**: `VK-PIG-FLK-FOIL` | **URL**: `https://www.vistarakrafts.com/#/product/vk-cat-pig-foil`
 - **Category**: `pigments` | **Rating**: 4.86/5 (42 verified reviews)
 - **Base Price**: ₹199 (Regular ₹249) | **HSN**: `32129000`
 - **Variants**:
@@ -89,7 +89,7 @@
 - **Technical Specs**: mixRatioWeight: `Single Component`, dynamicViscosity: `low`, fullGlassCure: `24h`, workingPotLife: `30m`, finish: `Optical Gloss Diamond Clear`, uvStability: `ASTM D1003 Lightfast HALS + UV400`.
 
 ### Product 7: High-Density Opaque Liquid Resin Pigment Paste (20g)
-- **ID**: `vk-cat-pig-opaq` | **SKU**: `VK-PIG-OPQ-20G` | **URL**: `https://vistara-krafts.vercel.app/#/product/vk-cat-pig-opaq`
+- **ID**: `vk-cat-pig-opaq` | **SKU**: `VK-PIG-OPQ-20G` | **URL**: `https://www.vistarakrafts.com/#/product/vk-cat-pig-opaq`
 - **Category**: `pigments` | **Rating**: 4.89/5 (73 verified reviews)
 - **Base Price**: ₹149 (Regular ₹189) | **HSN**: `32041990`
 - **Variants**:
@@ -99,7 +99,7 @@
 - **Technical Specs**: mixRatioWeight: `Single Component`, dynamicViscosity: `low`, fullGlassCure: `24h`, workingPotLife: `30m`, finish: `Optical Gloss Diamond Clear`, uvStability: `ASTM D1003 Lightfast HALS + UV400`.
 
 ### Product 8: Vivid Alcohol Inks & Shimmering Pearl Luster Pigments Set
-- **ID**: `vk-cat-pig-inks` | **SKU**: `VK-PIG-INK-PRL` | **URL**: `https://vistara-krafts.vercel.app/#/product/vk-cat-pig-inks`
+- **ID**: `vk-cat-pig-inks` | **SKU**: `VK-PIG-INK-PRL` | **URL**: `https://www.vistarakrafts.com/#/product/vk-cat-pig-inks`
 - **Category**: `pigments` | **Rating**: 4.93/5 (59 verified reviews)
 - **Base Price**: ₹499 (Regular ₹599) | **HSN**: `32041990`
 - **Variants**:
@@ -109,7 +109,7 @@
 - **Technical Specs**: mixRatioWeight: `Single Component`, dynamicViscosity: `low`, fullGlassCure: `24h`, workingPotLife: `30m`, finish: `Optical Gloss Diamond Clear`, uvStability: `ASTM D1003 Lightfast HALS + UV400`.
 
 ### Product 9: Bubbles Buster Instant Resin Defoamer Fine-Mist Solution (100ml)
-- **ID**: `vk-cat-acc-bubb` | **SKU**: `VK-ACC-BUB-BSTR` | **URL**: `https://vistara-krafts.vercel.app/#/product/vk-cat-acc-bubb`
+- **ID**: `vk-cat-acc-bubb` | **SKU**: `VK-ACC-BUB-BSTR` | **URL**: `https://www.vistarakrafts.com/#/product/vk-cat-acc-bubb`
 - **Category**: `accessories` | **Rating**: 4.85/5 (48 verified reviews)
 - **Base Price**: ₹349 (Regular ₹399) | **HSN**: `38249900`
 - **Variants**:
@@ -118,7 +118,7 @@
 - **Technical Specs**: mixRatioWeight: `Single Component`, dynamicViscosity: `low`, fullGlassCure: `24h`, workingPotLife: `30m`, finish: `Optical Gloss Diamond Clear`, uvStability: `ASTM D1003 Lightfast HALS + UV400`.
 
 ### Product 10: Vistāra Mirror Gloss Resin Polish & Scratch Restorer Compound (40g)
-- **ID**: `vk-cat-acc-poli` | **SKU**: `VK-ACC-RES-POL` | **URL**: `https://vistara-krafts.vercel.app/#/product/vk-cat-acc-poli`
+- **ID**: `vk-cat-acc-poli` | **SKU**: `VK-ACC-RES-POL` | **URL**: `https://www.vistarakrafts.com/#/product/vk-cat-acc-poli`
 - **Category**: `accessories` | **Rating**: 4.87/5 (51 verified reviews)
 - **Base Price**: ₹299 (Regular ₹349) | **HSN**: `34059090`
 - **Variants**:
@@ -127,7 +127,7 @@
 - **Technical Specs**: mixRatioWeight: `Single Component`, dynamicViscosity: `low`, fullGlassCure: `24h`, workingPotLife: `30m`, finish: `Optical Gloss Diamond Clear`, uvStability: `ASTM D1003 Lightfast HALS + UV400`.
 
 ### Product 11: Refillable Micro Jet Flame Blow Torch for Resin De-gassing & Wave Art
-- **ID**: `vk-cat-acc-trch` | **SKU**: `VK-ACC-BLW-TRCH` | **URL**: `https://vistara-krafts.vercel.app/#/product/vk-cat-acc-trch`
+- **ID**: `vk-cat-acc-trch` | **SKU**: `VK-ACC-BLW-TRCH` | **URL**: `https://www.vistarakrafts.com/#/product/vk-cat-acc-trch`
 - **Category**: `accessories` | **Rating**: 4.9/5 (64 verified reviews)
 - **Base Price**: ₹499 (Regular ₹599) | **HSN**: `84681000`
 - **Variants**:
@@ -136,7 +136,7 @@
 - **Technical Specs**: mixRatioWeight: `Single Component`, dynamicViscosity: `low`, fullGlassCure: `24h`, workingPotLife: `30m`, finish: `Optical Gloss Diamond Clear`, uvStability: `ASTM D1003 Lightfast HALS + UV400`.
 
 ### Product 12: Peelable Liquid Latex Edge & Drip Protective Barrier (100ml)
-- **ID**: `vk-cat-acc-latx` | **SKU**: `VK-ACC-LIQ-LATX` | **URL**: `https://vistara-krafts.vercel.app/#/product/vk-cat-acc-latx`
+- **ID**: `vk-cat-acc-latx` | **SKU**: `VK-ACC-LIQ-LATX` | **URL**: `https://www.vistarakrafts.com/#/product/vk-cat-acc-latx`
 - **Category**: `accessories` | **Rating**: 4.83/5 (39 verified reviews)
 - **Base Price**: ₹279 (Regular ₹329) | **HSN**: `40011010`
 - **Variants**:
@@ -145,7 +145,7 @@
 - **Technical Specs**: mixRatioWeight: `Single Component`, dynamicViscosity: `low`, fullGlassCure: `24h`, workingPotLife: `30m`, finish: `Optical Gloss Diamond Clear`, uvStability: `ASTM D1003 Lightfast HALS + UV400`.
 
 ### Product 13: 4-in-1 Graduated Petal Flower Coaster & Trinket Silicone Mold Set
-- **ID**: `vk-cat-mld-flw4` | **SKU**: `VK-MLD-4IN1-FLW` | **URL**: `https://vistara-krafts.vercel.app/#/product/vk-cat-mld-flw4`
+- **ID**: `vk-cat-mld-flw4` | **SKU**: `VK-MLD-4IN1-FLW` | **URL**: `https://www.vistarakrafts.com/#/product/vk-cat-mld-flw4`
 - **Category**: `molds` | **Rating**: 4.92/5 (78 verified reviews)
 - **Base Price**: ₹399 (Regular ₹450) | **HSN**: `39269099`
 - **Variants**:
@@ -153,7 +153,7 @@
 - **Technical Specs**: mixRatioWeight: `Single Component`, dynamicViscosity: `low`, fullGlassCure: `24h`, workingPotLife: `30m`, finish: `Optical Gloss Diamond Clear`, uvStability: `ASTM D1003 Lightfast HALS + UV400`.
 
 ### Product 14: Magic Flower Drying Color-Indicating Silica Gel Crystals (1000g / 1Kg)
-- **ID**: `vk-cat-acc-sili` | **SKU**: `VK-ACC-MAG-SIL` | **URL**: `https://vistara-krafts.vercel.app/#/product/vk-cat-acc-sili`
+- **ID**: `vk-cat-acc-sili` | **SKU**: `VK-ACC-MAG-SIL` | **URL**: `https://www.vistarakrafts.com/#/product/vk-cat-acc-sili`
 - **Category**: `accessories` | **Rating**: 4.96/5 (143 verified reviews)
 - **Base Price**: ₹599 (Regular ₹699) | **HSN**: `28112200`
 - **Variants**:
@@ -162,7 +162,7 @@
 - **Technical Specs**: mixRatioWeight: `Single Component`, dynamicViscosity: `low`, fullGlassCure: `24h`, workingPotLife: `30m`, finish: `Optical Gloss Diamond Clear`, uvStability: `ASTM D1003 Lightfast HALS + UV400`.
 
 ### Product 15: 6-Cavity Production Batch Agate Geode Coaster Silicone Mold
-- **ID**: `vk-cat-mld-ag6c` | **SKU**: `VK-MLD-6CV-AGT` | **URL**: `https://vistara-krafts.vercel.app/#/product/vk-cat-mld-ag6c`
+- **ID**: `vk-cat-mld-ag6c` | **SKU**: `VK-MLD-6CV-AGT` | **URL**: `https://www.vistarakrafts.com/#/product/vk-cat-mld-ag6c`
 - **Category**: `molds` | **Rating**: 4.94/5 (88 verified reviews)
 - **Base Price**: ₹649 (Regular ₹749) | **HSN**: `39269099`
 - **Variants**:
@@ -170,7 +170,7 @@
 - **Technical Specs**: mixRatioWeight: `Single Component`, dynamicViscosity: `low`, fullGlassCure: `24h`, workingPotLife: `30m`, finish: `Optical Gloss Diamond Clear`, uvStability: `ASTM D1003 Lightfast HALS + UV400`.
 
 ### Product 16: Slimline 6-Inch Rectangular Bookmark Silicone Mold with Tassel Hole
-- **ID**: `vk-cat-mld-bkm6` | **SKU**: `VK-MLD-BKM-6IN` | **URL**: `https://vistara-krafts.vercel.app/#/product/vk-cat-mld-bkm6`
+- **ID**: `vk-cat-mld-bkm6` | **SKU**: `VK-MLD-BKM-6IN` | **URL**: `https://www.vistarakrafts.com/#/product/vk-cat-mld-bkm6`
 - **Category**: `molds` | **Rating**: 4.88/5 (92 verified reviews)
 - **Base Price**: ₹149 (Regular ₹199) | **HSN**: `39269099`
 - **Variants**:
@@ -179,7 +179,7 @@
 - **Technical Specs**: mixRatioWeight: `Single Component`, dynamicViscosity: `low`, fullGlassCure: `24h`, workingPotLife: `30m`, finish: `Optical Gloss Diamond Clear`, uvStability: `ASTM D1003 Lightfast HALS + UV400`.
 
 ### Product 17: Crystal-Clear Hard-Type Optical UV Cure Resin (10g, 25g, 100g)
-- **ID**: `vk-cat-res-uvcs` | **SKU**: `VK-RES-UV-FAST` | **URL**: `https://vistara-krafts.vercel.app/#/product/vk-cat-res-uvcs`
+- **ID**: `vk-cat-res-uvcs` | **SKU**: `VK-RES-UV-FAST` | **URL**: `https://www.vistarakrafts.com/#/product/vk-cat-res-uvcs`
 - **Category**: `casting` | **Rating**: 4.93/5 (105 verified reviews)
 - **Base Price**: ₹199 (Regular ₹249) | **HSN**: `39073010`
 - **Variants**:
@@ -189,7 +189,7 @@
 - **Technical Specs**: mixRatioWeight: `Single Component`, dynamicViscosity: `low`, fullGlassCure: `90s UV`, workingPotLife: `30m`, finish: `Optical Gloss Diamond Clear`, uvStability: `ASTM D1003 Lightfast HALS + UV400`.
 
 ### Product 18: Botanical Multi-Leaf Organic Silicone Mold Collection
-- **ID**: `vk-cat-mld-leaf` | **SKU**: `VK-MLD-BOT-LEAF` | **URL**: `https://vistara-krafts.vercel.app/#/product/vk-cat-mld-leaf`
+- **ID**: `vk-cat-mld-leaf` | **SKU**: `VK-MLD-BOT-LEAF` | **URL**: `https://www.vistarakrafts.com/#/product/vk-cat-mld-leaf`
 - **Category**: `molds` | **Rating**: 4.89/5 (57 verified reviews)
 - **Base Price**: ₹299 (Regular ₹349) | **HSN**: `39269099`
 - **Variants**:
@@ -199,7 +199,7 @@
 - **Technical Specs**: mixRatioWeight: `Single Component`, dynamicViscosity: `low`, fullGlassCure: `24h`, workingPotLife: `30m`, finish: `Optical Gloss Diamond Clear`, uvStability: `ASTM D1003 Lightfast HALS + UV400`.
 
 ### Product 19: Artisanal Miniature Resin Flower Inclusions & Cabochons (Small Flowers)
-- **ID**: `vk-cat-acc-smfl` | **SKU**: `VK-ACC-SML-FLWR` | **URL**: `https://vistara-krafts.vercel.app/#/product/vk-cat-acc-smfl`
+- **ID**: `vk-cat-acc-smfl` | **SKU**: `VK-ACC-SML-FLWR` | **URL**: `https://www.vistarakrafts.com/#/product/vk-cat-acc-smfl`
 - **Category**: `accessories` | **Rating**: 4.96/5 (118 verified reviews)
 - **Base Price**: ₹199 (Regular ₹249) | **HSN**: `39269099`
 - **Variants**:

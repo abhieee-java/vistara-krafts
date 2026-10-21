@@ -4238,7 +4238,7 @@
     const seoCfg = (Store && typeof Store.getSeoConfig === 'function')
       ? Store.getSeoConfig()
       : {
-          siteUrl: String(window.VISTARA_SITE_URL || 'https://vistara-krafts.vercel.app').replace(/\/+$/, ''),
+          siteUrl: String(window.VISTARA_SITE_URL || 'https://www.vistarakrafts.com').replace(/\/+$/, ''),
           futureCustomDomain: 'https://vistarakrafts.com',
           defaultTitle: 'Vistāra Krafts (@resin.art.memories) | UltraClear Epoxy Resin Systems & Bridal Varmala Preservation Studio India',
           defaultDescription: 'Official Vistāra Krafts × Resin Art Memories (@resin.art.memories) Storefront.',
@@ -4257,7 +4257,7 @@
           }
         };
 
-    const siteUrl = String(window.VISTARA_SITE_URL || seoCfg.siteUrl || 'https://vistara-krafts.vercel.app').replace(/\/+$/, '');
+    const siteUrl = String(window.VISTARA_SITE_URL || seoCfg.siteUrl || 'https://www.vistarakrafts.com').replace(/\/+$/, '');
     seoCfg.siteUrl = siteUrl;
 
     const toAbsImageUrl = (rawImg) => {

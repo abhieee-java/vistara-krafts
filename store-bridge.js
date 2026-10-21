@@ -95,7 +95,7 @@
       handle: '@resin.art.memories',
       authorName: 'Aanya • Lead Preservation Artist',
       avatar: IMAGES.avatarPatron,
-      location: 'Mumbai & Bengaluru Studio',
+      location: 'Guwahati & Mumbai Studio',
       timeAgo: '2h ago',
       tag: 'StudioFormulas',
       badge: 'Reel • 148K views',
@@ -173,7 +173,7 @@
       handle: '@resin.art.memories',
       authorName: 'Resin Art Memories Studio',
       avatar: IMAGES.avatarPatron,
-      location: 'Bengaluru Workshop',
+      location: 'Guwahati Workshop',
       timeAgo: '3d ago',
       tag: 'MetallicAccents',
       badge: 'High Impact Foil',
@@ -289,6 +289,7 @@
   }
 
   const PINCODE_DIRECTORY = {
+    '781001': { city: 'Guwahati, AS', days: '1–2 business days', courier: 'BlueDart Priority Air', floralPickup: true },
     '560001': { city: 'Bengaluru Urban, KA', days: '2 business days', courier: 'BlueDart Priority Air', floralPickup: true },
     '400001': { city: 'Mumbai South, MH', days: '1–2 business days', courier: 'BlueDart Express & Studio Runner', floralPickup: true },
     '110001': { city: 'New Delhi Central, DL', days: '2 business days', courier: 'Delhivery Air Cargo', floralPickup: true },
@@ -953,7 +954,7 @@
     getPincodeInfo() {
       return safeRead(STORAGE_KEYS.PINCODE, {
         pin: '560001',
-        city: 'Bengaluru Urban, KA',
+        city: 'Guwahati, AS',
         days: '2 business days',
         courier: 'BlueDart Priority Air',
         floralPickup: true
@@ -2062,7 +2063,7 @@
         freeShippingThreshold: 999,
         defaultCourier: 'Delhivery Express',
         announcementBarActive: true,
-        announcementBarText: 'Vistāra Krafts • 24h Bridal Varmala Pickup • Free Express Shipping > ₹999 • 18% GST ITC • Handcrafted Bengaluru Atelier • Insured Air Dispatch',
+        announcementBarText: 'Vistāra Krafts • 24h Bridal Varmala Pickup • Free Express Shipping > ₹999 • 18% GST ITC • Handcrafted Guwahati Atelier • Insured Air Dispatch',
         enableFloralTransformationSection: false
       };
       const v2 = safeRead(STORAGE_KEYS.SETTINGS, null);
@@ -2566,7 +2567,7 @@
         global.VISTARA_SITE_URL ||
         seoCfg.siteUrl ||
         (cfCfg.brand && cfCfg.brand.siteUrl) ||
-        'https://vistara-krafts.vercel.app'
+        'https://www.vistarakrafts.com'
       ).replace(/\/+$/, '');
       const futureCustomDomain = String(
         global.VISTARA_CUSTOM_DOMAIN ||
@@ -2592,14 +2593,14 @@
         geo: seoCfg.geo || {
           country: 'IN',
           countryName: 'India',
-          region: 'IN-KA',
-          placename: 'Bengaluru, Karnataka, India',
-          postalCode: '560001',
-          latitude: 12.9716,
-          longitude: 77.5946,
-          position: '12.9716;77.5946',
-          icbm: '12.9716, 77.5946',
-          areaServed: ['IN', 'Bengaluru', 'Mumbai', 'New Delhi', 'Hyderabad', 'Chennai', 'Pune', 'Jaipur', 'Kolkata', 'Udaipur', 'Goa']
+          region: 'IN-AS',
+          placename: 'Guwahati, Assam, India',
+          postalCode: '781001',
+          latitude: 26.1445,
+          longitude: 91.7362,
+          position: '26.1445;91.7362',
+          icbm: '26.1445, 91.7362',
+          areaServed: ['IN', 'Guwahati', 'Assam', 'Northeast India', 'Bengaluru', 'Mumbai', 'New Delhi', 'Hyderabad', 'Chennai', 'Kolkata', 'Jaipur']
         }
       };
     },
