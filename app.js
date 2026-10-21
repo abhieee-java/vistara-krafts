@@ -1,5 +1,5 @@
 /**
- * Resin Art Memories (@resin.art.memories) × Vistāra Krafts Studio
+ * Resin Art Memories (@resin.art.memories) × Vistāra Krafts
  * Complete Customer Social E-Commerce Application Controller
  */
 (function () {
@@ -3890,8 +3890,8 @@
       '@type': ['Organization', 'OnlineStore', 'LocalBusiness'],
       '@id': `${siteUrl}/#organization`,
       name: 'Vistāra Krafts × Resin Art Memories',
-      alternateName: ['Vistara Krafts', 'Resin Art Memories', '@resin.art.memories', 'Vistāra Krafts Studio'],
-      legalName: 'Vistāra Krafts Studio India',
+      alternateName: ['Vistara Krafts', 'Resin Art Memories', '@resin.art.memories'],
+      legalName: 'Vistāra Krafts India',
       url: `${siteUrl}/`,
       logo: {
         '@type': 'ImageObject',
@@ -4416,7 +4416,7 @@
       availability: 'instock',
       pageSchemaType: 'WebPage',
       breadcrumbs: [
-        { name: 'Vistāra Krafts Studio Home', url: `${siteUrl}/` }
+        { name: 'Vistāra Krafts Home', url: `${siteUrl}/` }
       ]
     };
 
@@ -4431,7 +4431,7 @@
           { label: 'Standard Edition', price: activeProduct.price || 1299, regularPrice: activeProduct.regularPrice || activeProduct.price || 1299 };
         const priceNum = Number(activeVariant.price || activeProduct.price || 1299);
         const canonicalUrl = `${siteUrl}/#/product/${activeProduct.id}`;
-        const prodName = activeProduct.name || 'Vistāra Krafts Studio Edition';
+        const prodName = activeProduct.name || 'Vistāra Krafts Edition';
         const prodShort = activeProduct.shortName || prodName;
         const prodSku = activeProduct.sku || `VK-${String(activeProduct.id).toUpperCase()}`;
         const prodSubtitle = activeProduct.subtitle || `${prodName} — Handcrafted by Vistāra Krafts × Resin Art Memories (@resin.art.memories)`;
@@ -4461,7 +4461,7 @@
           availability: activeProduct.inStock !== false ? 'instock' : 'oos',
           pageSchemaType: 'ItemPage',
           breadcrumbs: [
-            { name: 'Vistāra Krafts Studio Home', url: `${siteUrl}/` },
+            { name: 'Vistāra Krafts Home', url: `${siteUrl}/` },
             { name: 'Epoxy & Keepsake Catalogue', url: `${siteUrl}/#/catalog` },
             { name: prodShort, url: canonicalUrl }
           ]
@@ -4479,7 +4479,7 @@
         canonicalUrl,
         pageSchemaType: 'CollectionPage',
         breadcrumbs: [
-          { name: 'Vistāra Krafts Studio Home', url: `${siteUrl}/` },
+          { name: 'Vistāra Krafts Home', url: `${siteUrl}/` },
           { name: `Catalogue (${catLabel})`, url: canonicalUrl }
         ]
       };
@@ -4494,7 +4494,7 @@
         priceAmount: String(shapePrice),
         pageSchemaType: 'WebPage',
         breadcrumbs: [
-          { name: 'Vistāra Krafts Studio Home', url: `${siteUrl}/` },
+          { name: 'Vistāra Krafts Home', url: `${siteUrl}/` },
           { name: 'Custom Bridal Varmala & Pour Calculator Studio', url: canonicalUrl }
         ]
       };
@@ -4508,7 +4508,7 @@
         priceAmount: '1299',
         pageSchemaType: 'CollectionPage',
         breadcrumbs: [
-          { name: 'Vistāra Krafts Studio Home', url: `${siteUrl}/` },
+          { name: 'Vistāra Krafts Home', url: `${siteUrl}/` },
           { name: '@resin.art.memories Community Feed', url: canonicalUrl }
         ]
       };
@@ -4528,7 +4528,7 @@
         robots: 'noindex, follow',
         canonicalUrl,
         breadcrumbs: [
-          { name: 'Vistāra Krafts Studio Home', url: `${siteUrl}/` },
+          { name: 'Vistāra Krafts Home', url: `${siteUrl}/` },
           { name: routeLabels[route], url: canonicalUrl }
         ]
       };
@@ -4541,7 +4541,7 @@
         robots: 'noindex, nofollow',
         canonicalUrl,
         breadcrumbs: [
-          { name: 'Vistāra Krafts Studio Home', url: `${siteUrl}/` },
+          { name: 'Vistāra Krafts Home', url: `${siteUrl}/` },
           { name: '404 Not Found', url: canonicalUrl }
         ]
       };
@@ -7471,7 +7471,7 @@
       const cleanStoreName = storeName.replace(/\s+Studio$/i, '');
       const threshold = settings.freeShippingThreshold != null ? Number(settings.freeShippingThreshold) : 999;
       const thresholdStr = Number(threshold).toLocaleString('en-IN');
-      const headlineMarkup = `<strong>${esc(cleanStoreName)} Studio</strong> • 24h Bridal Varmala Pickup • Free Express Shipping &gt; ₹${thresholdStr}<span class="hidden sm:inline"> • 18% GST ITC • Handcrafted Bengaluru Atelier • Insured Air Dispatch</span>`;
+      const headlineMarkup = `<strong>${esc(cleanStoreName)}</strong> • 24h Bridal Varmala Pickup • Free Express Shipping &gt; ₹${thresholdStr}<span class="hidden sm:inline"> • 18% GST ITC • Handcrafted Bengaluru Atelier • Insured Air Dispatch</span>`;
       const announcementHeadlineEls = document.querySelectorAll('.js-announcement-headline, #announcement-text, #announcement-text-dup');
       announcementHeadlineEls.forEach(el => {
         el.innerHTML = headlineMarkup;

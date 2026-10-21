@@ -1,5 +1,5 @@
 /**
- * Resin Art Memories × Vistāra Krafts Studio
+ * Resin Art Memories × Vistāra Krafts
  * Unified Customer Storefront State, E-Commerce Engine & Host-Push / Supabase / Cloudflare Bridge
  * Instagram: https://www.instagram.com/resin.art.memories?utm_source=qr
  */
@@ -1676,7 +1676,7 @@
               key: rzpData.keyId || 'rzp_test_TpT9QQKuBwPSmm',
               amount: rzpData.amount,
               currency: rzpData.currency || 'INR',
-              name: 'Vistāra Krafts Studio',
+              name: 'Vistāra Krafts',
               description: `Order #${rzpData.orderId}`,
               image: './vistara-krafts-logo.jpg',
               order_id: rzpData.razorpayOrderId,
@@ -2012,7 +2012,7 @@
 
     getSettings() {
       const defaults = {
-        storeName: 'Vistāra Krafts Studio',
+        storeName: 'Vistāra Krafts',
         brandTagline: 'Curated Resin Art & Museum-Grade Preservation',
         instagramHandle: '@vistarakrafts',
         contactEmail: 'support@vistarakrafts.com',
@@ -2022,7 +2022,7 @@
         freeShippingThreshold: 999,
         defaultCourier: 'Delhivery Express',
         announcementBarActive: true,
-        announcementBarText: 'Vistāra Krafts Studio • 24h Bridal Varmala Pickup • Free Express Shipping > ₹999 • 18% GST ITC • Handcrafted Bengaluru Atelier • Insured Air Dispatch',
+        announcementBarText: 'Vistāra Krafts • 24h Bridal Varmala Pickup • Free Express Shipping > ₹999 • 18% GST ITC • Handcrafted Bengaluru Atelier • Insured Air Dispatch',
         enableFloralTransformationSection: false
       };
       const v2 = safeRead(STORAGE_KEYS.SETTINGS, null);
@@ -2079,7 +2079,7 @@
 
         let resolvedEmail = currentSettings.contactEmail || currentSettings.supportEmail || 'support@vistarakrafts.com';
         let resolvedPhone = currentSettings.contactPhone || currentSettings.supportPhone || '+91 70022 70886';
-        let resolvedName = currentSettings.storeName || 'Vistāra Krafts Studio';
+        let resolvedName = currentSettings.storeName || 'Vistāra Krafts';
         let resolvedTagline = currentSettings.brandTagline || 'Curated Resin Art & Museum-Grade Preservation';
         let resolvedInstagram = currentSettings.instagramHandle || '@vistarakrafts';
 
@@ -2207,7 +2207,7 @@
           const desktopExtra = remaining.slice(2).join(' • ');
           markup = `<strong>${firstPart}</strong>${mainSlice ? ' • ' + mainSlice : ''}${desktopExtra ? `<span class="hidden sm:inline"> • ${desktopExtra}</span>` : ''}`;
         } else {
-          markup = `<strong>${cleanStoreName} Studio</strong> • ${dynamicText}`;
+          markup = `<strong>${cleanStoreName}</strong> • ${dynamicText}`;
         }
       }
 
@@ -2301,7 +2301,7 @@
           ...existingProd,
           ...targetProduct,
           sku: targetProduct.sku || existingProd.sku || ('VK-' + String(targetProduct.id).toUpperCase().replace(/[^A-Z0-9-]+/g, '-')),
-          name: targetProduct.name || existingProd.name || 'Vistāra Krafts Studio Edition',
+          name: targetProduct.name || existingProd.name || 'Vistāra Krafts Edition',
           shortName: targetProduct.shortName || existingProd.shortName || targetProduct.name || 'Studio Edition',
           subtitle: targetProduct.subtitle || existingProd.subtitle || 'Museum-Grade Optical Epoxy & Handcrafted Keepsake Edition',
           category: resolvedCat,
@@ -2628,7 +2628,7 @@
       const tickets = this.getDpdpTickets();
 
       return {
-        app: 'Vistāra Krafts Studio (@resin.art.memories)',
+        app: 'Vistāra Krafts (@resin.art.memories)',
         regulation: 'Digital Personal Data Protection (DPDP) Act, 2023 (India)',
         exportTimestamp: new Date().toISOString(),
         dataPrincipalSummary: {
