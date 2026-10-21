@@ -2110,9 +2110,9 @@
           contactPhone: resolvedPhone,
           supportPhone: resolvedPhone,
           instagramHandle: resolvedInstagram,
-          ...(barRow && barRow.value && (barDbUpdated >= localUpdated || !currentSettings.announcementBarText) ? {
-            announcementBarText: barRow.value.text || currentSettings.announcementBarText,
-            announcementBarActive: barRow.value.enabled !== false
+          ...(barRow && barRow.value ? {
+            announcementBarText: barRow.value.text !== undefined ? barRow.value.text : currentSettings.announcementBarText,
+            announcementBarActive: barRow.value.enabled !== undefined ? barRow.value.enabled : currentSettings.announcementBarActive
           } : (catPayload?.announcementBarText ? {
             announcementBarText: catPayload.announcementBarText,
             announcementBarActive: catPayload.announcementBarActive !== false
@@ -2175,6 +2175,7 @@
 
       const settings = (this.getSettings && this.getSettings()) || {};
       const storeName = settings.storeName || 'Vistāra Krafts';
+      const cleanStoreName = storeName.replace(/\s+Studio$/i, '');
       const threshold = settings.freeShippingThreshold != null ? Number(settings.freeShippingThreshold) : 999;
       const thresholdStr = Number(threshold).toLocaleString('en-IN');
 
@@ -2186,7 +2187,19 @@
           .replace(/>\s*₹?\s*1[,.]?499/gi, `> ₹${thresholdStr}`)
           .replace(/above\s*₹?\s*1[,.]?499/gi, `above ₹${thresholdStr}`);
 
-        if (dynamicText.includes(' • ')) {
+        // If the custom text already contains the brand name, don't prepend "Studio Studio"
+        if (dynamicText.toLowerCase().includes(cleanStoreName.toLowerCase())) {
+          if (dynamicText.includes(' • ')) {
+            const parts = dynamicText.split(' • ');
+            const firstPart = parts[0];
+            const remaining = parts.slice(1);
+            const mainSlice = remaining.slice(0, 2).join(' • ');
+            const desktopExtra = remaining.slice(2).join(' • ');
+            markup = `<strong>${firstPart}</strong>${mainSlice ? ' • ' + mainSlice : ''}${desktopExtra ? `<span class="hidden sm:inline"> • ${desktopExtra}</span>` : ''}`;
+          } else {
+            markup = dynamicText;
+          }
+        } else if (dynamicText.includes(' • ')) {
           const parts = dynamicText.split(' • ');
           const firstPart = parts[0];
           const remaining = parts.slice(1);
@@ -2194,7 +2207,7 @@
           const desktopExtra = remaining.slice(2).join(' • ');
           markup = `<strong>${firstPart}</strong>${mainSlice ? ' • ' + mainSlice : ''}${desktopExtra ? `<span class="hidden sm:inline"> • ${desktopExtra}</span>` : ''}`;
         } else {
-          markup = `<strong>${storeName} Studio</strong> • ${dynamicText}`;
+          markup = `<strong>${cleanStoreName} Studio</strong> • ${dynamicText}`;
         }
       }
 
@@ -2795,6 +2808,15 @@
             const cachedVersion = Number(safeRead('vk_store_published_version', 0));
             if (incomingVersion > cachedVersion) {
               safeWrite('vk_store_published_version', incomingVersion);
+              if (val && typeof val === 'object' && val.announcementBarText) {
+                const curr = Store.getSettings();
+                curr.announcementBarText = val.announcementBarText;
+                if (val.announcementBarActive !== undefined) curr.announcementBarActive = val.announcementBarActive;
+                safeWrite(STORAGE_KEYS.SETTINGS, curr);
+                safeWrite('vk_settings_v1', curr);
+                safeWrite('ram_vk_settings_v2', curr);
+                Store.applyAnnouncementBar(val.announcementBarText, val.announcementBarActive);
+              }
               if (typeof Store.refreshCatalog === 'function') {
                 Store.refreshCatalog({ smooth: true });
               }
@@ -2832,6 +2854,15 @@
           const cachedVersion = Number(safeRead('vk_store_published_version', 0));
           if (incomingVersion > cachedVersion) {
             safeWrite('vk_store_published_version', incomingVersion);
+            const pubText = ev.data.settings?.announcementBarText || ev.data.announcementBarText;
+            if (pubText) {
+              const curr = Store.getSettings();
+              curr.announcementBarText = pubText;
+              safeWrite(STORAGE_KEYS.SETTINGS, curr);
+              safeWrite('vk_settings_v1', curr);
+              safeWrite('ram_vk_settings_v2', curr);
+              Store.applyAnnouncementBar(pubText, curr.announcementBarActive);
+            }
             if (typeof Store.refreshCatalog === 'function') {
               Store.refreshCatalog({ smooth: true });
             }

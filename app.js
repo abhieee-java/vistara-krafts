@@ -3570,7 +3570,9 @@
                 <button type="button" onclick="window.setAccountOrderSearch('')" class="min-h-[48px] px-5 py-2.5 rounded-xl bg-primary text-white text-xs font-bold mt-1 shadow-xs cursor-pointer">Show All Orders</button>
               `}
             </div>
-          ` : filteredOrders.map(ord => {
+          ` : `
+            <div class="orders-list-scroll-wrapper flex flex-col gap-4 ${filteredOrders.length > 2 ? 'orders-content-scroll' : 'h-auto'}">
+              ${filteredOrders.map(ord => {
             const cleanOrderId = String(ord.orderId || ord.orderNumber || ord.id || '').replace(/^#/, '');
             return `
             <div class="ram-card p-5 bg-white flex flex-col gap-4" data-order-id="${esc(cleanOrderId)}">
@@ -3705,6 +3707,8 @@
             </div>
           `;
           }).join('')}
+            </div>
+          `}
         </div>
 
         <!-- Customer Bridal Flower Packing & Resin Care Vault -->
@@ -7458,15 +7462,21 @@
       drawerPhone.innerHTML = `Phone: <a href="tel:${esc(cleanPhone)}" class="text-primary font-semibold hover:underline">${esc(resolvedPhone)}</a>`;
     }
 
-    // Top Announcement Bar Free Shipping & Store Name
-    const storeName = settings.storeName || 'Vistāra Krafts';
-    const threshold = settings.freeShippingThreshold != null ? Number(settings.freeShippingThreshold) : 999;
-    const thresholdStr = Number(threshold).toLocaleString('en-IN');
-    const headlineMarkup = `<strong>${esc(storeName)} Studio</strong> • 24h Bridal Varmala Pickup • Free Express Shipping &gt; ₹${thresholdStr}<span class="hidden sm:inline"> • 18% GST ITC • Handcrafted Bengaluru Atelier • Insured Air Dispatch</span>`;
-    const announcementHeadlineEls = document.querySelectorAll('.js-announcement-headline, #announcement-text, #announcement-text-dup');
-    announcementHeadlineEls.forEach(el => {
-      el.innerHTML = headlineMarkup;
-    });
+    // Top Announcement Bar: Check if custom announcementBarText is published/configured
+    const rawAnnouncement = settings.announcementBarText || (typeof Store !== 'undefined' && typeof Store.getSettings === 'function' ? Store.getSettings()?.announcementBarText : null);
+    if (rawAnnouncement && typeof Store !== 'undefined' && typeof Store.applyAnnouncementBar === 'function') {
+      Store.applyAnnouncementBar(rawAnnouncement, settings.announcementBarActive);
+    } else {
+      const storeName = settings.storeName || 'Vistāra Krafts';
+      const cleanStoreName = storeName.replace(/\s+Studio$/i, '');
+      const threshold = settings.freeShippingThreshold != null ? Number(settings.freeShippingThreshold) : 999;
+      const thresholdStr = Number(threshold).toLocaleString('en-IN');
+      const headlineMarkup = `<strong>${esc(cleanStoreName)} Studio</strong> • 24h Bridal Varmala Pickup • Free Express Shipping &gt; ₹${thresholdStr}<span class="hidden sm:inline"> • 18% GST ITC • Handcrafted Bengaluru Atelier • Insured Air Dispatch</span>`;
+      const announcementHeadlineEls = document.querySelectorAll('.js-announcement-headline, #announcement-text, #announcement-text-dup');
+      announcementHeadlineEls.forEach(el => {
+        el.innerHTML = headlineMarkup;
+      });
+    }
   };
 
   // Initialize on DOMContentLoaded
