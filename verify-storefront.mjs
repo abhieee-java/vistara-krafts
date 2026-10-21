@@ -376,9 +376,9 @@ test('SPA Router in app.js renders all 7 customer routes, enforces zero owner/ad
     ['custom-studio', null, 'Custom Memory'],
     ['wishlist', null, 'Saved'],
     ['cart', null, 'Invoice Summary'],
-    ['account', null, 'Active Orders &amp; Varmala Preservation Timeline'],
-    ['orders', null, 'Active Orders &amp; Varmala Preservation Timeline'],
-    ['profile', null, 'Patron Profile &amp; Shipping Address']
+    ['account', null, 'My Orders'],
+    ['orders', null, 'My Orders'],
+    ['profile', null, 'Account &amp; Delivery Address']
   ];
 
   const forbiddenOwnerTerms = [
@@ -1340,7 +1340,7 @@ test('QA Audit & UX Reliability: Accessible Back Navigation on Subpages, Custom 
     { route: 'wishlist', param: null, backText: 'Back' },
     { route: 'cart', param: null, backText: 'Back to Shopping' },
     { route: 'social', param: null, backText: 'Back to Discover' },
-    { route: 'account', param: null, backText: 'Back to Storefront' }
+    { route: 'profile', param: null, backText: 'Home' }
   ];
 
   for (const page of subpages) {
@@ -2151,10 +2151,9 @@ test('Persona Preference, Masculine/Feminine Feed Curation, Gifting Sort & Produ
 
 test('Mobile Screen Single-Line Order ID & Hamburger Drawer Architecture (Hick\'s Law & Zero Duplicates)', () => {
   const indexHtml = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8');
-  // 1. Verify index.html contains distinct Account section and distinct Orders & Live Tracking section
+  // 1. Verify index.html contains dedicated account slot and orders section is removed from drawer
   assert.ok(indexHtml.includes('id="bar-drawer-account-slot"'), 'Drawer must include dedicated account slot');
-  assert.ok(indexHtml.includes('Orders &amp; Live Tracking'), 'Drawer must include distinct Orders & Live Tracking card');
-  assert.ok(indexHtml.includes('5-Stage Telemetry'), 'Drawer Orders card must display 5-Stage Telemetry badge');
+  assert.ok(!indexHtml.includes('Orders &amp; Live Tracking'), 'Drawer must NOT duplicate Orders section (Orders belongs on primary bottom nav)');
 
   // 2. Verify Zero duplicate action buttons in mobile-menu-drawer
   const drawerMatch = indexHtml.match(/<div id="mobile-menu-drawer"[\s\S]*?<!-- 2\. Technical/);
@@ -2163,7 +2162,7 @@ test('Mobile Screen Single-Line Order ID & Hamburger Drawer Architecture (Hick\'
 
   const navOnclicks = Array.from(drawerHtml.matchAll(/onclick="([^"]+)"/g)).map(m => m[1]);
   const ordersNavs = navOnclicks.filter(c => c.includes("navigateTo('orders')") || c.includes("navigateTo('account')"));
-  assert.strictEqual(ordersNavs.length, 1, 'Drawer must have exactly ONE button navigating to orders (no duplicates)');
+  assert.strictEqual(ordersNavs.length, 0, 'Drawer must NOT have redundant order buttons (Orders is on bottom nav)');
 
   const catalogNavs = navOnclicks.filter(c => c.includes("navigateTo('catalog'"));
   assert.strictEqual(catalogNavs.length, 1, 'Drawer must have exactly ONE button navigating to catalog (no duplicates)');

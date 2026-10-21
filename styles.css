@@ -1158,39 +1158,18 @@ textarea:disabled {
 
 
 /* =========================================================================
-   RESPONSIVE CONTENT-DRIVEN VERTICAL SCROLLING (ORDERS)
+   NATURAL CONTENT FLOW (ORDERS - ZERO ARTIFICIAL SCROLLBOX)
    ========================================================================= */
 .orders-content-scroll {
   height: auto;
-  max-height: min(760px, calc(100dvh - 200px));
-  overflow-y: auto;
-  overscroll-behavior: contain;
-  -webkit-overflow-scrolling: touch;
-  scrollbar-width: thin;
-  scrollbar-color: #d4cebe transparent;
-  padding-right: 4px;
+  max-height: none;
+  overflow: visible;
 }
 
 @media (max-width: 640px) {
   .orders-content-scroll {
-    max-height: calc(100dvh - 170px);
-    padding-right: 2px;
+    max-height: none;
+    overflow: visible;
+    padding-right: 0;
   }
-}
-
-.orders-content-scroll::-webkit-scrollbar {
-  width: 5px;
-}
-
-.orders-content-scroll::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.orders-content-scroll::-webkit-scrollbar-thumb {
-  background: #d4cebe;
-  border-radius: 9999px;
-}
-
-.orders-content-scroll::-webkit-scrollbar-thumb:hover {
-  background: var(--accent-10-brass, #b08d57);
 }
