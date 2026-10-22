@@ -4,6 +4,7 @@ import { defineConfig } from 'vite';
 import createOrderHandler from './api/create-order.js';
 import verifyPaymentHandler from './api/verify-payment.js';
 import webhookHandler from './api/razorpay-webhook.js';
+import sendWelcomeEmailHandler from './api/send-welcome-email.js';
 
 const STATIC_ASSETS = [
   'supabase-config.js',
@@ -60,6 +61,8 @@ function apiMiddlewarePlugin() {
               await verifyPaymentHandler(req, res);
             } else if (url === '/api/razorpay-webhook') {
               await webhookHandler(req, res);
+            } else if (url === '/api/send-welcome-email') {
+              await sendWelcomeEmailHandler(req, res);
             } else {
               res.status(404).json({ success: false, error: 'Endpoint not found' });
             }

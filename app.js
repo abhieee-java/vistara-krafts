@@ -6482,6 +6482,24 @@
       } catch (_e) {}
     }
 
+    // Trigger welcome email delivery via Resend now that email registration is verified
+    const accessToken = verifyRes?.data?.session?.access_token;
+    if (accessToken) {
+      fetch('/api/send-welcome-email', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${accessToken}`
+        }
+      }).then(r => r.json()).then(resData => {
+        if (resData && resData.success && !resData.already_sent) {
+          console.log('[Vistāra Email] Welcome email dispatched via Resend (ID:', resData.id, ')');
+        }
+      }).catch(err => {
+        console.warn('[Vistāra Email] Welcome email delivery notice:', err);
+      });
+    }
+
     const res = Store.loginPatron({
       provider: 'email',
       mode: 'signin',
@@ -7844,6 +7862,24 @@
 
           if (typeof Store.syncOrdersFromSupabase === 'function') {
             try { Store.syncOrdersFromSupabase(); } catch (_e) {}
+          }
+
+          // Trigger welcome email via Resend if this is a first-time Google OAuth registration
+          if (session.access_token && u.app_metadata?.provider === 'google' && u.created_at && u.last_sign_in_at) {
+            const isFirstSignIn = Math.abs(new Date(u.last_sign_in_at).getTime() - new Date(u.created_at).getTime()) < 15000;
+            if (isFirstSignIn) {
+              fetch('/api/send-welcome-email', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                  'Authorization': `Bearer ${session.access_token}`
+                }
+              }).then(r => r.json()).then(resData => {
+                if (resData && resData.success && !resData.already_sent) {
+                  console.log('[Vistāra Email] Google registration welcome email dispatched via Resend (ID:', resData.id, ')');
+                }
+              }).catch(() => {});
+            }
           }
 
           if (typeof window.showToast === 'function') {

@@ -53,5 +53,12 @@ export const CONFIG = {
   FREE_SHIPPING_THRESHOLD: Number(process.env.FREE_SHIPPING_THRESHOLD || 999),
   STANDARD_SHIPPING_FEE: Number(process.env.STANDARD_SHIPPING_FEE || 99),
   GST_RATE_PERCENT: 18,
-  CURRENCY: 'INR'
+  CURRENCY: 'INR',
+
+  // Canonical Site URL
+  SITE_URL: process.env.SITE_URL || 'https://vistarakrafts.com',
+
+  // Resend Transactional Email
+  RESEND_API_KEY: process.env.RESEND_API_KEY || '',
+  RESEND_FROM_EMAIL: process.env.RESEND_FROM_EMAIL || 'Vistāra Krafts <welcome@vistarakrafts.com>'
 };
