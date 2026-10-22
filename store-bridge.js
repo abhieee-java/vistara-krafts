@@ -1119,7 +1119,8 @@
 
       edgeSessionToken = 'vk_cf_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2, 8);
       const userRecord = {
-        id: (existingUser && existingUser.id) || ('usr_' + Date.now().toString(36)),
+        id: payload.userId || (existingUser && existingUser.id) || ('usr_' + Date.now().toString(36)),
+        userId: payload.userId || (existingUser && existingUser.userId) || (existingUser && existingUser.id) || '',
         email,
         name,
         phone,
@@ -1133,9 +1134,9 @@
         passwordVerifier: provider === 'email'
           ? hashSecretLocal(password)
           : (existingUser ? existingUser.passwordVerifier : ''),
-        memberTier: 'Gold Atelier Member',
-        tier: 'Gold Atelier Member',
-        loyaltyPoints: (existingUser && existingUser.loyaltyPoints) || 250,
+        memberTier: payload.memberTier || (existingUser && existingUser.memberTier) || 'Gold Atelier Member',
+        tier: payload.memberTier || (existingUser && existingUser.tier) || 'Gold Atelier Member',
+        loyaltyPoints: payload.loyaltyPoints || (existingUser && existingUser.loyaltyPoints) || 250,
         authenticated: true,
         authenticatedAt: new Date().toISOString()
       };
@@ -1317,6 +1318,19 @@
           pincode: resolvedPin,
           wishlist: this.getWishlist()
         });
+        if (global.VistaraSupabase && typeof global.VistaraSupabase.upsertProfile === 'function') {
+          const authUserId = (existingAuth && existingAuth.userId) || sessionObj.userId;
+          if (authUserId) {
+            global.VistaraSupabase.upsertProfile({
+              id: authUserId,
+              email: sessionObj.email,
+              full_name: sessionObj.name,
+              phone: sessionObj.phone || '',
+              address: resolvedAddress,
+              pincode: resolvedPin
+            });
+          }
+        }
         this.notify('auth_updated', sessionObj);
       }
 
@@ -1969,7 +1983,9 @@
         } else if (localIds.length > 0) {
           query = query.in('order_number', localIds);
         } else {
-          query = query.limit(25);
+          // Zero leakage: Guests without authenticated session or placed orders never load arbitrary customer orders
+          isSyncingOrders = false;
+          return currentOrders;
         }
 
         const { data, error } = await query;

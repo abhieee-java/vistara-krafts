@@ -166,6 +166,45 @@
       return { data, error, genderPreference: valid };
     },
 
+    async fetchProfile(userId) {
+      const sb = this.getClient();
+      if (!this.isConfigured() || !sb || !userId) return null;
+      try {
+        const { data, error } = await sb
+          .from('profiles')
+          .select('*')
+          .eq('id', userId)
+          .maybeSingle();
+        if (error) {
+          console.warn('[Vistāra Supabase] fetchProfile error:', error);
+          return null;
+        }
+        return data;
+      } catch (e) {
+        console.warn('[Vistāra Supabase] fetchProfile exception:', e);
+        return null;
+      }
+    },
+
+    async upsertProfile(profilePayload) {
+      const sb = this.getClient();
+      if (!this.isConfigured() || !sb || !profilePayload || !profilePayload.id) return null;
+      try {
+        const { data, error } = await sb
+          .from('profiles')
+          .upsert({
+            ...profilePayload,
+            updated_at: new Date().toISOString()
+          })
+          .select()
+          .maybeSingle();
+        return { data, error };
+      } catch (e) {
+        console.warn('[Vistāra Supabase] upsertProfile exception:', e);
+        return { data: null, error: e };
+      }
+    },
+
     // ------------------------------------------------------------------------
     // DATABASE QUERIES (Products, Orders, Mockups)
     // ------------------------------------------------------------------------

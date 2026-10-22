@@ -6368,14 +6368,32 @@
       return;
     }
 
+    const verifiedUser = typeof verifyRes !== 'undefined' ? verifyRes?.data?.user : null;
+    const verifiedUserId = verifiedUser?.id || '';
+    if (verifiedUserId && window.VistaraSupabase && typeof window.VistaraSupabase.upsertProfile === 'function') {
+      try {
+        window.VistaraSupabase.upsertProfile({
+          id: verifiedUserId,
+          email,
+          full_name: name || verifiedUser.user_metadata?.full_name || '',
+          phone: phone || verifiedUser.user_metadata?.phone || ''
+        });
+      } catch (_e) {}
+    }
+
     const res = Store.loginPatron({
       provider: 'email',
       mode: 'signin',
       email,
       name,
       phone,
-      password
+      password,
+      userId: verifiedUserId
     });
+
+    if (typeof Store.syncOrdersFromSupabase === 'function') {
+      try { Store.syncOrdersFromSupabase(); } catch (_e) {}
+    }
 
     window.showToast('Email Verified! ✨', `Welcome, ${res.session.name || 'Patron'}`);
 
@@ -6491,6 +6509,20 @@
             window.showToast('Sign-In Notice', error.message);
             return;
           }
+          if (data && data.user) {
+            let userProfile = null;
+            try {
+              if (window.VistaraSupabase && typeof window.VistaraSupabase.fetchProfile === 'function') {
+                userProfile = await window.VistaraSupabase.fetchProfile(data.user.id);
+              }
+            } catch (_e) {}
+            if (userProfile) {
+              if (!name && userProfile.full_name) name = userProfile.full_name;
+              if (!phone && userProfile.phone) phone = userProfile.phone;
+              if (!address && userProfile.address) address = userProfile.address;
+              if (!pincode && userProfile.pincode) pincode = userProfile.pincode;
+            }
+          }
         }
       }
     }
@@ -6505,8 +6537,13 @@
       address,
       pincode,
       personaPreference,
+      userId: (typeof data !== 'undefined' && data?.user?.id) || '',
       credential: lastGisCredential
     });
+
+    if (typeof Store.syncOrdersFromSupabase === 'function') {
+      try { Store.syncOrdersFromSupabase(); } catch (_e) {}
+    }
 
     if (!res.valid) {
       if (errEl) {
@@ -6547,6 +6584,10 @@
 
   window.handlePatronLogout = function () {
     Store.logoutPatron();
+    const sb = window.VistaraSupabase?.getClient?.();
+    if (sb && sb.auth && typeof sb.auth.signOut === 'function') {
+      try { sb.auth.signOut(); } catch (_e) {}
+    }
     AppState.pendingCheckoutAfterAuth = false;
     lastGisCredential = '';
     window.closeOAuthChooser();
@@ -7587,21 +7628,55 @@
 
       const hasAuthHash = window.location.hash && (window.location.hash.includes('access_token=') || window.location.hash.includes('error_description='));
 
-      const processSupabaseSession = (session) => {
+      const processSupabaseSession = async (session) => {
         if (!session || !session.user || !session.user.email) return;
         const u = session.user;
         const currentPatron = Store.getPatronSession();
         if (!currentPatron || currentPatron.email !== u.email) {
-          const fullName = u.user_metadata?.full_name || u.user_metadata?.name || u.email.split('@')[0];
+          let fullName = u.user_metadata?.full_name || u.user_metadata?.name || '';
+          let phone = u.user_metadata?.phone || '';
+          let address = '';
+          let pincode = '';
+          let memberTier = 'Verified Vistāra Patron';
+          let loyaltyPoints = 250;
+
+          if (window.VistaraSupabase && typeof window.VistaraSupabase.fetchProfile === 'function') {
+            try {
+              const profile = await window.VistaraSupabase.fetchProfile(u.id);
+              if (profile) {
+                if (profile.full_name) fullName = profile.full_name;
+                if (profile.phone) phone = profile.phone;
+                if (profile.address) address = profile.address;
+                if (profile.pincode) pincode = profile.pincode;
+                if (profile.member_tier) memberTier = profile.member_tier;
+                if (profile.loyalty_points) loyaltyPoints = profile.loyalty_points;
+              }
+            } catch (_e) {}
+          }
+
+          if (!fullName) {
+            fullName = u.email.split('@')[0].replace(/[._-]+/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+          }
+
           const avatar = u.user_metadata?.avatar_url || u.user_metadata?.picture || '';
           Store.loginPatron({
             provider: u.app_metadata?.provider === 'google' ? 'google' : 'email',
             mode: 'signin',
             email: u.email,
             name: fullName,
+            phone,
+            address,
+            pincode,
             avatar,
-            userId: u.id
+            userId: u.id,
+            memberTier,
+            loyaltyPoints
           });
+
+          if (typeof Store.syncOrdersFromSupabase === 'function') {
+            try { Store.syncOrdersFromSupabase(); } catch (_e) {}
+          }
+
           if (typeof window.showToast === 'function') {
             window.showToast('Welcome! ✨', `Signed in as ${fullName}`);
           }
