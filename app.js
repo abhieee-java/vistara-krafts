@@ -6142,11 +6142,34 @@
     syncBodyModalLock();
   };
 
+  let isGoogleOAuthPending = false;
+
   window.redirectToGoogleOAuth = async function () {
+    if (isGoogleOAuthPending) return false;
+    isGoogleOAuthPending = true;
+
+    const googleBtn = document.getElementById('cf-oauth-google-btn');
+    const errEl = document.getElementById('cf-auth-error');
+    if (errEl) {
+      errEl.textContent = '';
+      errEl.classList.add('hidden');
+    }
+
+    const originalBtnHtml = googleBtn ? googleBtn.innerHTML : '';
+    if (googleBtn) {
+      googleBtn.disabled = true;
+      googleBtn.classList.add('opacity-75', 'cursor-wait');
+      googleBtn.innerHTML = `
+        <span class="inline-block w-4 h-4 border-2 border-primary border-t-transparent rounded-full animate-spin shrink-0"></span>
+        <span class="truncate">Connecting to Google...</span>
+      `;
+    }
+
     const sb = window.VistaraSupabase?.getClient?.() || (typeof window.supabase !== 'undefined' ? window.supabase : null);
     if (sb && sb.auth && typeof sb.auth.signInWithOAuth === 'function') {
       try {
-        const redirectUri = window.location.origin + window.location.pathname;
+        const cleanPath = window.location.pathname === '/index.html' ? '/' : window.location.pathname;
+        const redirectUri = window.location.origin + cleanPath;
         const { data, error } = await sb.auth.signInWithOAuth({
           provider: 'google',
           options: {
@@ -6158,15 +6181,34 @@
           return true;
         } else if (error) {
           console.warn('[Vistāra Auth] Supabase Google OAuth error:', error);
-          const errEl = document.getElementById('cf-auth-error');
+          const friendlyError = error.message || 'Google sign-in could not be initiated. Please try again.';
           if (errEl) {
-            errEl.textContent = error.message;
+            errEl.textContent = friendlyError;
             errEl.classList.remove('hidden');
+          }
+          if (typeof window.showToast === 'function') {
+            window.showToast('Google Sign-In Error', friendlyError);
           }
         }
       } catch (err) {
         console.warn('[Vistāra Auth] OAuth error:', err);
+        if (errEl) {
+          errEl.textContent = 'Connection error while starting Google login. Please retry.';
+          errEl.classList.remove('hidden');
+        }
       }
+    } else {
+      if (errEl) {
+        errEl.textContent = 'Authentication service is initializing. Please try again in a moment.';
+        errEl.classList.remove('hidden');
+      }
+    }
+
+    isGoogleOAuthPending = false;
+    if (googleBtn) {
+      googleBtn.disabled = false;
+      googleBtn.classList.remove('opacity-75', 'cursor-wait');
+      googleBtn.innerHTML = originalBtnHtml;
     }
     return false;
   };
@@ -6435,7 +6477,16 @@
         window.showToast('Enter Valid Email', 'Please enter your registered email address to receive password reset instructions.');
         return;
       }
-      window.showToast('Reset Link Sent', `If an account exists for ${email}, recovery instructions have been sent.`);
+      const sb = window.VistaraSupabase?.getClient?.();
+      if (sb && sb.auth && typeof sb.auth.resetPasswordForEmail === 'function') {
+        try {
+          const cleanPath = window.location.pathname === '/index.html' ? '/' : window.location.pathname;
+          await sb.auth.resetPasswordForEmail(email, {
+            redirectTo: window.location.origin + cleanPath
+          });
+        } catch (_e) {}
+      }
+      window.showToast('Recovery Link Sent', `If an account exists for ${email}, password reset instructions have been sent.`);
       window.setAuthForgotMode(false);
       return;
     }
@@ -6479,11 +6530,17 @@
             }
           });
           if (error) {
+            const msg = String(error.message || '').toLowerCase();
+            let friendlyError = error.message;
+            if (msg.includes('already registered') || msg.includes('already exists')) {
+              friendlyError = 'An account with this email already exists. Please sign in below or continue with Google.';
+              window.setEmailAuthTab('signin');
+            }
             if (errEl) {
-              errEl.textContent = error.message;
+              errEl.textContent = friendlyError;
               errEl.classList.remove('hidden');
             }
-            window.showToast('Registration Notice', error.message);
+            window.showToast('Registration Notice', friendlyError);
             return;
           }
           if (data && data.user && !data.session) {
@@ -6502,11 +6559,15 @@
               window.showToast('Verification Required', `Please enter the 6-digit OTP code sent to ${email}`);
               return;
             }
+            let friendlyMsg = error.message;
+            if (errMsg.includes('invalid login credentials') || errMsg.includes('invalid credentials')) {
+              friendlyMsg = 'Incorrect email or password. If you originally signed in with Google, please click Continue with Google.';
+            }
             if (errEl) {
-              errEl.textContent = error.message;
+              errEl.textContent = friendlyMsg;
               errEl.classList.remove('hidden');
             }
-            window.showToast('Sign-In Notice', error.message);
+            window.showToast('Sign-In Notice', friendlyMsg);
             return;
           }
           if (data && data.user) {
@@ -7626,6 +7687,39 @@
       const sb = window.VistaraSupabase?.getClient?.() || (typeof window.supabase !== 'undefined' ? window.supabase : null);
       if (!sb || !sb.auth) return;
 
+      // 1. Detect OAuth return error or cancellation in query string or hash
+      const urlParams = new URLSearchParams(window.location.search);
+      const hashString = window.location.hash.startsWith('#') ? window.location.hash.slice(1) : window.location.hash;
+      const hashParams = new URLSearchParams(hashString);
+
+      const oauthErrorDesc = urlParams.get('error_description') || hashParams.get('error_description');
+      const oauthErrorCode = urlParams.get('error_code') || hashParams.get('error_code');
+      const oauthError = urlParams.get('error') || hashParams.get('error');
+
+      if (oauthError || oauthErrorDesc) {
+        console.warn('[Vistāra Auth] OAuth callback error detected:', { error: oauthError, description: oauthErrorDesc });
+        const isCancel = String(oauthErrorDesc || oauthError || '').toLowerCase().includes('denied') ||
+                         String(oauthErrorDesc || oauthError || '').toLowerCase().includes('cancel');
+        const userMsg = isCancel
+          ? 'Google sign-in was cancelled. You can sign in anytime using Google or your email.'
+          : (oauthErrorDesc || 'Sign-in could not be completed. Please try again.');
+
+        const errEl = document.getElementById('cf-auth-error');
+        if (errEl) {
+          errEl.textContent = userMsg;
+          errEl.classList.remove('hidden');
+        }
+        if (typeof window.showToast === 'function') {
+          window.showToast('Sign-In Notice', userMsg);
+        }
+
+        try {
+          const cleanSearch = window.location.search.replace(/[?&]error[^&]*/g, '').replace(/^&/, '?');
+          const cleanHash = window.location.hash.replace(/[#&]error[^&]*/g, '').replace(/^&/, '#');
+          window.history.replaceState(null, document.title, window.location.pathname + cleanSearch + cleanHash);
+        } catch (_e) {}
+      }
+
       const hasAuthHash = window.location.hash && (window.location.hash.includes('access_token=') || window.location.hash.includes('error_description='));
 
       const processSupabaseSession = async (session) => {
@@ -7685,9 +7779,10 @@
           document.getElementById('cloudflare-auth-modal')?.classList.add('hidden');
           if (typeof syncBodyModalLock === 'function') syncBodyModalLock();
         }
-        if (hasAuthHash) {
+        if (hasAuthHash || (window.location.search && window.location.search.includes('code='))) {
           try {
-            window.history.replaceState(null, document.title, window.location.pathname + window.location.search);
+            const cleanSearch = window.location.search.replace(/[?&]code=[^&]*/g, '').replace(/^&/, '?');
+            window.history.replaceState(null, document.title, window.location.pathname + cleanSearch);
           } catch (_e) {}
         }
       };

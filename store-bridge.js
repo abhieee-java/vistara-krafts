@@ -1047,6 +1047,10 @@
       return registeredUsers[email] || null;
     },
 
+    getUserByEmail(emailInput) {
+      return this.lookupSavedPatronByEmail(emailInput);
+    },
+
     loginPatron(payload = {}) {
       const provider = ['google', 'apple', 'email'].includes(payload.provider) ? payload.provider : 'email';
       const mode = payload.mode === 'register' ? 'register' : 'signin';

@@ -17,10 +17,19 @@
   };
 
   // 2. Client Initialization
+  const clientOptions = {
+    auth: {
+      persistSession: true,
+      autoRefreshToken: true,
+      detectSessionInUrl: true,
+      storage: typeof window !== 'undefined' ? window.localStorage : undefined
+    }
+  };
+
   let client = null;
   if (typeof window.supabase !== 'undefined' && typeof window.supabase.createClient === 'function') {
     try {
-      client = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+      client = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, clientOptions);
       console.log('[Vistāra Supabase] Client initialized successfully.');
     } catch (e) {
       console.warn('[Vistāra Supabase] Init error (using local mock fallback):', e);
@@ -34,7 +43,7 @@
     getClient() {
       if (!client && typeof window.supabase !== 'undefined' && typeof window.supabase.createClient === 'function') {
         try {
-          client = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+          client = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, clientOptions);
         } catch (e) {
           console.warn('[Vistāra Supabase] Fallback getClient failed:', e);
         }
