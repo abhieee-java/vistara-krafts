@@ -483,7 +483,7 @@
       el.textContent = pinInfo.pin;
     });
 
-    // Update Top-Bar Account Button Label & Status Dot
+    // Update Top-Bar Account Button Label & Status Dot (if present)
     const barLabel = document.getElementById('header-account-bar-label');
     const barDot = document.getElementById('header-account-bar-dot');
     const displayName = (auth.name || (isAuth ? profile.name : '') || '').trim();
@@ -500,21 +500,28 @@
       if (isAuth) {
         const providerBadge = String(auth.provider || 'email').toUpperCase();
         const addrText = auth.address || profile.defaultAddress || '';
+        const userFullName = displayName || auth.name || profile.name || auth.email || 'Patron';
+        const userInitial = (userFullName[0] || 'V').toUpperCase();
         drawerSlot.innerHTML = `
           <div class="flex items-start justify-between gap-2">
-            <div class="min-w-0">
-              <div class="flex items-center gap-1.5">
-                <span class="w-2 h-2 rounded-full bg-emerald-600 shrink-0"></span>
-                <span class="text-[10px] font-bold uppercase tracking-wider text-emerald-800">${esc(providerBadge)} VERIFIED</span>
+            <div class="flex items-center gap-2.5 min-w-0">
+              <div class="w-10 h-10 rounded-full bg-primary text-white font-bold flex items-center justify-center text-sm shrink-0 shadow-2xs">
+                ${esc(userInitial)}
               </div>
-              <p class="text-xs font-bold text-primary truncate mt-0.5">${esc(displayName || auth.email || 'My Account')}</p>
-              ${auth.email ? `<p class="text-[11px] text-on-surface-variant truncate">${esc(auth.email)}</p>` : ''}
-              ${addrText ? `<p class="text-[11px] text-on-surface-variant line-clamp-2 mt-1">📍 ${esc(addrText)}</p>` : ''}
+              <div class="min-w-0">
+                <div class="flex items-center gap-1.5">
+                  <span class="w-2 h-2 rounded-full bg-emerald-500 shrink-0"></span>
+                  <span class="text-[10px] font-bold uppercase tracking-wider text-emerald-800">${esc(providerBadge)} VERIFIED</span>
+                </div>
+                <p class="text-sm font-bold text-primary truncate mt-0.5" title="${esc(userFullName)}">${esc(userFullName)}</p>
+                ${auth.email ? `<p class="text-[11px] text-on-surface-variant truncate">${esc(auth.email)}</p>` : ''}
+              </div>
             </div>
-            <span class="material-symbols-outlined text-secondary text-xl shrink-0 mt-0.5" aria-hidden="true">account_circle</span>
+            <span class="material-symbols-outlined text-secondary text-xl shrink-0 mt-1" aria-hidden="true">verified_user</span>
           </div>
-          <div class="flex items-center gap-2 pt-2 border-t border-[#e4e0d8] mt-2">
-            <button type="button" onclick="window.closeModalById('mobile-menu-drawer'); window.navigateTo('profile');" class="flex-1 min-h-[44px] px-3 py-2 rounded-lg bg-primary text-white text-[11px] font-bold cursor-pointer flex items-center justify-center gap-1.5 shadow-xs">
+          ${addrText ? `<p class="text-[11px] text-on-surface-variant line-clamp-1 mt-2 bg-surface-container-low px-2 py-1 rounded border border-[#e4e0d8]">📍 ${esc(addrText)}</p>` : ''}
+          <div class="flex items-center gap-2 pt-2.5 border-t border-[#e4e0d8] mt-2.5">
+            <button type="button" onclick="window.closeModalById('mobile-menu-drawer'); window.navigateTo('profile');" class="flex-1 min-h-[44px] px-3 py-2 rounded-lg bg-primary text-white text-[11px] font-bold cursor-pointer flex items-center justify-center gap-1.5 shadow-xs hover:bg-primary-container transition">
               <span class="material-symbols-outlined text-sm" aria-hidden="true">badge</span>
               <span>Manage Profile &amp; Address</span>
             </button>
@@ -526,14 +533,15 @@
           <div class="flex items-center justify-between gap-2">
             <span class="text-[11px] uppercase tracking-wider font-bold text-primary flex items-center gap-1">
               <span class="material-symbols-outlined text-base text-secondary" aria-hidden="true">account_circle</span>
-              <span>My Account</span>
+              <span>Account &amp; Orders</span>
             </span>
+            <span class="text-[10px] font-semibold text-on-surface-variant bg-surface-container px-2 py-0.5 rounded-full">Guest Mode</span>
           </div>
-          <p class="text-[11px] text-on-surface-variant leading-snug mt-1">Sign in to track orders, save delivery addresses, and view invoices.</p>
-          <div class="pt-2">
+          <p class="text-[11px] text-on-surface-variant leading-snug mt-1.5">Sign in to track orders, save delivery addresses, and view invoices.</p>
+          <div class="pt-2.5">
             <button type="button" onclick="window.closeModalById('mobile-menu-drawer'); window.openCloudflareAuthModal(false);" class="w-full min-h-[44px] px-3 py-2 rounded-xl bg-primary text-white text-xs font-bold flex items-center justify-center gap-1.5 cursor-pointer shadow-xs hover:bg-primary-container transition">
               <span class="material-symbols-outlined text-base" aria-hidden="true">login</span>
-              <span>Sign In</span>
+              <span>Sign In / Create Account</span>
             </button>
           </div>
         `;
@@ -6076,13 +6084,16 @@
       return;
     }
 
-    // Normal OAuth login: update session & advance to Part 2 (Curation Step)
-    AppState.feedPersona = Store.getPersonaPreference() || personaPreference;
-    updateGlobalBadges();
-    renderActiveView();
     const providerLabel = cleanProvider === 'apple' ? 'Apple ID' : 'Google';
     window.showToast(`Signed in as ${res.session.name}! ✨`, `Verified via ${providerLabel}`);
-    window.showAuthStep('curation');
+    if (typeof window.finishLoginAndNavigate === 'function') {
+      window.finishLoginAndNavigate(res.session);
+    } else {
+      document.getElementById('cloudflare-auth-modal')?.classList.add('hidden');
+      syncBodyModalLock();
+      updateGlobalBadges();
+      renderActiveView();
+    }
   };
 
   window.submitOAuthChooserCustom = function () {
@@ -6108,9 +6119,41 @@
     if (phoneEl && !phoneEl.value && saved.phone) phoneEl.value = saved.phone;
   };
 
+  window.finishLoginAndNavigate = function (userSession) {
+    document.getElementById('cloudflare-auth-modal')?.classList.add('hidden');
+    syncBodyModalLock();
+    updateGlobalBadges();
+    renderActiveView();
+
+    if (AppState.pendingCheckoutAfterAuth) {
+      AppState.pendingCheckoutAfterAuth = false;
+      window.openCheckoutModal();
+      return;
+    }
+
+    let targetRoute = '#/home';
+    try {
+      const saved = sessionStorage.getItem('vk_route_before_auth');
+      if (saved && saved !== '#' && saved !== '#/' && !saved.includes('access_token=') && !saved.includes('error=')) {
+        targetRoute = saved;
+      }
+      sessionStorage.removeItem('vk_route_before_auth');
+    } catch (_e) {}
+
+    if (window.location.hash !== targetRoute) {
+      window.location.hash = targetRoute;
+    } else {
+      handleRouteChange(true);
+    }
+  };
+
   window.openCloudflareAuthModal = function (fromCheckout = false) {
     AppState.pendingCheckoutAfterAuth = Boolean(fromCheckout);
     isForgotAuthMode = false;
+    const currentHash = window.location.hash || '#/home';
+    if (!currentHash.includes('access_token=') && !currentHash.includes('error=')) {
+      try { sessionStorage.setItem('vk_route_before_auth', currentHash); } catch (_e) {}
+    }
     window.showAuthStep('credentials');
     const pwd = document.getElementById('cf-auth-password');
     const icon = document.getElementById('cf-auth-pwd-toggle-icon');
@@ -6163,6 +6206,11 @@
         <span class="inline-block w-4 h-4 border-2 border-primary border-t-transparent rounded-full animate-spin shrink-0"></span>
         <span class="truncate">Connecting to Google...</span>
       `;
+    }
+
+    const currentHash = window.location.hash || '#/home';
+    if (!currentHash.includes('access_token=') && !currentHash.includes('error=')) {
+      try { sessionStorage.setItem('vk_route_before_auth', currentHash); } catch (_e) {}
     }
 
     const sb = window.VistaraSupabase?.getClient?.() || (typeof window.supabase !== 'undefined' ? window.supabase : null);
@@ -6450,9 +6498,14 @@
       return;
     }
 
-    updateGlobalBadges();
-    renderActiveView();
-    window.showAuthStep('curation');
+    if (typeof window.finishLoginAndNavigate === 'function') {
+      window.finishLoginAndNavigate(res.session);
+    } else {
+      document.getElementById('cloudflare-auth-modal')?.classList.add('hidden');
+      syncBodyModalLock();
+      updateGlobalBadges();
+      renderActiveView();
+    }
   };
 
   window.resendEmailOtp = async function () {
@@ -6635,12 +6688,15 @@
       return;
     }
 
-    // Standard sign-in / registration: update session & advance to Part 2 (Curation Step)
-    AppState.feedPersona = Store.getPersonaPreference() || personaPreference;
-    updateGlobalBadges();
-    renderActiveView();
-    window.showToast(mode === 'register' ? `Account Created, ${res.session.name}! ✨` : `Signed in as ${res.session.name}! ✨`, 'Please select your feed curation preference.');
-    window.showAuthStep('curation');
+    window.showToast(mode === 'register' ? `Account Created, ${res.session.name}! ✨` : `Signed in as ${res.session.name}! ✨`);
+    if (typeof window.finishLoginAndNavigate === 'function') {
+      window.finishLoginAndNavigate(res.session);
+    } else {
+      document.getElementById('cloudflare-auth-modal')?.classList.add('hidden');
+      syncBodyModalLock();
+      updateGlobalBadges();
+      renderActiveView();
+    }
   };
 
   window.handlePatronLogout = function () {
@@ -7684,7 +7740,12 @@
   // Initialize Supabase Auth Session listener (for Google OAuth redirects and active sessions)
   function initSupabaseAuthListener() {
     try {
-      const sb = window.VistaraSupabase?.getClient?.() || (typeof window.supabase !== 'undefined' ? window.supabase : null);
+      const currentHash = window.location.hash || '#/home';
+    if (!currentHash.includes('access_token=') && !currentHash.includes('error=')) {
+      try { sessionStorage.setItem('vk_route_before_auth', currentHash); } catch (_e) {}
+    }
+
+    const sb = window.VistaraSupabase?.getClient?.() || (typeof window.supabase !== 'undefined' ? window.supabase : null);
       if (!sb || !sb.auth) return;
 
       // 1. Detect OAuth return error or cancellation in query string or hash
@@ -7774,10 +7835,14 @@
           if (typeof window.showToast === 'function') {
             window.showToast('Welcome! ✨', `Signed in as ${fullName}`);
           }
-          if (typeof updateGlobalBadges === 'function') updateGlobalBadges();
-          if (typeof renderActiveView === 'function') renderActiveView();
-          document.getElementById('cloudflare-auth-modal')?.classList.add('hidden');
-          if (typeof syncBodyModalLock === 'function') syncBodyModalLock();
+          if (typeof window.finishLoginAndNavigate === 'function') {
+            window.finishLoginAndNavigate({ name: fullName, email: u.email });
+          } else {
+            if (typeof updateGlobalBadges === 'function') updateGlobalBadges();
+            if (typeof renderActiveView === 'function') renderActiveView();
+            document.getElementById('cloudflare-auth-modal')?.classList.add('hidden');
+            if (typeof syncBodyModalLock === 'function') syncBodyModalLock();
+          }
         }
         if (hasAuthHash || (window.location.search && window.location.search.includes('code='))) {
           try {

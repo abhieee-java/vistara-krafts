@@ -178,6 +178,10 @@
     async fetchProfile(userId) {
       const sb = this.getClient();
       if (!this.isConfigured() || !sb || !userId) return null;
+      // Validate UUID format
+      if (typeof userId !== 'string' || !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(userId)) {
+        return null;
+      }
       try {
         const { data, error } = await sb
           .from('profiles')
@@ -198,13 +202,23 @@
     async upsertProfile(profilePayload) {
       const sb = this.getClient();
       if (!this.isConfigured() || !sb || !profilePayload || !profilePayload.id) return null;
+      // Validate UUID format
+      if (typeof profilePayload.id !== 'string' || !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(profilePayload.id)) {
+        return null;
+      }
       try {
+        const allowedCols = ['id', 'email', 'full_name', 'phone', 'address', 'pincode', 'gender_preference', 'provider', 'wishlist', 'member_tier', 'loyalty_points'];
+        const cleanPayload = {};
+        allowedCols.forEach(col => {
+          if (profilePayload[col] !== undefined && profilePayload[col] !== null) {
+            cleanPayload[col] = profilePayload[col];
+          }
+        });
+        cleanPayload.updated_at = new Date().toISOString();
+
         const { data, error } = await sb
           .from('profiles')
-          .upsert({
-            ...profilePayload,
-            updated_at: new Date().toISOString()
-          })
+          .upsert(cleanPayload)
           .select()
           .maybeSingle();
         return { data, error };
