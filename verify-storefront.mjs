@@ -1778,6 +1778,49 @@ if (chromeExe) {
     assert.strictEqual(e2eResult.guestProfileAddrAfterLogout, '', 'Headless Chrome: Logout must clear guest profile address');
     assert.strictEqual(e2eResult.appleChooserVisible, true, 'Headless Chrome: Clicking Continue with Apple after logout must display #cf-oauth-chooser-sheet');
 
+    // 2b. Verify user button is removed from home screen & username renders in hamburger drawer
+    const drawerAccountAudit = await cdpEval(`(async () => {
+      const headerBtn = document.getElementById('header-account-btn');
+      const hamburgerBtn = document.querySelector('button[aria-label="Open Navigation & Account Bar"]');
+      hamburgerBtn.click();
+      await new Promise(r => setTimeout(r, 60));
+      const drawer = document.getElementById('mobile-menu-drawer');
+      const drawerOpen = !drawer.classList.contains('hidden');
+
+      // Check drawer slot in guest mode
+      const guestSlotText = document.getElementById('bar-drawer-account-slot')?.textContent || '';
+
+      // Perform login
+      window.StorefrontBridge.loginPatron({
+        provider: 'google',
+        mode: 'signin',
+        email: 'abhishek.sharma@example.com',
+        name: 'Abhishek Sharma'
+      });
+      window.updateGlobalBadges();
+      const authSlotHtml = document.getElementById('bar-drawer-account-slot')?.innerHTML || '';
+
+      window.closeModalById('mobile-menu-drawer');
+
+      return {
+        headerAccountBtnExists: Boolean(headerBtn),
+        drawerOpen,
+        guestSlotHasSignIn: guestSlotText.includes('Sign In'),
+        authSlotHasUserName: authSlotHtml.includes('Abhishek Sharma'),
+        authSlotHasInitial: authSlotHtml.includes('>A<'),
+        authSlotHasVerifiedBadge: authSlotHtml.includes('GOOGLE VERIFIED'),
+        authSlotHasSignOut: authSlotHtml.includes('Sign Out')
+      };
+    })()`);
+
+    assert.strictEqual(drawerAccountAudit.headerAccountBtnExists, false, 'Headless Chrome: #header-account-btn must be removed from home screen header');
+    assert.strictEqual(drawerAccountAudit.drawerOpen, true, 'Headless Chrome: Hamburger button must open mobile-menu-drawer');
+    assert.strictEqual(drawerAccountAudit.guestSlotHasSignIn, true, 'Headless Chrome: Guest drawer slot must offer Sign In');
+    assert.strictEqual(drawerAccountAudit.authSlotHasUserName, true, 'Headless Chrome: Logged-in customer username must display in hamburger drawer');
+    assert.strictEqual(drawerAccountAudit.authSlotHasInitial, true, 'Headless Chrome: User initial avatar must display in hamburger drawer');
+    assert.strictEqual(drawerAccountAudit.authSlotHasVerifiedBadge, true, 'Headless Chrome: Verified provider badge must display in hamburger drawer');
+    assert.strictEqual(drawerAccountAudit.authSlotHasSignOut, true, 'Headless Chrome: Sign out action must display in hamburger drawer');
+
     // 3. Verify zero horizontal overflow across all 8 SPA routes and modals at 320x568, 375x812, 390x844 (iPhone 14), 428x926, and 1280x800
     for (const vp of [{ width: 320, height: 568 }, { width: 375, height: 812 }, { width: 390, height: 844 }, { width: 428, height: 926 }, { width: 1280, height: 800 }]) {
       await cdpSend('Emulation.setDeviceMetricsOverride', {

@@ -505,9 +505,7 @@
         drawerSlot.innerHTML = `
           <div class="flex items-start justify-between gap-2">
             <div class="flex items-center gap-2.5 min-w-0">
-              <div class="w-10 h-10 rounded-full bg-primary text-white font-bold flex items-center justify-center text-sm shrink-0 shadow-2xs">
-                ${esc(userInitial)}
-              </div>
+              <div class="w-10 h-10 rounded-full bg-primary text-white font-bold flex items-center justify-center text-sm shrink-0 shadow-2xs">${esc(userInitial)}</div>
               <div class="min-w-0">
                 <div class="flex items-center gap-1.5">
                   <span class="w-2 h-2 rounded-full bg-emerald-500 shrink-0"></span>
