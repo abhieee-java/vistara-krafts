@@ -1093,6 +1093,13 @@
         return { ok: false, valid: false, error: msg, message: msg };
       }
 
+      // Zero-leakage: Invalidate order cache when switching accounts
+      const currentAuth = this.getAuthSession();
+      if (currentAuth && currentAuth.email && currentAuth.email.toLowerCase() !== email.toLowerCase()) {
+        safeWrite(STORAGE_KEYS.ORDERS, []);
+        this.notify('orders_updated', []);
+      }
+
       const registeredUsers = safeRead(STORAGE_KEYS.REGISTERED_USERS, {}) || {};
       const existingUser = registeredUsers[email] || null;
 
@@ -1257,11 +1264,17 @@
 
       safeWrite(STORAGE_KEYS.AUTH_SESSION, null);
       safeWrite(STORAGE_KEYS.WISHLIST, []);
+      safeWrite(STORAGE_KEYS.ORDERS, []);
       safeWrite(STORAGE_KEYS.PATRON_PROFILE, guestDefaultProfile);
       callCloudflareEdge('/auth/logout', 'POST');
       edgeSessionToken = '';
 
+      if (global.VistaraSupabase && typeof global.VistaraSupabase.signOut === 'function') {
+        try { global.VistaraSupabase.signOut().catch(() => {}); } catch (_e) {}
+      }
+
       this.notify('wishlist_updated', { count: 0, wishlist: [] });
+      this.notify('orders_updated', []);
       this.notify('auth_updated', null);
       this.notify('patron_profile_updated', guestDefaultProfile);
       return { ok: true };
@@ -1574,7 +1587,7 @@
       const supabasePayload = {
         id: uniqueId,
         order_number: rawOrderId,
-        user_id: (authSession && authSession.id && typeof authSession.id === 'string' && authSession.id.length === 36) ? authSession.id : null,
+        user_id: (authSession && (authSession.userId || authSession.id) && typeof (authSession.userId || authSession.id) === 'string' && (authSession.userId || authSession.id).length === 36) ? (authSession.userId || authSession.id) : null,
         customer_name: newOrder.customerName,
         customer_email: newOrder.customerEmail,
         phone: newOrder.phone,
@@ -1719,7 +1732,7 @@
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-              userId: (authSession && authSession.id) || null,
+              userId: (authSession && (authSession.userId || authSession.id)) || null,
               name: customerName,
               phone: customerPhone,
               address: customerAddress,
@@ -1830,7 +1843,7 @@
                       orderId: rzpData.orderId,
                       id: rzpData.internalId || ('ord_' + Date.now().toString(36)),
                       orderNumber: rzpData.orderId,
-                      user_id: (authSession && authSession.id) || null,
+                      user_id: (authSession && (authSession.userId || authSession.id)) || null,
                       date: new Date().toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }),
                       total: rzpData.summary.total,
                       subtotal: rzpData.summary.subtotal,
@@ -2015,18 +2028,18 @@
       }
 
       const auth = this.getAuthSession();
-      const profile = this.getPatronProfile();
-      const userEmail = (auth && auth.email) ? String(auth.email).trim().toLowerCase() : ((profile && profile.email) ? String(profile.email).trim().toLowerCase() : '');
+      const userId = (auth && (auth.userId || auth.id)) || null;
+      const isUuid = typeof userId === 'string' && /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(userId.trim());
       const localIds = currentOrders.map(o => o.orderId || o.orderNumber || o.id).filter(Boolean);
 
       try {
         let query = client.from('orders').select('*').order('created_at', { ascending: false });
 
-        if (userEmail && localIds.length > 0) {
-          query = query.or(`customer_email.ilike.${userEmail},order_number.in.(${localIds.join(',')})`);
-        } else if (userEmail) {
-          query = query.ilike('customer_email', userEmail);
+        if (isUuid) {
+          // Authenticated customer: strictly query by authenticated user's ID
+          query = query.eq('user_id', userId.trim());
         } else if (localIds.length > 0) {
+          // Guest / local test checkout: only query explicitly placed local order IDs
           query = query.in('order_number', localIds);
         } else {
           // Zero leakage: Guests without authenticated session or placed orders never load arbitrary customer orders

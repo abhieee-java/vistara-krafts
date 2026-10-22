@@ -250,8 +250,10 @@
         console.log('[Vistāra Supabase] Staged mode: Order stored in local state machine', orderPayload.order_number);
         return { data: orderPayload, error: null };
       }
-      const { data, error } = await sb.from('orders').insert([orderPayload]).select();
-      return { data: data ? data[0] : null, error };
+      // Note: We avoid chaining .select() here to prevent RLS returning representation errors
+      // when guest patrons place orders (since guests cannot SELECT orders under strict RLS).
+      const { data, error } = await sb.from('orders').insert([orderPayload]);
+      return { data: orderPayload, error };
     },
 
     async submitCustomInquiry(inquiryPayload) {

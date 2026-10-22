@@ -20,14 +20,17 @@ export class OrderService {
           'apikey': key,
           'Authorization': `Bearer ${key}`,
           'Content-Type': 'application/json',
-          'Prefer': method === 'POST' ? 'return=representation' : (method === 'PATCH' ? 'return=representation' : undefined)
+          'Prefer': (CONFIG.SUPABASE_SERVICE_ROLE_KEY && method === 'POST') ? 'return=representation' : 'return=minimal'
         },
         body: body ? JSON.stringify(body) : undefined
       });
       if (!res.ok) {
         return { error: await res.text(), status: res.status };
       }
-      return { data: await res.json(), status: res.status };
+      const text = await res.text();
+      let data = null;
+      try { data = text ? JSON.parse(text) : null; } catch (_e) { data = text; }
+      return { data, status: res.status };
     } catch (err) {
       return { error: err.message, status: 500 };
     }
