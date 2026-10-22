@@ -1126,7 +1126,7 @@
             <div class="lg:col-span-7 flex flex-col items-start gap-3.5 min-w-0">
               <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white text-primary border border-[#b08d57]/40 shadow-2xs max-w-full">
                 <img src="${esc(Store.IMAGES.logoVistara)}" alt="Vistāra Krafts VK Monogram" class="w-5 h-5 rounded-sm object-cover shrink-0">
-                <span class="font-label-sm text-[11px] uppercase tracking-wider font-bold truncate">Vistāra Krafts • Epoxy &amp; Keepsake Atelier</span>
+                <span class="font-label-sm text-[11px] uppercase tracking-wider font-bold truncate vk-dev-badge">⚙ Website is in Development</span>
               </div>
 
               <h1 class="font-headline-lg text-2xl min-[360px]:text-3xl sm:text-5xl text-primary font-bold tracking-tight leading-[1.14] break-words">

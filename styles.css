@@ -309,6 +309,16 @@ textarea:disabled {
   100% { left: 160%; }
 }
 
+
+@keyframes vkDevPulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.35; }
+}
+
+.vk-dev-badge {
+  color: #9e3322;
+  animation: vkDevPulse 1.8s ease-in-out infinite;
+}
 @keyframes heartPop {
   0% { transform: scale(1); }
   35% { transform: scale(1.32); }
