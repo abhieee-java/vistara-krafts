@@ -700,6 +700,14 @@
 
   function handleRouteChange(forceResetScroll = false) {
     const { route, param, queryParams } = parseHash();
+    if (route === 'privacy') {
+      window.location.href = './privacy.html';
+      return;
+    }
+    if (route === 'terms') {
+      window.location.href = './terms.html';
+      return;
+    }
     const validRoutes = ['home', 'catalog', 'product', 'social', 'custom-studio', 'wishlist', 'cart', 'account', 'orders', 'profile', '404', '500'];
 
     if (!validRoutes.includes(route)) {

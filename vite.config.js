@@ -18,7 +18,9 @@ const STATIC_ASSETS = [
   'robots.txt',
   'sitemap.xml',
   'llms.txt',
-  'llms-full.txt'
+  'llms-full.txt',
+  'privacy.html',
+  'terms.html'
 ];
 
 function apiMiddlewarePlugin() {

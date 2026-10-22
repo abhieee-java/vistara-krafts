@@ -2750,6 +2750,14 @@
         <div class="flex flex-col gap-1 text-xs">
           <h2 class="font-headline-sm text-sm font-bold text-primary uppercase tracking-wider mb-1">Social &amp; Privacy</h2>
           <button type="button" onclick="window.navigateTo('social')" class="min-h-[44px] py-1.5 text-left text-on-surface-variant hover:text-primary flex items-center cursor-pointer">@resin.art.memories Reels Feed</button>
+          <a href="./privacy.html" class="min-h-[44px] py-1.5 text-left text-on-surface-variant hover:text-primary flex items-center gap-1 cursor-pointer">
+            <span class="material-symbols-outlined text-sm" aria-hidden="true">policy</span>
+            <span>Privacy Policy</span>
+          </a>
+          <a href="./terms.html" class="min-h-[44px] py-1.5 text-left text-on-surface-variant hover:text-primary flex items-center gap-1 cursor-pointer">
+            <span class="material-symbols-outlined text-sm" aria-hidden="true">description</span>
+            <span>Terms of Service</span>
+          </a>
           <button type="button" onclick="window.openDpdpModal('notice')" class="min-h-[44px] py-1.5 text-left font-semibold text-[#725a19] hover:text-primary flex items-center gap-1 cursor-pointer">
             <span class="material-symbols-outlined text-sm" aria-hidden="true">gavel</span>
             <span>DPDP Act 2023 Notice &amp; Privacy</span>
@@ -2777,7 +2785,13 @@
       </div>
 
       <div class="pt-6 border-t border-[#e4e0d8] flex flex-wrap items-center justify-between gap-3 text-xs text-on-surface-variant">
-        <span class="break-words">© 2026 Vistāra Krafts (@resin.art.memories). All rights reserved.</span>
+        <div class="flex items-center gap-3 flex-wrap">
+          <span class="break-words">© 2026 Vistāra Krafts (@resin.art.memories). All rights reserved.</span>
+          <span class="text-on-surface-variant/40 hidden min-[480px]:inline">•</span>
+          <a href="./privacy.html" class="hover:text-primary underline">Privacy Policy</a>
+          <span class="text-on-surface-variant/40">•</span>
+          <a href="./terms.html" class="hover:text-primary underline">Terms of Service</a>
+        </div>
         <span class="font-spec-numeral break-words flex items-center gap-1.5">
           <span class="inline-flex items-center gap-1 text-emerald-800 font-semibold bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
             <span class="material-symbols-outlined text-xs" aria-hidden="true">verified</span>
@@ -3684,6 +3698,13 @@
               <span class="truncate">Continue with Apple</span>
             </button>
           </div>
+
+          <p class="text-[11px] text-center text-on-surface-variant mt-1.5 leading-relaxed shrink-0">
+            By continuing, you agree to Vistāra Krafts 
+            <a href="./terms.html" target="_blank" class="text-primary font-bold underline hover:text-secondary">Terms of Service</a> 
+            &amp; 
+            <a href="./privacy.html" target="_blank" class="text-primary font-bold underline hover:text-secondary">Privacy Policy</a>.
+          </p>
 
           <div id="cf-google-gis-button-slot" class="hidden justify-center shrink-0"></div>
 
