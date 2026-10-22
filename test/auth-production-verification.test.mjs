@@ -326,3 +326,35 @@ test('13. Store.getPatronSession alias & Google callback session sync', () => {
   assert.strictEqual(profile.name, 'Anjana Kalita');
   assert.strictEqual(profile.email, 'anjana.kalita@vistarakrafts.com');
 });
+
+test('14. Cross-device Wishlist & Profile sync: Restores remote wishlist and syncs on toggle', () => {
+  const { Store, Supabase } = setupStoreSandbox();
+
+  let lastUpserted = null;
+  Supabase.upsertProfile = async (payload) => {
+    lastUpserted = payload;
+    return { data: payload, error: null };
+  };
+
+  // Sign in patron with remote wishlist from previous device
+  Store.loginPatron({
+    provider: 'google',
+    mode: 'signin',
+    email: 'anjana.kalita@vistarakrafts.com',
+    name: 'Anjana Kalita',
+    userId: '8c758e24-72f1-4a28-ad4e-68b3c309f2a2',
+    wishlist: ['vk-cat-res-201', 'vk-cat-clk-ocean']
+  });
+
+  // Verify wishlist was restored on this device
+  const wishlist = Store.getWishlist();
+  assert.ok(wishlist.includes('vk-cat-res-201'));
+  assert.ok(wishlist.includes('vk-cat-clk-ocean'));
+
+  // Toggle wishlist adds a new item and pushes to Supabase
+  Store.toggleWishlist('vk-cat-tbl-river');
+  assert.strictEqual(Store.isWishlisted('vk-cat-tbl-river'), true);
+  assert.ok(lastUpserted);
+  assert.strictEqual(lastUpserted.id, '8c758e24-72f1-4a28-ad4e-68b3c309f2a2');
+  assert.ok(lastUpserted.wishlist.includes('vk-cat-tbl-river'));
+});

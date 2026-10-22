@@ -914,8 +914,21 @@
     saveWishlist(list) {
       const updated = Array.isArray(list) ? list : [];
       safeWrite(STORAGE_KEYS.WISHLIST, updated);
+      const authSession = this.getAuthSession();
+      if (authSession && (authSession.userId || authSession.id)) {
+        if (global.VistaraSupabase && typeof global.VistaraSupabase.upsertProfile === 'function') {
+          global.VistaraSupabase.upsertProfile({
+            id: authSession.userId || authSession.id,
+            wishlist: updated
+          }).catch(() => {});
+        }
+      }
       this.notify('wishlist_updated', { count: updated.length, wishlist: updated });
       return updated;
+    },
+
+    setWishlist(list) {
+      return this.saveWishlist(list);
     },
 
     isWishlisted(productId) {
@@ -945,6 +958,15 @@
           pincode: nextSession.pincode || '',
           wishlist: updated
         });
+        if (global.VistaraSupabase && typeof global.VistaraSupabase.upsertProfile === 'function') {
+          const authUserId = authSession.userId || authSession.id;
+          if (authUserId) {
+            global.VistaraSupabase.upsertProfile({
+              id: authUserId,
+              wishlist: updated
+            }).catch(() => {});
+          }
+        }
       }
 
       this.notify('wishlist_updated', { productId, added: !exists, count: updated.length });
@@ -1179,6 +1201,21 @@
         }
       });
 
+      if (global.VistaraSupabase && typeof global.VistaraSupabase.upsertProfile === 'function') {
+        const authUserId = payload.userId || (existingUser && existingUser.userId);
+        if (authUserId) {
+          global.VistaraSupabase.upsertProfile({
+            id: authUserId,
+            email,
+            full_name: name,
+            phone,
+            address: fullAddress,
+            pincode: resolvedPin,
+            wishlist: mergedWishlist
+          }).catch(() => {});
+        }
+      }
+
       this.notify('wishlist_updated', { count: mergedWishlist.length, wishlist: mergedWishlist });
       this.notify('auth_updated', userRecord);
       this.notify('patron_profile_updated', userRecord);
@@ -1335,7 +1372,8 @@
               full_name: sessionObj.name,
               phone: sessionObj.phone || '',
               address: resolvedAddress,
-              pincode: resolvedPin
+              pincode: resolvedPin,
+              wishlist: this.getWishlist()
             });
           }
         }

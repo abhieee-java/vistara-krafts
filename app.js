@@ -7806,6 +7806,7 @@
           let memberTier = 'Verified Vistāra Patron';
           let loyaltyPoints = 250;
 
+          let wishlist = [];
           if (window.VistaraSupabase && typeof window.VistaraSupabase.fetchProfile === 'function') {
             try {
               const profile = await window.VistaraSupabase.fetchProfile(u.id);
@@ -7816,6 +7817,7 @@
                 if (profile.pincode) pincode = profile.pincode;
                 if (profile.member_tier) memberTier = profile.member_tier;
                 if (profile.loyalty_points) loyaltyPoints = profile.loyalty_points;
+                if (Array.isArray(profile.wishlist)) wishlist = profile.wishlist;
               }
             } catch (_e) {}
           }
@@ -7836,7 +7838,8 @@
             avatar,
             userId: u.id,
             memberTier,
-            loyaltyPoints
+            loyaltyPoints,
+            wishlist
           });
 
           if (typeof Store.syncOrdersFromSupabase === 'function') {
