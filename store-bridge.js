@@ -1036,6 +1036,10 @@
       return null;
     },
 
+    getPatronSession() {
+      return this.getAuthSession();
+    },
+
     isAuthenticated() {
       return Boolean(this.getAuthSession());
     },

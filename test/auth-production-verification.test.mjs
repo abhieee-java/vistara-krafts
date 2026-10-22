@@ -296,3 +296,33 @@ test('12. Account linking resilience: Google email with subsequent signin guidan
   assert.strictEqual(registeredUser.provider, 'google');
   assert.strictEqual(registeredUser.name, 'Dual User');
 });
+
+test('13. Store.getPatronSession alias & Google callback session sync', () => {
+  const { Store } = setupStoreSandbox();
+
+  // Initially unauthenticated
+  assert.strictEqual(Store.getPatronSession(), null);
+
+  // Authenticate via Google
+  Store.loginPatron({
+    provider: 'google',
+    mode: 'signin',
+    email: 'anjana.kalita@vistarakrafts.com',
+    name: 'Anjana Kalita',
+    avatar: 'https://lh3.googleusercontent.com/a/test-avatar',
+    userId: '11111111-2222-3333-4444-555555555555'
+  });
+
+  // Verify Store.getPatronSession returns active session matching getAuthSession
+  const patronSession = Store.getPatronSession();
+  assert.ok(patronSession);
+  assert.strictEqual(patronSession.email, 'anjana.kalita@vistarakrafts.com');
+  assert.strictEqual(patronSession.name, 'Anjana Kalita');
+  assert.strictEqual(patronSession.provider, 'google');
+  assert.strictEqual(Store.isAuthenticated(), true);
+
+  // Verify profile reflects active patron
+  const profile = Store.getPatronProfile();
+  assert.strictEqual(profile.name, 'Anjana Kalita');
+  assert.strictEqual(profile.email, 'anjana.kalita@vistarakrafts.com');
+});

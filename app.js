@@ -661,7 +661,20 @@
   };
 
   function parseHash() {
-    const raw = (window.location.hash || '#/home').replace(/^#\/?/, '');
+    let raw = (window.location.hash || '#/home').replace(/^#\/?/, '');
+    // Guard against OAuth callback tokens in hash (e.g., #access_token=... or #error_description=...)
+    if (raw.startsWith('access_token=') || raw.includes('&access_token=') || raw.startsWith('error_description=') || raw.startsWith('error=')) {
+      try {
+        const saved = sessionStorage.getItem('vk_route_before_auth');
+        if (saved && saved !== '#' && saved !== '#/' && !saved.includes('access_token=') && !saved.includes('error=')) {
+          raw = saved.replace(/^#\/?/, '');
+        } else {
+          raw = 'home';
+        }
+      } catch (_e) {
+        raw = 'home';
+      }
+    }
     const qIdx = raw.indexOf('?');
     const pathPart = qIdx >= 0 ? raw.slice(0, qIdx) : raw;
     const queryPart = qIdx >= 0 ? raw.slice(qIdx + 1) : '';
@@ -7784,7 +7797,7 @@
       const processSupabaseSession = async (session) => {
         if (!session || !session.user || !session.user.email) return;
         const u = session.user;
-        const currentPatron = Store.getPatronSession();
+        const currentPatron = typeof Store.getAuthSession === 'function' ? Store.getAuthSession() : (typeof Store.getPatronSession === 'function' ? Store.getPatronSession() : null);
         if (!currentPatron || currentPatron.email !== u.email) {
           let fullName = u.user_metadata?.full_name || u.user_metadata?.name || '';
           let phone = u.user_metadata?.phone || '';
@@ -7845,7 +7858,8 @@
         if (hasAuthHash || (window.location.search && window.location.search.includes('code='))) {
           try {
             const cleanSearch = window.location.search.replace(/[?&]code=[^&]*/g, '').replace(/^&/, '?');
-            window.history.replaceState(null, document.title, window.location.pathname + cleanSearch);
+            const targetHash = window.location.hash && !window.location.hash.includes('access_token=') && !window.location.hash.includes('error=') ? window.location.hash : '#/home';
+            window.history.replaceState(null, document.title, window.location.pathname + cleanSearch + targetHash);
           } catch (_e) {}
         }
       };
