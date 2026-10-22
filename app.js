@@ -7864,22 +7864,19 @@
             try { Store.syncOrdersFromSupabase(); } catch (_e) {}
           }
 
-          // Trigger welcome email via Resend if this is a first-time Google OAuth registration
-          if (session.access_token && u.app_metadata?.provider === 'google' && u.created_at && u.last_sign_in_at) {
-            const isFirstSignIn = Math.abs(new Date(u.last_sign_in_at).getTime() - new Date(u.created_at).getTime()) < 15000;
-            if (isFirstSignIn) {
-              fetch('/api/send-welcome-email', {
-                method: 'POST',
-                headers: {
-                  'Content-Type': 'application/json',
-                  'Authorization': `Bearer ${session.access_token}`
-                }
-              }).then(r => r.json()).then(resData => {
-                if (resData && resData.success && !resData.already_sent) {
-                  console.log('[Vistāra Email] Google registration welcome email dispatched via Resend (ID:', resData.id, ')');
-                }
-              }).catch(() => {});
-            }
+          // Dispatch welcome email via Resend for Google patron if not yet received (server enforces strict database idempotency)
+          if (session.access_token && u.app_metadata?.provider === 'google') {
+            fetch('/api/send-welcome-email', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${session.access_token}`
+              }
+            }).then(r => r.json()).then(resData => {
+              if (resData && resData.success && !resData.already_sent) {
+                console.log('[Vistāra Email] Google registration welcome email dispatched via Resend (ID:', resData.id, ')');
+              }
+            }).catch(() => {});
           }
 
           if (typeof window.showToast === 'function') {
