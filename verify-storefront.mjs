@@ -1172,6 +1172,8 @@ test('SEO, GEO & AEO Production Readiness: robots.txt, sitemap.xml, llms.txt, ll
   for (const listEl of catalogListNode.itemListElement) {
     assert.ok(listEl.item.offers.shippingDetails, `Static JSON-LD Product ${listEl.item.productID} must include OfferShippingDetails`);
     assert.ok(listEl.item.offers.hasMerchantReturnPolicy, `Static JSON-LD Product ${listEl.item.productID} must include hasMerchantReturnPolicy`);
+    assert.strictEqual(listEl.item.offers.validFrom, '2026-01-01', `Static JSON-LD Product ${listEl.item.productID} must include validFrom="2026-01-01"`);
+    assert.strictEqual(listEl.item.offers.priceValidUntil, '2027-12-31', `Static JSON-LD Product ${listEl.item.productID} must include priceValidUntil="2027-12-31"`);
   }
 
   // 3. Verify Store.getSeoConfig() and dynamic per-route / per-product / per-variant SEO updates in app.js
@@ -1209,6 +1211,8 @@ test('SEO, GEO & AEO Production Readiness: robots.txt, sitemap.xml, llms.txt, ll
   assert.strictEqual(activeProdSchema.offers.price, '1899', 'Active product JSON-LD Offer price must match selected variant');
   assert.ok(activeProdSchema.offers.shippingDetails, 'Dynamic Product Offer must include OfferShippingDetails');
   assert.ok(activeProdSchema.offers.hasMerchantReturnPolicy, 'Dynamic Product Offer must include hasMerchantReturnPolicy');
+  assert.strictEqual(activeProdSchema.offers.validFrom, '2026-01-01', 'Dynamic Product Offer must include validFrom="2026-01-01"');
+  assert.strictEqual(activeProdSchema.offers.priceValidUntil, '2027-12-31', 'Dynamic Product Offer must include priceValidUntil="2027-12-31"');
   assert.ok(
     activeProdSchema.additionalProperty.some(p => p.name === 'HSN Code' && p.value.includes('39073010')),
     'Dynamic Product additionalProperty must include HSN Code 39073010'

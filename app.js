@@ -3960,6 +3960,7 @@
           priceCurrency: 'INR',
           price: String(selectedPrice),
           priceValidUntil: '2027-12-31',
+          validFrom: '2026-01-01',
           itemCondition: 'https://schema.org/NewCondition',
           availability: prod.inStock !== false ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock',
           seller: { '@id': `${siteUrl}/#organization` },
