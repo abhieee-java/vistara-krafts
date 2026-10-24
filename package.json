@@ -5,12 +5,14 @@
   "type": "module",
   "scripts": {
     "dev": "vite --port 3000 --host",
-    "build": "vite build",
+    "build:css": "tailwindcss -i ./tailwind-input.css -o ./tailwind.min.css --minify",
+    "build": "npm run build:css && vite build",
     "preview": "vite preview --port 3000",
     "test": "node verify-storefront.mjs && node test/payment-security.test.mjs && node test/settings-sync-e2e.test.mjs && node test/test-announcement-delivery-sync.mjs && node test/auth-production-verification.test.mjs && node test/order-isolation-security.test.mjs && node test/welcome-email-resend.test.mjs",
     "lint": "echo 'No lint specified'"
   },
   "devDependencies": {
+    "tailwindcss": "^3.4.17",
     "vite": "^5.4.11"
   }
 }

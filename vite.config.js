@@ -14,6 +14,7 @@ const STATIC_ASSETS = [
   'app.js',
   'styles.css',
   'tokens.css',
+  'tailwind.min.css',
   'vistara-krafts-logo.jpg',
   'robots.txt',
   'sitemap.xml',

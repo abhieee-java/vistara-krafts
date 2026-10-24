@@ -1776,6 +1776,34 @@
             window.clearActivePaymentTimeout();
           }
 
+          // Dynamically load Razorpay SDK on-demand if not already loaded in browser
+          if (typeof window.Razorpay !== 'function' && typeof document !== 'undefined') {
+            await new Promise((resolveScript, rejectScript) => {
+              if (document.querySelector('script[src*="checkout.razorpay.com"]')) {
+                let attempts = 0;
+                const checkInterval = setInterval(() => {
+                  attempts++;
+                  if (typeof window.Razorpay === 'function') {
+                    clearInterval(checkInterval);
+                    resolveScript();
+                  } else if (attempts > 40) {
+                    clearInterval(checkInterval);
+                    rejectScript(new Error('Timeout waiting for Razorpay SDK'));
+                  }
+                }, 50);
+                return;
+              }
+              const script = document.createElement('script');
+              script.src = 'https://checkout.razorpay.com/v1/checkout.js';
+              script.async = true;
+              script.onload = () => resolveScript();
+              script.onerror = () => rejectScript(new Error('Failed to load Razorpay SDK'));
+              document.head.appendChild(script);
+            }).catch((err) => {
+              console.warn('Razorpay on-demand load:', err);
+            });
+          }
+
           if (typeof window.Razorpay !== 'function') {
             return {
               success: false,

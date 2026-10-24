@@ -1395,7 +1395,7 @@
               </div>
             </div>
             <div class="p-3 rounded-xl bg-surface-container-low border border-[#e4e0d8] flex items-center gap-2.5">
-              <span class="w-8 h-8 rounded-lg bg-secondary text-primary flex items-center justify-center shrink-0 font-bold text-xs">3:1</span>
+              <span class="w-8 h-8 rounded-lg bg-secondary text-white flex items-center justify-center shrink-0 font-bold text-xs">3:1</span>
               <div>
                 <p class="font-bold text-primary">3:1 Deep Pour System</p>
                 <p class="text-[11px] text-on-surface-variant">Low-exotherm for river tables up to 50mm</p>
@@ -6586,10 +6586,10 @@
     const mode = document.getElementById('cf-auth-mode')?.value || 'signin';
     const email = document.getElementById('cf-auth-email')?.value.trim() || '';
     const password = document.getElementById('cf-auth-password')?.value || '';
-    const name = document.getElementById('cf-auth-name')?.value.trim() || '';
-    const phone = document.getElementById('cf-auth-phone')?.value.trim() || '';
-    const address = document.getElementById('cf-auth-address')?.value.trim() || '';
-    const pincode = document.getElementById('cf-auth-pincode')?.value.trim() || '';
+    let name = document.getElementById('cf-auth-name')?.value.trim() || '';
+    let phone = document.getElementById('cf-auth-phone')?.value.trim() || '';
+    let address = document.getElementById('cf-auth-address')?.value.trim() || '';
+    let pincode = document.getElementById('cf-auth-pincode')?.value.trim() || '';
     const personaPreference = document.getElementById('cf-auth-selected-persona')?.value || 'all';
 
     const errEl = document.getElementById('cf-auth-error');
@@ -7940,10 +7940,10 @@
       window.applyStorefrontSettings(Store.getSettings());
     }
 
-    // Start auto-dismiss timer for Vistāra Krafts vector splash animation (1.0s animation + 0.3s fade = 1.3s total)
+    // Start auto-dismiss timer for Vistāra Krafts vector splash animation (fast entrance + smooth fade)
     vkSplashTimer = setTimeout(() => {
       window.dismissVkSplash();
-    }, 1000);
+    }, 400);
 
     // Check DPDP Consent State on initial load
     try {
