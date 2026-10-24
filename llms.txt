@@ -1,6 +1,6 @@
 # Vistāra Krafts (@resin.art.memories)
 
-> India’s premier Bridal Varmala & Floral Memory Preservation Atelier (`@resin.art.memories`) and ISO 9001:2015 Certified Optical Epoxy Resin Manufacturer (`Vistāra Krafts Studio & Chemical Atelier`). Based in Guwahati, Assam, India (PIN 781001) with 24-hour doorstep floral pickup and insured air delivery across 19,000+ Indian PIN codes. Official storefront: `https://www.vistarakrafts.com` (apex domain: `https://vistarakrafts.com`).
+> Vistāra Krafts (@resin.art.memories) is Guwahati's premier resin art studio and resin raw material supplier. We craft custom preserved wedding flower keepsakes, floral blocks, and supply high-quality epoxy resin raw materials, silicone molds, and pigments. Based exclusively in Guwahati, Assam, India (PIN 781028). Grievance & Data Protection Officer (DPO): Abhijit Kalita (ad4064773@gmail.com). We specialize exclusively in resin art and raw materials (we do not offer pottery). Official storefront: `https://www.vistarakrafts.com` (apex domain: `https://vistarakrafts.com`).
 
 ## Storefront & Discovery Links
 
@@ -43,7 +43,7 @@
 
 ## Geo-Targeting, Shipping, GST & Offers
 
-- **Headquarters & Lab**: Vistāra Krafts Studio & Chemical Atelier, Bengaluru, Karnataka 560001, India (`geo.region: IN-KA`, `12.9716, 77.5946`).
-- **Pan-India Express Air Delivery**: Free shipping on orders above ₹999 (₹99 below ₹999). Priority 1–3 day transit to Bengaluru (`560001`), Mumbai (`400001`), New Delhi (`110001`), Hyderabad (`500001`), Chennai (`600001`), Pune (`411001`), Jaipur (`302001`), Kolkata (`700001`), and 19,000+ PIN codes via BlueDart & Delhivery.
+- **Headquarters & Studio**: Vistāra Krafts Studio, Guwahati, Assam 781028, India (`geo.region: IN-AS`, `26.1445, 91.7362`). Grievance Officer & Data Protection Officer (DPO): Abhijit Kalita (`ad4064773@gmail.com`).
+- **Delivery**: Express courier delivery across Guwahati, Assam and Northeast India / Pan-India via BlueDart & Delhivery.
 - **Volume Discounts & Coupons**: Save 8% on 3–5 units, 16% on 6+ units. Active vouchers: `KRAFTFIRST` (₹150 off min ₹500), `MEMORIES10` (10% off min ₹1,000), `FLIRTY15` (15% off min ₹2,500), `STUDIO20` (20% off min ₹5,000).
-- **Tax & Compliance**: HSN `39073010` (Epoxy Resins in Primary Forms) & `69120010` (Ceramic Stoneware), 18% GST inclusive with B2B Input Tax Credit (ITC) tax invoices, ISO 9001:2015 & ISO 11014 SDS certified.
+- **Tax & Compliance**: HSN `39073010` (Epoxy Resins in Primary Forms & Castings), 18% GST inclusive with B2B Input Tax Credit (ITC) tax invoices. We offer exclusively resin art and resin raw materials (no pottery).

@@ -1138,31 +1138,31 @@
               </div>
 
               <h1 class="font-headline-lg text-2xl min-[360px]:text-3xl sm:text-5xl text-primary font-bold tracking-tight leading-[1.14] break-words">
-                Hold Your Most Intimate Memories in <span class="italic text-[#9e3322] font-serif">Liquid Glass</span>.
+                Handcrafted Resin Art &amp; <span class="italic text-[#9e3322] font-serif">Wedding Keepsakes</span> in Guwahati.
               </h1>
 
               <p class="font-body-lg text-xs min-[360px]:text-sm sm:text-base text-on-surface-variant max-w-xl leading-relaxed break-words">
-                From preserving wedding varmalas &amp; anniversary roses in museum-grade 50mm blocks to supplying India’s purest 3:1 &amp; 2:1 optical epoxy systems by <strong>Vistāra Krafts</strong>.
+                Welcome to <strong>Vistāra Krafts</strong> (@resin.art.memories). We turn your special wedding flowers and memories into crystal-clear resin keepsakes, and provide premium epoxy resin raw materials, silicone molds, and pigments for all your resin art creations.
               </p>
 
               <!-- Primary Conversion CTA -->
               <div class="flex flex-col sm:flex-row w-full sm:w-auto gap-2.5 sm:gap-3 pt-1">
                 <button type="button" onclick="window.navigateTo('catalog', 'all')" class="btn-shimmer min-h-[48px] w-full sm:w-auto px-6 sm:px-8 rounded-xl bg-primary hover:bg-primary-container text-on-primary font-title-md text-sm sm:text-base font-semibold flex items-center justify-center gap-2.5 shadow-md active:scale-[0.98] transition-all cursor-pointer">
-                  <span>Explore Complete 19-Piece Catalogue</span>
+                  <span>Explore Resin Art &amp; Raw Materials</span>
                   <span class="material-symbols-outlined text-lg" aria-hidden="true">arrow_forward</span>
                 </button>
               </div>
 
-              <!-- Trust & Optical Clarity Bar -->
+              <!-- Trust & Clarity Bar -->
               <div class="w-full mt-1 grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3">
                 <div class="rounded-xl bg-white/90 border border-[#e4e0d8] p-3 flex items-center gap-3 shadow-2xs min-w-0">
                   <img src="${esc(Store.IMAGES.floralCube)}" alt="Preserved Bridal Roses" class="w-11 h-11 rounded-lg object-cover shrink-0">
                   <div class="min-w-0 flex-1">
                     <div class="flex items-center gap-1 text-[#9e3322] font-label-sm text-[11px] uppercase font-bold truncate">
                       <span class="material-symbols-outlined text-sm shrink-0" aria-hidden="true">local_florist</span>
-                      <span class="truncate">Pan-India Varmala Pickup</span>
+                      <span class="truncate">Wedding Flower Keepsakes</span>
                     </div>
-                    <p class="text-xs text-on-surface leading-tight mt-0.5 break-words">Doorstep flower pickup in 24h across 19,000+ PINs</p>
+                    <p class="text-xs text-on-surface leading-tight mt-0.5 break-words">Doorstep flower pickup in Guwahati &amp; insured delivery</p>
                   </div>
                 </div>
                 <div class="rounded-xl bg-white/90 border border-[#e4e0d8] p-3 flex items-center gap-3 shadow-2xs min-w-0">
@@ -1170,9 +1170,9 @@
                   <div class="min-w-0 flex-1">
                     <div class="flex items-center gap-1 text-secondary font-label-sm text-[11px] uppercase font-bold truncate">
                       <span class="material-symbols-outlined text-sm shrink-0" aria-hidden="true">verified</span>
-                      <span class="truncate">99.4% Optical Transmission</span>
+                      <span class="truncate">Crystal Clear Epoxy Resin</span>
                     </div>
-                    <p class="text-xs text-on-surface leading-tight mt-0.5 break-words">ASTM D1003 HALS UV-shielded non-yellowing resin</p>
+                    <p class="text-xs text-on-surface leading-tight mt-0.5 break-words">Bubble-free, non-yellowing epoxy resin &amp; craft raw materials</p>
                   </div>
                 </div>
               </div>
@@ -1871,7 +1871,7 @@
         if (activeCat === 'uv_resin' || activeCat === 'uv' || activeCat === 'jewelry') {
           return p.id === 'vk-cat-res-uvcs' || prodSub.includes('uv') || p.id === 'vk-cat-mld-bkm6';
         }
-        if (activeCat === 'pottery') {
+        if (activeCat === 'materials' || activeCat === 'supplies' || activeCat === 'raw_materials') {
           return p.id === 'vk-cat-acc-stnd' || p.id === 'vk-cat-acc-deco' || p.id === 'vk-cat-acc-poli';
         }
         return false;
@@ -3952,7 +3952,7 @@
           '@type': 'Brand',
           name: String(prod.id).startsWith('ram-')
             ? 'Resin Art Memories (@resin.art.memories)'
-            : (String(prod.id).startsWith('potry-') ? 'Potry × Vistāra Krafts' : 'Vistāra Krafts')
+            : 'Vistāra Krafts'
         },
         offers: {
           '@type': 'Offer',

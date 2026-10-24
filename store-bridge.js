@@ -2416,7 +2416,7 @@
         const defaultImg = targetProduct.image || (targetProduct.images && targetProduct.images[0]) || existingProd.image || IMAGES.ultraclearMain;
         const rawSpecs = { ...(existingProd.specs || {}), ...(targetProduct.specs || {}) };
         const resolvedCat = targetProduct.category || existingProd.category || 'keepsakes';
-        const defaultHsn = resolvedCat === 'ceramics' ? '69120010' : (resolvedCat === 'pigments' ? '32064990' : (resolvedCat === 'molds' ? '39269099' : '39073010'));
+        const defaultHsn = resolvedCat === 'pigments' ? '32064990' : (resolvedCat === 'molds' ? '39269099' : '39073010');
         const normalizedProd = {
           ...existingProd,
           ...targetProduct,
