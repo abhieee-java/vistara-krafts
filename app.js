@@ -4355,7 +4355,7 @@
       : {
           siteUrl: String(window.VISTARA_SITE_URL || 'https://www.vistarakrafts.com').replace(/\/+$/, ''),
           futureCustomDomain: 'https://vistarakrafts.com',
-          defaultTitle: 'Vistāra Krafts (@resin.art.memories) | UltraClear Epoxy Resin Systems & Bridal Varmala Preservation Studio India',
+          defaultTitle: 'Vistāra Krafts — Resin Art & Raw Materials | Guwahati',
           defaultDescription: 'Official Vistāra Krafts × Resin Art Memories (@resin.art.memories) Storefront.',
           defaultKeywords: 'Vistara Krafts, Resin Art Memories, @resin.art.memories, bridal varmala preservation India, epoxy resin kit India',
           locale: 'en_IN',
