@@ -55,8 +55,23 @@ Allow: /
 User-agent: Applebot-Extended
 Allow: /
 
-# Microsoft Bing & Copilot
+# Microsoft Bing, MSN, DuckDuckGo & Microsoft Copilot
 User-agent: Bingbot
+Allow: /
+
+User-agent: msnbot
+Allow: /
+
+User-agent: msnbot-media
+Allow: /
+
+User-agent: MicrosoftPreview
+Allow: /
+
+User-agent: Copilot
+Allow: /
+
+User-agent: Bing-Copilot
 Allow: /
 
 Sitemap: https://www.vistarakrafts.com/sitemap.xml

@@ -5,7 +5,7 @@
   <!-- Storefront Root & Home Discovery -->
   <url>
     <loc>https://www.vistarakrafts.com/</loc>
-    <lastmod>2026-10-22</lastmod>
+    <lastmod>2026-10-24</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
     <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.vistarakrafts.com/" />
@@ -18,7 +18,7 @@
   </url>
   <url>
     <loc>https://www.vistarakrafts.com/#/home</loc>
-    <lastmod>2026-10-22</lastmod>
+    <lastmod>2026-10-24</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.95</priority>
     <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.vistarakrafts.com/#/home" />
@@ -26,7 +26,7 @@
   </url>
   <url>
     <loc>https://www.vistarakrafts.com/#/catalog</loc>
-    <lastmod>2026-10-22</lastmod>
+    <lastmod>2026-10-24</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.95</priority>
     <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.vistarakrafts.com/#/catalog" />
@@ -34,7 +34,7 @@
   </url>
   <url>
     <loc>https://www.vistarakrafts.com/#/custom-studio</loc>
-    <lastmod>2026-10-22</lastmod>
+    <lastmod>2026-10-24</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.90</priority>
     <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.vistarakrafts.com/#/custom-studio" />
@@ -42,7 +42,7 @@
   </url>
   <url>
     <loc>https://www.vistarakrafts.com/#/social</loc>
-    <lastmod>2026-10-22</lastmod>
+    <lastmod>2026-10-24</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.85</priority>
     <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.vistarakrafts.com/#/social" />
@@ -52,7 +52,7 @@
   <!-- 19 Curated Vistāra Krafts Catalog Products -->
   <url>
     <loc>https://www.vistarakrafts.com/#/product/vk-cat-res-201</loc>
-    <lastmod>2026-10-22</lastmod>
+    <lastmod>2026-10-24</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.85</priority>
     <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.vistarakrafts.com/#/product/vk-cat-res-201" />
@@ -64,7 +64,7 @@
   </url>
   <url>
     <loc>https://www.vistarakrafts.com/#/product/vk-cat-res-301</loc>
-    <lastmod>2026-10-22</lastmod>
+    <lastmod>2026-10-24</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.85</priority>
     <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.vistarakrafts.com/#/product/vk-cat-res-301" />
@@ -76,7 +76,7 @@
   </url>
   <url>
     <loc>https://www.vistarakrafts.com/#/product/vk-cat-acc-deco</loc>
-    <lastmod>2026-10-22</lastmod>
+    <lastmod>2026-10-24</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.85</priority>
     <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.vistarakrafts.com/#/product/vk-cat-acc-deco" />
@@ -88,7 +88,7 @@
   </url>
   <url>
     <loc>https://www.vistarakrafts.com/#/product/vk-cat-acc-stnd</loc>
-    <lastmod>2026-10-22</lastmod>
+    <lastmod>2026-10-24</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.85</priority>
     <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.vistarakrafts.com/#/product/vk-cat-acc-stnd" />
@@ -100,7 +100,7 @@
   </url>
   <url>
     <loc>https://www.vistarakrafts.com/#/product/vk-cat-mld-agat</loc>
-    <lastmod>2026-10-22</lastmod>
+    <lastmod>2026-10-24</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.85</priority>
     <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.vistarakrafts.com/#/product/vk-cat-mld-agat" />
@@ -112,7 +112,7 @@
   </url>
   <url>
     <loc>https://www.vistarakrafts.com/#/product/vk-cat-pig-foil</loc>
-    <lastmod>2026-10-22</lastmod>
+    <lastmod>2026-10-24</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.85</priority>
     <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.vistarakrafts.com/#/product/vk-cat-pig-foil" />
@@ -124,7 +124,7 @@
   </url>
   <url>
     <loc>https://www.vistarakrafts.com/#/product/vk-cat-pig-opaq</loc>
-    <lastmod>2026-10-22</lastmod>
+    <lastmod>2026-10-24</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.85</priority>
     <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.vistarakrafts.com/#/product/vk-cat-pig-opaq" />
@@ -136,7 +136,7 @@
   </url>
   <url>
     <loc>https://www.vistarakrafts.com/#/product/vk-cat-pig-inks</loc>
-    <lastmod>2026-10-22</lastmod>
+    <lastmod>2026-10-24</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.85</priority>
     <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.vistarakrafts.com/#/product/vk-cat-pig-inks" />
@@ -148,7 +148,7 @@
   </url>
   <url>
     <loc>https://www.vistarakrafts.com/#/product/vk-cat-acc-bubb</loc>
-    <lastmod>2026-10-22</lastmod>
+    <lastmod>2026-10-24</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.85</priority>
     <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.vistarakrafts.com/#/product/vk-cat-acc-bubb" />
@@ -160,7 +160,7 @@
   </url>
   <url>
     <loc>https://www.vistarakrafts.com/#/product/vk-cat-acc-poli</loc>
-    <lastmod>2026-10-22</lastmod>
+    <lastmod>2026-10-24</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.85</priority>
     <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.vistarakrafts.com/#/product/vk-cat-acc-poli" />
@@ -172,7 +172,7 @@
   </url>
   <url>
     <loc>https://www.vistarakrafts.com/#/product/vk-cat-acc-trch</loc>
-    <lastmod>2026-10-22</lastmod>
+    <lastmod>2026-10-24</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.85</priority>
     <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.vistarakrafts.com/#/product/vk-cat-acc-trch" />
@@ -184,7 +184,7 @@
   </url>
   <url>
     <loc>https://www.vistarakrafts.com/#/product/vk-cat-acc-latx</loc>
-    <lastmod>2026-10-22</lastmod>
+    <lastmod>2026-10-24</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.85</priority>
     <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.vistarakrafts.com/#/product/vk-cat-acc-latx" />
@@ -196,7 +196,7 @@
   </url>
   <url>
     <loc>https://www.vistarakrafts.com/#/product/vk-cat-mld-flw4</loc>
-    <lastmod>2026-10-22</lastmod>
+    <lastmod>2026-10-24</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.85</priority>
     <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.vistarakrafts.com/#/product/vk-cat-mld-flw4" />
@@ -208,7 +208,7 @@
   </url>
   <url>
     <loc>https://www.vistarakrafts.com/#/product/vk-cat-acc-sili</loc>
-    <lastmod>2026-10-22</lastmod>
+    <lastmod>2026-10-24</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.85</priority>
     <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.vistarakrafts.com/#/product/vk-cat-acc-sili" />
@@ -220,7 +220,7 @@
   </url>
   <url>
     <loc>https://www.vistarakrafts.com/#/product/vk-cat-mld-ag6c</loc>
-    <lastmod>2026-10-22</lastmod>
+    <lastmod>2026-10-24</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.85</priority>
     <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.vistarakrafts.com/#/product/vk-cat-mld-ag6c" />
@@ -232,7 +232,7 @@
   </url>
   <url>
     <loc>https://www.vistarakrafts.com/#/product/vk-cat-mld-bkm6</loc>
-    <lastmod>2026-10-22</lastmod>
+    <lastmod>2026-10-24</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.85</priority>
     <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.vistarakrafts.com/#/product/vk-cat-mld-bkm6" />
@@ -244,7 +244,7 @@
   </url>
   <url>
     <loc>https://www.vistarakrafts.com/#/product/vk-cat-res-uvcs</loc>
-    <lastmod>2026-10-22</lastmod>
+    <lastmod>2026-10-24</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.85</priority>
     <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.vistarakrafts.com/#/product/vk-cat-res-uvcs" />
@@ -256,7 +256,7 @@
   </url>
   <url>
     <loc>https://www.vistarakrafts.com/#/product/vk-cat-mld-leaf</loc>
-    <lastmod>2026-10-22</lastmod>
+    <lastmod>2026-10-24</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.85</priority>
     <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.vistarakrafts.com/#/product/vk-cat-mld-leaf" />
@@ -268,7 +268,7 @@
   </url>
   <url>
     <loc>https://www.vistarakrafts.com/#/product/vk-cat-acc-smfl</loc>
-    <lastmod>2026-10-22</lastmod>
+    <lastmod>2026-10-24</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.85</priority>
     <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.vistarakrafts.com/#/product/vk-cat-acc-smfl" />
@@ -282,13 +282,13 @@
   <!-- Machine-Readable LLM Knowledge Feeds (GEO / AEO Discovery) -->
   <url>
     <loc>https://www.vistarakrafts.com/llms.txt</loc>
-    <lastmod>2026-10-22</lastmod>
+    <lastmod>2026-10-24</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.80</priority>
   </url>
   <url>
     <loc>https://www.vistarakrafts.com/llms-full.txt</loc>
-    <lastmod>2026-10-22</lastmod>
+    <lastmod>2026-10-24</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.80</priority>
   </url>
