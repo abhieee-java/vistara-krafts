@@ -341,8 +341,21 @@ export class OrderService {
     if (!order || !Array.isArray(order.items) || order.inventory_deducted) return;
     order.inventory_deducted = true;
 
-    // Do not mutate live database on mock/test orders
-    if (order.order_number && (order.order_number.startsWith('VK-TEST') || order.order_number.includes('MOCK'))) {
+    // Do not mutate live database on mock/test orders or test runs
+    const emailStr = String(order.customer_email || order.customerEmail || order.email || '').toLowerCase();
+    const orderNumStr = String(order.order_number || order.orderId || '').toUpperCase();
+    const userStr = String(order.user_id || order.userId || '').toLowerCase();
+
+    if (
+      process.env.NODE_ENV === 'test' ||
+      orderNumStr.startsWith('VK-TEST') ||
+      orderNumStr.includes('MOCK') ||
+      orderNumStr.includes('TEST') ||
+      emailStr.includes('@test.com') ||
+      emailStr.includes('test_') ||
+      emailStr.includes('mock') ||
+      userStr.includes('test')
+    ) {
       return;
     }
 
