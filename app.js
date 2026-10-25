@@ -1971,13 +1971,10 @@
         </nav>
 
         <!-- 2. Clean, Uncluttered Catalogue Header -->
-        <div class="flex flex-col gap-1 max-w-2xl min-w-0 pt-0.5">
+        <div class="max-w-2xl min-w-0 pt-0.5">
           <h1 class="font-headline-lg text-2xl sm:text-3xl lg:text-4xl text-primary font-bold tracking-tight leading-snug break-words">
             Keepsake Art &amp; Epoxy Resin Supplies
           </h1>
-          <p class="text-xs sm:text-sm text-on-surface-variant leading-relaxed">
-            Handcrafted flower preservation, ocean decor, and quality 3:1, 2:1 &amp; UV resin formulas.
-          </p>
         </div>
 
         <!-- 3. Search Bar -->
@@ -2025,8 +2022,8 @@
           ` : ''}
         </div>
 
-        <!-- 4. Interactive Metadata, Sorting & Filter Card (Matches User Specification) -->
-        <div class="p-3.5 sm:p-4 rounded-2xl bg-white border border-[#e4e0d8] shadow-2xs flex flex-col gap-3">
+        <!-- 4. Compact Catalogue Controls (Row 1: Count & View Switcher | Row 2: Sort & Filter) -->
+        <div class="flex flex-col gap-2.5 w-full min-w-0 pt-0.5 pb-0.5">
           <!-- Hidden fallback select for programmatic testing -->
           <label for="catalog-sort-select" class="sr-only">Sort products</label>
           <select id="catalog-sort-select" aria-label="Sort products" onchange="window.setCatalogSort(this.value)" class="sr-only">
@@ -2042,49 +2039,40 @@
             <option value="viscosity" ${AppState.catalogSort === 'viscosity' ? 'selected' : ''}>Viscosity: Low–High</option>
           </select>
 
-          <!-- Top Row: Products Count on Left, Grid/List Switcher on Right -->
-          <div class="flex items-center justify-between gap-2">
-            <div>
-              <h3 class="font-bold text-primary text-sm sm:text-base leading-tight">${filtered.length} Products</h3>
-              <p class="text-[11px] text-on-surface-variant leading-tight">in this collection</p>
+          <!-- First Row: Product Count Left, Grid/List Switcher Right -->
+          <div class="flex items-center justify-between gap-3 w-full">
+            <div class="flex items-center gap-1.5 min-w-0">
+              <span class="font-spec-numeral font-bold text-primary text-sm sm:text-base tracking-tight">${filtered.length} Products</span>
             </div>
             <!-- Grid / List Switcher -->
-            <div class="flex items-center bg-surface-container-low p-1 rounded-xl border border-[#e4e0d8]">
-              <button type="button" aria-label="Grid View" onclick="window.setCatalogView('grid')" class="w-8 h-8 rounded-lg flex items-center justify-center ${AppState.catalogView === 'grid' ? 'bg-white text-primary shadow-2xs font-bold' : 'text-on-surface-variant hover:text-primary'} cursor-pointer transition-all">
-                <span class="material-symbols-outlined text-[18px]" aria-hidden="true">grid_view</span>
+            <div class="flex items-center bg-[#f5f0e8]/80 p-0.5 rounded-xl border border-[#e4e0d8] shadow-2xs">
+              <button type="button" aria-label="Grid View" onclick="window.setCatalogView('grid')" class="w-8 h-8 rounded-lg flex items-center justify-center ${AppState.catalogView === 'grid' ? 'bg-white text-primary shadow-xs font-bold' : 'text-on-surface-variant hover:text-primary'} cursor-pointer transition-all active:scale-95">
+                <span class="material-symbols-outlined text-[17px]" aria-hidden="true">grid_view</span>
               </button>
-              <button type="button" aria-label="List View" onclick="window.setCatalogView('list')" class="w-8 h-8 rounded-lg flex items-center justify-center ${AppState.catalogView === 'list' ? 'bg-white text-primary shadow-2xs font-bold' : 'text-on-surface-variant hover:text-primary'} cursor-pointer transition-all">
-                <span class="material-symbols-outlined text-[18px]" aria-hidden="true">view_list</span>
+              <button type="button" aria-label="List View" onclick="window.setCatalogView('list')" class="w-8 h-8 rounded-lg flex items-center justify-center ${AppState.catalogView === 'list' ? 'bg-white text-primary shadow-xs font-bold' : 'text-on-surface-variant hover:text-primary'} cursor-pointer transition-all active:scale-95">
+                <span class="material-symbols-outlined text-[17px]" aria-hidden="true">view_list</span>
               </button>
             </div>
           </div>
 
-          <!-- Bottom Row: 2 Big Equal Action Buttons -->
-          <div class="grid grid-cols-2 gap-2 sm:gap-2.5">
-            <!-- 1. Sort Button (Opens Sort Bottom Sheet) -->
-            <button type="button" onclick="window.toggleCatalogSortModal(true)" class="min-h-[46px] px-3 py-2.5 rounded-xl bg-white hover:bg-surface-container-lowest border border-[#e4e0d8] hover:border-primary/40 text-primary text-xs font-semibold flex items-center justify-between gap-2 shadow-2xs cursor-pointer transition-all">
-              <div class="flex items-center gap-1.5 min-w-0">
-                <span class="material-symbols-outlined text-base text-secondary shrink-0" aria-hidden="true">swap_vert</span>
-                <span class="truncate font-medium">${currentSortLabel}</span>
-              </div>
-              <span class="material-symbols-outlined text-sm text-on-surface-variant shrink-0" aria-hidden="true">keyboard_arrow_down</span>
-            </button>
-
-            <!-- 2. Specs Filter Button (Opens Filter Bottom Sheet) -->
-            <button type="button" onclick="window.toggleCatalogFilterDrawer(true)" class="min-h-[46px] px-3 py-2.5 rounded-xl ${hasActiveFilters ? 'bg-primary text-white border-primary shadow-xs' : 'bg-white hover:bg-surface-container-lowest border-[#e4e0d8] text-primary shadow-2xs'} border hover:border-primary text-xs font-semibold flex items-center justify-between gap-2 cursor-pointer transition-all">
-              <div class="flex items-center gap-1.5 min-w-0">
-                <span class="material-symbols-outlined text-base ${hasActiveFilters ? 'text-[#ffdeae]' : 'text-secondary'} shrink-0" aria-hidden="true">tune</span>
-                <span class="truncate font-medium">Specs Filter</span>
-              </div>
+          <!-- Second Row: ONE Compact Control: Sort & Filter -->
+          <button type="button" onclick="window.toggleCatalogFilterDrawer(true)" class="w-full min-h-[44px] px-4 py-2.5 rounded-xl bg-[#faf7f2] hover:bg-[#f3ede3] active:scale-[0.99] border border-[#e4e0d8] hover:border-[#cfc8bc] text-primary text-xs font-semibold flex items-center justify-between gap-2 shadow-2xs transition-all cursor-pointer">
+            <div class="flex items-center gap-2 min-w-0">
+              <span class="material-symbols-outlined text-[18px] text-secondary shrink-0" aria-hidden="true">tune</span>
+              <span class="truncate font-medium text-primary">Sort &amp; Filter</span>
+              <span class="text-[11px] text-on-surface-variant truncate font-normal hidden sm:inline">• ${currentSortLabel}</span>
+            </div>
+            <div class="flex items-center gap-2 shrink-0">
               ${hasActiveFilters ? `
-                <span class="inline-flex items-center justify-center w-5 h-5 rounded-full bg-[#8a611c] text-white text-[11px] font-bold leading-none shrink-0 shadow-2xs">
+                <span class="inline-flex items-center justify-center min-w-[20px] h-5 px-1.5 rounded-full bg-[#8a611c] text-white text-[10px] font-bold leading-none shadow-2xs">
                   ${activeFilterCount}
                 </span>
               ` : `
-                <span class="w-2 h-2 rounded-full opacity-0"></span>
+                <span class="text-[11px] text-secondary font-medium font-spec-numeral hidden xs:inline">${currentSortLabel}</span>
               `}
-            </button>
-          </div>
+              <span class="material-symbols-outlined text-sm text-on-surface-variant" aria-hidden="true">tune</span>
+            </div>
+          </button>
         </div>
 
         <!-- 5. Product Grid or Empty State -->
@@ -5283,6 +5271,24 @@
   function syncGlobalFilterDrawerDom() {
     const drawer = document.getElementById('global-filter-drawer');
     if (!drawer) return;
+
+    // Sync Sort radio buttons in drawer
+    drawer.querySelectorAll('button[data-drawer-sort]').forEach(btn => {
+      const val = btn.getAttribute('data-drawer-sort');
+      const isSelected = (val === AppState.catalogSort);
+      const radio = btn.querySelector('.sort-custom-radio');
+      if (isSelected) {
+        btn.className = 'w-full min-h-[42px] px-3.5 py-2 rounded-xl flex items-center justify-between gap-3 text-xs cursor-pointer transition-all bg-[#fcf8f2] text-primary border border-[#e8d8be] shadow-2xs font-bold';
+        if (radio) {
+          radio.className = 'sort-custom-radio w-4 h-4 rounded-full bg-[#8a611c] border-2 border-white ring-2 ring-[#8a611c] flex items-center justify-center shrink-0';
+        }
+      } else {
+        btn.className = 'w-full min-h-[42px] px-3.5 py-2 rounded-xl flex items-center justify-between gap-3 text-xs cursor-pointer transition-all hover:bg-surface-container-high text-primary border border-[#e4e0d8]/70 font-medium';
+        if (radio) {
+          radio.className = 'sort-custom-radio w-4 h-4 rounded-full bg-white border border-[#c4beaf] flex items-center justify-center shrink-0';
+        }
+      }
+    });
 
     // Sync Category buttons in drawer
     drawer.querySelectorAll('button[onclick^="window.setCatalogCategory"]').forEach(btn => {
