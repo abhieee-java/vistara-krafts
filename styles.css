@@ -264,6 +264,47 @@ textarea:disabled {
   border-color: var(--accent-10-brass);
 }
 
+/* 120fps Zero-Lag Product Card Optimization & GPU Transitions */
+.product-card-contain {
+  content-visibility: auto;
+  contain-intrinsic-size: 0 380px;
+  will-change: transform;
+}
+
+/* Tactile Haptic Press Physics */
+.haptic-press {
+  transition: transform 0.15s cubic-bezier(0.2, 0.8, 0.2, 1);
+  will-change: transform;
+}
+.haptic-press:active {
+  transform: scale(0.97);
+}
+
+/* Floating Mini-Cart Toast / Micro-Drawer */
+#mini-cart-toast {
+  position: fixed;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  z-index: 60;
+  transform: translateY(120%) scale(0.95);
+  opacity: 0;
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+              opacity 0.25s ease;
+  pointer-events: none;
+}
+#mini-cart-toast.active {
+  transform: translateY(0) scale(1);
+  opacity: 1;
+  pointer-events: auto;
+}
+@media (max-width: 640px) {
+  #mini-cart-toast {
+    bottom: 5.5rem;
+    left: 1rem;
+    right: 1rem;
+  }
+}
+
 /* Art Deco Diamond Divider */
 .deco-divider {
   display: flex;

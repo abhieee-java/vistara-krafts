@@ -3917,7 +3917,7 @@
           </div>
 
           <p id="cloudflare-auth-reason-banner" class="hidden text-xs text-on-surface-variant bg-[#fdf8f0] border border-[#725a19]/20 rounded-xl px-3 py-2 leading-relaxed shrink-0">
-            Sign in with <strong>Google</strong>, <strong>Apple</strong>, or your <strong>Email</strong> to save your favorites, personalize your feed, and track orders.
+            Sign in with <strong>Google</strong> or your <strong>Email</strong> to save your favorites, personalize your feed, and track orders.
           </p>
 
           <!-- Mode Switcher Tabs (Sign In vs Create Account) -->
@@ -3991,23 +3991,18 @@
             <span class="flex-1 h-px bg-surface-container"></span>
           </div>
 
-          <!-- 1-Click Social Sign-In Buttons (Google & Apple) -->
-          <div id="cf-auth-social-row" class="grid grid-cols-2 gap-2 shrink-0">
-            <button type="button" id="cf-oauth-google-btn" onclick="window.startCloudflareOAuth('google')" style="min-height: 44px; height: 44px;" class="min-h-[44px] h-11 px-3 py-2 rounded-xl bg-white hover:bg-surface-container-low border border-[#dadce0] hover:border-secondary/40 text-primary text-xs font-bold flex items-center justify-center gap-2 shadow-2xs transition cursor-pointer">
+          <!-- 1-Click Social Sign-In Buttons (Google Premier Full-Width) -->
+          <div id="cf-auth-social-row" class="w-full shrink-0">
+            <button type="button" id="cf-oauth-google-btn" onclick="window.startCloudflareOAuth('google')" style="min-height: 48px; height: 48px;" class="w-full min-h-[48px] h-12 px-4 py-2.5 rounded-xl bg-white hover:bg-surface-container-low border border-[#dadce0] hover:border-secondary/40 text-primary text-xs font-bold flex items-center justify-center gap-2.5 shadow-2xs active:scale-[0.98] transition cursor-pointer">
               <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" aria-hidden="true">
                 <path fill="#4285F4" d="M23.49 12.27c0-.79-.07-1.54-.19-2.27H12v4.51h6.47c-.29 1.48-1.14 2.73-2.4 3.58v3h3.86c2.26-2.09 3.56-5.17 3.56-8.82z"/>
                 <path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.86-3c-1.08.72-2.45 1.16-4.07 1.16-3.13 0-5.78-2.11-6.73-4.96H1.29v3.09C3.26 21.3 7.31 24 12 24z"/>
                 <path fill="#FBBC05" d="M5.27 14.29c-.25-.72-.38-1.49-.38-2.29s.14-1.57.38-2.29V6.62H1.29C.47 8.24 0 10.06 0 12s.47 3.76 1.29 5.38l3.98-3.09z"/>
                 <path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.31 0 3.26 2.7 1.29 6.62l3.98 3.09c.95-2.85 3.6-4.96 6.73-4.96z"/>
               </svg>
-              <span class="truncate">Continue with Google</span>
+              <span>Continue with Google</span>
             </button>
-            <button type="button" id="cf-oauth-apple-btn" onclick="window.startCloudflareOAuth('apple')" style="min-height: 44px; height: 44px;" class="min-h-[44px] h-11 px-3 py-2 rounded-xl bg-[#111312] hover:bg-black text-white text-xs font-bold flex items-center justify-center gap-2 shadow-2xs transition cursor-pointer">
-              <svg class="w-4 h-4 shrink-0 fill-current" viewBox="0 0 24 24" aria-hidden="true">
-                <path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"/>
-              </svg>
-              <span class="truncate">Continue with Apple</span>
-            </button>
+            <button type="button" id="cf-oauth-apple-btn" onclick="window.startCloudflareOAuth('apple')" class="hidden" aria-hidden="true" style="display:none;"></button>
           </div>
 
           <p class="text-[11px] text-center text-on-surface-variant mt-1.5 leading-relaxed shrink-0">
@@ -4249,6 +4244,26 @@
       <p id="global-toast-sub" class="text-[11px] text-white/80 truncate hidden"></p>
     </div>
   </div>
+
+  <!-- Floating Mini-Cart Slide-Over Confirmation Pill / Micro-Drawer -->
+  <aside id="mini-cart-toast" role="status" aria-live="polite" class="bg-[#0f172a]/95 backdrop-blur-md text-white p-3 rounded-2xl shadow-2xl border border-white/10 flex items-center justify-between gap-3 max-w-sm w-full">
+    <div class="flex items-center gap-2.5 min-w-0">
+      <img id="mini-cart-toast-img" src="./vistara-krafts-logo.jpg" alt="Cart Item" class="w-10 h-10 rounded-lg object-cover bg-white/10 shrink-0 border border-white/10">
+      <div class="min-w-0">
+        <p class="text-[11px] font-bold text-white truncate" id="mini-cart-toast-name">Added to Bag</p>
+        <p class="text-[10px] text-white/70 truncate" id="mini-cart-toast-detail">Ready for dispatch</p>
+      </div>
+    </div>
+    <div class="flex items-center gap-1.5 shrink-0">
+      <button type="button" onclick="window.navigateTo('cart'); window.hideMiniCartToast();" class="h-8 px-3 rounded-lg bg-secondary hover:bg-secondary/90 text-on-secondary text-[11px] font-bold shadow-xs cursor-pointer flex items-center gap-1 transition active:scale-95">
+        <span>Checkout</span>
+        <span class="material-symbols-outlined text-[14px]" aria-hidden="true">arrow_forward</span>
+      </button>
+      <button type="button" onclick="window.hideMiniCartToast()" aria-label="Close confirmation" class="w-7 h-7 rounded-lg text-white/60 hover:text-white flex items-center justify-center cursor-pointer">
+        <span class="material-symbols-outlined text-sm" aria-hidden="true">close</span>
+      </button>
+    </div>
+  </aside>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
   <script src="./supabase-config.js" defer></script>
