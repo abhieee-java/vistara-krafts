@@ -302,6 +302,52 @@ textarea:disabled {
     bottom: 5.5rem;
     left: 1rem;
     right: 1rem;
+    margin: 0 auto;
+    width: auto;
+  }
+}
+
+/* Shadcn/UI Frosted Glass Global Toast & Coordinated Stacking Engine */
+#global-toast {
+  position: fixed;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  z-index: 65;
+  transform: translateY(120%) scale(0.95);
+  opacity: 0;
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+              opacity 0.25s ease,
+              bottom 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  pointer-events: none;
+}
+#global-toast.active {
+  transform: translateY(0) scale(1);
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Desktop Stacking: When Mini-Cart Toast is active, lift global toast cleanly above it */
+body.has-mini-cart-toast #global-toast {
+  bottom: 6rem;
+}
+
+/* Mobile Stacking: Clear bottom nav bar and sticky PDP action bar */
+@media (max-width: 640px) {
+  #global-toast {
+    bottom: 5.5rem;
+    left: 1rem;
+    right: 1rem;
+    margin: 0 auto;
+    width: auto;
+  }
+  body.has-mini-cart-toast #global-toast {
+    bottom: 10.5rem;
+  }
+  body.route-product #global-toast {
+    bottom: 8.5rem;
+  }
+  body.route-product.has-mini-cart-toast #global-toast {
+    bottom: 13.5rem;
   }
 }
 

@@ -165,28 +165,148 @@
     }
   };
 
-  // Toast Notification System
+  // Toast Notification System (Shadcn / Radix UI Inspired Frosted Glass Architecture)
   let toastTimer = null;
-  window.showToast = function (message, subtitle = '') {
+  let toastRemainingTime = 2800;
+  let toastStartTime = null;
+
+  window.showToast = function (message, subtitle = '', options = {}) {
+    let opts = {};
+    let title = message;
+    let sub = subtitle;
+    if (typeof message === 'object' && message !== null) {
+      opts = message;
+      title = opts.title || opts.message || '';
+      sub = opts.subtitle || opts.description || '';
+    } else if (typeof subtitle === 'object' && subtitle !== null) {
+      opts = subtitle;
+      sub = opts.subtitle || opts.description || '';
+    } else if (typeof options === 'object' && options !== null) {
+      opts = options;
+    }
+
     const container = document.getElementById('global-toast');
     const titleEl = document.getElementById('global-toast-title');
     const subEl = document.getElementById('global-toast-sub');
+    const iconEl = document.getElementById('global-toast-icon');
+    const actionContainer = document.getElementById('global-toast-action-container');
+    const actionBtn = document.getElementById('global-toast-action-btn');
+    const actionText = document.getElementById('global-toast-action-text');
+
     if (!container || !titleEl) return;
 
-    titleEl.textContent = message;
+    titleEl.textContent = title;
     if (subEl) {
-      subEl.textContent = subtitle;
-      subEl.classList.toggle('hidden', !subtitle);
+      subEl.textContent = sub;
+      subEl.classList.toggle('hidden', !sub);
     }
 
+    // Set Icon & Accent Color
+    const iconName = opts.icon || (
+      opts.type === 'error' ? 'error' :
+      opts.type === 'warning' ? 'warning' :
+      opts.type === 'info' ? 'info' :
+      opts.type === 'offline' ? 'wifi_off' :
+      opts.type === 'online' ? 'wifi' : 'check_circle'
+    );
+    if (iconEl) {
+      iconEl.textContent = iconName;
+      iconEl.className = 'material-symbols-outlined text-lg shrink-0';
+      if (opts.type === 'error') {
+        iconEl.classList.add('text-[#f87171]');
+      } else if (opts.type === 'warning') {
+        iconEl.classList.add('text-[#f59e0b]');
+      } else if (opts.type === 'info') {
+        iconEl.classList.add('text-[#38bdf8]');
+      } else if (opts.type === 'offline') {
+        iconEl.classList.add('text-[#94a3b8]');
+      } else if (opts.type === 'online') {
+        iconEl.classList.add('text-[#22c55e]');
+      } else {
+        iconEl.classList.add('text-secondary');
+      }
+    }
+
+    // Handle Action Button (Discrete text-only link with arrow icon e.g. "View →", "Undo ↺")
+    if (opts.action && opts.action.label && typeof opts.action.onClick === 'function') {
+      if (actionContainer && actionBtn && actionText) {
+        actionText.textContent = opts.action.label;
+        actionBtn.onclick = (e) => {
+          e.stopPropagation();
+          try {
+            opts.action.onClick(e);
+          } finally {
+            window.hideToast();
+          }
+        };
+        actionContainer.classList.remove('hidden');
+      }
+    } else if (actionContainer) {
+      actionContainer.classList.add('hidden');
+    }
+
+    // Reveal Toast
+    container.classList.add('active');
     container.classList.remove('opacity-0', 'pointer-events-none', '-translate-y-4');
     container.classList.add('opacity-100', 'translate-y-0');
 
-    if (toastTimer) clearTimeout(toastTimer);
-    toastTimer = setTimeout(() => {
-      container.classList.remove('opacity-100', 'translate-y-0');
-      container.classList.add('opacity-0', 'pointer-events-none', '-translate-y-4');
-    }, 2800);
+    // Timer with hover/touch pause (Standard Shadcn/Radix behavior)
+    const duration = typeof opts.duration === 'number' ? opts.duration : 2800;
+    toastRemainingTime = duration;
+    toastStartTime = Date.now();
+
+    const startTimer = (ms) => {
+      if (toastTimer) clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => {
+        window.hideToast();
+      }, ms);
+    };
+
+    startTimer(toastRemainingTime);
+
+    // Bind hover/touch pause listeners once
+    if (!container._shadcnBound && typeof container.addEventListener === 'function') {
+      container._shadcnBound = true;
+      container.addEventListener('mouseenter', () => {
+        if (toastTimer) {
+          clearTimeout(toastTimer);
+          toastTimer = null;
+          toastRemainingTime -= (Date.now() - toastStartTime);
+          if (toastRemainingTime < 600) toastRemainingTime = 600;
+        }
+      });
+      container.addEventListener('mouseleave', () => {
+        if (!toastTimer && container.classList.contains('active')) {
+          toastStartTime = Date.now();
+          startTimer(toastRemainingTime);
+        }
+      });
+      container.addEventListener('touchstart', () => {
+        if (toastTimer) {
+          clearTimeout(toastTimer);
+          toastTimer = null;
+          toastRemainingTime -= (Date.now() - toastStartTime);
+          if (toastRemainingTime < 600) toastRemainingTime = 600;
+        }
+      }, { passive: true });
+      container.addEventListener('touchend', () => {
+        if (!toastTimer && container.classList.contains('active')) {
+          toastStartTime = Date.now();
+          startTimer(toastRemainingTime);
+        }
+      }, { passive: true });
+    }
+  };
+
+  window.hideToast = function () {
+    const container = document.getElementById('global-toast');
+    if (!container) return;
+    if (toastTimer) {
+      clearTimeout(toastTimer);
+      toastTimer = null;
+    }
+    container.classList.remove('active', 'opacity-100', 'translate-y-0');
+    container.classList.add('opacity-0', 'pointer-events-none', '-translate-y-4');
   };
 
   // Floating Mini-Cart Slide-Over Confirmation Pill / Micro-Drawer
@@ -206,6 +326,9 @@
       detailEl.textContent = `${priceStr}${variantStr} • Added to Bag`;
     }
     toast.classList.add('active');
+    if (typeof document !== 'undefined' && document.body && document.body.classList) {
+      document.body.classList.add('has-mini-cart-toast');
+    }
     if (miniCartToastTimer) clearTimeout(miniCartToastTimer);
     miniCartToastTimer = setTimeout(() => {
       window.hideMiniCartToast();
@@ -215,6 +338,9 @@
   window.hideMiniCartToast = function () {
     const toast = document.getElementById('mini-cart-toast');
     if (toast) toast.classList.remove('active');
+    if (typeof document !== 'undefined' && document.body && document.body.classList) {
+      document.body.classList.remove('has-mini-cart-toast');
+    }
   };
 
   // =========================================================================
@@ -778,6 +904,10 @@
     updateNavHighlight();
     updateGlobalBadges();
     syncBodyModalLock();
+
+    if (typeof document !== 'undefined' && document.body && document.body.classList) {
+      document.body.classList.toggle('route-product', AppState.currentRoute === 'product');
+    }
 
     if ((AppState.currentRoute === 'account' || AppState.currentRoute === 'orders') && Store && typeof Store.syncOrdersFromSupabase === 'function') {
       Store.syncOrdersFromSupabase().catch(() => {});
@@ -4881,7 +5011,20 @@
     const product = Store.getProductById(productId);
     if (!product) return;
     if (product.inStock === false) {
-      window.showToast('Item Out of Stock', 'This studio piece is currently unavailable.');
+      window.showToast('Item Out of Stock', 'This studio piece is currently unavailable.', {
+        type: 'error',
+        icon: 'block'
+      });
+      return;
+    }
+    const cart = Store.getCart();
+    const existingInCart = cart.find(i => i.productId === productId);
+    const maxStock = product.stockQuantity || 10;
+    if (existingInCart && existingInCart.qty >= maxStock) {
+      window.showToast('Maximum Artisan Stock Reached', `Only ${maxStock} units available for this handcrafted batch.`, {
+        type: 'warning',
+        icon: 'inventory_2'
+      });
       return;
     }
     const varState = AppState.cardVarieties[productId] || { colorIdx: 0, shapeIdx: 0, sizeIdx: 0 };
@@ -5190,10 +5333,35 @@
     if (res.added && btnTarget) {
       sotdHeartBurst(btnTarget);
     }
-    window.showToast(
-      res.added ? 'Saved to Atelier Wishlist' : 'Removed from Wishlist',
-      product ? product.shortName || product.name : ''
-    );
+    if (res.added) {
+      window.showToast('Added to Your Wishlist', product ? (product.shortName || product.name) : '', {
+        type: 'success',
+        icon: 'favorite',
+        action: {
+          label: 'View →',
+          onClick: () => {
+            window.navigateTo('wishlist');
+          }
+        }
+      });
+    } else {
+      window.showToast('Removed from Wishlist', product ? (product.shortName || product.name) : '', {
+        type: 'info',
+        icon: 'favorite_border',
+        action: {
+          label: 'Undo ↺',
+          onClick: () => {
+            Store.toggleWishlist(productId);
+            updateGlobalBadges();
+            renderActiveView();
+            window.showToast('Restored to Wishlist', product ? (product.shortName || product.name) : '', {
+              type: 'success',
+              icon: 'favorite'
+            });
+          }
+        }
+      });
+    }
   };
 
   window.selectPersonaGoal = function (goal) {
@@ -5216,7 +5384,10 @@
         iconEl.classList.add('text-error');
       }
       msgEl.innerHTML = `<span class="text-error font-semibold">${esc(res.message)}</span>`;
-      window.showToast('Invalid PIN Code', res.message);
+      window.showToast('PIN Code Notice', res.message || 'Please enter a valid 6-digit Indian PIN code.', {
+        type: 'warning',
+        icon: 'pin_drop'
+      });
     } else {
       if (iconEl) {
         iconEl.textContent = 'check_circle';
@@ -5224,7 +5395,10 @@
         iconEl.classList.add('text-[#266b4e]');
       }
       msgEl.innerHTML = `<strong>PIN ${esc(res.pin)} (${esc(res.city)})</strong> — Express Delivery in <strong>${esc(res.days)}</strong> via ${esc(res.courier)}. Express Air Delivery &amp; Instant UPI active.`;
-      window.showToast(`PIN ${res.pin} Serviceable!`, `${res.city} • ${res.courier}`);
+      window.showToast(`Delivery Available to ${res.city} (${res.pin})`, `Express Air delivery in ${res.days} via ${res.courier}`, {
+        type: 'success',
+        icon: 'local_shipping'
+      });
     }
   };
 
@@ -5776,7 +5950,16 @@
   };
 
   window.changePdpQty = function (delta) {
-    AppState.pdpQty = Math.max(1, Math.min(50, AppState.pdpQty + delta));
+    const prod = Store.getProductById(AppState.currentProductId);
+    const maxStock = (prod && prod.stockQuantity) ? prod.stockQuantity : 10;
+    if (delta > 0 && AppState.pdpQty >= maxStock) {
+      window.showToast('Maximum Artisan Stock Reached', `Only ${maxStock} units available for this handcrafted batch.`, {
+        type: 'warning',
+        icon: 'inventory_2'
+      });
+      return;
+    }
+    AppState.pdpQty = Math.max(1, Math.min(maxStock, AppState.pdpQty + delta));
     renderActiveView();
   };
 
@@ -5784,7 +5967,21 @@
     const prod = Store.getProductById(AppState.currentProductId);
     if (!prod) return;
     if (prod.inStock === false) {
-      window.showToast('Item Out of Stock', 'This studio piece is currently unavailable.');
+      window.showToast('Item Out of Stock', 'This studio piece is currently unavailable.', {
+        type: 'error',
+        icon: 'block'
+      });
+      return;
+    }
+    const cart = Store.getCart();
+    const existingInCart = cart.find(i => i.productId === prod.id);
+    const maxStock = prod.stockQuantity || 10;
+    const reqQty = (existingInCart ? existingInCart.qty : 0) + (AppState.pdpQty || 1);
+    if (reqQty > maxStock) {
+      window.showToast('Maximum Artisan Stock Reached', `Only ${maxStock} units available for this handcrafted batch.`, {
+        type: 'warning',
+        icon: 'inventory_2'
+      });
       return;
     }
     const v = (prod.variants && prod.variants[AppState.selectedVariantIdx]) || {
@@ -5865,6 +6062,17 @@
         box.innerHTML = `<span class="material-symbols-outlined text-[#266b4e] text-base shrink-0 mt-0.5" aria-hidden="true">verified_user</span><span><strong>${esc(res.pin)} (${esc(res.city)})</strong> — Delivery in <strong>${esc(res.days)}</strong> via ${esc(res.courier)}. Instant UPI &amp; Cards available.</span>`;
       }
     }
+    if (!res.valid) {
+      window.showToast('PIN Code Notice', res.message || 'Please enter a valid 6-digit Indian PIN code.', {
+        type: 'warning',
+        icon: 'pin_drop'
+      });
+    } else {
+      window.showToast(`Delivery Available to ${res.city} (${res.pin})`, `Express Air delivery in ${res.days} via ${res.courier}`, {
+        type: 'success',
+        icon: 'local_shipping'
+      });
+    }
   };
 
   window.toggleReviewForm = function () {
@@ -5896,7 +6104,10 @@
     if (navigator.clipboard && navigator.clipboard.writeText) {
       navigator.clipboard.writeText(shareUrl).catch(() => {});
     }
-    window.showToast('Link Copied to Clipboard!', `${prod.name} (@resin.art.memories)`);
+    window.showToast('Link Copied to Clipboard!', `${prod ? prod.name : 'Product'} link ready to share`, {
+      type: 'success',
+      icon: 'content_copy'
+    });
   };
 
   // Social Feed Handlers
@@ -6010,6 +6221,18 @@
 
   // Cart & Checkout Handlers
   window.handleCartQty = function (cartItemId, delta) {
+    const cart = Store.getCart();
+    const item = cart.find(i => i.cartItemId === cartItemId || i.productId === cartItemId);
+    if (item && delta > 0) {
+      const maxStock = item.stockQuantity || 10;
+      if (item.qty >= maxStock) {
+        window.showToast('Maximum Artisan Stock Reached', `Only ${maxStock} units available for this handcrafted batch.`, {
+          type: 'warning',
+          icon: 'inventory_2'
+        });
+        return;
+      }
+    }
     Store.updateCartQty(cartItemId, delta, false);
     updateGlobalBadges();
     renderActiveView();
@@ -6019,7 +6242,10 @@
     Store.removeFromCart(cartItemId);
     updateGlobalBadges();
     renderActiveView();
-    window.showToast('Item Removed from Studio Bag');
+    window.showToast('Item Removed from Studio Bag', '', {
+      type: 'info',
+      icon: 'remove_shopping_cart'
+    });
   };
 
   window.handleRemoveAllOutOfStock = function () {
@@ -6027,7 +6253,10 @@
       Store.removeOutOfStockItems();
       updateGlobalBadges();
       renderActiveView();
-      window.showToast('Out-of-Stock Items Removed', 'Your studio bag has been refreshed.');
+      window.showToast('Out-of-Stock Items Removed', 'Your studio bag has been refreshed.', {
+        type: 'info',
+        icon: 'cleaning_services'
+      });
     }
   };
 
@@ -6038,20 +6267,54 @@
     Store.removeFromCart(cartItemId);
     updateGlobalBadges();
     renderActiveView();
-    window.showToast('Saved for Later', 'Moved item to your Atelier Wishlist');
+    const prod = Store.getProductById(productId);
+    window.showToast('Saved for Later', prod ? (prod.shortName || prod.name) : 'Moved item to your Atelier Wishlist', {
+      type: 'success',
+      icon: 'bookmark',
+      action: {
+        label: 'View →',
+        onClick: () => {
+          window.navigateTo('wishlist');
+        }
+      }
+    });
   };
 
   window.handleApplyCoupon = function () {
     const code = document.getElementById('cart-coupon-input')?.value || '';
     const res = Store.applyCoupon(code);
     renderActiveView();
-    window.showToast(res.valid ? 'Voucher Applied!' : 'Voucher Notice', res.message);
+    if (res.valid) {
+      const summary = Store.getCartSummary();
+      const savedStr = summary.couponDiscount > 0 ? ` — ${formatINR(summary.couponDiscount)} saved!` : '';
+      window.showToast(`Coupon ${code.toUpperCase()} Applied!`, `Discount active${savedStr}`, {
+        type: 'success',
+        icon: 'local_offer'
+      });
+    } else {
+      window.showToast(res.message ? res.message : 'Coupon Notice', 'Add more studio items to reach eligibility threshold.', {
+        type: 'warning',
+        icon: 'info'
+      });
+    }
   };
 
   window.quickSelectCoupon = function (code) {
     const res = Store.applyCoupon(code);
     renderActiveView();
-    window.showToast(res.valid ? `Applied ${code}!` : 'Coupon Notice', res.message);
+    if (res.valid) {
+      const summary = Store.getCartSummary();
+      const savedStr = summary.couponDiscount > 0 ? ` — ${formatINR(summary.couponDiscount)} saved!` : '';
+      window.showToast(`Applied ${code}!`, `Special offer active${savedStr}`, {
+        type: 'success',
+        icon: 'local_offer'
+      });
+    } else {
+      window.showToast(res.message ? res.message : 'Coupon Notice', 'Add more studio items to reach eligibility threshold.', {
+        type: 'warning',
+        icon: 'info'
+      });
+    }
   };
 
   window.toggleGstClaim = function (checked) {
@@ -6086,7 +6349,10 @@
         errEl.textContent = res.message;
         errEl.classList.remove('hidden');
       }
-      window.showToast('Invalid PIN Code', res.message);
+      window.showToast('PIN Code Notice', res.message || 'Please enter a valid 6-digit Indian PIN code.', {
+        type: 'warning',
+        icon: 'pin_drop'
+      });
       return;
     }
     if (errEl) {
@@ -6097,7 +6363,10 @@
     syncBodyModalLock();
     updateGlobalBadges();
     renderActiveView();
-    window.showToast(`Delivering to PIN ${res.pin}`, `${res.city} • ${res.courier}`);
+    window.showToast(`Delivery Available to ${res.city} (${res.pin})`, `Express Air delivery in ${res.days} via ${res.courier}`, {
+      type: 'success',
+      icon: 'local_shipping'
+    });
   };
 
   // Story Modal Viewer
@@ -7813,14 +8082,22 @@
     const handleOffline = () => {
       wasNetworkOffline = true;
       showOfflineBanner();
-      window.showToast('Offline Mode Activated', 'Network lost. Your Studio Bag and checkout forms are saved locally.');
+      window.showToast('Offline Mode', 'Changes saved locally. Bag will sync once reconnected.', {
+        type: 'offline',
+        icon: 'wifi_off',
+        duration: 3500
+      });
     };
 
     const handleOnline = () => {
       hideOfflineBanner();
       if (wasNetworkOffline) {
         wasNetworkOffline = false;
-        window.showToast('Connection Restored', 'Studio Atelier reconnected. Edge state synchronized.');
+        window.showToast('Back Online', 'Studio Atelier reconnected. Bag and studio state synchronized.', {
+          type: 'online',
+          icon: 'wifi',
+          duration: 3000
+        });
         if (Store && typeof Store.syncPendingEdgeState === 'function') {
           Store.syncPendingEdgeState();
         }

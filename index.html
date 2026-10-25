@@ -4236,14 +4236,26 @@
     </div>
   </div>
 
-  <!-- Global Toast Notification -->
-  <div id="global-toast" role="status" aria-live="polite" class="fixed top-24 left-1/2 -translate-x-1/2 -translate-y-4 z-[60] bg-primary text-white px-4 py-2.5 rounded-xl shadow-xl transition-all duration-300 opacity-0 pointer-events-none flex items-center gap-2.5 max-w-sm w-[92vw]">
-    <span class="material-symbols-outlined text-secondary-fixed text-lg shrink-0" aria-hidden="true">check_circle</span>
-    <div class="min-w-0">
-      <p id="global-toast-title" class="text-xs font-bold truncate">Added to Studio Bag</p>
-      <p id="global-toast-sub" class="text-[11px] text-white/80 truncate hidden"></p>
+  <!-- Global Toast Notification (Shadcn/UI Frosted Glass Notification Engine) -->
+  <aside id="global-toast" role="status" aria-live="polite" class="bg-[#0f172a]/95 backdrop-blur-md text-white p-3.5 rounded-2xl shadow-2xl border border-white/10 flex items-center justify-between gap-3 max-w-sm w-full opacity-0 pointer-events-none">
+    <div class="flex items-center gap-2.5 min-w-0 flex-1">
+      <span id="global-toast-icon" class="material-symbols-outlined text-secondary text-lg shrink-0" aria-hidden="true">check_circle</span>
+      <div class="min-w-0 flex-1">
+        <p id="global-toast-title" class="text-xs font-bold text-white truncate">Added to Studio Bag</p>
+        <p id="global-toast-sub" class="text-[11px] text-white/75 truncate hidden"></p>
+      </div>
     </div>
-  </div>
+    <div class="flex items-center gap-2 shrink-0">
+      <div id="global-toast-action-container" class="hidden">
+        <button type="button" id="global-toast-action-btn" class="text-secondary hover:text-secondary-fixed font-bold text-xs hover:underline cursor-pointer flex items-center gap-1 active:scale-95 transition-transform">
+          <span id="global-toast-action-text">View →</span>
+        </button>
+      </div>
+      <button type="button" id="global-toast-close" onclick="window.hideToast()" aria-label="Dismiss notification" class="w-6 h-6 rounded-md text-white/50 hover:text-white flex items-center justify-center cursor-pointer transition-colors">
+        <span class="material-symbols-outlined text-sm" aria-hidden="true">close</span>
+      </button>
+    </div>
+  </aside>
 
   <!-- Floating Mini-Cart Slide-Over Confirmation Pill / Micro-Drawer -->
   <aside id="mini-cart-toast" role="status" aria-live="polite" class="bg-[#0f172a]/95 backdrop-blur-md text-white p-3 rounded-2xl shadow-2xl border border-white/10 flex items-center justify-between gap-3 max-w-sm w-full">
