@@ -1031,8 +1031,10 @@
                   <span class="text-outline font-spec-numeral">(${p.reviewsCount})</span>
                   ${affinityTag ? `<span class="hidden sm:inline-block">${affinityTag}</span>` : ''}
                 </div>
-                <button type="button" aria-label="Toggle Wishlist" onclick="window.handleWishlistToggle(event, '${esc(p.id)}')" class="w-11 h-11 rounded-full bg-surface-container-low flex items-center justify-center ${isFav ? 'text-[#9e3322]' : 'text-primary'} hover:scale-105 transition-transform cursor-pointer">
-                  <span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' ${isFav ? 1 : 0};" aria-hidden="true">${isFav ? 'favorite' : 'favorite_border'}</span>
+                <button type="button" aria-label="Toggle Wishlist" onclick="window.handleWishlistToggle(event, '${esc(p.id)}')" class="w-11 h-11 rounded-full bg-surface-container-low flex items-center justify-center ${isFav ? 'text-[#9e3322]' : 'text-primary'} hover:scale-105 active:scale-95 transition-transform cursor-pointer" title="Save to Wishlist">
+                  <svg class="w-5 h-5 ${isFav ? 'fill-[#9e3322] stroke-[#9e3322]' : 'fill-none stroke-current'} transition-colors" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/>
+                  </svg>
                 </button>
               </div>
               <h2 class="font-headline-sm text-base text-primary font-semibold cursor-pointer hover:text-secondary transition-colors line-clamp-2" onclick="window.navigateTo('product', '${esc(p.id)}')">${esc(p.name)}</h2>
@@ -1041,7 +1043,6 @@
                 <span class="px-2 py-0.5 rounded bg-surface-container-high text-primary font-spec-numeral text-[11px]">Ratio: ${esc(p.ratio)}</span>
                 <span class="px-2 py-0.5 rounded bg-secondary-container/40 text-on-secondary-container font-spec-numeral text-[11px]">Depth: ${esc(p.pourDepth)}</span>
                 <span class="px-2 py-0.5 rounded bg-surface-container-high text-on-surface-variant font-spec-numeral text-[11px]">${esc(p.unitPriceLabel)}</span>
-                ${p.sku ? `<span class="px-2 py-0.5 rounded bg-surface-container-high font-mono text-[10px] sm:text-[10.5px] sku-badge whitespace-nowrap shrink-0 text-primary border border-[#e4e0d8]" data-sku="${esc(p.sku)}">SKU:&nbsp;<span class="sku-text font-bold">${esc(p.sku)}</span></span>` : ''}
               </div>
             </div>
             <div class="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-surface-container">
@@ -1117,8 +1118,10 @@
 
     return `
       <article class="ram-card product-card-contain sotd-tilt sotd-reveal p-2.5 sm:p-3 flex flex-col justify-between relative group h-full" data-product-id="${esc(p.id)}" data-price="${activePrice}" data-ratio="${esc(p.ratio)}">
-        <button type="button" aria-label="Save to Wishlist" onclick="window.handleWishlistToggle(event, '${esc(p.id)}')" class="absolute top-3.5 right-3.5 z-10 w-11 h-11 rounded-full bg-white/95 backdrop-blur-sm flex items-center justify-center ${isFav ? 'text-[#9e3322]' : 'text-primary'} shadow-sm hover:scale-105 active:scale-95 transition-transform cursor-pointer">
-          <span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' ${isFav ? 1 : 0};" aria-hidden="true">${isFav ? 'favorite' : 'favorite_border'}</span>
+        <button type="button" aria-label="Save to Wishlist" onclick="window.handleWishlistToggle(event, '${esc(p.id)}')" class="absolute top-3.5 right-3.5 z-10 w-11 h-11 rounded-full bg-white/95 backdrop-blur-sm border border-[#e4e0d8] flex items-center justify-center ${isFav ? 'text-[#9e3322]' : 'text-primary'} shadow-sm hover:scale-105 active:scale-95 transition-transform cursor-pointer" title="Save to Wishlist">
+          <svg class="w-5 h-5 ${isFav ? 'fill-[#9e3322] stroke-[#9e3322]' : 'fill-none stroke-current'} transition-colors" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/>
+          </svg>
         </button>
         <div>
           <div class="relative w-full aspect-square rounded-xl bg-surface-container-low overflow-hidden mb-2 cursor-pointer" onclick="window.navigateTo('product', '${esc(p.id)}')">
@@ -1144,7 +1147,6 @@
             <span class="font-medium text-primary">${p.category === 'keepsakes' ? 'Custom Keepsake' : 'Ratio ' + esc(p.ratio)}</span>
             <span class="text-outline/40">•</span>
             <span>Depth ${esc(p.pourDepth)}</span>
-            ${p.sku ? `<span class="text-outline/40">•</span><span class="sku-badge font-mono text-[9.5px] min-[360px]:text-[10px] text-primary whitespace-nowrap shrink-0" data-sku="${esc(p.sku)}">SKU:&nbsp;<span class="sku-text font-bold">${esc(p.sku)}</span></span>` : ''}
           </div>
         </div>
         <div class="pt-2 mt-1.5 border-t border-surface-container flex flex-col gap-1.5">
@@ -2461,13 +2463,10 @@
                   <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/>
                 </svg>
               </button>
-              <div class="absolute bottom-3.5 right-3.5 flex items-center gap-2">
+              <div class="absolute bottom-3.5 right-3.5 flex items-center">
                 <span id="pdp-gallery-counter" class="bg-primary/85 backdrop-blur-md text-on-primary px-3 py-1.5 rounded-full font-spec-numeral text-xs">
                   ${AppState.pdpGalleryIdx + 1} of ${gallery.length}
                 </span>
-                <button type="button" aria-label="Zoom Image" onclick="window.openLightbox('${esc(activeImg)}', '${esc(product.name)}')" class="w-11 h-11 rounded-full bg-primary/85 backdrop-blur-md text-on-primary flex items-center justify-center hover:bg-primary transition-colors cursor-pointer">
-                  <span class="material-symbols-outlined text-lg" aria-hidden="true">zoom_in</span>
-                </button>
               </div>
             </div>
 
@@ -2483,79 +2482,50 @@
 
           <!-- Right Column: Specs, Variants & Conversion Controls (6 cols) -->
           <div class="lg:col-span-6 lg:col-start-7 lg:row-start-1 lg:row-span-2 flex flex-col gap-5">
-            <!-- Product Identity & Social Proof Header -->
-            <div class="flex flex-col gap-2">
-              <span class="font-label-sm text-secondary uppercase tracking-widest text-[11px] font-bold">Archival Formula &amp; Studio Edition</span>
+            <!-- Product Identity & Social Proof Header (Amazon / Flipkart Style) -->
+            <div class="flex flex-col gap-1.5">
+              <span class="font-label-sm text-secondary uppercase tracking-widest text-[11px] font-bold">Vistāra Krafts Studio</span>
               <h1 class="font-headline-lg text-2xl sm:text-3xl lg:text-4xl text-primary font-bold tracking-tight">${esc(product.name)}</h1>
               <p class="text-xs sm:text-sm text-on-surface-variant italic">${esc(product.subtitle || 'Museum-Grade Optical Epoxy & Handcrafted Keepsake Edition')}</p>
 
-              <!-- Consolidated Social Proof & Certification Row -->
-              <div class="flex items-center flex-wrap gap-2 pt-1">
-                <div class="flex items-center gap-1.5 bg-surface-container-low border border-[#e4e0d8] px-3 py-1.5 rounded-full text-xs">
-                  <span class="material-symbols-outlined text-secondary text-sm" style="font-variation-settings: 'FILL' 1;" aria-hidden="true">star</span>
-                  <span class="font-spec-numeral font-bold text-primary">${Number(product.rating || 4.9).toFixed(1)}</span>
-                  <span class="text-outline">•</span>
-                  <button type="button" onclick="window.scrollToSection('pdp-reviews')" class="text-on-surface-variant underline hover:text-primary transition-colors cursor-pointer">${Number(product.reviewsCount || 24)} verified reviews</button>
-                </div>
-                <span class="inline-flex items-center gap-1 text-[#266b4e] text-xs bg-emerald-50 border border-emerald-200/60 px-3 py-1.5 rounded-full font-semibold">
-                  <span class="material-symbols-outlined text-xs" aria-hidden="true">water_drop</span>
-                  98% Bubble-Free
+              <!-- Compact Rating & Stock Line (Shortened, No Chunky Pill Bars) -->
+              <div class="flex items-center gap-2 pt-1 flex-wrap">
+                <span class="inline-flex items-center gap-1 bg-[#266b4e] text-white text-xs font-bold px-2 py-0.5 rounded shadow-2xs">
+                  ${Number(product.rating || 4.9).toFixed(1)} ★
                 </span>
-                ${product.gender === 'women' || product.genderAffinity === 'feminine' ? `
-                  <span class="inline-flex items-center gap-1 text-[#9e3322] text-xs bg-[#ffe4de] border border-[#9e3322]/20 px-3 py-1.5 rounded-full font-semibold">
-                    <span>🌸</span> Women's Keepsake
-                  </span>
-                ` : (product.gender === 'men' || product.genderAffinity === 'masculine' ? `
-                  <span class="inline-flex items-center gap-1 text-blue-900 text-xs bg-blue-50 border border-blue-200/60 px-3 py-1.5 rounded-full font-semibold">
-                    <span>👔</span> Men's Keepsake
-                  </span>
-                ` : `
-                  <span class="inline-flex items-center gap-1 text-amber-900 text-xs bg-amber-50 border border-amber-200/60 px-3 py-1.5 rounded-full font-semibold">
-                    <span>✨</span> Universal Studio
-                  </span>
-                `)}
-                <span class="sku-badge sku-pill inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-surface-container-low border border-[#e4e0d8] text-xs font-mono text-primary font-medium" data-sku="${esc(product.sku)}">
-                  <span class="text-on-surface-variant text-[11px] font-sans">SKU:</span>
-                  <span class="sku-text font-bold text-primary whitespace-nowrap">${esc(product.sku)}</span>
+                <button type="button" onclick="window.scrollToSection('pdp-reviews')" class="text-xs text-[#1a56db] hover:underline cursor-pointer font-medium">
+                  ${Number(product.reviewsCount || 24)} ratings
+                </button>
+                <span class="text-outline/30">•</span>
+                <span class="text-xs text-[#266b4e] font-semibold inline-flex items-center gap-1">
+                  <span class="w-1.5 h-1.5 rounded-full bg-[#266b4e] inline-block animate-pulse"></span> In Stock
                 </span>
+                ${product.category === 'keepsakes' ? `
+                  <span class="text-outline/30">•</span>
+                  <span class="text-xs text-secondary font-medium">Handcrafted Keepsake</span>
+                ` : ''}
               </div>
             </div>
 
-            <!-- Main Dynamic Price Section (Clean Editorial, No Box Fatigue) -->
-            <div class="py-3 border-y border-[#e4e0d8] flex flex-col gap-2">
-              <div class="flex items-baseline justify-between flex-wrap gap-2">
-                <div class="flex items-baseline gap-2.5">
-                  <span id="pdp-display-price" class="font-spec-numeral text-3xl sm:text-4xl text-primary font-bold tracking-tight">${formatINR(currentPrice)}</span>
-                  <span id="pdp-display-regular" class="font-spec-numeral text-sm sm:text-base line-through text-outline">${formatINR(regularPrice)}</span>
-                  ${discountPct > 0 ? `<span id="pdp-display-discount" class="font-spec-numeral text-xs font-bold bg-[#ffe4de] text-[#9e3322] px-2.5 py-0.5 rounded-full">${discountPct}% OFF</span>` : ''}
-                </div>
-                <span id="pdp-display-unit" class="font-spec-numeral text-xs text-primary font-semibold bg-surface-container-high px-3 py-1 rounded-full">${esc(activeVariant.unitPrice || product.unitPriceLabel || 'Standard Edition')}</span>
+            <!-- Main Dynamic Price Section (Clean Amazon/Flipkart Hierarchy) -->
+            <div class="py-2.5 border-y border-[#e4e0d8] flex flex-col gap-1">
+              <div class="flex items-baseline gap-2.5 flex-wrap">
+                ${discountPct > 0 ? `<span id="pdp-display-discount" class="font-spec-numeral text-sm sm:text-base font-bold text-[#9e3322]">${discountPct}% off</span>` : ''}
+                <span id="pdp-display-price" class="font-spec-numeral text-3xl sm:text-4xl text-primary font-bold tracking-tight">${formatINR(currentPrice)}</span>
+                <span id="pdp-display-regular" class="font-spec-numeral text-sm line-through text-outline">M.R.P.: ${formatINR(regularPrice)}</span>
               </div>
-              <div class="flex items-center justify-between gap-2 text-xs text-on-surface-variant">
-                <span>Inclusive of all GST (18% B2B Input Credit eligible)</span>
-                <span class="text-[#266b4e] font-bold flex items-center gap-1 shrink-0">
-                  <span class="w-2 h-2 rounded-full bg-[#266b4e] inline-block animate-pulse"></span> In Stock • Dispatches in 24h
-                </span>
-              </div>
+              <p class="text-xs text-on-surface-variant">Inclusive of all taxes <span id="pdp-display-unit" class="text-outline font-medium">(${esc(activeVariant.unitPrice || product.unitPriceLabel || 'Standard Edition')})</span></p>
             </div>
 
             ${hasVarieties ? `
-            <!-- Interactive Product Varieties: Colors, Shapes, Sizes -->
-            <div class="p-4 rounded-2xl bg-surface-container-low/70 border border-[#e4e0d8] flex flex-col gap-3.5">
-              <div class="flex items-center justify-between">
-                <span class="font-title-md text-xs sm:text-sm text-primary font-bold flex items-center gap-1.5">
-                  <span class="material-symbols-outlined text-secondary text-base" aria-hidden="true">palette</span>
-                  <span>Bespoke Product Varieties</span>
-                </span>
-                <span class="font-label-sm text-[11px] text-secondary font-semibold">Tuned for Your Order</span>
-              </div>
-
+            <!-- Product Varieties: Colors, Shapes, Sizes (Unboxed & Clean) -->
+            <div class="flex flex-col gap-3 py-1">
               ${colors.length > 0 ? `
               <!-- Colors -->
               <div class="flex flex-col gap-1.5">
-                <div class="flex items-center justify-between text-xs">
-                  <span class="font-bold text-primary">🎨 Color / Resin Tint:</span>
-                  <span class="font-semibold text-secondary">${esc(activeColor ? activeColor.label : '')}</span>
+                <div class="text-xs">
+                  <span class="font-bold text-primary">Color:</span>
+                  <span class="font-semibold text-secondary ml-1">${esc(activeColor ? activeColor.label : '')}</span>
                 </div>
                 <div class="flex items-center gap-2 flex-wrap">
                   ${colors.map((c, cIdx) => `
@@ -2570,13 +2540,13 @@
               ${shapes.length > 0 ? `
               <!-- Shapes -->
               <div class="flex flex-col gap-1.5">
-                <div class="flex items-center justify-between text-xs">
-                  <span class="font-bold text-primary">📐 Bespoke Shape:</span>
-                  <span class="font-semibold text-secondary">${esc(activeShape ? activeShape.label : '')}</span>
+                <div class="text-xs">
+                  <span class="font-bold text-primary">Shape:</span>
+                  <span class="font-semibold text-secondary ml-1">${esc(activeShape ? activeShape.label : '')}</span>
                 </div>
                 <div class="flex items-center gap-2 flex-wrap">
                   ${shapes.map((s, sIdx) => `
-                    <button type="button" onclick="window.selectPdpVariety('shape', ${sIdx})" class="min-h-[40px] px-3.5 py-1.5 rounded-lg text-xs font-bold border transition-all cursor-pointer ${sIdx === activeShapeIdx ? 'bg-primary text-white border-primary shadow-xs' : 'bg-white text-primary border-[#e4e0d8] hover:bg-surface-container'}">
+                    <button type="button" onclick="window.selectPdpVariety('shape', ${sIdx})" class="min-h-[38px] px-3.5 py-1.5 rounded-lg text-xs font-bold border transition-all cursor-pointer ${sIdx === activeShapeIdx ? 'bg-primary text-white border-primary shadow-xs' : 'bg-white text-primary border-[#e4e0d8] hover:bg-surface-container'}">
                       <span>${esc(s.label)}</span>
                     </button>
                   `).join('')}
@@ -2587,18 +2557,18 @@
               ${sizes.length > 0 ? `
               <!-- Sizes -->
               <div class="flex flex-col gap-1.5">
-                <div class="flex items-center justify-between text-xs">
-                  <span class="font-bold text-primary">📏 Edition Size:</span>
-                  <span class="font-semibold text-secondary">${esc(activeSize ? activeSize.label : '')}</span>
+                <div class="text-xs">
+                  <span class="font-bold text-primary">Size / Edition:</span>
+                  <span class="font-semibold text-secondary ml-1">${esc(activeSize ? activeSize.label : '')}</span>
                 </div>
-                <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                <div class="grid grid-cols-2 sm:grid-cols-3 gap-2">
                   ${sizes.map((sz, szIdx) => `
-                    <button type="button" onclick="window.selectPdpVariety('size', ${szIdx})" class="min-h-[44px] p-2.5 rounded-xl border text-left flex flex-col justify-between transition-all cursor-pointer ${szIdx === activeSizeIdx ? 'bg-primary text-white border-primary shadow-xs' : 'bg-white text-primary border-[#e4e0d8] hover:bg-surface-container'}">
+                    <button type="button" onclick="window.selectPdpVariety('size', ${szIdx})" class="min-h-[44px] p-2 rounded-xl border text-left flex flex-col justify-between transition-all cursor-pointer ${szIdx === activeSizeIdx ? 'bg-primary text-white border-primary shadow-xs' : 'bg-white text-primary border-[#e4e0d8] hover:bg-surface-container'}">
                       <div class="flex items-center justify-between">
                         <span class="font-bold text-xs truncate">${esc(sz.label)}</span>
                         ${sz.popular ? `<span class="px-1.5 py-0.5 rounded bg-secondary-fixed text-on-secondary-fixed text-[9px] font-bold uppercase shrink-0">Popular</span>` : ''}
                       </div>
-                      <span class="text-[11px] ${szIdx === activeSizeIdx ? 'text-[#ffd79b]' : 'text-on-surface-variant'}">${(sz.priceDelta || 0) > 0 ? '+' + formatINR(sz.priceDelta) : 'Standard Studio'}</span>
+                      <span class="text-[11px] ${szIdx === activeSizeIdx ? 'text-[#ffd79b]' : 'text-on-surface-variant'}">${(sz.priceDelta || 0) > 0 ? '+' + formatINR(sz.priceDelta) : 'Standard'}</span>
                     </button>
                   `).join('')}
                 </div>
