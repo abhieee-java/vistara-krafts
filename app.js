@@ -4203,26 +4203,91 @@
           </button>
         </div>
 
-        <!-- Lottie-Style Animated Kinetic SVG: Preserved Floral Botanical Crystal Specimen -->
-        <div class="relative w-40 h-40 sm:w-48 sm:h-48 flex items-center justify-center">
+        <!-- Lottie-Style Animated Kinetic SVG: Ultra-Premium Handcrafted 404 Artisan Keepsake -->
+        <div class="relative w-56 h-36 sm:w-72 sm:h-44 flex items-center justify-center">
           <div class="absolute inset-0 rounded-full bg-[#d4af37]/15 lottie-anim-pulse blur-xl pointer-events-none"></div>
-          <svg class="w-full h-full drop-shadow-md lottie-anim-float" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Animated missing specimen illustration">
-            <ellipse cx="100" cy="100" rx="84" ry="32" stroke="#d4af37" stroke-width="1.2" stroke-dasharray="4 6" opacity="0.6" class="lottie-anim-spin" />
-            <polygon points="100,28 152,70 140,148 100,172 60,148 48,70" fill="#fcf9f5" stroke="#0f172a" stroke-width="2" />
-            <polygon points="100,28 152,70 100,105" fill="#f4efe6" stroke="#0f172a" stroke-width="1.2" opacity="0.8" />
-            <polygon points="100,28 48,70 100,105" fill="#ede5d8" stroke="#0f172a" stroke-width="1.2" opacity="0.8" />
-            <polygon points="48,70 60,148 100,105" fill="#e2d7c5" stroke="#0f172a" stroke-width="1.2" opacity="0.7" />
-            <polygon points="152,70 140,148 100,105" fill="#dbcdb8" stroke="#0f172a" stroke-width="1.2" opacity="0.7" />
-            <polygon points="60,148 100,172 100,105" fill="#d0bfab" stroke="#0f172a" stroke-width="1.2" opacity="0.85" />
-            <polygon points="140,148 100,172 100,105" fill="#c4b09b" stroke="#0f172a" stroke-width="1.2" opacity="0.85" />
-            <circle cx="100" cy="98" r="8" fill="#9e3322" opacity="0.9" />
-            <circle cx="94" cy="94" r="5" fill="#d4af37" opacity="0.8" />
-            <circle cx="106" cy="94" r="5" fill="#d4af37" opacity="0.8" />
-            <circle cx="100" cy="88" r="5" fill="#d4af37" opacity="0.8" />
-            <path d="M100 106 Q98 126 100 142" stroke="#266b4e" stroke-width="1.5" stroke-linecap="round" />
-            <polygon points="160,42 163,48 169,51 163,54 160,60 157,54 151,51 157,48" fill="#d4af37" />
-            <circle cx="45" cy="120" r="2.5" fill="#d4af37" />
-            <circle cx="155" cy="130" r="3" fill="#9e3322" opacity="0.7" />
+          <svg class="w-full h-full drop-shadow-lg lottie-anim-float" viewBox="0 0 260 130" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Artisan 404 number illustration">
+            <defs>
+              <linearGradient id="goldGradApp404" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#fcedb3"/>
+                <stop offset="35%" stop-color="#d4af37"/>
+                <stop offset="70%" stop-color="#aa771c"/>
+                <stop offset="100%" stop-color="#805300"/>
+              </linearGradient>
+              <linearGradient id="obsidianGradApp404" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" stop-color="#1e293b"/>
+                <stop offset="100%" stop-color="#090d16"/>
+              </linearGradient>
+              <linearGradient id="crystalShineApp404" x1="20%" y1="0%" x2="80%" y2="100%">
+                <stop offset="0%" stop-color="#ffffff" stop-opacity="0.9"/>
+                <stop offset="40%" stop-color="#fdfbf7" stop-opacity="0.4"/>
+                <stop offset="100%" stop-color="#d4af37" stop-opacity="0.15"/>
+              </linearGradient>
+              <radialGradient id="auraGlowApp404" cx="50%" cy="50%" r="50%">
+                <stop offset="0%" stop-color="#d4af37" stop-opacity="0.25"/>
+                <stop offset="100%" stop-color="#d4af37" stop-opacity="0"/>
+              </radialGradient>
+            </defs>
+
+            <!-- Ambient Glow -->
+            <ellipse cx="130" cy="65" rx="110" ry="50" fill="url(#auraGlowApp404)" />
+
+            <!-- Orbital Stardust Ellipse -->
+            <ellipse cx="130" cy="65" rx="115" ry="38" stroke="url(#goldGradApp404)" stroke-width="1.2" stroke-dasharray="4 6" opacity="0.6" class="lottie-anim-spin" />
+
+            <!-- NUMERAL: Left '4' -->
+            <g id="numeral-4-left-app">
+              <path d="M54 28 L24 74 L62 74 M48 24 L48 98" stroke="url(#obsidianGradApp404)" stroke-width="14" stroke-linecap="round" stroke-linejoin="round" opacity="0.12" transform="translate(2, 3)" />
+              <path d="M54 28 L24 74 L62 74 M48 24 L48 98" stroke="url(#obsidianGradApp404)" stroke-width="12" stroke-linecap="round" stroke-linejoin="round" />
+              <path d="M54 28 L24 74 L62 74 M48 24 L48 98" stroke="url(#goldGradApp404)" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" />
+              <path d="M54 30 L26 73 L60 73 M48 26 L48 96" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" opacity="0.85" />
+              <circle cx="48" cy="24" r="4.5" fill="url(#goldGradApp404)" stroke="#ffffff" stroke-width="1" />
+              <circle cx="48" cy="98" r="4.5" fill="url(#goldGradApp404)" stroke="#ffffff" stroke-width="1" />
+              <circle cx="24" cy="74" r="3.5" fill="url(#goldGradApp404)" />
+              <circle cx="62" cy="74" r="3.5" fill="url(#goldGradApp404)" />
+            </g>
+
+            <!-- NUMERAL: Center '0' (Artisan Botanical Crystal Cabochon) -->
+            <g id="numeral-0-center-app">
+              <ellipse cx="130" cy="62" rx="34" ry="46" fill="#fcfaf6" stroke="url(#obsidianGradApp404)" stroke-width="4" />
+              <ellipse cx="130" cy="62" rx="26" ry="38" fill="url(#crystalShineApp404)" stroke="url(#goldGradApp404)" stroke-width="2.5" />
+              <path d="M130 16 L148 40 L148 84 L130 108 L112 84 L112 40 Z" fill="none" stroke="url(#goldGradApp404)" stroke-width="1" opacity="0.75" />
+              <path d="M112 40 L148 40 M112 84 L148 84 M130 16 L130 108" stroke="url(#goldGradApp404)" stroke-width="0.75" opacity="0.6" />
+              
+              <!-- Preserved Botanical Gold Blossom Core -->
+              <circle cx="130" cy="62" r="7.5" fill="#9e3322" opacity="0.95" />
+              <circle cx="124" cy="58" r="4" fill="url(#goldGradApp404)" />
+              <circle cx="136" cy="58" r="4" fill="url(#goldGradApp404)" />
+              <circle cx="130" cy="52" r="4" fill="url(#goldGradApp404)" />
+              <circle cx="124" cy="66" r="4" fill="url(#goldGradApp404)" />
+              <circle cx="136" cy="66" r="4" fill="url(#goldGradApp404)" />
+              <circle cx="130" cy="62" r="2.5" fill="#ffffff" />
+              <path d="M130 70 Q128 82 130 92" stroke="#266b4e" stroke-width="1.6" stroke-linecap="round" />
+              <path d="M130 80 Q135 77 138 82" stroke="#266b4e" stroke-width="1.2" stroke-linecap="round" />
+
+              <!-- Specular Glint -->
+              <ellipse cx="122" cy="42" rx="7" ry="14" fill="#ffffff" opacity="0.45" transform="rotate(-25 122 42)" />
+            </g>
+
+            <!-- NUMERAL: Right '4' -->
+            <g id="numeral-4-right-app">
+              <path d="M212 28 L182 74 L220 74 M206 24 L206 98" stroke="url(#obsidianGradApp404)" stroke-width="14" stroke-linecap="round" stroke-linejoin="round" opacity="0.12" transform="translate(2, 3)" />
+              <path d="M212 28 L182 74 L220 74 M206 24 L206 98" stroke="url(#obsidianGradApp404)" stroke-width="12" stroke-linecap="round" stroke-linejoin="round" />
+              <path d="M212 28 L182 74 L220 74 M206 24 L206 98" stroke="url(#goldGradApp404)" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" />
+              <path d="M212 30 L184 73 L218 73 M206 26 L206 96" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" opacity="0.85" />
+              <circle cx="206" cy="24" r="4.5" fill="url(#goldGradApp404)" stroke="#ffffff" stroke-width="1" />
+              <circle cx="206" cy="98" r="4.5" fill="url(#goldGradApp404)" stroke="#ffffff" stroke-width="1" />
+              <circle cx="182" cy="74" r="3.5" fill="url(#goldGradApp404)" />
+              <circle cx="220" cy="74" r="3.5" fill="url(#goldGradApp404)" />
+            </g>
+
+            <!-- Prismatic Diamond Sparkles -->
+            <polygon points="76,20 79,27 86,30 79,33 76,40 73,33 66,30 73,27" fill="url(#goldGradApp404)" />
+            <polygon points="184,18 186,23 191,25 186,27 184,32 182,27 177,25 182,23" fill="#d4af37" opacity="0.85" />
+            <polygon points="74,106 76,110 80,112 76,114 74,118 72,114 68,112 72,110" fill="#9e3322" opacity="0.75" />
+            <polygon points="188,102 191,107 196,109 191,111 188,116 185,111 180,109 185,107" fill="url(#goldGradApp404)" />
+            <circle cx="12" cy="65" r="2.5" fill="url(#goldGradApp404)" opacity="0.7" />
+            <circle cx="248" cy="65" r="2.5" fill="url(#goldGradApp404)" opacity="0.7" />
           </svg>
         </div>
 
@@ -4284,24 +4349,89 @@
           </button>
         </div>
 
-        <!-- Lottie-Style Animated Kinetic SVG: Optical Curing Prism & Precision Gears -->
-        <div class="relative w-40 h-40 sm:w-48 sm:h-48 flex items-center justify-center">
+        <!-- Lottie-Style Animated Kinetic SVG: Ultra-Premium Handcrafted 500 Atelier Specimen -->
+        <div class="relative w-56 h-36 sm:w-72 sm:h-44 flex items-center justify-center">
           <div class="absolute inset-0 rounded-full bg-[#d4af37]/10 lottie-anim-pulse blur-xl pointer-events-none"></div>
-          <svg class="w-full h-full drop-shadow-md" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Animated system interruption illustration">
-            <circle cx="100" cy="100" r="88" stroke="#d4af37" stroke-width="1.2" stroke-dasharray="4 8" opacity="0.45" />
-            <g class="lottie-anim-spin">
-              <circle cx="100" cy="100" r="64" stroke="#0f172a" stroke-width="2" stroke-dasharray="14 8" opacity="0.65" />
-              <circle cx="100" cy="100" r="54" stroke="#d4af37" stroke-width="1" opacity="0.3" />
+          <svg class="w-full h-full drop-shadow-lg" viewBox="0 0 260 130" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Artisan 500 number illustration">
+            <defs>
+              <linearGradient id="goldGradApp500" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#fcedb3"/>
+                <stop offset="30%" stop-color="#d4af37"/>
+                <stop offset="70%" stop-color="#b8860b"/>
+                <stop offset="100%" stop-color="#7a4f00"/>
+              </linearGradient>
+              <linearGradient id="obsidianGradApp500" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" stop-color="#1e293b"/>
+                <stop offset="100%" stop-color="#0b0f19"/>
+              </linearGradient>
+              <radialGradient id="auraGlowApp500" cx="50%" cy="50%" r="50%">
+                <stop offset="0%" stop-color="#d4af37" stop-opacity="0.22"/>
+                <stop offset="100%" stop-color="#d4af37" stop-opacity="0"/>
+              </radialGradient>
+              <linearGradient id="rubyAccentApp500" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#c84b31"/>
+                <stop offset="100%" stop-color="#7a1c0d"/>
+              </linearGradient>
+            </defs>
+
+            <!-- Ambient Golden Aura -->
+            <ellipse cx="130" cy="65" rx="115" ry="52" fill="url(#auraGlowApp500)" />
+
+            <!-- Outer Kinetic Measurement Orbit -->
+            <circle cx="130" cy="65" r="58" stroke="url(#goldGradApp500)" stroke-width="1" stroke-dasharray="3 6" opacity="0.4" />
+
+            <!-- NUMERAL: '5' (Left, Handcrafted Sculpted Artisan Numeral) -->
+            <g id="numeral-5-left-app">
+              <path d="M68 28 L36 28 L32 58 Q46 52 58 60 Q70 69 66 84 Q60 98 42 98 Q28 98 22 88 M68 28 L68 36" stroke="url(#obsidianGradApp500)" stroke-width="13" stroke-linecap="round" stroke-linejoin="round" fill="none" opacity="0.12" transform="translate(2, 3)" />
+              <path d="M68 28 L36 28 L32 58 Q46 52 58 60 Q70 69 66 84 Q60 98 42 98 Q28 98 22 88 M68 28 L68 36" stroke="url(#obsidianGradApp500)" stroke-width="11" stroke-linecap="round" stroke-linejoin="round" fill="none" />
+              <path d="M68 28 L36 28 L32 58 Q46 52 58 60 Q70 69 66 84 Q60 98 42 98 Q28 98 22 88 M68 28 L68 36" stroke="url(#goldGradApp500)" stroke-width="7.5" stroke-linecap="round" stroke-linejoin="round" fill="none" />
+              <path d="M66 28 L36 28 L32 58 Q46 52 58 60 Q70 69 66 84 Q60 98 42 98 Q28 98 22 88" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none" opacity="0.85" />
+              <circle cx="68" cy="28" r="4.5" fill="url(#goldGradApp500)" stroke="#ffffff" stroke-width="1" />
+              <circle cx="22" cy="88" r="4" fill="url(#goldGradApp500)" stroke="#ffffff" stroke-width="0.8" />
             </g>
-            <g class="lottie-anim-spin-rev">
-              <circle cx="100" cy="100" r="42" stroke="#9e3322" stroke-width="1.8" stroke-dasharray="10 6" opacity="0.75" />
-              <polygon points="100,62 133,119 67,119" stroke="#d4af37" stroke-width="1.5" fill="none" opacity="0.5" />
+
+            <!-- NUMERAL: Center '0' (Kinetic Precision Calibration Gauge) -->
+            <g id="numeral-0-center-app" transform="translate(122, 63)">
+              <circle cx="0" cy="0" r="34" fill="none" stroke="url(#obsidianGradApp500)" stroke-width="8" opacity="0.12" transform="translate(2, 3)" />
+              <circle cx="0" cy="0" r="34" fill="#faf8f5" stroke="url(#obsidianGradApp500)" stroke-width="5" />
+              <circle cx="0" cy="0" r="26" fill="none" stroke="url(#goldGradApp500)" stroke-width="2.5" />
+
+              <g class="lottie-anim-spin">
+                <circle cx="0" cy="0" r="20" fill="none" stroke="url(#goldGradApp500)" stroke-width="2" stroke-dasharray="6 4" opacity="0.85" />
+                <line x1="0" y1="-26" x2="0" y2="-20" stroke="url(#goldGradApp500)" stroke-width="2" />
+                <line x1="26" y1="0" x2="20" y2="0" stroke="url(#goldGradApp500)" stroke-width="2" />
+                <line x1="0" y1="26" x2="0" y2="20" stroke="url(#goldGradApp500)" stroke-width="2" />
+                <line x1="-26" y1="0" x2="-20" y2="0" stroke="url(#goldGradApp500)" stroke-width="2" />
+                <polygon points="0,-12 10,6 -10,6" fill="none" stroke="url(#rubyAccentApp500)" stroke-width="1.2" opacity="0.7" />
+              </g>
+
+              <g class="lottie-anim-pulse">
+                <circle cx="0" cy="0" r="7.5" fill="url(#obsidianGradApp500)" stroke="url(#goldGradApp500)" stroke-width="1.5" />
+                <circle cx="0" cy="0" r="3" fill="#ffffff" />
+              </g>
             </g>
-            <g class="lottie-anim-pulse">
-              <polygon points="100,72 124,100 100,128 76,100" fill="#0f172a" stroke="#d4af37" stroke-width="2" />
-              <line x1="76" y1="100" x2="124" y2="100" stroke="#d4af37" stroke-width="1" opacity="0.7" />
-              <line x1="100" y1="72" x2="100" y2="128" stroke="#d4af37" stroke-width="1" opacity="0.7" />
+
+            <!-- NUMERAL: Right '0' (Interlocking Optical Synchronizer) -->
+            <g id="numeral-0-right-app" transform="translate(196, 63)">
+              <circle cx="0" cy="0" r="34" fill="none" stroke="url(#obsidianGradApp500)" stroke-width="8" opacity="0.12" transform="translate(2, 3)" />
+              <circle cx="0" cy="0" r="34" fill="#faf8f5" stroke="url(#obsidianGradApp500)" stroke-width="5" />
+              <circle cx="0" cy="0" r="26" fill="none" stroke="url(#goldGradApp500)" stroke-width="2.5" />
+
+              <g class="lottie-anim-spin-rev">
+                <circle cx="0" cy="0" r="20" fill="none" stroke="url(#rubyAccentApp500)" stroke-width="1.8" stroke-dasharray="5 5" opacity="0.75" />
+                <polygon points="0,-14 12,0 0,14 -12,0" fill="none" stroke="url(#goldGradApp500)" stroke-width="1.2" opacity="0.8" />
+              </g>
+
+              <polygon points="0,-8 7,0 0,8 -7,0" fill="url(#goldGradApp500)" stroke="#ffffff" stroke-width="1" />
+              <circle cx="0" cy="0" r="2.5" fill="#ffffff" />
             </g>
+
+            <!-- Kinetic Floating Diamond Sparkles -->
+            <polygon points="86,18 89,24 95,26 89,28 86,34 83,28 77,26 83,24" fill="url(#goldGradApp500)" />
+            <polygon points="160,16 162,21 167,23 162,25 160,30 158,25 153,23 158,21" fill="#d4af37" opacity="0.9" />
+            <polygon points="238,28 240,33 245,35 240,37 238,42 236,37 231,35 236,33" fill="url(#goldGradApp500)" opacity="0.8" />
+            <polygon points="88,106 90,110 94,112 90,114 88,118 86,114 82,112 86,110" fill="#9e3322" opacity="0.75" />
+            <polygon points="162,108 165,113 170,115 165,117 162,122 159,117 154,115 159,113" fill="url(#goldGradApp500)" />
           </svg>
         </div>
 
@@ -4334,12 +4464,15 @@
           </a>
         </div>
 
-        <div class="p-3.5 rounded-xl bg-surface-container-low border border-[#e4e0d8] max-w-md w-full text-left flex items-start gap-3">
-          <span class="material-symbols-outlined text-secondary text-base mt-0.5" aria-hidden="true">info</span>
+        <div class="p-3.5 rounded-xl bg-[#faf8f5] border border-[#e4e0d8] max-w-md w-full text-left flex items-start gap-3 shadow-2xs">
+          <span class="material-symbols-outlined text-[#d4af37] text-base mt-0.5" aria-hidden="true">verified_user</span>
           <div class="text-[11px] text-on-surface-variant">
-            <p class="font-bold text-primary">Incident Diagnostics</p>
-            <p class="font-mono mt-0.5">Trace ID: ${traceId}</p>
-            <p class="mt-1">${esc(errorDetails || 'Automatic failover ready. Local cache intact.')}</p>
+            <p class="font-bold text-primary flex items-center gap-1.5">
+              <span>Patron Data & Studio Bag Protected</span>
+              <span class="inline-block w-1.5 h-1.5 rounded-full bg-[#266b4e]"></span>
+            </p>
+            <p class="text-on-surface-variant/80 mt-0.5">All customer inputs and items are cached safely in your browser. Cloud edge auto-healing is in progress.</p>
+            <p class="font-mono text-[10px] text-on-surface-variant/60 mt-1">Trace ID: ${traceId}</p>
           </div>
         </div>
       </div>

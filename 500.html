@@ -12,8 +12,8 @@
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,400;1,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
   <link rel="stylesheet" href="./tokens.css">
+  <link rel="stylesheet" href="./tailwind.min.css">
   <link rel="stylesheet" href="./styles.css">
-  <script src="https://cdn.tailwindcss.com"></script>
   <style>
     @keyframes gearRotate {
       from { transform: rotate(0deg); }
@@ -31,9 +31,9 @@
       0%, 100% { transform: translateY(0px) rotate(0deg); opacity: 0.4; }
       50% { transform: translateY(-8px) rotate(15deg); opacity: 1; }
     }
-    .anim-gear { transform-origin: center; animation: gearRotate 16s linear infinite; }
-    .anim-gear-rev { transform-origin: center; animation: gearRotateRev 22s linear infinite; }
-    .anim-glow { transform-origin: center; animation: pulseGlow 4s ease-in-out infinite; }
+    .anim-gear, .lottie-anim-spin { transform-origin: center; animation: gearRotate 16s linear infinite; }
+    .anim-gear-rev, .lottie-anim-spin-rev { transform-origin: center; animation: gearRotateRev 22s linear infinite; }
+    .anim-glow, .lottie-anim-pulse { transform-origin: center; animation: pulseGlow 4s ease-in-out infinite; }
     .anim-sparkle { transform-origin: center; animation: floatSparkle 3s ease-in-out infinite; }
   </style>
 </head>
@@ -65,39 +65,89 @@
   <main class="flex-1 flex items-center justify-center p-4 sm:p-8">
     <div class="flex flex-col items-center justify-center max-w-xl mx-auto text-center gap-6 py-8">
       
-      <!-- Lottie-Style Animated Kinetic SVG: Optical Curing Prism & Precision Gears -->
-      <div class="relative w-44 h-44 sm:w-52 sm:h-52 flex items-center justify-center">
+      <!-- Lottie-Style Animated Kinetic SVG: Ultra-Premium Handcrafted 500 Atelier Specimen -->
+      <div class="relative w-56 h-36 sm:w-72 sm:h-44 flex items-center justify-center">
         <div class="absolute inset-0 rounded-full bg-[#d4af37]/10 anim-glow blur-xl pointer-events-none"></div>
-        <svg class="w-full h-full drop-shadow-md" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Animated system calibration illustration">
-          <!-- Ambient Outer Orbit -->
-          <circle cx="100" cy="100" r="88" stroke="#d4af37" stroke-width="1.2" stroke-dasharray="4 8" opacity="0.45" />
-          
-          <!-- Outer Gear (Clockwise) -->
-          <g class="anim-gear">
-            <circle cx="100" cy="100" r="64" stroke="#0f172a" stroke-width="2" stroke-dasharray="14 8" opacity="0.65" />
-            <circle cx="100" cy="100" r="54" stroke="#d4af37" stroke-width="1" opacity="0.3" />
+        <svg class="w-full h-full drop-shadow-lg" viewBox="0 0 260 130" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Artisan 500 number illustration">
+          <defs>
+            <linearGradient id="goldGrad500" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#fcedb3"/>
+              <stop offset="30%" stop-color="#d4af37"/>
+              <stop offset="70%" stop-color="#b8860b"/>
+              <stop offset="100%" stop-color="#7a4f00"/>
+            </linearGradient>
+            <linearGradient id="obsidianGrad500" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stop-color="#1e293b"/>
+              <stop offset="100%" stop-color="#0b0f19"/>
+            </linearGradient>
+            <radialGradient id="auraGlow500" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stop-color="#d4af37" stop-opacity="0.22"/>
+              <stop offset="100%" stop-color="#d4af37" stop-opacity="0"/>
+            </radialGradient>
+            <linearGradient id="rubyAccent500" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#c84b31"/>
+              <stop offset="100%" stop-color="#7a1c0d"/>
+            </linearGradient>
+          </defs>
+
+          <!-- Ambient Golden Aura -->
+          <ellipse cx="130" cy="65" rx="115" ry="52" fill="url(#auraGlow500)" />
+
+          <!-- Outer Kinetic Measurement Orbit -->
+          <circle cx="130" cy="65" r="58" stroke="url(#goldGrad500)" stroke-width="1" stroke-dasharray="3 6" opacity="0.4" />
+
+          <!-- NUMERAL: '5' (Left, Handcrafted Sculpted Artisan Numeral) -->
+          <g id="numeral-5-left">
+            <path d="M68 28 L36 28 L32 58 Q46 52 58 60 Q70 69 66 84 Q60 98 42 98 Q28 98 22 88 M68 28 L68 36" stroke="url(#obsidianGrad500)" stroke-width="13" stroke-linecap="round" stroke-linejoin="round" fill="none" opacity="0.12" transform="translate(2, 3)" />
+            <path d="M68 28 L36 28 L32 58 Q46 52 58 60 Q70 69 66 84 Q60 98 42 98 Q28 98 22 88 M68 28 L68 36" stroke="url(#obsidianGrad500)" stroke-width="11" stroke-linecap="round" stroke-linejoin="round" fill="none" />
+            <path d="M68 28 L36 28 L32 58 Q46 52 58 60 Q70 69 66 84 Q60 98 42 98 Q28 98 22 88 M68 28 L68 36" stroke="url(#goldGrad500)" stroke-width="7.5" stroke-linecap="round" stroke-linejoin="round" fill="none" />
+            <path d="M66 28 L36 28 L32 58 Q46 52 58 60 Q70 69 66 84 Q60 98 42 98 Q28 98 22 88" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none" opacity="0.85" />
+            <circle cx="68" cy="28" r="4.5" fill="url(#goldGrad500)" stroke="#ffffff" stroke-width="1" />
+            <circle cx="22" cy="88" r="4" fill="url(#goldGrad500)" stroke="#ffffff" stroke-width="0.8" />
           </g>
 
-          <!-- Counter Gear (Counter-Clockwise) -->
-          <g class="anim-gear-rev">
-            <circle cx="100" cy="100" r="42" stroke="#9e3322" stroke-width="1.8" stroke-dasharray="10 6" opacity="0.75" />
-            <polygon points="100,62 133,119 67,119" stroke="#d4af37" stroke-width="1.5" fill="none" opacity="0.5" />
+          <!-- NUMERAL: Center '0' (Kinetic Precision Calibration Gauge) -->
+          <g id="numeral-0-center" transform="translate(122, 63)">
+            <circle cx="0" cy="0" r="34" fill="none" stroke="url(#obsidianGrad500)" stroke-width="8" opacity="0.12" transform="translate(2, 3)" />
+            <circle cx="0" cy="0" r="34" fill="#faf8f5" stroke="url(#obsidianGrad500)" stroke-width="5" />
+            <circle cx="0" cy="0" r="26" fill="none" stroke="url(#goldGrad500)" stroke-width="2.5" />
+
+            <g class="lottie-anim-spin">
+              <circle cx="0" cy="0" r="20" fill="none" stroke="url(#goldGrad500)" stroke-width="2" stroke-dasharray="6 4" opacity="0.85" />
+              <line x1="0" y1="-26" x2="0" y2="-20" stroke="url(#goldGrad500)" stroke-width="2" />
+              <line x1="26" y1="0" x2="20" y2="0" stroke="url(#goldGrad500)" stroke-width="2" />
+              <line x1="0" y1="26" x2="0" y2="20" stroke="url(#goldGrad500)" stroke-width="2" />
+              <line x1="-26" y1="0" x2="-20" y2="0" stroke="url(#goldGrad500)" stroke-width="2" />
+              <polygon points="0,-12 10,6 -10,6" fill="none" stroke="url(#rubyAccent500)" stroke-width="1.2" opacity="0.7" />
+            </g>
+
+            <g class="lottie-anim-pulse">
+              <circle cx="0" cy="0" r="7.5" fill="url(#obsidianGrad500)" stroke="url(#goldGrad500)" stroke-width="1.5" />
+              <circle cx="0" cy="0" r="3" fill="#ffffff" />
+            </g>
           </g>
 
-          <!-- Central Optical Crystal / Prism Core -->
-          <g class="anim-glow">
-            <polygon points="100,72 124,100 100,128 76,100" fill="#0f172a" stroke="#d4af37" stroke-width="2" />
-            <line x1="76" y1="100" x2="124" y2="100" stroke="#d4af37" stroke-width="1" opacity="0.7" />
-            <line x1="100" y1="72" x2="100" y2="128" stroke="#d4af37" stroke-width="1" opacity="0.7" />
+          <!-- NUMERAL: Right '0' (Interlocking Optical Synchronizer) -->
+          <g id="numeral-0-right" transform="translate(196, 63)">
+            <circle cx="0" cy="0" r="34" fill="none" stroke="url(#obsidianGrad500)" stroke-width="8" opacity="0.12" transform="translate(2, 3)" />
+            <circle cx="0" cy="0" r="34" fill="#faf8f5" stroke="url(#obsidianGrad500)" stroke-width="5" />
+            <circle cx="0" cy="0" r="26" fill="none" stroke="url(#goldGrad500)" stroke-width="2.5" />
+
+            <g class="lottie-anim-spin-rev">
+              <circle cx="0" cy="0" r="20" fill="none" stroke="url(#rubyAccent500)" stroke-width="1.8" stroke-dasharray="5 5" opacity="0.75" />
+              <polygon points="0,-14 12,0 0,14 -12,0" fill="none" stroke="url(#goldGrad500)" stroke-width="1.2" opacity="0.8" />
+            </g>
+
+            <polygon points="0,-8 7,0 0,8 -7,0" fill="url(#goldGrad500)" stroke="#ffffff" stroke-width="1" />
+            <circle cx="0" cy="0" r="2.5" fill="#ffffff" />
           </g>
 
-          <!-- Kinetic Floating Sparkles -->
-          <g class="anim-sparkle">
-            <polygon points="155,55 158,62 165,65 158,68 155,75 152,68 145,65 152,62" fill="#d4af37" />
-            <polygon points="42,135 44,140 49,142 44,144 42,149 40,144 35,142 40,140" fill="#9e3322" opacity="0.85" />
-            <circle cx="140" cy="148" r="3" fill="#d4af37" opacity="0.7" />
-            <circle cx="60" cy="58" r="2.5" fill="#0f172a" opacity="0.5" />
-          </g>
+          <!-- Kinetic Floating Diamond Sparkles -->
+          <polygon points="86,18 89,24 95,26 89,28 86,34 83,28 77,26 83,24" fill="url(#goldGrad500)" />
+          <polygon points="160,16 162,21 167,23 162,25 160,30 158,25 153,23 158,21" fill="#d4af37" opacity="0.9" />
+          <polygon points="238,28 240,33 245,35 240,37 238,42 236,37 231,35 236,33" fill="url(#goldGrad500)" opacity="0.8" />
+          <polygon points="88,106 90,110 94,112 90,114 88,118 86,114 82,112 86,110" fill="#9e3322" opacity="0.75" />
+          <polygon points="162,108 165,113 170,115 165,117 162,122 159,117 154,115 159,113" fill="url(#goldGrad500)" />
         </svg>
       </div>
 
@@ -130,12 +180,15 @@
         </a>
       </div>
 
-      <div class="p-3.5 rounded-xl bg-surface-container-low border border-[#e4e0d8] max-w-md w-full text-left flex items-start gap-3">
-        <span class="material-symbols-outlined text-secondary text-base mt-0.5">info</span>
+      <div class="p-3.5 rounded-xl bg-[#faf8f5] border border-[#e4e0d8] max-w-md w-full text-left flex items-start gap-3 shadow-2xs">
+        <span class="material-symbols-outlined text-[#d4af37] text-base mt-0.5">verified_user</span>
         <div class="text-[11px] text-on-surface-variant">
-          <p class="font-bold text-primary">Incident Diagnostics</p>
-          <p class="font-mono mt-0.5" id="diag-trace">Trace ID: VK-EDGE-500-CALIB</p>
-          <p class="mt-1">Edge Nodes: Bengaluru Primary (IN-KA) • Automatic Failover Ready</p>
+          <p class="font-bold text-primary flex items-center gap-1.5">
+            <span>Patron Data & Studio Bag Protected</span>
+            <span class="inline-block w-1.5 h-1.5 rounded-full bg-[#266b4e]"></span>
+          </p>
+          <p class="text-on-surface-variant/80 mt-0.5">All customer inputs and items are cached safely in your browser. Cloud edge auto-healing is in progress.</p>
+          <p class="font-mono text-[10px] text-on-surface-variant/60 mt-1" id="diag-trace">Trace ID: VK-EDGE-500-CALIB</p>
         </div>
       </div>
 

@@ -13,7 +13,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
   <link rel="stylesheet" href="./tokens.css">
   <link rel="stylesheet" href="./styles.css">
-  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="./tailwind.min.css">
   <style>
     @keyframes crystalLevitate {
       0%, 100% { transform: translateY(0px) rotate(0deg); }
@@ -27,7 +27,7 @@
       0%, 100% { opacity: 0.3; transform: scale(0.95); }
       50% { opacity: 0.75; transform: scale(1.06); }
     }
-    .anim-levitate { animation: crystalLevitate 5s ease-in-out infinite; }
+    .anim-levitate, .lottie-anim-float { animation: crystalLevitate 5s ease-in-out infinite; }
     .anim-orbit { transform-origin: center; animation: orbitSpin 20s linear infinite; }
     .anim-aura { transform-origin: center; animation: auraPulse 4s ease-in-out infinite; }
   </style>
@@ -54,33 +54,91 @@
   <main class="flex-1 flex items-center justify-center p-4 sm:p-8">
     <div class="flex flex-col items-center justify-center max-w-xl mx-auto text-center gap-6 py-8">
       
-      <!-- Lottie-Style Animated Kinetic SVG: Preserved Floral Botanical Crystal Specimen -->
-      <div class="relative w-44 h-44 sm:w-52 sm:h-52 flex items-center justify-center">
+      <!-- Lottie-Style Animated Kinetic SVG: Ultra-Premium Handcrafted 404 Artisan Keepsake -->
+      <div class="relative w-56 h-36 sm:w-72 sm:h-44 flex items-center justify-center">
         <div class="absolute inset-0 rounded-full bg-[#d4af37]/15 anim-aura blur-xl pointer-events-none"></div>
-        <svg class="w-full h-full drop-shadow-md anim-levitate" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Animated missing specimen illustration">
-          <!-- Orbital Ellipse -->
-          <ellipse cx="100" cy="100" rx="84" ry="32" stroke="#d4af37" stroke-width="1.2" stroke-dasharray="4 6" opacity="0.6" class="anim-orbit" />
-          
-          <!-- Faceted Crystal Silhouette -->
-          <polygon points="100,28 152,70 140,148 100,172 60,148 48,70" fill="#fcf9f5" stroke="#0f172a" stroke-width="2" />
-          <polygon points="100,28 152,70 100,105" fill="#f4efe6" stroke="#0f172a" stroke-width="1.2" opacity="0.8" />
-          <polygon points="100,28 48,70 100,105" fill="#ede5d8" stroke="#0f172a" stroke-width="1.2" opacity="0.8" />
-          <polygon points="48,70 60,148 100,105" fill="#e2d7c5" stroke="#0f172a" stroke-width="1.2" opacity="0.7" />
-          <polygon points="152,70 140,148 100,105" fill="#dbcdb8" stroke="#0f172a" stroke-width="1.2" opacity="0.7" />
-          <polygon points="60,148 100,172 100,105" fill="#d0bfab" stroke="#0f172a" stroke-width="1.2" opacity="0.85" />
-          <polygon points="140,148 100,172 100,105" fill="#c4b09b" stroke="#0f172a" stroke-width="1.2" opacity="0.85" />
+        <svg class="w-full h-full drop-shadow-lg anim-levitate" viewBox="0 0 260 130" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Artisan 404 number illustration">
+          <defs>
+            <linearGradient id="goldGrad404" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#fcedb3"/>
+              <stop offset="35%" stop-color="#d4af37"/>
+              <stop offset="70%" stop-color="#aa771c"/>
+              <stop offset="100%" stop-color="#805300"/>
+            </linearGradient>
+            <linearGradient id="obsidianGrad404" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stop-color="#1e293b"/>
+              <stop offset="100%" stop-color="#090d16"/>
+            </linearGradient>
+            <linearGradient id="crystalShine404" x1="20%" y1="0%" x2="80%" y2="100%">
+              <stop offset="0%" stop-color="#ffffff" stop-opacity="0.9"/>
+              <stop offset="40%" stop-color="#fdfbf7" stop-opacity="0.4"/>
+              <stop offset="100%" stop-color="#d4af37" stop-opacity="0.15"/>
+            </linearGradient>
+            <radialGradient id="auraGlow404" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stop-color="#d4af37" stop-opacity="0.25"/>
+              <stop offset="100%" stop-color="#d4af37" stop-opacity="0"/>
+            </radialGradient>
+          </defs>
 
-          <!-- Preserved Gold Flower Stem inside Crystal -->
-          <circle cx="100" cy="98" r="8" fill="#9e3322" opacity="0.9" />
-          <circle cx="94" cy="94" r="5" fill="#d4af37" opacity="0.8" />
-          <circle cx="106" cy="94" r="5" fill="#d4af37" opacity="0.8" />
-          <circle cx="100" cy="88" r="5" fill="#d4af37" opacity="0.8" />
-          <path d="M100 106 Q98 126 100 142" stroke="#266b4e" stroke-width="1.5" stroke-linecap="round" />
+          <!-- Ambient Glow -->
+          <ellipse cx="130" cy="65" rx="110" ry="50" fill="url(#auraGlow404)" />
 
-          <!-- Golden Prismatic Sparkles -->
-          <polygon points="160,42 163,48 169,51 163,54 160,60 157,54 151,51 157,48" fill="#d4af37" />
-          <circle cx="45" cy="120" r="2.5" fill="#d4af37" />
-          <circle cx="155" cy="130" r="3" fill="#9e3322" opacity="0.7" />
+          <!-- Orbital Stardust Ellipse -->
+          <ellipse cx="130" cy="65" rx="115" ry="38" stroke="url(#goldGrad404)" stroke-width="1.2" stroke-dasharray="4 6" opacity="0.6" class="anim-orbit" />
+
+          <!-- NUMERAL: Left '4' -->
+          <g id="numeral-4-left">
+            <path d="M54 28 L24 74 L62 74 M48 24 L48 98" stroke="url(#obsidianGrad404)" stroke-width="14" stroke-linecap="round" stroke-linejoin="round" opacity="0.12" transform="translate(2, 3)" />
+            <path d="M54 28 L24 74 L62 74 M48 24 L48 98" stroke="url(#obsidianGrad404)" stroke-width="12" stroke-linecap="round" stroke-linejoin="round" />
+            <path d="M54 28 L24 74 L62 74 M48 24 L48 98" stroke="url(#goldGrad404)" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" />
+            <path d="M54 30 L26 73 L60 73 M48 26 L48 96" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" opacity="0.85" />
+            <circle cx="48" cy="24" r="4.5" fill="url(#goldGrad404)" stroke="#ffffff" stroke-width="1" />
+            <circle cx="48" cy="98" r="4.5" fill="url(#goldGrad404)" stroke="#ffffff" stroke-width="1" />
+            <circle cx="24" cy="74" r="3.5" fill="url(#goldGrad404)" />
+            <circle cx="62" cy="74" r="3.5" fill="url(#goldGrad404)" />
+          </g>
+
+          <!-- NUMERAL: Center '0' (Artisan Botanical Crystal Cabochon) -->
+          <g id="numeral-0-center">
+            <ellipse cx="130" cy="62" rx="34" ry="46" fill="#fcfaf6" stroke="url(#obsidianGrad404)" stroke-width="4" />
+            <ellipse cx="130" cy="62" rx="26" ry="38" fill="url(#crystalShine404)" stroke="url(#goldGrad404)" stroke-width="2.5" />
+            <path d="M130 16 L148 40 L148 84 L130 108 L112 84 L112 40 Z" fill="none" stroke="url(#goldGrad404)" stroke-width="1" opacity="0.75" />
+            <path d="M112 40 L148 40 M112 84 L148 84 M130 16 L130 108" stroke="url(#goldGrad404)" stroke-width="0.75" opacity="0.6" />
+            
+            <!-- Preserved Botanical Gold Blossom Core -->
+            <circle cx="130" cy="62" r="7.5" fill="#9e3322" opacity="0.95" />
+            <circle cx="124" cy="58" r="4" fill="url(#goldGrad404)" />
+            <circle cx="136" cy="58" r="4" fill="url(#goldGrad404)" />
+            <circle cx="130" cy="52" r="4" fill="url(#goldGrad404)" />
+            <circle cx="124" cy="66" r="4" fill="url(#goldGrad404)" />
+            <circle cx="136" cy="66" r="4" fill="url(#goldGrad404)" />
+            <circle cx="130" cy="62" r="2.5" fill="#ffffff" />
+            <path d="M130 70 Q128 82 130 92" stroke="#266b4e" stroke-width="1.6" stroke-linecap="round" />
+            <path d="M130 80 Q135 77 138 82" stroke="#266b4e" stroke-width="1.2" stroke-linecap="round" />
+
+            <!-- Specular Glint -->
+            <ellipse cx="122" cy="42" rx="7" ry="14" fill="#ffffff" opacity="0.45" transform="rotate(-25 122 42)" />
+          </g>
+
+          <!-- NUMERAL: Right '4' -->
+          <g id="numeral-4-right">
+            <path d="M212 28 L182 74 L220 74 M206 24 L206 98" stroke="url(#obsidianGrad404)" stroke-width="14" stroke-linecap="round" stroke-linejoin="round" opacity="0.12" transform="translate(2, 3)" />
+            <path d="M212 28 L182 74 L220 74 M206 24 L206 98" stroke="url(#obsidianGrad404)" stroke-width="12" stroke-linecap="round" stroke-linejoin="round" />
+            <path d="M212 28 L182 74 L220 74 M206 24 L206 98" stroke="url(#goldGrad404)" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" />
+            <path d="M212 30 L184 73 L218 73 M206 26 L206 96" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" opacity="0.85" />
+            <circle cx="206" cy="24" r="4.5" fill="url(#goldGrad404)" stroke="#ffffff" stroke-width="1" />
+            <circle cx="206" cy="98" r="4.5" fill="url(#goldGrad404)" stroke="#ffffff" stroke-width="1" />
+            <circle cx="182" cy="74" r="3.5" fill="url(#goldGrad404)" />
+            <circle cx="220" cy="74" r="3.5" fill="url(#goldGrad404)" />
+          </g>
+
+          <!-- Prismatic Sparkles -->
+          <polygon points="76,20 79,27 86,30 79,33 76,40 73,33 66,30 73,27" fill="url(#goldGrad404)" />
+          <polygon points="184,18 186,23 191,25 186,27 184,32 182,27 177,25 182,23" fill="#d4af37" opacity="0.85" />
+          <polygon points="74,106 76,110 80,112 76,114 74,118 72,114 68,112 72,110" fill="#9e3322" opacity="0.75" />
+          <polygon points="188,102 191,107 196,109 191,111 188,116 185,111 180,109 185,107" fill="url(#goldGrad404)" />
+          <circle cx="12" cy="65" r="2.5" fill="url(#goldGrad404)" opacity="0.7" />
+          <circle cx="248" cy="65" r="2.5" fill="url(#goldGrad404)" opacity="0.7" />
         </svg>
       </div>
 
