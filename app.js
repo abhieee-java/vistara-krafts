@@ -782,6 +782,35 @@
     });
   }
 
+  // Apple-Grade Shimmer Skeleton Card Renderer for Catalogue Progressive Streaming
+  function renderProductSkeletonCard(isListView = false) {
+    if (isListView) {
+      return `
+        <div class="ram-card p-3.5 sm:p-4 rounded-2xl bg-white border border-[#e4e0d8] shadow-2xs flex items-center gap-3.5 sm:gap-4 overflow-hidden" aria-hidden="true">
+          <div class="w-20 h-20 sm:w-24 sm:h-24 rounded-xl skeleton-box shrink-0"></div>
+          <div class="flex-1 flex flex-col gap-2 min-w-0">
+            <div class="h-3.5 w-3/4 rounded-full skeleton-box"></div>
+            <div class="h-2.5 w-1/2 rounded-full skeleton-box"></div>
+            <div class="h-4 w-20 rounded-md skeleton-box mt-1"></div>
+          </div>
+        </div>
+      `;
+    }
+    return `
+      <div class="ram-card p-3 sm:p-3.5 rounded-2xl bg-white border border-[#e4e0d8] shadow-2xs flex flex-col gap-2.5 overflow-hidden" aria-hidden="true">
+        <div class="w-full aspect-square rounded-xl skeleton-box"></div>
+        <div class="flex flex-col gap-1.5 pt-1">
+          <div class="h-3.5 w-3/4 rounded-full skeleton-box"></div>
+          <div class="h-2.5 w-1/2 rounded-full skeleton-box"></div>
+        </div>
+        <div class="flex items-center justify-between pt-2 border-t border-[#f0ede6]">
+          <div class="h-4 w-16 rounded-md skeleton-box"></div>
+          <div class="h-7 w-20 rounded-xl skeleton-box"></div>
+        </div>
+      </div>
+    `;
+  }
+
   // Reusable Product Card Renderer
   function renderProductCard(p, isListView = false) {
     const isFav = Store.isWishlisted(p.id);
@@ -1956,21 +1985,7 @@
 
     return `
       <div class="route-view-enter flex flex-col w-full max-w-7xl mx-auto px-3 sm:px-8 py-3 sm:py-5 pb-44 sm:pb-28 gap-3 sm:gap-4">
-        <!-- 1. Dedicated Back Navigation & Breadcrumb Element -->
-        <nav aria-label="Breadcrumb Navigation" class="flex items-center w-full">
-          <div class="inline-flex items-center gap-1.5 text-xs text-on-surface-variant font-label-sm">
-            <button type="button" onclick="window.handleBackButton('home')" aria-label="Go back to previous page" class="inline-flex items-center gap-1.5 text-xs font-semibold text-primary/80 hover:text-primary py-1 px-2.5 rounded-lg bg-surface-container-low hover:bg-surface-container border border-[#e4e0d8] transition-colors cursor-pointer shrink-0">
-              <span class="material-symbols-outlined text-[15px]" aria-hidden="true">arrow_back</span>
-              <span>Back to Discover</span>
-            </button>
-            <span class="text-outline/40">/</span>
-            <button type="button" onclick="window.navigateTo('home')" class="hover:text-primary transition-colors cursor-pointer shrink-0">Home</button>
-            <span class="material-symbols-outlined text-[13px] text-outline/60" aria-hidden="true">chevron_right</span>
-            <span class="text-secondary font-bold truncate">Catalogue</span>
-          </div>
-        </nav>
-
-        <!-- 2. Clean, Uncluttered Catalogue Header -->
+        <!-- 1. Clean, Uncluttered Catalogue Header (Apple-Restrained) -->
         <div class="max-w-2xl min-w-0 pt-0.5">
           <h1 class="font-headline-lg text-2xl sm:text-3xl lg:text-4xl text-primary font-bold tracking-tight leading-snug break-words">
             Keepsake Art &amp; Epoxy Resin Supplies
@@ -2107,16 +2122,20 @@
           </div>
         `}
 
-        <!-- Pagination / Load More Section -->
+        <!-- Progressive Infinite Scroll & Apple-Grade Shimmer Skeleton Sentinel -->
         ${filtered.length > visible.length ? `
-          <div class="py-6 flex flex-col items-center gap-3">
-            <p class="text-xs text-on-surface-variant font-spec-numeral">Showing <strong>${visible.length}</strong> of <strong>${filtered.length}</strong> formulations</p>
-            <button type="button" onclick="window.loadMoreCatalog()" class="min-h-[48px] px-6 py-3 rounded-xl bg-primary text-on-primary font-label-md text-xs font-semibold flex items-center gap-2 shadow-sm cursor-pointer">
-              <span class="material-symbols-outlined text-base" aria-hidden="true">refresh</span>
-              <span>Load Remaining (${filtered.length - visible.length}) Products</span>
-            </button>
+          <div id="catalog-scroll-sentinel" class="w-full flex flex-col gap-3 pt-2 pb-6">
+            <!-- Shimmer Skeleton Placeholders (Streams smoothly as user approaches bottom) -->
+            <div id="catalog-skeleton-loader" class="${AppState.catalogView === 'list' ? 'flex flex-col gap-3' : 'grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2.5 sm:gap-4'} ${AppState.isLoadingMoreCatalog ? '' : 'hidden'}" aria-hidden="true">
+              ${[1, 2, 3, 4].map(() => renderProductSkeletonCard(AppState.catalogView === 'list')).join('')}
+            </div>
+            <!-- Invisible Intersection Trigger Sentinel -->
+            <div id="catalog-sentinel-trigger" class="w-full h-12 pointer-events-none opacity-0"></div>
           </div>
-        ` : ''}
+        ` : `
+          <!-- Quiet Apple-Style Whitespace at End of Catalogue -->
+          <div class="pt-6 pb-2"></div>
+        `}
 
         <!-- 6. Quality & Trust Section (Moved from Header to below Product Grid) -->
         <section class="mt-8 pt-8 border-t border-[#e4e0d8] flex flex-col gap-5">
@@ -4794,6 +4813,13 @@
       initSotdInteractions();
     } catch (_e) {}
 
+    if (AppState.currentRoute === 'catalog') {
+      try {
+        initCatalogInfiniteScroll();
+        initCatalogScrollListener();
+      } catch (_e) {}
+    }
+
     if (preserveScroll && prevScrollY > 0) {
       try {
         window.scrollTo({ top: prevScrollY, left: 0, behavior: 'instant' });
@@ -5381,6 +5407,7 @@
   let catalogSearchDebounceTimer = null;
   window.setCatalogSearch = function (val, immediate = false) {
     AppState.catalogSearch = val;
+    AppState.catalogVisibleCount = 8;
     clearTimeout(catalogSearchDebounceTimer);
     const updateSearch = () => {
       renderActiveView({ preserveScroll: true });
@@ -5534,6 +5561,7 @@
 
   window.setCatalogSort = function (sortVal) {
     AppState.catalogSort = sortVal;
+    AppState.catalogVisibleCount = 8;
     syncGlobalFilterDrawerDom();
     syncCatalogSortModalDom();
     renderActiveView();
@@ -5559,12 +5587,14 @@
 
   window.setCatalogRatio = function (ratio) {
     AppState.catalogRatioFilter = ratio;
+    AppState.catalogVisibleCount = 8;
     syncGlobalFilterDrawerDom();
     renderActiveView();
   };
 
   window.setCatalogMaxPrice = function (price) {
     AppState.catalogMaxPrice = Number(price) || 12000;
+    AppState.catalogVisibleCount = 8;
     syncGlobalFilterDrawerDom();
     renderActiveView();
   };
@@ -5579,15 +5609,90 @@
     if (typeof Store.setPersonaPreference === 'function') {
       Store.setPersonaPreference('all');
     }
-    AppState.catalogVisibleCount = 12;
+    AppState.catalogVisibleCount = 8;
     syncGlobalFilterDrawerDom();
     renderActiveView();
     window.toggleCatalogFilterDrawer(false);
   };
 
+  // Apple-Grade Progressive Infinite Scroll Architecture
+  let catalogScrollObserver = null;
+  let catalogScrollListenerAttached = false;
+  let infiniteScrollDebounce = false;
+
+  function initCatalogInfiniteScroll() {
+    if (catalogScrollObserver) {
+      catalogScrollObserver.disconnect();
+      catalogScrollObserver = null;
+    }
+
+    const sentinel = document.getElementById('catalog-sentinel-trigger') || document.getElementById('catalog-scroll-sentinel');
+    if (!sentinel) return;
+
+    if (typeof IntersectionObserver !== 'undefined') {
+      catalogScrollObserver = new IntersectionObserver((entries) => {
+        const entry = entries[0];
+        if (entry && entry.isIntersecting) {
+          triggerInfiniteScrollLoad();
+        }
+      }, {
+        root: null,
+        rootMargin: '350px 0px',
+        threshold: 0
+      });
+      catalogScrollObserver.observe(sentinel);
+    }
+  }
+
+  function initCatalogScrollListener() {
+    if (catalogScrollListenerAttached) return;
+    catalogScrollListenerAttached = true;
+    if (typeof window === 'undefined') return;
+    window.addEventListener('scroll', () => {
+      if (AppState.currentRoute !== 'catalog') return;
+      const sentinel = document.getElementById('catalog-scroll-sentinel');
+      if (!sentinel) return;
+      const rect = sentinel.getBoundingClientRect();
+      const vh = window.innerHeight || (document.documentElement ? document.documentElement.clientHeight : 800);
+      if (rect.top <= vh + 350) {
+        triggerInfiniteScrollLoad();
+      }
+    }, { passive: true });
+  }
+
+  function triggerInfiniteScrollLoad() {
+    if (infiniteScrollDebounce || AppState.isLoadingMoreCatalog) return;
+    const filtered = getFilteredCatalogProducts();
+    if (AppState.catalogVisibleCount >= filtered.length) return;
+
+    infiniteScrollDebounce = true;
+    AppState.isLoadingMoreCatalog = true;
+
+    const skeletonEl = document.getElementById('catalog-skeleton-loader');
+    if (skeletonEl) skeletonEl.classList.remove('hidden');
+
+    const isTest = (typeof global !== 'undefined' && (global.__VK_TEST_ENV__ || global.__VK_TEST_FIXTURES__)) ||
+                   (typeof window !== 'undefined' && (window.__VK_TEST_ENV__ || window.__VK_TEST_FIXTURES__));
+
+    if (isTest) {
+      AppState.catalogVisibleCount = Math.min(AppState.catalogVisibleCount + 8, filtered.length);
+      AppState.isLoadingMoreCatalog = false;
+      infiniteScrollDebounce = false;
+      renderActiveView({ preserveScroll: true });
+    } else {
+      setTimeout(() => {
+        AppState.catalogVisibleCount = Math.min(AppState.catalogVisibleCount + 8, filtered.length);
+        AppState.isLoadingMoreCatalog = false;
+        infiniteScrollDebounce = false;
+        renderActiveView({ preserveScroll: true });
+      }, 120);
+    }
+  }
+
   window.loadMoreCatalog = function () {
-    AppState.catalogVisibleCount += 8;
-    renderActiveView();
+    const filtered = getFilteredCatalogProducts();
+    AppState.catalogVisibleCount = Math.min(AppState.catalogVisibleCount + 8, filtered.length);
+    renderActiveView({ preserveScroll: true });
   };
 
   window.toggleCatalogFilterDrawer = function (show) {

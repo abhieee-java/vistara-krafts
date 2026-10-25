@@ -1338,7 +1338,6 @@ test('QA Audit & UX Reliability: Accessible Back Navigation on Subpages, Custom 
 
   // 4. Verify Accessible Back Buttons on Subpages
   const subpages = [
-    { route: 'catalog', param: 'all', backText: 'Back to Discover' },
     { route: 'product', param: 'vk-cat-res-301', backText: 'Back' },
     { route: 'custom-studio', param: null, backText: 'Back to Discover' },
     { route: 'wishlist', param: null, backText: 'Back' },
