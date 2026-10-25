@@ -2962,55 +2962,145 @@
     </div>
   </div>
 
-  <!-- 2. Technical & Catalogue Filter Drawer -->
+  <!-- 2. Technical & Catalogue Filter Drawer (Matches User Design Specification) -->
   <div id="global-filter-drawer" role="dialog" aria-modal="true" aria-labelledby="filter-drawer-title" class="fixed inset-0 z-50 bg-primary/60 backdrop-blur-xs hidden flex items-end sm:items-center justify-center p-0 sm:p-4" onclick="window.toggleCatalogFilterDrawer(false)">
     <div class="w-full max-w-lg bg-surface rounded-t-3xl sm:rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90dvh] border-t sm:border border-[#e4e0d8]" onclick="event.stopPropagation()">
       <!-- Mobile Pull / Drag Indicator Handle -->
-      <div class="pt-2.5 pb-1 flex justify-center sm:hidden bg-surface-container-low shrink-0">
-        <span class="w-10 h-1 rounded-full bg-[#d4af37]/40"></span>
+      <div class="pt-3 pb-1 flex justify-center sm:hidden shrink-0 bg-surface">
+        <span class="w-12 h-1 rounded-full bg-outline/30"></span>
       </div>
       
       <!-- Drawer Header -->
-      <div class="px-5 py-3.5 bg-surface-container-low flex items-center justify-between gap-3 border-b border-[#e4e0d8] shrink-0">
-        <div class="flex items-center gap-2.5 min-w-0">
-          <div class="w-8 h-8 rounded-lg bg-white border border-[#e4e0d8] flex items-center justify-center shadow-2xs shrink-0">
-            <span class="material-symbols-outlined text-secondary text-[18px]" aria-hidden="true">tune</span>
-          </div>
-          <div>
-            <h3 id="filter-drawer-title" class="font-headline-sm text-sm sm:text-base text-primary font-bold tracking-tight">Filter Catalogue &amp; Specs</h3>
-            <p class="text-[11px] text-on-surface-variant">Select resin formulations, ratios &amp; budgets</p>
-          </div>
-        </div>
-        <button type="button" aria-label="Close Filter Drawer" onclick="window.toggleCatalogFilterDrawer(false)" class="w-9 h-9 rounded-full bg-white border border-[#e4e0d8] hover:bg-surface-container-high flex items-center justify-center shrink-0 cursor-pointer shadow-2xs transition-colors">
-          <span class="material-symbols-outlined text-base text-primary" aria-hidden="true">close</span>
+      <div class="px-5 py-3.5 bg-surface flex items-center justify-between gap-3 shrink-0">
+        <h3 id="filter-drawer-title" class="font-serif text-2xl font-bold text-primary tracking-tight">Filter Products</h3>
+        <button type="button" aria-label="Close Filter Drawer" onclick="window.toggleCatalogFilterDrawer(false)" class="w-8 h-8 rounded-full bg-surface-container-high hover:bg-surface-container-highest flex items-center justify-center text-primary cursor-pointer transition-colors shrink-0">
+          <span class="material-symbols-outlined text-base" aria-hidden="true">close</span>
         </button>
       </div>
 
+      <!-- Applied Filters Status Row -->
+      <div class="px-5 pb-3 bg-surface flex items-center justify-between border-b border-[#e4e0d8]/80 shrink-0">
+        <span id="drawer-applied-badge" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#fbf5eb] border border-[#d4af37]/40 text-[#8a611c] text-xs font-semibold hidden">
+          ● 2 filters applied
+        </span>
+        <button type="button" onclick="window.resetCatalogFilters()" class="text-xs font-bold text-[#8a611c] hover:underline cursor-pointer ml-auto">Clear All</button>
+      </div>
+
       <!-- Drawer Content Sections -->
-      <div class="p-4 sm:p-5 overflow-y-auto space-y-5">
-        <!-- 1. Product Category -->
-        <div>
-          <div class="flex items-center justify-between mb-2">
-            <span class="text-xs font-bold text-primary uppercase tracking-wider">Product Category</span>
-            <span class="text-[11px] text-on-surface-variant font-spec-numeral">Select one</span>
+      <div class="p-4 sm:p-5 overflow-y-auto space-y-6">
+        <!-- 1. Category Section with Checkboxes & Counts -->
+        <div class="space-y-2">
+          <div class="flex items-center justify-between py-1 border-b border-[#e4e0d8]/70">
+            <div class="flex items-center gap-2">
+              <span class="material-symbols-outlined text-secondary text-base" aria-hidden="true">category</span>
+              <span class="text-xs font-bold text-primary uppercase tracking-wider">Category</span>
+            </div>
+            <span class="material-symbols-outlined text-on-surface-variant text-base" aria-hidden="true">keyboard_arrow_up</span>
           </div>
-          <div class="grid grid-cols-2 sm:grid-cols-3 gap-2" id="drawer-categories-container">
-            <button type="button" onclick="window.setCatalogCategory('all')" class="min-h-[44px] px-3 py-2 rounded-xl bg-primary text-white text-xs font-semibold cursor-pointer shadow-2xs">All Categories (19)</button>
-            <button type="button" onclick="window.setCatalogCategory('casting')" class="min-h-[44px] px-3 py-2 rounded-xl bg-surface-container-high text-primary text-xs font-semibold cursor-pointer border border-[#e4e0d8]/70 hover:bg-surface-container-highest">Casting (2:1 / UV)</button>
-            <button type="button" onclick="window.setCatalogCategory('deep_pour')" class="min-h-[44px] px-3 py-2 rounded-xl bg-surface-container-high text-primary text-xs font-semibold cursor-pointer border border-[#e4e0d8]/70 hover:bg-surface-container-highest">Deep Pour 3:1</button>
-            <button type="button" onclick="window.setCatalogCategory('molds')" class="min-h-[44px] px-3 py-2 rounded-xl bg-surface-container-high text-primary text-xs font-semibold cursor-pointer border border-[#e4e0d8]/70 hover:bg-surface-container-highest">Silicone Molds</button>
-            <button type="button" onclick="window.setCatalogCategory('pigments')" class="min-h-[44px] px-3 py-2 rounded-xl bg-surface-container-high text-primary text-xs font-semibold cursor-pointer border border-[#e4e0d8]/70 hover:bg-surface-container-highest">Pigments &amp; Inks</button>
-            <button type="button" onclick="window.setCatalogCategory('accessories')" class="min-h-[44px] px-3 py-2 rounded-xl bg-surface-container-high text-primary text-xs font-semibold cursor-pointer border border-[#e4e0d8]/70 hover:bg-surface-container-highest">Studio Accessories</button>
+          <div class="space-y-1.5 pt-1" id="drawer-categories-container">
+            <button type="button" onclick="window.setCatalogCategory('all')" class="w-full min-h-[44px] px-3.5 py-2.5 rounded-xl flex items-center justify-between gap-3 text-xs cursor-pointer transition-all hover:bg-surface-container-high text-primary border border-[#e4e0d8]/70 font-medium">
+              <div class="flex items-center gap-2.5">
+                <span class="filter-custom-checkbox w-5 h-5 rounded-md bg-white border border-[#c4beaf] flex items-center justify-center shrink-0"></span>
+                <span class="font-medium text-primary">All Categories</span>
+              </div>
+              <span class="text-[11px] text-on-surface-variant font-spec-numeral font-bold">19</span>
+            </button>
+            <button type="button" onclick="window.setCatalogCategory('casting')" class="w-full min-h-[44px] px-3.5 py-2.5 rounded-xl flex items-center justify-between gap-3 text-xs cursor-pointer transition-all hover:bg-surface-container-high text-primary border border-[#e4e0d8]/70 font-medium">
+              <div class="flex items-center gap-2.5">
+                <span class="filter-custom-checkbox w-5 h-5 rounded-md bg-white border border-[#c4beaf] flex items-center justify-center shrink-0"></span>
+                <span class="font-medium text-primary">Casting (2:1 / UV)</span>
+              </div>
+              <span class="text-[11px] text-on-surface-variant font-spec-numeral font-bold">4</span>
+            </button>
+            <button type="button" onclick="window.setCatalogCategory('deep_pour')" class="w-full min-h-[44px] px-3.5 py-2.5 rounded-xl flex items-center justify-between gap-3 text-xs cursor-pointer transition-all hover:bg-surface-container-high text-primary border border-[#e4e0d8]/70 font-medium">
+              <div class="flex items-center gap-2.5">
+                <span class="filter-custom-checkbox w-5 h-5 rounded-md bg-white border border-[#c4beaf] flex items-center justify-center shrink-0"></span>
+                <span class="font-medium text-primary">Deep Pour 3:1</span>
+              </div>
+              <span class="text-[11px] text-on-surface-variant font-spec-numeral font-bold">3</span>
+            </button>
+            <button type="button" onclick="window.setCatalogCategory('molds')" class="w-full min-h-[44px] px-3.5 py-2.5 rounded-xl flex items-center justify-between gap-3 text-xs cursor-pointer transition-all hover:bg-surface-container-high text-primary border border-[#e4e0d8]/70 font-medium">
+              <div class="flex items-center gap-2.5">
+                <span class="filter-custom-checkbox w-5 h-5 rounded-md bg-white border border-[#c4beaf] flex items-center justify-center shrink-0"></span>
+                <span class="font-medium text-primary">Silicone Molds</span>
+              </div>
+              <span class="text-[11px] text-on-surface-variant font-spec-numeral font-bold">4</span>
+            </button>
+            <button type="button" onclick="window.setCatalogCategory('pigments')" class="w-full min-h-[44px] px-3.5 py-2.5 rounded-xl flex items-center justify-between gap-3 text-xs cursor-pointer transition-all hover:bg-surface-container-high text-primary border border-[#e4e0d8]/70 font-medium">
+              <div class="flex items-center gap-2.5">
+                <span class="filter-custom-checkbox w-5 h-5 rounded-md bg-white border border-[#c4beaf] flex items-center justify-center shrink-0"></span>
+                <span class="font-medium text-primary">Pigments &amp; Inks</span>
+              </div>
+              <span class="text-[11px] text-on-surface-variant font-spec-numeral font-bold">4</span>
+            </button>
+            <button type="button" onclick="window.setCatalogCategory('accessories')" class="w-full min-h-[44px] px-3.5 py-2.5 rounded-xl flex items-center justify-between gap-3 text-xs cursor-pointer transition-all hover:bg-surface-container-high text-primary border border-[#e4e0d8]/70 font-medium">
+              <div class="flex items-center gap-2.5">
+                <span class="filter-custom-checkbox w-5 h-5 rounded-md bg-white border border-[#c4beaf] flex items-center justify-center shrink-0"></span>
+                <span class="font-medium text-primary">Studio Accessories</span>
+              </div>
+              <span class="text-[11px] text-on-surface-variant font-spec-numeral font-bold">4</span>
+            </button>
           </div>
         </div>
 
-        <!-- 2. Gifting & Persona Curation -->
-        <div>
-          <div class="flex items-center justify-between mb-2">
-            <span class="text-xs font-bold text-primary uppercase tracking-wider">Gifting &amp; Persona Curation</span>
-            <span class="text-[11px] text-on-surface-variant">Curated feeds</span>
+        <!-- 2. Resin Type Section with Checkboxes & Counts -->
+        <div class="space-y-2">
+          <div class="flex items-center justify-between py-1 border-b border-[#e4e0d8]/70">
+            <div class="flex items-center gap-2">
+              <span class="material-symbols-outlined text-secondary text-base" aria-hidden="true">water_drop</span>
+              <span class="text-xs font-bold text-primary uppercase tracking-wider">Resin Type</span>
+            </div>
+            <span class="material-symbols-outlined text-on-surface-variant text-base" aria-hidden="true">keyboard_arrow_up</span>
           </div>
-          <div class="grid grid-cols-3 gap-2" id="drawer-gifting-container">
+          <div class="space-y-1.5 pt-1">
+            <button type="button" onclick="window.setCatalogRatio('all')" class="w-full min-h-[44px] px-3.5 py-2.5 rounded-xl flex items-center justify-between gap-3 text-xs cursor-pointer transition-all hover:bg-surface-container-high text-primary border border-[#e4e0d8]/70 font-medium">
+              <div class="flex items-center gap-2.5">
+                <span class="filter-custom-checkbox w-5 h-5 rounded-md bg-white border border-[#c4beaf] flex items-center justify-center shrink-0"></span>
+                <span class="font-medium text-primary">All Resin Ratios</span>
+              </div>
+              <span class="text-[11px] text-on-surface-variant font-spec-numeral font-bold">All</span>
+            </button>
+            <button type="button" onclick="window.setCatalogRatio('3:1')" class="w-full min-h-[44px] px-3.5 py-2.5 rounded-xl flex items-center justify-between gap-3 text-xs cursor-pointer transition-all hover:bg-surface-container-high text-primary border border-[#e4e0d8]/70 font-medium">
+              <div class="flex items-center gap-2.5">
+                <span class="filter-custom-checkbox w-5 h-5 rounded-md bg-white border border-[#c4beaf] flex items-center justify-center shrink-0"></span>
+                <span class="font-medium text-primary">3:1 Deep Pour Resin</span>
+              </div>
+              <span class="text-[11px] text-on-surface-variant font-spec-numeral font-bold">6</span>
+            </button>
+            <button type="button" onclick="window.setCatalogRatio('2:1')" class="w-full min-h-[44px] px-3.5 py-2.5 rounded-xl flex items-center justify-between gap-3 text-xs cursor-pointer transition-all hover:bg-surface-container-high text-primary border border-[#e4e0d8]/70 font-medium">
+              <div class="flex items-center gap-2.5">
+                <span class="filter-custom-checkbox w-5 h-5 rounded-md bg-white border border-[#c4beaf] flex items-center justify-center shrink-0"></span>
+                <span class="font-medium text-primary">2:1 Casting Resin</span>
+              </div>
+              <span class="text-[11px] text-on-surface-variant font-spec-numeral font-bold">5</span>
+            </button>
+            <button type="button" onclick="window.setCatalogRatio('1:1')" class="w-full min-h-[44px] px-3.5 py-2.5 rounded-xl flex items-center justify-between gap-3 text-xs cursor-pointer transition-all hover:bg-surface-container-high text-primary border border-[#e4e0d8]/70 font-medium">
+              <div class="flex items-center gap-2.5">
+                <span class="filter-custom-checkbox w-5 h-5 rounded-md bg-white border border-[#c4beaf] flex items-center justify-center shrink-0"></span>
+                <span class="font-medium text-primary">1:1 Fast Cure Resin</span>
+              </div>
+              <span class="text-[11px] text-on-surface-variant font-spec-numeral font-bold">4</span>
+            </button>
+            <button type="button" onclick="window.setCatalogRatio('1-part')" class="w-full min-h-[44px] px-3.5 py-2.5 rounded-xl flex items-center justify-between gap-3 text-xs cursor-pointer transition-all hover:bg-surface-container-high text-primary border border-[#e4e0d8]/70 font-medium">
+              <div class="flex items-center gap-2.5">
+                <span class="filter-custom-checkbox w-5 h-5 rounded-md bg-white border border-[#c4beaf] flex items-center justify-center shrink-0"></span>
+                <span class="font-medium text-primary">UV Solar Curing Resin</span>
+              </div>
+              <span class="text-[11px] text-on-surface-variant font-spec-numeral font-bold">4</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- 3. Application / Gifting Curation Section -->
+        <div class="space-y-2">
+          <div class="flex items-center justify-between py-1 border-b border-[#e4e0d8]/70">
+            <div class="flex items-center gap-2">
+              <span class="material-symbols-outlined text-secondary text-base" aria-hidden="true">build</span>
+              <span class="text-xs font-bold text-primary uppercase tracking-wider">Application &amp; Gifting</span>
+            </div>
+            <span class="material-symbols-outlined text-on-surface-variant text-base" aria-hidden="true">keyboard_arrow_up</span>
+          </div>
+          <div class="grid grid-cols-3 gap-2 pt-1" id="drawer-gifting-container">
             <button type="button" data-drawer-gifting="masculine" onclick="window.setFeedPersona('masculine')" class="min-h-[44px] px-2.5 py-2 rounded-xl bg-surface-container-high text-primary text-xs font-semibold cursor-pointer flex items-center justify-center gap-1.5 border border-[#e4e0d8]/70">
               <span>👔 For Him</span>
             </button>
@@ -3023,45 +3113,132 @@
           </div>
         </div>
 
-        <!-- 3. Mix Ratio System -->
-        <div>
-          <div class="flex items-center justify-between mb-2">
-            <span class="text-xs font-bold text-primary uppercase tracking-wider">Mix Ratio by Weight / System</span>
-            <span class="text-[11px] text-on-surface-variant font-spec-numeral">Technical spec</span>
-          </div>
-          <div class="grid grid-cols-5 gap-1.5 sm:gap-2">
-            <button type="button" onclick="window.setCatalogRatio('all')" class="min-h-[44px] py-2 rounded-xl bg-primary text-white text-xs font-semibold cursor-pointer shadow-2xs">All</button>
-            <button type="button" onclick="window.setCatalogRatio('3:1')" class="min-h-[44px] py-2 rounded-xl bg-surface-container-high text-primary font-spec-numeral text-xs font-bold cursor-pointer border border-[#e4e0d8]/70">3:1</button>
-            <button type="button" onclick="window.setCatalogRatio('2:1')" class="min-h-[44px] py-2 rounded-xl bg-surface-container-high text-primary font-spec-numeral text-xs font-bold cursor-pointer border border-[#e4e0d8]/70">2:1</button>
-            <button type="button" onclick="window.setCatalogRatio('1:1')" class="min-h-[44px] py-2 rounded-xl bg-surface-container-high text-primary font-spec-numeral text-xs font-bold cursor-pointer border border-[#e4e0d8]/70">1:1</button>
-            <button type="button" onclick="window.setCatalogRatio('1-part')" class="min-h-[44px] py-2 rounded-xl bg-surface-container-high text-primary text-xs font-bold cursor-pointer border border-[#e4e0d8]/70">UV</button>
-          </div>
-        </div>
-
-        <!-- 4. Maximum Price Range -->
-        <div class="pt-1">
-          <div class="flex justify-between items-center mb-1.5">
-            <label for="catalog-max-price-range" class="text-xs font-bold text-primary uppercase tracking-wider">Maximum Price Bracket</label>
+        <!-- 4. Maximum Price Range Section -->
+        <div class="space-y-2 pt-1">
+          <div class="flex items-center justify-between py-1 border-b border-[#e4e0d8]/70">
+            <div class="flex items-center gap-2">
+              <span class="material-symbols-outlined text-secondary text-base" aria-hidden="true">payments</span>
+              <label for="catalog-max-price-range" class="text-xs font-bold text-primary uppercase tracking-wider">Budget Bracket</label>
+            </div>
             <span id="drawer-price-label" class="font-spec-numeral text-xs font-bold text-secondary px-2.5 py-0.5 rounded-full bg-surface-container-high border border-[#e4e0d8]">Up to ₹12,000</span>
           </div>
-          <input id="catalog-max-price-range" type="range" min="150" max="12000" step="50" value="12000" aria-label="Maximum Price Bracket" oninput="window.setCatalogMaxPrice(this.value)" class="w-full h-8 accent-primary cursor-pointer">
-          <div class="flex justify-between text-[11px] text-on-surface-variant font-spec-numeral mt-0.5">
-            <span>₹150</span>
-            <span>₹6,000</span>
-            <span>₹12,000</span>
+          <div class="pt-2">
+            <input id="catalog-max-price-range" type="range" min="150" max="12000" step="50" value="12000" aria-label="Maximum Price Bracket" oninput="window.setCatalogMaxPrice(this.value)" class="w-full h-8 accent-primary cursor-pointer">
+            <div class="flex justify-between text-[11px] text-on-surface-variant font-spec-numeral mt-0.5">
+              <span>₹150</span>
+              <span>₹6,000</span>
+              <span>₹12,000</span>
+            </div>
           </div>
         </div>
       </div>
 
       <!-- Drawer Footer Actions -->
       <div class="p-4 bg-surface-container-low border-t border-[#e4e0d8] flex gap-3 shrink-0">
-        <button type="button" onclick="window.resetCatalogFilters()" class="flex-1 min-h-[48px] py-2.5 rounded-xl bg-white hover:bg-surface-container border border-[#e4e0d8] text-primary text-xs font-bold cursor-pointer shadow-2xs transition-colors flex items-center justify-center gap-1.5">
-          <span class="material-symbols-outlined text-[16px] text-on-surface-variant" aria-hidden="true">restart_alt</span>
-          <span>Clear All</span>
+        <button type="button" onclick="window.resetCatalogFilters()" class="flex-1 min-h-[48px] py-2.5 rounded-xl bg-[#f4efe8] hover:bg-[#eae2d7] border border-[#e4e0d8] text-primary text-xs font-bold cursor-pointer shadow-2xs transition-colors">
+          Reset
         </button>
-        <button type="button" onclick="window.toggleCatalogFilterDrawer(false)" class="flex-1 min-h-[48px] py-2.5 rounded-xl bg-primary hover:bg-primary-container text-white text-xs font-bold cursor-pointer shadow-xs transition-colors flex items-center justify-center gap-1.5">
-          <span class="material-symbols-outlined text-[16px] text-[#ffdeae]" aria-hidden="true">check</span>
-          <span>Apply Filters</span>
+        <button type="button" id="drawer-apply-btn" onclick="window.toggleCatalogFilterDrawer(false)" class="flex-1 min-h-[48px] py-2.5 rounded-xl bg-primary hover:bg-primary-container text-white text-xs font-bold cursor-pointer shadow-xs transition-colors">
+          Apply Filters
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2.5 Sort by Bottom Sheet / Modal (Matches User Design Specification) -->
+  <div id="catalog-sort-modal" role="dialog" aria-modal="true" aria-labelledby="sort-modal-title" class="fixed inset-0 z-50 bg-primary/60 backdrop-blur-xs hidden flex items-end sm:items-center justify-center p-0 sm:p-4" onclick="window.toggleCatalogSortModal(false)">
+    <div class="w-full max-w-sm bg-surface rounded-t-3xl sm:rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[85dvh] border-t sm:border border-[#e4e0d8]" onclick="event.stopPropagation()">
+      <!-- Mobile Pull Indicator Handle -->
+      <div class="pt-3 pb-1 flex justify-center sm:hidden shrink-0 bg-surface">
+        <span class="w-12 h-1 rounded-full bg-outline/30"></span>
+      </div>
+
+      <div class="px-5 py-3.5 bg-surface flex items-center justify-between gap-2 border-b border-[#e4e0d8] shrink-0">
+        <h3 id="sort-modal-title" class="font-headline-sm text-base font-bold text-primary">Sort by</h3>
+        <button type="button" aria-label="Close Sort Menu" onclick="window.toggleCatalogSortModal(false)" class="w-8 h-8 rounded-full bg-surface-container-high hover:bg-surface-container-highest flex items-center justify-center text-primary cursor-pointer transition-colors shrink-0">
+          <span class="material-symbols-outlined text-base" aria-hidden="true">close</span>
+        </button>
+      </div>
+
+      <div class="p-3 sm:p-4 overflow-y-auto flex flex-col gap-1.5" id="sort-options-container">
+        <button type="button" data-sort-value="popular" onclick="window.setCatalogSort('popular'); window.toggleCatalogSortModal(false);" class="w-full min-h-[46px] px-3.5 py-2.5 rounded-xl flex items-center justify-between gap-3 text-xs cursor-pointer transition-all hover:bg-surface-container-high text-primary/90 hover:text-primary font-medium">
+          <div class="flex items-center gap-2.5 min-w-0">
+            <span class="material-symbols-outlined text-base text-secondary" aria-hidden="true">workspace_premium</span>
+            <span class="truncate">Popular</span>
+          </div>
+          <span class="material-symbols-outlined text-base text-secondary font-bold shrink-0 sort-check-icon hidden" aria-hidden="true">check</span>
+        </button>
+
+        <button type="button" data-sort-value="newest" onclick="window.setCatalogSort('newest'); window.toggleCatalogSortModal(false);" class="w-full min-h-[46px] px-3.5 py-2.5 rounded-xl flex items-center justify-between gap-3 text-xs cursor-pointer transition-all hover:bg-surface-container-high text-primary/90 hover:text-primary font-medium">
+          <div class="flex items-center gap-2.5 min-w-0">
+            <span class="material-symbols-outlined text-base text-secondary" aria-hidden="true">auto_awesome</span>
+            <span class="truncate">Newest First</span>
+          </div>
+          <span class="material-symbols-outlined text-base text-secondary font-bold shrink-0 sort-check-icon hidden" aria-hidden="true">check</span>
+        </button>
+
+        <button type="button" data-sort-value="price_asc" onclick="window.setCatalogSort('price_asc'); window.toggleCatalogSortModal(false);" class="w-full min-h-[46px] px-3.5 py-2.5 rounded-xl flex items-center justify-between gap-3 text-xs cursor-pointer transition-all hover:bg-surface-container-high text-primary/90 hover:text-primary font-medium">
+          <div class="flex items-center gap-2.5 min-w-0">
+            <span class="material-symbols-outlined text-base text-secondary" aria-hidden="true">arrow_upward</span>
+            <span class="truncate">Price: Low to High</span>
+          </div>
+          <span class="material-symbols-outlined text-base text-secondary font-bold shrink-0 sort-check-icon hidden" aria-hidden="true">check</span>
+        </button>
+
+        <button type="button" data-sort-value="price_desc" onclick="window.setCatalogSort('price_desc'); window.toggleCatalogSortModal(false);" class="w-full min-h-[46px] px-3.5 py-2.5 rounded-xl flex items-center justify-between gap-3 text-xs cursor-pointer transition-all hover:bg-surface-container-high text-primary/90 hover:text-primary font-medium">
+          <div class="flex items-center gap-2.5 min-w-0">
+            <span class="material-symbols-outlined text-base text-secondary" aria-hidden="true">arrow_downward</span>
+            <span class="truncate">Price: High to Low</span>
+          </div>
+          <span class="material-symbols-outlined text-base text-secondary font-bold shrink-0 sort-check-icon hidden" aria-hidden="true">check</span>
+        </button>
+
+        <button type="button" data-sort-value="rating" onclick="window.setCatalogSort('rating'); window.toggleCatalogSortModal(false);" class="w-full min-h-[46px] px-3.5 py-2.5 rounded-xl flex items-center justify-between gap-3 text-xs cursor-pointer transition-all hover:bg-surface-container-high text-primary/90 hover:text-primary font-medium">
+          <div class="flex items-center gap-2.5 min-w-0">
+            <span class="material-symbols-outlined text-base text-secondary" aria-hidden="true">star</span>
+            <span class="truncate">Highest Rated</span>
+          </div>
+          <span class="material-symbols-outlined text-base text-secondary font-bold shrink-0 sort-check-icon hidden" aria-hidden="true">check</span>
+        </button>
+
+        <button type="button" data-sort-value="name_asc" onclick="window.setCatalogSort('name_asc'); window.toggleCatalogSortModal(false);" class="w-full min-h-[46px] px-3.5 py-2.5 rounded-xl flex items-center justify-between gap-3 text-xs cursor-pointer transition-all hover:bg-surface-container-high text-primary/90 hover:text-primary font-medium">
+          <div class="flex items-center gap-2.5 min-w-0">
+            <span class="material-symbols-outlined text-base text-secondary" aria-hidden="true">sort_by_alpha</span>
+            <span class="truncate">A – Z</span>
+          </div>
+          <span class="material-symbols-outlined text-base text-secondary font-bold shrink-0 sort-check-icon hidden" aria-hidden="true">check</span>
+        </button>
+
+        <button type="button" data-sort-value="gifts_him" onclick="window.setCatalogSort('gifts_him'); window.toggleCatalogSortModal(false);" class="w-full min-h-[46px] px-3.5 py-2.5 rounded-xl flex items-center justify-between gap-3 text-xs cursor-pointer transition-all hover:bg-surface-container-high text-primary/90 hover:text-primary font-medium">
+          <div class="flex items-center gap-2.5 min-w-0">
+            <span class="material-symbols-outlined text-base text-secondary" aria-hidden="true">male</span>
+            <span class="truncate">👔 For Him</span>
+          </div>
+          <span class="material-symbols-outlined text-base text-secondary font-bold shrink-0 sort-check-icon hidden" aria-hidden="true">check</span>
+        </button>
+
+        <button type="button" data-sort-value="gifts_her" onclick="window.setCatalogSort('gifts_her'); window.toggleCatalogSortModal(false);" class="w-full min-h-[46px] px-3.5 py-2.5 rounded-xl flex items-center justify-between gap-3 text-xs cursor-pointer transition-all hover:bg-surface-container-high text-primary/90 hover:text-primary font-medium">
+          <div class="flex items-center gap-2.5 min-w-0">
+            <span class="material-symbols-outlined text-base text-secondary" aria-hidden="true">female</span>
+            <span class="truncate">🌸 For Her</span>
+          </div>
+          <span class="material-symbols-outlined text-base text-secondary font-bold shrink-0 sort-check-icon hidden" aria-hidden="true">check</span>
+        </button>
+
+        <button type="button" data-sort-value="gifting" onclick="window.setCatalogSort('gifting'); window.toggleCatalogSortModal(false);" class="w-full min-h-[46px] px-3.5 py-2.5 rounded-xl flex items-center justify-between gap-3 text-xs cursor-pointer transition-all hover:bg-surface-container-high text-primary/90 hover:text-primary font-medium">
+          <div class="flex items-center gap-2.5 min-w-0">
+            <span class="material-symbols-outlined text-base text-secondary" aria-hidden="true">featured_seasonal_and_gifts</span>
+            <span class="truncate">🎁 Gift Sets</span>
+          </div>
+          <span class="material-symbols-outlined text-base text-secondary font-bold shrink-0 sort-check-icon hidden" aria-hidden="true">check</span>
+        </button>
+
+        <button type="button" data-sort-value="viscosity" onclick="window.setCatalogSort('viscosity'); window.toggleCatalogSortModal(false);" class="w-full min-h-[46px] px-3.5 py-2.5 rounded-xl flex items-center justify-between gap-3 text-xs cursor-pointer transition-all hover:bg-surface-container-high text-primary/90 hover:text-primary font-medium">
+          <div class="flex items-center gap-2.5 min-w-0">
+            <span class="material-symbols-outlined text-base text-secondary" aria-hidden="true">opacity</span>
+            <span class="truncate">Viscosity: Low–High</span>
+          </div>
+          <span class="material-symbols-outlined text-base text-secondary font-bold shrink-0 sort-check-icon hidden" aria-hidden="true">check</span>
         </button>
       </div>
     </div>
