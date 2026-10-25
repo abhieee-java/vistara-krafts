@@ -2242,6 +2242,47 @@ test('Mobile Screen Single-Line Order ID & Hamburger Drawer Architecture (Hick\'
   assert.ok(!drawerSlotHtml.includes('>Edit<'), 'Authenticated drawer slot must not have redundant Edit button');
   assert.ok(drawerSlotHtml.includes('Sign Out'), 'Authenticated drawer slot must offer Sign Out');
 
+  // 4. Verify Hamburger Menu Hidden on Orders, Cart & Checkout; Bag Button Hidden from Header
+  sandbox.window.navigateTo('home');
+  const headerCartHome = mockDocument.getElementById('btn-header-cart');
+  assert.ok(headerCartHome && headerCartHome.classList.contains('hidden'), 'Bag button must be hidden from top header on home');
+
+  const headerMenuHome = mockDocument.getElementById('btn-header-menu');
+  assert.ok(headerMenuHome && !headerMenuHome.classList.contains('hidden'), 'Hamburger menu must be visible on home');
+
+  sandbox.window.navigateTo('orders');
+  const headerMenuOrders = mockDocument.getElementById('btn-header-menu');
+  assert.ok(headerMenuOrders && headerMenuOrders.classList.contains('hidden'), 'Hamburger menu must NOT show up on orders page');
+
+  sandbox.window.navigateTo('cart');
+  const headerMenuCart = mockDocument.getElementById('btn-header-menu');
+  assert.ok(headerMenuCart && headerMenuCart.classList.contains('hidden'), 'Hamburger menu must NOT show up on bag/cart page');
+
+  // 5. Verify PDP Variety Selector only renders when hasVarieties is true
+  const plainProduct = {
+    id: 'test-no-var-prod',
+    name: 'Plain Tool Without Varieties',
+    shortName: 'Plain Tool',
+    price: 399,
+    regularPrice: 499,
+    category: 'accessories',
+    colors: [],
+    shapes: [],
+    sizes: [],
+    inStock: true
+  };
+  Store.receiveStudioPush({
+    action: 'STUDIO_UPSERT_PRODUCT',
+    payload: plainProduct
+  });
+  sandbox.window.navigateTo('product', 'test-no-var-prod'); // Product without varieties
+  const pdpNoVarHtml = mockDocument.getElementById('app-view-root').innerHTML;
+  assert.ok(!pdpNoVarHtml.includes('id="pdp-variety-selection-block"'), 'PDP must NOT show variety selector if product has no varieties');
+
+  sandbox.window.navigateTo('product', 'test-var-prod'); // Product with colors, shapes, sizes
+  const pdpVarHtml = mockDocument.getElementById('app-view-root').innerHTML;
+  assert.ok(pdpVarHtml.includes('id="pdp-variety-selection-block"'), 'PDP must show Select Variety section when product has varieties');
+
   // Clean up
   sandbox.window.handlePatronLogout();
   sandbox.window.navigateTo('home');

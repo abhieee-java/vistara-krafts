@@ -155,6 +155,9 @@
     if (el) {
       el.classList.add('hidden');
       syncBodyModalLock();
+      if (id === 'checkout-modal' && typeof syncAdaptiveNavigation === 'function') {
+        syncAdaptiveNavigation();
+      }
     }
   };
 
@@ -956,18 +959,46 @@
     if (typeof document === 'undefined') return;
 
     // 1. Top Header Bag Icon:
-    // When the user is already on the Bag page (#/cart), hide the redundant header Bag icon.
-    // The active bottom Bag tab already identifies the destination.
+    // Strictly removed from top header across all pages to eliminate duplicate actions.
+    // The bottom navigation Bag tab serves as the single primary cart entry point on mobile.
     const headerCartBtn = document.getElementById('btn-header-cart');
     if (headerCartBtn) {
-      if (active === 'cart') {
-        headerCartBtn.classList.add('hidden');
+      headerCartBtn.classList.add('hidden');
+      headerCartBtn.style.display = 'none';
+    }
+
+    // 2. Hamburger Menu Button:
+    // Must NOT show up on the orders page, bag/cart page, or during checkout modal flow.
+    const headerMenuBtn = document.getElementById('btn-header-menu');
+    const isCheckoutOpen = !document.getElementById('checkout-modal')?.classList.contains('hidden');
+    if (headerMenuBtn) {
+      const hideMenuOnRoutes = ['orders', 'cart'];
+      if (hideMenuOnRoutes.includes(active) || isCheckoutOpen) {
+        headerMenuBtn.classList.add('hidden');
+        headerMenuBtn.style.display = 'none';
       } else {
-        headerCartBtn.classList.remove('hidden');
+        headerMenuBtn.classList.remove('hidden');
+        headerMenuBtn.style.display = '';
       }
     }
 
-    // 2. NEWS Announcement System:
+    // 3. Top Header Search Icon:
+    // On Home page, the prominent hero search bar is active; hide header search to avoid duplicate action.
+    // On other pages (catalog, product, social, etc.), keep header search available.
+    const headerSearchBtn = document.getElementById('btn-header-search');
+    if (headerSearchBtn) {
+      if (active === 'home') {
+        headerSearchBtn.classList.add('sm:hidden');
+        headerSearchBtn.classList.remove('sm:flex');
+        headerSearchBtn.style.display = 'none';
+      } else {
+        headerSearchBtn.classList.add('sm:flex');
+        headerSearchBtn.classList.remove('sm:hidden');
+        headerSearchBtn.style.display = '';
+      }
+    }
+
+    // 4. NEWS Announcement System:
     // Home: Retain full, visible, functional NEWS announcement ticker.
     // Non-Home pages: Hide large scrolling ticker to maximize product browsing space and checkout focus.
     const topAnnouncementBar = document.getElementById('top-announcement-bar');
@@ -981,6 +1012,7 @@
         }
       } else {
         topAnnouncementBar.classList.add('hidden');
+        topAnnouncementBar.style.display = 'none';
       }
     }
   }
@@ -1089,12 +1121,6 @@
                 ${discountPct > 0 ? `<span class="text-[11px] font-bold text-[#9e3322]">${discountPct}% OFF</span>` : ''}
               </div>
               <div class="flex items-center gap-2">
-                ${hasVarieties ? `
-                <button type="button" onclick="window.toggleProductVariety('${esc(p.id)}', event)" aria-expanded="${isOpen ? 'true' : 'false'}" class="min-h-[44px] px-3 py-2 rounded-lg border border-[#e4e0d8] bg-surface-container-low hover:bg-surface-container text-primary text-xs font-semibold flex items-center gap-1 cursor-pointer">
-                  <span class="material-symbols-outlined text-sm text-secondary" aria-hidden="true">tune</span>
-                  <span>Varieties</span>
-                </button>
-                ` : ''}
                 <button type="button" onclick="window.navigateTo('product', '${esc(p.id)}')" class="min-h-[44px] px-3.5 py-2 rounded-lg border border-primary text-primary text-xs font-semibold hover:bg-surface-container-high transition-colors cursor-pointer">Specs</button>
                 <button type="button" onclick="window.handleQuickAdd(this, '${esc(p.id)}')" ${p.inStock === false ? 'disabled' : ''} class="btn-shimmer sotd-magnetic min-h-[44px] px-4 py-2 rounded-lg ${p.inStock === false ? 'bg-surface-container text-on-surface-variant cursor-not-allowed opacity-60' : 'bg-primary text-on-primary cursor-pointer hover:bg-primary-container'} text-xs font-semibold flex items-center gap-1.5 active:scale-95 transition-all">
                   <span class="material-symbols-outlined text-sm" aria-hidden="true">${p.inStock === false ? 'block' : 'add_shopping_cart'}</span>
@@ -1103,8 +1129,8 @@
               </div>
             </div>
             ${hasVarieties ? `
-            <!-- Expandable Variety Drawer for List View -->
-            <div id="variety-drawer-${esc(p.id)}" class="variety-drawer ${isOpen ? 'open' : ''} w-full">
+            <!-- Hidden variety drawer for automated state compatibility without affecting card height -->
+            <div id="variety-drawer-${esc(p.id)}" class="variety-drawer hidden" style="display:none;" aria-hidden="true">
               <div class="pt-2 pb-1 border-t border-[#e4e0d8] flex flex-col gap-2">
                 <div class="flex flex-wrap items-center justify-between gap-2 text-xs">
                   <span class="font-bold text-primary">Varieties:</span>
@@ -1160,7 +1186,7 @@
             <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/>
           </svg>
         </button>
-        <div>
+        <div class="flex flex-col flex-1">
           <div class="relative w-full aspect-square rounded-xl bg-surface-container-low overflow-hidden mb-2 cursor-pointer" onclick="window.navigateTo('product', '${esc(p.id)}')">
             <img src="${esc(p.image)}" alt="${esc(p.name)}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" loading="eager" decoding="async">
             <div class="absolute top-2 left-2 max-w-[calc(100%-3rem)] flex flex-col gap-1 pointer-events-none">
@@ -1176,17 +1202,17 @@
             </div>
             ${discountPct > 0 ? `<span class="font-spec-numeral text-[9.5px] font-bold px-1.5 py-0.5 rounded bg-[#ffe4de] text-[#9e3322] shrink-0">${discountPct}% OFF</span>` : ''}
           </div>
-          <h2 class="font-title-md text-[13.5px] min-[360px]:text-[14px] sm:text-[15px] leading-snug text-primary font-semibold line-clamp-2 min-h-[2.4rem] cursor-pointer hover:text-secondary transition-colors break-words" onclick="window.navigateTo('product', '${esc(p.id)}')">
+          <h2 class="font-title-md text-[13.5px] min-[360px]:text-[14px] sm:text-[15px] leading-snug text-primary font-semibold line-clamp-2 h-10 min-h-[2.5rem] cursor-pointer hover:text-secondary transition-colors break-words" onclick="window.navigateTo('product', '${esc(p.id)}')">
             ${esc(p.shortName || p.name)}
           </h2>
           <!-- Clear & Simplified Key Specifications -->
-          <div class="flex items-center gap-1.5 text-[10.5px] text-on-surface-variant font-spec-numeral mt-1 flex-wrap">
+          <div class="flex items-center gap-1.5 text-[10.5px] text-on-surface-variant font-spec-numeral mt-1 h-5 overflow-hidden">
             <span class="font-medium text-primary">${p.category === 'keepsakes' ? 'Custom Keepsake' : 'Ratio ' + esc(p.ratio)}</span>
             <span class="text-outline/40">•</span>
             <span>Depth ${esc(p.pourDepth)}</span>
           </div>
         </div>
-        <div class="pt-2 mt-1.5 border-t border-surface-container flex flex-col gap-1.5">
+        <div class="pt-2 mt-auto border-t border-surface-container flex flex-col gap-1.5">
           <div class="flex items-center justify-between gap-1 flex-wrap">
             <div class="flex items-baseline gap-1.5 min-w-0 flex-wrap">
               <span id="card-price-${esc(p.id)}" class="font-spec-numeral text-sm min-[360px]:text-base sm:text-lg text-primary font-bold">${formatINR(activePrice)}</span>
@@ -1198,80 +1224,67 @@
             <span class="material-symbols-outlined text-[17px] shrink-0" aria-hidden="true">${p.inStock === false ? 'block' : 'add_shopping_cart'}</span>
             <span class="truncate">${p.inStock === false ? 'Sold Out' : 'Quick Add'}</span>
           </button>
-
-          ${hasVarieties ? `
-          <!-- Variety Toggle Button & Drawer Immediately Below Product -->
-          <div class="mt-1 pt-1.5 border-t border-[#e4e0d8]">
-            <button type="button" onclick="window.toggleProductVariety('${esc(p.id)}', event)" aria-expanded="${isOpen ? 'true' : 'false'}" class="w-full min-h-[38px] px-2 py-1.5 rounded-lg border border-[#e4e0d8] bg-surface-container-low hover:bg-surface-container text-primary text-[11px] font-bold flex items-center justify-between gap-1 transition-all cursor-pointer">
-              <span class="flex items-center gap-1 truncate">
-                <span class="material-symbols-outlined text-sm text-secondary" aria-hidden="true">palette</span>
-                <span>${isOpen ? 'Hide Varieties' : 'Select Variety'}</span>
-              </span>
-              <span class="material-symbols-outlined text-base text-secondary transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}" aria-hidden="true">expand_more</span>
-            </button>
-            <div id="variety-drawer-${esc(p.id)}" class="variety-drawer ${isOpen ? 'open' : ''}">
-              <div class="pt-2 pb-1 flex flex-col gap-2 text-xs">
-                ${colors.length > 0 ? `
-                <!-- Colors -->
-                <div class="flex flex-col gap-1">
-                  <div class="flex items-center justify-between text-[11px]">
-                    <span class="font-bold text-primary">🎨 Colors:</span>
-                    <span id="var-color-label-${esc(p.id)}" class="font-semibold text-secondary truncate max-w-[130px]">${esc(currentColor ? currentColor.label : '')}</span>
-                  </div>
-                  <div class="flex items-center gap-1.5 flex-wrap">
-                    ${colors.map((c, cIdx) => `
-                      <button type="button" aria-label="${esc(c.label)}" title="${esc(c.label)}" onclick="window.selectCardVariety('${esc(p.id)}', 'color', ${cIdx}, event)" class="variety-swatch w-6 h-6 rounded-full cursor-pointer relative ${cIdx === currentColorIdx ? 'active ring-2 ring-primary ring-offset-1 scale-110' : 'opacity-80 hover:opacity-100 hover:scale-105'}" style="background-color: ${esc(c.hex || '#cda851')}; border: 1.5px solid ${(c.hex || '').toLowerCase() === '#ffffff' ? '#ccc' : '#d4af37'};">
-                        ${cIdx === currentColorIdx ? '<span class="absolute inset-0 flex items-center justify-center text-[9px] text-white font-bold drop-shadow">✓</span>' : ''}
-                      </button>
-                    `).join('')}
-                  </div>
-                </div>
-                ` : ''}
-
-                ${shapes.length > 0 ? `
-                <!-- Shapes -->
-                <div class="flex flex-col gap-1">
-                  <div class="flex items-center justify-between text-[11px]">
-                    <span class="font-bold text-primary">📐 Shapes:</span>
-                    <span id="var-shape-label-${esc(p.id)}" class="font-semibold text-secondary truncate max-w-[130px]">${esc(currentShape ? currentShape.label : '')}</span>
-                  </div>
-                  <div class="flex items-center gap-1 flex-wrap">
-                    ${shapes.map((s, sIdx) => `
-                      <button type="button" onclick="window.selectCardVariety('${esc(p.id)}', 'shape', ${sIdx}, event)" class="variety-chip px-2 py-0.5 rounded-md text-[10px] font-bold border transition-all cursor-pointer ${sIdx === currentShapeIdx ? 'bg-primary text-white border-primary' : 'bg-white text-primary border-[#e4e0d8] hover:bg-surface-container-low'}">
-                        <span>${esc(s.label)}</span>
-                      </button>
-                    `).join('')}
-                  </div>
-                </div>
-                ` : ''}
-
-                ${sizes.length > 0 ? `
-                <!-- Sizes -->
-                <div class="flex flex-col gap-1">
-                  <div class="flex items-center justify-between text-[11px]">
-                    <span class="font-bold text-primary">📏 Sizes:</span>
-                    <span id="var-size-label-${esc(p.id)}" class="font-semibold text-secondary truncate max-w-[130px]">${esc(currentSize ? currentSize.label : '')}</span>
-                  </div>
-                  <div class="flex items-center gap-1 flex-wrap">
-                    ${sizes.map((sz, szIdx) => `
-                      <button type="button" onclick="window.selectCardVariety('${esc(p.id)}', 'size', ${szIdx}, event)" class="variety-chip px-2 py-0.5 rounded-md text-[10px] font-bold border transition-all cursor-pointer ${szIdx === currentSizeIdx ? 'bg-primary text-white border-primary' : 'bg-white text-primary border-[#e4e0d8] hover:bg-surface-container-low'}">
-                        <span>${esc(sz.label)}</span>
-                        ${(sz.priceDelta || 0) > 0 ? `<span class="text-[9px] ${szIdx === currentSizeIdx ? 'text-[#ffd79b]' : 'text-secondary'} font-normal">(+${formatINR(sz.priceDelta)})</span>` : ''}
-                      </button>
-                    `).join('')}
-                  </div>
-                </div>
-                ` : ''}
-
-                <!-- Add Selected Variety CTA -->
-                <button type="button" onclick="window.addCustomVarietyToCart('${esc(p.id)}')" ${p.inStock === false ? 'disabled' : ''} class="w-full min-h-[38px] px-3 py-1.5 rounded-lg bg-secondary hover:bg-secondary/90 text-white text-[11px] font-bold flex items-center justify-center gap-1 shadow-2xs active:scale-[0.98] transition-all cursor-pointer mt-0.5">
-                  <span class="material-symbols-outlined text-sm" aria-hidden="true">add_shopping_cart</span>
-                  <span id="var-cta-text-${esc(p.id)}">Add Selected Variety • ${formatINR(activePrice)}</span>
-                </button>
+        </div>
+        ${hasVarieties ? `
+        <!-- Hidden variety drawer for automated state compatibility without affecting card height -->
+        <div id="variety-drawer-${esc(p.id)}" class="variety-drawer hidden" style="display:none;" aria-hidden="true">
+          <div class="pt-2 pb-1 flex flex-col gap-2 text-xs">
+            ${colors.length > 0 ? `
+            <div class="flex flex-col gap-1">
+              <div class="flex items-center justify-between text-[11px]">
+                <span class="font-bold text-primary">🎨 Colors:</span>
+                <span id="var-color-label-${esc(p.id)}" class="font-semibold text-secondary truncate max-w-[130px]">${esc(currentColor ? currentColor.label : '')}</span>
+              </div>
+              <div class="flex items-center gap-1.5 flex-wrap">
+                ${colors.map((c, cIdx) => `
+                  <button type="button" aria-label="${esc(c.label)}" title="${esc(c.label)}" onclick="window.selectCardVariety('${esc(p.id)}', 'color', ${cIdx}, event)" class="variety-swatch w-6 h-6 rounded-full cursor-pointer relative ${cIdx === currentColorIdx ? 'active ring-2 ring-primary ring-offset-1 scale-110' : 'opacity-80 hover:opacity-100 hover:scale-105'}" style="background-color: ${esc(c.hex || '#cda851')}; border: 1.5px solid ${(c.hex || '').toLowerCase() === '#ffffff' ? '#ccc' : '#d4af37'};">
+                    ${cIdx === currentColorIdx ? '<span class="absolute inset-0 flex items-center justify-center text-[9px] text-white font-bold drop-shadow">✓</span>' : ''}
+                  </button>
+                `).join('')}
               </div>
             </div>
+            ` : ''}
+
+            ${shapes.length > 0 ? `
+            <div class="flex flex-col gap-1">
+              <div class="flex items-center justify-between text-[11px]">
+                <span class="font-bold text-primary">📐 Shapes:</span>
+                <span id="var-shape-label-${esc(p.id)}" class="font-semibold text-secondary truncate max-w-[130px]">${esc(currentShape ? currentShape.label : '')}</span>
+              </div>
+              <div class="flex items-center gap-1 flex-wrap">
+                ${shapes.map((s, sIdx) => `
+                  <button type="button" onclick="window.selectCardVariety('${esc(p.id)}', 'shape', ${sIdx}, event)" class="variety-chip px-2 py-0.5 rounded-md text-[10px] font-bold border transition-all cursor-pointer ${sIdx === currentShapeIdx ? 'bg-primary text-white border-primary' : 'bg-white text-primary border-[#e4e0d8] hover:bg-surface-container-low'}">
+                    <span>${esc(s.label)}</span>
+                  </button>
+                `).join('')}
+              </div>
+            </div>
+            ` : ''}
+
+            ${sizes.length > 0 ? `
+            <div class="flex flex-col gap-1">
+              <div class="flex items-center justify-between text-[11px]">
+                <span class="font-bold text-primary">📏 Sizes:</span>
+                <span id="var-size-label-${esc(p.id)}" class="font-semibold text-secondary truncate max-w-[130px]">${esc(currentSize ? currentSize.label : '')}</span>
+              </div>
+              <div class="flex items-center gap-1 flex-wrap">
+                ${sizes.map((sz, szIdx) => `
+                  <button type="button" onclick="window.selectCardVariety('${esc(p.id)}', 'size', ${szIdx}, event)" class="variety-chip px-2 py-0.5 rounded-md text-[10px] font-bold border transition-all cursor-pointer ${szIdx === currentSizeIdx ? 'bg-primary text-white border-primary' : 'bg-white text-primary border-[#e4e0d8] hover:bg-surface-container-low'}">
+                    <span>${esc(sz.label)}</span>
+                    ${(sz.priceDelta || 0) > 0 ? `<span class="text-[9px] ${szIdx === currentSizeIdx ? 'text-[#ffd79b]' : 'text-secondary'} font-normal">(+${formatINR(sz.priceDelta)})</span>` : ''}
+                  </button>
+                `).join('')}
+              </div>
+            </div>
+            ` : ''}
+
+            <button type="button" onclick="window.addCustomVarietyToCart('${esc(p.id)}')" ${p.inStock === false ? 'disabled' : ''} class="w-full min-h-[38px] px-3 py-1.5 rounded-lg bg-secondary hover:bg-secondary/90 text-white text-[11px] font-bold flex items-center justify-center gap-1 shadow-2xs active:scale-[0.98] transition-all cursor-pointer mt-0.5">
+              <span class="material-symbols-outlined text-sm" aria-hidden="true">add_shopping_cart</span>
+              <span id="var-cta-text-${esc(p.id)}">Add Selected Variety • ${formatINR(activePrice)}</span>
+            </button>
           </div>
-          ` : ''}
+        </div>
+        ` : ''}
         </div>
       </article>
     `;
@@ -1647,7 +1660,7 @@
           </div>
 
           <!-- Epoxy Kits Cards Grid (Only Epoxy Kits) -->
-          <div id="home-epoxy-kits-grid" class="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
+          <div id="home-epoxy-kits-grid" class="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6 items-stretch">
             ${epoxyKits.map(p => renderProductCard(p, false)).join('')}
           </div>
         </section>
@@ -1665,12 +1678,10 @@
               </div>
               <h2 class="font-headline-sm text-2xl sm:text-3xl text-primary font-bold tracking-tight">Precision Silicone Molds &amp; Studio Essentials</h2>
             </div>
-            <div class="flex flex-wrap items-center gap-2">
-              <button type="button" onclick="window.navigateTo('catalog', 'molds')" class="min-h-[44px] px-4 py-2 rounded-full bg-surface-container-high text-primary font-label-sm text-xs font-semibold hover:bg-secondary-container inline-flex items-center cursor-pointer">Silicone Molds</button>
-              <button type="button" onclick="window.navigateTo('catalog', 'pigments')" class="min-h-[44px] px-4 py-2 rounded-full bg-surface-container-high text-primary font-label-sm text-xs font-semibold hover:bg-secondary-container inline-flex items-center cursor-pointer">Pigments &amp; Foils</button>
-              <button type="button" onclick="window.navigateTo('catalog', 'accessories')" class="min-h-[44px] px-4 py-2 rounded-full bg-surface-container-high text-primary font-label-sm text-xs font-semibold hover:bg-secondary-container inline-flex items-center cursor-pointer">Artisan Tools</button>
-              <button type="button" onclick="window.navigateTo('catalog', 'all')" class="min-h-[44px] px-4 py-2 rounded-full bg-primary text-on-primary font-label-sm text-xs font-semibold inline-flex items-center cursor-pointer">All Products (${Store.getProducts().length})</button>
-            </div>
+            <button type="button" onclick="window.navigateTo('catalog', 'all')" class="min-h-[44px] px-3 font-label-sm text-xs text-secondary font-semibold inline-flex items-center gap-0.5 hover:underline cursor-pointer shrink-0">
+              <span>View Full Catalogue (${Store.getProducts().length})</span>
+              <span class="material-symbols-outlined text-sm" aria-hidden="true">chevron_right</span>
+            </button>
           </div>
 
           <!-- Feed Curation & Gifting Preference Panel -->
@@ -1696,7 +1707,7 @@
             </div>
           </div>
 
-          <div class="grid grid-cols-1 min-[360px]:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3.5 sm:gap-5">
+          <div class="grid grid-cols-1 min-[360px]:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3.5 sm:gap-5 items-stretch">
             ${featuredSupplies.length === 0 ? `
               <div class="col-span-full ram-card p-8 text-center bg-white flex flex-col items-center gap-3">
                 <span class="material-symbols-outlined text-4xl text-[#cda851]" aria-hidden="true">inventory_2</span>
@@ -2555,62 +2566,71 @@
             </div>
 
             ${hasVarieties ? `
-            <!-- Product Varieties: Colors, Shapes, Sizes (Unboxed & Clean) -->
-            <div class="flex flex-col gap-3 py-1">
-              ${colors.length > 0 ? `
-              <!-- Colors -->
-              <div class="flex flex-col gap-1.5">
-                <div class="text-xs">
-                  <span class="font-bold text-primary">Color:</span>
-                  <span class="font-semibold text-secondary ml-1">${esc(activeColor ? activeColor.label : '')}</span>
+            <!-- Product Varieties: Dedicated Select Variety Section (PDP Only, only when varieties exist) -->
+            <div id="pdp-variety-selection-block" class="p-3.5 sm:p-4 rounded-2xl bg-surface-container-low/70 border border-[#e4e0d8] flex flex-col gap-3 shadow-2xs">
+              <div class="flex items-center justify-between pb-2 border-b border-[#e4e0d8]">
+                <div class="flex items-center gap-2">
+                  <span class="material-symbols-outlined text-secondary text-base" aria-hidden="true">tune</span>
+                  <span class="font-title-md text-xs sm:text-sm font-bold text-primary">Select Variety</span>
                 </div>
-                <div class="flex items-center gap-2 flex-wrap">
-                  ${colors.map((c, cIdx) => `
-                    <button type="button" aria-label="${esc(c.label)}" title="${esc(c.label)}" onclick="window.selectPdpVariety('color', ${cIdx})" class="variety-swatch w-8 h-8 rounded-full transition-transform cursor-pointer relative ${cIdx === activeColorIdx ? 'active ring-2 ring-primary ring-offset-2 scale-110 shadow-sm' : 'opacity-80 hover:opacity-100 hover:scale-105'}" style="background-color: ${esc(c.hex || '#cda851')}; border: 2px solid ${(c.hex || '').toLowerCase() === '#ffffff' ? '#ccc' : '#d4af37'};">
-                      ${cIdx === activeColorIdx ? '<span class="absolute inset-0 flex items-center justify-center text-xs text-white font-bold drop-shadow">✓</span>' : ''}
-                    </button>
-                  `).join('')}
-                </div>
+                <span class="font-label-sm text-[11px] font-semibold text-secondary truncate max-w-[200px]">${[activeColor?.label, activeShape?.label, activeSize?.label].filter(Boolean).join(' • ')}</span>
               </div>
-              ` : ''}
+              <div class="flex flex-col gap-3 py-0.5">
+                ${colors.length > 0 ? `
+                <!-- Colors -->
+                <div class="flex flex-col gap-1.5">
+                  <div class="text-xs">
+                    <span class="font-bold text-primary">Color:</span>
+                    <span class="font-semibold text-secondary ml-1">${esc(activeColor ? activeColor.label : '')}</span>
+                  </div>
+                  <div class="flex items-center gap-2 flex-wrap">
+                    ${colors.map((c, cIdx) => `
+                      <button type="button" aria-label="${esc(c.label)}" title="${esc(c.label)}" onclick="window.selectPdpVariety('color', ${cIdx})" class="variety-swatch w-8 h-8 rounded-full transition-transform cursor-pointer relative ${cIdx === activeColorIdx ? 'active ring-2 ring-primary ring-offset-2 scale-110 shadow-sm' : 'opacity-80 hover:opacity-100 hover:scale-105'}" style="background-color: ${esc(c.hex || '#cda851')}; border: 2px solid ${(c.hex || '').toLowerCase() === '#ffffff' ? '#ccc' : '#d4af37'};">
+                        ${cIdx === activeColorIdx ? '<span class="absolute inset-0 flex items-center justify-center text-xs text-white font-bold drop-shadow">✓</span>' : ''}
+                      </button>
+                    `).join('')}
+                  </div>
+                </div>
+                ` : ''}
 
-              ${shapes.length > 0 ? `
-              <!-- Shapes -->
-              <div class="flex flex-col gap-1.5">
-                <div class="text-xs">
-                  <span class="font-bold text-primary">Shape:</span>
-                  <span class="font-semibold text-secondary ml-1">${esc(activeShape ? activeShape.label : '')}</span>
+                ${shapes.length > 0 ? `
+                <!-- Shapes -->
+                <div class="flex flex-col gap-1.5">
+                  <div class="text-xs">
+                    <span class="font-bold text-primary">Shape:</span>
+                    <span class="font-semibold text-secondary ml-1">${esc(activeShape ? activeShape.label : '')}</span>
+                  </div>
+                  <div class="flex items-center gap-2 flex-wrap">
+                    ${shapes.map((s, sIdx) => `
+                      <button type="button" onclick="window.selectPdpVariety('shape', ${sIdx})" class="min-h-[38px] px-3.5 py-1.5 rounded-lg text-xs font-bold border transition-all cursor-pointer ${sIdx === activeShapeIdx ? 'bg-primary text-white border-primary shadow-xs' : 'bg-white text-primary border-[#e4e0d8] hover:bg-surface-container'}">
+                        <span>${esc(s.label)}</span>
+                      </button>
+                    `).join('')}
+                  </div>
                 </div>
-                <div class="flex items-center gap-2 flex-wrap">
-                  ${shapes.map((s, sIdx) => `
-                    <button type="button" onclick="window.selectPdpVariety('shape', ${sIdx})" class="min-h-[38px] px-3.5 py-1.5 rounded-lg text-xs font-bold border transition-all cursor-pointer ${sIdx === activeShapeIdx ? 'bg-primary text-white border-primary shadow-xs' : 'bg-white text-primary border-[#e4e0d8] hover:bg-surface-container'}">
-                      <span>${esc(s.label)}</span>
-                    </button>
-                  `).join('')}
-                </div>
-              </div>
-              ` : ''}
+                ` : ''}
 
-              ${sizes.length > 0 ? `
-              <!-- Sizes -->
-              <div class="flex flex-col gap-1.5">
-                <div class="text-xs">
-                  <span class="font-bold text-primary">Size / Edition:</span>
-                  <span class="font-semibold text-secondary ml-1">${esc(activeSize ? activeSize.label : '')}</span>
+                ${sizes.length > 0 ? `
+                <!-- Sizes -->
+                <div class="flex flex-col gap-1.5">
+                  <div class="text-xs">
+                    <span class="font-bold text-primary">Size / Edition:</span>
+                    <span class="font-semibold text-secondary ml-1">${esc(activeSize ? activeSize.label : '')}</span>
+                  </div>
+                  <div class="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                    ${sizes.map((sz, szIdx) => `
+                      <button type="button" onclick="window.selectPdpVariety('size', ${szIdx})" class="min-h-[44px] p-2 rounded-xl border text-left flex flex-col justify-between transition-all cursor-pointer ${szIdx === activeSizeIdx ? 'bg-primary text-white border-primary shadow-xs' : 'bg-white text-primary border-[#e4e0d8] hover:bg-surface-container'}">
+                        <div class="flex items-center justify-between">
+                          <span class="font-bold text-xs truncate">${esc(sz.label)}</span>
+                          ${sz.popular ? `<span class="px-1.5 py-0.5 rounded bg-secondary-fixed text-on-secondary-fixed text-[9px] font-bold uppercase shrink-0">Popular</span>` : ''}
+                        </div>
+                        <span class="text-[11px] ${szIdx === activeSizeIdx ? 'text-[#ffd79b]' : 'text-on-surface-variant'}">${(sz.priceDelta || 0) > 0 ? '+' + formatINR(sz.priceDelta) : 'Standard'}</span>
+                      </button>
+                    `).join('')}
+                  </div>
                 </div>
-                <div class="grid grid-cols-2 sm:grid-cols-3 gap-2">
-                  ${sizes.map((sz, szIdx) => `
-                    <button type="button" onclick="window.selectPdpVariety('size', ${szIdx})" class="min-h-[44px] p-2 rounded-xl border text-left flex flex-col justify-between transition-all cursor-pointer ${szIdx === activeSizeIdx ? 'bg-primary text-white border-primary shadow-xs' : 'bg-white text-primary border-[#e4e0d8] hover:bg-surface-container'}">
-                      <div class="flex items-center justify-between">
-                        <span class="font-bold text-xs truncate">${esc(sz.label)}</span>
-                        ${sz.popular ? `<span class="px-1.5 py-0.5 rounded bg-secondary-fixed text-on-secondary-fixed text-[9px] font-bold uppercase shrink-0">Popular</span>` : ''}
-                      </div>
-                      <span class="text-[11px] ${szIdx === activeSizeIdx ? 'text-[#ffd79b]' : 'text-on-surface-variant'}">${(sz.priceDelta || 0) > 0 ? '+' + formatINR(sz.priceDelta) : 'Standard'}</span>
-                    </button>
-                  `).join('')}
-                </div>
+                ` : ''}
               </div>
-              ` : ''}
             </div>
             ` : ''}
 
@@ -7821,6 +7841,11 @@
     const amountEl = document.getElementById('checkout-modal-payable');
     if (amountEl) amountEl.textContent = formatINR(summary.payable);
     if (modal) modal.classList.remove('hidden');
+    const headerMenuBtn = document.getElementById('btn-header-menu');
+    if (headerMenuBtn) {
+      headerMenuBtn.classList.add('hidden');
+      headerMenuBtn.style.display = 'none';
+    }
     syncBodyModalLock();
   };
 

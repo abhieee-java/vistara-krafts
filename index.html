@@ -2698,7 +2698,7 @@
     <div class="max-w-7xl mx-auto h-16 sm:h-20 px-3 sm:px-6 lg:px-8 flex items-center justify-between gap-1.5 sm:gap-3 w-full min-w-0">
       <!-- Strict Brand Identity: Vistāra Krafts + Uploaded VK Monogram Logo -->
       <div class="flex items-center gap-2 sm:gap-3 min-w-0 overflow-hidden">
-        <button type="button" aria-label="Open Navigation & Account Bar" onclick="window.openModalById('mobile-menu-drawer')" class="w-11 h-11 sm:w-12 sm:h-12 min-w-[44px] min-h-[44px] rounded-xl flex items-center justify-center text-primary bg-surface-container/60 hover:bg-surface-container active:scale-95 shrink-0 cursor-pointer shadow-2xs border border-[#e4e0d8]/80 transition-all">
+        <button id="btn-header-menu" type="button" aria-label="Open Navigation & Account Bar" onclick="window.openModalById('mobile-menu-drawer')" class="w-11 h-11 sm:w-12 sm:h-12 min-w-[44px] min-h-[44px] rounded-xl flex items-center justify-center text-primary bg-surface-container/60 hover:bg-surface-container active:scale-95 shrink-0 cursor-pointer shadow-2xs border border-[#e4e0d8]/80 transition-all">
           <span class="material-symbols-outlined text-[28px]" aria-hidden="true">menu</span>
         </button>
         <a href="#/home" onclick="if(window.location.hash==='#/home'||window.location.hash===''||window.location.hash==='#'){window.replayVkSplash();}" class="flex items-center gap-2.5 group min-w-0 min-h-[48px] py-1 overflow-hidden" title="Vistāra Krafts — Click to replay animated intro">
@@ -2737,7 +2737,7 @@
           <span class="js-header-pin font-semibold">560001</span>
         </button>
 
-        <button type="button" aria-label="Search Catalogue" onclick="window.navigateTo('catalog', 'all'); setTimeout(() => document.getElementById('catalog-search-input')?.focus(), 120);" class="hidden sm:flex w-11 h-11 sm:w-12 sm:h-12 min-w-[44px] min-h-[44px] rounded-xl items-center justify-center text-primary bg-surface-container/50 hover:bg-surface-container active:scale-95 border border-[#e4e0d8]/80 cursor-pointer shrink-0 transition-all">
+        <button id="btn-header-search" type="button" aria-label="Search Catalogue" onclick="window.navigateTo('catalog', 'all'); setTimeout(() => document.getElementById('catalog-search-input')?.focus(), 120);" class="hidden sm:flex w-11 h-11 sm:w-12 sm:h-12 min-w-[44px] min-h-[44px] rounded-xl items-center justify-center text-primary bg-surface-container/50 hover:bg-surface-container active:scale-95 border border-[#e4e0d8]/80 cursor-pointer shrink-0 transition-all">
           <span class="material-symbols-outlined text-[24px]" aria-hidden="true">search</span>
         </button>
 
@@ -2746,7 +2746,7 @@
           <span class="js-wishlist-badge hidden absolute top-0.5 right-0.5 min-w-[18px] h-[18px] px-1 bg-[#9e3322] text-white rounded-full font-spec-numeral text-[10px] font-bold flex items-center justify-center border-2 border-white shadow-xs">0</span>
         </button>
 
-        <button id="btn-header-cart" type="button" aria-label="View Studio Bag" onclick="window.navigateTo('cart')" class="relative w-11 h-11 sm:w-12 sm:h-12 min-w-[44px] min-h-[44px] rounded-xl flex items-center justify-center text-primary bg-surface-container/50 hover:bg-surface-container active:scale-95 border border-[#e4e0d8]/80 cursor-pointer shrink-0 transition-all">
+        <button id="btn-header-cart" type="button" aria-label="View Studio Bag" onclick="window.navigateTo('cart')" class="hidden" style="display: none !important;">
           <span class="material-symbols-outlined text-[24px]" aria-hidden="true">shopping_bag</span>
           <span class="js-cart-badge hidden absolute top-0.5 right-0.5 min-w-[18px] h-[18px] px-1 bg-[#9e3322] text-white rounded-full font-spec-numeral text-[10px] font-bold flex items-center justify-center border-2 border-white shadow-xs">0</span>
         </button>
