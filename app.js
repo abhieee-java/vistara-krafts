@@ -147,6 +147,10 @@
     if (el) {
       el.classList.remove('hidden');
       syncBodyModalLock();
+      if (id === 'mobile-menu-drawer') {
+        if (typeof updateNavHighlight === 'function') updateNavHighlight();
+        if (typeof updateGlobalBadges === 'function') updateGlobalBadges();
+      }
     }
   };
 
@@ -713,6 +717,47 @@
       }
     }
 
+    // Update Slide-Over Drawer Authenticated Actions (#drawer-authenticated-actions)
+    const drawerAuthActions = document.getElementById('drawer-authenticated-actions');
+    if (drawerAuthActions) {
+      if (isAuth) {
+        drawerAuthActions.classList.remove('hidden');
+        drawerAuthActions.innerHTML = `
+          <span class="text-[10px] uppercase tracking-wider text-secondary font-bold px-1 pt-1 block">My Account</span>
+          <button type="button" data-drawer-route="orders" onclick="window.closeModalById('mobile-menu-drawer'); window.navigateTo('orders');" class="drawer-nav-item min-h-[44px] p-2.5 rounded-xl text-left text-xs font-semibold text-primary hover:bg-surface-container flex items-center justify-between cursor-pointer transition">
+            <span class="flex items-center gap-2.5">
+              <span class="material-symbols-outlined text-base text-secondary" aria-hidden="true">receipt_long</span>
+              <span>My Orders</span>
+            </span>
+            <span class="material-symbols-outlined text-base text-outline drawer-nav-chevron" aria-hidden="true">chevron_right</span>
+          </button>
+          <button type="button" data-drawer-route="profile" onclick="window.closeModalById('mobile-menu-drawer'); window.navigateTo('profile');" class="drawer-nav-item min-h-[44px] p-2.5 rounded-xl text-left text-xs font-semibold text-primary hover:bg-surface-container flex items-center justify-between cursor-pointer transition">
+            <span class="flex items-center gap-2.5">
+              <span class="material-symbols-outlined text-base text-secondary" aria-hidden="true">badge</span>
+              <span>Manage Addresses</span>
+            </span>
+            <span class="material-symbols-outlined text-base text-outline drawer-nav-chevron" aria-hidden="true">chevron_right</span>
+          </button>
+          <button type="button" onclick="window.closeModalById('mobile-menu-drawer'); window.handlePatronLogout();" class="drawer-nav-item min-h-[44px] p-2.5 rounded-xl text-left text-xs font-semibold text-[#9e3322] hover:bg-[#ffe4de]/40 flex items-center justify-between cursor-pointer transition">
+            <span class="flex items-center gap-2.5">
+              <span class="material-symbols-outlined text-base text-[#9e3322]" aria-hidden="true">logout</span>
+              <span>Sign Out</span>
+            </span>
+            <span class="material-symbols-outlined text-base text-[#9e3322] drawer-nav-chevron" aria-hidden="true">chevron_right</span>
+          </button>
+        `;
+      } else {
+        drawerAuthActions.classList.add('hidden');
+        drawerAuthActions.innerHTML = '';
+      }
+    }
+
+    // Dynamic catalog count in drawer
+    const totalCatalogItems = (typeof Store !== 'undefined' && Store.getProducts) ? Store.getProducts().length : 19;
+    document.querySelectorAll('.js-drawer-catalog-count').forEach(el => {
+      el.textContent = String(totalCatalogItems);
+    });
+
     // Update Top-Bar Account & Shipping Popup Drawer (#account-bar-modal-body) - Strictly Profile & Address ONLY
     const barModalBody = document.getElementById('account-bar-modal-body');
     if (barModalBody) {
@@ -949,6 +994,27 @@
         btn.classList.toggle('border-secondary', isCurrent);
         btn.classList.toggle('font-semibold', isCurrent);
         btn.classList.toggle('text-on-surface-variant', !isCurrent);
+      }
+    });
+
+    // Mobile Drawer Navigation Item Highlighting
+    document.querySelectorAll('.drawer-nav-item[data-drawer-route]').forEach(btn => {
+      const r = btn.getAttribute('data-drawer-route');
+      const isCurrent = (r === active) || (active === 'product' && r === 'catalog');
+      btn.classList.toggle('text-[#9e3322]', isCurrent);
+      btn.classList.toggle('bg-[#ffe4de]/50', isCurrent);
+      btn.classList.toggle('font-bold', isCurrent);
+      btn.classList.toggle('text-primary', !isCurrent);
+      btn.classList.toggle('font-semibold', !isCurrent);
+      const chevron = btn.querySelector('.drawer-nav-chevron');
+      if (chevron) {
+        chevron.classList.toggle('text-[#9e3322]', isCurrent);
+        chevron.classList.toggle('text-outline', !isCurrent);
+      }
+      const icon = btn.querySelector('.material-symbols-outlined:not(.drawer-nav-chevron)');
+      if (icon) {
+        icon.classList.toggle('text-[#9e3322]', isCurrent);
+        icon.classList.toggle('text-secondary', !isCurrent);
       }
     });
   }
@@ -2015,7 +2081,7 @@
         </section>
 
         <!-- Frequently Asked Questions (Bridal Preservation & Resin Care) -->
-        <section class="px-4 sm:px-8 py-8 bg-surface-container-low border-t border-[#e4e0d8] flex flex-col gap-4">
+        <section id="home-faqs" class="px-4 sm:px-8 py-8 bg-surface-container-low border-t border-[#e4e0d8] flex flex-col gap-4">
           <div>
             <span class="font-label-sm text-[11px] uppercase tracking-widest text-[#9e3322] font-bold">Atelier Patron Care &amp; Technical FAQ</span>
             <h2 class="font-headline-sm text-2xl text-primary font-bold">Frequently Asked Questions</h2>

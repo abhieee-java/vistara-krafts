@@ -2883,64 +2883,88 @@
   <!-- 1. Left Slide-Over Navigation & Account Bar Drawer -->
   <div id="mobile-menu-drawer" role="dialog" aria-modal="true" aria-label="Navigation and Account Bar Drawer" class="fixed inset-0 z-50 bg-primary/50 backdrop-blur-xs hidden flex" onclick="window.closeModalById('mobile-menu-drawer')">
     <div class="w-80 max-w-[86vw] h-full max-h-[100dvh] bg-surface p-4 sm:p-5 flex flex-col justify-between overflow-y-auto shadow-2xl" onclick="event.stopPropagation()">
-      <div class="flex flex-col gap-3.5">
+      <div class="flex flex-col gap-3">
+        <!-- Drawer Header: Brand Identity & Close Button -->
         <div class="flex items-center justify-between gap-2 border-b border-[#e4e0d8] pb-3">
           <div class="flex items-center gap-2.5 min-w-0">
             <img src="./vistara-krafts-logo.jpg" alt="Vistāra Krafts VK Logo" class="w-9 h-9 rounded-lg border border-[#e4e0d8] bg-white p-0.5 object-contain shrink-0">
             <div class="min-w-0">
               <span id="drawer-brand-name" class="font-serif text-base font-bold text-primary block truncate">Vistāra Krafts</span>
-              <span id="drawer-brand-tagline" class="text-[10px] uppercase tracking-widest text-[#9e3322] font-bold block truncate">@resin.art.memories</span>
+              <span id="drawer-brand-tagline" class="text-[10px] uppercase tracking-wider text-[#9e3322] font-semibold block truncate">Curated Resin Art &amp; Keepsakes</span>
             </div>
           </div>
-          <button type="button" aria-label="Close Navigation Drawer" onclick="window.closeModalById('mobile-menu-drawer')" class="w-11 h-11 rounded-full bg-surface-container flex items-center justify-center shrink-0 cursor-pointer">
+          <button type="button" aria-label="Close Navigation Menu" onclick="window.closeModalById('mobile-menu-drawer')" class="w-11 h-11 rounded-full bg-surface-container hover:bg-surface-container-high transition flex items-center justify-center shrink-0 cursor-pointer">
             <span class="material-symbols-outlined text-lg" aria-hidden="true">close</span>
           </button>
         </div>
 
-        <!-- Account Details Inside the Bar (Dynamic Guest / Logged-In Card) -->
+        <!-- Section 1: Account (Dynamic Guest / Authenticated Card) -->
         <div id="bar-drawer-account-slot" class="rounded-xl bg-white border border-[#e4e0d8] p-3 shadow-2xs"></div>
 
-        <!-- Store Discovery Navigation Links (Zero Duplicates, Strict Hick's Law Alignment) -->
-        <div class="flex flex-col gap-1">
-          <span class="text-[10px] uppercase tracking-wider text-secondary font-bold px-1 pt-1.5 block">Store Navigation</span>
-          <button type="button" onclick="window.navigateTo('home'); window.closeModalById('mobile-menu-drawer');" class="min-h-[44px] p-2.5 rounded-xl text-left text-xs font-semibold text-primary hover:bg-surface-container flex items-center justify-between cursor-pointer">
-            <span class="flex items-center gap-2">
-              <span class="material-symbols-outlined text-base text-secondary" aria-hidden="true">home</span>
-              <span>Storefront Home</span>
-            </span>
-            <span class="material-symbols-outlined text-base text-outline" aria-hidden="true">chevron_right</span>
-          </button>
-          <button type="button" onclick="window.navigateTo('catalog', 'all'); window.closeModalById('mobile-menu-drawer');" class="min-h-[44px] p-2.5 rounded-xl text-left text-xs font-semibold text-[#9e3322] bg-[#ffe4de]/50 flex items-center justify-between cursor-pointer">
-            <span class="flex items-center gap-2">
-              <span class="material-symbols-outlined text-base text-[#9e3322]" aria-hidden="true">category</span>
-              <span>Complete 19-Piece Catalog</span>
-            </span>
-            <span class="material-symbols-outlined text-base text-[#9e3322]" aria-hidden="true">chevron_right</span>
-          </button>
-          <button type="button" onclick="window.navigateTo('social'); window.closeModalById('mobile-menu-drawer');" class="min-h-[44px] p-2.5 rounded-xl text-left text-xs font-semibold text-primary hover:bg-surface-container flex items-center justify-between cursor-pointer">
-            <span class="flex items-center gap-2">
-              <span class="material-symbols-outlined text-base text-secondary" aria-hidden="true">photo_camera</span>
-              <span>@resin.art.memories Social Feed</span>
-            </span>
-            <span class="material-symbols-outlined text-base text-outline" aria-hidden="true">chevron_right</span>
-          </button>
-          <button type="button" onclick="window.navigateTo('wishlist'); window.closeModalById('mobile-menu-drawer');" class="min-h-[44px] p-2.5 rounded-xl text-left text-xs font-semibold text-primary hover:bg-surface-container flex items-center justify-between cursor-pointer">
-            <span class="flex items-center gap-2">
-              <span class="material-symbols-outlined text-base text-secondary" aria-hidden="true">bookmarks</span>
-              <span>Saved Wishlist</span>
-            </span>
-            <span class="material-symbols-outlined text-base text-outline" aria-hidden="true">chevron_right</span>
-          </button>
-          <button type="button" onclick="window.manualRefreshCatalog(); window.closeModalById('mobile-menu-drawer');" class="min-h-[44px] p-2.5 rounded-xl text-left text-xs font-semibold text-primary hover:bg-surface-container flex items-center justify-between cursor-pointer border border-[#e4e0d8] bg-surface-container/30">
-            <span class="flex items-center gap-2">
-              <span class="material-symbols-outlined text-base text-secondary" aria-hidden="true">sync</span>
-              <span>↻ Refresh Studio Catalogue</span>
-            </span>
-            <span class="text-[10px] text-on-surface-variant font-mono bg-white px-1.5 py-0.5 rounded border border-[#e4e0d8]">In-Memory</span>
-          </button>
-        </div>
+        <!-- Store Navigation: Organized Hierarchy (Zero Duplicates, Strict Hick's Law) -->
+        <nav class="flex flex-col gap-2.5" aria-label="Mobile Navigation Menu">
+          <!-- Section 2: Shop -->
+          <div class="flex flex-col gap-1">
+            <span class="text-[10px] uppercase tracking-wider text-secondary font-bold px-1 pt-1 block">Shop</span>
+            <button type="button" data-drawer-route="home" onclick="window.navigateTo('home'); window.closeModalById('mobile-menu-drawer');" class="drawer-nav-item min-h-[44px] p-2.5 rounded-xl text-left text-xs font-semibold text-primary hover:bg-surface-container flex items-center justify-between cursor-pointer transition">
+              <span class="flex items-center gap-2.5">
+                <span class="material-symbols-outlined text-base text-secondary" aria-hidden="true">home</span>
+                <span>Home</span>
+              </span>
+              <span class="material-symbols-outlined text-base text-outline drawer-nav-chevron" aria-hidden="true">chevron_right</span>
+            </button>
+            <button type="button" data-drawer-route="catalog" onclick="window.navigateTo('catalog', 'all'); window.closeModalById('mobile-menu-drawer');" class="drawer-nav-item min-h-[44px] p-2.5 rounded-xl text-left text-xs font-semibold text-primary hover:bg-surface-container flex items-center justify-between cursor-pointer transition">
+              <span class="flex items-center gap-2.5">
+                <span class="material-symbols-outlined text-base text-secondary" aria-hidden="true">category</span>
+                <span>Shop All</span>
+              </span>
+              <div class="flex items-center gap-1.5">
+                <span class="text-[10px] font-mono text-on-surface-variant bg-surface-container px-2 py-0.5 rounded-full js-drawer-catalog-count">19</span>
+                <span class="material-symbols-outlined text-base text-outline drawer-nav-chevron" aria-hidden="true">chevron_right</span>
+              </div>
+            </button>
+            <button type="button" data-drawer-route="wishlist" onclick="window.navigateTo('wishlist'); window.closeModalById('mobile-menu-drawer');" class="drawer-nav-item min-h-[44px] p-2.5 rounded-xl text-left text-xs font-semibold text-primary hover:bg-surface-container flex items-center justify-between cursor-pointer transition">
+              <span class="flex items-center gap-2.5">
+                <span class="material-symbols-outlined text-base text-secondary" aria-hidden="true">bookmarks</span>
+                <span>Saved Wishlist</span>
+              </span>
+              <div class="flex items-center gap-1.5">
+                <span class="text-[10px] font-mono text-[#9e3322] bg-[#ffe4de] px-2 py-0.5 rounded-full font-bold js-wishlist-badge">0</span>
+                <span class="material-symbols-outlined text-base text-outline drawer-nav-chevron" aria-hidden="true">chevron_right</span>
+              </div>
+            </button>
+          </div>
+
+          <!-- Section 3: Discover -->
+          <div class="flex flex-col gap-1 pt-1 border-t border-[#e4e0d8]">
+            <span class="text-[10px] uppercase tracking-wider text-secondary font-bold px-1 pt-1 block">Discover</span>
+            <button type="button" data-drawer-route="social" onclick="window.navigateTo('social'); window.closeModalById('mobile-menu-drawer');" class="drawer-nav-item min-h-[44px] p-2.5 rounded-xl text-left text-xs font-semibold text-primary hover:bg-surface-container flex items-center justify-between cursor-pointer transition">
+              <span class="flex items-center gap-2.5">
+                <span class="material-symbols-outlined text-base text-secondary" aria-hidden="true">photo_camera</span>
+                <span>Instagram Gallery</span>
+              </span>
+              <span class="material-symbols-outlined text-base text-outline drawer-nav-chevron" aria-hidden="true">chevron_right</span>
+            </button>
+          </div>
+
+          <!-- Section 4: Help & Support -->
+          <div class="flex flex-col gap-1 pt-1 border-t border-[#e4e0d8]">
+            <span class="text-[10px] uppercase tracking-wider text-secondary font-bold px-1 pt-1 block">Help &amp; Support</span>
+            <button type="button" onclick="window.closeModalById('mobile-menu-drawer'); window.navigateTo('home'); setTimeout(() => window.scrollToSection('home-faqs'), 150);" class="drawer-nav-item min-h-[44px] p-2.5 rounded-xl text-left text-xs font-semibold text-primary hover:bg-surface-container flex items-center justify-between cursor-pointer transition">
+              <span class="flex items-center gap-2.5">
+                <span class="material-symbols-outlined text-base text-secondary" aria-hidden="true">quiz</span>
+                <span>FAQs</span>
+              </span>
+              <span class="material-symbols-outlined text-base text-outline drawer-nav-chevron" aria-hidden="true">chevron_right</span>
+            </button>
+          </div>
+
+          <!-- Section 5: Authenticated Customer Actions (Populated dynamically via JS when authenticated) -->
+          <div id="drawer-authenticated-actions" class="hidden flex flex-col gap-1 pt-2 border-t border-[#e4e0d8] mt-1"></div>
+        </nav>
       </div>
 
+      <!-- Studio Concierge & Contact Card -->
       <div class="p-3 rounded-xl bg-surface-container-low border border-[#e4e0d8] text-xs mt-3 shrink-0 space-y-2">
         <div>
           <p class="font-bold text-primary flex items-center gap-1.5">
@@ -2948,7 +2972,7 @@
             <span>Studio Concierge &amp; Support</span>
           </p>
           <div id="drawer-support-email" class="text-[11px] text-on-surface-variant mt-1">
-            Email: <a href="mailto:studio@vistarakrafts.com" class="text-primary font-semibold hover:underline">studio@vistarakrafts.com</a>
+            Email: <a href="mailto:support@vistarakrafts.com" class="text-primary font-semibold hover:underline">support@vistarakrafts.com</a>
           </div>
           <div id="drawer-support-phone" class="text-[11px] text-on-surface-variant mt-0.5">
             Phone: <a href="tel:+917002270886" class="text-primary font-semibold hover:underline">+91 70022 70886</a>

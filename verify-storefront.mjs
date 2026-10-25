@@ -1812,7 +1812,10 @@ if (chromeExe) {
         authSlotHasUserName: authSlotHtml.includes('Abhishek Sharma'),
         authSlotHasInitial: authSlotHtml.includes('>A<'),
         authSlotHasVerifiedBadge: authSlotHtml.includes('GOOGLE VERIFIED'),
-        authSlotHasSignOut: authSlotHtml.includes('Sign Out')
+        authSlotHasSignOut: authSlotHtml.includes('Sign Out'),
+        drawerAuthHasOrders: Boolean(document.getElementById('drawer-authenticated-actions')?.innerHTML.includes('My Orders')),
+        drawerAuthHasAddresses: Boolean(document.getElementById('drawer-authenticated-actions')?.innerHTML.includes('Manage Addresses')),
+        drawerAuthHasSignOut: Boolean(document.getElementById('drawer-authenticated-actions')?.innerHTML.includes('Sign Out'))
       };
     })()`);
 
@@ -1823,6 +1826,9 @@ if (chromeExe) {
     assert.strictEqual(drawerAccountAudit.authSlotHasInitial, true, 'Headless Chrome: User initial avatar must display in hamburger drawer');
     assert.strictEqual(drawerAccountAudit.authSlotHasVerifiedBadge, true, 'Headless Chrome: Verified provider badge must display in hamburger drawer');
     assert.strictEqual(drawerAccountAudit.authSlotHasSignOut, true, 'Headless Chrome: Sign out action must display in hamburger drawer');
+    assert.strictEqual(drawerAccountAudit.drawerAuthHasOrders, true, 'Headless Chrome: Section 5 must offer My Orders for authenticated customers');
+    assert.strictEqual(drawerAccountAudit.drawerAuthHasAddresses, true, 'Headless Chrome: Section 5 must offer Manage Addresses for authenticated customers');
+    assert.strictEqual(drawerAccountAudit.drawerAuthHasSignOut, true, 'Headless Chrome: Section 5 must offer Sign Out for authenticated customers');
 
     // 3. Verify zero horizontal overflow across all 8 SPA routes and modals at 320x568, 375x812, 390x844 (iPhone 14), 428x926, and 1280x800
     for (const vp of [{ width: 320, height: 568 }, { width: 375, height: 812 }, { width: 390, height: 844 }, { width: 428, height: 926 }, { width: 1280, height: 800 }]) {
@@ -2282,6 +2288,58 @@ test('Mobile Screen Single-Line Order ID & Hamburger Drawer Architecture (Hick\'
   sandbox.window.navigateTo('product', 'test-var-prod'); // Product with colors, shapes, sizes
   const pdpVarHtml = mockDocument.getElementById('app-view-root').innerHTML;
   assert.ok(pdpVarHtml.includes('id="pdp-variety-selection-block"'), 'PDP must show Select Variety section when product has varieties');
+
+  // Clean up
+  sandbox.window.handlePatronLogout();
+  sandbox.window.navigateTo('home');
+});
+
+test('Master UI/UX Hamburger Drawer Navigation Architecture & Kinetic Polish', () => {
+  const indexHtml = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8');
+  // 1. Verify index.html Drawer Header Branding & Removal of Internal Items
+  assert.ok(indexHtml.includes('Curated Resin Art &amp; Keepsakes'), 'Drawer must feature refined brand tagline');
+  assert.ok(indexHtml.includes('aria-label="Close Navigation Menu"'), 'Drawer close button must have accessible aria-label');
+  assert.ok(!indexHtml.includes('↻ Refresh Studio Catalogue'), 'Drawer must not leak internal refresh action to customers');
+  assert.ok(!indexHtml.includes('>In-Memory<'), 'Drawer must not leak developer in-memory status pill to customers');
+  assert.ok(indexHtml.includes('support@vistarakrafts.com'), 'Concierge email must be support@vistarakrafts.com');
+
+  // 2. Verify Hierarchical Navigation Categories in static index.html
+  const drawerMatch = indexHtml.match(/<div id="mobile-menu-drawer"[\s\S]*?<!-- 2\. Technical/);
+  assert.ok(drawerMatch, 'Must find mobile-menu-drawer markup');
+  const drawerHtml = drawerMatch[0];
+  assert.ok(drawerHtml.includes('>Shop<'), 'Drawer must feature Shop section header');
+  assert.ok(drawerHtml.includes('>Discover<'), 'Drawer must feature Discover section header');
+  assert.ok(drawerHtml.includes('>Help &amp; Support<'), 'Drawer must feature Help & Support section header');
+  assert.ok(drawerHtml.includes('Instagram Gallery'), 'Drawer must feature Instagram Gallery');
+  assert.ok(drawerHtml.includes('home-faqs'), 'FAQs button must link to home-faqs section');
+
+  // 3. Verify Dynamic Guest Mode Behavior
+  sandbox.window.handlePatronLogout();
+  sandbox.window.updateGlobalBadges();
+  const guestSlotHtml = mockDocument.getElementById('bar-drawer-account-slot').innerHTML;
+  assert.ok(guestSlotHtml.includes('Guest Mode'), 'Drawer account slot must display Guest Mode pill when logged out');
+  assert.ok(guestSlotHtml.includes('Sign In / Create Account'), 'Drawer account slot must offer Sign In button when logged out');
+  const drawerAuthActions = mockDocument.getElementById('drawer-authenticated-actions');
+  assert.ok(drawerAuthActions && drawerAuthActions.classList.contains('hidden'), 'Authenticated actions must be hidden in guest mode');
+  assert.strictEqual(drawerAuthActions.innerHTML, '', 'Authenticated actions container must be empty in guest mode');
+
+  // 4. Verify Dynamic Authenticated Behavior
+  sandbox.window.completeOAuthChooserAccount('google', 'artisan.collector@example.com', 'Artisan Collector');
+  sandbox.window.updateGlobalBadges();
+  const authSlotHtml = mockDocument.getElementById('bar-drawer-account-slot').innerHTML;
+  assert.ok(authSlotHtml.includes('Artisan Collector'), 'Drawer must display logged-in customer name');
+  assert.ok(authSlotHtml.includes('artisan.collector@example.com'), 'Drawer must display customer email');
+  assert.ok(!authSlotHtml.includes('Guest Mode'), 'Drawer must NOT display Guest Mode badge when authenticated');
+  assert.ok(!drawerAuthActions.classList.contains('hidden'), 'Authenticated actions must be visible when authenticated');
+  assert.ok(drawerAuthActions.innerHTML.includes('My Orders'), 'Section 5 must render My Orders for authenticated users');
+  assert.ok(drawerAuthActions.innerHTML.includes('Manage Addresses'), 'Section 5 must render Manage Addresses for authenticated users');
+  assert.ok(drawerAuthActions.innerHTML.includes('Sign Out'), 'Section 5 must render Sign Out for authenticated users');
+
+  // 5. Verify Active Route Highlighting & Dynamic Catalog Count in app.js
+  const appJs = fs.readFileSync(path.join(ROOT, 'app.js'), 'utf8');
+  assert.ok(appJs.includes('.drawer-nav-item[data-drawer-route]'), 'app.js must implement drawer active route highlighting');
+  assert.ok(appJs.includes('drawer-nav-chevron'), 'app.js must synchronize drawer nav chevrons with route');
+  assert.ok(appJs.includes('js-drawer-catalog-count'), 'app.js must dynamically synchronize drawer catalog count');
 
   // Clean up
   sandbox.window.handlePatronLogout();
