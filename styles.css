@@ -264,10 +264,8 @@ textarea:disabled {
   border-color: var(--accent-10-brass);
 }
 
-/* 120fps Zero-Lag Product Card Optimization & GPU Transitions */
+/* Fast Loading Product Card Optimization & GPU Transitions */
 .product-card-contain {
-  content-visibility: auto;
-  contain-intrinsic-size: 0 380px;
   will-change: transform;
 }
 
@@ -297,15 +295,6 @@ textarea:disabled {
   opacity: 1;
   pointer-events: auto;
 }
-@media (max-width: 640px) {
-  #mini-cart-toast {
-    bottom: 5.5rem;
-    left: 1rem;
-    right: 1rem;
-    margin: 0 auto;
-    width: auto;
-  }
-}
 
 /* Shadcn/UI Frosted Glass Global Toast & Coordinated Stacking Engine */
 #global-toast {
@@ -331,23 +320,15 @@ body.has-mini-cart-toast #global-toast {
   bottom: 6rem;
 }
 
-/* Mobile Stacking: Clear bottom nav bar and sticky PDP action bar */
+/* Strictly Hide Toasts on Mobile Screens (< 640px) */
 @media (max-width: 640px) {
-  #global-toast {
-    bottom: 5.5rem;
-    left: 1rem;
-    right: 1rem;
-    margin: 0 auto;
-    width: auto;
-  }
-  body.has-mini-cart-toast #global-toast {
-    bottom: 10.5rem;
-  }
-  body.route-product #global-toast {
-    bottom: 8.5rem;
-  }
-  body.route-product.has-mini-cart-toast #global-toast {
-    bottom: 13.5rem;
+  #global-toast,
+  #mini-cart-toast {
+    display: none !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+    visibility: hidden !important;
+    transform: translateY(200%) !important;
   }
 }
 

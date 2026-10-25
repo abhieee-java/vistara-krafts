@@ -201,6 +201,11 @@
       subEl.classList.toggle('hidden', !sub);
     }
 
+    // Strictly skip displaying toast on mobile screens (< 640px)
+    if (typeof window !== 'undefined' && window.innerWidth && window.innerWidth < 640) {
+      return;
+    }
+
     // Set Icon & Accent Color
     const iconName = opts.icon || (
       opts.type === 'error' ? 'error' :
@@ -313,6 +318,10 @@
   let miniCartToastTimer = null;
   window.showMiniCartToast = function (item) {
     if (!item) return;
+    // Strictly skip displaying toast on mobile screens (< 640px)
+    if (typeof window !== 'undefined' && window.innerWidth && window.innerWidth < 640) {
+      return;
+    }
     const toast = document.getElementById('mini-cart-toast');
     if (!toast) return;
     const imgEl = document.getElementById('mini-cart-toast-img');
@@ -1007,7 +1016,7 @@
       return `
         <article class="ram-card product-card-contain sotd-reveal p-3.5 flex flex-col sm:flex-row gap-4 items-start sm:items-center group" data-product-id="${esc(p.id)}">
           <div class="relative w-full sm:w-36 h-44 sm:h-36 rounded-xl bg-surface-container-low overflow-hidden shrink-0 cursor-pointer" onclick="window.navigateTo('product', '${esc(p.id)}')">
-            <img src="${esc(p.image)}" alt="${esc(p.name)}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" loading="${cardIndex < 4 ? 'eager' : 'lazy'}" decoding="async" ${cardIndex < 4 ? 'fetchpriority="high"' : ''}>
+            <img src="${esc(p.image)}" alt="${esc(p.name)}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" loading="eager" decoding="async">
             <div class="absolute top-2 left-2 flex flex-col gap-1 max-w-[calc(100%-1rem)]">
               <span class="truncate px-2.5 py-0.5 rounded-full bg-primary text-on-primary text-[10px] font-semibold uppercase shadow-xs">${esc(p.badge)}</span>
               ${affinityTag}
@@ -1113,7 +1122,7 @@
         </button>
         <div>
           <div class="relative w-full aspect-square rounded-xl bg-surface-container-low overflow-hidden mb-2 cursor-pointer" onclick="window.navigateTo('product', '${esc(p.id)}')">
-            <img src="${esc(p.image)}" alt="${esc(p.name)}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" loading="${cardIndex < 4 ? 'eager' : 'lazy'}" decoding="async" ${cardIndex < 4 ? 'fetchpriority="high"' : ''}>
+            <img src="${esc(p.image)}" alt="${esc(p.name)}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" loading="eager" decoding="async">
             <div class="absolute top-2 left-2 max-w-[calc(100%-3rem)] flex flex-col gap-1 pointer-events-none">
               <span class="px-2 py-0.5 rounded-full bg-primary/90 text-on-primary font-label-sm text-[9.5px] uppercase font-semibold tracking-wider shadow-2xs truncate block">${esc(p.badge)}</span>
               ${affinityTag}
@@ -2454,6 +2463,12 @@
                   Optical Grade
                 </span>
               </div>
+              <!-- Floating Wishlist Heart Button (Only Heart SVG Icon) -->
+              <button type="button" aria-label="Save to Wishlist" onclick="window.handleWishlistToggle(event, '${esc(product.id)}')" class="absolute top-3.5 right-3.5 z-10 w-11 h-11 rounded-full bg-white/95 backdrop-blur-sm border border-[#e4e0d8] flex items-center justify-center ${isFav ? 'text-[#9e3322]' : 'text-primary'} shadow-sm hover:scale-105 active:scale-95 transition-transform cursor-pointer" title="Save to Wishlist">
+                <svg class="w-5 h-5 ${isFav ? 'fill-[#9e3322] stroke-[#9e3322]' : 'fill-none stroke-current'} transition-colors" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/>
+                </svg>
+              </button>
               <div class="absolute bottom-3.5 right-3.5 flex items-center gap-2">
                 <span id="pdp-gallery-counter" class="bg-primary/85 backdrop-blur-md text-on-primary px-3 py-1.5 rounded-full font-spec-numeral text-xs">
                   ${AppState.pdpGalleryIdx + 1} of ${gallery.length}
@@ -2661,8 +2676,10 @@
                   <span class="material-symbols-outlined text-lg shrink-0" aria-hidden="true">shopping_bag</span>
                   <span class="truncate">Add to Studio Bag • ${formatINR(totalCtaPrice)}</span>
                 </button>
-                <button type="button" aria-label="Save to Wishlist" onclick="window.handleWishlistToggle(event, '${esc(product.id)}')" class="w-12 h-12 rounded-xl bg-surface-container-low border border-[#e4e0d8] flex items-center justify-center ${isFav ? 'text-[#9e3322]' : 'text-primary'} shrink-0 cursor-pointer">
-                  <span class="material-symbols-outlined text-xl" style="font-variation-settings: 'FILL' ${isFav ? 1 : 0};" aria-hidden="true">${isFav ? 'favorite' : 'favorite_border'}</span>
+                <button type="button" aria-label="Save to Wishlist" onclick="window.handleWishlistToggle(event, '${esc(product.id)}')" class="w-12 h-12 rounded-xl bg-surface-container-low border border-[#e4e0d8] flex items-center justify-center ${isFav ? 'text-[#9e3322]' : 'text-primary'} hover:scale-105 active:scale-95 transition-transform shrink-0 cursor-pointer" title="Save to Wishlist">
+                  <svg class="w-6 h-6 ${isFav ? 'fill-[#9e3322] stroke-[#9e3322]' : 'fill-none stroke-current'} transition-colors" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/>
+                  </svg>
                 </button>
               </div>
               <button type="button" onclick="window.buyNowPdp()" class="w-full h-12 px-4 rounded-xl bg-[#9e3322] hover:opacity-95 text-white font-title-md text-xs sm:text-sm font-bold flex items-center justify-center gap-2 shadow-sm cursor-pointer">
@@ -2870,8 +2887,10 @@
         <!-- Sticky Bottom PDP Action Bar (aligned with lg:hidden mobile bottom nav) -->
         <aside class="fixed bottom-16 lg:bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-lg border-t border-[#e4e0d8] px-2.5 sm:px-8 py-2.5 shadow-lg max-w-full">
           <div class="max-w-7xl mx-auto flex items-center gap-1.5 sm:gap-3">
-            <button type="button" aria-label="Save to Wishlist" onclick="window.handleWishlistToggle(event, '${esc(product.id)}')" class="hidden sm:flex w-12 h-12 rounded-xl bg-surface-container-low items-center justify-center ${isFav ? 'text-[#9e3322]' : 'text-primary'} shrink-0 cursor-pointer">
-              <span class="material-symbols-outlined text-2xl" style="font-variation-settings: 'FILL' ${isFav ? 1 : 0};" aria-hidden="true">${isFav ? 'favorite' : 'favorite_border'}</span>
+            <button type="button" aria-label="Save to Wishlist" onclick="window.handleWishlistToggle(event, '${esc(product.id)}')" class="flex w-11 sm:w-12 h-11 sm:h-12 rounded-xl bg-surface-container-low border border-[#e4e0d8] items-center justify-center ${isFav ? 'text-[#9e3322]' : 'text-primary'} shrink-0 cursor-pointer active:scale-95 transition-transform" title="Save to Wishlist">
+              <svg class="w-5 sm:w-6 h-5 sm:h-6 ${isFav ? 'fill-[#9e3322] stroke-[#9e3322]' : 'fill-none stroke-current'} transition-colors" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/>
+              </svg>
             </button>
             <div class="hidden min-[420px]:flex h-12 bg-surface-container-low rounded-xl items-center px-0.5 sm:px-1 shrink-0 border border-[#e4e0d8]">
               <button type="button" aria-label="Decrease quantity" onclick="window.changePdpQty(-1)" class="w-11 h-11 flex items-center justify-center text-primary font-bold cursor-pointer">
