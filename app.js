@@ -911,6 +911,7 @@
 
     renderActiveView({ resetScroll: routeChanged });
     updateNavHighlight();
+    syncAdaptiveNavigation();
     updateGlobalBadges();
     syncBodyModalLock();
 
@@ -948,6 +949,42 @@
       }
     });
   }
+
+  // Adaptive Navigation System: Context-Aware Navigation Presentation
+  function syncAdaptiveNavigation() {
+    const active = AppState.currentRoute;
+    if (typeof document === 'undefined') return;
+
+    // 1. Top Header Bag Icon:
+    // When the user is already on the Bag page (#/cart), hide the redundant header Bag icon.
+    // The active bottom Bag tab already identifies the destination.
+    const headerCartBtn = document.getElementById('btn-header-cart');
+    if (headerCartBtn) {
+      if (active === 'cart') {
+        headerCartBtn.classList.add('hidden');
+      } else {
+        headerCartBtn.classList.remove('hidden');
+      }
+    }
+
+    // 2. NEWS Announcement System:
+    // Home: Retain full, visible, functional NEWS announcement ticker.
+    // Non-Home pages: Hide large scrolling ticker to maximize product browsing space and checkout focus.
+    const topAnnouncementBar = document.getElementById('top-announcement-bar');
+    if (topAnnouncementBar) {
+      const isHome = (active === 'home');
+      if (isHome) {
+        const settings = (typeof Store !== 'undefined' && typeof Store.getSettings === 'function') ? Store.getSettings() : {};
+        if (settings.announcementBarActive !== false) {
+          topAnnouncementBar.classList.remove('hidden');
+          topAnnouncementBar.style.display = '';
+        }
+      } else {
+        topAnnouncementBar.classList.add('hidden');
+      }
+    }
+  }
+  window.syncAdaptiveNavigation = syncAdaptiveNavigation;
 
   // Apple-Grade Shimmer Skeleton Card Renderer for Catalogue Progressive Streaming
   function renderProductSkeletonCard(isListView = false) {
@@ -2130,7 +2167,7 @@
 
   function renderCatalogView() {
     const filtered = getFilteredCatalogProducts();
-    const visible = filtered.slice(0, AppState.catalogVisibleCount);
+    const visible = filtered; // Render all products smoothly without lazy loading delay!
 
     const activeFilterCount = (AppState.catalogCategory !== 'all' ? 1 : 0) +
       (AppState.catalogRatioFilter !== 'all' ? 1 : 0) +
@@ -2226,21 +2263,21 @@
           <!-- First Row: Product Count Left, Grid/List Switcher Right -->
           <div class="flex items-center justify-between gap-3 w-full">
             <div class="flex items-center gap-1.5 min-w-0">
-              <span class="font-spec-numeral font-bold text-primary text-sm sm:text-base tracking-tight">${filtered.length} Products</span>
+              <span id="catalog-product-count" class="font-spec-numeral font-bold text-primary text-sm sm:text-base tracking-tight">${filtered.length} Products</span>
             </div>
             <!-- Grid / List Switcher -->
             <div class="flex items-center bg-[#f5f0e8]/80 p-0.5 rounded-xl border border-[#e4e0d8] shadow-2xs">
-              <button type="button" aria-label="Grid View" onclick="window.setCatalogView('grid')" class="w-8 h-8 rounded-lg flex items-center justify-center ${AppState.catalogView === 'grid' ? 'bg-white text-primary shadow-xs font-bold' : 'text-on-surface-variant hover:text-primary'} cursor-pointer transition-all active:scale-95">
+              <button id="btn-view-grid" type="button" aria-label="Grid View" onclick="window.setCatalogView('grid')" class="w-8 h-8 rounded-lg flex items-center justify-center ${AppState.catalogView === 'grid' ? 'bg-white text-primary shadow-xs font-bold' : 'text-on-surface-variant hover:text-primary'} cursor-pointer transition-all active:scale-95">
                 <span class="material-symbols-outlined text-[17px]" aria-hidden="true">grid_view</span>
               </button>
-              <button type="button" aria-label="List View" onclick="window.setCatalogView('list')" class="w-8 h-8 rounded-lg flex items-center justify-center ${AppState.catalogView === 'list' ? 'bg-white text-primary shadow-xs font-bold' : 'text-on-surface-variant hover:text-primary'} cursor-pointer transition-all active:scale-95">
+              <button id="btn-view-list" type="button" aria-label="List View" onclick="window.setCatalogView('list')" class="w-8 h-8 rounded-lg flex items-center justify-center ${AppState.catalogView === 'list' ? 'bg-white text-primary shadow-xs font-bold' : 'text-on-surface-variant hover:text-primary'} cursor-pointer transition-all active:scale-95">
                 <span class="material-symbols-outlined text-[17px]" aria-hidden="true">view_list</span>
               </button>
             </div>
           </div>
 
           <!-- Second Row: ONE Compact Control: Sort & Filter -->
-          <button type="button" onclick="window.toggleCatalogFilterDrawer(true)" class="w-full min-h-[44px] px-4 py-2.5 rounded-xl bg-[#faf7f2] hover:bg-[#f3ede3] active:scale-[0.99] border border-[#e4e0d8] hover:border-[#cfc8bc] text-primary text-xs font-semibold flex items-center justify-between gap-2 shadow-2xs transition-all cursor-pointer">
+          <button id="catalog-sort-filter-btn" type="button" onclick="window.toggleCatalogFilterDrawer(true)" class="w-full min-h-[44px] px-4 py-2.5 rounded-xl bg-[#faf7f2] hover:bg-[#f3ede3] active:scale-[0.99] border border-[#e4e0d8] hover:border-[#cfc8bc] text-primary text-xs font-semibold flex items-center justify-between gap-2 shadow-2xs transition-all cursor-pointer">
             <div class="flex items-center gap-2 min-w-0">
               <span class="material-symbols-outlined text-[18px] text-secondary shrink-0" aria-hidden="true">tune</span>
               <span class="truncate font-medium text-primary">Sort &amp; Filter</span>

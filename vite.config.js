@@ -31,6 +31,11 @@ function apiMiddlewarePlugin() {
       server.middlewares.use(async (req, res, next) => {
         const url = req.url.split('?')[0];
         if (!url.startsWith('/api/')) {
+          if (url.endsWith('.html') || url.endsWith('.js') || url.endsWith('.css') || url === '/' || url === '') {
+            res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+            res.setHeader('Pragma', 'no-cache');
+            res.setHeader('Expires', '0');
+          }
           return next();
         }
 
@@ -79,6 +84,16 @@ function apiMiddlewarePlugin() {
 }
 
 export default defineConfig({
+  server: {
+    headers: {
+      'Cache-Control': 'no-cache, no-store, must-revalidate'
+    }
+  },
+  preview: {
+    headers: {
+      'Cache-Control': 'no-cache, no-store, must-revalidate'
+    }
+  },
   envPrefix: ['VITE_', 'SUPABASE_', 'CLOUDINARY_'],
   plugins: [
     apiMiddlewarePlugin(),
