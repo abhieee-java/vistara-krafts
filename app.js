@@ -1149,11 +1149,11 @@
 
     if (isListView) {
       return `
-        <article class="ram-card product-card-contain sotd-reveal p-3.5 flex flex-col sm:flex-row gap-4 items-start sm:items-center group" data-product-id="${esc(p.id)}">
-          <div class="relative w-full sm:w-36 h-44 sm:h-36 rounded-xl bg-surface-container-low overflow-hidden shrink-0 cursor-pointer" onclick="window.navigateTo('product', '${esc(p.id)}')">
+        <article class="ram-card product-card-contain sotd-reveal p-3 sm:p-3.5 flex flex-col sm:flex-row gap-3.5 items-start sm:items-center group" data-product-id="${esc(p.id)}">
+          <div class="relative w-full sm:w-28 h-32 sm:h-28 rounded-xl bg-surface-container-low overflow-hidden shrink-0 cursor-pointer" onclick="window.navigateTo('product', '${esc(p.id)}')">
             <img src="${esc(p.image)}" alt="${esc(p.name)}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" loading="eager" decoding="async">
-            <div class="absolute top-2 left-2 flex flex-col gap-1 max-w-[calc(100%-1rem)]">
-              <span class="truncate px-2.5 py-0.5 rounded-full bg-primary text-on-primary text-[10px] font-semibold uppercase shadow-xs">${esc(p.badge)}</span>
+            <div class="absolute top-2 left-2 flex flex-col gap-1 max-w-[calc(100%-1rem)] pointer-events-none">
+              <span class="truncate px-2 py-0.5 rounded-full bg-primary text-on-primary text-[9px] font-semibold uppercase shadow-xs">${esc(p.badge)}</span>
               ${affinityTag}
             </div>
           </div>
@@ -1166,8 +1166,8 @@
                   <span class="text-outline font-spec-numeral">(${p.reviewsCount})</span>
                   ${affinityTag ? `<span class="hidden sm:inline-block">${affinityTag}</span>` : ''}
                 </div>
-                <button type="button" aria-label="Toggle Wishlist" onclick="window.handleWishlistToggle(event, '${esc(p.id)}')" class="w-11 h-11 rounded-full bg-surface-container-low flex items-center justify-center ${isFav ? 'text-[#9e3322]' : 'text-primary'} hover:scale-105 active:scale-95 transition-transform cursor-pointer" title="Save to Wishlist">
-                  <svg class="w-5 h-5 ${isFav ? 'fill-[#9e3322] stroke-[#9e3322]' : 'fill-none stroke-current'} transition-colors" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <button type="button" aria-label="Toggle Wishlist" onclick="window.handleWishlistToggle(event, '${esc(p.id)}')" class="w-9 h-9 rounded-full bg-surface-container-low flex items-center justify-center ${isFav ? 'text-[#9e3322]' : 'text-primary'} hover:scale-105 active:scale-95 transition-transform cursor-pointer" title="Save to Wishlist">
+                  <svg class="w-4 h-4 ${isFav ? 'fill-[#9e3322] stroke-[#9e3322]' : 'fill-none stroke-current'} transition-colors" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                     <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/>
                   </svg>
                 </button>
@@ -1247,18 +1247,19 @@
 
     return `
       <article class="ram-card product-card-contain sotd-tilt sotd-reveal p-2.5 sm:p-3 flex flex-col justify-between relative group h-full" data-product-id="${esc(p.id)}" data-price="${activePrice}" data-ratio="${esc(p.ratio)}">
-        <button type="button" aria-label="Save to Wishlist" onclick="window.handleWishlistToggle(event, '${esc(p.id)}')" class="absolute top-3.5 right-3.5 z-10 w-11 h-11 rounded-full bg-white/95 backdrop-blur-sm border border-[#e4e0d8] flex items-center justify-center ${isFav ? 'text-[#9e3322]' : 'text-primary'} shadow-sm hover:scale-105 active:scale-95 transition-transform cursor-pointer" title="Save to Wishlist">
-          <svg class="w-5 h-5 ${isFav ? 'fill-[#9e3322] stroke-[#9e3322]' : 'fill-none stroke-current'} transition-colors" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/>
-          </svg>
-        </button>
         <div class="flex flex-col flex-1">
-          <div class="relative w-full aspect-square rounded-xl bg-surface-container-low overflow-hidden mb-2 cursor-pointer" onclick="window.navigateTo('product', '${esc(p.id)}')">
+          <!-- Sleek, Smaller & Uniform Product Media -->
+          <div class="catalog-card-media relative w-full aspect-[4/3] rounded-xl bg-surface-container-low overflow-hidden mb-2 cursor-pointer" onclick="window.navigateTo('product', '${esc(p.id)}')">
             <img src="${esc(p.image)}" alt="${esc(p.name)}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" loading="eager" decoding="async">
-            <div class="absolute top-2 left-2 max-w-[calc(100%-3rem)] flex flex-col gap-1 pointer-events-none">
-              <span class="px-2 py-0.5 rounded-full bg-primary/90 text-on-primary font-label-sm text-[9.5px] uppercase font-semibold tracking-wider shadow-2xs truncate block">${esc(p.badge)}</span>
+            <div class="absolute top-2 left-2 max-w-[calc(100%-2.5rem)] flex flex-col gap-1 pointer-events-none">
+              <span class="px-2 py-0.5 rounded-full bg-primary/90 text-on-primary font-label-sm text-[9px] uppercase font-semibold tracking-wider shadow-2xs truncate block">${esc(p.badge)}</span>
               ${affinityTag}
             </div>
+            <button type="button" aria-label="Save to Wishlist" onclick="event.stopPropagation(); window.handleWishlistToggle(event, '${esc(p.id)}')" class="absolute top-2 right-2 z-10 w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-white/95 backdrop-blur-xs border border-[#e4e0d8] flex items-center justify-center ${isFav ? 'text-[#9e3322]' : 'text-primary'} shadow-2xs hover:scale-105 active:scale-95 transition-transform cursor-pointer" title="Save to Wishlist">
+              <svg class="w-4 h-4 ${isFav ? 'fill-[#9e3322] stroke-[#9e3322]' : 'fill-none stroke-current'} transition-colors" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/>
+              </svg>
+            </button>
           </div>
           <div class="flex items-center justify-between gap-1 mb-1">
             <div class="flex items-center gap-1 min-w-0">
@@ -1268,11 +1269,11 @@
             </div>
             ${discountPct > 0 ? `<span class="font-spec-numeral text-[9.5px] font-bold px-1.5 py-0.5 rounded bg-[#ffe4de] text-[#9e3322] shrink-0">${discountPct}% OFF</span>` : ''}
           </div>
-          <h2 class="font-title-md text-[13.5px] min-[360px]:text-[14px] sm:text-[15px] leading-snug text-primary font-semibold line-clamp-2 h-10 min-h-[2.5rem] cursor-pointer hover:text-secondary transition-colors break-words" onclick="window.navigateTo('product', '${esc(p.id)}')">
+          <h2 class="font-title-md text-[13px] sm:text-[14px] leading-snug text-primary font-semibold line-clamp-2 h-9 min-h-[2.25rem] cursor-pointer hover:text-secondary transition-colors break-words" onclick="window.navigateTo('product', '${esc(p.id)}')">
             ${esc(p.shortName || p.name)}
           </h2>
           <!-- Clear & Simplified Key Specifications -->
-          <div class="flex items-center gap-1.5 text-[10.5px] text-on-surface-variant font-spec-numeral mt-1 h-5 overflow-hidden">
+          <div class="flex items-center gap-1.5 text-[10.5px] text-on-surface-variant font-spec-numeral mt-0.5 h-4 overflow-hidden">
             <span class="font-medium text-primary">${p.category === 'keepsakes' ? 'Custom Keepsake' : 'Ratio ' + esc(p.ratio)}</span>
             <span class="text-outline/40">•</span>
             <span>Depth ${esc(p.pourDepth)}</span>
@@ -1351,7 +1352,6 @@
           </div>
         </div>
         ` : ''}
-        </div>
       </article>
     `;
   }

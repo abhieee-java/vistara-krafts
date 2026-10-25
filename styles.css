@@ -269,6 +269,27 @@ textarea:disabled {
   will-change: transform;
 }
 
+/* Controlled, Smaller Catalog Product Card Media (Uniform Alignment) */
+.catalog-card-media {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  max-height: 180px;
+  border-radius: 12px;
+  background-color: var(--surface-60-mist, #f3f1ec);
+  overflow: hidden;
+  margin-bottom: 0.5rem;
+  cursor: pointer;
+}
+
+@media (max-width: 640px) {
+  .catalog-card-media {
+    aspect-ratio: 4 / 3;
+    max-height: 130px;
+    border-radius: 10px;
+  }
+}
+
 /* Tactile Haptic Press Physics */
 .haptic-press {
   transition: transform 0.15s cubic-bezier(0.2, 0.8, 0.2, 1);
