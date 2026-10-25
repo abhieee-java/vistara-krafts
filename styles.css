@@ -406,6 +406,36 @@ body.has-mini-cart-toast #global-toast {
   pointer-events: none;
 }
 
+/* Quick Add Button — Catalog Product Card Refinement */
+.catalog-quick-add-btn {
+  height: 36px !important;
+  min-height: 36px !important;
+  padding: 8px 12px !important;
+  gap: 8px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  line-height: 1 !important;
+  box-sizing: border-box !important;
+}
+
+.catalog-quick-add-btn .material-symbols-outlined {
+  font-size: 16px !important;
+  width: 16px !important;
+  height: 16px !important;
+  line-height: 1 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  vertical-align: middle !important;
+}
+
+.catalog-quick-add-btn span {
+  display: inline-flex !important;
+  align-items: center !important;
+  line-height: 1 !important;
+}
+
 @keyframes shimmerSweep {
   0%, 70% { transform: translateX(-150%) skewX(-20deg); }
   100% { transform: translateX(350%) skewX(-20deg); }

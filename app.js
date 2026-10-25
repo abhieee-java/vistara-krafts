@@ -1293,9 +1293,9 @@
             </div>
             <button type="button" onclick="window.navigateTo('product', '${esc(p.id)}')" class="px-1.5 py-0.5 inline-flex items-center text-[11px] font-semibold text-secondary hover:underline cursor-pointer shrink-0">Details</button>
           </div>
-          <button type="button" onclick="window.handleQuickAdd(this, '${esc(p.id)}')" ${p.inStock === false ? 'disabled' : ''} class="btn-shimmer sotd-magnetic w-full h-8.5 sm:h-9 rounded-lg ${p.inStock === false ? 'bg-surface-container text-on-surface-variant cursor-not-allowed opacity-60' : 'bg-primary hover:bg-primary-container text-on-primary cursor-pointer'} font-label-md text-xs font-semibold flex items-center justify-center gap-1.5 active:scale-[0.98] transition-all shadow-2xs">
-            <span class="material-symbols-outlined text-[15px] shrink-0" aria-hidden="true">${p.inStock === false ? 'block' : 'add_shopping_cart'}</span>
-            <span class="truncate">${p.inStock === false ? 'Sold Out' : 'Quick Add'}</span>
+          <button type="button" onclick="window.handleQuickAdd(this, '${esc(p.id)}')" ${p.inStock === false ? 'disabled' : ''} class="catalog-quick-add-btn btn-shimmer sotd-magnetic w-full h-9 py-2 px-3 rounded-lg ${p.inStock === false ? 'bg-surface-container text-on-surface-variant cursor-not-allowed opacity-60' : 'bg-primary hover:bg-primary-container text-on-primary cursor-pointer'} font-label-md text-xs font-semibold flex items-center justify-center gap-2 active:scale-[0.98] transition-all shadow-2xs">
+            <span class="material-symbols-outlined text-[16px] shrink-0 leading-none" aria-hidden="true">${p.inStock === false ? 'block' : 'add_shopping_cart'}</span>
+            <span class="truncate leading-none">${p.inStock === false ? 'Sold Out' : 'Quick Add'}</span>
           </button>
         </div>
         ${hasVarieties ? `
