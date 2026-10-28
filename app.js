@@ -8839,6 +8839,18 @@
     initSupabaseAuthListener();
     handleRouteChange();
 
+    const logoLink = document.getElementById('brand-logo-link');
+    if (logoLink) {
+      logoLink.addEventListener('click', (e) => {
+        if (window.location.hash === '#/home' || window.location.hash === '' || window.location.hash === '#') {
+          e.preventDefault();
+          if (typeof window.replayVkSplash === 'function') {
+            window.replayVkSplash();
+          }
+        }
+      });
+    }
+
     if (Store && typeof Store.getSettings === 'function') {
       window.applyStorefrontSettings(Store.getSettings());
     }

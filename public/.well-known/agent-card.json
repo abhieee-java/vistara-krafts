@@ -1,0 +1,21 @@
+{
+  "name": "Vistāra Krafts Agent Manifest",
+  "description": "Artisanal floral preservation keepsakes and optical epoxy resin crafting materials atelier in Guwahati, Assam, India.",
+  "url": "https://www.vistarakrafts.com/",
+  "version": "1.0.0",
+  "provider": {
+    "name": "Vistāra Krafts (@resin.art.memories)",
+    "url": "https://www.vistarakrafts.com/"
+  },
+  "documentation": {
+    "llms": "https://www.vistarakrafts.com/llms.txt",
+    "llms_full": "https://www.vistarakrafts.com/llms-full.txt",
+    "markdown": "https://www.vistarakrafts.com/index.md",
+    "sitemap": "https://www.vistarakrafts.com/sitemap.xml"
+  },
+  "capabilities": {
+    "catalog_search": true,
+    "product_recommendations": true,
+    "shipping_inquiry": true
+  }
+}
