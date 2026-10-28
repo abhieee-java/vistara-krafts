@@ -16,7 +16,23 @@
       <image:title>Vistāra Krafts Official VK Monogram — Bridal Varmala Preservation &amp; Optical Epoxy Atelier</image:title>
     </image:image>
   </url>
-    <url>
+      <url>
+    <loc>https://www.vistarakrafts.com/about</loc>
+    <lastmod>2026-10-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.80</priority>
+    <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.vistarakrafts.com/about" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.vistarakrafts.com/about" />
+  </url>
+  <url>
+    <loc>https://www.vistarakrafts.com/editorial-policy</loc>
+    <lastmod>2026-10-26</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+    <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.vistarakrafts.com/editorial-policy" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.vistarakrafts.com/editorial-policy" />
+  </url>
+<url>
     <loc>https://www.vistarakrafts.com/privacy</loc>
     <lastmod>2026-10-28</lastmod>
     <changefreq>monthly</changefreq>
