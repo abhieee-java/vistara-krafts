@@ -16,15 +16,15 @@
   "rewrites": [
     {
       "source": "/verify",
-      "destination": "/index.html"
+      "destination": "/"
     },
     {
       "source": "/confirm",
-      "destination": "/index.html"
+      "destination": "/"
     },
     {
       "source": "/auth/:path*",
-      "destination": "/index.html"
+      "destination": "/"
     }
   ],
   "headers": [
