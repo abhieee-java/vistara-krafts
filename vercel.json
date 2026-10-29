@@ -13,6 +13,12 @@
       "permanent": true
     }
   ],
+  "rewrites": [
+    {
+      "source": "/(verify|confirm|auth/.*)",
+      "destination": "/index.html"
+    }
+  ],
   "headers": [
     {
       "source": "/assets/(.*)",

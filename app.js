@@ -920,6 +920,24 @@
       window.location.href = './terms.html';
       return;
     }
+    if (route === 'verify' || route === 'confirm' || route === 'auth') {
+      AppState.currentRoute = 'home';
+      setTimeout(() => {
+        const email = queryParams?.email || '';
+        const code = queryParams?.code || queryParams?.token || '';
+        if (typeof window.openCloudflareAuthModal === 'function') {
+          window.openCloudflareAuthModal();
+        }
+        if (typeof window.openEmailOtpStep === 'function') {
+          window.openEmailOtpStep(email, {});
+          if (code) {
+            const otpInput = document.getElementById('cf-auth-otp-input');
+            if (otpInput) otpInput.value = code;
+          }
+        }
+      }, 150);
+      return;
+    }
     const validRoutes = ['home', 'catalog', 'product', 'social', 'custom-studio', 'wishlist', 'cart', 'account', 'orders', 'profile', '404', '500'];
 
     if (!validRoutes.includes(route)) {
@@ -7335,24 +7353,58 @@
 
     let verifySuccess = false;
     let verifyErrorMsg = '';
+    let verifyRes = null;
 
     const sb = window.VistaraSupabase?.getClient?.();
     if (sb && sb.auth && typeof sb.auth.verifyOtp === 'function') {
       try {
-        let verifyRes = await sb.auth.verifyOtp({ email, token, type: 'signup' });
+        verifyRes = await sb.auth.verifyOtp({ email, token, type: 'signup' });
         if (verifyRes.error) {
           verifyRes = await sb.auth.verifyOtp({ email, token, type: 'email' });
         }
-        if (verifyRes.error) {
-          verifyErrorMsg = verifyRes.error.message || 'Invalid or expired 6-digit code. Please try again.';
-        } else {
+        if (!verifyRes.error && verifyRes.data) {
           verifySuccess = true;
+        } else {
+          verifyErrorMsg = verifyRes.error?.message || '';
         }
       } catch (err) {
-        verifyErrorMsg = err?.message || 'Verification failed. Please retry.';
+        verifyErrorMsg = err?.message || '';
       }
     } else {
       verifySuccess = true;
+    }
+
+    // Fallback & Guarantee: Verify through Vistāra Resend OTP verification service
+    if (!verifySuccess) {
+      try {
+        const apiRes = await fetch('/api/verify-email-otp', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, code: token, password })
+        });
+        const apiData = await apiRes.json();
+        if (apiData && apiData.success) {
+          verifySuccess = true;
+          verifyErrorMsg = '';
+          if (apiData.session) {
+            verifyRes = { data: { session: apiData.session, user: apiData.session.user } };
+            if (sb && sb.auth && typeof sb.auth.setSession === 'function') {
+              try { await sb.auth.setSession(apiData.session); } catch (_e) {}
+            }
+          } else if (password && sb && sb.auth && typeof sb.auth.signInWithPassword === 'function') {
+            try {
+              const signInRes = await sb.auth.signInWithPassword({ email, password });
+              if (signInRes.data?.session) {
+                verifyRes = signInRes;
+              }
+            } catch (_e) {}
+          }
+        } else if (apiData && apiData.error) {
+          verifyErrorMsg = apiData.error;
+        }
+      } catch (apiErr) {
+        if (!verifyErrorMsg) verifyErrorMsg = apiErr?.message || 'Verification failed. Please retry.';
+      }
     }
 
     if (submitBtn) {
@@ -7439,6 +7491,22 @@
   window.resendEmailOtp = async function () {
     const email = pendingEmailOtpPayload?.email || document.getElementById('cf-auth-email')?.value.trim() || '';
     if (!email) return;
+    const name = pendingEmailOtpPayload?.name || '';
+
+    // 1. Dispatch 6-digit OTP code directly to user's inbox via Resend
+    try {
+      fetch('/api/send-verification-otp', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, name })
+      }).then(r => r.json()).then(resData => {
+        if (resData?.success) {
+          console.log('[Vistāra OTP] Fresh 6-digit code dispatched via Resend to', email);
+        }
+      }).catch(err => console.warn('[Vistāra OTP] Resend dispatch notice:', err));
+    } catch (_e) {}
+
+    // 2. Also trigger Supabase native resend in parallel
     const sb = window.VistaraSupabase?.getClient?.();
     if (sb && sb.auth) {
       try {
@@ -7526,6 +7594,19 @@
           }
           if (data && data.user && !data.session) {
             window.openEmailOtpStep(email, { name, phone, password });
+            // Dispatch 6-digit OTP code directly to user's inbox via Resend
+            try {
+              fetch('/api/send-verification-otp', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, name })
+              }).then(r => r.json()).then(resData => {
+                if (resData?.success) {
+                  console.log('[Vistāra OTP] 6-digit verification code sent via Resend to', email);
+                }
+              }).catch(e => console.warn('[Vistāra OTP] Dispatch notice:', e));
+            } catch (_e) {}
+
             window.showToast('Verification Code Sent', `We sent a 6-digit OTP code to ${email}`);
             return;
           }
@@ -7536,6 +7617,14 @@
             const errMsg = String(error.message || '').toLowerCase();
             if (errMsg.includes('email not confirmed') || errMsg.includes('not verified')) {
               window.openEmailOtpStep(email, { password });
+              // Dispatch 6-digit OTP code directly via Resend so patron receives the code immediately
+              try {
+                fetch('/api/send-verification-otp', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ email })
+                }).catch(() => {});
+              } catch (_e) {}
               try { await sb.auth.resend({ type: 'signup', email }); } catch (_e) {}
               window.showToast('Verification Required', `Please enter the 6-digit OTP code sent to ${email}`);
               return;
@@ -8700,11 +8789,16 @@
 
       if (oauthError || oauthErrorDesc) {
         console.warn('[Vistāra Auth] OAuth callback error detected:', { error: oauthError, description: oauthErrorDesc });
+        const isExpiredOtp = String(oauthErrorDesc || oauthErrorCode || '').toLowerCase().includes('expired') ||
+                             String(oauthErrorDesc || '').toLowerCase().includes('link is invalid') ||
+                             oauthErrorCode === 'otp_expired';
         const isCancel = String(oauthErrorDesc || oauthError || '').toLowerCase().includes('denied') ||
                          String(oauthErrorDesc || oauthError || '').toLowerCase().includes('cancel');
-        const userMsg = isCancel
-          ? 'Google sign-in was cancelled. You can sign in anytime using Google or your email.'
-          : (oauthErrorDesc || 'Sign-in could not be completed. Please try again.');
+        const userMsg = isExpiredOtp
+          ? 'Your email verification link expired. Please enter the 6-digit verification code sent to your email to complete registration.'
+          : (isCancel
+              ? 'Google sign-in was cancelled. You can sign in anytime using Google or your email.'
+              : (oauthErrorDesc || 'Sign-in could not be completed. Please try again.'));
 
         const errEl = document.getElementById('cf-auth-error');
         if (errEl) {
@@ -8712,7 +8806,15 @@
           errEl.classList.remove('hidden');
         }
         if (typeof window.showToast === 'function') {
-          window.showToast('Sign-In Notice', userMsg);
+          window.showToast(isExpiredOtp ? 'Verification Link Notice' : 'Sign-In Notice', userMsg);
+        }
+
+        if (isExpiredOtp) {
+          setTimeout(() => {
+            if (typeof window.openCloudflareAuthModal === 'function') {
+              window.openCloudflareAuthModal();
+            }
+          }, 200);
         }
 
         try {

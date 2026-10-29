@@ -399,4 +399,235 @@ You received this email because you created an account on vistarakrafts.com.
       to: email
     };
   }
+
+  /**
+   * Builds the responsive, premium HTML email containing the 6-digit OTP code.
+   */
+  static buildOtpEmailHtml({ name, code, siteUrl = 'https://vistarakrafts.com' }) {
+    const greetingName = (name && String(name).trim().length > 0 && String(name).trim().toLowerCase() !== 'patron')
+      ? String(name).trim()
+      : '';
+    const greeting = greetingName ? `Dear ${greetingName},` : 'Dear Patron,';
+
+    return `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vistāra Krafts Verification Code</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: #f7f6f2;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      color: #1a1a1e;
+      -webkit-font-smoothing: antialiased;
+    }
+    .wrapper {
+      width: 100%;
+      table-layout: fixed;
+      background-color: #f7f6f2;
+      padding-top: 40px;
+      padding-bottom: 40px;
+    }
+    .container {
+      max-width: 560px;
+      margin: 0 auto;
+      background-color: #ffffff;
+      border-radius: 16px;
+      border: 1px solid #e7e5df;
+      overflow: hidden;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+    }
+    .header-bar {
+      background-color: #121217;
+      padding: 32px 28px 26px;
+      text-align: center;
+    }
+    .brand-title {
+      color: #ffffff;
+      font-size: 22px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      font-weight: 600;
+      margin: 0;
+      font-family: 'Playfair Display', Georgia, serif;
+    }
+    .brand-tagline {
+      color: #c4a482;
+      font-size: 11px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      margin-top: 6px;
+      margin-bottom: 0;
+      font-weight: 500;
+    }
+    .content {
+      padding: 36px 32px 30px;
+    }
+    .greeting {
+      font-size: 17px;
+      font-weight: 600;
+      color: #121217;
+      margin-top: 0;
+      margin-bottom: 14px;
+    }
+    .body-p {
+      font-size: 14px;
+      line-height: 1.6;
+      color: #4a4a52;
+      margin-top: 0;
+      margin-bottom: 16px;
+    }
+    .otp-card {
+      background-color: #faf8f5;
+      border: 2px dashed #d4af37;
+      border-radius: 12px;
+      padding: 24px 20px;
+      text-align: center;
+      margin: 24px 0;
+    }
+    .otp-label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.2em;
+      color: #725a19;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    .otp-code {
+      font-size: 38px;
+      font-weight: 800;
+      letter-spacing: 8px;
+      color: #121217;
+      font-family: 'Space Grotesk', -apple-system, monospace;
+      margin: 6px 0;
+    }
+    .otp-expiry {
+      font-size: 12px;
+      color: #76757f;
+      margin-top: 6px;
+    }
+    .footer-bar {
+      background-color: #f7f6f2;
+      padding: 24px 32px;
+      text-align: center;
+      border-top: 1px solid #ebe8e1;
+      font-size: 12px;
+      color: #76757f;
+      line-height: 1.5;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+    <table class="container" width="100%" cellpadding="0" cellspacing="0" align="center">
+      <tr>
+        <td class="header-bar">
+          <div class="brand-title">Vistāra Krafts</div>
+          <div class="brand-tagline">Epoxy &amp; Keepsake Atelier</div>
+        </td>
+      </tr>
+      <tr>
+        <td class="content">
+          <div class="greeting">${greeting}</div>
+          <p class="body-p">
+            Thank you for registering with Vistāra Krafts. To verify your email address and securely activate your account, please enter the following 6-digit verification code:
+          </p>
+          <div class="otp-card">
+            <div class="otp-label">Your Verification Code</div>
+            <div class="otp-code">${code}</div>
+            <div class="otp-expiry">Valid for 15 minutes • Do not share this code with anyone</div>
+          </div>
+          <p class="body-p">
+            Please enter this code on the website screen to complete your registration. If you did not create a Vistāra Krafts account, you can safely ignore this email.
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td class="footer-bar">
+          <div>© 2026 Vistāra Krafts (@resin.art.memories). All rights reserved.</div>
+          <div style="margin-top: 4px;">Guwahati, Assam, India • ISO 9001:2015 Certified Atelier</div>
+        </td>
+      </tr>
+    </table>
+  </div>
+</body>
+</html>`;
+  }
+
+  /**
+   * Builds the plain-text fallback version of the OTP email.
+   */
+  static buildOtpEmailText({ name, code }) {
+    const greetingName = (name && String(name).trim().length > 0 && String(name).trim().toLowerCase() !== 'patron')
+      ? String(name).trim()
+      : '';
+    const greeting = greetingName ? `Dear ${greetingName},` : 'Dear Patron,';
+
+    return `${greeting}
+
+Thank you for registering with Vistāra Krafts.
+
+Your 6-digit verification code is: ${code}
+
+This code is valid for 15 minutes. Enter this code on the website screen to complete your registration.
+
+If you did not request this verification code, please ignore this email.
+
+Warm regards,
+The Vistāra Krafts Atelier Team
+© 2026 Vistāra Krafts (@resin.art.memories)
+Guwahati, Assam, India
+`;
+  }
+
+  /**
+   * Sends the 6-digit verification OTP email via Resend API.
+   */
+  static async sendVerificationOtpEmail({ email, name, code }) {
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      throw new Error('A valid recipient email address is required.');
+    }
+    if (!code || String(code).trim().length !== 6) {
+      throw new Error('A valid 6-digit verification code is required.');
+    }
+    if (!CONFIG.RESEND_API_KEY) {
+      throw new Error('Resend API key is not configured on the server.');
+    }
+
+    const htmlContent = this.buildOtpEmailHtml({ name, code, siteUrl: CONFIG.SITE_URL });
+    const textContent = this.buildOtpEmailText({ name, code });
+    const subject = `Your Vistāra Krafts Verification Code: ${code}`;
+
+    const resendRes = await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${CONFIG.RESEND_API_KEY}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        from: CONFIG.RESEND_FROM_EMAIL || 'Vistāra Krafts <welcome@vistarakrafts.com>',
+        to: [email],
+        subject,
+        html: htmlContent,
+        text: textContent
+      })
+    });
+
+    const resendData = await resendRes.json();
+    if (!resendRes.ok || resendData.error) {
+      const errorMsg = resendData.error?.message || resendData.message || 'Resend API dispatch failed';
+      console.error('[EmailService] Resend OTP Error:', errorMsg);
+      throw new Error(`Failed to deliver OTP email via Resend: ${errorMsg}`);
+    }
+
+    console.log(`[EmailService] OTP email successfully dispatched via Resend to ${email} (ID: ${resendData.id})`);
+    return {
+      success: true,
+      id: resendData.id,
+      to: email
+    };
+  }
 }
