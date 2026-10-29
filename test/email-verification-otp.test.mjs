@@ -23,6 +23,12 @@ test('2. OTP Email Plain-Text Fallback: Clear code presentation', async () => {
   assert.ok(text.includes('Valid for 15 minutes') || text.includes('valid for 15 minutes'), 'Plain-text template must specify validity');
 });
 
+test('2b. Sender Identity: OTP Sender is team@vistarakrafts.com', () => {
+  const sender = EmailService.getSenderAddress(CONFIG.RESEND_OTP_FROM_EMAIL || 'Vistāra Krafts <team@vistarakrafts.com>');
+  assert.ok(sender.includes('team@vistarakrafts.com'), 'Sender must use team@vistarakrafts.com');
+  assert.ok(sender.includes('Vistāra Krafts') || sender.includes('Vistara Krafts'), 'Sender must include atelier brand name');
+});
+
 test('3. Database RPC create_email_verification_code persists code', async () => {
   const testEmail = `test_otp_${Date.now()}@vistarakrafts.com`;
   const testCode = '882211';

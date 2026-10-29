@@ -6901,6 +6901,7 @@
 
   window.setEmailAuthTab = function (mode) {
     isForgotAuthMode = false;
+    window.clearAuthError?.();
     const cleanMode = mode === 'register' ? 'register' : 'signin';
     const modeInput = document.getElementById('cf-auth-mode');
     if (modeInput) modeInput.value = cleanMode;
@@ -7075,6 +7076,38 @@
     }
   };
 
+  window.showAuthError = function (msg) {
+    const box = document.getElementById('cf-auth-error-box');
+    const errEl = document.getElementById('cf-auth-error');
+    if (errEl) errEl.textContent = msg;
+    if (box) box.classList.remove('hidden');
+    else if (errEl) errEl.classList.remove('hidden');
+  };
+
+  window.clearAuthError = function () {
+    const box = document.getElementById('cf-auth-error-box');
+    const errEl = document.getElementById('cf-auth-error');
+    if (errEl) errEl.textContent = '';
+    if (box) box.classList.add('hidden');
+    else if (errEl) errEl.classList.add('hidden');
+  };
+
+  window.showOtpError = function (msg) {
+    const box = document.getElementById('cf-auth-otp-error-box');
+    const errEl = document.getElementById('cf-auth-otp-error');
+    if (errEl) errEl.textContent = msg;
+    if (box) box.classList.remove('hidden');
+    else if (errEl) errEl.classList.remove('hidden');
+  };
+
+  window.clearOtpError = function () {
+    const box = document.getElementById('cf-auth-otp-error-box');
+    const errEl = document.getElementById('cf-auth-otp-error');
+    if (errEl) errEl.textContent = '';
+    if (box) box.classList.add('hidden');
+    else if (errEl) errEl.classList.add('hidden');
+  };
+
   window.openCloudflareAuthModal = function (fromCheckout = false) {
     AppState.pendingCheckoutAfterAuth = Boolean(fromCheckout);
     isForgotAuthMode = false;
@@ -7088,13 +7121,22 @@
     if (pwd) pwd.type = 'password';
     if (icon) icon.textContent = 'visibility';
 
-    const errEl = document.getElementById('cf-auth-error');
-    if (errEl) {
-      errEl.textContent = '';
-      errEl.classList.add('hidden');
-    }
+    window.clearAuthError();
     window.closeOAuthChooser();
     window.setEmailAuthTab('signin');
+
+    // Pre-fill remembered email for fast 1-click return experience
+    try {
+      const remembered = localStorage.getItem('vk_remembered_email');
+      const emailInput = document.getElementById('cf-auth-email');
+      if (remembered && emailInput && !emailInput.value) {
+        emailInput.value = remembered;
+        setTimeout(() => { if (typeof pwd?.focus === 'function') pwd.focus(); }, 80);
+      } else if (emailInput && !emailInput.value) {
+        setTimeout(() => { if (typeof emailInput.focus === 'function') emailInput.focus(); }, 80);
+      }
+    } catch (_e) {}
+
     if (typeof window.setAuthPersona === 'function') {
       window.setAuthPersona(Store.getPersonaPreference() || AppState.feedPersona || 'all');
     }
@@ -7303,6 +7345,8 @@
   };
 
   let pendingEmailOtpPayload = null;
+  let otpListenersAttached = false;
+  let resendCooldownTimer = null;
 
   window.openEmailOtpStep = function (email, meta = {}) {
     pendingEmailOtpPayload = { email, ...meta };
@@ -7311,39 +7355,58 @@
     const otpInput = document.getElementById('cf-auth-otp-input');
     if (otpInput) {
       otpInput.value = '';
-      setTimeout(() => { if (typeof otpInput.focus === 'function') otpInput.focus(); }, 100);
+      if (!otpListenersAttached) {
+        otpListenersAttached = true;
+        // Auto-advance / Auto-submit on typing all 6 digits
+        otpInput.addEventListener('input', () => {
+          const digits = otpInput.value.replace(/\D/g, '').slice(0, 6);
+          if (otpInput.value !== digits) otpInput.value = digits;
+          if (digits.length === 6) {
+            window.clearOtpError();
+            setTimeout(() => {
+              if (otpInput.value.length === 6) window.submitEmailOtp();
+            }, 60);
+          }
+        });
+        // Auto-paste clean-up and auto-submit
+        otpInput.addEventListener('paste', (e) => {
+          e.preventDefault();
+          const paste = (e.clipboardData || window.clipboardData)?.getData('text') || '';
+          const digits = paste.replace(/\D/g, '').slice(0, 6);
+          if (digits) {
+            otpInput.value = digits;
+            if (digits.length === 6) {
+              window.clearOtpError();
+              setTimeout(() => window.submitEmailOtp(), 60);
+            }
+          }
+        });
+      }
+      setTimeout(() => { if (typeof otpInput.focus === 'function') otpInput.focus(); }, 120);
     }
-    const errEl = document.getElementById('cf-auth-otp-error');
-    if (errEl) {
-      errEl.textContent = '';
-      errEl.classList.add('hidden');
-    }
+    window.clearOtpError();
     window.showAuthStep('otp');
   };
 
   window.submitEmailOtp = async function (ev) {
     if (ev && typeof ev.preventDefault === 'function') ev.preventDefault();
     const otpInput = document.getElementById('cf-auth-otp-input');
-    const otpError = document.getElementById('cf-auth-otp-error');
     const submitBtn = document.getElementById('cf-auth-otp-submit-btn');
     const token = (otpInput?.value || '').trim();
 
     if (!token || token.length < 6) {
-      if (otpError) {
-        otpError.textContent = 'Please enter the complete 6-digit code from your email.';
-        otpError.classList.remove('hidden');
-      }
+      window.showOtpError('Please enter the complete 6-digit code sent to your email.');
       return;
     }
 
-    if (otpError) {
-      otpError.textContent = '';
-      otpError.classList.add('hidden');
-    }
+    window.clearOtpError();
 
     if (submitBtn) {
       submitBtn.disabled = true;
-      submitBtn.textContent = 'Verifying Code...';
+      submitBtn.innerHTML = `
+        <span class="inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin shrink-0 mr-2 align-middle"></span>
+        <span>Verifying Code...</span>
+      `;
     }
 
     const email = pendingEmailOtpPayload?.email || document.getElementById('cf-auth-email')?.value.trim() || '';
@@ -7413,10 +7476,16 @@
     }
 
     if (!verifySuccess) {
-      if (otpError) {
-        otpError.textContent = verifyErrorMsg || 'Invalid 6-digit verification code.';
-        otpError.classList.remove('hidden');
+      let friendlyOtpError = verifyErrorMsg || 'The 6-digit verification code is invalid.';
+      const lower = friendlyOtpError.toLowerCase();
+      if (lower.includes('invalid') || lower.includes('not match') || lower.includes('wrong')) {
+        friendlyOtpError = 'The 6-digit code does not match. Please check your latest email from team@vistarakrafts.com and try again.';
+      } else if (lower.includes('expired') || lower.includes('no active')) {
+        friendlyOtpError = 'This verification code has expired (valid for 15 minutes). Tap "Resend Code" below to receive a new one.';
+      } else if (lower.includes('too many') || lower.includes('attempts')) {
+        friendlyOtpError = 'Too many incorrect attempts. For your security, this code was locked. Tap "Resend Code" below to receive a fresh one.';
       }
+      window.showOtpError(friendlyOtpError);
       return;
     }
 
@@ -7493,6 +7562,31 @@
     if (!email) return;
     const name = pendingEmailOtpPayload?.name || '';
 
+    const resendBtn = document.getElementById('cf-auth-otp-resend-btn');
+    if (resendBtn && resendBtn.disabled) return;
+
+    if (resendBtn) {
+      resendBtn.disabled = true;
+      resendBtn.classList.add('opacity-50', 'cursor-not-allowed');
+      let countdown = 30;
+      resendBtn.textContent = `Resend in ${countdown}s`;
+      if (resendCooldownTimer) clearInterval(resendCooldownTimer);
+      resendCooldownTimer = setInterval(() => {
+        countdown--;
+        if (countdown > 0) {
+          resendBtn.textContent = `Resend in ${countdown}s`;
+        } else {
+          clearInterval(resendCooldownTimer);
+          resendCooldownTimer = null;
+          resendBtn.disabled = false;
+          resendBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+          resendBtn.textContent = 'Resend Code';
+        }
+      }, 1000);
+    }
+
+    window.clearOtpError();
+
     // 1. Dispatch 6-digit OTP code directly to user's inbox via Resend
     try {
       fetch('/api/send-verification-otp', {
@@ -7523,7 +7617,7 @@
     if (isForgotAuthMode) {
       const email = document.getElementById('cf-auth-email')?.value.trim() || '';
       if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-        window.showToast('Enter Valid Email', 'Please enter your registered email address to receive password reset instructions.');
+        window.showAuthError('Please enter a valid email address so we can send your password reset instructions.');
         return;
       }
       const sb = window.VistaraSupabase?.getClient?.();
@@ -7550,169 +7644,199 @@
     let pincode = document.getElementById('cf-auth-pincode')?.value.trim() || '';
     const personaPreference = document.getElementById('cf-auth-selected-persona')?.value || 'all';
 
-    const errEl = document.getElementById('cf-auth-error');
+    window.clearAuthError();
 
-    // Live Supabase Auth Integration for Email & 6-Digit OTP Verification
-    if (provider === 'email' && !window.__VK_TEST_ENV__ && typeof window.process === 'undefined') {
-      const sb = window.VistaraSupabase?.getClient?.();
-      if (sb && sb.auth) {
-        if (mode === 'register') {
-          if (!name) {
-            if (errEl) {
-              errEl.textContent = 'Please enter your full name to create your account.';
-              errEl.classList.remove('hidden');
-            }
-            return;
-          }
-          if (!password || password.length < 6) {
-            if (errEl) {
-              errEl.textContent = 'Password must be at least 6 characters.';
-              errEl.classList.remove('hidden');
-            }
-            return;
-          }
-          const { data, error } = await sb.auth.signUp({
-            email,
-            password,
-            options: {
-              data: { full_name: name, phone }
-            }
-          });
-          if (error) {
-            const msg = String(error.message || '').toLowerCase();
-            let friendlyError = error.message;
-            if (msg.includes('already registered') || msg.includes('already exists')) {
-              friendlyError = 'An account with this email already exists. Please sign in below or continue with Google.';
-              window.setEmailAuthTab('signin');
-            }
-            if (errEl) {
-              errEl.textContent = friendlyError;
-              errEl.classList.remove('hidden');
-            }
-            window.showToast('Registration Notice', friendlyError);
-            return;
-          }
-          if (data && data.user && !data.session) {
-            window.openEmailOtpStep(email, { name, phone, password });
-            // Dispatch 6-digit OTP code directly to user's inbox via Resend
-            try {
-              fetch('/api/send-verification-otp', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email, name })
-              }).then(r => r.json()).then(resData => {
-                if (resData?.success) {
-                  console.log('[Vistāra OTP] 6-digit verification code sent via Resend to', email);
-                }
-              }).catch(e => console.warn('[Vistāra OTP] Dispatch notice:', e));
-            } catch (_e) {}
+    // Fast Client-Side Validation with Empathetic Explanations
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      window.showAuthError('Please enter a complete email address (e.g. name@example.com) to continue.');
+      const el = document.getElementById('cf-auth-email');
+      if (typeof el?.focus === 'function') el.focus();
+      return;
+    }
 
-            window.showToast('Verification Code Sent', `We sent a 6-digit OTP code to ${email}`);
-            return;
-          }
-        } else {
-          // Sign In mode: verify credentials with Supabase
-          const { data, error } = await sb.auth.signInWithPassword({ email, password });
-          if (error) {
-            const errMsg = String(error.message || '').toLowerCase();
-            if (errMsg.includes('email not confirmed') || errMsg.includes('not verified')) {
-              window.openEmailOtpStep(email, { password });
-              // Dispatch 6-digit OTP code directly via Resend so patron receives the code immediately
+    if (mode === 'register' && !name) {
+      window.showAuthError('Please enter your full name so our atelier artisans know who we are crafting for.');
+      const el = document.getElementById('cf-auth-name');
+      if (typeof el?.focus === 'function') el.focus();
+      return;
+    }
+
+    if (!password || password.length < 6) {
+      window.showAuthError(
+        mode === 'register'
+          ? 'To keep your bespoke orders and account secure, your password must be at least 6 characters.'
+          : 'Please enter your password (minimum 6 characters).'
+      );
+      const el = document.getElementById('cf-auth-password');
+      if (typeof el?.focus === 'function') el.focus();
+      return;
+    }
+
+    // Remember Me persistence
+    const rememberMeVal = document.getElementById('cf-auth-remember')?.value;
+    if (rememberMeVal === '1') {
+      try { localStorage.setItem('vk_remembered_email', email); } catch (_e) {}
+    } else {
+      try { localStorage.removeItem('vk_remembered_email'); } catch (_e) {}
+    }
+
+    const submitBtn = document.getElementById('cf-auth-submit-btn');
+    const originalBtnText = submitBtn ? submitBtn.innerHTML : (mode === 'register' ? 'Create Account' : 'Sign In');
+    if (submitBtn) {
+      submitBtn.disabled = true;
+      submitBtn.classList.add('opacity-85', 'cursor-wait');
+      submitBtn.innerHTML = `
+        <span class="inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin shrink-0 mr-2 align-middle"></span>
+        <span>${mode === 'register' ? 'Creating Account...' : 'Signing In...'}</span>
+      `;
+    }
+
+    try {
+      // Live Supabase Auth Integration for Email & 6-Digit OTP Verification
+      if (provider === 'email' && !window.__VK_TEST_ENV__ && typeof window.process === 'undefined') {
+        const sb = window.VistaraSupabase?.getClient?.();
+        if (sb && sb.auth) {
+          if (mode === 'register') {
+            const { data, error } = await sb.auth.signUp({
+              email,
+              password,
+              options: {
+                data: { full_name: name, phone }
+              }
+            });
+            if (error) {
+              const msg = String(error.message || '').toLowerCase();
+              let friendlyError = error.message;
+              if (msg.includes('already registered') || msg.includes('already exists')) {
+                friendlyError = 'An account with this email is already registered. We have switched you to Sign In—please enter your password or continue with Google.';
+                window.setEmailAuthTab('signin');
+              } else if (msg.includes('rate limit') || msg.includes('too many')) {
+                friendlyError = 'Too many attempts. For your safety, please wait 60 seconds before trying again.';
+              }
+              window.showAuthError(friendlyError);
+              window.showToast('Registration Notice', friendlyError);
+              return;
+            }
+            if (data && data.user && !data.session) {
+              window.openEmailOtpStep(email, { name, phone, password });
+              // Dispatch 6-digit OTP code directly to user's inbox via Resend
               try {
                 fetch('/api/send-verification-otp', {
                   method: 'POST',
                   headers: { 'Content-Type': 'application/json' },
-                  body: JSON.stringify({ email })
-                }).catch(() => {});
+                  body: JSON.stringify({ email, name })
+                }).then(r => r.json()).then(resData => {
+                  if (resData?.success) {
+                    console.log('[Vistāra OTP] 6-digit verification code sent via Resend to', email);
+                  }
+                }).catch(e => console.warn('[Vistāra OTP] Dispatch notice:', e));
               } catch (_e) {}
-              try { await sb.auth.resend({ type: 'signup', email }); } catch (_e) {}
-              window.showToast('Verification Required', `Please enter the 6-digit OTP code sent to ${email}`);
+
+              window.showToast('Verification Code Sent', `We sent a 6-digit OTP code to ${email}`);
               return;
             }
-            let friendlyMsg = error.message;
-            if (errMsg.includes('invalid login credentials') || errMsg.includes('invalid credentials')) {
-              friendlyMsg = 'Incorrect email or password. If you originally signed in with Google, please click Continue with Google.';
-            }
-            if (errEl) {
-              errEl.textContent = friendlyMsg;
-              errEl.classList.remove('hidden');
-            }
-            window.showToast('Sign-In Notice', friendlyMsg);
-            return;
-          }
-          if (data && data.user) {
-            let userProfile = null;
-            try {
-              if (window.VistaraSupabase && typeof window.VistaraSupabase.fetchProfile === 'function') {
-                userProfile = await window.VistaraSupabase.fetchProfile(data.user.id);
+          } else {
+            // Sign In mode: verify credentials with Supabase
+            const { data, error } = await sb.auth.signInWithPassword({ email, password });
+            if (error) {
+              const errMsg = String(error.message || '').toLowerCase();
+              if (errMsg.includes('email not confirmed') || errMsg.includes('not verified')) {
+                window.openEmailOtpStep(email, { password });
+                // Dispatch 6-digit OTP code directly via Resend so patron receives the code immediately
+                try {
+                  fetch('/api/send-verification-otp', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email })
+                  }).catch(() => {});
+                } catch (_e) {}
+                try { await sb.auth.resend({ type: 'signup', email }); } catch (_e) {}
+                window.showToast('Verification Required', `Please enter the 6-digit OTP code sent to ${email}`);
+                return;
               }
-            } catch (_e) {}
-            if (userProfile) {
-              if (!name && userProfile.full_name) name = userProfile.full_name;
-              if (!phone && userProfile.phone) phone = userProfile.phone;
-              if (!address && userProfile.address) address = userProfile.address;
-              if (!pincode && userProfile.pincode) pincode = userProfile.pincode;
+              let friendlyMsg = error.message;
+              if (errMsg.includes('invalid login credentials') || errMsg.includes('invalid credentials')) {
+                friendlyMsg = 'The email or password you entered is incorrect. Double-check your spelling, or if you originally signed in with Google, tap "Continue with Google" below.';
+              } else if (errMsg.includes('rate limit') || errMsg.includes('too many')) {
+                friendlyMsg = 'Too many sign-in attempts. Please wait 60 seconds before trying again.';
+              }
+              window.showAuthError(friendlyMsg);
+              window.showToast('Sign-In Notice', friendlyMsg);
+              return;
+            }
+            if (data && data.user) {
+              let userProfile = null;
+              try {
+                if (window.VistaraSupabase && typeof window.VistaraSupabase.fetchProfile === 'function') {
+                  userProfile = await window.VistaraSupabase.fetchProfile(data.user.id);
+                }
+              } catch (_e) {}
+              if (userProfile) {
+                if (!name && userProfile.full_name) name = userProfile.full_name;
+                if (!phone && userProfile.phone) phone = userProfile.phone;
+                if (!address && userProfile.address) address = userProfile.address;
+                if (!pincode && userProfile.pincode) pincode = userProfile.pincode;
+              }
             }
           }
         }
       }
-    }
 
-    const res = Store.loginPatron({
-      provider,
-      mode,
-      email,
-      password,
-      name,
-      phone,
-      address,
-      pincode,
-      personaPreference,
-      userId: (typeof data !== 'undefined' && data?.user?.id) || '',
-      credential: lastGisCredential
-    });
+      const res = Store.loginPatron({
+        provider,
+        mode,
+        email,
+        password,
+        name,
+        phone,
+        address,
+        pincode,
+        personaPreference,
+        userId: (typeof data !== 'undefined' && data?.user?.id) || '',
+        credential: lastGisCredential
+      });
 
-    if (typeof Store.syncOrdersFromSupabase === 'function') {
-      try { Store.syncOrdersFromSupabase(); } catch (_e) {}
-    }
-
-    if (!res.valid) {
-      if (errEl) {
-        errEl.textContent = res.message;
-        errEl.classList.remove('hidden');
+      if (typeof Store.syncOrdersFromSupabase === 'function') {
+        try { Store.syncOrdersFromSupabase(); } catch (_e) {}
       }
-      window.showToast('Sign-In Notice', res.message);
-      return;
-    }
 
-    if (errEl) {
-      errEl.textContent = '';
-      errEl.classList.add('hidden');
-    }
+      if (!res.valid) {
+        window.showAuthError(res.message);
+        window.showToast('Sign-In Notice', res.message);
+        return;
+      }
 
-    window.closeOAuthChooser();
+      window.clearAuthError();
+      window.closeOAuthChooser();
 
-    const shouldOpenCheckout = AppState.pendingCheckoutAfterAuth;
-    if (shouldOpenCheckout) {
-      AppState.pendingCheckoutAfterAuth = false;
-      document.getElementById('cloudflare-auth-modal')?.classList.add('hidden');
-      syncBodyModalLock();
-      AppState.feedPersona = Store.getPersonaPreference() || personaPreference;
-      updateGlobalBadges();
-      renderActiveView();
-      window.showToast(`Signed in as ${res.session.name}`, `Verified via ${provider.toUpperCase()}`);
-      window.openCheckoutModal();
-      return;
-    }
+      const shouldOpenCheckout = AppState.pendingCheckoutAfterAuth;
+      if (shouldOpenCheckout) {
+        AppState.pendingCheckoutAfterAuth = false;
+        document.getElementById('cloudflare-auth-modal')?.classList.add('hidden');
+        syncBodyModalLock();
+        AppState.feedPersona = Store.getPersonaPreference() || personaPreference;
+        updateGlobalBadges();
+        renderActiveView();
+        window.showToast(`Signed in as ${res.session.name}`, `Verified via ${provider.toUpperCase()}`);
+        window.openCheckoutModal();
+        return;
+      }
 
-    window.showToast(mode === 'register' ? `Account Created, ${res.session.name}! ✨` : `Signed in as ${res.session.name}! ✨`);
-    if (typeof window.finishLoginAndNavigate === 'function') {
-      window.finishLoginAndNavigate(res.session);
-    } else {
-      document.getElementById('cloudflare-auth-modal')?.classList.add('hidden');
-      syncBodyModalLock();
-      updateGlobalBadges();
-      renderActiveView();
+      window.showToast(mode === 'register' ? `Account Created, ${res.session.name}! ✨` : `Signed in as ${res.session.name}! ✨`);
+      if (typeof window.finishLoginAndNavigate === 'function') {
+        window.finishLoginAndNavigate(res.session);
+      } else {
+        document.getElementById('cloudflare-auth-modal')?.classList.add('hidden');
+        syncBodyModalLock();
+        updateGlobalBadges();
+        renderActiveView();
+      }
+    } finally {
+      if (submitBtn) {
+        submitBtn.disabled = false;
+        submitBtn.classList.remove('opacity-85', 'cursor-wait');
+        submitBtn.innerHTML = originalBtnText;
+      }
     }
   };
 

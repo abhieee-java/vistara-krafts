@@ -4135,7 +4135,15 @@
               </button>
             </div>
 
-            <p id="cf-auth-error" role="alert" class="hidden text-xs text-error font-semibold"></p>
+            <!-- Human-Friendly Error Banner -->
+            <div id="cf-auth-error-box" class="hidden rounded-xl bg-red-50/90 border border-red-200/80 p-3 text-xs text-red-900 transition-all duration-200 shadow-2xs">
+              <div class="flex items-start gap-2.5">
+                <span class="material-symbols-outlined text-red-600 text-base shrink-0 mt-0.5" aria-hidden="true">error</span>
+                <div class="flex-1 min-w-0">
+                  <p id="cf-auth-error" role="alert" class="font-medium leading-relaxed"></p>
+                </div>
+              </div>
+            </div>
 
             <!-- Primary Submit CTA -->
             <button type="submit" id="cf-auth-submit-btn" style="min-height: 48px; height: 48px;" class="btn-shimmer w-full min-h-[48px] h-12 rounded-xl bg-primary text-white text-xs font-bold tracking-wide shadow-md hover:bg-primary/95 active:scale-[0.99] transition cursor-pointer mt-0.5">
@@ -4226,14 +4234,22 @@
               <input id="cf-auth-otp-input" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="6" required autocomplete="one-time-code" placeholder="123456" style="min-height: 48px; height: 48px;" class="w-full h-12 min-h-[48px] px-4 rounded-xl bg-surface-container-low border border-[#e4e0d8] text-primary text-center font-mono text-xl tracking-[0.5em] font-bold focus:border-primary focus:ring-1 focus:ring-primary/20 outline-none transition box-border">
             </div>
 
-            <p id="cf-auth-otp-error" role="alert" class="hidden text-xs text-error font-semibold text-center"></p>
+            <!-- Human-Friendly OTP Error Banner -->
+            <div id="cf-auth-otp-error-box" class="hidden rounded-xl bg-red-50/90 border border-red-200/80 p-3 text-xs text-red-900 transition-all duration-200 shadow-2xs">
+              <div class="flex items-start gap-2.5">
+                <span class="material-symbols-outlined text-red-600 text-base shrink-0 mt-0.5" aria-hidden="true">error</span>
+                <div class="flex-1 min-w-0">
+                  <p id="cf-auth-otp-error" role="alert" class="font-medium leading-relaxed"></p>
+                </div>
+              </div>
+            </div>
 
             <button type="submit" id="cf-auth-otp-submit-btn" style="min-height: 48px; height: 48px;" class="btn-shimmer w-full min-h-[48px] h-12 rounded-xl bg-primary text-white text-xs font-bold tracking-wide shadow-md hover:bg-primary/95 active:scale-[0.99] transition cursor-pointer">
               Verify &amp; Continue
             </button>
 
             <div class="flex items-center justify-between text-xs pt-1 px-1">
-              <button type="button" onclick="window.resendEmailOtp()" class="text-secondary font-bold hover:text-primary hover:underline cursor-pointer">
+              <button type="button" id="cf-auth-otp-resend-btn" onclick="window.resendEmailOtp()" class="text-secondary font-bold hover:text-primary hover:underline cursor-pointer transition">
                 Resend Code
               </button>
               <button type="button" onclick="window.showAuthStep('credentials')" class="text-on-surface-variant hover:text-primary hover:underline cursor-pointer">

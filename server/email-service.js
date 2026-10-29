@@ -9,8 +9,8 @@ export class EmailService {
    * Returns a sanitized, RFC-compliant sender address for Resend API.
    * Strips any leading/trailing quotes and normalizes format to Name <email@domain>.
    */
-  static getSenderAddress() {
-    let raw = (CONFIG.RESEND_FROM_EMAIL || 'Vistāra Krafts <welcome@vistarakrafts.com>').trim();
+  static getSenderAddress(override) {
+    let raw = (override || CONFIG.RESEND_FROM_EMAIL || 'Vistāra Krafts <welcome@vistarakrafts.com>').trim();
     raw = raw.replace(/^['"]+|['"]+$/g, '').trim();
 
     const angleMatch = raw.match(/<([^>]+)>/);
@@ -24,7 +24,7 @@ export class EmailService {
       return `Vistāra Krafts <${raw}>`;
     }
 
-    return 'Vistāra Krafts <welcome@vistarakrafts.com>';
+    return override || 'Vistāra Krafts <welcome@vistarakrafts.com>';
   }
 
   /**
@@ -392,7 +392,7 @@ You received this email because you created an account on vistarakrafts.com.
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        from: this.getSenderAddress(),
+        from: this.getSenderAddress(CONFIG.RESEND_FROM_EMAIL || 'Vistāra Krafts <welcome@vistarakrafts.com>'),
         to: [email],
         subject,
         html: htmlContent,
@@ -630,7 +630,7 @@ Guwahati, Assam, India
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        from: this.getSenderAddress(),
+        from: this.getSenderAddress(CONFIG.RESEND_OTP_FROM_EMAIL || 'Vistāra Krafts <team@vistarakrafts.com>'),
         to: [email],
         subject,
         html: htmlContent,
