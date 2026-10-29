@@ -7587,29 +7587,44 @@
 
     window.clearOtpError();
 
-    // 1. Dispatch 6-digit OTP code directly to user's inbox via Resend
+    // 1. Dispatch 6-digit OTP code directly to user's inbox via Resend with rate limit handling
     try {
       fetch('/api/send-verification-otp', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, name })
-      }).then(r => r.json()).then(resData => {
-        if (resData?.success) {
-          console.log('[Vistāra OTP] Fresh 6-digit code dispatched via Resend to', email);
+      }).then(async r => {
+        const resData = await r.json().catch(() => ({}));
+        if (!r.ok || resData?.rateLimited || !resData?.success) {
+          const waitTime = resData?.retryAfter ? Math.ceil(resData.retryAfter / 60) : 15;
+          const msg = resData?.error || `You have reached the maximum of 5 verification requests. For security and to protect against abuse, please wait ${waitTime} minutes before requesting another code.`;
+          window.showOtpError(msg);
+          if (resendCooldownTimer) {
+            clearInterval(resendCooldownTimer);
+            resendCooldownTimer = null;
+          }
+          if (resendBtn) {
+            resendBtn.disabled = true;
+            resendBtn.classList.add('opacity-50', 'cursor-not-allowed');
+            resendBtn.textContent = 'Limit reached';
+          }
+          return;
+        }
+
+        console.log('[Vistāra OTP] Fresh 6-digit code dispatched via Resend to', email);
+        window.showToast('Code Resent', `A fresh 6-digit verification code has been dispatched to ${email}`);
+
+        // Also trigger Supabase native resend in background if available
+        const sb = window.VistaraSupabase?.getClient?.();
+        if (sb && sb.auth) {
+          try {
+            await sb.auth.resend({ type: 'signup', email });
+          } catch (_e) {
+            try { if (typeof sb.auth.signInWithOtp === 'function') await sb.auth.signInWithOtp({ email }); } catch (_err) {}
+          }
         }
       }).catch(err => console.warn('[Vistāra OTP] Resend dispatch notice:', err));
     } catch (_e) {}
-
-    // 2. Also trigger Supabase native resend in parallel
-    const sb = window.VistaraSupabase?.getClient?.();
-    if (sb && sb.auth) {
-      try {
-        await sb.auth.resend({ type: 'signup', email });
-      } catch (_e) {
-        try { if (typeof sb.auth.signInWithOtp === 'function') await sb.auth.signInWithOtp({ email }); } catch (_err) {}
-      }
-    }
-    window.showToast('Code Resent', `A fresh 6-digit verification code has been dispatched to ${email}`);
   };
 
   window.submitCloudflareAuthForm = async function (ev) {
@@ -7725,8 +7740,11 @@
                   method: 'POST',
                   headers: { 'Content-Type': 'application/json' },
                   body: JSON.stringify({ email, name })
-                }).then(r => r.json()).then(resData => {
-                  if (resData?.success) {
+                }).then(async r => {
+                  const resData = await r.json().catch(() => ({}));
+                  if (!r.ok || resData?.rateLimited || !resData?.success) {
+                    window.showOtpError(resData?.error || 'Rate limit reached (5 verification attempts maximum). Please wait before requesting another code.');
+                  } else if (resData?.success) {
                     console.log('[Vistāra OTP] 6-digit verification code sent via Resend to', email);
                   }
                 }).catch(e => console.warn('[Vistāra OTP] Dispatch notice:', e));
@@ -7748,6 +7766,11 @@
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ email })
+                  }).then(async r => {
+                    const resData = await r.json().catch(() => ({}));
+                    if (!r.ok || resData?.rateLimited || !resData?.success) {
+                      window.showOtpError(resData?.error || 'Rate limit reached (5 verification attempts maximum). Please wait before requesting another code.');
+                    }
                   }).catch(() => {});
                 } catch (_e) {}
                 try { await sb.auth.resend({ type: 'signup', email }); } catch (_e) {}

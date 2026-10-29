@@ -1,10 +1,15 @@
 import { CONFIG } from '../server/config.js';
+import { extractClientIp, evaluateRateLimit, commitRateLimitEntry } from './send-verification-otp.js';
+
+const verifyIpHistory = new Map();
+const MAX_VERIFY_ATTEMPTS = 15;
+const VERIFY_WINDOW_MS = 15 * 60 * 1000;
 
 export default async function handler(req, res) {
   // CORS configuration
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Forwarded-For');
 
   if (req.method === 'OPTIONS') {
     return res.status(200).end();
@@ -45,6 +50,20 @@ export default async function handler(req, res) {
         error: 'Please enter the 6-digit verification code.'
       });
     }
+
+    // IP-based Rate Limiting to prevent brute-force guessing of OTP codes
+    const clientIp = extractClientIp(req);
+    const ipCheck = evaluateRateLimit(clientIp, verifyIpHistory, MAX_VERIFY_ATTEMPTS, VERIFY_WINDOW_MS);
+    if (!ipCheck.allowed) {
+      res.setHeader('Retry-After', String(ipCheck.retryAfter));
+      return res.status(429).json({
+        success: false,
+        rateLimited: true,
+        error: 'Too many verification attempts from this network. For security, please wait a few minutes before trying again.',
+        retryAfter: ipCheck.retryAfter
+      });
+    }
+    commitRateLimitEntry(clientIp, verifyIpHistory, VERIFY_WINDOW_MS);
 
     // 1. Verify code and confirm user in Supabase auth.users table
     const rpcRes = await fetch(`${CONFIG.SUPABASE_URL}/rest/v1/rpc/verify_email_code_and_confirm_user`, {

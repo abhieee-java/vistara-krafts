@@ -136,6 +136,25 @@
               We never store your raw credit/debit card numbers or UPI PINs. All payment transactions are securely processed directly by Razorpay (RBI-authorized payment aggregator) using PCI-DSS Level 1 compliant tokenization.
             </p>
           </div>
+          <div class="col-span-1 md:col-span-2 p-4 rounded-2xl bg-surface-container-low border border-[#e4e0d8] space-y-1.5">
+            <h3 class="font-bold text-primary text-sm flex items-center gap-1.5">
+              <span class="material-symbols-outlined text-base text-secondary">security</span>
+              <span>E. Technical Telemetry, Anti-Bot &amp; Rate-Limiting Protection (IP Address &amp; Request Metadata)</span>
+            </h3>
+            <p class="text-on-surface-variant leading-relaxed">
+              When you interact with our authentication, customer sign-in, or email verification endpoints, our servers automatically log your <strong>Internet Protocol (IP) address</strong>, request timestamp, and HTTP User-Agent.
+            </p>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1 text-[11px] text-on-surface-variant">
+              <div class="p-2.5 rounded-xl bg-white border border-[#e4e0d8] space-y-0.5">
+                <span class="font-bold text-primary block">Specified Purpose &amp; Rate Limits:</span>
+                <span>Enforcing a strict security quota of <strong>maximum 5 verification code requests per 15 minutes</strong> per IP address and email, mitigating automated bot scrapers, preventing distributed credential stuffing, and defending transactional email and database infrastructure against abuse or credit drainage.</span>
+              </div>
+              <div class="p-2.5 rounded-xl bg-white border border-[#e4e0d8] space-y-0.5">
+                <span class="font-bold text-primary block">Lawful Basis &amp; Zero Monetization:</span>
+                <span>Processed strictly under <strong>Section 4 &amp; 7 of the Digital Personal Data Protection (DPDP) Act, 2023</strong> (legitimate security interest &amp; fraud prevention). Rate limit records are transient, auto-expiring, and are <strong>never</strong> sold, rented, tracked cross-site, or shared with third-party advertisers.</span>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
