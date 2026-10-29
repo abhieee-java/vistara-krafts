@@ -126,7 +126,30 @@ export default async function handler(req, res) {
       });
     }
 
-    // 1. Extract and sanitize client IP address
+    // 1a. Strict check: reject verification requests for suspended accounts
+    try {
+      const blockRes = await fetch(`${CONFIG.SUPABASE_URL}/rest/v1/rpc/is_customer_blocked`, {
+        method: 'POST',
+        headers: {
+          'apikey': CONFIG.SUPABASE_ANON_KEY,
+          'Authorization': `Bearer ${CONFIG.SUPABASE_ANON_KEY}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ p_email: email })
+      });
+      if (blockRes.ok) {
+        const isBlocked = await blockRes.json();
+        if (isBlocked) {
+          return res.status(403).json({
+            success: false,
+            blocked: true,
+            error: 'This account has been suspended by administration. If you believe this is a mistake, please email support@vistarakrafts.com.'
+          });
+        }
+      }
+    } catch (_e) {}
+
+    // 1b. Extract and sanitize client IP address
     const clientIp = extractClientIp(req);
 
     // 2. High-Speed In-Memory Rate Limiting (Sub-millisecond anti-bot rejection before hitting DB or Resend)

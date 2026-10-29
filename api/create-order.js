@@ -28,8 +28,10 @@ export default async function handler(req, res) {
     return res.status(200).json(orderData);
   } catch (err) {
     console.error('[API create-order Error]:', err.message);
-    return res.status(400).json({
+    const isSuspended = String(err.message || '').includes('suspended') || String(err.message || '').includes('blocked');
+    return res.status(isSuspended ? 403 : 400).json({
       success: false,
+      blocked: isSuspended,
       error: err.message || 'Failed to initiate secure checkout.'
     });
   }

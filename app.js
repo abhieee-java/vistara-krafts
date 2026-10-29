@@ -911,6 +911,10 @@
   }
 
   function handleRouteChange(forceResetScroll = false) {
+    if (isAccountSuspendedActive) {
+      window.renderSuspensionLockoutScreen(suspendedUserEmail);
+      return;
+    }
     const { route, param, queryParams } = parseHash();
     if (route === 'privacy') {
       window.location.href = './privacy.html';
@@ -7557,6 +7561,170 @@
     }
   };
 
+  // =========================================================================
+  // UNBYPASSABLE ACCOUNT SUSPENSION & ANTI-TAMPER SECURITY ENGINE
+  // =========================================================================
+  let isAccountSuspendedActive = false;
+  let suspendedUserEmail = '';
+  let suspensionAntiTamperObserver = null;
+  let suspensionAntiTamperInterval = null;
+
+  window.triggerAccountSuspension = function (email, reason) {
+    isAccountSuspendedActive = true;
+    suspendedUserEmail = (email || '').trim().toLowerCase();
+
+    // 1. Immediately revoke credentials & active sessions
+    try {
+      if (typeof Store?.logoutPatron === 'function') Store.logoutPatron();
+      if (typeof Store?.clearCart === 'function') Store.clearCart();
+      const sb = window.VistaraSupabase?.getClient?.();
+      if (sb && sb.auth && typeof sb.auth.signOut === 'function') {
+        sb.auth.signOut().catch(() => {});
+      }
+    } catch (_e) {}
+
+    // 2. Wipe tokens from storage so client-side state cannot be restored
+    try {
+      localStorage.removeItem('vk_supabase_auth_token');
+      localStorage.removeItem('vk_patron_session_v1');
+      localStorage.removeItem('vk_cart_items_v1');
+      localStorage.removeItem('vk_remembered_email');
+      sessionStorage.clear();
+    } catch (_e) {}
+
+    // 3. Close any open dialogs/drawers
+    try {
+      document.getElementById('cloudflare-auth-modal')?.classList.add('hidden');
+      document.getElementById('checkout-modal')?.classList.add('hidden');
+      document.getElementById('side-nav')?.classList.add('hidden');
+    } catch (_e) {}
+
+    // 4. Render and lock the UI
+    window.renderSuspensionLockoutScreen(suspendedUserEmail, reason);
+
+    // 5. Start Anti-Tamper DevTools Defense
+    window.startSuspensionAntiTamperGuard();
+  };
+
+  window.renderSuspensionLockoutScreen = function (email, reason) {
+    let screen = document.getElementById('vk-account-suspended-screen');
+    if (!screen) {
+      screen = document.createElement('aside');
+      screen.id = 'vk-account-suspended-screen';
+      screen.setAttribute('role', 'alertdialog');
+      screen.setAttribute('aria-modal', 'true');
+      screen.setAttribute('aria-labelledby', 'vk-suspended-title');
+      document.body.appendChild(screen);
+    }
+
+    screen.className = 'fixed inset-0 z-[999999] bg-[#07070a]/96 backdrop-blur-2xl flex items-center justify-center p-4 sm:p-6 pointer-events-auto select-none';
+    screen.style.display = 'flex';
+    screen.style.visibility = 'visible';
+    screen.style.opacity = '1';
+    screen.style.zIndex = '999999';
+
+    const safeEmail = email ? String(email).replace(/[<>&"']/g, '') : 'your registered email';
+    const mailSubject = encodeURIComponent('Account Suspension Review Request - Vistāra Krafts');
+    const mailBody = encodeURIComponent(`Hello Vistāra Krafts Support Team,\n\nMy account (${safeEmail}) has been suspended. If this was done in error or if we have made any mistake, please review my account privileges.\n\nThank you.`);
+
+    screen.innerHTML = `
+      <div class="max-w-lg w-full bg-gradient-to-b from-[#161622] via-[#0f0f18] to-[#0a0a10] border border-red-500/30 rounded-3xl p-6 sm:p-8 shadow-[0_25px_60px_-15px_rgba(239,68,68,0.35)] text-center text-white relative overflow-hidden animate-in fade-in zoom-in-95 duration-300">
+        <div class="pointer-events-none absolute -top-24 left-1/2 -translate-x-1/2 w-48 h-48 rounded-full bg-red-600/20 blur-3xl"></div>
+        <div class="relative z-10">
+          <div class="w-16 h-16 mx-auto mb-4 rounded-2xl bg-red-950/70 border border-red-500/50 flex items-center justify-center text-red-400 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.15)]">
+            <span class="material-symbols-outlined text-3xl" aria-hidden="true">gavel</span>
+          </div>
+          <span class="inline-block px-3 py-1 rounded-full bg-red-500/15 border border-red-500/30 text-red-400 text-[11px] font-bold uppercase tracking-widest mb-2">
+            Atelier Restriction
+          </span>
+          <h2 id="vk-suspended-title" class="font-headline text-xl sm:text-2xl font-bold tracking-tight text-white mb-3">
+            Account Access Suspended
+          </h2>
+          <div class="text-xs sm:text-sm text-white/85 leading-relaxed space-y-3 mb-6">
+            <p>
+              Your Vistāra Krafts atelier account associated with <strong class="text-amber-300 font-mono underline">${safeEmail}</strong> has been suspended by administration.
+            </p>
+            <div class="p-3.5 rounded-2xl bg-red-950/30 border border-red-500/20 text-red-200/90 text-xs text-left space-y-1">
+              <span class="font-bold flex items-center gap-1 text-red-300">
+                <span class="material-symbols-outlined text-sm" aria-hidden="true">block</span>
+                <span>Active Restrictions:</span>
+              </span>
+              <p class="text-[11px] leading-normal text-white/70">
+                All shopping privileges, custom casting inquiries, and order placements are strictly disabled for this account.
+              </p>
+            </div>
+            <p class="text-xs text-white/80 pt-1">
+              If you believe this was done in error or if we have made any mistake, please reach out to our team directly at
+              <a href="mailto:support@vistarakrafts.com?subject=${mailSubject}&body=${mailBody}" class="text-amber-400 hover:text-amber-300 font-bold underline transition-colors">support@vistarakrafts.com</a>.
+            </p>
+          </div>
+          <div class="space-y-2.5">
+            <a href="mailto:support@vistarakrafts.com?subject=${mailSubject}&body=${mailBody}" class="w-full min-h-[48px] py-3.5 px-6 rounded-2xl bg-gradient-to-r from-red-600 via-[#9e3322] to-amber-600 hover:brightness-110 text-white font-bold text-xs sm:text-sm tracking-wide shadow-lg flex items-center justify-center gap-2 transition active:scale-95 cursor-pointer">
+              <span class="material-symbols-outlined text-base" aria-hidden="true">mail</span>
+              <span>Email support@vistarakrafts.com</span>
+            </a>
+            <button type="button" onclick="window.dismissSuspensionAndContinueAsGuest()" class="w-full min-h-[44px] py-2.5 px-4 rounded-xl bg-white/5 hover:bg-white/10 text-white/70 hover:text-white border border-white/10 text-xs font-medium tracking-wide transition cursor-pointer flex items-center justify-center gap-1.5">
+              <span class="material-symbols-outlined text-sm" aria-hidden="true">logout</span>
+              <span>Sign Out &amp; Continue as Guest</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    `;
+
+    document.body.style.setProperty('overflow', 'hidden', 'important');
+  };
+
+  window.startSuspensionAntiTamperGuard = function () {
+    if (suspensionAntiTamperObserver) suspensionAntiTamperObserver.disconnect();
+    
+    // DevTools Anti-Tamper: Detect if user deletes the element, modifies display, or removes overflow
+    suspensionAntiTamperObserver = new MutationObserver(() => {
+      if (!isAccountSuspendedActive) return;
+      const screen = document.getElementById('vk-account-suspended-screen');
+      if (!screen || !document.body.contains(screen) || screen.style.display === 'none' || screen.style.opacity === '0' || screen.style.visibility === 'hidden') {
+        window.renderSuspensionLockoutScreen(suspendedUserEmail);
+      }
+      if (document.body.style.overflow !== 'hidden') {
+        document.body.style.setProperty('overflow', 'hidden', 'important');
+      }
+    });
+
+    try {
+      suspensionAntiTamperObserver.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['style', 'class'] });
+    } catch (_e) {}
+
+    if (suspensionAntiTamperInterval) clearInterval(suspensionAntiTamperInterval);
+    suspensionAntiTamperInterval = setInterval(() => {
+      if (!isAccountSuspendedActive) {
+        clearInterval(suspensionAntiTamperInterval);
+        return;
+      }
+      const screen = document.getElementById('vk-account-suspended-screen');
+      if (!screen || !document.body.contains(screen)) {
+        window.renderSuspensionLockoutScreen(suspendedUserEmail);
+      }
+    }, 500);
+  };
+
+  window.dismissSuspensionAndContinueAsGuest = function () {
+    isAccountSuspendedActive = false;
+    suspendedUserEmail = '';
+    if (suspensionAntiTamperObserver) {
+      suspensionAntiTamperObserver.disconnect();
+      suspensionAntiTamperObserver = null;
+    }
+    if (suspensionAntiTamperInterval) {
+      clearInterval(suspensionAntiTamperInterval);
+      suspensionAntiTamperInterval = null;
+    }
+    document.body.style.removeProperty('overflow');
+    const screen = document.getElementById('vk-account-suspended-screen');
+    if (screen) screen.remove();
+    window.location.hash = '#/home';
+    window.location.reload();
+  };
+
   window.resendEmailOtp = async function () {
     const email = pendingEmailOtpPayload?.email || document.getElementById('cf-auth-email')?.value.trim() || '';
     if (!email) return;
@@ -7795,6 +7963,10 @@
                 }
               } catch (_e) {}
               if (userProfile) {
+                if (userProfile.is_blocked || userProfile.status === 'blocked') {
+                  window.triggerAccountSuspension(email, userProfile.blocked_reason);
+                  return;
+                }
                 if (!name && userProfile.full_name) name = userProfile.full_name;
                 if (!phone && userProfile.phone) phone = userProfile.phone;
                 if (!address && userProfile.address) address = userProfile.address;
@@ -8066,6 +8238,10 @@
 
   // Checkout Modal (Step 2: Collect Delivery Address & Confirm Payment after Sign-In)
   window.openCheckoutModal = function () {
+    if (isAccountSuspendedActive) {
+      window.renderSuspensionLockoutScreen(suspendedUserEmail);
+      return;
+    }
     const isTest = (typeof global !== 'undefined' && (global.__VK_TEST_ENV__ || global.__VK_TEST_FIXTURES__)) ||
                    (typeof window !== 'undefined' && (window.__VK_TEST_ENV__ || window.__VK_TEST_FIXTURES__));
     if (!isTest && Store && typeof Store.verifyCheckoutProducts === 'function') {
@@ -8976,6 +9152,18 @@
       const processSupabaseSession = async (session) => {
         if (!session || !session.user || !session.user.email) return;
         const u = session.user;
+
+        // Strict account suspension check on session processing
+        if (window.VistaraSupabase && typeof window.VistaraSupabase.fetchProfile === 'function') {
+          try {
+            const profile = await window.VistaraSupabase.fetchProfile(u.id);
+            if (profile && (profile.is_blocked || profile.status === 'blocked')) {
+              window.triggerAccountSuspension(u.email, profile.blocked_reason);
+              return;
+            }
+          } catch (_e) {}
+        }
+
         const currentPatron = typeof Store.getAuthSession === 'function' ? Store.getAuthSession() : (typeof Store.getPatronSession === 'function' ? Store.getPatronSession() : null);
         if (!currentPatron || currentPatron.email !== u.email) {
           let fullName = u.user_metadata?.full_name || u.user_metadata?.name || '';
@@ -8990,6 +9178,10 @@
             try {
               const profile = await window.VistaraSupabase.fetchProfile(u.id);
               if (profile) {
+                if (profile.is_blocked || profile.status === 'blocked') {
+                  window.triggerAccountSuspension(u.email, profile.blocked_reason);
+                  return;
+                }
                 if (profile.full_name) fullName = profile.full_name;
                 if (profile.phone) phone = profile.phone;
                 if (profile.address) address = profile.address;
@@ -9075,6 +9267,23 @@
             if (session) processSupabaseSession(session);
           }
         });
+
+        // Realtime security guard: instantly lock out active user if administrator suspends their account
+        try {
+          if (typeof sb.channel === 'function') {
+            sb.channel('realtime:customer_block_guard')
+              .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'profiles' }, (payload) => {
+                const current = typeof Store.getAuthSession === 'function' ? Store.getAuthSession() : (typeof Store.getPatronSession === 'function' ? Store.getPatronSession() : null);
+                if (current && payload && payload.new) {
+                  const isTarget = (payload.new.id && payload.new.id === current.userId) || (payload.new.email && payload.new.email.toLowerCase() === (current.email || '').toLowerCase());
+                  if (isTarget && (payload.new.is_blocked || payload.new.status === 'blocked')) {
+                    window.triggerAccountSuspension(current.email, payload.new.blocked_reason);
+                  }
+                }
+              })
+              .subscribe();
+          }
+        } catch (_e) {}
       }
     } catch (e) {
       console.warn('[Vistāra Auth] initSupabaseAuthListener error:', e);

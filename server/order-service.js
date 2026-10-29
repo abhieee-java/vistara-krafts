@@ -37,6 +37,35 @@ export class OrderService {
   }
 
   /**
+   * Checks whether a customer account has been suspended/blocked by administration.
+   */
+  static async checkIfCustomerBlocked(email, userId) {
+    try {
+      if (!email && !userId) return false;
+      const key = CONFIG.SUPABASE_SERVICE_ROLE_KEY || CONFIG.SUPABASE_ANON_KEY;
+      const rpcRes = await fetch(`${CONFIG.SUPABASE_URL}/rest/v1/rpc/is_customer_blocked`, {
+        method: 'POST',
+        headers: {
+          'apikey': key,
+          'Authorization': `Bearer ${key}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          p_email: email ? String(email).trim().toLowerCase() : null,
+          p_user_id: userId || null
+        })
+      });
+      if (rpcRes.ok) {
+        const isBlocked = await rpcRes.json();
+        return Boolean(isBlocked);
+      }
+      return false;
+    } catch (_e) {
+      return false;
+    }
+  }
+
+  /**
    * Step 1: Create an authorized checkout order.
    * Calculates prices server-side, enforces limits, creates Razorpay order, saves pending order.
    */
@@ -61,6 +90,14 @@ export class OrderService {
     const customerPhone = String(phone || '').replace(/\D/g, '').slice(-10);
     const rawAddress = String(address || '').trim();
     const cleanPin = String(pincode || '').trim();
+
+    // Strict account suspension check (Unbypassable by client DevTools)
+    if (customerEmail || userId) {
+      const isBlocked = await this.checkIfCustomerBlocked(customerEmail, userId);
+      if (isBlocked) {
+        throw new Error('This account has been suspended by administration. If you believe this is a mistake, please email support@vistarakrafts.com.');
+      }
+    }
 
     if (!customerName || customerName.length < 2) {
       throw new Error('Please enter a valid recipient name (minimum 2 characters).');
