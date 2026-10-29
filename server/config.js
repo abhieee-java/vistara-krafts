@@ -60,5 +60,5 @@ export const CONFIG = {
 
   // Resend Transactional Email
   RESEND_API_KEY: process.env.RESEND_API_KEY || '',
-  RESEND_FROM_EMAIL: process.env.RESEND_FROM_EMAIL || 'Vistara Krafts <welcome@vistarakrafts.com>'
+  RESEND_FROM_EMAIL: process.env.RESEND_FROM_EMAIL || 'Vistāra Krafts <welcome@vistarakrafts.com>'
 };
