@@ -15,7 +15,15 @@
   ],
   "rewrites": [
     {
-      "source": "/(verify|confirm|auth/.*)",
+      "source": "/verify",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/confirm",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/auth/:path*",
       "destination": "/index.html"
     }
   ],

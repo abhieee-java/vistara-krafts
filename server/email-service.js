@@ -370,7 +370,7 @@ You received this email because you created an account on vistarakrafts.com.
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        from: CONFIG.RESEND_FROM_EMAIL || 'Vistāra Krafts <welcome@vistarakrafts.com>',
+        from: CONFIG.RESEND_FROM_EMAIL || 'Vistara Krafts <welcome@vistarakrafts.com>',
         to: [email],
         subject,
         html: htmlContent,
@@ -608,7 +608,7 @@ Guwahati, Assam, India
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        from: CONFIG.RESEND_FROM_EMAIL || 'Vistāra Krafts <welcome@vistarakrafts.com>',
+        from: CONFIG.RESEND_FROM_EMAIL || 'Vistara Krafts <welcome@vistarakrafts.com>',
         to: [email],
         subject,
         html: htmlContent,
