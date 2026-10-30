@@ -1070,6 +1070,72 @@ body.has-mini-cart-toast #global-toast {
   animation: authModalPop 0.22s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
+/* ==========================================================================
+   Spatial Slide Transitions for Drawers (Plan 001)
+   ========================================================================== */
+@keyframes drawerBackdropFade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes drawerSlideLeft {
+  0% {
+    opacity: 0.4;
+    transform: translateX(-100%);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes drawerSlideBottom {
+  0% {
+    opacity: 0.6;
+    transform: translateY(100%);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes drawerScaleDesktop {
+  0% {
+    opacity: 0;
+    transform: scale(0.96) translateY(8px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+#mobile-menu-drawer:not(.hidden),
+#global-filter-drawer:not(.hidden) {
+  animation: drawerBackdropFade 0.2s ease-out forwards;
+}
+
+#mobile-menu-drawer:not(.hidden) > div {
+  animation: drawerSlideLeft 0.28s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  will-change: transform, opacity;
+}
+
+#global-filter-drawer:not(.hidden) > div {
+  animation: drawerSlideBottom 0.28s cubic-bezier(0.32, 0.72, 0, 1) forwards;
+  will-change: transform, opacity;
+}
+
+@media (min-width: 640px) {
+  #global-filter-drawer:not(.hidden) > div {
+    animation: drawerScaleDesktop 0.22s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+}
+
 /* Auth Modal Desktop 3D Animation Showcase */
 .auth-desktop-showcase {
   display: none !important;
