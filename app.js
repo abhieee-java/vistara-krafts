@@ -3618,45 +3618,31 @@
     const summary = Store.getCartSummary();
     const pinInfo = Store.getPincodeInfo();
     const gstInfo = Store.getGstInfo();
+    const isFreeUnlocked = summary.subtotal >= summary.freeShippingThreshold && summary.subtotal > 0;
 
     return `
-      <div class="route-view-enter flex flex-col w-full max-w-7xl mx-auto px-3.5 sm:px-8 py-3 sm:py-5 pb-28 gap-3 sm:gap-4">
-        <!-- Integrated Apple-Compact Header (Zero Dead Space) -->
-        <div class="flex items-center justify-between gap-3 w-full border-b border-[#e4e0d8] pb-2.5">
-          <div class="flex items-center gap-2.5 sm:gap-3 min-w-0">
-            <button type="button" onclick="window.handleBackButton('catalog')" aria-label="Go back to catalogue" class="inline-flex items-center gap-1.5 text-xs font-semibold text-primary/80 hover:text-primary min-h-[36px] py-1.5 px-3 rounded-xl bg-surface-container-low hover:bg-surface-container border border-[#e4e0d8] transition-colors cursor-pointer shrink-0">
-              <span class="material-symbols-outlined text-sm sm:text-base" aria-hidden="true">arrow_back</span>
+      <div class="route-view-enter flex flex-col w-full max-w-7xl mx-auto px-3.5 sm:px-8 py-3.5 sm:py-5 pb-28 gap-4">
+        <!-- Studio Bag Header Navigation & Title (Unconstrained, Zero Truncation) -->
+        <div class="flex flex-col gap-2.5 w-full border-b border-[#e4e0d8] pb-3">
+          <div class="flex items-center justify-between gap-3 w-full">
+            <button type="button" onclick="window.handleBackButton('catalog')" aria-label="Go back to catalogue" class="inline-flex items-center gap-1.5 text-xs font-semibold text-primary/80 hover:text-primary min-h-[38px] py-1.5 px-3 rounded-xl bg-surface-container-low hover:bg-surface-container border border-[#e4e0d8] active:scale-[0.97] transition-all cursor-pointer">
+              <span class="material-symbols-outlined text-base" aria-hidden="true">arrow_back</span>
               <span class="tracking-tight">Back to Shopping</span>
             </button>
-            <div class="min-w-0">
-              <h1 class="font-headline-md text-lg sm:text-2xl text-primary font-bold tracking-tight truncate">
-                Studio Bag <span class="text-secondary font-spec-numeral">(${summary.itemsCount})</span>
-              </h1>
-            </div>
+            <span class="font-spec-numeral text-[11px] sm:text-xs px-2.5 py-1 rounded-full bg-surface-container-high text-primary font-semibold whitespace-nowrap border border-[#e4e0d8] shrink-0">Batch #VK-4409</span>
           </div>
-          <span class="font-spec-numeral text-[11px] sm:text-xs px-2.5 py-1 rounded-full bg-surface-container-high text-primary font-semibold whitespace-nowrap border border-[#e4e0d8] shrink-0">Batch #VK-4409</span>
-        </div>
-
-        <!-- Free Shipping Progression Strip (Architecturally Bound to Authoritative Admin Settings) -->
-        <div class="p-3 sm:p-3.5 rounded-2xl ${summary.isFreeShipping ? 'bg-[#f0f7f3] border border-[#266b4e]/30' : 'bg-secondary-container/90 border border-secondary/20'} shadow-2xs flex flex-col gap-2 transition-colors duration-300">
-          <div class="flex flex-wrap items-center justify-between gap-2 text-xs font-semibold">
-            <div class="flex items-center gap-1.5 sm:gap-2 ${summary.isFreeShipping ? 'text-[#266b4e]' : 'text-primary'} min-w-0">
-              <span class="material-symbols-outlined text-base sm:text-lg ${summary.isFreeShipping ? 'text-[#266b4e] scale-110' : 'text-secondary'} shrink-0 transition-transform" style="font-variation-settings: 'FILL' 1;" aria-hidden="true">${summary.isFreeShipping ? 'verified' : 'local_shipping'}</span>
-              <span class="tracking-tight text-[11px] sm:text-xs truncate">
-                ${summary.isFreeShipping
-                  ? 'Unlocked! Eligible for <strong class="text-[#266b4e]">Free Pan-India BlueDart Air Express Delivery</strong>!'
-                  : `Add <strong class="text-secondary font-bold font-spec-numeral">${formatINR(summary.amountToFreeShipping)}</strong> more for <strong>Free Express Delivery</strong>!`}
-              </span>
-            </div>
-            <span class="font-spec-numeral font-bold ${summary.isFreeShipping ? 'text-[#266b4e]' : 'text-primary'} text-[11px] sm:text-xs whitespace-nowrap bg-white/90 px-2 py-0.5 rounded-full border border-black/5 shadow-2xs shrink-0">${formatINR(summary.subtotal)} / ${formatINR(summary.freeShippingThreshold)}</span>
-          </div>
-          <div class="relative w-full bg-white/80 h-2 sm:h-2.5 rounded-full overflow-hidden p-0.5 border border-black/5">
-            <div class="${summary.isFreeShipping ? 'bg-gradient-to-r from-[#266b4e] to-emerald-400' : 'bg-gradient-to-r from-secondary to-[#d4af37]'} h-full rounded-full transition-all duration-700 ease-out shadow-xs" style="width: ${summary.shippingProgress}%;"></div>
+          <div class="flex items-baseline justify-between gap-2">
+            <h1 class="font-headline-md text-2xl sm:text-3xl text-primary font-bold tracking-tight">
+              Studio Bag <span class="text-secondary font-spec-numeral text-lg sm:text-xl font-medium">(${summary.itemsCount})</span>
+            </h1>
+            ${summary.cart.length > 0 ? `
+              <span class="text-xs text-on-surface-variant hidden sm:inline">Handcrafted atelier dispatch</span>
+            ` : ''}
           </div>
         </div>
 
         ${summary.cart.length === 0 ? `
-          <div class="ram-card p-10 text-center flex flex-col items-center gap-3.5 bg-white">
+          <div class="ram-card p-8 sm:p-12 text-center flex flex-col items-center gap-4 bg-white">
             <div class="relative w-24 h-24 flex items-center justify-center lottie-anim-float">
               <div class="absolute inset-0 rounded-full bg-[#d4af37]/15 lottie-anim-pulse blur-md pointer-events-none"></div>
               <svg class="w-full h-full drop-shadow-sm" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Studio bag empty">
@@ -3668,11 +3654,39 @@
                 <circle cx="26" cy="68" r="2" fill="#d4af37" opacity="0.7" />
               </svg>
             </div>
-            <h2 class="font-headline-sm text-xl text-primary font-bold">Your Studio Bag is Empty</h2>
-            <p class="text-xs text-on-surface-variant max-w-sm">Explore our preserved bridal keepsakes, ocean serving boards, or optical 3:1 &amp; 2:1 epoxy systems.</p>
-            <button type="button" onclick="window.navigateTo('catalog', 'all')" class="min-h-[48px] px-6 py-3 rounded-xl bg-primary text-on-primary text-xs font-bold shadow-xs cursor-pointer">Browse Catalogue</button>
+            <div class="space-y-1.5 max-w-sm">
+              <h2 class="font-headline-sm text-xl sm:text-2xl text-primary font-bold tracking-tight">Your Studio Bag is Empty</h2>
+              <p class="text-xs sm:text-sm text-on-surface-variant leading-relaxed">
+                Explore our preserved bridal keepsakes, ocean serving boards, or optical 3:1 &amp; 2:1 epoxy systems.
+              </p>
+            </div>
+            <div class="flex items-center gap-1.5 text-[11px] text-[#266b4e] font-semibold bg-[#f0f7f3] border border-[#266b4e]/20 px-3 py-1.5 rounded-full">
+              <span class="material-symbols-outlined text-sm" aria-hidden="true">local_shipping</span>
+              <span>Free Pan-India BlueDart Express on orders over ₹${summary.freeShippingThreshold}</span>
+            </div>
+            <button type="button" onclick="window.navigateTo('catalog', 'all')" class="btn-shimmer min-h-[46px] px-7 py-3 rounded-xl bg-primary hover:bg-primary-container text-on-primary text-xs font-bold shadow-sm active:scale-[0.97] transition-all cursor-pointer">
+              Browse Catalogue
+            </button>
           </div>
         ` : `
+          <!-- Free Shipping Progression Strip (Architecturally Bound to Authoritative Admin Settings) -->
+          <div class="p-3 sm:p-3.5 rounded-2xl ${isFreeUnlocked ? 'bg-[#f0f7f3] border border-[#266b4e]/30' : 'bg-secondary-container/90 border border-secondary/20'} shadow-2xs flex flex-col gap-2 transition-colors duration-300">
+            <div class="flex flex-wrap items-center justify-between gap-2 text-xs font-semibold">
+              <div class="flex items-center gap-1.5 sm:gap-2 ${isFreeUnlocked ? 'text-[#266b4e]' : 'text-primary'} min-w-0">
+                <span class="material-symbols-outlined text-base sm:text-lg ${isFreeUnlocked ? 'text-[#266b4e] scale-110' : 'text-secondary'} shrink-0 transition-transform" style="font-variation-settings: 'FILL' 1;" aria-hidden="true">${isFreeUnlocked ? 'verified' : 'local_shipping'}</span>
+                <span class="tracking-tight text-[11px] sm:text-xs truncate">
+                  ${isFreeUnlocked
+                    ? 'Unlocked! Eligible for <strong class="text-[#266b4e]">Free Pan-India BlueDart Air Express Delivery</strong>!'
+                    : `Add <strong class="text-secondary font-bold font-spec-numeral">${formatINR(summary.amountToFreeShipping)}</strong> more for <strong>Free Express Delivery</strong>!`}
+                </span>
+              </div>
+              <span class="font-spec-numeral font-bold ${isFreeUnlocked ? 'text-[#266b4e]' : 'text-primary'} text-[11px] sm:text-xs whitespace-nowrap bg-white/90 px-2 py-0.5 rounded-full border border-black/5 shadow-2xs shrink-0">${formatINR(summary.subtotal)} / ${formatINR(summary.freeShippingThreshold)}</span>
+            </div>
+            <div class="relative w-full bg-white/80 h-2 sm:h-2.5 rounded-full overflow-hidden p-0.5 border border-black/5">
+              <div class="${isFreeUnlocked ? 'bg-gradient-to-r from-[#266b4e] to-emerald-400' : 'bg-gradient-to-r from-secondary to-[#d4af37]'} h-full rounded-full transition-all duration-700 ease-out shadow-xs" style="width: ${summary.shippingProgress}%;"></div>
+            </div>
+          </div>
+
           <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-6 items-start">
             <!-- Left Column: Cart Line Items (7 cols) -->
             <div class="lg:col-span-7 flex flex-col gap-3">
