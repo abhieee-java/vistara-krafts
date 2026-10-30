@@ -472,18 +472,38 @@ body.has-mini-cart-toast #global-toast {
 }
 
 @keyframes fadeInSlide {
-  from {
+  0% {
     opacity: 0;
-    transform: translateY(8px);
+    transform: scale(0.988) translateY(4px);
   }
-  to {
+  100% {
     opacity: 1;
-    transform: translateY(0);
+    transform: scale(1) translateY(0);
   }
 }
 
 .route-view-enter {
-  animation: fadeInSlide 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+  animation: fadeInSlide 0.24s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  will-change: transform, opacity;
+}
+
+/* Apple-Grade Tactile Bottom Navigation Micro-Interactions */
+.bottom-tab-item {
+  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), background-color 0.2s ease, color 0.2s ease;
+  will-change: transform;
+}
+
+.bottom-tab-item:active {
+  transform: scale(0.92) !important;
+}
+
+.bottom-tab-item .material-symbols-outlined {
+  transition: transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1);
+  will-change: transform;
+}
+
+.bottom-tab-item.text-primary .material-symbols-outlined {
+  transform: scale(1.08);
 }
 
 /* ==========================================================================

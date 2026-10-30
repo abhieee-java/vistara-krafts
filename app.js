@@ -2365,40 +2365,41 @@
             <option value="viscosity" ${AppState.catalogSort === 'viscosity' ? 'selected' : ''}>Viscosity: Low–High</option>
           </select>
 
-          <!-- First Row: Product Count Left, Grid/List Switcher Right -->
-          <div class="flex items-center justify-between gap-3 w-full">
-            <div class="flex items-center gap-1.5 min-w-0">
-              <span id="catalog-product-count" class="font-spec-numeral font-bold text-primary text-sm sm:text-base tracking-tight">${filtered.length} Products</span>
+          <!-- Unified Single-Tier Compact Controls (Apple-Restrained: Zero Blank Space) -->
+          <div class="flex items-center justify-between gap-2 sm:gap-3 w-full min-w-0 pt-0.5 pb-0.5">
+            <!-- Left: Product Count Badge -->
+            <div class="flex items-center gap-1.5 shrink-0 min-w-0">
+              <span id="catalog-product-count" class="font-spec-numeral font-bold text-primary text-xs sm:text-sm tracking-tight bg-surface-container-low px-2.5 sm:px-3 py-1.5 rounded-full border border-[#e4e0d8]/80 whitespace-nowrap">
+                ${filtered.length} Products
+              </span>
             </div>
-            <!-- Grid / List Switcher -->
-            <div class="flex items-center bg-[#f5f0e8]/80 p-0.5 rounded-xl border border-[#e4e0d8] shadow-2xs">
-              <button id="btn-view-grid" type="button" aria-label="Grid View" onclick="window.setCatalogView('grid')" class="w-8 h-8 rounded-lg flex items-center justify-center ${AppState.catalogView === 'grid' ? 'bg-white text-primary shadow-xs font-bold' : 'text-on-surface-variant hover:text-primary'} cursor-pointer transition-all active:scale-95">
-                <span class="material-symbols-outlined text-[17px]" aria-hidden="true">grid_view</span>
+
+            <!-- Right: Content-Hugging Sort & Filter Pill + Segmented View Switcher -->
+            <div class="flex items-center gap-2 shrink-0">
+              <!-- Compact Pill Button (No stretched empty blank space) -->
+              <button id="catalog-sort-filter-btn" type="button" onclick="window.toggleCatalogFilterDrawer(true)" class="min-h-[38px] px-3 sm:px-3.5 py-1.5 rounded-full bg-white hover:bg-[#faf7f2] active:scale-[0.97] border border-[#e4e0d8] hover:border-secondary/50 text-primary text-xs font-semibold flex items-center gap-1.5 sm:gap-2 shadow-2xs transition-all cursor-pointer">
+                <span class="material-symbols-outlined text-[17px] text-secondary shrink-0" aria-hidden="true">tune</span>
+                <span class="font-medium text-primary whitespace-nowrap">Sort &amp; Filter</span>
+                ${hasActiveFilters ? `
+                  <span class="inline-flex items-center justify-center min-w-[18px] h-[18px] px-1 rounded-full bg-[#8a611c] text-white text-[10px] font-bold leading-none shadow-2xs">
+                    ${activeFilterCount}
+                  </span>
+                ` : `
+                  <span class="text-[11px] text-on-surface-variant font-normal font-spec-numeral hidden xs:inline whitespace-nowrap">• ${currentSortLabel}</span>
+                `}
               </button>
-              <button id="btn-view-list" type="button" aria-label="List View" onclick="window.setCatalogView('list')" class="w-8 h-8 rounded-lg flex items-center justify-center ${AppState.catalogView === 'list' ? 'bg-white text-primary shadow-xs font-bold' : 'text-on-surface-variant hover:text-primary'} cursor-pointer transition-all active:scale-95">
-                <span class="material-symbols-outlined text-[17px]" aria-hidden="true">view_list</span>
-              </button>
+
+              <!-- Grid / List Switcher Capsule -->
+              <div class="flex items-center bg-[#f5f0e8]/90 p-0.5 rounded-full border border-[#e4e0d8] shadow-2xs">
+                <button id="btn-view-grid" type="button" aria-label="Grid View" onclick="window.setCatalogView('grid')" class="w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center ${AppState.catalogView === 'grid' ? 'bg-white text-primary shadow-xs font-bold' : 'text-on-surface-variant hover:text-primary'} cursor-pointer transition-all active:scale-95">
+                  <span class="material-symbols-outlined text-[16px]" aria-hidden="true">grid_view</span>
+                </button>
+                <button id="btn-view-list" type="button" aria-label="List View" onclick="window.setCatalogView('list')" class="w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center ${AppState.catalogView === 'list' ? 'bg-white text-primary shadow-xs font-bold' : 'text-on-surface-variant hover:text-primary'} cursor-pointer transition-all active:scale-95">
+                  <span class="material-symbols-outlined text-[16px]" aria-hidden="true">view_list</span>
+                </button>
+              </div>
             </div>
           </div>
-
-          <!-- Second Row: ONE Compact Control: Sort & Filter -->
-          <button id="catalog-sort-filter-btn" type="button" onclick="window.toggleCatalogFilterDrawer(true)" class="w-full min-h-[44px] px-4 py-2.5 rounded-xl bg-[#faf7f2] hover:bg-[#f3ede3] active:scale-[0.99] border border-[#e4e0d8] hover:border-[#cfc8bc] text-primary text-xs font-semibold flex items-center justify-between gap-2 shadow-2xs transition-all cursor-pointer">
-            <div class="flex items-center gap-2 min-w-0">
-              <span class="material-symbols-outlined text-[18px] text-secondary shrink-0" aria-hidden="true">tune</span>
-              <span class="truncate font-medium text-primary">Sort &amp; Filter</span>
-              <span class="text-[11px] text-on-surface-variant truncate font-normal hidden sm:inline">• ${currentSortLabel}</span>
-            </div>
-            <div class="flex items-center gap-2 shrink-0">
-              ${hasActiveFilters ? `
-                <span class="inline-flex items-center justify-center min-w-[20px] h-5 px-1.5 rounded-full bg-[#8a611c] text-white text-[10px] font-bold leading-none shadow-2xs">
-                  ${activeFilterCount}
-                </span>
-              ` : `
-                <span class="text-[11px] text-secondary font-medium font-spec-numeral hidden xs:inline">${currentSortLabel}</span>
-              `}
-              <span class="material-symbols-outlined text-sm text-on-surface-variant" aria-hidden="true">tune</span>
-            </div>
-          </button>
         </div>
 
         <!-- 5. Product Grid or Empty State -->
