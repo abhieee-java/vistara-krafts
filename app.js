@@ -643,12 +643,26 @@
     const profile = Store.getPatronProfile();
 
     document.querySelectorAll('.js-cart-badge').forEach(el => {
+      const prevCount = parseInt(el.textContent, 10) || 0;
       el.textContent = summary.itemsCount;
-      el.classList.toggle('hidden', summary.itemsCount === 0);
+      const isVisible = summary.itemsCount > 0;
+      el.classList.toggle('hidden', !isVisible);
+      if (isVisible && summary.itemsCount > prevCount) {
+        el.classList.remove('badge-pop');
+        void el.offsetWidth; // Force DOM reflow to re-trigger spring animation
+        el.classList.add('badge-pop');
+      }
     });
     document.querySelectorAll('.js-wishlist-badge').forEach(el => {
+      const prevCount = parseInt(el.textContent, 10) || 0;
       el.textContent = wishlist.length;
-      el.classList.toggle('hidden', wishlist.length === 0);
+      const isVisible = wishlist.length > 0;
+      el.classList.toggle('hidden', !isVisible);
+      if (isVisible && wishlist.length > prevCount) {
+        el.classList.remove('badge-pop');
+        void el.offsetWidth; // Force DOM reflow to re-trigger spring animation
+        el.classList.add('badge-pop');
+      }
     });
     document.querySelectorAll('.js-header-pin').forEach(el => {
       el.textContent = pinInfo.pin;
@@ -3615,21 +3629,21 @@
           </button>
         </div>
 
-        <!-- Free Shipping Progression Strip -->
-        <div class="p-4 rounded-2xl bg-secondary-container text-on-secondary-container shadow-xs flex flex-col gap-2">
+        <!-- Free Shipping Progression Strip (Architecturally Bound to Authoritative Admin Settings) -->
+        <div class="p-4 sm:p-4.5 rounded-2xl ${summary.isFreeShipping ? 'bg-[#f0f7f3] border border-[#266b4e]/30' : 'bg-secondary-container/90 border border-secondary/20'} shadow-2xs flex flex-col gap-2.5 transition-colors duration-300">
           <div class="flex flex-wrap items-center justify-between gap-2 text-xs font-semibold">
-            <div class="flex items-center gap-2 text-primary">
-              <span class="material-symbols-outlined text-lg text-secondary" style="font-variation-settings: 'FILL' 1;" aria-hidden="true">local_shipping</span>
-              <span>
+            <div class="flex items-center gap-2 ${summary.isFreeShipping ? 'text-[#266b4e]' : 'text-primary'}">
+              <span class="material-symbols-outlined text-lg ${summary.isFreeShipping ? 'text-[#266b4e] scale-110' : 'text-secondary'} transition-transform" style="font-variation-settings: 'FILL' 1;" aria-hidden="true">${summary.isFreeShipping ? 'verified' : 'local_shipping'}</span>
+              <span class="tracking-tight">
                 ${summary.isFreeShipping
-                  ? 'Unlocked! Eligible for <strong>Free Pan-India BlueDart Air Express Delivery</strong>!'
-                  : `Add <strong>${formatINR(summary.amountToFreeShipping)}</strong> more for <strong>Free Pan-India Express Delivery</strong>!`}
+                  ? 'Unlocked! Eligible for <strong class="text-[#266b4e]">Free Pan-India BlueDart Air Express Delivery</strong>!'
+                  : `Add <strong class="text-secondary font-bold font-spec-numeral">${formatINR(summary.amountToFreeShipping)}</strong> more for <strong>Free Pan-India Express Delivery</strong>!`}
               </span>
             </div>
-            <span class="font-spec-numeral font-bold text-primary whitespace-nowrap">${formatINR(summary.subtotal)} / ${formatINR(summary.freeShippingThreshold)}</span>
+            <span class="font-spec-numeral font-bold ${summary.isFreeShipping ? 'text-[#266b4e]' : 'text-primary'} whitespace-nowrap bg-white/90 px-2.5 py-0.5 rounded-full border border-black/5 shadow-2xs">${formatINR(summary.subtotal)} / ${formatINR(summary.freeShippingThreshold)}</span>
           </div>
-          <div class="w-full bg-white/70 h-2 rounded-full overflow-hidden">
-            <div class="bg-secondary h-full rounded-full transition-all duration-500" style="width: ${summary.shippingProgress}%;"></div>
+          <div class="relative w-full bg-white/80 h-2.5 rounded-full overflow-hidden p-0.5 border border-black/5">
+            <div class="${summary.isFreeShipping ? 'bg-gradient-to-r from-[#266b4e] to-emerald-400' : 'bg-gradient-to-r from-secondary to-[#d4af37]'} h-full rounded-full transition-all duration-700 ease-out shadow-xs" style="width: ${summary.shippingProgress}%;"></div>
           </div>
         </div>
 
@@ -5224,13 +5238,16 @@
       if (btnEl._quickAddTimer) {
         clearTimeout(btnEl._quickAddTimer);
       }
-      btnEl.innerHTML = '<span class="material-symbols-outlined text-sm" aria-hidden="true">check</span><span>Added!</span>';
-      btnEl.classList.add('bg-secondary');
+      btnEl.classList.add('quick-add-success');
+      btnEl.innerHTML = '<span class="material-symbols-outlined text-sm inline-block scale-110" aria-hidden="true">check_circle</span><span class="font-bold">Added!</span>';
+      btnEl.classList.remove('bg-primary', 'hover:bg-primary-container');
+      btnEl.classList.add('bg-[#266b4e]', 'text-white', 'shadow-xs');
       btnEl._quickAddTimer = setTimeout(() => {
         btnEl.innerHTML = btnEl.dataset.origHtml;
-        btnEl.classList.remove('bg-secondary');
+        btnEl.classList.remove('quick-add-success', 'bg-[#266b4e]', 'text-white', 'shadow-xs');
+        btnEl.classList.add('bg-primary', 'hover:bg-primary-container');
         btnEl._quickAddTimer = null;
-      }, 1200);
+      }, 1250);
     }
   };
 

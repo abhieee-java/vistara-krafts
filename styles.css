@@ -506,6 +506,41 @@ body.has-mini-cart-toast #global-toast {
   transform: scale(1.08);
 }
 
+/* Apple-Grade Tactile Cart & Wishlist Badge Pop Physics */
+@keyframes badgePop {
+  0% {
+    transform: scale(0.65);
+  }
+  50% {
+    transform: scale(1.32);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.badge-pop {
+  animation: badgePop 0.24s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+  will-change: transform;
+}
+
+/* Quick-Add Button Tactile Micro-Confirmation */
+.quick-add-success {
+  animation: quickAddPop 0.22s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+@keyframes quickAddPop {
+  0% {
+    transform: scale(0.95);
+  }
+  50% {
+    transform: scale(1.04);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
 /* ==========================================================================
    Awwwards SOTD (Site of the Day) Haute-Couture Atmosphere & Micro-Interactions
    ========================================================================== */
