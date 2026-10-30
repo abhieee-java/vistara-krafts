@@ -3620,39 +3620,39 @@
     const gstInfo = Store.getGstInfo();
 
     return `
-      <div class="route-view-enter flex flex-col w-full max-w-7xl mx-auto px-4 sm:px-8 py-6 pb-28 gap-6">
-        <!-- Back Navigation Button -->
-        <div class="flex items-center">
-          <button type="button" onclick="window.handleBackButton('catalog')" aria-label="Go back to catalogue" class="inline-flex items-center gap-1.5 text-xs font-semibold text-primary/80 hover:text-primary min-h-[44px] py-1 px-3 rounded-lg bg-surface-container-low hover:bg-surface-container transition-colors cursor-pointer w-fit">
-            <span class="material-symbols-outlined text-sm" aria-hidden="true">arrow_back</span>
-            <span>Back to Shopping</span>
-          </button>
+      <div class="route-view-enter flex flex-col w-full max-w-7xl mx-auto px-3.5 sm:px-8 py-3 sm:py-5 pb-28 gap-3 sm:gap-4">
+        <!-- Integrated Apple-Compact Header (Zero Dead Space) -->
+        <div class="flex items-center justify-between gap-3 w-full border-b border-[#e4e0d8] pb-2.5">
+          <div class="flex items-center gap-2.5 sm:gap-3 min-w-0">
+            <button type="button" onclick="window.handleBackButton('catalog')" aria-label="Go back to catalogue" class="inline-flex items-center gap-1.5 text-xs font-semibold text-primary/80 hover:text-primary min-h-[36px] py-1.5 px-3 rounded-xl bg-surface-container-low hover:bg-surface-container border border-[#e4e0d8] transition-colors cursor-pointer shrink-0">
+              <span class="material-symbols-outlined text-sm sm:text-base" aria-hidden="true">arrow_back</span>
+              <span class="tracking-tight">Back to Shopping</span>
+            </button>
+            <div class="min-w-0">
+              <h1 class="font-headline-md text-lg sm:text-2xl text-primary font-bold tracking-tight truncate">
+                Studio Bag <span class="text-secondary font-spec-numeral">(${summary.itemsCount})</span>
+              </h1>
+            </div>
+          </div>
+          <span class="font-spec-numeral text-[11px] sm:text-xs px-2.5 py-1 rounded-full bg-surface-container-high text-primary font-semibold whitespace-nowrap border border-[#e4e0d8] shrink-0">Batch #VK-4409</span>
         </div>
 
         <!-- Free Shipping Progression Strip (Architecturally Bound to Authoritative Admin Settings) -->
-        <div class="p-4 sm:p-4.5 rounded-2xl ${summary.isFreeShipping ? 'bg-[#f0f7f3] border border-[#266b4e]/30' : 'bg-secondary-container/90 border border-secondary/20'} shadow-2xs flex flex-col gap-2.5 transition-colors duration-300">
+        <div class="p-3 sm:p-3.5 rounded-2xl ${summary.isFreeShipping ? 'bg-[#f0f7f3] border border-[#266b4e]/30' : 'bg-secondary-container/90 border border-secondary/20'} shadow-2xs flex flex-col gap-2 transition-colors duration-300">
           <div class="flex flex-wrap items-center justify-between gap-2 text-xs font-semibold">
-            <div class="flex items-center gap-2 ${summary.isFreeShipping ? 'text-[#266b4e]' : 'text-primary'}">
-              <span class="material-symbols-outlined text-lg ${summary.isFreeShipping ? 'text-[#266b4e] scale-110' : 'text-secondary'} transition-transform" style="font-variation-settings: 'FILL' 1;" aria-hidden="true">${summary.isFreeShipping ? 'verified' : 'local_shipping'}</span>
-              <span class="tracking-tight">
+            <div class="flex items-center gap-1.5 sm:gap-2 ${summary.isFreeShipping ? 'text-[#266b4e]' : 'text-primary'} min-w-0">
+              <span class="material-symbols-outlined text-base sm:text-lg ${summary.isFreeShipping ? 'text-[#266b4e] scale-110' : 'text-secondary'} shrink-0 transition-transform" style="font-variation-settings: 'FILL' 1;" aria-hidden="true">${summary.isFreeShipping ? 'verified' : 'local_shipping'}</span>
+              <span class="tracking-tight text-[11px] sm:text-xs truncate">
                 ${summary.isFreeShipping
                   ? 'Unlocked! Eligible for <strong class="text-[#266b4e]">Free Pan-India BlueDart Air Express Delivery</strong>!'
-                  : `Add <strong class="text-secondary font-bold font-spec-numeral">${formatINR(summary.amountToFreeShipping)}</strong> more for <strong>Free Pan-India Express Delivery</strong>!`}
+                  : `Add <strong class="text-secondary font-bold font-spec-numeral">${formatINR(summary.amountToFreeShipping)}</strong> more for <strong>Free Express Delivery</strong>!`}
               </span>
             </div>
-            <span class="font-spec-numeral font-bold ${summary.isFreeShipping ? 'text-[#266b4e]' : 'text-primary'} whitespace-nowrap bg-white/90 px-2.5 py-0.5 rounded-full border border-black/5 shadow-2xs">${formatINR(summary.subtotal)} / ${formatINR(summary.freeShippingThreshold)}</span>
+            <span class="font-spec-numeral font-bold ${summary.isFreeShipping ? 'text-[#266b4e]' : 'text-primary'} text-[11px] sm:text-xs whitespace-nowrap bg-white/90 px-2 py-0.5 rounded-full border border-black/5 shadow-2xs shrink-0">${formatINR(summary.subtotal)} / ${formatINR(summary.freeShippingThreshold)}</span>
           </div>
-          <div class="relative w-full bg-white/80 h-2.5 rounded-full overflow-hidden p-0.5 border border-black/5">
+          <div class="relative w-full bg-white/80 h-2 sm:h-2.5 rounded-full overflow-hidden p-0.5 border border-black/5">
             <div class="${summary.isFreeShipping ? 'bg-gradient-to-r from-[#266b4e] to-emerald-400' : 'bg-gradient-to-r from-secondary to-[#d4af37]'} h-full rounded-full transition-all duration-700 ease-out shadow-xs" style="width: ${summary.shippingProgress}%;"></div>
           </div>
-        </div>
-
-        <div class="flex flex-wrap items-center justify-between gap-2">
-          <div>
-            <p class="font-label-sm text-xs uppercase tracking-wider text-secondary font-bold">Apothecary Dispatch Batch</p>
-            <h1 class="font-headline-md text-2xl sm:text-3xl text-primary font-bold">Your Studio Bag (${summary.itemsCount})</h1>
-          </div>
-          <span class="font-spec-numeral text-xs px-3 py-1 rounded-full bg-surface-container-high text-primary font-semibold whitespace-nowrap">Batch #VK-4409</span>
         </div>
 
         ${summary.cart.length === 0 ? `
@@ -3673,39 +3673,39 @@
             <button type="button" onclick="window.navigateTo('catalog', 'all')" class="min-h-[48px] px-6 py-3 rounded-xl bg-primary text-on-primary text-xs font-bold shadow-xs cursor-pointer">Browse Catalogue</button>
           </div>
         ` : `
-          <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-6 items-start">
             <!-- Left Column: Cart Line Items (7 cols) -->
-            <div class="lg:col-span-7 flex flex-col gap-4">
+            <div class="lg:col-span-7 flex flex-col gap-3">
               ${summary.cart.map(item => {
                 const effectiveUnit = Store.getEffectiveUnitPrice(item);
                 const isTierDiscounted = effectiveUnit < item.price;
                 return `
-                <div class="ram-card p-3 sm:p-4 bg-white flex flex-col gap-3 min-w-0" data-cart-item-id="${esc(item.cartItemId)}">
-                  <div class="flex gap-2.5 sm:gap-4 min-w-0">
-                    <img src="${esc(item.image)}" alt="${esc(item.name)}" onclick="window.navigateTo('product', '${esc(item.productId)}')" class="w-16 h-16 sm:w-24 sm:h-24 rounded-xl object-cover bg-surface-container shrink-0 cursor-pointer border border-[#e4e0d8]">
+                <div class="ram-card p-3 sm:p-3.5 bg-white flex flex-col gap-2.5 min-w-0" data-cart-item-id="${esc(item.cartItemId)}">
+                  <div class="flex gap-2.5 sm:gap-3.5 min-w-0">
+                    <img src="${esc(item.image)}" alt="${esc(item.name)}" onclick="window.navigateTo('product', '${esc(item.productId)}')" class="w-16 h-16 sm:w-20 sm:h-20 rounded-xl object-cover bg-surface-container shrink-0 cursor-pointer border border-[#e4e0d8]">
                     <div class="flex-1 min-w-0 flex flex-col justify-between">
                       <div>
                         <div class="flex items-start justify-between gap-1.5">
-                          <h2 onclick="window.navigateTo('product', '${esc(item.productId)}')" class="font-title-md text-xs min-[360px]:text-sm sm:text-base text-primary font-bold line-clamp-2 cursor-pointer hover:text-secondary break-words">${esc(item.name)}</h2>
-                          <button type="button" aria-label="Remove item" onclick="window.handleCartRemove('${esc(item.cartItemId)}')" class="w-11 h-11 rounded-lg text-on-surface-variant hover:text-error hover:bg-surface-container-low flex items-center justify-center shrink-0 cursor-pointer">
-                            <span class="material-symbols-outlined text-lg" aria-hidden="true">close</span>
+                          <h2 onclick="window.navigateTo('product', '${esc(item.productId)}')" class="font-title-md text-xs sm:text-sm text-primary font-bold line-clamp-2 cursor-pointer hover:text-secondary break-words leading-tight">${esc(item.name)}</h2>
+                          <button type="button" aria-label="Remove item" onclick="window.handleCartRemove('${esc(item.cartItemId)}')" class="w-8 h-8 rounded-lg text-on-surface-variant hover:text-error hover:bg-surface-container-low flex items-center justify-center shrink-0 cursor-pointer transition-colors -mr-1 -mt-1">
+                            <span class="material-symbols-outlined text-base" aria-hidden="true">close</span>
                           </button>
                         </div>
-                        <p class="text-xs text-on-surface-variant flex items-center flex-wrap gap-1.5 my-0.5">
+                        <p class="text-[11px] text-on-surface-variant flex items-center flex-wrap gap-1.5 mt-0.5">
                           ${item.variantLabel ? `<span>${esc(item.variantLabel)}</span>` : ''}
                           ${item.variantLabel && item.sku ? `<span class="text-outline">•</span>` : ''}
-                          ${item.sku ? `<span class="sku-badge sku-pill font-mono text-[10.5px] sm:text-[11px] px-1.5 py-0.5 rounded bg-surface-container-high border border-[#e4e0d8] text-primary whitespace-nowrap shrink-0" data-sku="${esc(item.sku)}">SKU:&nbsp;<span class="sku-text font-bold">${esc(item.sku)}</span></span>` : ''}
+                          ${item.sku ? `<span class="sku-badge sku-pill font-mono text-[10px] px-1.5 py-0.5 rounded bg-surface-container-high border border-[#e4e0d8] text-primary whitespace-nowrap shrink-0" data-sku="${esc(item.sku)}">SKU:&nbsp;<span class="sku-text font-bold">${esc(item.sku)}</span></span>` : ''}
                         </p>
                         ${(item.color || item.shape || item.size) ? `
-                          <div class="flex flex-wrap items-center gap-1.5 my-1 text-[11px]">
+                          <div class="flex flex-wrap items-center gap-1.5 my-1 text-[10.5px]">
                             ${item.color ? `<span class="px-2 py-0.5 rounded-full bg-surface-container-high text-primary font-semibold border border-[#e4e0d8]">🎨 ${esc(item.color)}</span>` : ''}
                             ${item.shape ? `<span class="px-2 py-0.5 rounded-full bg-surface-container-high text-primary font-semibold border border-[#e4e0d8]">📐 ${esc(item.shape)}</span>` : ''}
                             ${item.size ? `<span class="px-2 py-0.5 rounded-full bg-secondary-container/50 text-secondary font-bold border border-[#e4e0d8]">📏 ${esc(item.size)}</span>` : ''}
                           </div>
                         ` : ''}
-                        ${item.customNote ? `<p class="text-[11px] text-[#9e3322] font-medium mt-1 break-anywhere">✨ Note: “${esc(item.customNote)}”</p>` : ''}
+                        ${item.customNote ? `<p class="text-[10.5px] text-[#9e3322] font-medium mt-0.5 break-anywhere">✨ Note: “${esc(item.customNote)}”</p>` : ''}
                         ${item.isOutOfStock ? `
-                          <div class="mt-2 p-2 rounded-lg bg-[#ffe4de] text-[#9e3322] border border-[#f5c2b7] text-xs font-semibold flex items-center justify-between gap-2">
+                          <div class="mt-1.5 p-2 rounded-lg bg-[#ffe4de] text-[#9e3322] border border-[#f5c2b7] text-xs font-semibold flex items-center justify-between gap-2">
                             <div class="flex items-center gap-1.5 min-w-0">
                               <span class="material-symbols-outlined text-sm shrink-0" aria-hidden="true">inventory_2</span>
                               <span class="truncate">${esc(item.stockWarning || 'Currently Out of Stock')}</span>
@@ -3714,25 +3714,25 @@
                           </div>
                         ` : ''}
                       </div>
-                      <div class="flex flex-wrap items-baseline gap-1.5 sm:gap-2 mt-2">
+                      <div class="flex flex-wrap items-baseline gap-1.5 sm:gap-2 mt-1">
                         <span class="font-spec-numeral text-sm sm:text-base font-bold text-primary" data-line-total="${effectiveUnit * item.qty}">${formatINR(effectiveUnit * item.qty)}</span>
-                        <span class="font-spec-numeral text-[11px] sm:text-xs text-outline">(${formatINR(effectiveUnit)} / unit)</span>
+                        <span class="font-spec-numeral text-[11px] text-outline">(${formatINR(effectiveUnit)} / unit)</span>
                         ${isTierDiscounted ? `<span class="px-2 py-0.5 rounded-full bg-secondary-container/60 text-secondary font-label-sm text-[10px] font-bold">Volume Tier Applied</span>` : ''}
                       </div>
                     </div>
                   </div>
 
                   <div class="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-surface-container">
-                    <div class="flex items-center bg-surface-container-low rounded-lg p-1 border border-[#e4e0d8]">
-                      <button type="button" aria-label="Decrease quantity" onclick="window.handleCartQty('${esc(item.cartItemId)}', -1)" class="w-11 h-11 rounded-md bg-white text-primary flex items-center justify-center font-bold hover:bg-surface-container cursor-pointer">
-                        <span class="material-symbols-outlined text-sm" aria-hidden="true">remove</span>
+                    <div class="flex items-center bg-surface-container-low rounded-lg p-0.5 border border-[#e4e0d8]">
+                      <button type="button" aria-label="Decrease quantity" onclick="window.handleCartQty('${esc(item.cartItemId)}', -1)" class="w-8 h-8 rounded-md bg-white text-primary flex items-center justify-center font-bold hover:bg-surface-container cursor-pointer transition-colors shadow-2xs">
+                        <span class="material-symbols-outlined text-xs" aria-hidden="true">remove</span>
                       </button>
-                      <span class="font-spec-numeral text-xs font-bold px-3 text-primary">${item.qty}</span>
-                      <button type="button" aria-label="Increase quantity" onclick="window.handleCartQty('${esc(item.cartItemId)}', 1)" class="w-11 h-11 rounded-md bg-white text-primary flex items-center justify-center font-bold hover:bg-surface-container cursor-pointer">
-                        <span class="material-symbols-outlined text-sm" aria-hidden="true">add</span>
+                      <span class="font-spec-numeral text-xs font-bold px-2.5 text-primary">${item.qty}</span>
+                      <button type="button" aria-label="Increase quantity" onclick="window.handleCartQty('${esc(item.cartItemId)}', 1)" class="w-8 h-8 rounded-md bg-white text-primary flex items-center justify-center font-bold hover:bg-surface-container cursor-pointer transition-colors shadow-2xs">
+                        <span class="material-symbols-outlined text-xs" aria-hidden="true">add</span>
                       </button>
                     </div>
-                    <button type="button" onclick="window.handleSaveForLater('${esc(item.cartItemId)}', '${esc(item.productId)}')" class="min-h-[44px] px-3 rounded-lg text-xs text-secondary font-semibold hover:bg-surface-container-low flex items-center gap-1 cursor-pointer">
+                    <button type="button" onclick="window.handleSaveForLater('${esc(item.cartItemId)}', '${esc(item.productId)}')" class="min-h-[36px] px-2.5 rounded-lg text-xs text-secondary font-semibold hover:bg-surface-container-low flex items-center gap-1 cursor-pointer transition-colors">
                       <span class="material-symbols-outlined text-sm" aria-hidden="true">bookmark_add</span>
                       <span>Save for later</span>
                     </button>
@@ -3740,77 +3740,77 @@
                 </div>
               `;}).join('')}
 
-              <!-- Pincode Dispatch Indicator Card -->
-              <div class="ram-card p-3.5 sm:p-4 bg-white flex flex-col min-[380px]:flex-row items-start min-[380px]:items-center justify-between gap-3 min-w-0">
-                <div class="flex items-center gap-3 min-w-0 flex-1">
-                  <div class="w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center shrink-0">
-                    <span class="material-symbols-outlined text-xl" aria-hidden="true">pin_drop</span>
+              <!-- Pincode Dispatch Indicator Card (Tightened) -->
+              <div class="ram-card p-3 sm:p-3.5 bg-white flex flex-col min-[380px]:flex-row items-start min-[380px]:items-center justify-between gap-2.5 min-w-0">
+                <div class="flex items-center gap-2.5 min-w-0 flex-1">
+                  <div class="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center shrink-0">
+                    <span class="material-symbols-outlined text-base" aria-hidden="true">pin_drop</span>
                   </div>
                   <div class="min-w-0 flex-1">
                     <p class="text-xs sm:text-sm font-bold text-primary truncate">Delivering to PIN ${esc(pinInfo.pin)} (${esc(pinInfo.city)})</p>
-                    <p class="text-xs text-on-surface-variant truncate">${esc(pinInfo.courier)} • Guaranteed in ${esc(pinInfo.days)}</p>
+                    <p class="text-[11px] text-on-surface-variant truncate">${esc(pinInfo.courier)} • Guaranteed in ${esc(pinInfo.days)}</p>
                   </div>
                 </div>
-                <button type="button" onclick="window.promptChangePincode()" class="min-h-[44px] px-3 rounded-lg text-xs font-bold text-secondary underline whitespace-nowrap shrink-0 cursor-pointer">Change PIN</button>
+                <button type="button" onclick="window.promptChangePincode()" class="min-h-[36px] px-2.5 rounded-lg text-xs font-bold text-secondary underline whitespace-nowrap shrink-0 cursor-pointer">Change PIN</button>
               </div>
 
-              <!-- B2B GST Input Tax Credit (18%) Box -->
-              <div class="ram-card p-4 bg-white flex flex-col gap-3 min-w-0">
-                <label class="flex items-start gap-3 cursor-pointer min-h-[44px]">
-                  <input type="checkbox" ${gstInfo.enabled ? 'checked' : ''} onchange="window.toggleGstClaim(this.checked)" class="mt-1 w-5 h-5 accent-primary rounded shrink-0">
+              <!-- B2B GST Input Tax Credit (18%) Box (Tightened) -->
+              <div class="ram-card p-3 sm:p-3.5 bg-white flex flex-col gap-2.5 min-w-0">
+                <label class="flex items-start gap-2.5 cursor-pointer">
+                  <input type="checkbox" ${gstInfo.enabled ? 'checked' : ''} onchange="window.toggleGstClaim(this.checked)" class="mt-0.5 w-4 h-4 accent-primary rounded shrink-0">
                   <div class="flex-1 min-w-0">
-                    <span class="text-sm font-bold text-primary flex items-center gap-1.5 flex-wrap">
+                    <span class="text-xs sm:text-sm font-bold text-primary flex items-center gap-1.5 flex-wrap leading-tight">
                       <span>Claim GST Input Tax Credit (18% ITC)</span>
-                      <span class="material-symbols-outlined text-sm text-secondary" aria-hidden="true">verified_user</span>
+                      <span class="material-symbols-outlined text-xs text-secondary" aria-hidden="true">verified_user</span>
                     </span>
-                    <p class="text-xs text-on-surface-variant break-words">Receive an automated B2B tax invoice with HSN 39073010 for registered studios.</p>
+                    <p class="text-[11px] text-on-surface-variant mt-0.5 break-words">Automated B2B tax invoice with HSN 39073010 for registered studios.</p>
                   </div>
                 </label>
-                <div id="cart-gst-fields" class="${gstInfo.enabled ? 'grid' : 'hidden'} grid-cols-1 sm:grid-cols-2 gap-3 pt-2 border-t border-surface-container">
+                <div id="cart-gst-fields" class="${gstInfo.enabled ? 'grid' : 'hidden'} grid-cols-1 sm:grid-cols-2 gap-2.5 pt-2 border-t border-surface-container">
                   <div>
-                    <label for="cart-gstin-input" class="text-[11px] text-on-surface-variant font-medium block mb-1">GSTIN (15-Character ID)</label>
-                    <input id="cart-gstin-input" type="text" maxlength="15" value="${esc(gstInfo.gstin)}" onchange="window.saveGstField()" class="w-full h-12 px-3 rounded-lg bg-surface-container-low border border-[#e4e0d8] font-spec-numeral text-sm uppercase text-primary">
+                    <label for="cart-gstin-input" class="text-[10.5px] text-on-surface-variant font-medium block mb-1">GSTIN (15-Character ID)</label>
+                    <input id="cart-gstin-input" type="text" maxlength="15" value="${esc(gstInfo.gstin)}" onchange="window.saveGstField()" class="w-full h-10 px-3 rounded-lg bg-surface-container-low border border-[#e4e0d8] font-spec-numeral text-xs uppercase text-primary">
                   </div>
                   <div>
-                    <label for="cart-tradename-input" class="text-[11px] text-on-surface-variant font-medium block mb-1">Registered Legal Studio / Entity Name</label>
-                    <input id="cart-tradename-input" type="text" value="${esc(gstInfo.tradeName)}" onchange="window.saveGstField()" class="w-full h-12 px-3 rounded-lg bg-surface-container-low border border-[#e4e0d8] text-sm text-primary">
+                    <label for="cart-tradename-input" class="text-[10.5px] text-on-surface-variant font-medium block mb-1">Registered Legal Studio / Entity Name</label>
+                    <input id="cart-tradename-input" type="text" value="${esc(gstInfo.tradeName)}" onchange="window.saveGstField()" class="w-full h-10 px-3 rounded-lg bg-surface-container-low border border-[#e4e0d8] text-xs text-primary">
                   </div>
                 </div>
               </div>
             </div>
 
             <!-- Right Column: Voucher + Single Unified Invoice Summary (5 cols) -->
-            <div class="lg:col-span-5 flex flex-col gap-4 sticky top-24 min-w-0">
-              <!-- Voucher Box -->
-              <div class="ram-card p-4 bg-white flex flex-col gap-2.5 min-w-0">
-                <label for="cart-coupon-input" class="text-sm font-bold text-primary">Studio Voucher or Instagram Promo Code</label>
-                <form class="flex flex-col min-[360px]:flex-row gap-2" onsubmit="event.preventDefault(); window.handleApplyCoupon();">
-                  <input id="cart-coupon-input" type="text" value="${esc(summary.couponCode || summary.savedCouponCode)}" placeholder="Enter code (e.g. KRAFTFIRST)" class="flex-1 min-w-0 h-12 px-3 rounded-lg bg-surface-container-low border border-[#e4e0d8] font-spec-numeral text-sm uppercase text-primary">
-                  <button type="submit" class="px-5 h-12 rounded-lg bg-primary text-white text-xs font-bold shrink-0 cursor-pointer">APPLY</button>
+            <div class="lg:col-span-5 flex flex-col gap-3 sm:gap-4 sticky top-20 min-w-0">
+              <!-- Voucher Box (Compact Apple Style) -->
+              <div class="ram-card p-3.5 sm:p-4 bg-white flex flex-col gap-2 min-w-0">
+                <label for="cart-coupon-input" class="text-xs sm:text-sm font-bold text-primary">Studio Voucher or Promo Code</label>
+                <form class="flex flex-col min-[360px]:flex-row gap-1.5" onsubmit="event.preventDefault(); window.handleApplyCoupon();">
+                  <input id="cart-coupon-input" type="text" value="${esc(summary.couponCode || summary.savedCouponCode)}" placeholder="Enter code (e.g. KRAFTFIRST)" class="flex-1 min-w-0 h-10 px-3 rounded-lg bg-surface-container-low border border-[#e4e0d8] font-spec-numeral text-xs uppercase text-primary">
+                  <button type="submit" class="px-4 h-10 rounded-lg bg-primary text-white text-xs font-bold shrink-0 cursor-pointer">APPLY</button>
                 </form>
-                <div class="flex flex-wrap gap-2 pt-1">
+                <div class="flex flex-wrap gap-1.5 pt-0.5">
                   ${Object.values(Store.COUPONS).map(c => `
-                    <button type="button" onclick="window.quickSelectCoupon('${c.code}')" class="min-h-[44px] px-3.5 py-2 rounded-lg text-xs font-spec-numeral font-semibold border transition-colors cursor-pointer ${summary.couponCode === c.code ? 'bg-secondary text-white border-secondary' : 'bg-surface-container-low text-primary border-[#e4e0d8] hover:border-secondary'}">
+                    <button type="button" onclick="window.quickSelectCoupon('${c.code}')" class="min-h-[32px] px-2.5 py-1 rounded-md text-[11px] font-spec-numeral font-semibold border transition-colors cursor-pointer ${summary.couponCode === c.code ? 'bg-secondary text-white border-secondary' : 'bg-surface-container-low text-primary border-[#e4e0d8] hover:border-secondary'}">
                       ${c.code}
                     </button>
                   `).join('')}
                 </div>
                 ${summary.couponDiscount > 0 ? `
-                  <div class="flex items-center gap-1.5 text-[#266b4e] text-xs font-semibold pt-1">
+                  <div class="flex items-center gap-1.5 text-[#266b4e] text-xs font-semibold pt-0.5">
                     <span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;" aria-hidden="true">check_circle</span>
                     <span>Code <strong>${esc(summary.couponCode)}</strong> active — ${formatINR(summary.couponDiscount)} saved!</span>
                   </div>
                 ` : (summary.couponInvalidReason ? `
-                  <div id="cart-coupon-warning" class="flex items-start gap-1.5 text-[#704600] bg-[#fff5e0] p-2.5 rounded-lg text-xs font-medium mt-1">
+                  <div id="cart-coupon-warning" class="flex items-start gap-1.5 text-[#704600] bg-[#fff5e0] p-2 rounded-lg text-xs font-medium mt-0.5">
                     <span class="material-symbols-outlined text-sm shrink-0 mt-0.5" aria-hidden="true">info</span>
                     <span>${esc(summary.couponInvalidReason)}</span>
                   </div>
                 ` : '')}
               </div>
 
-              <!-- SINGLE Clean Invoice Summary (Fixed Duplicate Bug from Stitch Raw HTML) -->
-              <div id="order-invoice-summary" class="ram-card p-5 bg-white flex flex-col gap-3">
-                <h2 class="font-headline-sm text-lg text-primary font-bold border-b border-surface-container pb-2">Invoice Summary</h2>
+              <!-- SINGLE Clean Invoice Summary -->
+              <div id="order-invoice-summary" class="ram-card p-4 sm:p-5 bg-white flex flex-col gap-2.5">
+                <h2 class="font-headline-sm text-base sm:text-lg text-primary font-bold border-b border-surface-container pb-2">Invoice Summary</h2>
                 <div class="flex justify-between items-center text-xs sm:text-sm text-on-surface-variant">
                   <span>Cart Subtotal (${summary.itemsCount} items)</span>
                   <span class="font-spec-numeral font-bold text-primary">${formatINR(summary.subtotal)}</span>
@@ -3831,16 +3831,16 @@
                   <span>Includes ₹${summary.gstAmount.toFixed(2)} GST (18%)</span>
                   <span>${gstInfo.enabled ? 'Eligible 18% ITC' : 'Tax Inclusive'}</span>
                 </div>
-                <div class="pt-3 mt-1 border-t border-surface-container flex justify-between items-baseline bg-surface-container-low p-3.5 rounded-xl">
+                <div class="pt-2.5 mt-0.5 border-t border-surface-container flex justify-between items-baseline bg-surface-container-low p-3 rounded-xl">
                   <div>
-                    <span class="font-headline-sm text-base text-primary font-bold block">Total Payable</span>
-                    <span class="text-[11px] text-on-surface-variant">Zero hidden charges at dispatch</span>
+                    <span class="font-headline-sm text-sm sm:text-base text-primary font-bold block">Total Payable</span>
+                    <span class="text-[10.5px] text-on-surface-variant">Zero hidden charges at dispatch</span>
                   </div>
-                  <span class="font-spec-numeral text-2xl font-bold text-primary">${formatINR(summary.payable)}</span>
+                  <span class="font-spec-numeral text-xl sm:text-2xl font-bold text-primary">${formatINR(summary.payable)}</span>
                 </div>
 
                 ${summary.hasOutOfStock ? `
-                  <div class="mt-3 p-3 rounded-xl bg-[#ffe4de] border border-[#f5c2b7] text-[#9e3322] text-xs flex flex-col gap-2">
+                  <div class="mt-2 p-2.5 rounded-xl bg-[#ffe4de] border border-[#f5c2b7] text-[#9e3322] text-xs flex flex-col gap-2">
                     <div class="flex items-center gap-1.5 font-bold">
                       <span class="material-symbols-outlined text-base" aria-hidden="true">warning</span>
                       <span>Out-of-Stock Items in Bag (${summary.outOfStockCount})</span>
@@ -3850,17 +3850,17 @@
                       Remove Out-of-Stock Items
                     </button>
                   </div>
-                  <button type="button" disabled class="w-full h-12 mt-2 rounded-xl bg-primary/40 text-on-primary/60 font-title-md text-sm font-bold flex items-center justify-center gap-2 cursor-not-allowed">
+                  <button type="button" disabled class="w-full h-11 mt-1 rounded-xl bg-primary/40 text-on-primary/60 font-title-md text-sm font-bold flex items-center justify-center gap-2 cursor-not-allowed">
                     <span>Remove Out-of-Stock Items to Checkout</span>
                   </button>
                 ` : `
-                  <button type="button" onclick="window.openCheckoutModal()" class="btn-shimmer w-full h-12 mt-2 rounded-xl bg-primary hover:bg-primary-container text-on-primary font-title-md text-sm font-bold flex items-center justify-center gap-2 shadow-md cursor-pointer">
+                  <button type="button" onclick="window.openCheckoutModal()" class="btn-shimmer w-full h-11 sm:h-12 mt-1 rounded-xl bg-primary hover:bg-primary-container text-on-primary font-title-md text-xs sm:text-sm font-bold flex items-center justify-center gap-2 shadow-md cursor-pointer active:scale-[0.99] transition-transform">
                     <span>Proceed to Secure Checkout • ${formatINR(summary.payable)}</span>
-                    <span class="material-symbols-outlined text-lg" aria-hidden="true">arrow_forward</span>
+                    <span class="material-symbols-outlined text-base sm:text-lg" aria-hidden="true">arrow_forward</span>
                   </button>
                 `}
 
-                <p class="text-[11px] text-center text-on-surface-variant pt-1">
+                <p class="text-[10.5px] text-center text-on-surface-variant pt-0.5">
                   🔒 100% Encrypted via <strong>Razorpay Payment Gateway</strong> • UPI, Cards &amp; NetBanking
                 </p>
               </div>
