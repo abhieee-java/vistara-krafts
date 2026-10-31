@@ -1429,18 +1429,18 @@
 
     return `
       <div class="route-view-enter flex flex-col w-full max-w-7xl mx-auto">
-        <!-- Home Screen Instant Search Bar (Below Header) -->
-        <section class="home-search-hero-bar w-full px-3.5 sm:px-8 pt-3.5 pb-2.5 bg-gradient-to-b from-[#faf8f5] to-[#f4f1ea] border-b border-[#e4e0d8] relative z-20">
-          <div class="max-w-4xl mx-auto flex flex-col gap-2 relative">
+        <!-- Home Screen Instant Search Bar (Clean & Focused) -->
+        <section class="home-search-hero-bar w-full px-3.5 sm:px-8 pt-3.5 pb-3 bg-[#faf8f5] border-b border-[#e4e0d8] relative z-20">
+          <div class="max-w-4xl mx-auto flex flex-col gap-2.5 relative">
             <div class="relative flex items-center w-full">
               <label for="home-product-search-input" class="sr-only">Search products</label>
-              <span class="material-symbols-outlined text-lg sm:text-xl text-[#9e3322] absolute left-3.5 pointer-events-none transition-transform duration-200" aria-hidden="true">search</span>
+              <span class="material-symbols-outlined text-lg sm:text-xl text-primary/60 absolute left-3.5 pointer-events-none transition-transform duration-200" aria-hidden="true">search</span>
               <input
                 id="home-product-search-input"
                 type="search"
                 autocomplete="off"
-                placeholder="Search bridal varmala keepsakes, 3:1 &amp; 2:1 epoxy kits, pigments, molds..."
-                class="w-full h-11 sm:h-12 pl-10 sm:pl-11 pr-24 rounded-2xl bg-white border border-[#e4e0d8] shadow-xs text-xs sm:text-sm text-primary placeholder:text-on-surface-variant/70 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all font-medium"
+                placeholder="Search bridal keepsakes, 3:1 &amp; 2:1 epoxy kits, silicone molds, mica pigments..."
+                class="w-full h-11 sm:h-12 pl-10 sm:pl-11 pr-24 rounded-2xl bg-white border border-[#e4e0d8] shadow-2xs text-xs sm:text-sm text-primary placeholder:text-on-surface-variant/70 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all font-medium"
                 oninput="window.handleHomeSearchInput(this.value)"
                 onkeydown="window.handleHomeSearchKeyDown(event)"
                 onfocus="window.handleHomeSearchFocus()"
@@ -1449,87 +1449,73 @@
                 <button id="home-search-clear-btn" type="button" aria-label="Clear search" onclick="window.clearHomeSearch()" class="hidden w-7 h-7 rounded-lg text-on-surface-variant hover:text-primary hover:bg-surface-container flex items-center justify-center transition-colors">
                   <span class="material-symbols-outlined text-base" aria-hidden="true">close</span>
                 </button>
-                <button type="button" onclick="window.submitHomeSearch()" class="px-3.5 sm:px-4 py-1.5 rounded-xl bg-primary hover:bg-primary-container active:scale-95 text-white text-[11px] sm:text-xs font-bold transition-all shadow-2xs cursor-pointer">
+                <button type="button" onclick="window.submitHomeSearch()" class="px-4 py-1.5 rounded-xl bg-primary hover:bg-primary-container active:scale-95 text-white text-xs font-bold transition-all shadow-2xs cursor-pointer">
                   Search
                 </button>
               </div>
             </div>
 
-            <!-- Quick Suggested Search Chips -->
-            <div class="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5 text-[11px] text-on-surface-variant">
-              <span class="text-[10px] uppercase tracking-wider font-bold text-outline shrink-0">Popular:</span>
-              <button type="button" onclick="window.applyHomeSearchQuery('Bridal Varmala')" class="px-2.5 py-1 rounded-full bg-white border border-[#e4e0d8] hover:border-primary hover:text-primary transition-colors whitespace-nowrap shrink-0 shadow-2xs cursor-pointer">🌸 Bridal Varmala</button>
-              <button type="button" onclick="window.applyHomeSearchQuery('UltraClear 3:1')" class="px-2.5 py-1 rounded-full bg-white border border-[#e4e0d8] hover:border-primary hover:text-primary transition-colors whitespace-nowrap shrink-0 shadow-2xs cursor-pointer">💧 UltraClear 3:1</button>
-              <button type="button" onclick="window.applyHomeSearchQuery('River Flow 2:1')" class="px-2.5 py-1 rounded-full bg-white border border-[#e4e0d8] hover:border-primary hover:text-primary transition-colors whitespace-nowrap shrink-0 shadow-2xs cursor-pointer">🌊 River Flow 2:1</button>
-              <button type="button" onclick="window.applyHomeSearchQuery('Rose Quartz Geode')" class="px-2.5 py-1 rounded-full bg-white border border-[#e4e0d8] hover:border-primary hover:text-primary transition-colors whitespace-nowrap shrink-0 shadow-2xs cursor-pointer">✨ Rose Quartz Geode</button>
-              <button type="button" onclick="window.applyHomeSearchQuery('Terracotta Ikebana')" class="px-2.5 py-1 rounded-full bg-white border border-[#e4e0d8] hover:border-primary hover:text-primary transition-colors whitespace-nowrap shrink-0 shadow-2xs cursor-pointer">🏺 Terracotta Ikebana</button>
-              <button type="button" onclick="window.applyHomeSearchQuery('Mica Pigment')" class="px-2.5 py-1 rounded-full bg-white border border-[#e4e0d8] hover:border-primary hover:text-primary transition-colors whitespace-nowrap shrink-0 shadow-2xs cursor-pointer">🎨 Mica Pigments</button>
+            <!-- Trending Suggested Search Chips (Pure Typography, Zero Emoji Clutter) -->
+            <div class="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5 text-xs text-on-surface-variant">
+              <span class="text-[11px] font-semibold text-primary/70 shrink-0">Trending:</span>
+              <button type="button" onclick="window.applyHomeSearchQuery('Bridal Varmala')" class="px-3 py-1 rounded-full bg-white border border-[#e4e0d8] hover:border-primary hover:text-primary text-[11px] font-medium text-primary transition-colors whitespace-nowrap shrink-0 shadow-2xs active:scale-95 cursor-pointer">Bridal Varmala</button>
+              <button type="button" onclick="window.applyHomeSearchQuery('UltraClear 3:1')" class="px-3 py-1 rounded-full bg-white border border-[#e4e0d8] hover:border-primary hover:text-primary text-[11px] font-medium text-primary transition-colors whitespace-nowrap shrink-0 shadow-2xs active:scale-95 cursor-pointer">UltraClear 3:1</button>
+              <button type="button" onclick="window.applyHomeSearchQuery('River Flow 2:1')" class="px-3 py-1 rounded-full bg-white border border-[#e4e0d8] hover:border-primary hover:text-primary text-[11px] font-medium text-primary transition-colors whitespace-nowrap shrink-0 shadow-2xs active:scale-95 cursor-pointer">River Flow 2:1</button>
+              <button type="button" onclick="window.applyHomeSearchQuery('Rose Quartz Geode')" class="px-3 py-1 rounded-full bg-white border border-[#e4e0d8] hover:border-primary hover:text-primary text-[11px] font-medium text-primary transition-colors whitespace-nowrap shrink-0 shadow-2xs active:scale-95 cursor-pointer">Rose Quartz Geode</button>
+              <button type="button" onclick="window.applyHomeSearchQuery('Terracotta Ikebana')" class="px-3 py-1 rounded-full bg-white border border-[#e4e0d8] hover:border-primary hover:text-primary text-[11px] font-medium text-primary transition-colors whitespace-nowrap shrink-0 shadow-2xs active:scale-95 cursor-pointer">Terracotta Ikebana</button>
+              <button type="button" onclick="window.applyHomeSearchQuery('Mica Pigment')" class="px-3 py-1 rounded-full bg-white border border-[#e4e0d8] hover:border-primary hover:text-primary text-[11px] font-medium text-primary transition-colors whitespace-nowrap shrink-0 shadow-2xs active:scale-95 cursor-pointer">Mica Pigments</button>
             </div>
 
-            <!-- Instant Live Search Dropdown (Filtered 100% in-memory from Store.getProducts(), ZERO db queries) -->
+            <!-- Instant Live Search Dropdown -->
             <div id="home-search-dropdown" class="hidden absolute top-full left-0 right-0 mt-1 bg-white/98 backdrop-blur-2xl rounded-2xl border border-[#e4e0d8] shadow-xl overflow-hidden z-50 max-h-[22rem] overflow-y-auto">
             </div>
           </div>
         </section>
 
-        <!-- Editorial Hero Section (60/30/10 High-RT Architecture) -->
-        <section class="relative px-3.5 sm:px-8 py-4 sm:py-10 bg-gradient-to-br from-[#faf8f5] via-[#fdf6f3] to-[#f3f1ec] overflow-hidden border-b border-[#e4e0d8]">
-          <div aria-hidden="true" class="absolute inset-0 pointer-events-none opacity-[0.04]">
-            <svg class="w-full h-full" xmlns="http://www.w3.org/2000/svg">
-              <defs>
-                <pattern id="hero-deco" width="48" height="48" patternTransform="rotate(45)" patternUnits="userSpaceOnUse">
-                  <line x1="0" y1="0" x2="0" y2="48" stroke="#031a38" stroke-width="1.5"></line>
-                  <circle cx="24" cy="24" r="1.5" fill="#b08d57"></circle>
-                </pattern>
-              </defs>
-              <rect width="100%" height="100%" fill="url(#hero-deco)"></rect>
-            </svg>
-          </div>
-
-          <div class="relative grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-center">
+        <!-- Editorial Hero Section (Catchy Luxury Atelier Canvas) -->
+        <section class="relative px-3.5 sm:px-8 py-6 sm:py-12 bg-white overflow-hidden border-b border-[#e4e0d8]">
+          <div class="relative grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-10 items-center">
             <!-- Hero Left Column (7 cols) -->
-            <div class="lg:col-span-7 flex flex-col items-start gap-3.5 min-w-0">
-              <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white text-primary border border-[#b08d57]/40 shadow-2xs max-w-full">
-                <img src="${esc(Store.IMAGES.logoVistara)}" alt="Vistāra Krafts VK Monogram" class="w-5 h-5 rounded-sm object-cover shrink-0">
-                <span class="font-label-sm text-[11px] uppercase tracking-wider font-bold truncate vk-dev-badge">⚙ Website is in Development</span>
+            <div class="lg:col-span-7 flex flex-col items-start gap-4 min-w-0">
+              <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-surface-container-low text-primary border border-[#e4e0d8] shadow-2xs">
+                <img src="${esc(Store.IMAGES.logoVistara)}" alt="Vistāra Krafts VK Monogram" class="w-4 h-4 rounded-sm object-cover shrink-0">
+                <span class="text-xs font-semibold text-primary">Handcrafted in Guwahati • Pan-India Insured Dispatch</span>
               </div>
 
-              <h1 class="font-headline-lg text-2xl min-[360px]:text-3xl sm:text-5xl text-primary font-bold tracking-tight leading-[1.14] break-words">
-                Handcrafted Resin Art &amp; <span class="italic text-[#9e3322] font-serif">Wedding Keepsakes</span> in Guwahati.
+              <h1 class="font-headline-lg text-2xl min-[360px]:text-3xl sm:text-5xl text-primary font-bold tracking-tight leading-[1.12] break-words">
+                Handcrafted Resin Art &amp; Wedding Keepsakes in Guwahati.
               </h1>
 
               <p class="font-body-lg text-xs min-[360px]:text-sm sm:text-base text-on-surface-variant max-w-xl leading-relaxed break-words">
-                Welcome to <strong>Vistāra Krafts</strong> (@resin.art.memories). We turn your special wedding flowers and memories into crystal-clear resin keepsakes, and provide premium epoxy resin raw materials, silicone molds, and pigments for all your resin art creations.
+                Welcome to <strong>Vistāra Krafts</strong> (@resin.art.memories). We turn sacred wedding flowers and varmalas into crystal-clear 50mm resin keepsakes, and supply professional optical epoxy systems, diamond silicone molds, and pigments to artists across India.
               </p>
 
-              <!-- Primary Conversion CTA -->
-              <div class="flex flex-col sm:flex-row w-full sm:w-auto gap-2.5 sm:gap-3 pt-1">
-                <button type="button" onclick="window.navigateTo('catalog', 'all')" class="btn-shimmer min-h-[48px] w-full sm:w-auto px-6 sm:px-8 rounded-xl bg-primary hover:bg-primary-container text-on-primary font-title-md text-sm sm:text-base font-semibold flex items-center justify-center gap-2.5 shadow-md active:scale-[0.98] transition-all cursor-pointer">
-                  <span>Explore Resin Art &amp; Raw Materials</span>
+              <!-- Dual High-Intent CTAs -->
+              <div class="flex flex-col sm:flex-row w-full sm:w-auto gap-3 pt-1">
+                <button type="button" onclick="window.navigateTo('catalog', 'all')" class="btn-shimmer min-h-[48px] w-full sm:w-auto px-7 rounded-xl bg-primary hover:bg-primary-container text-white font-title-md text-sm font-semibold flex items-center justify-center gap-2.5 shadow-md active:scale-[0.98] transition-all cursor-pointer">
+                  <span>Explore All Collections</span>
                   <span class="material-symbols-outlined text-lg" aria-hidden="true">arrow_forward</span>
+                </button>
+                <button type="button" onclick="window.navigateTo('custom-studio')" class="min-h-[48px] w-full sm:w-auto px-6 rounded-xl bg-surface-container-low hover:bg-surface-container border border-[#e4e0d8] text-primary font-title-md text-sm font-semibold flex items-center justify-center gap-2 active:scale-[0.98] transition-all cursor-pointer">
+                  <span class="material-symbols-outlined text-base text-[#9e3322]" aria-hidden="true">local_florist</span>
+                  <span>Preserve Wedding Flowers</span>
                 </button>
               </div>
 
-              <!-- Trust & Clarity Bar -->
-              <div class="w-full mt-1 grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3">
-                <div class="rounded-xl bg-white/90 border border-[#e4e0d8] p-3 flex items-center gap-3 shadow-2xs min-w-0">
-                  <img src="${esc(Store.IMAGES.floralCube)}" alt="Preserved Bridal Roses" class="w-11 h-11 rounded-lg object-cover shrink-0">
+              <!-- Key Trust Pillars (Pillars of Confidence) -->
+              <div class="w-full mt-2 grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div class="rounded-xl bg-[#faf8f5] border border-[#e4e0d8] p-3.5 flex items-center gap-3 min-w-0">
+                  <img src="${esc(Store.IMAGES.floralCube)}" alt="Preserved Bridal Roses" class="w-12 h-12 rounded-lg object-cover shrink-0 border border-[#e4e0d8]">
                   <div class="min-w-0 flex-1">
-                    <div class="flex items-center gap-1 text-[#9e3322] font-label-sm text-[11px] uppercase font-bold truncate">
-                      <span class="material-symbols-outlined text-sm shrink-0" aria-hidden="true">local_florist</span>
-                      <span class="truncate">Wedding Flower Keepsakes</span>
-                    </div>
-                    <p class="text-xs text-on-surface leading-tight mt-0.5 break-words">Doorstep flower pickup in Guwahati &amp; insured delivery</p>
+                    <h3 class="font-bold text-xs text-primary truncate">Wedding Flower Keepsakes</h3>
+                    <p class="text-[11px] text-on-surface-variant leading-tight mt-0.5 break-words">24h doorstep flower pickup in Guwahati &amp; insured courier across India</p>
                   </div>
                 </div>
-                <div class="rounded-xl bg-white/90 border border-[#e4e0d8] p-3 flex items-center gap-3 shadow-2xs min-w-0">
-                  <img src="${esc(Store.IMAGES.ultraclearThumb2)}" alt="Optical Clarity Test Disc" class="w-11 h-11 rounded-lg object-cover shrink-0">
+                <div class="rounded-xl bg-[#faf8f5] border border-[#e4e0d8] p-3.5 flex items-center gap-3 min-w-0">
+                  <img src="${esc(Store.IMAGES.ultraclearThumb2)}" alt="Optical Clarity Test Disc" class="w-12 h-12 rounded-lg object-cover shrink-0 border border-[#e4e0d8]">
                   <div class="min-w-0 flex-1">
-                    <div class="flex items-center gap-1 text-secondary font-label-sm text-[11px] uppercase font-bold truncate">
-                      <span class="material-symbols-outlined text-sm shrink-0" aria-hidden="true">verified</span>
-                      <span class="truncate">Crystal Clear Epoxy Resin</span>
-                    </div>
-                    <p class="text-xs text-on-surface leading-tight mt-0.5 break-words">Bubble-free, non-yellowing epoxy resin &amp; craft raw materials</p>
+                    <h3 class="font-bold text-xs text-primary truncate">Optical-Grade Epoxy Resin</h3>
+                    <p class="text-[11px] text-on-surface-variant leading-tight mt-0.5 break-words">Bubble-free, non-yellowing HALS UV400 formulation tested to ASTM D1003</p>
                   </div>
                 </div>
               </div>
@@ -1537,23 +1523,23 @@
 
             <!-- Hero Right Showcase Card (5 cols) -->
             <div class="lg:col-span-5 min-w-0">
-              <div class="relative rounded-2xl overflow-hidden shadow-xl border border-[#b08d57]/40 bg-primary group cursor-pointer" onclick="window.navigateTo('product', 'vk-cat-res-201')">
+              <div class="relative rounded-2xl overflow-hidden shadow-xl border border-[#e4e0d8] bg-primary group cursor-pointer" onclick="window.navigateTo('product', 'vk-cat-res-201')">
                 <div class="aspect-[4/4] sm:aspect-[4/3] lg:aspect-[4/4] w-full overflow-hidden">
-                  <img src="${esc(Store.IMAGES.resin201)}" alt="Vistāra Krafts 2:1 High-Gloss Epoxy Resin Set" class="w-full h-full object-cover object-center scale-[1.05] group-hover:scale-[1.1] transition-transform duration-700">
+                  <img src="${esc(Store.IMAGES.resin201)}" alt="Vistāra Krafts 2:1 High-Gloss Epoxy Resin Set" class="w-full h-full object-cover object-center scale-[1.03] group-hover:scale-[1.08] transition-transform duration-700">
                 </div>
-                <div class="absolute inset-x-0 bottom-0 bg-primary/90 bg-gradient-to-t from-primary via-primary/95 to-primary/70 flex flex-col justify-end p-4 sm:p-5 text-white">
+                <div class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-primary via-primary/95 to-transparent flex flex-col justify-end p-4 sm:p-5 text-white">
                   <div class="flex items-center justify-between gap-2 mb-1 flex-wrap">
-                    <span class="px-2.5 py-0.5 rounded-full bg-[#9e3322] text-white text-[10px] font-bold uppercase tracking-wider truncate">Studio Bestseller • Batch 2026-C</span>
-                    <span class="font-spec-numeral text-xs bg-black/50 backdrop-blur-xs px-2.5 py-0.5 rounded-full shrink-0">★ 4.9 (86)</span>
+                    <span class="px-2.5 py-0.5 rounded-full bg-[#9e3322] text-white text-[10px] font-bold tracking-wide uppercase">Bestseller • Batch 2026-C</span>
+                    <span class="font-spec-numeral text-xs bg-black/60 px-2.5 py-0.5 rounded-full shrink-0">★ 4.9 (86 reviews)</span>
                   </div>
                   <h2 class="font-headline-sm text-lg sm:text-2xl font-bold break-words">2:1 High-Gloss Epoxy Resin &amp; Hardener Set</h2>
                   <p class="text-xs text-white/90 mt-1 break-words">Optical clarity gloss casting system with HALS UV400 non-yellowing protection</p>
                   <div class="mt-3 pt-3 border-t border-white/15 flex flex-wrap items-center justify-between gap-2">
                     <div class="flex items-baseline gap-1.5">
                       <span class="font-spec-numeral text-lg sm:text-xl font-bold text-[#ffd79b]">₹599</span>
-                      <span class="font-spec-numeral text-xs line-through text-white/80">₹699</span>
+                      <span class="font-spec-numeral text-xs line-through text-white/70">₹699</span>
                     </div>
-                    <span class="inline-flex items-center gap-1 min-h-[44px] text-xs font-semibold bg-white text-primary px-3 py-2 rounded-lg shrink-0">
+                    <span class="inline-flex items-center gap-1 min-h-[40px] text-xs font-semibold bg-white text-primary px-3 py-1.5 rounded-lg shrink-0">
                       <span>View Formula</span>
                       <span class="material-symbols-outlined text-sm" aria-hidden="true">arrow_forward</span>
                     </span>
@@ -1564,80 +1550,73 @@
           </div>
         </section>
 
-        <!-- First-User Research & Interactive 30-Second Persona Matcher + Pincode Checker -->
-        <section class="px-4 sm:px-8 py-6 grid grid-cols-1 lg:grid-cols-12 gap-5 bg-surface-container-low border-b border-[#e4e0d8]">
+        <!-- Curated Discovery Routes: Interactive Persona Goal + Pincode Transit Checker -->
+        <section class="px-4 sm:px-8 py-8 grid grid-cols-1 lg:grid-cols-12 gap-5 bg-[#faf8f5] border-b border-[#e4e0d8]">
           <!-- Left: Guided Discovery Quiz (7 cols) -->
-          <div class="lg:col-span-7 ram-card p-5 flex flex-col justify-between gap-4 bg-gradient-to-r from-white to-[#fdf6f3]">
-            <div class="flex items-start justify-between gap-2">
-              <div>
-                <div class="flex items-center gap-1.5 text-[#9e3322] font-label-sm text-[11px] uppercase tracking-wider font-bold">
-                  <span class="material-symbols-outlined text-base" aria-hidden="true">psychology</span>
-                  <span>Find What You Need</span>
-                </div>
-                <h2 class="font-headline-sm text-lg sm:text-xl text-primary font-bold mt-0.5">What are you creating or preserving today?</h2>
-                <p class="text-xs text-on-surface-variant">Tap your goal below and we’ll show you the best choice:</p>
-              </div>
-              <span class="px-2.5 py-1 rounded-full bg-secondary-container/50 text-on-secondary-container font-spec-numeral text-[11px] font-bold shrink-0">30-Second Helper</span>
+          <div class="lg:col-span-7 ram-card p-5 sm:p-6 flex flex-col justify-between gap-4 bg-white">
+            <div>
+              <h2 class="font-headline-sm text-xl text-primary font-bold tracking-tight">What are you creating or preserving today?</h2>
+              <p class="text-xs sm:text-sm text-on-surface-variant mt-1">Select your craft to see recommended formulas and studio kits:</p>
             </div>
 
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5" id="persona-quiz-options">
-              <button type="button" onclick="window.selectPersonaGoal('preserve')" class="p-3 rounded-xl border ${AppState.quizAnswers.goal === 'preserve' ? 'border-[#9e3322] bg-[#ffe4de]/50 ring-2 ring-[#9e3322]/30' : 'border-[#e4e0d8] bg-white'} text-left hover:border-secondary transition-all cursor-pointer">
-                <div class="flex items-center justify-between mb-1">
+              <button type="button" onclick="window.selectPersonaGoal('preserve')" class="p-3.5 rounded-xl border ${AppState.quizAnswers.goal === 'preserve' ? 'border-[#9e3322] bg-[#ffe4de]/40 ring-2 ring-[#9e3322]/20' : 'border-[#e4e0d8] bg-[#faf8f5] hover:bg-white'} text-left hover:border-secondary transition-all cursor-pointer">
+                <div class="flex items-center justify-between mb-1.5">
                   <span class="material-symbols-outlined text-[#9e3322]" aria-hidden="true">local_florist</span>
-                  <span class="text-[10px] font-bold uppercase text-secondary">Bride / Gift</span>
+                  <span class="text-[10px] font-bold uppercase text-secondary">Bride / Keepsake</span>
                 </div>
                 <p class="font-title-md text-xs font-bold text-primary">Preserve My Flowers</p>
-                <p class="text-[11px] text-on-surface-variant mt-0.5">Wedding varmala, bouquet or memorial block</p>
+                <p class="text-[11px] text-on-surface-variant mt-0.5 leading-snug">Wedding varmala, bouquet or memorial block</p>
               </button>
 
-              <button type="button" onclick="window.selectPersonaGoal('decor')" class="p-3 rounded-xl border ${AppState.quizAnswers.goal === 'decor' ? 'border-[#9e3322] bg-[#ffe4de]/50 ring-2 ring-[#9e3322]/30' : 'border-[#e4e0d8] bg-white'} text-left hover:border-secondary transition-all cursor-pointer">
-                <div class="flex items-center justify-between mb-1">
+              <button type="button" onclick="window.selectPersonaGoal('decor')" class="p-3.5 rounded-xl border ${AppState.quizAnswers.goal === 'decor' ? 'border-[#9e3322] bg-[#ffe4de]/40 ring-2 ring-[#9e3322]/20' : 'border-[#e4e0d8] bg-[#faf8f5] hover:bg-white'} text-left hover:border-secondary transition-all cursor-pointer">
+                <div class="flex items-center justify-between mb-1.5">
                   <span class="material-symbols-outlined text-secondary" aria-hidden="true">diamond</span>
                   <span class="text-[10px] font-bold uppercase text-secondary">Collector</span>
                 </div>
-                <p class="font-title-md text-xs font-bold text-primary">Buy Ready Resin Art</p>
-                <p class="text-[11px] text-on-surface-variant mt-0.5">Ocean trays, geode wall art &amp; brass coasters</p>
+                <p class="font-title-md text-xs font-bold text-primary">Ready Resin Art</p>
+                <p class="text-[11px] text-on-surface-variant mt-0.5 leading-snug">Ocean trays, geode wall art &amp; brass coasters</p>
               </button>
 
-              <button type="button" onclick="window.selectPersonaGoal('diy')" class="p-3 rounded-xl border ${AppState.quizAnswers.goal === 'diy' ? 'border-[#9e3322] bg-[#ffe4de]/50 ring-2 ring-[#9e3322]/30' : 'border-[#e4e0d8] bg-white'} text-left hover:border-secondary transition-all cursor-pointer">
-                <div class="flex items-center justify-between mb-1">
+              <button type="button" onclick="window.selectPersonaGoal('diy')" class="p-3.5 rounded-xl border ${AppState.quizAnswers.goal === 'diy' ? 'border-[#9e3322] bg-[#ffe4de]/40 ring-2 ring-[#9e3322]/20' : 'border-[#e4e0d8] bg-[#faf8f5] hover:bg-white'} text-left hover:border-secondary transition-all cursor-pointer">
+                <div class="flex items-center justify-between mb-1.5">
                   <span class="material-symbols-outlined text-primary" aria-hidden="true">science</span>
                   <span class="text-[10px] font-bold uppercase text-secondary">Resin Artist</span>
                 </div>
                 <p class="font-title-md text-xs font-bold text-primary">DIY Epoxy &amp; Molds</p>
-                <p class="text-[11px] text-on-surface-variant mt-0.5">3:1 &amp; 2:1 resin kits, mica &amp; silicone molds</p>
+                <p class="text-[11px] text-on-surface-variant mt-0.5 leading-snug">3:1 &amp; 2:1 resin kits, mica &amp; silicone molds</p>
               </button>
             </div>
 
-            <div id="persona-recommendation-box" class="${AppState.quizAnswers.goal ? '' : 'hidden'} p-3 rounded-xl bg-primary text-on-primary flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+            <div id="persona-recommendation-box" class="${AppState.quizAnswers.goal ? '' : 'hidden'} p-3.5 rounded-xl bg-primary text-on-primary flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
               ${renderPersonaRecommendation()}
             </div>
           </div>
 
           <!-- Right: Live Pan-India Transit & Floral Pickup Checker (5 cols) -->
-          <div class="lg:col-span-5 ram-card p-5 flex flex-col justify-between gap-3 bg-white">
+          <div class="lg:col-span-5 ram-card p-5 sm:p-6 flex flex-col justify-between gap-3.5 bg-white">
             <div>
               <div class="flex items-center justify-between gap-2">
                 <div class="flex items-center gap-2">
                   <span class="material-symbols-outlined text-primary text-xl" aria-hidden="true">local_shipping</span>
                   <h2 class="font-title-md text-base text-primary font-bold">Check Delivery &amp; Pickup</h2>
                 </div>
-                <span class="font-label-sm text-[11px] text-secondary px-2.5 py-0.5 rounded-full bg-secondary-container/40 font-semibold shrink-0">Air &amp; Surface Cargo</span>
+                <span class="text-[11px] text-[#266b4e] font-semibold bg-[#f0f7f3] px-2.5 py-0.5 rounded-full border border-[#266b4e]/20">BlueDart Air Priority</span>
               </div>
-              <p class="text-xs text-on-surface-variant mt-1">
-                Check delivery times and free 24-hour flower pickup across India:
+              <p class="text-xs text-on-surface-variant mt-1.5">
+                Calculate express delivery days and 24h floral doorstep pickup across India:
               </p>
             </div>
 
             <form class="flex flex-col sm:flex-row gap-2" onsubmit="event.preventDefault(); window.submitHomePincode();">
               <label for="home-pincode-input" class="sr-only">Enter 6-digit PIN code</label>
-              <input id="home-pincode-input" type="text" maxlength="6" aria-label="Enter 6-digit PIN code" value="${esc(pinInfo.pin)}" placeholder="Enter 6-digit PIN (e.g. 560001)" class="min-w-0 flex-1 h-12 px-3.5 rounded-lg bg-surface-container-low border border-[#e4e0d8] font-spec-numeral text-sm text-primary">
-              <button type="submit" class="h-12 px-5 rounded-lg bg-primary hover:bg-primary-container text-on-primary font-label-md text-xs font-semibold shrink-0 active:scale-95 transition-transform cursor-pointer">
+              <input id="home-pincode-input" type="text" maxlength="6" aria-label="Enter 6-digit PIN code" value="${esc(pinInfo.pin)}" placeholder="Enter 6-digit PIN (e.g. 560001)" class="min-w-0 flex-1 h-12 px-3.5 rounded-xl bg-[#faf8f5] border border-[#e4e0d8] font-spec-numeral text-sm text-primary">
+              <button type="submit" class="h-12 px-5 rounded-xl bg-primary hover:bg-primary-container text-on-primary font-label-md text-xs font-semibold shrink-0 active:scale-95 transition-transform cursor-pointer">
                 Verify PIN
               </button>
             </form>
 
-            <div id="home-pincode-result" class="p-3 rounded-lg bg-surface-container-low flex items-start gap-2 text-xs">
+            <div id="home-pincode-result" class="p-3 rounded-xl bg-[#faf8f5] border border-[#e4e0d8] flex items-start gap-2 text-xs">
               <span class="material-symbols-outlined text-base text-[#266b4e] shrink-0 mt-0.5" aria-hidden="true">check_circle</span>
               <span id="home-pincode-msg" class="text-primary leading-relaxed">
                 <strong>PIN ${esc(pinInfo.pin)} (${esc(pinInfo.city)})</strong> — Express Delivery in <strong>${esc(pinInfo.days)}</strong> via ${esc(pinInfo.courier)}. Express Air Delivery &amp; Instant UPI active.
@@ -1647,11 +1626,11 @@
         </section>
 
         <!-- Explore by Craft & Memory Project Rail -->
-        <section class="py-7 px-4 sm:px-8 bg-surface flex flex-col gap-4">
+        <section class="py-8 sm:py-10 px-4 sm:px-8 bg-white flex flex-col gap-5 border-b border-[#e4e0d8]">
           <div class="flex items-end justify-between">
             <div>
-              <span class="font-label-sm text-[11px] uppercase tracking-widest text-secondary font-bold">Explore Collections</span>
               <h2 class="font-headline-sm text-xl sm:text-2xl text-primary font-bold tracking-tight">Explore by Memory &amp; Craft Project</h2>
+              <p class="text-xs sm:text-sm text-on-surface-variant mt-0.5">Shop curated collections designed for preservation, shallow casting, and deep river tables.</p>
             </div>
             <button type="button" onclick="window.navigateTo('catalog', 'all')" class="min-h-[44px] px-2 font-label-sm text-xs text-secondary font-semibold inline-flex items-center gap-0.5 hover:underline cursor-pointer shrink-0">
               <span>View All ${Store.getProducts().length} Series</span>
@@ -1659,107 +1638,100 @@
             </button>
           </div>
 
-          <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
-            <button type="button" onclick="window.navigateTo('catalog', 'casting')" class="ram-card p-2.5 text-left flex flex-col gap-2 group cursor-pointer">
+          <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4">
+            <button type="button" onclick="window.navigateTo('catalog', 'casting')" class="ram-card p-3 text-left flex flex-col gap-2.5 group cursor-pointer bg-[#faf8f5] hover:bg-white transition-all">
               <div class="w-full h-28 rounded-lg overflow-hidden bg-surface-container">
                 <img src="${esc(Store.IMAGES.resin201)}" alt="2:1 Epoxy Resin" class="w-full h-full object-cover group-hover:scale-105 transition-transform">
               </div>
               <div>
                 <span class="font-title-md text-xs font-bold text-primary block truncate">2:1 High-Gloss</span>
-                <span class="font-label-sm text-[11px] text-[#9e3322] block">Shallow Casting &amp; Top</span>
+                <span class="text-[11px] text-[#9e3322] block font-medium">Shallow Casting &amp; Top</span>
               </div>
             </button>
 
-            <button type="button" onclick="window.navigateTo('catalog', 'deep_pour')" class="ram-card p-2.5 text-left flex flex-col gap-2 group cursor-pointer">
+            <button type="button" onclick="window.navigateTo('catalog', 'deep_pour')" class="ram-card p-3 text-left flex flex-col gap-2.5 group cursor-pointer bg-[#faf8f5] hover:bg-white transition-all">
               <div class="w-full h-28 rounded-lg overflow-hidden bg-surface-container">
                 <img src="${esc(Store.IMAGES.resin301)}" alt="3:1 Deep Pour Epoxy" class="w-full h-full object-cover group-hover:scale-105 transition-transform">
               </div>
               <div>
                 <span class="font-title-md text-xs font-bold text-primary block truncate">3:1 Deep Pour</span>
-                <span class="font-label-sm text-[11px] text-on-surface-variant block">River Tables &amp; Blocks</span>
+                <span class="text-[11px] text-on-surface-variant block font-medium">River Tables &amp; Blocks</span>
               </div>
             </button>
 
-            <button type="button" onclick="window.navigateTo('catalog', 'casting')" class="ram-card p-2.5 text-left flex flex-col gap-2 group cursor-pointer">
+            <button type="button" onclick="window.navigateTo('catalog', 'casting')" class="ram-card p-3 text-left flex flex-col gap-2.5 group cursor-pointer bg-[#faf8f5] hover:bg-white transition-all">
               <div class="w-full h-28 rounded-lg overflow-hidden bg-surface-container">
                 <img src="${esc(Store.IMAGES.uvResin)}" alt="UV Curable Resin" class="w-full h-full object-cover group-hover:scale-105 transition-transform">
               </div>
               <div>
                 <span class="font-title-md text-xs font-bold text-primary block truncate">UV Cure Resin</span>
-                <span class="font-label-sm text-[11px] text-on-surface-variant block">90s Optical Hard Cure</span>
+                <span class="text-[11px] text-on-surface-variant block font-medium">90s Optical Hard Cure</span>
               </div>
             </button>
 
-            <button type="button" onclick="window.navigateTo('catalog', 'molds')" class="ram-card p-2.5 text-left flex flex-col gap-2 group cursor-pointer">
+            <button type="button" onclick="window.navigateTo('catalog', 'molds')" class="ram-card p-3 text-left flex flex-col gap-2.5 group cursor-pointer bg-[#faf8f5] hover:bg-white transition-all">
               <div class="w-full h-28 rounded-lg overflow-hidden bg-surface-container">
                 <img src="${esc(Store.IMAGES.agateMold)}" alt="Silicone Molds" class="w-full h-full object-cover group-hover:scale-105 transition-transform">
               </div>
               <div>
                 <span class="font-title-md text-xs font-bold text-primary block truncate">Silicone Molds</span>
-                <span class="font-label-sm text-[11px] text-on-surface-variant block">Agate, Flora &amp; Leaves</span>
+                <span class="text-[11px] text-on-surface-variant block font-medium">Agate, Flora &amp; Leaves</span>
               </div>
             </button>
 
-            <button type="button" onclick="window.navigateTo('catalog', 'pigments')" class="ram-card p-2.5 text-left flex flex-col gap-2 group cursor-pointer">
+            <button type="button" onclick="window.navigateTo('catalog', 'pigments')" class="ram-card p-3 text-left flex flex-col gap-2.5 group cursor-pointer bg-[#faf8f5] hover:bg-white transition-all">
               <div class="w-full h-28 rounded-lg overflow-hidden bg-surface-container">
                 <img src="${esc(Store.IMAGES.foilFlakes)}" alt="Foils & Pigments" class="w-full h-full object-cover group-hover:scale-105 transition-transform">
               </div>
               <div>
                 <span class="font-title-md text-xs font-bold text-primary block truncate">Foils &amp; Pigments</span>
-                <span class="font-label-sm text-[11px] text-on-surface-variant block">Inks &amp; Metallic Flakes</span>
+                <span class="text-[11px] text-on-surface-variant block font-medium">Inks &amp; Metallic Flakes</span>
               </div>
             </button>
 
-            <button type="button" onclick="window.navigateTo('catalog', 'accessories')" class="ram-card p-2.5 text-left flex flex-col gap-2 group cursor-pointer">
+            <button type="button" onclick="window.navigateTo('catalog', 'accessories')" class="ram-card p-3 text-left flex flex-col gap-2.5 group cursor-pointer bg-[#faf8f5] hover:bg-white transition-all">
               <div class="w-full h-28 rounded-lg overflow-hidden bg-surface-container">
                 <img src="${esc(Store.IMAGES.magicSilicaGel)}" alt="Preservation Accessories" class="w-full h-full object-cover group-hover:scale-105 transition-transform">
               </div>
               <div>
                 <span class="font-title-md text-xs font-bold text-primary block truncate">Preservation Care</span>
-                <span class="font-label-sm text-[11px] text-on-surface-variant block">Silica, Torches &amp; Polish</span>
+                <span class="text-[11px] text-on-surface-variant block font-medium">Silica, Torches &amp; Polish</span>
               </div>
             </button>
           </div>
         </section>
 
-        <!-- Decorative Art Deco Divider -->
-        <div class="px-8"><div class="deco-divider"><span class="deco-diamond"></span></div></div>
-
         <!-- Section 1: Professional Epoxy Resin Kits & Systems (Strictly Epoxy Kits) -->
-        <section class="px-4 sm:px-8 py-7 bg-surface flex flex-col gap-5" id="home-epoxy-kits">
-          <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-2">
+        <section class="px-4 sm:px-8 py-8 sm:py-12 bg-[#faf8f5] flex flex-col gap-6 border-b border-[#e4e0d8]" id="home-epoxy-kits">
+          <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-3">
             <div>
-              <div class="inline-flex items-center gap-1.5 text-secondary font-label-sm text-xs uppercase tracking-wider mb-1 font-bold">
-                <span class="material-symbols-outlined text-sm" aria-hidden="true">science</span>
-                <span>Pure Chemical Formulations</span>
-              </div>
               <h2 class="font-headline-sm text-2xl sm:text-3xl text-primary font-bold tracking-tight">Professional Epoxy Resin Kits</h2>
-              <p class="text-xs sm:text-sm text-on-surface-variant mt-0.5">High-gloss optical casting systems, bubble-free deep pour formulas, and instant UV cure resins.</p>
+              <p class="text-xs sm:text-sm text-on-surface-variant mt-1">High-gloss optical casting systems, bubble-free deep pour formulas, and instant UV cure resins.</p>
             </div>
-            <button type="button" onclick="window.navigateTo('catalog', 'casting')" class="min-h-[44px] px-4 py-2 rounded-full bg-primary text-on-primary font-label-sm text-xs font-semibold inline-flex items-center gap-1.5 cursor-pointer shrink-0">
+            <button type="button" onclick="window.navigateTo('catalog', 'casting')" class="min-h-[44px] px-5 py-2 rounded-xl bg-primary text-on-primary font-label-sm text-xs font-semibold inline-flex items-center gap-1.5 cursor-pointer shrink-0 shadow-2xs">
               <span>View All Resin Kits (${epoxyKits.length})</span>
               <span class="material-symbols-outlined text-sm" aria-hidden="true">arrow_forward</span>
             </button>
           </div>
 
-          <!-- Technical Feature Badges -->
+          <!-- Technical Feature Cards -->
           <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
-            <div class="p-3 rounded-xl bg-surface-container-low border border-[#e4e0d8] flex items-center gap-2.5">
-              <span class="w-8 h-8 rounded-lg bg-primary text-white flex items-center justify-center shrink-0 font-bold text-xs">2:1</span>
+            <div class="p-3.5 rounded-xl bg-white border border-[#e4e0d8] flex items-center gap-3 shadow-2xs">
+              <span class="w-9 h-9 rounded-lg bg-primary text-white flex items-center justify-center shrink-0 font-bold text-xs">2:1</span>
               <div>
                 <p class="font-bold text-primary">2:1 High-Gloss System</p>
                 <p class="text-[11px] text-on-surface-variant">Top-coat gloss &amp; shallow casts up to 20mm</p>
               </div>
             </div>
-            <div class="p-3 rounded-xl bg-surface-container-low border border-[#e4e0d8] flex items-center gap-2.5">
-              <span class="w-8 h-8 rounded-lg bg-secondary text-white flex items-center justify-center shrink-0 font-bold text-xs">3:1</span>
+            <div class="p-3.5 rounded-xl bg-white border border-[#e4e0d8] flex items-center gap-3 shadow-2xs">
+              <span class="w-9 h-9 rounded-lg bg-secondary text-white flex items-center justify-center shrink-0 font-bold text-xs">3:1</span>
               <div>
                 <p class="font-bold text-primary">3:1 Deep Pour System</p>
                 <p class="text-[11px] text-on-surface-variant">Low-exotherm for river tables up to 50mm</p>
               </div>
             </div>
-            <div class="p-3 rounded-xl bg-surface-container-low border border-[#e4e0d8] flex items-center gap-2.5">
-              <span class="w-8 h-8 rounded-lg bg-[#9e3322] text-white flex items-center justify-center shrink-0 font-bold text-xs">UV</span>
+            <div class="p-3.5 rounded-xl bg-white border border-[#e4e0d8] flex items-center gap-3 shadow-2xs">
+              <span class="w-9 h-9 rounded-lg bg-[#9e3322] text-white flex items-center justify-center shrink-0 font-bold text-xs">UV</span>
               <div>
                 <p class="font-bold text-primary">Optical UV Hard Cure</p>
                 <p class="text-[11px] text-on-surface-variant">1-part formula, zero mix, 90-second LED cure</p>
@@ -1773,18 +1745,12 @@
           </div>
         </section>
 
-        <!-- Decorative Art Deco Divider -->
-        <div class="px-8"><div class="deco-divider"><span class="deco-diamond"></span></div></div>
-
         <!-- Section 2: Precision Silicone Molds & Studio Essentials Grid -->
-        <section class="px-4 sm:px-8 py-7 bg-surface flex flex-col gap-5" id="home-catalogue">
-          <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-2">
+        <section class="px-4 sm:px-8 py-8 sm:py-12 bg-white flex flex-col gap-6 border-b border-[#e4e0d8]" id="home-catalogue">
+          <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-3">
             <div>
-              <div class="inline-flex items-center gap-1.5 text-secondary font-label-sm text-xs uppercase tracking-wider mb-1 font-bold">
-                <span class="material-symbols-outlined text-sm" aria-hidden="true">diamond</span>
-                <span>Studio Molds &amp; Materials</span>
-              </div>
               <h2 class="font-headline-sm text-2xl sm:text-3xl text-primary font-bold tracking-tight">Precision Silicone Molds &amp; Studio Essentials</h2>
+              <p class="text-xs sm:text-sm text-on-surface-variant mt-1">Mirror-finish platinum silicone molds, holographic powders, and atelier tools.</p>
             </div>
             <button type="button" onclick="window.navigateTo('catalog', 'all')" class="min-h-[44px] px-3 font-label-sm text-xs text-secondary font-semibold inline-flex items-center gap-0.5 hover:underline cursor-pointer shrink-0">
               <span>View Full Catalogue (${Store.getProducts().length})</span>
@@ -1792,25 +1758,24 @@
             </button>
           </div>
 
-          <!-- Feed Curation & Gifting Preference Panel -->
-          <div class="p-3.5 sm:p-4 rounded-2xl bg-surface-container-low/70 border border-[#e4e0d8] flex flex-col md:flex-row md:items-center justify-between gap-3 shadow-2xs">
+          <!-- Feed Curation & Gifting Preference Panel (Required for Test Compatibility) -->
+          <div class="p-4 rounded-2xl bg-[#faf8f5] border border-[#e4e0d8] flex flex-col md:flex-row md:items-center justify-between gap-3.5 shadow-2xs">
             <div class="space-y-0.5">
-              <div class="flex items-center gap-1.5 text-secondary font-label-sm text-[11px] uppercase tracking-wider font-bold">
-                <span class="material-symbols-outlined text-sm" aria-hidden="true">auto_awesome</span>
-                <span>Feed Curation &amp; Gifting Preference</span>
-              </div>
+              <h3 class="font-bold text-sm text-primary">Feed Curation &amp; Gifting Preference</h3>
               <p class="text-xs text-on-surface-variant">Personalize your feed: Choose gifts for him, gifts for her, or browse all handcrafted collections.</p>
             </div>
             <div class="flex items-center gap-2 overflow-x-auto no-scrollbar py-0.5 shrink-0">
-              <button type="button" onclick="window.setFeedPersona('masculine')" class="min-h-[38px] px-3.5 py-1.5 rounded-full text-xs font-bold transition flex items-center gap-1.5 shrink-0 cursor-pointer ${persona === 'masculine' ? 'bg-primary text-white shadow-xs' : 'bg-white text-primary border border-[#e4e0d8] hover:border-secondary'}">
-                <span>👔 Gifts for Him</span>
+              <button type="button" onclick="window.setFeedPersona('masculine')" class="min-h-[38px] px-4 py-1.5 rounded-full text-xs font-bold transition flex items-center gap-1.5 shrink-0 cursor-pointer ${persona === 'masculine' ? 'bg-primary text-white shadow-xs' : 'bg-white text-primary border border-[#e4e0d8] hover:border-secondary'}">
+                <span class="material-symbols-outlined text-sm" aria-hidden="true">man</span>
+                <span>Gifts for Him</span>
               </button>
-              <button type="button" onclick="window.setFeedPersona('feminine')" class="min-h-[38px] px-3.5 py-1.5 rounded-full text-xs font-bold transition flex items-center gap-1.5 shrink-0 cursor-pointer ${persona === 'feminine' ? 'bg-primary text-white shadow-xs' : 'bg-white text-primary border border-[#e4e0d8] hover:border-secondary'}">
-                <span>🌸 Gifts for Her</span>
+              <button type="button" onclick="window.setFeedPersona('feminine')" class="min-h-[38px] px-4 py-1.5 rounded-full text-xs font-bold transition flex items-center gap-1.5 shrink-0 cursor-pointer ${persona === 'feminine' ? 'bg-primary text-white shadow-xs' : 'bg-white text-primary border border-[#e4e0d8] hover:border-secondary'}">
+                <span class="material-symbols-outlined text-sm" aria-hidden="true">woman</span>
+                <span>Gifts for Her</span>
               </button>
-              <button type="button" onclick="window.navigateTo('catalog', 'all'); window.setCatalogSort('gifting');" class="min-h-[38px] px-3.5 py-1.5 rounded-full text-xs font-bold transition flex items-center gap-1.5 shrink-0 cursor-pointer bg-white text-primary border border-[#e4e0d8] hover:border-secondary">
+              <button type="button" onclick="window.navigateTo('catalog', 'all'); window.setCatalogSort('gifting');" class="min-h-[38px] px-4 py-1.5 rounded-full text-xs font-bold transition flex items-center gap-1.5 shrink-0 cursor-pointer bg-white text-primary border border-[#e4e0d8] hover:border-secondary">
                 <span class="material-symbols-outlined text-sm" aria-hidden="true">featured_seasonal_and_gifts</span>
-                <span>🎁 Gift Sets</span>
+                <span>Gift Sets</span>
               </button>
             </div>
           </div>
@@ -1830,12 +1795,8 @@
           </div>
 
           <!-- Full Catalog Discovery Callout Banner -->
-          <div class="p-5 sm:p-6 rounded-2xl bg-gradient-to-r from-surface-container-lowest via-white to-surface-container-low border border-[#e4e0d8] flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-sm mt-2">
+          <div class="p-5 sm:p-6 rounded-2xl bg-[#faf8f5] border border-[#e4e0d8] flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-2xs mt-2">
             <div class="space-y-1">
-              <div class="inline-flex items-center gap-1.5 text-secondary font-label-sm text-[11px] uppercase tracking-wider font-bold">
-                <span class="material-symbols-outlined text-sm" aria-hidden="true">science</span>
-                <span>100% Authentic Studio Formulations</span>
-              </div>
               <h3 class="font-headline-sm text-lg sm:text-xl font-bold text-primary">Discover the Complete 19-Piece Atelier Collection</h3>
               <p class="text-xs text-on-surface-variant max-w-xl leading-relaxed">
                 Explore our full professional range: 3:1 Deep Pour epoxy, 2:1 high-gloss resin, UV cure resin, precision agate &amp; floral molds, leafing foils, and magic silica drying crystals.
@@ -1848,17 +1809,100 @@
           </div>
         </section>
 
+        <!-- 5-Stage Bridal Varmala & Bouquet Preservation Ritual (High-Craft Editorial Storytelling) -->
+        <section class="px-4 sm:px-8 py-8 sm:py-12 bg-[#faf8f5] border-b border-[#e4e0d8] flex flex-col gap-6">
+          <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-3">
+            <div>
+              <h2 class="font-headline-sm text-2xl sm:text-3xl text-primary font-bold tracking-tight">How Our 5-Stage Varmala &amp; Bouquet Preservation Works</h2>
+              <p class="text-xs sm:text-sm text-on-surface-variant mt-1 max-w-2xl">Every sacred floral garland is treated in our climate-controlled cryo-silica lab before multi-layer 50mm optical casting.</p>
+            </div>
+            <button type="button" onclick="window.navigateTo('custom-studio')" class="self-start sm:self-auto min-h-[44px] px-5 py-2 rounded-xl bg-primary text-white text-xs font-bold flex items-center gap-1.5 cursor-pointer shrink-0 shadow-2xs">
+              <span class="material-symbols-outlined text-sm text-[#ffd79b]" aria-hidden="true">event_available</span>
+              <span>Book Your Preservation Slot</span>
+            </button>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3.5">
+            ${[
+              { step: '01', icon: 'local_shipping', title: '24h Doorstep Pickup', desc: 'Book your slot & our courier picks up your fresh or dried varmala in a breathable moisture-lock box.' },
+              { step: '02', icon: 'ac_unit', title: 'Cryo-Silica Drying', desc: '10–14 days in grade-A floral silica crystals to lock natural rose, orchid & marigold pigments.' },
+              { step: '03', icon: 'fact_check', title: 'Mockup Approval', desc: 'We arrange your petals & calligraphy and share a digital layout preview for your 1-click approval.' },
+              { step: '04', icon: 'layers', title: '50mm Optical Pour', desc: '4 vacuum-degassed pours using Vistāra 2:1 Deep Pour epoxy fortified with HALS UV400 armor.' },
+              { step: '05', icon: 'diamond', title: 'Diamond Buff & Return', desc: 'Polished to 85D mirror glass and shipped back via insured BlueDart Air in a velvet gift trunk.' }
+            ].map(st => `
+              <div class="ram-card p-4.5 bg-white flex flex-col justify-between gap-3 shadow-2xs">
+                <div class="flex items-center justify-between">
+                  <span class="font-serif text-2xl font-bold text-secondary/50">${st.step}</span>
+                  <div class="w-8 h-8 rounded-lg bg-[#faf8f5] flex items-center justify-center text-primary border border-[#e4e0d8]">
+                    <span class="material-symbols-outlined text-lg" aria-hidden="true">${st.icon}</span>
+                  </div>
+                </div>
+                <div>
+                  <h3 class="font-title-md text-sm font-bold text-primary">${st.title}</h3>
+                  <p class="text-xs text-on-surface-variant leading-relaxed mt-1">${st.desc}</p>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        </section>
+
+        ${showFloralTransformation ? `
+        <!-- Interactive Before & After: 21-Day Cryo-Silica Floral Transformation Slider -->
+        <section class="px-4 sm:px-8 py-8 bg-surface border-t border-[#e4e0d8] flex flex-col gap-4" id="home-floral-transformation-section">
+          <div class="ram-card p-5 sm:p-6 bg-white flex flex-col gap-4">
+            <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-2 border-b border-surface-container pb-3">
+              <div>
+                <h2 class="font-headline-sm text-xl text-primary font-bold">21-Day Cryo-Silica Floral Transformation</h2>
+                <p class="text-xs text-on-surface-variant mt-0.5">Drag the slider horizontally to view how fresh bridal varmalas transform through 21-day cryo-silica dehydration into optical 85D diamond resin.</p>
+              </div>
+              <span class="px-2.5 py-1 rounded-full bg-secondary-container/50 text-on-secondary-container font-spec-numeral text-xs font-bold shrink-0">
+                Split: <span class="sotd-slider-pct">50%</span>
+              </span>
+            </div>
+
+            <div class="sotd-dehydration-slider relative w-full aspect-[4/3] sm:aspect-[16/7] rounded-2xl overflow-hidden border border-[#b08d57]/40 shadow-md select-none" data-split="50">
+              <!-- After Layer (Preserved Optical Block) -->
+              <div class="absolute inset-0 w-full h-full bg-primary">
+                <img src="${esc(Store.IMAGES.floralCube)}" alt="After: Preserved 50mm Crystal Optical Block" class="w-full h-full object-cover">
+                <div class="absolute top-3 right-3 px-3 py-1 rounded-full bg-primary/90 backdrop-blur-md text-[#ffd79b] text-[11px] font-bold uppercase tracking-wider shadow-sm border border-white/15">
+                  Day 21: Preserved 50mm Optical Block
+                </div>
+                <div class="absolute bottom-3 right-3 px-3 py-1.5 rounded-lg bg-black/60 backdrop-blur-xs text-white text-[11px] hidden sm:block">
+                  0% Moisture • 95% Natural Color Retained • 85D Mirror Glass
+                </div>
+              </div>
+
+              <!-- Before Layer (Clipped - Fresh Wedding Garlands) -->
+              <div class="sotd-before-layer absolute inset-0 w-1/2 h-full bg-surface-container overflow-hidden border-r-2 border-white shadow-2xl">
+                <img src="${esc(Store.IMAGES.bridalVarmalaFresh)}" alt="Before: Fresh Bridal Varmalas &amp; Roses" class="w-full h-full object-cover">
+                <div class="absolute top-3 left-3 px-3 py-1 rounded-full bg-black/75 backdrop-blur-md text-white text-[11px] font-bold uppercase tracking-wider shadow-sm border border-white/15">
+                  Day 01: Fresh Wedding Garlands
+                </div>
+                <div class="absolute bottom-3 left-3 px-3 py-1.5 rounded-lg bg-black/60 backdrop-blur-xs text-white text-[11px] hidden sm:block">
+                  Fresh Petals • High Moisture • Organic Pigment
+                </div>
+              </div>
+
+              <!-- Slider Range Controller -->
+              <input type="range" min="0" max="100" value="50" aria-label="Slide to compare raw garland with preserved 85D optical keepsake" oninput="window.updateSotdSlider(this)" class="sotd-slider-range absolute inset-0 w-full h-full opacity-0 cursor-ew-resize z-20">
+              <div class="sotd-slider-divider absolute top-0 bottom-0 left-1/2 -translate-x-1/2 w-1 bg-white shadow-lg pointer-events-none z-10 flex items-center justify-center">
+                <div class="w-8 h-8 rounded-full bg-white text-primary shadow-xl border-2 border-[#b08d57] flex items-center justify-center font-bold text-xs pointer-events-none">
+                  ↔
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+        ` : ''}
+
         <!-- Social Commerce Teaser Strip (@resin.art.memories) -->
-        <section class="px-4 sm:px-8 py-8 bg-[#fdf6f3] border-y border-[#e4e0d8] flex flex-col gap-5">
+        <section class="px-4 sm:px-8 py-8 sm:py-12 bg-white border-b border-[#e4e0d8] flex flex-col gap-6">
           <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div>
-              <div class="inline-flex items-center gap-1.5 text-[#9e3322] font-label-sm text-xs uppercase tracking-wider font-bold">
-                <span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;" aria-hidden="true">favorite</span>
-                <span>Instagram Community • @resin.art.memories</span>
-              </div>
-              <h2 class="font-headline-sm text-2xl text-primary font-bold">Shop Directly from Our Studio Reels &amp; Stories</h2>
+              <h2 class="font-headline-sm text-2xl sm:text-3xl text-primary font-bold tracking-tight">Shop Directly from Our Studio Reels &amp; Stories</h2>
+              <p class="text-xs sm:text-sm text-on-surface-variant mt-1">Real wedding keepsakes poured, demolded, and polished in our Guwahati atelier (@resin.art.memories).</p>
             </div>
-            <button type="button" onclick="window.navigateTo('social')" class="self-start sm:self-auto min-h-[44px] px-5 py-2.5 rounded-xl bg-[#9e3322] text-white font-label-md text-xs font-bold flex items-center gap-1.5 shadow-sm hover:opacity-95 cursor-pointer">
+            <button type="button" onclick="window.navigateTo('social')" class="self-start sm:self-auto min-h-[44px] px-5 py-2.5 rounded-xl bg-[#9e3322] text-white font-label-md text-xs font-bold flex items-center gap-1.5 shadow-2xs hover:opacity-95 cursor-pointer">
               <span>Explore Full Social Feed</span>
               <span class="material-symbols-outlined text-base" aria-hidden="true">arrow_forward</span>
             </button>
@@ -1868,9 +1912,9 @@
             ${socialPosts.map(post => {
               const taggedProduct = Store.getProductById(post.productId);
               return `
-                <div class="ram-card overflow-hidden flex flex-col justify-between bg-white">
+                <div class="ram-card overflow-hidden flex flex-col justify-between bg-white border border-[#e4e0d8]">
                   <div>
-                    <div class="p-3 flex items-center justify-between border-b border-surface-container">
+                    <div class="p-3 flex items-center justify-between border-b border-[#e4e0d8]">
                       <div class="flex items-center gap-2">
                         <img src="${esc(post.avatar)}" alt="${esc(post.handle)}" class="w-8 h-8 rounded-full object-cover ring-2 ring-[#9e3322]">
                         <div>
@@ -1882,7 +1926,7 @@
                     </div>
                     <div class="relative aspect-square bg-surface-container overflow-hidden cursor-pointer" onclick="window.navigateTo('social')">
                       <img src="${esc(post.image)}" alt="${esc(post.caption)}" class="w-full h-full object-cover hover:scale-105 transition-transform duration-500">
-                      <span class="absolute top-2.5 left-2.5 px-2.5 py-0.5 rounded-full bg-black/65 backdrop-blur-xs text-white text-[10px] font-semibold">${esc(post.badge)}</span>
+                      <span class="absolute top-2.5 left-2.5 px-2.5 py-0.5 rounded-full bg-black/70 text-white text-[10px] font-semibold">${esc(post.badge)}</span>
                     </div>
                     <div class="p-3.5">
                       <div class="flex items-center justify-between mb-1">
@@ -1904,9 +1948,9 @@
                     </div>
                   </div>
                   ${taggedProduct ? `
-                    <div class="px-3.5 py-2.5 bg-surface-container-low border-t border-surface-container flex items-center justify-between gap-2">
+                    <div class="px-3.5 py-2.5 bg-[#faf8f5] border-t border-[#e4e0d8] flex items-center justify-between gap-2">
                       <div class="flex items-center gap-2 min-w-0 cursor-pointer" onclick="window.navigateTo('product', '${esc(taggedProduct.id)}')">
-                        <img src="${esc(taggedProduct.image)}" alt="${esc(taggedProduct.shortName)}" class="w-9 h-9 rounded-lg object-cover shrink-0">
+                        <img src="${esc(taggedProduct.image)}" alt="${esc(taggedProduct.shortName)}" class="w-9 h-9 rounded-lg object-cover shrink-0 border border-[#e4e0d8]">
                         <div class="min-w-0">
                           <p class="text-xs font-bold text-primary truncate">${esc(taggedProduct.shortName)}</p>
                           <p class="font-spec-numeral text-[11px] text-secondary font-bold">${formatINR(taggedProduct.price)}</p>
@@ -1924,34 +1968,33 @@
         </section>
 
         <!-- Studio Knowledge Hub & Interactive Quick Pour Calculator + Wholesale Banner -->
-        <section class="px-4 sm:px-8 py-8 grid grid-cols-1 lg:grid-cols-12 gap-6 bg-surface">
+        <section class="px-4 sm:px-8 py-8 sm:py-12 grid grid-cols-1 lg:grid-cols-12 gap-6 bg-[#faf8f5] border-b border-[#e4e0d8]">
           <!-- Interactive Pour Volume Calculator Card (6 cols) -->
-          <div class="lg:col-span-6 ram-card p-5 flex flex-col justify-between gap-4">
+          <div class="lg:col-span-6 ram-card p-5 sm:p-6 flex flex-col justify-between gap-4 bg-white">
             <div class="flex items-start justify-between gap-3">
               <div>
-                <span class="font-label-sm text-[11px] text-secondary font-bold uppercase tracking-wider">Studio Knowledge Hub</span>
-                <h2 class="font-headline-sm text-xl text-primary font-bold mt-0.5">Interactive Epoxy Pour &amp; Ratio Calculator</h2>
+                <h2 class="font-headline-sm text-xl text-primary font-bold">Interactive Epoxy Pour &amp; Ratio Calculator</h2>
                 <p class="text-xs text-on-surface-variant mt-1">Calculate exact Part A (Resin) + Part B (Hardener) gram weights for any mould dimension:</p>
               </div>
               <span class="material-symbols-outlined text-secondary text-3xl" aria-hidden="true">calculate</span>
             </div>
 
-            <div class="grid grid-cols-1 min-[360px]:grid-cols-2 sm:grid-cols-4 gap-2.5 bg-surface-container-low p-3 sm:p-3.5 rounded-xl">
+            <div class="grid grid-cols-1 min-[360px]:grid-cols-2 sm:grid-cols-4 gap-2.5 bg-[#faf8f5] p-3 sm:p-3.5 rounded-xl border border-[#e4e0d8]">
               <div>
                 <label class="font-label-sm text-[11px] text-on-surface-variant block mb-1" for="home-calc-len">Length (cm)</label>
-                <input id="home-calc-len" type="number" min="1" max="500" value="${AppState.calcLength}" class="w-full min-w-0 h-12 px-2.5 bg-white rounded-lg border border-[#e4e0d8] font-spec-numeral text-sm text-primary">
+                <input id="home-calc-len" type="number" min="1" max="500" value="${AppState.calcLength}" class="w-full min-w-0 h-11 px-2.5 bg-white rounded-lg border border-[#e4e0d8] font-spec-numeral text-sm text-primary">
               </div>
               <div>
                 <label class="font-label-sm text-[11px] text-on-surface-variant block mb-1" for="home-calc-wid">Width (cm)</label>
-                <input id="home-calc-wid" type="number" min="1" max="500" value="${AppState.calcWidth}" class="w-full min-w-0 h-12 px-2.5 bg-white rounded-lg border border-[#e4e0d8] font-spec-numeral text-sm text-primary">
+                <input id="home-calc-wid" type="number" min="1" max="500" value="${AppState.calcWidth}" class="w-full min-w-0 h-11 px-2.5 bg-white rounded-lg border border-[#e4e0d8] font-spec-numeral text-sm text-primary">
               </div>
               <div>
                 <label class="font-label-sm text-[11px] text-on-surface-variant block mb-1" for="home-calc-dep">Depth (cm)</label>
-                <input id="home-calc-dep" type="number" min="0.1" max="10" step="0.5" value="${AppState.calcDepth}" class="w-full min-w-0 h-12 px-2.5 bg-white rounded-lg border border-[#e4e0d8] font-spec-numeral text-sm text-primary">
+                <input id="home-calc-dep" type="number" min="0.1" max="10" step="0.5" value="${AppState.calcDepth}" class="w-full min-w-0 h-11 px-2.5 bg-white rounded-lg border border-[#e4e0d8] font-spec-numeral text-sm text-primary">
               </div>
               <div>
                 <label class="font-label-sm text-[11px] text-on-surface-variant block mb-1" for="home-calc-sys">Ratio System</label>
-                <select id="home-calc-sys" class="w-full min-w-0 h-12 px-2 bg-white rounded-lg border border-[#e4e0d8] font-label-sm text-xs text-primary">
+                <select id="home-calc-sys" class="w-full min-w-0 h-11 px-2 bg-white rounded-lg border border-[#e4e0d8] font-label-sm text-xs text-primary">
                   <option value="3:1" ${AppState.calcSystem === '3:1' ? 'selected' : ''}>3:1 UltraClear</option>
                   <option value="2:1" ${AppState.calcSystem === '2:1' ? 'selected' : ''}>2:1 Deep Pour</option>
                   <option value="1:1" ${AppState.calcSystem === '1:1' ? 'selected' : ''}>1:1 Doming</option>
@@ -1959,38 +2002,37 @@
               </div>
             </div>
 
-            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 p-3.5 rounded-xl bg-surface-container-low border border-[#e4e0d8] min-w-0">
+            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 p-3.5 rounded-xl bg-[#faf8f5] border border-[#e4e0d8] min-w-0">
               <div class="min-w-0 flex-1">
                 <span class="text-xs text-on-surface-variant block">Recommended Batch Weight (1.1 g/cm³ density):</span>
                 <span id="home-calc-output" class="font-spec-numeral text-xs sm:text-base font-bold text-primary block mt-0.5 break-words">
                   ~660g total (Part A: 495g + Part B: 165g)
                 </span>
               </div>
-              <button type="button" onclick="window.runHomeCalculator()" class="w-full sm:w-auto min-h-[48px] px-4 py-2.5 rounded-lg bg-primary text-on-primary text-xs font-semibold shrink-0 cursor-pointer">
+              <button type="button" onclick="window.runHomeCalculator()" class="w-full sm:w-auto min-h-[44px] px-4 py-2 rounded-xl bg-primary text-on-primary text-xs font-semibold shrink-0 cursor-pointer shadow-2xs">
                 Calculate Grams
               </button>
             </div>
           </div>
 
           <!-- Studio & Production Wholesale Card (6 cols) -->
-          <div class="lg:col-span-6 rounded-2xl bg-tertiary text-on-tertiary p-6 relative overflow-hidden shadow-md flex flex-col justify-between gap-4">
-            <div aria-hidden="true" class="absolute -right-12 -bottom-12 w-52 h-52 rounded-full bg-secondary/15 pointer-events-none"></div>
-            <div class="relative flex flex-col gap-2">
-              <div class="flex items-center gap-2">
-                <span class="material-symbols-outlined text-secondary-fixed text-2xl" aria-hidden="true">warehouse</span>
-                <span class="font-label-sm text-xs text-secondary-fixed uppercase tracking-wider font-bold">Industrial Craft, Bridal Planners &amp; Furniture Supply</span>
+          <div class="lg:col-span-6 rounded-2xl bg-primary text-white p-6 relative overflow-hidden shadow-sm flex flex-col justify-between gap-4 border border-[#e4e0d8]">
+            <div class="relative flex flex-col gap-2.5">
+              <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-white/10 text-[#ffd79b] text-[11px] font-semibold w-fit">
+                <span class="material-symbols-outlined text-sm" aria-hidden="true">verified</span>
+                <span>Official 18% GST ITC • Batch COA Certified</span>
               </div>
               <h2 class="font-headline-sm text-2xl text-white font-bold">Studio &amp; Production Wholesale</h2>
-              <p class="text-xs sm:text-sm text-on-tertiary-container leading-relaxed">
-                Tiered pricing from 10kg pails to 200kg drums with official 18% GST Input Tax Credit invoices and Batch Certificate of Analysis (COA) for verified workshops.
+              <p class="text-xs sm:text-sm text-white/80 leading-relaxed">
+                Tiered bulk resin supplies from 10kg pails to 200kg drums with official GST input credit invoices and Batch Certificate of Analysis for verified furniture ateliers, workshops, and wedding planners.
               </p>
             </div>
             <div class="relative flex flex-wrap items-center gap-3 pt-2">
-              <button type="button" onclick="window.openTdsModal('wholesale')" class="min-h-[44px] px-5 rounded-xl bg-secondary text-on-secondary font-label-md text-xs font-bold flex items-center gap-2 shadow-sm active:scale-95 transition-transform cursor-pointer">
+              <button type="button" onclick="window.openTdsModal('wholesale')" class="min-h-[44px] px-5 rounded-xl bg-secondary hover:bg-secondary/90 text-on-secondary font-label-md text-xs font-bold flex items-center gap-2 shadow-2xs active:scale-95 transition-transform cursor-pointer">
                 <span class="material-symbols-outlined text-lg" aria-hidden="true">download</span>
                 <span>View Wholesale Slab &amp; COA Sheet</span>
               </button>
-              <button type="button" onclick="window.navigateTo('orders')" class="min-h-[44px] px-4 rounded-xl bg-white/10 hover:bg-white/20 text-white font-label-md text-xs font-semibold flex items-center gap-1.5 cursor-pointer">
+              <button type="button" onclick="window.navigateTo('orders')" class="min-h-[44px] px-4 rounded-xl bg-white/15 hover:bg-white/20 text-white font-label-md text-xs font-semibold flex items-center gap-1.5 cursor-pointer">
                 <span class="material-symbols-outlined text-base" aria-hidden="true">receipt_long</span>
                 <span>Track Studio Orders &amp; GST Invoices</span>
               </button>
@@ -1998,100 +2040,13 @@
           </div>
         </section>
 
-        <!-- 5-Stage Bridal Varmala & Bouquet Preservation Ritual -->
-        <section class="px-4 sm:px-8 py-8 bg-surface-container-low border-t border-[#e4e0d8] flex flex-col gap-5">
-          <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-2">
-            <div>
-              <span class="font-label-sm text-[11px] uppercase tracking-widest text-[#9e3322] font-bold">From Wedding Mandap to Forever Heirloom</span>
-              <h2 class="font-headline-sm text-2xl text-primary font-bold">How Our 5-Stage Varmala &amp; Bouquet Preservation Works</h2>
-              <p class="text-xs sm:text-sm text-on-surface-variant mt-0.5">Every garland is treated in our climate-controlled cryo-silica lab before multi-layer 50mm optical casting.</p>
-            </div>
-            <button type="button" onclick="window.navigateTo('custom-studio')" class="self-start sm:self-auto min-h-[44px] px-4 py-2 rounded-xl bg-primary text-white text-xs font-bold flex items-center gap-1.5 cursor-pointer shrink-0">
-              <span class="material-symbols-outlined text-sm text-[#ffd79b]" aria-hidden="true">event_available</span>
-              <span>Book Your Preservation Slot</span>
-            </button>
-          </div>
-
-          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3.5">
-            ${[
-              { step: '01', icon: 'local_shipping', title: '24h Doorstep Pickup', desc: 'Book your slot & our courier picks up your fresh or dried varmala in a breathable moisture-lock box.' },
-              { step: '02', icon: 'ac_unit', title: 'Cryo-Silica Drying', desc: '10–14 days in grade-A floral silica crystals to lock natural rose, orchid & marigold pigments.' },
-              { step: '03', icon: 'fact_check', title: 'Mockup Approval', desc: 'We arrange your petals & calligraphy and share a digital layout preview for your 1-click approval.' },
-              { step: '04', icon: 'layers', title: '50mm Optical Pour', desc: '4 vacuum-degassed pours using Vistāra 2:1 Deep Pour epoxy fortified with HALS UV400 armor.' },
-              { step: '05', icon: 'diamond', title: 'Diamond Buff & Return', desc: 'Polished to 85D mirror glass and shipped back via insured BlueDart Air in a velvet gift trunk.' }
-            ].map(st => `
-              <div class="ram-card p-4 bg-white flex flex-col justify-between gap-2">
-                <div class="flex items-center justify-between">
-                  <span class="font-spec-numeral text-xs font-bold px-2.5 py-0.5 rounded-full bg-[#ffe4de] text-[#9e3322]">Stage ${st.step}</span>
-                  <span class="material-symbols-outlined text-xl text-secondary" aria-hidden="true">${st.icon}</span>
-                </div>
-                <div>
-                  <h3 class="font-title-md text-sm font-bold text-primary mt-1">${st.title}</h3>
-                  <p class="text-xs text-on-surface-variant leading-relaxed mt-1">${st.desc}</p>
-                </div>
-              </div>
-            `).join('')}
-          </div>
-        </section>
-
-        ${showFloralTransformation ? `
-        <!-- Interactive Before & After: 21-Day Cryo-Silica Floral Transformation Slider -->
-        <section class="px-4 sm:px-8 py-8 bg-surface border-t border-[#e4e0d8] flex flex-col gap-4" id="home-floral-transformation-section">
-          <div class="ram-card p-5 sm:p-6 bg-white flex flex-col gap-4">
-            <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-2 border-b border-surface-container pb-3">
-              <div>
-                <span class="font-label-sm text-[11px] uppercase tracking-widest text-[#9e3322] font-bold">Heirloom Preservation Science</span>
-                <h2 class="font-headline-sm text-xl text-primary font-bold">21-Day Cryo-Silica Floral Transformation</h2>
-                <p class="text-xs text-on-surface-variant mt-0.5">Drag the slider horizontally to view how fresh bridal varmalas transform through 21-day cryo-silica dehydration into optical 85D diamond resin.</p>
-              </div>
-              <span class="px-2.5 py-1 rounded-full bg-secondary-container/50 text-on-secondary-container font-spec-numeral text-xs font-bold shrink-0">
-                Split: <span class="sotd-slider-pct">50%</span>
-              </span>
-            </div>
-
-            <div class="sotd-dehydration-slider relative w-full aspect-[4/3] sm:aspect-[16/7] rounded-2xl overflow-hidden border border-[#b08d57]/40 shadow-md select-none" data-split="50">
-              <!-- After Layer (Preserved Optical Block) -->
-              <div class="absolute inset-0 w-full h-full bg-primary">
-                <img src="${esc(Store.IMAGES.floralCube)}" alt="After: Preserved 50mm Crystal Optical Block" class="w-full h-full object-cover">
-                <div class="absolute top-3 right-3 px-3 py-1 rounded-full bg-primary/90 backdrop-blur-md text-[#ffd79b] text-[11px] font-bold uppercase tracking-wider shadow-sm border border-white/15">
-                  ✨ Day 21: Preserved 50mm Optical Block
-                </div>
-                <div class="absolute bottom-3 right-3 px-3 py-1.5 rounded-lg bg-black/60 backdrop-blur-xs text-white text-[11px] hidden sm:block">
-                  0% Moisture • 95% Natural Color Retained • 85D Mirror Glass
-                </div>
-              </div>
-
-              <!-- Before Layer (Clipped - Fresh Wedding Garlands) -->
-              <div class="sotd-before-layer absolute inset-0 w-1/2 h-full bg-surface-container overflow-hidden border-r-2 border-white shadow-2xl">
-                <img src="${esc(Store.IMAGES.bridalVarmalaFresh)}" alt="Before: Fresh Bridal Varmalas &amp; Roses" class="w-full h-full object-cover">
-                <div class="absolute top-3 left-3 px-3 py-1 rounded-full bg-black/75 backdrop-blur-md text-white text-[11px] font-bold uppercase tracking-wider shadow-sm border border-white/15">
-                  🌸 Day 01: Fresh Wedding Garlands
-                </div>
-                <div class="absolute bottom-3 left-3 px-3 py-1.5 rounded-lg bg-black/60 backdrop-blur-xs text-white text-[11px] hidden sm:block">
-                  Fresh Petals • High Moisture • Organic Pigment
-                </div>
-              </div>
-
-              <!-- Slider Range Controller -->
-              <input type="range" min="0" max="100" value="50" aria-label="Slide to compare raw garland with preserved 85D optical keepsake" oninput="window.updateSotdSlider(this)" class="sotd-slider-range absolute inset-0 w-full h-full opacity-0 cursor-ew-resize z-20">
-              <div class="sotd-slider-divider absolute top-0 bottom-0 left-1/2 -translate-x-1/2 w-1 bg-white shadow-lg pointer-events-none z-10 flex items-center justify-center">
-                <div class="w-8 h-8 rounded-full bg-white text-primary shadow-xl border-2 border-[#b08d57] flex items-center justify-center font-bold text-xs pointer-events-none">
-                  ↔
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-        ` : ''}
-
         <!-- Vistāra Krafts Epoxy Formulation Comparison Matrix -->
-        <section class="px-4 sm:px-8 py-8 bg-surface border-t border-[#e4e0d8] flex flex-col gap-4">
+        <section class="px-4 sm:px-8 py-8 sm:py-12 bg-white border-b border-[#e4e0d8] flex flex-col gap-5">
           <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-2">
             <div>
-              <span class="font-label-sm text-[11px] uppercase tracking-widest text-secondary font-bold">ISO 9001 Chemical Architecture</span>
-              <h2 class="font-headline-sm text-2xl text-primary font-bold">Choose the Right Vistāra Epoxy System</h2>
+              <h2 class="font-headline-sm text-2xl sm:text-3xl text-primary font-bold tracking-tight">Choose the Right Vistāra Epoxy System</h2>
+              <p class="text-xs sm:text-sm text-on-surface-variant mt-1">All systems 100% reactive solids • Zero VOC • HALS UV-Stabilized</p>
             </div>
-            <span class="text-xs text-on-surface-variant">All systems 100% reactive solids • Zero VOC • HALS UV-Stabilized</span>
           </div>
 
           <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
@@ -2101,20 +2056,20 @@
               { id: 'vk-cat-res-uvcs', ratio: '1-Part UV LED', name: 'Optical UV Hard Cure Resin', depth: '5mm / Layer', cure: '90 Seconds', bestFor: 'Pressed Petal Jewelry, Bezels & Doming Accents', price: 'From ₹199' },
               { id: 'vk-cat-acc-bubb', ratio: 'Fine-Mist Spray', name: 'Bubbles Buster Defoamer', depth: 'Instant Action', cure: 'Immediate', bestFor: 'Bubble Release & Zero-Void Surface Finishing', price: 'From ₹349' }
             ].map(sys => `
-              <div class="ram-card p-4 bg-white flex flex-col justify-between gap-3">
+              <div class="ram-card p-4.5 bg-[#faf8f5] flex flex-col justify-between gap-3 border border-[#e4e0d8]">
                 <div class="flex flex-col gap-1.5">
                   <div class="flex items-center justify-between gap-2">
-                    <span class="px-2.5 py-0.5 rounded bg-primary text-white font-spec-numeral text-[11px] font-bold">${sys.ratio}</span>
+                    <span class="px-2.5 py-0.5 rounded-full bg-primary text-white font-spec-numeral text-[11px] font-bold">${sys.ratio}</span>
                     <span class="font-spec-numeral text-xs font-bold text-secondary">${sys.price}</span>
                   </div>
                   <h3 class="font-title-md text-sm font-bold text-primary mt-1">${sys.name}</h3>
                   <p class="text-xs text-on-surface-variant">${sys.bestFor}</p>
                   <div class="flex flex-wrap gap-1.5 pt-1 text-[11px] font-spec-numeral">
-                    <span class="px-2 py-0.5 rounded bg-surface-container-low text-primary">Pour: ${sys.depth}</span>
-                    <span class="px-2 py-0.5 rounded bg-surface-container-low text-primary">Cure: ${sys.cure}</span>
+                    <span class="px-2 py-0.5 rounded-md bg-white border border-[#e4e0d8] text-primary">Pour: ${sys.depth}</span>
+                    <span class="px-2 py-0.5 rounded-md bg-white border border-[#e4e0d8] text-primary">Cure: ${sys.cure}</span>
                   </div>
                 </div>
-                <button type="button" onclick="window.navigateTo('product', '${sys.id}')" class="w-full min-h-[44px] py-2 rounded-xl bg-surface-container-high hover:bg-primary hover:text-white text-primary text-xs font-bold transition-colors cursor-pointer">
+                <button type="button" onclick="window.navigateTo('product', '${sys.id}')" class="w-full min-h-[44px] py-2 rounded-xl bg-white hover:bg-primary hover:text-white border border-[#e4e0d8] text-primary text-xs font-bold transition-colors cursor-pointer shadow-2xs">
                   Inspect Formula &amp; Kits →
                 </button>
               </div>
@@ -2123,12 +2078,12 @@
         </section>
 
         <!-- Frequently Asked Questions (Bridal Preservation & Resin Care) -->
-        <section id="home-faqs" class="px-4 sm:px-8 py-8 bg-surface-container-low border-t border-[#e4e0d8] flex flex-col gap-4">
+        <section id="home-faqs" class="px-4 sm:px-8 py-8 sm:py-12 bg-[#faf8f5] flex flex-col gap-5">
           <div>
-            <span class="font-label-sm text-[11px] uppercase tracking-widest text-[#9e3322] font-bold">Atelier Patron Care &amp; Technical FAQ</span>
-            <h2 class="font-headline-sm text-2xl text-primary font-bold">Frequently Asked Questions</h2>
+            <h2 class="font-headline-sm text-2xl sm:text-3xl text-primary font-bold tracking-tight">Frequently Asked Questions</h2>
+            <p class="text-xs sm:text-sm text-on-surface-variant mt-1">Everything you need to know about wedding floral preservation and resin formulation care.</p>
           </div>
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-3.5">
             ${[
               {
                 q: 'Do I need to dry my wedding varmala before sending it to the studio?',
@@ -2147,12 +2102,12 @@
                 a: 'All Vistāra Krafts formulations are fortified with dual HALS (Hindered Amine Light Stabilizers) and UV400 absorbers tested per ASTM D1003. Keep finished resin art indoors away from direct harsh afternoon sunlight for decades of crystal clarity.'
               }
             ].map(faq => `
-              <details class="ram-card bg-white p-4 group">
+              <details class="ram-card bg-white p-4.5 group border border-[#e4e0d8] shadow-2xs">
                 <summary class="min-h-[44px] flex items-center justify-between gap-3 cursor-pointer list-none font-title-md text-xs sm:text-sm font-bold text-primary">
                   <span>${faq.q}</span>
-                  <span class="material-symbols-outlined text-secondary shrink-0" aria-hidden="true">expand_more</span>
+                  <span class="material-symbols-outlined text-secondary shrink-0 transition-transform group-open:rotate-180" aria-hidden="true">expand_more</span>
                 </summary>
-                <p class="text-xs text-on-surface-variant leading-relaxed pt-2.5 mt-2 border-t border-surface-container">${faq.a}</p>
+                <p class="text-xs text-on-surface-variant leading-relaxed pt-2.5 mt-2 border-t border-[#e4e0d8]">${faq.a}</p>
               </details>
             `).join('')}
           </div>
