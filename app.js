@@ -1202,7 +1202,7 @@
                   <span class="text-outline font-spec-numeral">(${p.reviewsCount})</span>
                   ${affinityTag ? `<span class="hidden sm:inline-block">${affinityTag}</span>` : ''}
                 </div>
-                <button type="button" aria-label="Toggle Wishlist" onclick="window.handleWishlistToggle(event, '${esc(p.id)}')" class="w-8 h-8 rounded-full bg-surface-container-low flex items-center justify-center ${isFav ? 'text-[#9e3322]' : 'text-primary'} hover:scale-105 active:scale-95 transition-transform cursor-pointer" title="Save to Wishlist">
+                <button type="button" aria-label="Toggle Wishlist" onclick="window.handleWishlistToggle(event, '${esc(p.id)}')" class="w-8 h-8 bg-transparent border-0 flex items-center justify-center ${isFav ? 'text-[#9e3322]' : 'text-primary'} hover:scale-110 active:scale-95 transition-transform cursor-pointer" title="Save to Wishlist">
                   <svg class="w-4 h-4 ${isFav ? 'fill-[#9e3322] stroke-[#9e3322]' : 'fill-none stroke-current'} transition-colors" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                     <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/>
                   </svg>
@@ -1291,8 +1291,8 @@
               <span class="px-1.5 py-0.5 rounded-md bg-primary/90 text-on-primary font-label-sm text-[8.5px] sm:text-[9px] font-semibold tracking-normal shadow-2xs leading-tight truncate block">${esc(p.badge)}</span>
               ${affinityTag}
             </div>
-            <button type="button" aria-label="Save to Wishlist" onclick="event.stopPropagation(); window.handleWishlistToggle(event, '${esc(p.id)}')" class="absolute top-1.5 right-1.5 z-10 w-7.5 h-7.5 sm:w-8 sm:h-8 rounded-full bg-white/95 backdrop-blur-xs border border-[#e4e0d8] flex items-center justify-center ${isFav ? 'text-[#9e3322]' : 'text-primary'} shadow-2xs hover:scale-105 active:scale-95 transition-transform cursor-pointer" title="Save to Wishlist">
-              <svg class="w-3.5 h-3.5 ${isFav ? 'fill-[#9e3322] stroke-[#9e3322]' : 'fill-none stroke-current'} transition-colors" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <button type="button" aria-label="Save to Wishlist" onclick="event.stopPropagation(); window.handleWishlistToggle(event, '${esc(p.id)}')" class="absolute top-1.5 right-1.5 z-10 min-w-[36px] min-h-[36px] p-1.5 bg-transparent border-0 flex items-center justify-center ${isFav ? 'text-[#9e3322]' : 'text-white'} hover:scale-110 active:scale-95 transition-transform cursor-pointer" title="Save to Wishlist">
+              <svg class="w-4 h-4 ${isFav ? 'fill-[#9e3322]' : 'fill-none'} filter drop-shadow-[0_1px_3px_rgba(0,0,0,0.6)] transition-colors" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                 <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/>
               </svg>
             </button>
@@ -2569,9 +2569,9 @@
                   Optical Grade
                 </span>
               </div>
-              <!-- Floating Wishlist Heart Button (Only Heart SVG Icon) -->
-              <button type="button" aria-label="Save to Wishlist" onclick="window.handleWishlistToggle(event, '${esc(product.id)}')" class="absolute top-3.5 right-3.5 z-10 w-11 h-11 rounded-full bg-white/95 backdrop-blur-sm border border-[#e4e0d8] flex items-center justify-center ${isFav ? 'text-[#9e3322]' : 'text-primary'} shadow-sm hover:scale-105 active:scale-95 transition-transform cursor-pointer" title="Save to Wishlist">
-                <svg class="w-5 h-5 ${isFav ? 'fill-[#9e3322] stroke-[#9e3322]' : 'fill-none stroke-current'} transition-colors" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <!-- Floating Wishlist Heart Button (Minimal Floating Heart SVG, Zero Circular Background) -->
+              <button type="button" aria-label="Save to Wishlist" onclick="window.handleWishlistToggle(event, '${esc(product.id)}')" class="absolute top-3.5 right-3.5 z-10 min-w-[44px] min-h-[44px] p-2 bg-transparent border-0 flex items-center justify-center ${isFav ? 'text-[#9e3322]' : 'text-white'} hover:scale-110 active:scale-95 transition-transform cursor-pointer" title="Save to Wishlist">
+                <svg class="w-6 h-6 ${isFav ? 'fill-[#9e3322]' : 'fill-none'} filter drop-shadow-[0_1px_4px_rgba(0,0,0,0.65)] transition-colors" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                   <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/>
                 </svg>
               </button>
