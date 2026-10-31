@@ -92,6 +92,25 @@ body.modal-open {
   display: none !important;
 }
 
+/* Suppress native browser search cancel buttons across all engines to prevent double icon bug */
+input[type="search"]::-webkit-search-cancel-button,
+input[type="search"]::-webkit-search-decoration,
+input[type="search"]::-webkit-search-results-button,
+input[type="search"]::-webkit-search-results-decoration {
+  -webkit-appearance: none !important;
+  appearance: none !important;
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+
+input[type="search"]::-ms-clear,
+input[type="search"]::-ms-reveal {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+
 /* Accessible 2px Focus Ring with Offset (Brand Antique Brass) */
 a:focus-visible,
 button:focus-visible,
