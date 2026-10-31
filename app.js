@@ -3597,8 +3597,8 @@
         </div>
 
         ${summary.cart.length === 0 ? `
-          <div class="ram-card p-8 sm:p-12 text-center flex flex-col items-center gap-4 bg-white">
-            <div class="relative w-24 h-24 flex items-center justify-center lottie-anim-float">
+          <div class="ram-card p-6 sm:p-10 text-center flex flex-col items-center gap-3.5 bg-white border border-[#e4e0d8] rounded-2xl shadow-xs">
+            <div class="relative w-20 h-20 sm:w-24 sm:h-24 flex items-center justify-center lottie-anim-float">
               <div class="absolute inset-0 rounded-full bg-[#d4af37]/15 lottie-anim-pulse blur-md pointer-events-none"></div>
               <svg class="w-full h-full drop-shadow-sm" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Studio bag empty">
                 <circle cx="50" cy="50" r="44" stroke="#d4af37" stroke-width="1.2" stroke-dasharray="4 6" class="lottie-anim-spin" opacity="0.6" />
@@ -3609,8 +3609,8 @@
                 <circle cx="26" cy="68" r="2" fill="#d4af37" opacity="0.7" />
               </svg>
             </div>
-            <div class="space-y-1.5 max-w-sm">
-              <h2 class="font-headline-sm text-xl sm:text-2xl text-primary font-bold tracking-tight">Your Studio Bag is Empty</h2>
+            <div class="space-y-1 max-w-sm">
+              <h2 class="font-headline-sm text-lg sm:text-2xl text-primary font-bold tracking-tight">Your Studio Bag is Empty</h2>
               <p class="text-xs sm:text-sm text-on-surface-variant leading-relaxed">
                 Explore our preserved bridal keepsakes, ocean serving boards, or optical 3:1 &amp; 2:1 epoxy systems.
               </p>
@@ -3619,9 +3619,42 @@
               <span class="material-symbols-outlined text-sm" aria-hidden="true">local_shipping</span>
               <span>Free Pan-India BlueDart Express on orders over ₹${summary.freeShippingThreshold}</span>
             </div>
-            <button type="button" onclick="window.navigateTo('catalog', 'all')" class="btn-shimmer min-h-[46px] px-7 py-3 rounded-xl bg-primary hover:bg-primary-container text-on-primary text-xs font-bold shadow-sm active:scale-[0.97] transition-all cursor-pointer">
+            <button type="button" onclick="window.navigateTo('catalog', 'all')" class="btn-shimmer min-h-[44px] px-7 py-2.5 rounded-xl bg-primary hover:bg-primary-container text-on-primary text-xs font-bold shadow-sm active:scale-[0.97] transition-all cursor-pointer">
               Browse Catalogue
             </button>
+          </div>
+
+          <!-- Curated Trending Atelier Picks (Eliminates Blank Area Wastage & Boosts Discovery) -->
+          <div class="flex flex-col gap-3 pt-2">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <span class="material-symbols-outlined text-secondary text-lg" aria-hidden="true">auto_awesome</span>
+                <h3 class="font-title-md text-sm sm:text-base font-bold text-primary tracking-tight">Trending Atelier Picks</h3>
+              </div>
+              <button type="button" onclick="window.navigateTo('catalog', 'all')" class="text-xs font-semibold text-secondary hover:underline cursor-pointer flex items-center gap-1">
+                <span>Explore All</span>
+                <span class="material-symbols-outlined text-sm" aria-hidden="true">chevron_right</span>
+              </button>
+            </div>
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-3.5">
+              ${(Store.getProducts() || []).slice(0, 4).map(p => `
+                <div onclick="window.navigateTo('product', '${esc(p.id)}')" class="ram-card p-2 sm:p-2.5 bg-white border border-[#e4e0d8] rounded-xl flex flex-col justify-between hover:shadow-sm transition-all cursor-pointer group">
+                  <div class="aspect-square w-full rounded-lg bg-surface-container overflow-hidden mb-2 relative">
+                    <img src="${esc(p.image)}" alt="${esc(p.name)}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                    <span class="absolute top-1 left-1 px-1.5 py-0.5 rounded text-[8.5px] sm:text-[9px] font-bold bg-primary/90 text-white leading-none">${esc(p.badge || 'Artisan')}</span>
+                  </div>
+                  <div class="flex flex-col gap-1 min-w-0">
+                    <h4 class="text-xs font-semibold text-primary truncate group-hover:text-secondary transition-colors">${esc(p.name)}</h4>
+                    <div class="flex items-center justify-between gap-1 mt-0.5">
+                      <span class="font-spec-numeral font-bold text-xs text-primary">${formatINR(p.price)}</span>
+                      <button type="button" onclick="event.stopPropagation(); window.addBagSuggestion('${esc(p.id)}')" aria-label="Add ${esc(p.name)} to bag" class="w-7 h-7 rounded-lg bg-primary hover:bg-primary-container text-white flex items-center justify-center active:scale-90 transition-transform cursor-pointer" title="Quick Add">
+                        <span class="material-symbols-outlined text-sm" aria-hidden="true">add</span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              `).join('')}
+            </div>
           </div>
         ` : `
           <!-- Free Shipping Progression Strip (Architecturally Bound to Authoritative Admin Settings) -->
@@ -5625,6 +5658,15 @@
     Store.addToCart(prod.id, null, 1);
     updateGlobalBadges();
     window.showToast(`Added ${prod.shortName || prod.name} to Bag`, 'Recommended for your calculated pour');
+  };
+
+  window.addBagSuggestion = function (productId) {
+    const prod = Store.getProductById(productId);
+    if (!prod) return;
+    Store.addToCart(prod.id, null, 1);
+    updateGlobalBadges();
+    window.showToast(`Added ${prod.shortName || prod.name} to Bag`, 'Handcrafted atelier addition');
+    renderActiveView();
   };
 
   function syncCatalogSortModalDom() {
