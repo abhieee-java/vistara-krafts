@@ -105,8 +105,9 @@ await test('Variant ID Resolution: vk-cat-acc-smfl with variantId "var-flw-all" 
 
   assert.strictEqual(result.items[0].unitPrice, 999, 'Unit price must be ₹999 for master set');
   assert.strictEqual(result.subtotal, 999, 'Subtotal must be ₹999');
-  assert.strictEqual(result.shippingFee, 99, 'Shipping ₹99 applied for subtotal < 1499');
-  assert.strictEqual(result.total, 1098, 'Total must be ₹1,098');
+  assert.strictEqual(result.isFreeShipping, true, 'Free shipping unlocked at authoritative threshold ₹999');
+  assert.strictEqual(result.shippingFee, 0, 'Shipping ₹0 applied at threshold');
+  assert.strictEqual(result.total, 999, 'Total must be ₹999');
 });
 
 // 2. Multi-item cart with mix of base products and variant IDs

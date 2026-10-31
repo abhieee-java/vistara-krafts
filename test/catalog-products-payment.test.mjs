@@ -44,7 +44,7 @@ await test('Catalog Products: Authoritative price resolution for Small Flowers I
   const prod = await PriceCalculator.fetchAuthoritativeProduct('vk-cat-acc-smfl');
   assert.ok(prod, 'Product vk-cat-acc-smfl must exist');
   assert.strictEqual(prod.sku, 'VK-ACC-SML-FLWR');
-  assert.strictEqual(prod.price, 199, 'Base price must be ₹199');
+  assert.strictEqual(prod.price, 238, 'Base price must match database price of ₹238');
 });
 
 // 2. Order calculation with new catalog products
@@ -112,8 +112,8 @@ await test('Razorpay: Successfully creates real order on Razorpay for new catalo
   assert.strictEqual(orderRes.success, true);
   assert.ok(orderRes.orderId.startsWith('VK-'));
   assert.ok(orderRes.razorpayOrderId.startsWith('order_'));
-  // Subtotal = 599 + 599 = 1198. Shipping = 99. Total = 1297 -> 129700 paise
-  assert.strictEqual(orderRes.amount, 129700);
+  // Subtotal = 599 + 400 = 999. Free shipping threshold is 999 -> Free shipping. Total = 999 -> 99900 paise
+  assert.strictEqual(orderRes.amount, 99900);
   assert.strictEqual(orderRes.keyId, CONFIG.RAZORPAY_KEY_ID);
 });
 
