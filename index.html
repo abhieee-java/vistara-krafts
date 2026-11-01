@@ -3911,7 +3911,7 @@
       <div class="flex items-center justify-between gap-2 border-b border-surface-container pb-2 shrink-0">
         <div class="min-w-0">
           <span class="text-[9.5px] uppercase tracking-wider text-secondary font-bold block leading-none">100% Secure Checkout</span>
-          <h3 id="checkout-modal-title" class="font-headline-sm text-base sm:text-lg text-primary font-bold truncate mt-0.5">Delivery Address &amp; Payment</h3>
+          <h3 id="checkout-modal-title" class="font-headline-sm text-base sm:text-lg text-primary font-bold truncate mt-0.5">Delivery Address</h3>
         </div>
         <button type="button" aria-label="Close Checkout Modal" onclick="window.closeModalById('checkout-modal')" class="w-8 h-8 rounded-full bg-surface-container-low hover:bg-surface-container flex items-center justify-center shrink-0 cursor-pointer transition-colors">
           <span class="material-symbols-outlined text-base" aria-hidden="true">close</span>
@@ -3940,15 +3940,6 @@
           <input id="chk-pincode" type="text" required maxlength="6" pattern="[1-9][0-9]{5}" autocomplete="postal-code" aria-label="6-Digit Delivery PIN Code" aria-describedby="chk-pincode-err" value="" placeholder="6 Digits" class="w-full h-11 px-2.5 rounded-lg bg-surface-container-low border border-[#e4e0d8] font-spec-numeral text-xs focus:outline-none focus:border-primary">
           <p id="chk-pincode-err" class="hidden text-[9px] text-[#9e3322] font-semibold mt-0.5" role="alert"></p>
         </div>
-      </div>
-      <div class="shrink-0">
-        <label for="chk-payment" class="text-[10px] uppercase tracking-wider font-bold text-primary block mb-0.5">Payment Method</label>
-        <select id="chk-payment" aria-label="Select Payment Method" class="w-full h-11 px-2.5 rounded-lg bg-surface-container-low border border-[#e4e0d8] text-xs focus:outline-none focus:border-primary">
-          <option value="UPI Instant (GPay / PhonePe / Paytm)">UPI Instant (GPay / PhonePe / Paytm)</option>
-          <option value="Credit / Debit Card (Visa / Mastercard / RuPay)">Credit / Debit Card (Visa / Mastercard / RuPay)</option>
-          <option value="No-Cost 3-Month EMI (Zero Interest Split Pay)">No-Cost 3-Month EMI (Zero Interest Split Pay)</option>
-          <option value="NetBanking / Corporate B2B NEFT">NetBanking / B2B Corporate</option>
-        </select>
       </div>
       <div class="shrink-0">
         <label for="chk-gift-wrap" class="py-1.5 px-2.5 rounded-lg bg-[#fdf6f3] border border-[#9e3322]/20 flex items-center justify-between gap-2 cursor-pointer hover:bg-[#faeeea] transition-colors">

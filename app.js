@@ -1437,7 +1437,8 @@
               <span class="material-symbols-outlined text-lg sm:text-xl text-primary/60 absolute left-3.5 pointer-events-none transition-transform duration-200" aria-hidden="true">search</span>
               <input
                 id="home-product-search-input"
-                type="search"
+                type="text"
+                inputmode="search"
                 autocomplete="off"
                 placeholder="Search bridal keepsakes, 3:1 &amp; 2:1 epoxy kits, silicone molds, mica pigments..."
                 class="w-full h-11 sm:h-12 pl-10 sm:pl-11 pr-24 rounded-2xl bg-white border border-[#e4e0d8] shadow-2xs text-xs sm:text-sm text-primary placeholder:text-on-surface-variant/70 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all font-medium [appearance:textfield] [&::-webkit-search-cancel-button]:hidden [&::-webkit-search-decoration]:hidden"
@@ -2683,15 +2684,23 @@
                     <span class="font-semibold text-secondary ml-1">${esc(activeSize ? activeSize.label : '')}</span>
                   </div>
                   <div class="grid grid-cols-2 sm:grid-cols-3 gap-2">
-                    ${sizes.map((sz, szIdx) => `
-                      <button type="button" onclick="window.selectPdpVariety('size', ${szIdx})" class="min-h-[44px] p-2 rounded-xl border text-left flex flex-col justify-between transition-all cursor-pointer ${szIdx === activeSizeIdx ? 'bg-primary text-white border-primary shadow-xs' : 'bg-white text-primary border-[#e4e0d8] hover:bg-surface-container'}">
-                        <div class="flex items-center justify-between">
-                          <span class="font-bold text-xs truncate">${esc(sz.label)}</span>
-                          ${sz.popular ? `<span class="px-1.5 py-0.5 rounded bg-secondary-fixed text-on-secondary-fixed text-[9px] font-bold uppercase shrink-0">Popular</span>` : ''}
-                        </div>
-                        <span class="text-[11px] ${szIdx === activeSizeIdx ? 'text-[#ffd79b]' : 'text-on-surface-variant'}">${(sz.priceDelta || 0) > 0 ? '+' + formatINR(sz.priceDelta) : 'Standard'}</span>
-                      </button>
-                    `).join('')}
+                    ${sizes.map((sz, szIdx) => {
+                      const isSelected = szIdx === activeSizeIdx;
+                      const v = variants[szIdx];
+                      const priceLabel = (sz.priceDelta || 0) > 0
+                        ? '+' + formatINR(sz.priceDelta)
+                        : (v && v.price ? formatINR(v.price) : 'Standard');
+                      const isPopular = sz.popular || (v && v.popular);
+                      return `
+                        <button type="button" onclick="window.selectPdpVariety('size', ${szIdx})" class="min-h-[46px] p-2.5 rounded-xl border text-left flex flex-col justify-between transition-all cursor-pointer ${isSelected ? 'bg-primary text-white border-primary shadow-xs' : 'bg-white text-primary border-[#e4e0d8] hover:bg-surface-container'}">
+                          <div class="flex items-center justify-between gap-1">
+                            <span class="font-bold text-xs truncate">${esc(sz.label)}</span>
+                            ${isPopular ? `<span class="px-1.5 py-0.5 rounded bg-secondary-fixed text-on-secondary-fixed text-[8.5px] font-bold uppercase shrink-0">Popular</span>` : ''}
+                          </div>
+                          <span class="text-[11px] font-semibold mt-0.5 ${isSelected ? 'text-[#ffd79b]' : 'text-on-surface-variant'}">${priceLabel}</span>
+                        </button>
+                      `;
+                    }).join('')}
                   </div>
                 </div>
                 ` : ''}
@@ -2699,50 +2708,7 @@
             </div>
             ` : ''}
 
-            <!-- Variant / Kit Selector -->
-            <div class="flex flex-col gap-2">
-              <div class="flex justify-between items-center">
-                <span class="font-title-md text-xs sm:text-sm text-primary font-bold">Select Kit / Edition Architecture</span>
-                <span class="font-label-sm text-[11px] text-secondary font-semibold">Self-Leveling Low Exotherm</span>
-              </div>
-              <div class="grid grid-cols-1 gap-2">
-                ${variants.map((v, idx) => {
-                  const isSelected = idx === AppState.selectedVariantIdx;
-                  return `
-                    <button type="button" onclick="window.selectPdpVariant(${idx})" class="p-3.5 rounded-xl border text-left flex flex-col min-[420px]:flex-row min-[420px]:items-center justify-between gap-2.5 transition-all cursor-pointer ${isSelected ? 'bg-primary text-on-primary border-primary shadow-md' : 'bg-white text-primary border-[#e4e0d8] hover:bg-surface-container-low'}">
-                      <div class="flex items-center gap-2.5 min-w-0 flex-1">
-                        <span class="material-symbols-outlined text-xl ${isSelected ? 'text-secondary-fixed' : 'text-secondary'} shrink-0" aria-hidden="true">workspace_premium</span>
-                        <div class="min-w-0 flex-1">
-                          <div class="flex items-center gap-1.5 flex-wrap">
-                            <p class="font-title-md text-sm font-bold ${isSelected ? 'text-white' : 'text-primary'} break-words">${esc(v.label)}</p>
-                            ${v.popular ? `<span class="px-2 py-0.5 rounded bg-secondary-fixed text-on-secondary-fixed text-[10px] font-bold uppercase shrink-0">Most Popular</span>` : ''}
-                          </div>
-                          <p class="text-xs ${isSelected ? 'text-white/85' : 'text-on-surface-variant'} break-words">${esc(v.desc || '')}</p>
-                        </div>
-                      </div>
-                      <div class="text-left min-[420px]:text-right shrink-0 min-[420px]:pl-2 flex min-[420px]:flex-col items-baseline min-[420px]:items-end gap-2 min-[420px]:gap-0">
-                        <p class="font-spec-numeral text-base font-bold ${isSelected ? 'text-white' : 'text-primary'}">${formatINR(v.price)}</p>
-                        <span class="font-spec-numeral text-[11px] ${isSelected ? 'text-secondary-fixed' : 'text-on-surface-variant'}">${esc(v.unitPrice || '')}</span>
-                      </div>
-                    </button>
-                  `;
-                }).join('')}
-              </div>
-            </div>
-
-            <!-- Custom Memory / Engraving Note (Included Free) -->
-            <div class="p-3.5 rounded-xl bg-surface-container-low border border-[#e4e0d8] flex flex-col gap-1.5">
-              <div class="flex items-center justify-between gap-2">
-                <label for="pdp-custom-note" class="text-xs font-bold text-primary flex items-center gap-1.5">
-                  <span class="material-symbols-outlined text-sm text-[#9e3322]" aria-hidden="true">edit_note</span>
-                  <span>${product.isCustomizable ? 'Personalization / Couple Name & Date Engraving (Free)' : 'Studio Batch Note / COA Request (Optional)'}</span>
-                </label>
-                <span class="text-[10px] font-bold text-[#9e3322] uppercase tracking-wider bg-[#ffe4de] px-2 py-0.5 rounded-full shrink-0">Included</span>
-              </div>
-              <input id="pdp-custom-note" type="text" value="${esc(AppState.pdpCustomNote)}" oninput="window.setPdpCustomNote(this.value)" placeholder="${product.isCustomizable ? 'e.g. Aarav & Meera • 12 Oct 2026 • Gold Foil Calligraphy' : 'e.g. Include printed ASTM Certificate of Analysis with shipment'}" class="w-full h-11 px-3 rounded-lg bg-white border border-[#e4e0d8] text-xs text-primary focus:outline-none focus:ring-1 focus:ring-primary">
-            </div>
-
-            <!-- Inline Primary Conversion Actions (Desktop & Mobile) -->
+            <!-- Inline Primary Conversion Actions (Directly Below Product Options for High Conversion) -->
             <div class="p-3.5 rounded-2xl bg-white border border-[#e4e0d8] shadow-sm flex flex-col gap-2.5">
               <div class="flex items-center gap-2">
                 <div class="h-12 bg-surface-container-low rounded-xl flex items-center px-1 shrink-0 border border-[#e4e0d8]">
@@ -2768,6 +2734,18 @@
                 <span class="material-symbols-outlined text-lg shrink-0" aria-hidden="true">bolt</span>
                 <span>Express Buy Now (Instant UPI / Cards)</span>
               </button>
+            </div>
+
+            <!-- Custom Memory / Engraving Note (Included Free) -->
+            <div class="p-3.5 rounded-xl bg-surface-container-low border border-[#e4e0d8] flex flex-col gap-1.5">
+              <div class="flex items-center justify-between gap-2">
+                <label for="pdp-custom-note" class="text-xs font-bold text-primary flex items-center gap-1.5">
+                  <span class="material-symbols-outlined text-sm text-[#9e3322]" aria-hidden="true">edit_note</span>
+                  <span>${product.isCustomizable ? 'Personalization / Couple Name & Date Engraving (Free)' : 'Studio Batch Note / COA Request (Optional)'}</span>
+                </label>
+                <span class="text-[10px] font-bold text-[#9e3322] uppercase tracking-wider bg-[#ffe4de] px-2 py-0.5 rounded-full shrink-0">Included</span>
+              </div>
+              <input id="pdp-custom-note" type="text" value="${esc(AppState.pdpCustomNote)}" oninput="window.setPdpCustomNote(this.value)" placeholder="${product.isCustomizable ? 'e.g. Aarav & Meera • 12 Oct 2026 • Gold Foil Calligraphy' : 'e.g. Include printed ASTM Certificate of Analysis with shipment'}" class="w-full h-11 px-3 rounded-lg bg-white border border-[#e4e0d8] text-xs text-primary focus:outline-none focus:ring-1 focus:ring-primary">
             </div>
 
             <!-- Compact Tiered Studio Volume Strip -->
@@ -2988,9 +2966,10 @@
             ${Store.getRecentlyViewedProducts(product.id, 4).map(p => renderProductCard(p, false)).join('')}
           </div>
         </section>
+      </div>
 
-        <!-- Sticky Bottom PDP Action Bar (aligned with lg:hidden mobile bottom nav, Apple-Grade UX) -->
-        <aside class="fixed bottom-16 lg:bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-lg border-t border-[#e4e0d8] px-2.5 sm:px-8 py-2.5 shadow-lg max-w-full">
+      <!-- Sticky Bottom PDP Action Bar (aligned with lg:hidden mobile bottom nav, Apple-Grade UX) -->
+      <aside class="fixed bottom-16 lg:bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-lg border-t border-[#e4e0d8] px-2.5 sm:px-8 py-2.5 shadow-lg max-w-full">
           <div class="max-w-7xl mx-auto flex items-center justify-between gap-2 sm:gap-4 max-w-full">
             
             <!-- Left: Product Context & Real-Time Price (Thumb Zone & Desktop Context) -->
@@ -3045,7 +3024,6 @@
             </div>
           </div>
         </aside>
-      </div>
     `;
   }
 
@@ -5461,7 +5439,10 @@
   window.selectPdpVariety = function (type, index) {
     if (type === 'color') AppState.pdpSelectedColorIdx = index;
     if (type === 'shape') AppState.pdpSelectedShapeIdx = index;
-    if (type === 'size') AppState.pdpSelectedSizeIdx = index;
+    if (type === 'size') {
+      AppState.pdpSelectedSizeIdx = index;
+      AppState.selectedVariantIdx = index;
+    }
     renderActiveView({ preserveScroll: true });
   };
 
@@ -6188,7 +6169,8 @@
 
   window.selectPdpVariant = function (idx) {
     AppState.selectedVariantIdx = idx;
-    renderActiveView();
+    AppState.pdpSelectedSizeIdx = idx;
+    renderActiveView({ preserveScroll: true });
     const prod = Store.getProductById(AppState.currentProductId);
     const v = prod && prod.variants && prod.variants[idx];
     if (v) window.showToast(`Selected ${v.label}`, `${formatINR(v.price)} • ${v.unitPrice || 'Studio Edition'}`);

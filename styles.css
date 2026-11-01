@@ -497,13 +497,21 @@ body.has-mini-cart-toast #global-toast {
   }
   100% {
     opacity: 1;
-    transform: scale(1) translateY(0);
+    transform: none;
   }
 }
 
 .route-view-enter {
   animation: fadeInSlide 0.24s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-  will-change: transform, opacity;
+}
+
+/* Suppress native search clear buttons across mobile browsers to prevent double-cross visual artifacts */
+input[type="search"]::-webkit-search-cancel-button,
+input[type="search"]::-webkit-search-decoration,
+input[type="search"]::-webkit-search-results-button,
+input[type="search"]::-webkit-search-results-decoration {
+  -webkit-appearance: none !important;
+  display: none !important;
 }
 
 /* Apple-Grade Tactile Bottom Navigation Micro-Interactions */
