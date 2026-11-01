@@ -44,109 +44,181 @@ export class EmailService {
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Welcome to Vistāra Krafts Atelier</title>
   <style>
+    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
     body {
       margin: 0;
       padding: 0;
-      background-color: #f7f6f2;
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      background-color: #f6f5f0;
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
       color: #1a1a1e;
       -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
     }
     table {
       border-spacing: 0;
+      border-collapse: collapse;
+      mso-table-lspace: 0pt;
+      mso-table-rspace: 0pt;
     }
     td {
       padding: 0;
     }
     img {
       border: 0;
+      line-height: 100%;
+      outline: none;
+      text-decoration: none;
     }
     .wrapper {
       width: 100%;
       table-layout: fixed;
-      background-color: #f7f6f2;
-      padding-top: 40px;
-      padding-bottom: 40px;
+      background-color: #f6f5f0;
+      padding-top: 48px;
+      padding-bottom: 48px;
     }
     .container {
       max-width: 600px;
       margin: 0 auto;
       background-color: #ffffff;
-      border-radius: 16px;
-      border: 1px solid #e7e5df;
+      border-radius: 20px;
+      border: 1px solid #e5e1d5;
       overflow: hidden;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+      box-shadow: 0 10px 30px rgba(18, 18, 23, 0.06);
+    }
+    .gold-accent-bar {
+      height: 4px;
+      background: linear-gradient(90deg, #aa771c 0%, #f3e5ab 50%, #d4af37 100%);
+      width: 100%;
     }
     .header-bar {
-      background-color: #121217;
-      padding: 36px 32px 30px;
+      background-color: #0d0d12;
+      padding: 40px 32px 34px;
       text-align: center;
+      background-image: radial-gradient(circle at 50% 0%, #1e1e28 0%, #0d0d12 80%);
+    }
+    .brand-emblem {
+      display: inline-block;
+      margin-bottom: 14px;
     }
     .brand-title {
       color: #ffffff;
-      font-size: 24px;
-      letter-spacing: 0.12em;
+      font-size: 26px;
+      letter-spacing: 0.14em;
       text-transform: uppercase;
-      font-weight: 600;
+      font-weight: 700;
       margin: 0;
       font-family: 'Playfair Display', Georgia, serif;
     }
     .brand-tagline {
-      color: #c4a482;
-      font-size: 11px;
-      letter-spacing: 0.22em;
+      color: #d4af37;
+      font-size: 11.5px;
+      letter-spacing: 0.24em;
       text-transform: uppercase;
       margin-top: 8px;
       margin-bottom: 0;
-      font-weight: 500;
+      font-weight: 600;
     }
     .content {
-      padding: 40px 36px 36px;
+      padding: 44px 38px 40px;
     }
     .greeting {
-      font-size: 18px;
-      font-weight: 600;
+      font-size: 19px;
+      font-weight: 700;
       color: #121217;
       margin-top: 0;
-      margin-bottom: 16px;
+      margin-bottom: 18px;
+      font-family: 'Playfair Display', Georgia, serif;
     }
     .body-p {
       font-size: 15px;
-      line-height: 1.65;
-      color: #4a4a52;
+      line-height: 1.7;
+      color: #4a4a54;
       margin-top: 0;
-      margin-bottom: 18px;
+      margin-bottom: 20px;
+    }
+    .privilege-card {
+      background: #faf8f5;
+      border: 1.5px dashed #d4af37;
+      border-radius: 14px;
+      padding: 22px 24px;
+      margin: 28px 0;
+      text-align: center;
+    }
+    .privilege-badge {
+      font-size: 10.5px;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      font-weight: 700;
+      color: #9e3322;
+      margin-bottom: 8px;
+    }
+    .privilege-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: #121217;
+      margin: 0 0 10px;
+      font-family: 'Playfair Display', Georgia, serif;
+    }
+    .coupon-code {
+      display: inline-block;
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 17px;
+      font-weight: 800;
+      letter-spacing: 0.14em;
+      color: #121217;
+      background-color: #ffffff;
+      border: 1px solid #e6e2d8;
+      border-radius: 8px;
+      padding: 7px 18px;
+      margin: 4px 0 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+    }
+    .privilege-sub {
+      font-size: 12px;
+      color: #6b6b75;
+      margin: 0;
     }
     .card-box {
       background-color: #faf9f6;
       border: 1px solid #ebe8e1;
-      border-radius: 12px;
-      padding: 22px 24px;
-      margin: 24px 0;
+      border-radius: 14px;
+      padding: 24px 26px;
+      margin: 26px 0;
     }
     .card-title {
-      font-size: 14px;
-      font-weight: 600;
+      font-size: 13.5px;
+      font-weight: 700;
       color: #121217;
       text-transform: uppercase;
-      letter-spacing: 0.05em;
+      letter-spacing: 0.08em;
       margin-top: 0;
-      margin-bottom: 14px;
+      margin-bottom: 16px;
+      border-bottom: 1px solid #ede9e1;
+      padding-bottom: 10px;
     }
     .feature-item {
       font-size: 13.5px;
-      line-height: 1.55;
-      color: #555560;
-      margin-bottom: 10px;
-      padding-left: 18px;
+      line-height: 1.6;
+      color: #4a4a54;
+      margin-bottom: 12px;
+      padding-left: 20px;
       position: relative;
     }
     .feature-item:last-child {
       margin-bottom: 0;
     }
+    .feature-item::before {
+      content: '•';
+      position: absolute;
+      left: 4px;
+      color: #d4af37;
+      font-weight: bold;
+      font-size: 16px;
+      line-height: 1;
+    }
     .cta-container {
       text-align: center;
-      padding: 24px 0 12px;
+      padding: 28px 0 12px;
     }
     .cta-button {
       display: inline-block;
@@ -154,28 +226,40 @@ export class EmailService {
       color: #ffffff !important;
       text-decoration: none;
       font-size: 14px;
-      font-weight: 600;
-      letter-spacing: 0.06em;
+      font-weight: 700;
+      letter-spacing: 0.08em;
       text-transform: uppercase;
-      padding: 15px 36px;
+      padding: 16px 42px;
       border-radius: 9999px;
       border: 1px solid #121217;
+      box-shadow: 0 4px 16px rgba(18, 18, 23, 0.16);
+      transition: all 0.2s ease-in-out;
     }
     .footer-bar {
-      background-color: #faf9f6;
+      background-color: #fbfaf7;
       border-top: 1px solid #ebe8e1;
-      padding: 28px 36px;
+      padding: 32px 36px;
       text-align: center;
     }
     .footer-text {
       font-size: 12px;
-      line-height: 1.6;
+      line-height: 1.65;
       color: #8c8c96;
       margin: 0 0 8px;
     }
     .footer-link {
-      color: #8c8c96;
+      color: #6b6b75;
       text-decoration: underline;
+    }
+    .footer-trust {
+      display: inline-block;
+      padding: 6px 14px;
+      border-radius: 9999px;
+      background: #f1eee6;
+      font-size: 11px;
+      font-weight: 600;
+      color: #4a4a52;
+      margin-bottom: 12px;
     }
   </style>
 </head>
@@ -185,8 +269,18 @@ export class EmailService {
       <tr>
         <td align="center">
           <div class="container">
+            <!-- Luxury Gold Gradient Accent Bar -->
+            <div class="gold-accent-bar"></div>
+
             <!-- Header -->
             <div class="header-bar">
+              <div class="brand-emblem">
+                <svg width="44" height="44" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <circle cx="22" cy="22" r="21" stroke="#d4af37" stroke-width="1.2" stroke-dasharray="3 3"/>
+                  <rect x="10" y="10" width="24" height="24" rx="4" stroke="#d4af37" stroke-width="1.2" fill="#121217"/>
+                  <path d="M16 16L22 28L28 16" stroke="#f3e5ab" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
               <h1 class="brand-title">Vistāra Krafts</h1>
               <p class="brand-tagline">Epoxy &amp; Keepsake Atelier</p>
             </div>
@@ -196,24 +290,34 @@ export class EmailService {
               <p class="greeting">${greeting}</p>
               
               <p class="body-p">
-                We are delighted to welcome you to the Vistāra Krafts Atelier. Your patron account has been successfully created and verified.
+                We are delighted to welcome you to the <strong>Vistāra Krafts Atelier</strong>. Your patron account has been officially registered and verified.
               </p>
 
               <p class="body-p">
-                At Vistāra Krafts, we celebrate the delicate alchemy of chemistry and handcrafted precision. From ultra-clear 2:1 and 3:1 cast resin formulations to bespoke floral preservation keepsakes and artisanal studio decor, every piece is curated for lasting beauty.
+                At our studio in Guwahati, Assam, we dedicate ourselves to the art of bespoke botanical preservation and precision optical resin chemistry. Whether you are preserving sacred wedding varmalas into diamond-polished keepsake blocks or crafting heirloom resin masterpieces with our 3:1 and 2:1 crystal formulations, each batch is engineered for timeless permanence.
               </p>
 
-              <!-- Highlights Box -->
+              <!-- Patron Welcome Privilege Box -->
+              <div class="privilege-card">
+                <div class="privilege-badge">Patron Welcome Privilege</div>
+                <h3 class="privilege-title">Enjoy 10% Off Your First Atelier Order</h3>
+                <div>
+                  <span class="coupon-code">KRAFTFIRST</span>
+                </div>
+                <p class="privilege-sub">Enter code during checkout on preserved keepsake blocks, ocean serving boards, or optical resin formulations.</p>
+              </div>
+
+              <!-- Atelier Standards -->
               <div class="card-box">
-                <div class="card-title">What You Can Expect at Our Atelier</div>
+                <div class="card-title">The Vistāra Atelier Guarantee</div>
                 <div class="feature-item">
-                  <strong>• Artisanal Craftsmanship:</strong> Hand-cast, cured, and diamond-polished finishes crafted with care.
+                  <strong>Museum-Grade Preservation:</strong> Custom 5-stage silica dehydration ensuring vibrant petals and crystal-clear 50mm resin casting without yellowing.
                 </div>
                 <div class="feature-item">
-                  <strong>• Live Order Tracking:</strong> Real-time production milestones from formulation to courier pickup directly in your account.
+                  <strong>Authoritative Live Tracking:</strong> Transparent production timelines tracking silica curing, casting, diamond-edge polishing, and dispatch.
                 </div>
                 <div class="feature-item">
-                  <strong>• Pan-India Safe Delivery:</strong> Multi-layer shockproof packaging delivered securely to your doorstep.
+                  <strong>Air Express Pan-India:</strong> Solvent-safe, multi-layered shockproof packaging with guaranteed BlueDart air transit and 18% GST tax invoices.
                 </div>
               </div>
 
@@ -227,15 +331,18 @@ export class EmailService {
 
             <!-- Footer -->
             <div class="footer-bar">
+              <div class="footer-trust">
+                ✦ 100% Verified Atelier • BlueDart Air Logistics • 18% GST ITC Invoicing
+              </div>
               <p class="footer-text">
-                <strong>Vistāra Krafts Studio</strong> • Handcrafted Keepsakes &amp; Epoxy Formulations
+                <strong>Vistāra Krafts Studio</strong> • Guwahati Atelier, Assam 781001, India
               </p>
               <p class="footer-text">
-                Questions or custom keepsake inquiries? Contact our studio concierge at 
+                Concierge inquiries &amp; custom varmala bookings: 
                 <a href="mailto:support@vistarakrafts.com" class="footer-link">support@vistarakrafts.com</a>
               </p>
               <p class="footer-text" style="margin-top: 14px; font-size: 11px;">
-                You received this email because you created an account on <a href="${siteUrl}" class="footer-link">${siteUrl.replace(/^https?:\/\//, '')}</a>.
+                You received this verification because an account was registered on <a href="${siteUrl}" class="footer-link">${siteUrl.replace(/^https?:\/\//, '')}</a>.
               </p>
               <p class="footer-text" style="font-size: 11px; margin-bottom: 0;">
                 © 2026 Vistāra Krafts. All rights reserved.
@@ -267,20 +374,24 @@ ${greeting}
 
 We are delighted to welcome you to the Vistāra Krafts Atelier. Your patron account has been successfully created and verified.
 
-At Vistāra Krafts, we celebrate the delicate alchemy of chemistry and handcrafted precision. From ultra-clear 2:1 and 3:1 cast resin formulations to bespoke floral preservation keepsakes and artisanal studio decor, every piece is curated for lasting beauty.
+At our studio in Guwahati, Assam, we dedicate ourselves to the art of bespoke botanical preservation and precision optical resin chemistry. Whether you are preserving sacred wedding varmalas into diamond-polished keepsake blocks or crafting heirloom resin masterpieces with our 3:1 and 2:1 crystal formulations, each batch is engineered for timeless permanence.
 
-WHAT YOU CAN EXPECT AT OUR ATELIER:
-• Artisanal Craftsmanship: Hand-cast, cured, and diamond-polished finishes crafted with care.
-• Live Order Tracking: Real-time production milestones from formulation to courier pickup directly in your account.
-• Pan-India Safe Delivery: Multi-layer shockproof packaging delivered securely to your doorstep.
+PATRON WELCOME PRIVILEGE:
+Use promo code: KRAFTFIRST
+Enjoy 10% off your first handcrafted keepsake, ocean serving board, or optical resin formulation during checkout.
 
-EXPLORE THE ATELIER:
-Visit our storefront to discover our latest collections:
+THE VISTĀRA ATELIER GUARANTEE:
+• Museum-Grade Preservation: Custom 5-stage silica dehydration ensuring vibrant petals and crystal-clear 50mm resin casting without yellowing.
+• Authoritative Live Tracking: Transparent production timelines tracking silica curing, casting, diamond-edge polishing, and dispatch.
+• Air Express Pan-India: Solvent-safe, multi-layered shockproof packaging with guaranteed BlueDart air transit and 18% GST tax invoices.
+
+EXPLORE THE STORE:
+Visit our storefront to discover our collections:
 ${catalogUrl}
 
 ==================================================
-Vistāra Krafts Studio • Handcrafted Keepsakes & Epoxy Formulations
-Support: support@vistarakrafts.com
+Vistāra Krafts Studio • Guwahati Atelier, Assam 781001, India
+Support Concierge: support@vistarakrafts.com
 Website: ${siteUrl}
 
 You received this email because you created an account on vistarakrafts.com.

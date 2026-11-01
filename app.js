@@ -3986,6 +3986,9 @@
               const isShipped = ord.orderStatus === 'shipped' || ord.orderStatus === 'in_transit';
               const trackingNum = ord.trackingNumber || ord.tracking_number;
               const courierName = ord.carrier || ord.courier || 'BlueDart Air Express';
+              const orderTimestamp = (ord.created_at || ord.createdAt)
+                ? (new Date(ord.created_at || ord.createdAt).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }) + ' at ' + new Date(ord.created_at || ord.createdAt).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', hour12: true }))
+                : (ord.date || 'Recent');
 
               let statusBadge = `<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-amber-50 text-amber-800 border border-amber-200 text-[11px] font-semibold"><span class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></span><span>Processing &amp; Crafting</span></span>`;
               if (isDelivered) {
@@ -4003,7 +4006,7 @@
                     <div>
                       <div class="flex flex-wrap items-center gap-2">
                         <span class="font-spec-numeral text-xs font-bold text-secondary whitespace-nowrap">ORDER #${esc(cleanOrderId)}</span>
-                        <span class="text-xs text-on-surface-variant">• ${esc(ord.date || 'Recent')}</span>
+                        <span class="text-xs text-on-surface-variant">• ${esc(orderTimestamp)}</span>
                         ${statusBadge}
                         ${ord.giftWrap ? `<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-[#fdf6f3] text-[#9e3322] border border-[#f5c2b7]/60 text-[10px] font-semibold"><span class="material-symbols-outlined text-[13px]" aria-hidden="true">featured_seasonal_and_gifts</span><span>Silk Potli Wrap</span></span>` : ''}
                       </div>
