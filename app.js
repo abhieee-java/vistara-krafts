@@ -2989,31 +2989,60 @@
           </div>
         </section>
 
-        <!-- Sticky Bottom PDP Action Bar (aligned with lg:hidden mobile bottom nav) -->
+        <!-- Sticky Bottom PDP Action Bar (aligned with lg:hidden mobile bottom nav, Apple-Grade UX) -->
         <aside class="fixed bottom-16 lg:bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-lg border-t border-[#e4e0d8] px-2.5 sm:px-8 py-2.5 shadow-lg max-w-full">
-          <div class="max-w-7xl mx-auto flex items-center gap-1.5 sm:gap-3">
-            <button type="button" aria-label="Save to Wishlist" onclick="window.handleWishlistToggle(event, '${esc(product.id)}')" class="flex w-11 sm:w-12 h-11 sm:h-12 rounded-xl bg-surface-container-low border border-[#e4e0d8] items-center justify-center ${isFav ? 'text-[#9e3322]' : 'text-primary'} shrink-0 cursor-pointer active:scale-95 transition-transform" title="Save to Wishlist">
-              <svg class="w-5 sm:w-6 h-5 sm:h-6 ${isFav ? 'fill-[#9e3322] stroke-[#9e3322]' : 'fill-none stroke-current'} transition-colors" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/>
-              </svg>
-            </button>
-            <div class="hidden min-[420px]:flex h-12 bg-surface-container-low rounded-xl items-center px-0.5 sm:px-1 shrink-0 border border-[#e4e0d8]">
-              <button type="button" aria-label="Decrease quantity" onclick="window.changePdpQty(-1)" class="w-11 h-11 flex items-center justify-center text-primary font-bold cursor-pointer">
-                <span class="material-symbols-outlined text-base" aria-hidden="true">remove</span>
+          <div class="max-w-7xl mx-auto flex items-center justify-between gap-2 sm:gap-4 max-w-full">
+            
+            <!-- Left: Product Context & Real-Time Price (Thumb Zone & Desktop Context) -->
+            <div class="flex items-center gap-2.5 min-w-0 flex-1 sm:flex-initial">
+              ${activeImg ? `
+                <img src="${esc(activeImg)}" alt="${esc(product.name)}" class="w-10 h-10 sm:w-11 sm:h-11 rounded-xl object-cover border border-[#e4e0d8] bg-surface-container shrink-0" loading="lazy">
+              ` : ''}
+              <div class="flex flex-col min-w-0">
+                <span class="text-[11px] sm:text-xs text-on-surface-variant font-medium truncate max-w-[130px] min-[390px]:max-w-[170px] sm:max-w-[220px] md:max-w-xs">
+                  ${esc(activeVariant.label && activeVariant.label !== 'Standard Edition' ? activeVariant.label : product.name)}
+                </span>
+                <div class="flex items-baseline gap-1.5 flex-wrap">
+                  <span class="font-spec-numeral text-sm sm:text-base font-bold text-primary">${formatINR(totalCtaPrice)}</span>
+                  ${discountPct > 0 ? `
+                    <span class="text-[9.5px] sm:text-[10px] text-emerald-700 font-bold bg-emerald-50 px-1 rounded border border-emerald-200">${discountPct}% off</span>
+                  ` : ''}
+                </div>
+              </div>
+            </div>
+
+            <!-- Right: Interactive Controls (Wishlist, Stepper, Add to Bag, Buy Now) -->
+            <div class="flex items-center gap-1.5 sm:gap-2 shrink-0">
+              <!-- Wishlist Heart Button -->
+              <button type="button" aria-label="Save to Wishlist" onclick="window.handleWishlistToggle(event, '${esc(product.id)}')" class="flex w-10 sm:w-11 h-10 sm:h-11 rounded-xl bg-surface-container-low border border-[#e4e0d8] items-center justify-center ${isFav ? 'text-[#9e3322]' : 'text-primary'} shrink-0 cursor-pointer active:scale-95 transition-transform" title="Save to Wishlist">
+                <svg class="w-5 h-5 ${isFav ? 'fill-[#9e3322] stroke-[#9e3322]' : 'fill-none stroke-current'} transition-colors" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/>
+                </svg>
               </button>
-              <span id="pdp-qty-val" class="w-5 sm:w-8 text-center font-spec-numeral text-sm text-primary font-bold">${AppState.pdpQty}</span>
-              <button type="button" aria-label="Increase quantity" onclick="window.changePdpQty(1)" class="w-11 h-11 flex items-center justify-center text-primary font-bold cursor-pointer">
-                <span class="material-symbols-outlined text-base" aria-hidden="true">add</span>
+
+              <!-- Quantity Stepper -->
+              <div class="hidden min-[480px]:flex h-10 sm:h-11 bg-surface-container-low rounded-xl items-center px-0.5 sm:px-1 shrink-0 border border-[#e4e0d8]">
+                <button type="button" aria-label="Decrease quantity" onclick="window.changePdpQty(-1)" class="w-9 sm:w-10 h-9 sm:h-10 flex items-center justify-center text-primary font-bold cursor-pointer hover:bg-surface-container rounded-lg transition-colors">
+                  <span class="material-symbols-outlined text-base" aria-hidden="true">remove</span>
+                </button>
+                <span id="pdp-qty-val" class="w-6 sm:w-8 text-center font-spec-numeral text-xs sm:text-sm text-primary font-bold">${AppState.pdpQty}</span>
+                <button type="button" aria-label="Increase quantity" onclick="window.changePdpQty(1)" class="w-9 sm:w-10 h-9 sm:h-10 flex items-center justify-center text-primary font-bold cursor-pointer hover:bg-surface-container rounded-lg transition-colors">
+                  <span class="material-symbols-outlined text-base" aria-hidden="true">add</span>
+                </button>
+              </div>
+
+              <!-- Add to Bag Primary CTA -->
+              <button type="button" id="pdp-add-to-cart-btn" onclick="window.addPdpToCart()" ${product.inStock === false ? 'disabled' : ''} class="btn-shimmer h-10 sm:h-11 px-3 sm:px-4 rounded-xl ${product.inStock === false ? 'bg-surface-container text-on-surface-variant cursor-not-allowed opacity-60' : 'bg-primary hover:bg-primary-container text-on-primary cursor-pointer'} font-title-md text-xs sm:text-sm font-bold flex items-center justify-center gap-1.5 shadow-sm active:scale-[0.97] transition-all">
+                <span class="material-symbols-outlined text-base sm:text-lg shrink-0" aria-hidden="true">${product.inStock === false ? 'block' : 'shopping_bag'}</span>
+                <span id="pdp-cta-label" class="whitespace-nowrap">${product.inStock === false ? 'Out of Stock' : `Add to Bag • ${formatINR(totalCtaPrice)}`}</span>
+              </button>
+
+              <!-- Express Buy Now -->
+              <button type="button" id="pdp-buy-now-btn" onclick="window.buyNowPdp()" ${product.inStock === false ? 'disabled' : ''} class="h-10 sm:h-11 px-3 sm:px-4 rounded-xl ${product.inStock === false ? 'bg-surface-container text-on-surface-variant cursor-not-allowed opacity-60' : 'bg-[#9e3322] hover:opacity-95 text-white cursor-pointer'} font-title-md text-xs sm:text-sm font-bold flex items-center justify-center gap-1 shadow-sm shrink-0 whitespace-nowrap active:scale-[0.97] transition-all">
+                <span class="material-symbols-outlined text-base sm:text-lg shrink-0" aria-hidden="true">bolt</span>
+                <span>Buy Now</span>
               </button>
             </div>
-            <button type="button" id="pdp-add-to-cart-btn" onclick="window.addPdpToCart()" ${product.inStock === false ? 'disabled' : ''} class="btn-shimmer min-w-0 flex-1 h-12 px-2.5 sm:px-5 rounded-xl ${product.inStock === false ? 'bg-surface-container text-on-surface-variant cursor-not-allowed opacity-60' : 'bg-primary hover:bg-primary-container text-on-primary cursor-pointer'} font-title-md text-xs sm:text-sm font-bold flex items-center justify-center gap-1.5 sm:gap-2 shadow-md active:scale-[0.99] transition-all">
-              <span class="material-symbols-outlined text-base sm:text-xl shrink-0" aria-hidden="true">${product.inStock === false ? 'block' : 'shopping_bag'}</span>
-              <span id="pdp-cta-label" class="truncate">${product.inStock === false ? 'Out of Stock' : `Add to Bag • ${formatINR(totalCtaPrice)}`}</span>
-            </button>
-            <button type="button" id="pdp-buy-now-btn" onclick="window.buyNowPdp()" ${product.inStock === false ? 'disabled' : ''} class="h-12 px-3 sm:px-5 rounded-xl ${product.inStock === false ? 'bg-surface-container text-on-surface-variant cursor-not-allowed opacity-60' : 'bg-[#9e3322] hover:opacity-95 text-white cursor-pointer'} font-title-md text-xs sm:text-sm font-bold flex items-center justify-center gap-1 shadow-md shrink-0 whitespace-nowrap">
-              <span class="material-symbols-outlined text-base sm:text-lg shrink-0" aria-hidden="true">bolt</span>
-              <span>Buy Now</span>
-            </button>
           </div>
         </aside>
       </div>
@@ -3700,13 +3729,13 @@
                           ${item.sku ? `<span class="sku-badge sku-pill font-mono text-[10px] px-1.5 py-0.5 rounded bg-surface-container-high border border-[#e4e0d8] text-primary whitespace-nowrap shrink-0" data-sku="${esc(item.sku)}">SKU:&nbsp;<span class="sku-text font-bold">${esc(item.sku)}</span></span>` : ''}
                         </p>
                         ${(item.color || item.shape || item.size) ? `
-                          <div class="flex flex-wrap items-center gap-1.5 my-1 text-[10.5px]">
-                            ${item.color ? `<span class="px-2 py-0.5 rounded-full bg-surface-container-high text-primary font-semibold border border-[#e4e0d8]">🎨 ${esc(item.color)}</span>` : ''}
-                            ${item.shape ? `<span class="px-2 py-0.5 rounded-full bg-surface-container-high text-primary font-semibold border border-[#e4e0d8]">📐 ${esc(item.shape)}</span>` : ''}
-                            ${item.size ? `<span class="px-2 py-0.5 rounded-full bg-secondary-container/50 text-secondary font-bold border border-[#e4e0d8]">📏 ${esc(item.size)}</span>` : ''}
+                          <div class="flex flex-wrap items-center gap-1.5 my-1 text-[10px]">
+                            ${item.color ? `<span class="px-2 py-0.5 rounded-md bg-surface-container-high text-primary font-medium border border-[#e4e0d8]">Color: ${esc(item.color)}</span>` : ''}
+                            ${item.shape ? `<span class="px-2 py-0.5 rounded-md bg-surface-container-high text-primary font-medium border border-[#e4e0d8]">Shape: ${esc(item.shape)}</span>` : ''}
+                            ${item.size ? `<span class="px-2 py-0.5 rounded-md bg-secondary-container/50 text-secondary font-bold border border-[#e4e0d8]">Size: ${esc(item.size)}</span>` : ''}
                           </div>
                         ` : ''}
-                        ${item.customNote ? `<p class="text-[10.5px] text-[#9e3322] font-medium mt-0.5 break-anywhere">✨ Note: “${esc(item.customNote)}”</p>` : ''}
+                        ${item.customNote ? `<p class="text-[10.5px] text-[#9e3322] font-medium mt-0.5 break-anywhere"><span class="font-semibold">Bespoke Note:</span> “${esc(item.customNote)}”</p>` : ''}
                         ${item.isOutOfStock ? `
                           <div class="mt-1.5 p-2 rounded-lg bg-[#ffe4de] text-[#9e3322] border border-[#f5c2b7] text-xs font-semibold flex items-center justify-between gap-2">
                             <div class="flex items-center gap-1.5 min-w-0">
@@ -3863,12 +3892,36 @@
                   </button>
                 `}
 
-                <p class="text-[10.5px] text-center text-on-surface-variant pt-0.5">
-                  🔒 100% Encrypted via <strong>Razorpay Payment Gateway</strong> • UPI, Cards &amp; NetBanking
+                <p class="text-[10.5px] text-center text-on-surface-variant pt-0.5 flex items-center justify-center gap-1.5">
+                  <span class="material-symbols-outlined text-xs text-secondary" aria-hidden="true">lock</span>
+                  <span>256-Bit Encrypted via <strong>Razorpay Payment Gateway</strong> • UPI, Cards &amp; NetBanking</span>
                 </p>
               </div>
             </div>
           </div>
+
+          <!-- Mobile Sticky Checkout Bar (Apple-Grade Thumb-Zone Priority Bar) -->
+          <aside class="lg:hidden fixed bottom-16 inset-x-0 z-40 bg-white/92 backdrop-blur-xl border-t border-[#e4e0d8] px-4 py-2.5 shadow-[0_-4px_24px_rgba(0,0,0,0.08)]">
+            <div class="flex items-center justify-between gap-3 max-w-lg mx-auto">
+              <div class="flex flex-col min-w-0">
+                <span class="text-[10px] text-on-surface-variant uppercase tracking-wider font-semibold">Total Payable</span>
+                <div class="flex items-baseline gap-1.5">
+                  <span class="font-spec-numeral text-base sm:text-lg font-bold text-primary">${formatINR(summary.payable)}</span>
+                  ${summary.isFreeShipping ? `<span class="text-[10px] text-[#266b4e] font-semibold">Free Air Express</span>` : ''}
+                </div>
+              </div>
+              ${summary.hasOutOfStock ? `
+                <button type="button" onclick="window.handleRemoveAllOutOfStock()" class="h-11 px-4 rounded-xl bg-[#9e3322] text-white text-xs font-bold active:scale-[0.97] transition-all cursor-pointer">
+                  Remove Out of Stock
+                </button>
+              ` : `
+                <button type="button" onclick="window.openCheckoutModal()" class="btn-shimmer flex-1 max-w-[210px] h-11 px-4 rounded-xl bg-primary hover:bg-primary-container text-white font-title-md text-xs sm:text-sm font-bold flex items-center justify-center gap-1.5 shadow-md active:scale-[0.97] transition-all cursor-pointer">
+                  <span>Checkout</span>
+                  <span class="material-symbols-outlined text-base" aria-hidden="true">arrow_forward</span>
+                </button>
+              `}
+            </div>
+          </aside>
         `}
       </div>
     `;
@@ -3902,16 +3955,26 @@
 
         <!-- Orders List or Empty State -->
         ${filteredOrders.length === 0 ? `
-          <div class="rounded-2xl border border-[#e4e0d8] bg-white p-8 sm:p-12 text-center flex flex-col items-center gap-3 shadow-xs">
-            <div class="w-16 h-16 rounded-full bg-surface-container flex items-center justify-center text-secondary mb-1">
+          <div class="rounded-2xl border border-[#e4e0d8] bg-white p-8 sm:p-12 text-center flex flex-col items-center gap-3.5 shadow-xs">
+            <div class="w-16 h-16 rounded-2xl bg-surface-container flex items-center justify-center text-secondary mb-1 border border-[#e4e0d8]/80 shadow-2xs">
               <span class="material-symbols-outlined text-3xl" aria-hidden="true">package_2</span>
             </div>
-            <h2 class="text-lg font-bold text-primary">${allOrders.length === 0 ? 'No Studio Orders Placed Yet' : 'No Matching Orders Found'}</h2>
-            <p class="text-xs sm:text-sm text-on-surface-variant max-w-sm">${allOrders.length === 0 ? 'Your purchases and delivery updates will appear here once you place an order.' : 'No orders matched your search query. Try clearing your search.'}</p>
+            <h2 class="text-lg sm:text-xl font-bold text-primary">${allOrders.length === 0 ? 'Your Atelier Orders &amp; Floral Keepsakes' : 'No Matching Orders Found'}</h2>
+            <p class="text-xs sm:text-sm text-on-surface-variant max-w-md leading-relaxed">${allOrders.length === 0 ? 'When you place an order, live crafting stages, silica dehydration updates, and BlueDart air express tracking appear right here.' : 'No orders matched your search query. Try clearing your search.'}</p>
             ${allOrders.length === 0 ? `
-              <button type="button" onclick="window.navigateTo('catalog', 'all')" class="min-h-[44px] px-6 py-2.5 rounded-xl bg-primary text-white text-xs font-bold mt-2 shadow-xs hover:bg-primary-container transition cursor-pointer">Browse Catalogue to Place Your First Order</button>
+              <div class="flex flex-col items-center gap-3 w-full max-w-sm mt-1">
+                <button type="button" onclick="window.navigateTo('catalog', 'all')" class="btn-shimmer w-full sm:w-auto min-h-[44px] px-8 py-2.5 rounded-xl bg-primary text-white text-xs font-bold shadow-sm hover:bg-primary-container active:scale-[0.97] transition-all cursor-pointer">
+                  Browse Catalogue to Place Your First Order
+                </button>
+                <div class="flex flex-wrap items-center justify-center gap-2 pt-2">
+                  <button type="button" onclick="window.navigateTo('catalog', 'varmala')" class="px-3 py-1.5 rounded-full bg-surface-container-low hover:bg-surface-container border border-[#e4e0d8] text-primary text-[11px] font-semibold active:scale-95 transition-all cursor-pointer">Preserved Keepsakes</button>
+                  <button type="button" onclick="window.navigateTo('catalog', 'epoxy')" class="px-3 py-1.5 rounded-full bg-surface-container-low hover:bg-surface-container border border-[#e4e0d8] text-primary text-[11px] font-semibold active:scale-95 transition-all cursor-pointer">Optical Epoxy</button>
+                  <button type="button" onclick="window.navigateTo('catalog', 'molds')" class="px-3 py-1.5 rounded-full bg-surface-container-low hover:bg-surface-container border border-[#e4e0d8] text-primary text-[11px] font-semibold active:scale-95 transition-all cursor-pointer">Silicone Molds</button>
+                  <button type="button" onclick="window.navigateTo('catalog', 'pigments')" class="px-3 py-1.5 rounded-full bg-surface-container-low hover:bg-surface-container border border-[#e4e0d8] text-primary text-[11px] font-semibold active:scale-95 transition-all cursor-pointer">Mica Pigments</button>
+                </div>
+              </div>
             ` : `
-              <button type="button" onclick="window.setAccountOrderSearch('')" class="min-h-[44px] px-5 py-2.5 rounded-xl bg-primary text-white text-xs font-bold mt-2 shadow-xs hover:bg-primary-container transition cursor-pointer">Show All Orders</button>
+              <button type="button" onclick="window.setAccountOrderSearch('')" class="min-h-[44px] px-6 py-2.5 rounded-xl bg-primary text-white text-xs font-bold mt-2 shadow-xs hover:bg-primary-container active:scale-[0.97] transition-all cursor-pointer">Show All Orders</button>
             `}
           </div>
         ` : `
@@ -3922,15 +3985,15 @@
               const isCancelled = ord.orderStatus === 'cancelled' || ord.orderStatus === 'refunded';
               const isShipped = ord.orderStatus === 'shipped' || ord.orderStatus === 'in_transit';
               const trackingNum = ord.trackingNumber || ord.tracking_number;
-              const courierName = ord.carrier || ord.courier || 'Express Delivery';
+              const courierName = ord.carrier || ord.courier || 'BlueDart Air Express';
 
-              let statusBadge = `<span class="px-2.5 py-0.5 rounded-full bg-amber-50 text-amber-800 border border-amber-200 text-[11px] font-bold">Processing</span>`;
+              let statusBadge = `<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-amber-50 text-amber-800 border border-amber-200 text-[11px] font-semibold"><span class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></span><span>Processing &amp; Crafting</span></span>`;
               if (isDelivered) {
-                statusBadge = `<span class="px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200 text-[11px] font-bold">Delivered</span>`;
+                statusBadge = `<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200 text-[11px] font-semibold"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span><span>Delivered</span></span>`;
               } else if (isCancelled) {
-                statusBadge = `<span class="px-2.5 py-0.5 rounded-full bg-red-50 text-red-800 border border-red-200 text-[11px] font-bold">Cancelled</span>`;
+                statusBadge = `<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-red-50 text-red-800 border border-red-200 text-[11px] font-semibold"><span class="w-1.5 h-1.5 rounded-full bg-red-400"></span><span>Cancelled</span></span>`;
               } else if (isShipped) {
-                statusBadge = `<span class="px-2.5 py-0.5 rounded-full bg-blue-50 text-blue-800 border border-blue-200 text-[11px] font-bold">Shipped</span>`;
+                statusBadge = `<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-blue-50 text-blue-800 border border-blue-200 text-[11px] font-semibold"><span class="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse"></span><span>In Transit</span></span>`;
               }
 
               return `
@@ -3942,7 +4005,7 @@
                         <span class="font-spec-numeral text-xs font-bold text-secondary whitespace-nowrap">ORDER #${esc(cleanOrderId)}</span>
                         <span class="text-xs text-on-surface-variant">• ${esc(ord.date || 'Recent')}</span>
                         ${statusBadge}
-                        ${ord.giftWrap ? `<span class="px-2 py-0.5 rounded-full bg-[#fdf6f3] text-[#9e3322] text-[10px] font-semibold">🎁 Gift Wrap</span>` : ''}
+                        ${ord.giftWrap ? `<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-[#fdf6f3] text-[#9e3322] border border-[#f5c2b7]/60 text-[10px] font-semibold"><span class="material-symbols-outlined text-[13px]" aria-hidden="true">featured_seasonal_and_gifts</span><span>Silk Potli Wrap</span></span>` : ''}
                       </div>
                       ${ord.status ? `<p class="text-xs font-semibold text-primary mt-1">${esc(ord.status)}</p>` : ''}
                     </div>
@@ -3997,11 +4060,11 @@
                       ${ord.paymentMethod ? `Paid via ${esc(ord.paymentMethod)}` : 'Payment Confirmed'} • 18% GST Invoice Included
                     </span>
                     <div class="flex items-center gap-2 shrink-0">
-                      <button type="button" onclick="window.openOrderInvoiceModal('${esc(cleanOrderId)}')" class="min-h-[40px] px-3.5 py-1.5 rounded-lg border border-[#e4e0d8] bg-surface-container-low hover:bg-surface-container text-xs font-semibold text-primary flex items-center gap-1.5 transition cursor-pointer">
+                      <button type="button" onclick="window.openOrderInvoiceModal('${esc(cleanOrderId)}')" class="min-h-[40px] px-3.5 py-1.5 rounded-xl border border-[#e4e0d8] bg-surface-container-low hover:bg-surface-container text-xs font-semibold text-primary flex items-center gap-1.5 active:scale-[0.97] transition-all cursor-pointer">
                         <span class="material-symbols-outlined text-sm text-secondary" aria-hidden="true">receipt_long</span>
                         <span>View Invoice</span>
                       </button>
-                      <button type="button" onclick="window.handleReorder('${esc(cleanOrderId)}')" class="min-h-[40px] px-3.5 py-1.5 rounded-lg bg-primary hover:bg-primary-container text-white text-xs font-semibold flex items-center gap-1.5 shadow-xs transition cursor-pointer">
+                      <button type="button" onclick="window.handleReorder('${esc(cleanOrderId)}')" class="min-h-[40px] px-4 py-1.5 rounded-xl bg-primary hover:bg-primary-container text-white text-xs font-semibold flex items-center gap-1.5 shadow-xs active:scale-[0.97] transition-all cursor-pointer">
                         <span class="material-symbols-outlined text-sm" aria-hidden="true">replay</span>
                         <span>Buy Again</span>
                       </button>
