@@ -2968,62 +2968,58 @@
         </section>
       </div>
 
-      <!-- Sticky Bottom PDP Action Bar (aligned with lg:hidden mobile bottom nav, Apple-Grade UX) -->
-      <aside class="fixed bottom-16 lg:bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-lg border-t border-[#e4e0d8] px-2.5 sm:px-8 py-2.5 shadow-lg max-w-full">
-          <div class="max-w-7xl mx-auto flex items-center justify-between gap-2 sm:gap-4 max-w-full">
-            
-            <!-- Left: Product Context & Real-Time Price (Thumb Zone & Desktop Context) -->
-            <div class="flex items-center gap-2.5 min-w-0 flex-1 sm:flex-initial">
-              ${activeImg ? `
-                <img src="${esc(activeImg)}" alt="${esc(product.name)}" class="w-10 h-10 sm:w-11 sm:h-11 rounded-xl object-cover border border-[#e4e0d8] bg-surface-container shrink-0" loading="lazy">
-              ` : ''}
-              <div class="flex flex-col min-w-0">
-                <span class="text-[11px] sm:text-xs text-on-surface-variant font-medium truncate max-w-[130px] min-[390px]:max-w-[170px] sm:max-w-[220px] md:max-w-xs">
-                  ${esc(activeVariant.label && activeVariant.label !== 'Standard Edition' ? activeVariant.label : product.name)}
-                </span>
-                <div class="flex items-baseline gap-1.5 flex-wrap">
-                  <span class="font-spec-numeral text-sm sm:text-base font-bold text-primary">${formatINR(totalCtaPrice)}</span>
-                  ${discountPct > 0 ? `
-                    <span class="text-[9.5px] sm:text-[10px] text-emerald-700 font-bold bg-emerald-50 px-1 rounded border border-emerald-200">${discountPct}% off</span>
-                  ` : ''}
-                </div>
+      <!-- Sticky Bottom PDP Action Bar (De-cluttered dual-CTA layout, Apple-grade restraint) -->
+      <aside class="fixed bottom-16 lg:bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-lg border-t border-[#e4e0d8] px-3 sm:px-8 py-2.5 shadow-lg max-w-full">
+        <div class="max-w-7xl mx-auto flex items-center justify-between gap-3 sm:gap-6 max-w-full">
+          
+          <!-- Left: Product Context (Desktop / Tablet only, hidden on mobile to eliminate clutter) -->
+          <div class="hidden sm:flex items-center gap-3 min-w-0 flex-1">
+            ${activeImg ? `
+              <img src="${esc(activeImg)}" alt="${esc(product.name)}" class="w-11 h-11 rounded-xl object-cover border border-[#e4e0d8] bg-surface-container shrink-0" loading="lazy">
+            ` : ''}
+            <div class="flex flex-col min-w-0">
+              <span class="text-xs text-primary font-bold truncate max-w-xs md:max-w-sm">
+                ${esc(product.name)}
+              </span>
+              <div class="flex items-baseline gap-1.5 flex-wrap">
+                <span class="font-spec-numeral text-sm font-bold text-primary">${formatINR(totalCtaPrice)}</span>
+                ${discountPct > 0 ? `
+                  <span class="text-[9.5px] text-emerald-700 font-bold bg-emerald-50 px-1 rounded border border-emerald-200">${discountPct}% off</span>
+                ` : ''}
               </div>
-            </div>
-
-            <!-- Right: Interactive Controls (Wishlist, Stepper, Add to Bag, Buy Now) -->
-            <div class="flex items-center gap-1.5 sm:gap-2 shrink-0">
-              <!-- Wishlist Heart Button -->
-              <button type="button" aria-label="Save to Wishlist" onclick="window.handleWishlistToggle(event, '${esc(product.id)}')" class="flex w-10 sm:w-11 h-10 sm:h-11 rounded-xl bg-surface-container-low border border-[#e4e0d8] items-center justify-center ${isFav ? 'text-[#9e3322]' : 'text-primary'} shrink-0 cursor-pointer active:scale-95 transition-transform" title="Save to Wishlist">
-                <svg class="w-5 h-5 ${isFav ? 'fill-[#9e3322] stroke-[#9e3322]' : 'fill-none stroke-current'} transition-colors" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                  <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/>
-                </svg>
-              </button>
-
-              <!-- Quantity Stepper -->
-              <div class="hidden min-[480px]:flex h-10 sm:h-11 bg-surface-container-low rounded-xl items-center px-0.5 sm:px-1 shrink-0 border border-[#e4e0d8]">
-                <button type="button" aria-label="Decrease quantity" onclick="window.changePdpQty(-1)" class="w-9 sm:w-10 h-9 sm:h-10 flex items-center justify-center text-primary font-bold cursor-pointer hover:bg-surface-container rounded-lg transition-colors">
-                  <span class="material-symbols-outlined text-base" aria-hidden="true">remove</span>
-                </button>
-                <span id="pdp-qty-val" class="w-6 sm:w-8 text-center font-spec-numeral text-xs sm:text-sm text-primary font-bold">${AppState.pdpQty}</span>
-                <button type="button" aria-label="Increase quantity" onclick="window.changePdpQty(1)" class="w-9 sm:w-10 h-9 sm:h-10 flex items-center justify-center text-primary font-bold cursor-pointer hover:bg-surface-container rounded-lg transition-colors">
-                  <span class="material-symbols-outlined text-base" aria-hidden="true">add</span>
-                </button>
-              </div>
-
-              <!-- Add to Bag Primary CTA -->
-              <button type="button" id="pdp-add-to-cart-btn" onclick="window.addPdpToCart()" ${product.inStock === false ? 'disabled' : ''} class="btn-shimmer h-10 sm:h-11 px-3 sm:px-4 rounded-xl ${product.inStock === false ? 'bg-surface-container text-on-surface-variant cursor-not-allowed opacity-60' : 'bg-primary hover:bg-primary-container text-on-primary cursor-pointer'} font-title-md text-xs sm:text-sm font-bold flex items-center justify-center gap-1.5 shadow-sm active:scale-[0.97] transition-all">
-                <span class="material-symbols-outlined text-base sm:text-lg shrink-0" aria-hidden="true">${product.inStock === false ? 'block' : 'shopping_bag'}</span>
-                <span id="pdp-cta-label" class="whitespace-nowrap">${product.inStock === false ? 'Out of Stock' : `Add to Bag • ${formatINR(totalCtaPrice)}`}</span>
-              </button>
-
-              <!-- Express Buy Now -->
-              <button type="button" id="pdp-buy-now-btn" onclick="window.buyNowPdp()" ${product.inStock === false ? 'disabled' : ''} class="h-10 sm:h-11 px-3 sm:px-4 rounded-xl ${product.inStock === false ? 'bg-surface-container text-on-surface-variant cursor-not-allowed opacity-60' : 'bg-[#9e3322] hover:opacity-95 text-white cursor-pointer'} font-title-md text-xs sm:text-sm font-bold flex items-center justify-center gap-1 shadow-sm shrink-0 whitespace-nowrap active:scale-[0.97] transition-all">
-                <span class="material-symbols-outlined text-base sm:text-lg shrink-0" aria-hidden="true">bolt</span>
-                <span>Buy Now</span>
-              </button>
             </div>
           </div>
-        </aside>
+
+          <!-- Right: Clean Dual Action Buttons (Side-by-side 50/50 on mobile, matching reference design) -->
+          <div class="grid grid-cols-2 gap-2.5 sm:gap-3 w-full sm:w-auto sm:flex sm:items-center sm:justify-end">
+            <!-- Add to Cart / Bag (Clean white pill button with subtle border) -->
+            <button
+              type="button"
+              id="pdp-add-to-cart-btn"
+              onclick="window.addPdpToCart()"
+              ${product.inStock === false ? 'disabled' : ''}
+              class="w-full sm:min-w-[150px] sm:w-auto h-12 px-3 sm:px-5 rounded-2xl border border-[#e4e0d8] bg-white hover:bg-surface-container active:scale-[0.98] text-primary font-bold text-xs min-[360px]:text-sm sm:text-base flex items-center justify-center transition-all cursor-pointer shadow-2xs ${product.inStock === false ? 'opacity-50 cursor-not-allowed' : ''}"
+            >
+              <span id="pdp-cta-label" class="whitespace-nowrap">${product.inStock === false ? 'Out of Stock' : 'Add to cart'}</span>
+            </button>
+
+            <!-- Buy Now with Price (Rich brand CTA matching reference layout) -->
+            <button
+              type="button"
+              id="pdp-buy-now-btn"
+              onclick="window.buyNowPdp()"
+              ${product.inStock === false ? 'disabled' : ''}
+              class="w-full sm:min-w-[160px] sm:w-auto h-12 px-3 sm:px-5 rounded-2xl bg-[#9e3322] hover:bg-[#852a1b] active:scale-[0.98] text-white font-bold flex flex-col items-center justify-center transition-all cursor-pointer shadow-sm leading-tight py-1 ${product.inStock === false ? 'opacity-50 cursor-not-allowed' : ''}"
+            >
+              <span class="text-xs min-[360px]:text-sm sm:text-base font-bold leading-none">${product.inStock === false ? 'Unavailable' : 'Buy now'}</span>
+              ${product.inStock !== false ? `
+                <span class="text-[10.5px] min-[360px]:text-xs sm:text-xs font-semibold text-[#ffe4de] leading-none mt-1">at ${formatINR(totalCtaPrice)}</span>
+              ` : ''}
+            </button>
+          </div>
+
+        </div>
+      </aside>
     `;
   }
 
