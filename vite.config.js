@@ -10,6 +10,7 @@ const STATIC_ASSETS = [
   'supabase-config.js',
   'supabase-client.js',
   'cloudinary-config.js',
+  'content-moderation.js',
   'store-bridge.js',
   'app.js',
   'styles.css',
