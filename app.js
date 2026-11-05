@@ -8950,14 +8950,32 @@
     syncBodyModalLock();
   };
 
-  window.acceptDpdpBanner = function () {
-    ResinStore.saveDpdpConsent({
-      categories: { orderFulfillment: true, analyticsSession: true, marketingPromos: false },
-      age18PlusVerified: true
-    });
+  window.acceptAllCookies = function () {
+    ResinStore.acceptAllCookies();
+    if (window.VistaraAnalytics && typeof window.VistaraAnalytics.setConsent === 'function') {
+      window.VistaraAnalytics.setConsent('all');
+    }
     const banner = document.getElementById('dpdp-consent-banner');
     if (banner) banner.classList.add('hidden');
-    window.showToast('Preferences Saved', 'Your privacy preferences have been updated.');
+    window.showToast('Preferences Saved', 'All cookies accepted. Full atelier experience and analytics enabled.');
+  };
+
+  window.acceptEssentialCookies = function () {
+    ResinStore.acceptEssentialCookies();
+    if (window.VistaraAnalytics && typeof window.VistaraAnalytics.setConsent === 'function') {
+      window.VistaraAnalytics.setConsent('essential');
+    }
+    const banner = document.getElementById('dpdp-consent-banner');
+    if (banner) banner.classList.add('hidden');
+    window.showToast('Essential Cookies Only', 'Advertising & analytics disabled. Cart, wishlist & auth remain active.');
+  };
+
+  window.acceptDpdpBanner = function (choice = 'all') {
+    if (choice === 'essential') {
+      window.acceptEssentialCookies();
+    } else {
+      window.acceptAllCookies();
+    }
   };
 
   window.saveDpdpPreferencesForm = function (ev) {
@@ -8965,34 +8983,40 @@
     const analyticsEl = document.getElementById('dpdp-pref-analytics');
     const marketingEl = document.getElementById('dpdp-pref-marketing');
     const ageEl = document.getElementById('dpdp-pref-age');
+    const isAnalytics = Boolean(analyticsEl ? analyticsEl.checked : true);
 
     ResinStore.saveDpdpConsent({
+      choice: isAnalytics ? 'all' : 'essential',
       categories: {
         orderFulfillment: true,
-        analyticsSession: Boolean(analyticsEl ? analyticsEl.checked : true),
+        analyticsSession: isAnalytics,
         marketingPromos: Boolean(marketingEl ? marketingEl.checked : false)
       },
       age18PlusVerified: Boolean(ageEl ? ageEl.checked : true)
     });
 
+    if (window.VistaraAnalytics && typeof window.VistaraAnalytics.setConsent === 'function') {
+      window.VistaraAnalytics.setConsent(isAnalytics ? 'all' : 'essential');
+    }
+
     window.closeModalById('dpdp-preferences-modal');
     const banner = document.getElementById('dpdp-consent-banner');
     if (banner) banner.classList.add('hidden');
-    window.showToast('Preferences Saved', 'DPDP Act 2023 consent preferences updated.');
+    window.showToast('Preferences Saved', 'Privacy and cookie preferences updated.');
   };
 
   window.withdrawDpdpConsent = function () {
-    ResinStore.saveDpdpConsent({
-      categories: { orderFulfillment: true, analyticsSession: false, marketingPromos: false },
-      age18PlusVerified: true
-    });
+    ResinStore.acceptEssentialCookies();
+    if (window.VistaraAnalytics && typeof window.VistaraAnalytics.setConsent === 'function') {
+      window.VistaraAnalytics.setConsent('essential');
+    }
     const analyticsEl = document.getElementById('dpdp-pref-analytics');
     const marketingEl = document.getElementById('dpdp-pref-marketing');
     if (analyticsEl) analyticsEl.checked = false;
     if (marketingEl) marketingEl.checked = false;
 
     window.closeModalById('dpdp-preferences-modal');
-    window.showToast('Consents Withdrawn', 'Optional processing consents have been revoked.');
+    window.showToast('Consents Withdrawn', 'Optional tracking & processing consents have been revoked.');
   };
 
   window.toggleDpdpNoticeLang = function (lang) {
@@ -9469,6 +9493,11 @@
       if (!dpdpConsent.accepted) {
         const banner = document.getElementById('dpdp-consent-banner');
         if (banner) banner.classList.remove('hidden');
+      } else {
+        const choice = dpdpConsent.choice || (dpdpConsent.categories && dpdpConsent.categories.analyticsSession ? 'all' : 'essential');
+        if (window.VistaraAnalytics && typeof window.VistaraAnalytics.setConsent === 'function') {
+          window.VistaraAnalytics.setConsent(choice);
+        }
       }
     } catch (e) {
       console.warn('DPDP consent init:', e);

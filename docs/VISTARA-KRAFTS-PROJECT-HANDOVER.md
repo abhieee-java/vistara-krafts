@@ -396,13 +396,15 @@ Both applications are deployed with immutable production deployment artifacts. I
   - `search` / `Search`: Catalogue and home search query telemetry.
 - **Defensive Safeguards:** CSP whitelisted in `vercel.json`; ad-blocker suppression never interrupts user checkout.
 
-### 11.5 Streamlined Cookie & Privacy Architecture
-- **Single Subtle Cookie & Privacy Bar:** Replaced clunky legalistic DPDP banners with a professional, floating frosted-glass bar (`bg-white/95 backdrop-blur-md border-[#e4e0d8]`) docked at `bottom-20 lg:bottom-4`.
-  - *Copy:* "We use cookies and similar technologies to improve your experience. By browsing our site, you agree to our Privacy Policy."
-  - *Action:* Single "Got it" button with persistent localStorage state.
-- **Authoritative Statutory Privacy Policy (`privacy.html`):** Permanent footer link covering full DPDP Act 2023 Section 5/6 disclosures, Data Fiduciary identity, DPO and Grievance Officer details (`grievance@vistarakrafts.com`), data retention, and 7-day resolution SLAs.
+### 11.5 Binary Choice Cookie & Tracker Privacy Architecture
+- **Binary Choice Floating Bar:** Replaced old single-button banners with an Apple-grade, floating frosted-glass bar (`bg-white/95 backdrop-blur-md border-[#e4e0d8]`) docked at `bottom-20 lg:bottom-4`:
+  - *Copy:* "We use cookies to personalize your atelier experience and analyze traffic. You can choose to accept all or keep only essential cookies."
+  - *[Accept All] (Primary Navy Pill):* Enables Google Analytics 4 (`G-QVM9JT6BW3`), Meta Pixel (`1183595563273188`), and Microsoft Clarity (`z6d831rvdh`) with Google Consent Mode v2 `granted`.
+  - *[Essential Only] (Subtle Outline / Ghost Button):* Disables advertising and analytics trackers (`ga-disable = true`, `gtag consent denied`, `fbq consent revoke`, `clarity consent false`), while preserving Cart, Wishlist, Supabase Auth, and Razorpay Order Checkout.
+  - *[Privacy Policy]:* Direct link to full statutory disclosures in `./privacy.html`.
+- **Authoritative Statutory Privacy Policy (`privacy.html`):** Permanent footer link covering full DPDP Act 2023 Section 5/6 disclosures, Data Fiduciary identity, DPO and Grievance Officer details (`grievance@vistarakrafts.com`), cookie classifications, data retention, and 7-day resolution SLAs.
 - **Streamlined Checkout Consent:** Clean, distraction-free consent line positioned directly above the primary order placement action: *"I consent to processing contact & address for BlueDart delivery & GST invoicing."*
-- Detailed technical specification maintained in `docs/COOKIE-PRIVACY-BAR-SPEC.md`.
+- Detailed specifications maintained in `docs/04-COOKIE-BINARY-CHOICE-SPEC.md` and `docs/COOKIE-PRIVACY-BAR-SPEC.md`.
 
 ---
 
@@ -418,7 +420,7 @@ The Vistāra Krafts digital commerce platform is verified, secured, and ready fo
 | **Razorpay Payment Integration** | **APPROVED** | Abhijit | November 2026 |
 | **Resend Email Delivery Engine** | **APPROVED** | Abhijit | November 2026 |
 | **GA4 & Meta Pixel Ad Tracking** | **APPROVED** | Abhijit | November 2026 |
-| **Streamlined Cookie & Privacy Bar**| **APPROVED** | Abhijit | November 2026 |
+| **Binary Choice Cookie & Privacy Bar**| **APPROVED** | Abhijit | November 2026 |
 | **End-to-End Automated Verification** | **PASSED (27/27)** | Abhijit | November 2026 |
 
 *Official project handover concluded. The system is in active production service.*

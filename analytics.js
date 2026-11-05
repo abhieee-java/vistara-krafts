@@ -17,8 +17,37 @@
 (function (global) {
   'use strict';
 
+  function isAnalyticsAllowed() {
+    if (VistaraAnalytics._explicitConsent === 'essential') {
+      return false;
+    }
+    if (VistaraAnalytics._explicitConsent === 'all') {
+      return true;
+    }
+    if (typeof global !== 'undefined') {
+      if (global['ga-disable-G-QVM9JT6BW3'] === true || global['vk_analytics_disabled'] === true) {
+        return false;
+      }
+    }
+    try {
+      if (typeof localStorage !== 'undefined') {
+        const raw = localStorage.getItem('ram_vk_dpdp_consent_v1') || localStorage.getItem('vk_cookie_consent') || localStorage.getItem('vk_dpdp_consent');
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          if (parsed && (parsed.choice === 'essential' || (parsed.categories && parsed.categories.analyticsSession === false))) {
+            return false;
+          }
+        }
+      }
+    } catch (_e) {}
+    return true;
+  }
+
   // Defensive wrappers for Google Analytics and Meta Pixel
   function sendGtag(...args) {
+    if (!isAnalyticsAllowed()) {
+      return;
+    }
     if (typeof global.gtag === 'function') {
       try {
         global.gtag(...args);
@@ -31,6 +60,9 @@
   }
 
   function sendFbq(...args) {
+    if (!isAnalyticsAllowed()) {
+      return;
+    }
     if (typeof global.fbq === 'function') {
       try {
         global.fbq(...args);
@@ -41,10 +73,59 @@
   }
 
   const VistaraAnalytics = {
+    _explicitConsent: null,
+
     // Configurable tracking IDs
     GA_MEASUREMENT_ID: 'G-QVM9JT6BW3',
     META_PIXEL_ID: (typeof document !== 'undefined' && document.querySelector('meta[name="meta-pixel-id"]')?.getAttribute('content')) ||
                    (typeof global.VISTARA_META_PIXEL_ID !== 'undefined' ? global.VISTARA_META_PIXEL_ID : '1183595563273188'),
+
+    /**
+     * Check if analytics and tracking are currently permitted
+     */
+    isAnalyticsAllowed() {
+      return isAnalyticsAllowed();
+    },
+
+    /**
+     * Set Binary Consent Choice: 'all' | 'essential'
+     * @param {'all'|'essential'} choice
+     */
+    setConsent(choice) {
+      this._explicitConsent = choice;
+      const isAll = (choice === 'all');
+
+      if (typeof global !== 'undefined') {
+        global['ga-disable-G-QVM9JT6BW3'] = !isAll;
+        global['vk_analytics_disabled'] = !isAll;
+
+        // GA4 Consent Mode v2 Update
+        if (typeof global.gtag === 'function') {
+          try {
+            global.gtag('consent', 'update', {
+              'analytics_storage': isAll ? 'granted' : 'denied',
+              'ad_storage': isAll ? 'granted' : 'denied',
+              'ad_user_data': isAll ? 'granted' : 'denied',
+              'ad_personalization': isAll ? 'granted' : 'denied'
+            });
+          } catch (_e) {}
+        }
+
+        // Meta Pixel Consent Grant / Revoke
+        if (typeof global.fbq === 'function') {
+          try {
+            global.fbq('consent', isAll ? 'grant' : 'revoke');
+          } catch (_e) {}
+        }
+
+        // Microsoft Clarity Consent
+        if (typeof global.clarity === 'function') {
+          try {
+            global.clarity('consent', isAll);
+          } catch (_e) {}
+        }
+      }
+    },
 
     /**
      * Virtual Page View for SPA Route Changes

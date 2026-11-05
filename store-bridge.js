@@ -24,6 +24,7 @@
     RECENTLY_VIEWED: 'ram_vk_recently_viewed_v2',
     STUDIO_SYNC_LOG: 'ram_vk_studio_sync_v2',
     DPDP_CONSENT: 'ram_vk_dpdp_consent_v1',
+    COOKIE_CONSENT: 'vk_cookie_consent',
     DPDP_TICKETS: 'ram_vk_dpdp_tickets_v1',
     CHECKOUT_DRAFT: 'ram_vk_checkout_draft_v2',
     OFFLINE_QUEUE: 'ram_vk_offline_queue_v2',
@@ -2738,10 +2739,11 @@
       };
     },
 
-    // Digital Personal Data Protection (DPDP) Act 2023 Compliance Methods
+    // Digital Personal Data Protection (DPDP) Act 2023 & Binary Cookie Consent Methods
     getDpdpConsent() {
       return safeRead(STORAGE_KEYS.DPDP_CONSENT, {
         accepted: false,
+        choice: null, // 'all' | 'essential'
         date: null,
         categories: {
           orderFulfillment: true,
@@ -2755,20 +2757,44 @@
 
     saveDpdpConsent(data) {
       const current = this.getDpdpConsent();
+      const choice = (data && data.choice) ? data.choice : (data && data.categories && data.categories.analyticsSession ? 'all' : 'essential');
+      const isAll = (choice === 'all');
       const updated = {
         accepted: true,
+        choice: choice,
         date: new Date().toISOString(),
         categories: {
           orderFulfillment: true,
-          analyticsSession: Boolean(data && data.categories ? data.categories.analyticsSession : true),
-          marketingPromos: Boolean(data && data.categories ? data.categories.marketingPromos : false)
+          analyticsSession: Boolean(data && data.categories && typeof data.categories.analyticsSession !== 'undefined' ? data.categories.analyticsSession : isAll),
+          marketingPromos: Boolean(data && data.categories && typeof data.categories.marketingPromos !== 'undefined' ? data.categories.marketingPromos : isAll)
         },
         age18PlusVerified: Boolean(data && typeof data.age18PlusVerified !== 'undefined' ? data.age18PlusVerified : true),
         language: String((data && data.language) || current.language || 'en')
       };
       safeWrite(STORAGE_KEYS.DPDP_CONSENT, updated);
+      safeWrite(STORAGE_KEYS.COOKIE_CONSENT, updated);
+      try {
+        localStorage.setItem('vk_dpdp_consent', JSON.stringify(updated));
+        localStorage.setItem('vk_cookie_consent', JSON.stringify(updated));
+      } catch (_e) {}
       this.notify('dpdp_consent_updated', updated);
       return updated;
+    },
+
+    acceptAllCookies() {
+      return this.saveDpdpConsent({
+        choice: 'all',
+        categories: { orderFulfillment: true, analyticsSession: true, marketingPromos: true },
+        age18PlusVerified: true
+      });
+    },
+
+    acceptEssentialCookies() {
+      return this.saveDpdpConsent({
+        choice: 'essential',
+        categories: { orderFulfillment: true, analyticsSession: false, marketingPromos: false },
+        age18PlusVerified: true
+      });
     },
 
     getDpdpTickets() {

@@ -21,6 +21,34 @@
   <meta name="format-detection" content="telephone=no">
   <meta name="google-site-verification" content="YNQCw9oCgQojRu345QHRsTi7wfpvcZ3uTE7KZR-5X-E">
 
+  <!-- Early Cookie & Privacy Consent Resolution for GA4, Meta Pixel, and Microsoft Clarity -->
+  <script>
+    (function () {
+      try {
+        var raw = localStorage.getItem('ram_vk_dpdp_consent_v1') || localStorage.getItem('vk_cookie_consent') || localStorage.getItem('vk_dpdp_consent');
+        var parsed = raw ? JSON.parse(raw) : null;
+        var isEssential = parsed && (parsed.choice === 'essential' || (parsed.categories && parsed.categories.analyticsSession === false));
+        var isAll = parsed && (parsed.choice === 'all' || (parsed.categories && parsed.categories.analyticsSession === true && parsed.accepted === true));
+
+        if (isEssential) {
+          window['ga-disable-G-QVM9JT6BW3'] = true;
+          window['vk_analytics_disabled'] = true;
+        }
+
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        window.gtag = gtag;
+
+        gtag('consent', 'default', {
+          'analytics_storage': isAll ? 'granted' : 'denied',
+          'ad_storage': isAll ? 'granted' : 'denied',
+          'ad_user_data': isAll ? 'granted' : 'denied',
+          'ad_personalization': isAll ? 'granted' : 'denied'
+        });
+      } catch (_e) {}
+    })();
+  </script>
+
   <!-- Google tag (gtag.js) GA4 -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-QVM9JT6BW3"></script>
   <script>
@@ -45,7 +73,17 @@
     s.parentNode.insertBefore(t,s)}(window, document,'script',
     'https://connect.facebook.net/en_US/fbevents.js');
     fbq('init', '1183595563273188');
-    fbq('track', 'PageView');
+    try {
+      var rawMeta = localStorage.getItem('ram_vk_dpdp_consent_v1') || localStorage.getItem('vk_cookie_consent');
+      var metaConsent = rawMeta ? JSON.parse(rawMeta) : null;
+      if (metaConsent && (metaConsent.choice === 'essential' || (metaConsent.categories && metaConsent.categories.analyticsSession === false))) {
+        fbq('consent', 'revoke');
+      } else {
+        fbq('track', 'PageView');
+      }
+    } catch (_e) {
+      fbq('track', 'PageView');
+    }
   </script>
   <!-- End Meta Pixel Code -->
 
@@ -56,6 +94,13 @@
           t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
           y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
       })(window, document, "clarity", "script", "z6d831rvdh");
+      try {
+        var rawClarity = localStorage.getItem('ram_vk_dpdp_consent_v1') || localStorage.getItem('vk_cookie_consent');
+        var clarityConsent = rawClarity ? JSON.parse(rawClarity) : null;
+        if (clarityConsent && (clarityConsent.choice === 'essential' || (clarityConsent.categories && clarityConsent.categories.analyticsSession === false))) {
+          if (window.clarity) window.clarity('consent', false);
+        }
+      } catch (_e) {}
   </script>
 
   <!-- Guwahati, Assam Studio Geo-Targeting (GEO) -->
@@ -3537,17 +3582,21 @@
        DIGITAL PERSONAL DATA PROTECTION (DPDP) ACT 2023 COMPLIANCE SUITE
        ===================================================================== -->
 
-  <!-- 1. Single Subtle Cookie & Privacy Bar -->
-  <aside id="dpdp-consent-banner" role="region" aria-label="Cookie and Privacy Notice" class="fixed bottom-20 lg:bottom-4 inset-x-3 sm:inset-x-6 max-w-2xl mx-auto z-40 bg-white/95 backdrop-blur-md text-primary rounded-2xl border border-[#e4e0d8] shadow-lg p-3 sm:py-2.5 sm:px-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 transition-all duration-300 hidden">
-    <div class="flex items-center gap-2.5 min-w-0">
-      <span class="material-symbols-outlined text-secondary text-lg shrink-0" aria-hidden="true">cookie</span>
-      <p class="text-xs text-on-surface-variant leading-snug">
-        We use cookies and similar technologies to improve your experience. By browsing our site, you agree to our <a href="./privacy.html" class="text-primary font-semibold underline hover:text-secondary transition-colors">Privacy Policy</a>.
+  <!-- 1. Binary Choice Cookie & Privacy Bar (Accept All vs. Essential Only) -->
+  <aside id="dpdp-consent-banner" role="region" aria-label="Cookie and Privacy Choice" class="fixed bottom-20 lg:bottom-4 inset-x-3 sm:inset-x-6 max-w-2xl mx-auto z-40 bg-white/95 backdrop-blur-md text-primary rounded-2xl border border-[#e4e0d8] shadow-lg p-3.5 sm:py-3 sm:px-4.5 flex flex-col md:flex-row items-start md:items-center justify-between gap-3.5 transition-all duration-300 hidden">
+    <div class="flex items-start gap-2.5 min-w-0 flex-1">
+      <span class="material-symbols-outlined text-secondary text-xl shrink-0 mt-0.5" aria-hidden="true">cookie</span>
+      <p class="text-xs text-on-surface-variant leading-relaxed">
+        We use cookies to personalize your atelier experience and analyze traffic. You can choose to accept all or keep only essential cookies.
+        <a href="./privacy.html" class="text-primary font-semibold underline hover:text-secondary transition-colors ml-1 whitespace-nowrap">Privacy Policy</a>
       </p>
     </div>
-    <div class="flex items-center gap-2 shrink-0 self-end sm:self-center">
-      <button type="button" onclick="window.acceptDpdpBanner()" class="min-h-[36px] px-4 py-1.5 rounded-xl bg-primary hover:bg-primary-container text-white text-xs font-semibold cursor-pointer shadow-2xs active:scale-95 transition-all">
-        Got it
+    <div class="flex items-center gap-2 shrink-0 self-end md:self-center flex-wrap sm:flex-nowrap">
+      <button type="button" id="btn-cookie-essential" onclick="window.acceptEssentialCookies()" class="min-h-[36px] px-3.5 py-1.5 rounded-xl border border-primary/25 hover:border-primary text-primary hover:bg-primary/5 text-xs font-semibold cursor-pointer active:scale-95 transition-all">
+        Essential Only
+      </button>
+      <button type="button" id="btn-cookie-accept-all" onclick="window.acceptAllCookies()" class="min-h-[36px] px-4 py-1.5 rounded-xl bg-primary hover:bg-primary-container text-white text-xs font-semibold cursor-pointer shadow-2xs active:scale-95 transition-all">
+        Accept All
       </button>
     </div>
   </aside>

@@ -12,46 +12,61 @@
 Previously, first-time visitors were presented with an aggressive, legalistic DPDP Act compliance banner featuring a gavel icon, statutory references, and multiple configuration buttons. While legally sound, this disrupted user onboarding and introduced visual friction uncharacteristic of a luxury bridal preservation and curated resin art atelier.
 
 ### Core Architecture Transformation
-The privacy architecture was restructured into a **three-tier professional standard**:
-1. **Tier 1 (Storefront Entrance):** A single, subtle, floating **Cookie & Privacy Bar** that informs customers with Apple-grade restraint and a single "Got it" acknowledgement.
-2. **Tier 2 (Comprehensive Statutory Notice):** Permanent, easily accessible links in the site footer leading to `privacy.html`, which houses complete Section 5/6 disclosures under the Digital Personal Data Protection (DPDP) Act 2023, Data Fiduciary identity, and Grievance Officer contact.
+The privacy architecture was restructured into a **three-tier professional standard with binary consent choice**:
+1. **Tier 1 (Storefront Entrance):** A subtle, floating **Binary Choice Cookie & Privacy Bar** allowing patrons to select between **[Accept All]** (enabling GA4, Microsoft Clarity, and Meta Pixel) and **[Essential Only]** (disabling advertising/analytics while preserving Cart, Wishlist, and Supabase auth).
+2. **Tier 2 (Comprehensive Statutory Notice):** Permanent, easily accessible links in the site footer leading to `privacy.html`, which houses complete Section 5/6 disclosures under the Digital Personal Data Protection (DPDP) Act 2023, Data Fiduciary identity, cookie categorizations, and Grievance Officer contact.
 3. **Tier 3 (Transactional Checkout Consent):** A concise, non-distracting checkbox directly above the primary order placement action.
 
 ---
 
-## 2. COMPONENT SPECIFICATION: COOKIE & PRIVACY BAR
+## 2. COMPONENT SPECIFICATION: BINARY CHOICE COOKIE & PRIVACY BAR
 
 ### 2.1 Visual & Responsive Architecture
-- **HTML Container:** `<aside id="dpdp-consent-banner" role="region" aria-label="Cookie and Privacy Notice">`
+- **HTML Container:** `<aside id="dpdp-consent-banner" role="region" aria-label="Cookie and Privacy Choice">`
 - **Surface Styling:** Frosted alabaster glassmorphism (`bg-white/95 backdrop-blur-md`), 1px subtle sand border (`border-[#e4e0d8]`), 16px corner radius (`rounded-2xl`), and gentle elevation shadow (`shadow-lg`).
 - **Desktop Positioning:** `fixed bottom-4 inset-x-6 max-w-2xl mx-auto z-40`. Centered at viewport bottom with generous negative space.
 - **Mobile Positioning (Thumb-Zone Priority):** `fixed bottom-20 inset-x-3 z-40`. Docked cleanly above the mobile bottom tab navigation bar (`h-16`) to guarantee zero element overlap and uninterrupted navigation.
-- **Iconography:** Subtle `cookie` icon in secondary brand accent (`#c59b27`), replacing the earlier gavel symbol.
+- **Iconography:** Subtle `cookie` icon in secondary brand accent (`#c59b27`).
 
-### 2.2 Editorial Copy
-> *"We use cookies and similar technologies to improve your experience. By browsing our site, you agree to our [Privacy Policy](./privacy.html)."*
+### 2.2 Authoritative Copy
+> *"We use cookies to personalize your atelier experience and analyze traffic. You can choose to accept all or keep only essential cookies. [Privacy Policy](./privacy.html)"*
 
-### 2.3 Interactive Micro-Interaction
-- **Primary CTA Button:** `<button type="button" onclick="window.acceptDpdpBanner()">Got it</button>`
-- **Button Styling:** Solid brand navy pill (`bg-primary text-white`), min-height 36px, spring press compression (`active:scale-95`).
-- **State Persistence:**
-  - Persists consent state in `localStorage` under `vk_dpdp_consent`.
-  - Hides the banner immediately (`classList.add('hidden')`).
-  - Displays a brief, refined confirmation toast: *"Preferences Saved — Your privacy preferences have been updated."*
-  - Subsequent visits detect the saved consent and remain 100% clean without re-displaying the bar.
+### 2.3 Interactive Binary Choices
+1. **[Essential Only] (Subtle outline / ghost button):**
+   - Markup: `<button type="button" id="btn-cookie-essential" onclick="window.acceptEssentialCookies()">Essential Only</button>`
+   - Styling: `min-h-[36px] px-3.5 py-1.5 rounded-xl border border-primary/25 hover:border-primary text-primary hover:bg-primary/5 text-xs font-semibold cursor-pointer active:scale-95 transition-all`
+   - Actions:
+     - Sets `choice: 'essential'` in `localStorage`.
+     - Sets `window['ga-disable-G-QVM9JT6BW3'] = true` and updates Google Consent Mode v2 to `denied`.
+     - Calls `fbq('consent', 'revoke')` and `clarity('consent', false)`.
+     - Suppresses telemetry in `VistaraAnalytics`.
+     - Displays feedback toast: *"Essential Cookies Only — Advertising & analytics disabled. Cart, wishlist & auth remain active."*
+2. **[Accept All] (Primary navy pill):**
+   - Markup: `<button type="button" id="btn-cookie-accept-all" onclick="window.acceptAllCookies()">Accept All</button>`
+   - Styling: `min-h-[36px] px-4 py-1.5 rounded-xl bg-primary hover:bg-primary-container text-white text-xs font-semibold cursor-pointer shadow-2xs active:scale-95 transition-all`
+   - Actions:
+     - Sets `choice: 'all'` in `localStorage`.
+     - Enables GA4 (`ga-disable = false`), sets Consent Mode to `granted`.
+     - Calls `fbq('consent', 'grant')` and `clarity('consent', true)`.
+     - Enables full telemetry in `VistaraAnalytics`.
+     - Displays feedback toast: *"Preferences Saved — All cookies accepted. Full atelier experience and analytics enabled."*
 
 ```html
-<!-- Single Subtle Cookie & Privacy Bar Markup -->
-<aside id="dpdp-consent-banner" role="region" aria-label="Cookie and Privacy Notice" class="fixed bottom-20 lg:bottom-4 inset-x-3 sm:inset-x-6 max-w-2xl mx-auto z-40 bg-white/95 backdrop-blur-md text-primary rounded-2xl border border-[#e4e0d8] shadow-lg p-3 sm:py-2.5 sm:px-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 transition-all duration-300 hidden">
-  <div class="flex items-center gap-2.5 min-w-0">
-    <span class="material-symbols-outlined text-secondary text-lg shrink-0" aria-hidden="true">cookie</span>
-    <p class="text-xs text-on-surface-variant leading-snug">
-      We use cookies and similar technologies to improve your experience. By browsing our site, you agree to our <a href="./privacy.html" class="text-primary font-semibold underline hover:text-secondary transition-colors">Privacy Policy</a>.
+<!-- Binary Choice Cookie & Privacy Bar Markup -->
+<aside id="dpdp-consent-banner" role="region" aria-label="Cookie and Privacy Choice" class="fixed bottom-20 lg:bottom-4 inset-x-3 sm:inset-x-6 max-w-2xl mx-auto z-40 bg-white/95 backdrop-blur-md text-primary rounded-2xl border border-[#e4e0d8] shadow-lg p-3.5 sm:py-3 sm:px-4.5 flex flex-col md:flex-row items-start md:items-center justify-between gap-3.5 transition-all duration-300 hidden">
+  <div class="flex items-start gap-2.5 min-w-0 flex-1">
+    <span class="material-symbols-outlined text-secondary text-xl shrink-0 mt-0.5" aria-hidden="true">cookie</span>
+    <p class="text-xs text-on-surface-variant leading-relaxed">
+      We use cookies to personalize your atelier experience and analyze traffic. You can choose to accept all or keep only essential cookies.
+      <a href="./privacy.html" class="text-primary font-semibold underline hover:text-secondary transition-colors ml-1 whitespace-nowrap">Privacy Policy</a>
     </p>
   </div>
-  <div class="flex items-center gap-2 shrink-0 self-end sm:self-center">
-    <button type="button" onclick="window.acceptDpdpBanner()" class="min-h-[36px] px-4 py-1.5 rounded-xl bg-primary hover:bg-primary-container text-white text-xs font-semibold cursor-pointer shadow-2xs active:scale-95 transition-all">
-      Got it
+  <div class="flex items-center gap-2 shrink-0 self-end md:self-center flex-wrap sm:flex-nowrap">
+    <button type="button" id="btn-cookie-essential" onclick="window.acceptEssentialCookies()" class="min-h-[36px] px-3.5 py-1.5 rounded-xl border border-primary/25 hover:border-primary text-primary hover:bg-primary/5 text-xs font-semibold cursor-pointer active:scale-95 transition-all">
+      Essential Only
+    </button>
+    <button type="button" id="btn-cookie-accept-all" onclick="window.acceptAllCookies()" class="min-h-[36px] px-4 py-1.5 rounded-xl bg-primary hover:bg-primary-container text-white text-xs font-semibold cursor-pointer shadow-2xs active:scale-95 transition-all">
+      Accept All
     </button>
   </div>
 </aside>

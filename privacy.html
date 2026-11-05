@@ -182,11 +182,44 @@
         </div>
       </section>
 
-      <!-- Section 4: Data Security & Row Level Security (RLS) -->
+      <!-- Section 4: Cookie Policy & Binary Choice Telemetry Controls -->
+      <section class="space-y-4 p-5 sm:p-6 rounded-2xl bg-white border border-[#e4e0d8] shadow-xs">
+        <h2 class="font-headline text-lg sm:text-xl font-bold text-primary flex items-center gap-2">
+          <span class="material-symbols-outlined text-secondary text-xl">cookie</span>
+          <span>4. Cookie Policy &amp; Binary Choice Telemetry Controls</span>
+        </h2>
+        <div class="space-y-3 text-xs leading-relaxed text-on-surface-variant">
+          <p>
+            Vistāra Krafts provides patrons with transparent, binary control over browser cookies and analytics telemetry. You can choose either <strong>[Accept All]</strong> or <strong>[Essential Only]</strong> via our floating privacy banner or consent preferences.
+          </p>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+            <div class="p-3 rounded-xl bg-surface-container-low border border-[#e4e0d8] space-y-1.5">
+              <span class="font-bold text-primary flex items-center gap-1.5 text-xs">
+                <span class="material-symbols-outlined text-sm text-[#3b7c3f]">check_circle</span>
+                Essential Cookies &amp; Storage (Always Active)
+              </span>
+              <p class="text-[11px] text-on-surface-variant">
+                Strictly required to maintain core atelier functionality: your Shopping Bag (<code>ram_vk_cart_v2</code>), Keepsake Wishlist (<code>ram_vk_wishlist_v2</code>), Supabase secure authentication session (<code>ram_vk_cf_auth_v2</code>), and Razorpay checkout token. These items are strictly operational and cannot be switched off.
+              </p>
+            </div>
+            <div class="p-3 rounded-xl bg-surface-container-low border border-[#e4e0d8] space-y-1.5">
+              <span class="font-bold text-primary flex items-center gap-1.5 text-xs">
+                <span class="material-symbols-outlined text-sm text-secondary">tune</span>
+                Analytics &amp; Ad Trackers (Requires "Accept All")
+              </span>
+              <p class="text-[11px] text-on-surface-variant">
+                Includes Google Analytics 4 (<code>G-QVM9JT6BW3</code>), Meta Pixel (<code>1183595563273188</code>), and Microsoft Clarity (<code>z6d831rvdh</code>). When you choose <strong>[Essential Only]</strong>, these trackers are entirely disabled via Google Consent Mode v2, Meta consent revocation, and client-side suppression.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 5: Data Security & Row Level Security (RLS) -->
       <section class="space-y-3">
         <h2 class="font-headline text-lg sm:text-xl font-bold text-primary flex items-center gap-2">
           <span class="material-symbols-outlined text-secondary text-xl">shield</span>
-          <span>4. Database Security &amp; Order Isolation</span>
+          <span>5. Database Security &amp; Order Isolation</span>
         </h2>
         <p class="text-xs leading-relaxed text-on-surface-variant">
           Our PostgreSQL database implements strict <strong>Row Level Security (RLS)</strong>. Customer orders, delivery addresses, and payment logs are cryptographically bound to the authenticated patron's unique user ID (<code>auth.uid() = user_id</code>). Customer A can never view, query, modify, or infer any order or address data belonging to Customer B under any network circumstance.
