@@ -563,9 +563,15 @@
     },
 
     addComment(postId, userHandle, text) {
-      const cleanText = String(text || '').trim();
+      let cleanText = String(text || '').trim();
       if (!cleanText) return null;
-      const handle = String(userHandle || '@patron_guest').trim();
+      if (typeof window !== 'undefined' && window.ContentModeration) {
+        cleanText = window.ContentModeration.moderateContent(cleanText, { vertical: 'comment' }).cleanText;
+      } else {
+        cleanText = cleanText.replace(/<[^>]*>?/gm, '').slice(0, 250);
+      }
+      if (!cleanText) return null;
+      let handle = String(userHandle || '@patron_guest').replace(/<[^>]*>?/gm, '').slice(0, 40).trim();
       const posts = this.getSocialPosts().map(p => {
         if (p.id === postId) {
           const comments = [...(p.comments || []), {
@@ -584,17 +590,29 @@
 
     addCustomerPost({ authorName, handle, caption, tag, image, productId }) {
       const posts = this.getSocialPosts();
+      let safeCaption = String(caption || 'Preserved our special memories forever with @resin.art.memories!').trim();
+      let safeAuthor = String(authorName || 'Verified Studio Patron').trim();
+      let safeHandle = String(handle || '@resin.patron').trim();
+      
+      if (typeof window !== 'undefined' && window.ContentModeration) {
+        safeCaption = window.ContentModeration.sanitizeTextInput(safeCaption, window.ContentModeration.INPUT_LIMITS.MEMORY_CAPTION);
+        safeAuthor = window.ContentModeration.sanitizeRecipientName(safeAuthor);
+      } else {
+        safeCaption = safeCaption.replace(/<[^>]*>?/gm, '').slice(0, 500);
+        safeAuthor = safeAuthor.replace(/<[^>]*>?/gm, '').slice(0, 60);
+      }
+
       const newPost = {
         id: 'post-' + Date.now(),
-        handle: handle ? (handle.startsWith('@') ? handle : '@' + handle) : '@resin.patron',
-        authorName: authorName || 'Verified Studio Patron',
+        handle: safeHandle ? (safeHandle.startsWith('@') ? safeHandle : '@' + safeHandle) : '@resin.patron',
+        authorName: safeAuthor || 'Verified Studio Patron',
         avatar: IMAGES.avatarPatron,
         location: 'Community Showcase • India',
         timeAgo: 'Just now',
         tag: tag || 'ClientLove',
         badge: 'Community Memory',
         image: image || IMAGES.resin201,
-        caption: caption || 'Preserved our special memories forever with @resin.art.memories!',
+        caption: safeCaption,
         likes: 1,
         saved: false,
         liked: true,

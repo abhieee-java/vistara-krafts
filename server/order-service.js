@@ -84,12 +84,13 @@ export class OrderService {
       paymentMethod = 'UPI / Razorpay'
     } = payload;
 
-    // 1. Validate customer input
-    const customerName = String(name || '').trim();
-    const customerEmail = String(email || '').trim().toLowerCase();
+    // 1. Validate customer input and sanitize (OWASP XSS & buffer cap)
+    const customerName = String(name || '').replace(/<[^>]*>?/gm, '').slice(0, 60).trim();
+    const customerEmail = String(email || '').replace(/<[^>]*>?/gm, '').slice(0, 100).trim().toLowerCase();
     const customerPhone = String(phone || '').replace(/\D/g, '').slice(-10);
-    const rawAddress = String(address || '').trim();
-    const cleanPin = String(pincode || '').trim();
+    const rawAddress = String(address || '').replace(/<[^>]*>?/gm, '').slice(0, 200).trim();
+    const cleanPin = String(pincode || '').replace(/\D/g, '').slice(0, 6).trim();
+    const cleanNotes = String(notes || '').replace(/<[^>]*>?/gm, '').slice(0, 250).trim();
 
     // Strict account suspension check (Unbypassable by client DevTools)
     if (customerEmail || userId) {

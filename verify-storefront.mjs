@@ -1587,7 +1587,10 @@ if (chromeExe) {
     ws.addEventListener('message', ev => {
       const data = JSON.parse(ev.data);
       if (data.method === 'Runtime.exceptionThrown') {
-        consoleErrors.push(data.params.exceptionDetails?.text || 'Uncaught exception');
+        const details = data.params.exceptionDetails;
+        const msg = details?.exception?.description || details?.text || 'Uncaught exception';
+        console.error('[HEADLESS CHROME EXCEPTION]:', msg, details?.url, details?.lineNumber);
+        consoleErrors.push(msg);
       }
       if (data.id && pending.has(data.id)) {
         const { resolve, reject } = pending.get(data.id);
@@ -1916,6 +1919,7 @@ if (chromeExe) {
   } catch (err) {
     console.error('❌ FAIL: Real Headless Chrome E2E verification');
     console.error('   ', err.message);
+    if (typeof consoleErrors !== 'undefined') console.error('    consoleErrors:', consoleErrors);
     failed++;
   }
 }

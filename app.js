@@ -5848,7 +5848,13 @@
 
   let catalogSearchDebounceTimer = null;
   window.setCatalogSearch = function (val, immediate = false) {
-    AppState.catalogSearch = val;
+    let cleanVal = val;
+    if (typeof window !== 'undefined' && window.ContentModeration) {
+      cleanVal = window.ContentModeration.sanitizeSearchQuery(val);
+    } else if (typeof cleanVal === 'string') {
+      cleanVal = cleanVal.slice(0, 100);
+    }
+    AppState.catalogSearch = cleanVal;
     AppState.catalogVisibleCount = 8;
     clearTimeout(catalogSearchDebounceTimer);
     const updateSearch = () => {
@@ -5870,7 +5876,12 @@
 
   // Home Screen Instant Predictive Search Bar (strictly in-memory cache, ZERO DB calls)
   window.handleHomeSearchInput = function (rawVal) {
-    const q = String(rawVal || '').trim().toLowerCase();
+    let q = String(rawVal || '').trim();
+    if (typeof window !== 'undefined' && window.ContentModeration) {
+      q = window.ContentModeration.sanitizeSearchQuery(q).toLowerCase();
+    } else {
+      q = q.slice(0, 100).toLowerCase();
+    }
     const clearBtn = document.getElementById('home-search-clear-btn');
     const dropdown = document.getElementById('home-search-dropdown');
     if (clearBtn) clearBtn.classList.toggle('hidden', !q);
@@ -6179,7 +6190,11 @@
   };
 
   window.setPdpCustomNote = function (val) {
-    AppState.pdpCustomNote = val;
+    if (typeof window !== 'undefined' && window.ContentModeration) {
+      AppState.pdpCustomNote = window.ContentModeration.sanitizeTextInput(val, window.ContentModeration.INPUT_LIMITS.ENGRAVING_NOTE);
+    } else {
+      AppState.pdpCustomNote = String(val || '').slice(0, 150);
+    }
   };
 
   window.changePdpQty = function (delta) {
@@ -6366,7 +6381,17 @@
   window.handleSocialComment = function (postId, formEl) {
     const input = formEl.querySelector('input[name="commentText"]');
     if (!input || !input.value.trim()) return;
-    Store.addComment(postId, '@studio.patron', input.value.trim());
+    const rawText = input.value.trim();
+    if (typeof window !== 'undefined' && window.ContentModeration) {
+      const check = window.ContentModeration.moderateContent(rawText, { vertical: 'comment' });
+      if (!check.isSafe) {
+        window.showToast('Notice', check.reason || 'Please remove inappropriate language or links.');
+        return;
+      }
+      Store.addComment(postId, '@studio.patron', check.cleanText);
+    } else {
+      Store.addComment(postId, '@studio.patron', rawText.slice(0, 250));
+    }
     input.value = '';
     renderActiveView();
     window.showToast('Comment Posted!', 'Shared on @resin.art.memories community wall');
@@ -6702,11 +6727,21 @@
 
   window.submitShareMemoryForm = function (ev) {
     ev.preventDefault();
-    const authorName = document.getElementById('mem-author-name')?.value.trim();
-    const handle = document.getElementById('mem-author-handle')?.value.trim();
+    let authorName = (document.getElementById('mem-author-name')?.value || '').trim();
+    let handle = (document.getElementById('mem-author-handle')?.value || '').trim();
     const tag = document.getElementById('mem-tag')?.value || 'ClientLove';
-    const caption = document.getElementById('mem-caption')?.value.trim();
+    let caption = (document.getElementById('mem-caption')?.value || '').trim();
     const productId = document.getElementById('mem-product')?.value || 'vk-cat-res-301';
+
+    if (typeof window !== 'undefined' && window.ContentModeration) {
+      const captionCheck = window.ContentModeration.moderateContent(caption, { vertical: 'memory_caption' });
+      if (!captionCheck.isSafe) {
+        window.showToast('Notice', captionCheck.reason || 'Please remove prohibited language or external links.');
+        return;
+      }
+      caption = captionCheck.cleanText;
+      authorName = window.ContentModeration.sanitizeRecipientName(authorName);
+    }
 
     Store.addCustomerPost({
       authorName,
@@ -8457,12 +8492,17 @@
 
     const auth = (typeof Store.getAuthSession === 'function' && Store.getAuthSession()) || {};
     const profile = Store.getPatronProfile();
-    const name = document.getElementById('chk-name')?.value.trim() || auth.name || profile.name || '';
-    const phone = document.getElementById('chk-phone')?.value.trim() || auth.phone || profile.phone || '';
-    const address = document.getElementById('chk-address')?.value.trim() || auth.address || profile.defaultAddress || '';
-    const pincode = document.getElementById('chk-pincode')?.value.trim() || auth.pincode || profile.pincode || '';
+    let name = document.getElementById('chk-name')?.value.trim() || auth.name || profile.name || '';
+    let phone = document.getElementById('chk-phone')?.value.trim() || auth.phone || profile.phone || '';
+    let address = document.getElementById('chk-address')?.value.trim() || auth.address || profile.defaultAddress || '';
+    let pincode = document.getElementById('chk-pincode')?.value.trim() || auth.pincode || profile.pincode || '';
     const paymentMethod = document.getElementById('chk-payment')?.value || 'UPI Instant (GPay / PhonePe)';
     const giftWrap = Boolean(document.getElementById('chk-gift-wrap')?.checked);
+
+    if (typeof window !== 'undefined' && window.ContentModeration) {
+      name = window.ContentModeration.sanitizeRecipientName(name);
+      address = window.ContentModeration.sanitizeDeliveryAddress(address);
+    }
 
     // Validate inputs with accessible inline errors
     let hasError = false;

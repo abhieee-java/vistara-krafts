@@ -41,7 +41,7 @@ test('1. Supabase RPC toggle_customer_block_status toggles profile & directory s
   const isBlocked1 = await checkRes1.json();
   assert.equal(isBlocked1, true, 'is_customer_blocked must return true for suspended account');
 
-  // Unblock and verify status returns to false
+  // Verify unauthenticated anon callers CANNOT toggle customer block status (OWASP Access Control Defense)
   const unblockRes = await fetch(`${CONFIG.SUPABASE_URL}/rest/v1/rpc/toggle_customer_block_status`, {
     method: 'POST',
     headers: {
@@ -51,30 +51,7 @@ test('1. Supabase RPC toggle_customer_block_status toggles profile & directory s
     },
     body: JSON.stringify({ p_user_id: userId, p_blocked: false })
   });
-  assert.equal(unblockRes.status, 200);
-
-  const checkRes2 = await fetch(`${CONFIG.SUPABASE_URL}/rest/v1/rpc/is_customer_blocked`, {
-    method: 'POST',
-    headers: {
-      'apikey': CONFIG.SUPABASE_ANON_KEY,
-      'Authorization': `Bearer ${CONFIG.SUPABASE_ANON_KEY}`,
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({ p_email: testEmail })
-  });
-  const isBlocked2 = await checkRes2.json();
-  assert.equal(isBlocked2, false, 'is_customer_blocked must return false after unblocking');
-
-  // Re-block and verify status returns to true
-  await fetch(`${CONFIG.SUPABASE_URL}/rest/v1/rpc/toggle_customer_block_status`, {
-    method: 'POST',
-    headers: {
-      'apikey': CONFIG.SUPABASE_ANON_KEY,
-      'Authorization': `Bearer ${CONFIG.SUPABASE_ANON_KEY}`,
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({ p_user_id: userId, p_blocked: true })
-  });
+  assert.equal(unblockRes.status === 401 || unblockRes.status === 403, true, 'Anonymous callers must be rejected from modifying customer suspension status');
 
   const checkRes3 = await fetch(`${CONFIG.SUPABASE_URL}/rest/v1/rpc/is_customer_blocked`, {
     method: 'POST',
