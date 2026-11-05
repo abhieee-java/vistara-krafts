@@ -1437,19 +1437,22 @@
               <span class="material-symbols-outlined text-lg sm:text-xl text-primary/60 absolute left-3.5 pointer-events-none transition-transform duration-200" aria-hidden="true">search</span>
               <input
                 id="home-product-search-input"
-                type="text"
+                type="search"
                 inputmode="search"
                 autocomplete="off"
                 placeholder="Search bridal keepsakes, 3:1 &amp; 2:1 epoxy kits, silicone molds, mica pigments..."
-                class="w-full h-11 sm:h-12 pl-10 sm:pl-11 pr-24 rounded-2xl bg-white border border-[#e4e0d8] shadow-2xs text-xs sm:text-sm text-primary placeholder:text-on-surface-variant/70 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all font-medium [appearance:textfield] [&::-webkit-search-cancel-button]:hidden [&::-webkit-search-decoration]:hidden"
-                style="-webkit-appearance: textfield;"
+                class="w-full h-11 sm:h-12 pl-10 sm:pl-11 pr-24 rounded-2xl bg-white border border-[#e4e0d8] shadow-2xs text-xs sm:text-sm text-primary placeholder:text-on-surface-variant/70 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all font-medium"
+                style="-webkit-appearance: none; appearance: none;"
                 oninput="window.handleHomeSearchInput(this.value)"
                 onkeydown="window.handleHomeSearchKeyDown(event)"
                 onfocus="window.handleHomeSearchFocus()"
               />
               <div class="absolute right-2 flex items-center gap-1">
-                <button id="home-search-clear-btn" type="button" aria-label="Clear search" onclick="window.clearHomeSearch()" class="hidden w-7 h-7 rounded-lg text-on-surface-variant hover:text-primary hover:bg-surface-container flex items-center justify-center transition-colors">
-                  <span class="material-symbols-outlined text-base" aria-hidden="true">close</span>
+                <button id="home-search-clear-btn" type="button" aria-label="Clear search" onclick="window.clearHomeSearch()" class="hidden w-7 h-7 rounded-lg text-primary/70 hover:text-primary hover:bg-surface-container flex items-center justify-center transition-colors">
+                  <svg class="w-3.5 h-3.5 pointer-events-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                  </svg>
                 </button>
                 <button type="button" onclick="window.submitHomeSearch()" class="px-4 py-1.5 rounded-xl bg-primary hover:bg-primary-container active:scale-95 text-white text-xs font-bold transition-all shadow-2xs cursor-pointer">
                   Search

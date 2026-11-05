@@ -92,23 +92,43 @@ body.modal-open {
   display: none !important;
 }
 
-/* Suppress native browser search cancel buttons across all engines to prevent double icon bug */
+/* Universal suppression of all native browser search cancel / clear buttons across all engines to prevent double icon bug */
+input::-webkit-search-cancel-button,
+input::-webkit-search-decoration,
+input::-webkit-search-results-button,
+input::-webkit-search-results-decoration,
+input::-webkit-clear-button,
+input[type="text"]::-webkit-clear-button,
+input[type="text"]::-webkit-search-cancel-button,
+input[type="text"]::-webkit-search-decoration,
+input[type="search"]::-webkit-clear-button,
 input[type="search"]::-webkit-search-cancel-button,
 input[type="search"]::-webkit-search-decoration,
 input[type="search"]::-webkit-search-results-button,
-input[type="search"]::-webkit-search-results-decoration {
+input[type="search"]::-webkit-search-results-decoration,
+input::-ms-clear,
+input::-ms-reveal,
+#home-product-search-input::-webkit-search-cancel-button,
+#home-product-search-input::-webkit-search-decoration,
+#home-product-search-input::-webkit-clear-button {
   -webkit-appearance: none !important;
   appearance: none !important;
   display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
   width: 0 !important;
   height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  pointer-events: none !important;
 }
 
-input[type="search"]::-ms-clear,
-input[type="search"]::-ms-reveal {
+#home-search-clear-btn.hidden {
   display: none !important;
-  width: 0 !important;
-  height: 0 !important;
+}
+
+#home-search-clear-btn:not(.hidden) {
+  display: flex !important;
 }
 
 /* Accessible 2px Focus Ring with Offset (Brand Antique Brass) */
@@ -505,14 +525,7 @@ body.has-mini-cart-toast #global-toast {
   animation: fadeInSlide 0.24s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-/* Suppress native search clear buttons across mobile browsers to prevent double-cross visual artifacts */
-input[type="search"]::-webkit-search-cancel-button,
-input[type="search"]::-webkit-search-decoration,
-input[type="search"]::-webkit-search-results-button,
-input[type="search"]::-webkit-search-results-decoration {
-  -webkit-appearance: none !important;
-  display: none !important;
-}
+/* Native search cancel buttons suppressed globally at lines 95-126 */
 
 /* Apple-Grade Tactile Bottom Navigation Micro-Interactions */
 .bottom-tab-item {

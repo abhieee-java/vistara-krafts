@@ -2051,22 +2051,22 @@
         // 1. Authenticated customer: authoritatively fetch real orders from Supabase
         if (auth && (isUuid || userEmail)) {
           // Primary: Dedicated SECURITY DEFINER RPC
-          try {
-            const { data: rpcOrders, error: rpcErr } = await client.rpc('get_my_orders');
-            if (!rpcErr && Array.isArray(rpcOrders)) {
-              orderRows = rpcOrders;
-            }
-          } catch (_rpcErr) {}
+          if (typeof client.rpc === 'function') {
+            try {
+              const { data: rpcOrders, error: rpcErr } = await client.rpc('get_my_orders');
+              if (!rpcErr && Array.isArray(rpcOrders)) {
+                orderRows = rpcOrders;
+              }
+            } catch (_rpcErr) {}
+          }
 
           // Fallback: Table query under RLS
           if (!orderRows) {
             let query = client.from('orders').select('*').order('created_at', { ascending: false });
-            if (isUuid && userEmail) {
-              query = query.or(`user_id.eq.${userId.trim()},customer_email.ilike.${userEmail}`);
-            } else if (isUuid) {
+            if (isUuid) {
               query = query.eq('user_id', userId.trim());
             } else if (userEmail) {
-              query = query.ilike('customer_email', userEmail);
+              query = typeof query.ilike === 'function' ? query.ilike('customer_email', userEmail) : query.eq('customer_email', userEmail);
             }
             const { data, error } = await query;
             if (!error && Array.isArray(data)) {
