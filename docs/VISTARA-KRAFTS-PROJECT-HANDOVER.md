@@ -384,6 +384,26 @@ Both applications are deployed with immutable production deployment artifacts. I
 3. Locate the previous stable production deployment.
 4. Click **Instant Rollback**. Traffic is rerouted in under 5 seconds with zero server downtime.
 
+### 11.4 E-Commerce Ad Tracking & Conversion Pixels
+- **Google Analytics 4 (GA4):** Measurement Tag `G-QVM9JT6BW3`.
+- **Meta Pixel (Facebook/Instagram Ads):** Pixel ID `1183595563273188`.
+- **Ad Tracking Engine (`analytics.js`):** Unified, defensive e-commerce tracking module exposing `window.VistaraAnalytics`:
+  - `page_view` / `PageView`: Virtual route transitions on SPA hash changes.
+  - `view_item` / `ViewContent`: Product detail views with variant-level pricing in INR.
+  - `add_to_cart` / `AddToCart`: Items added to bag with quantity and selected variety.
+  - `begin_checkout` & `initiate_checkout` / `InitiateCheckout`: Delivery address modal trigger.
+  - `purchase` / `Purchase`: Verified payment capture with transaction ID, tax, shipping, and exact-once deduplication.
+  - `search` / `Search`: Catalogue and home search query telemetry.
+- **Defensive Safeguards:** CSP whitelisted in `vercel.json`; ad-blocker suppression never interrupts user checkout.
+
+### 11.5 Streamlined Cookie & Privacy Architecture
+- **Single Subtle Cookie & Privacy Bar:** Replaced clunky legalistic DPDP banners with a professional, floating frosted-glass bar (`bg-white/95 backdrop-blur-md border-[#e4e0d8]`) docked at `bottom-20 lg:bottom-4`.
+  - *Copy:* "We use cookies and similar technologies to improve your experience. By browsing our site, you agree to our Privacy Policy."
+  - *Action:* Single "Got it" button with persistent localStorage state.
+- **Authoritative Statutory Privacy Policy (`privacy.html`):** Permanent footer link covering full DPDP Act 2023 Section 5/6 disclosures, Data Fiduciary identity, DPO and Grievance Officer details (`grievance@vistarakrafts.com`), data retention, and 7-day resolution SLAs.
+- **Streamlined Checkout Consent:** Clean, distraction-free consent line positioned directly above the primary order placement action: *"I consent to processing contact & address for BlueDart delivery & GST invoicing."*
+- Detailed technical specification maintained in `docs/COOKIE-PRIVACY-BAR-SPEC.md`.
+
 ---
 
 ## 12. SIGN-OFF & PROJECT HANDOVER ACCEPTANCE
@@ -397,6 +417,8 @@ The Vistāra Krafts digital commerce platform is verified, secured, and ready fo
 | **Supabase PostgreSQL & RLS** | **APPROVED** | Abhijit | November 2026 |
 | **Razorpay Payment Integration** | **APPROVED** | Abhijit | November 2026 |
 | **Resend Email Delivery Engine** | **APPROVED** | Abhijit | November 2026 |
+| **GA4 & Meta Pixel Ad Tracking** | **APPROVED** | Abhijit | November 2026 |
+| **Streamlined Cookie & Privacy Bar**| **APPROVED** | Abhijit | November 2026 |
 | **End-to-End Automated Verification** | **PASSED (27/27)** | Abhijit | November 2026 |
 
 *Official project handover concluded. The system is in active production service.*
