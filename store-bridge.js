@@ -1966,6 +1966,10 @@
           }
         }
 
+        if (typeof global !== 'undefined' && global.VistaraAnalytics && typeof global.VistaraAnalytics.trackPurchase === 'function') {
+          global.VistaraAnalytics.trackPurchase(synchronousResult.order);
+        }
+
         return { success: true, order: synchronousResult.order, verifiedByServer: true };
       }
 

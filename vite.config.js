@@ -11,6 +11,7 @@ const STATIC_ASSETS = [
   'supabase-client.js',
   'cloudinary-config.js',
   'content-moderation.js',
+  'analytics.js',
   'store-bridge.js',
   'app.js',
   'styles.css',

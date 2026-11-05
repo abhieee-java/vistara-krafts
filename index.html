@@ -21,6 +21,34 @@
   <meta name="format-detection" content="telephone=no">
   <meta name="google-site-verification" content="YNQCw9oCgQojRu345QHRsTi7wfpvcZ3uTE7KZR-5X-E">
 
+  <!-- Google tag (gtag.js) GA4 -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-QVM9JT6BW3"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-QVM9JT6BW3', {
+      send_page_view: true
+    });
+  </script>
+
+  <!-- Meta Pixel Code (Facebook & Instagram Ads) -->
+  <meta name="meta-pixel-id" content="1183595563273188">
+  <script>
+    !function(f,b,e,v,n,t,s)
+    {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+    n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+    if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+    n.queue=[];t=b.createElement(e);t.async=!0;
+    t.src=v;s=b.getElementsByTagName(e)[0];
+    s.parentNode.insertBefore(t,s)}(window, document,'script',
+    'https://connect.facebook.net/en_US/fbevents.js');
+    fbq('init', '1183595563273188');
+    fbq('track', 'PageView');
+  </script>
+  <!-- End Meta Pixel Code -->
+
   <!-- Microsoft Clarity Analytics -->
   <script type="text/javascript">
       (function(c,l,a,r,i,t,y){
@@ -2616,6 +2644,8 @@
   </script>
 </head>
 <body class="bg-surface text-on-surface flex flex-col min-h-screen">
+  <!-- Meta Pixel noscript fallback -->
+  <noscript><img height="1" width="1" style="display:none" alt="Meta Pixel" src="https://www.facebook.com/tr?id=1183595563273188&amp;ev=PageView&amp;noscript=1" /></noscript>
   <a href="#app-view-root" class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-primary focus:text-white focus:rounded-md focus:shadow-lg">Skip to main content</a>
 
   <!-- Vistāra Krafts (VK) Animated Vector Splash Screen -->
@@ -4505,6 +4535,7 @@
   <script src="./supabase-config.js" defer></script>
   <script src="./cloudinary-config.js" defer></script>
   <script src="./content-moderation.js" defer></script>
+  <script src="./analytics.js?v=20261106_01" defer></script>
   <script src="./store-bridge.js?v=20261031_03" defer></script>
   <script src="./app.js?v=20261031_03" defer></script>
 </body>
