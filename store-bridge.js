@@ -1093,12 +1093,10 @@
         return { ok: false, valid: false, error: msg, message: msg };
       }
 
-      // Zero-leakage: Invalidate order cache when switching accounts
-      const currentAuth = this.getAuthSession();
-      if (currentAuth && currentAuth.email && currentAuth.email.toLowerCase() !== email.toLowerCase()) {
-        safeWrite(STORAGE_KEYS.ORDERS, []);
-        this.notify('orders_updated', []);
-      }
+      // Zero-leakage: Always reset local order cache upon logging into an account,
+      // ensuring all orders are freshly and authoritatively fetched from Supabase.
+      safeWrite(STORAGE_KEYS.ORDERS, []);
+      this.notify('orders_updated', []);
 
       const registeredUsers = safeRead(STORAGE_KEYS.REGISTERED_USERS, {}) || {};
       const existingUser = registeredUsers[email] || null;
@@ -1429,20 +1427,7 @@
     },
 
     getOrders() {
-      const list = safeRead(STORAGE_KEYS.ORDERS, DEFAULT_ORDERS);
-      const auth = this.getAuthSession();
-      if (!auth) return list;
-      return list.map(o => {
-        if (o.customerName === 'Vistāra Studio Sample Order') {
-          return {
-            ...o,
-            customerName: auth.name || o.customerName,
-            phone: auth.phone || o.phone,
-            address: auth.address || o.address
-          };
-        }
-        return o;
-      });
+      return safeRead(STORAGE_KEYS.ORDERS, DEFAULT_ORDERS);
     },
 
     findOrder(query) {
@@ -2057,47 +2042,70 @@
 
       const auth = this.getAuthSession();
       const userId = (auth && (auth.userId || auth.id)) || null;
+      const userEmail = (auth && auth.email) ? String(auth.email).trim().toLowerCase() : null;
       const isUuid = typeof userId === 'string' && /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(userId.trim());
-      const localIds = currentOrders.map(o => o.orderId || o.orderNumber || o.id).filter(Boolean);
 
       try {
-        let query = client.from('orders').select('*').order('created_at', { ascending: false });
+        let orderRows = null;
 
-        if (isUuid) {
-          // Authenticated customer: strictly query by authenticated user's ID
-          query = query.eq('user_id', userId.trim());
-        } else if (localIds.length > 0) {
-          // Guest / local test checkout: only query explicitly placed local order IDs
-          query = query.in('order_number', localIds);
-        } else {
-          // Zero leakage: Guests without authenticated session or placed orders never load arbitrary customer orders
-          isSyncingOrders = false;
+        // 1. Authenticated customer: authoritatively fetch real orders from Supabase
+        if (auth && (isUuid || userEmail)) {
+          // Primary: Dedicated SECURITY DEFINER RPC
+          try {
+            const { data: rpcOrders, error: rpcErr } = await client.rpc('get_my_orders');
+            if (!rpcErr && Array.isArray(rpcOrders)) {
+              orderRows = rpcOrders;
+            }
+          } catch (_rpcErr) {}
+
+          // Fallback: Table query under RLS
+          if (!orderRows) {
+            let query = client.from('orders').select('*').order('created_at', { ascending: false });
+            if (isUuid && userEmail) {
+              query = query.or(`user_id.eq.${userId.trim()},customer_email.ilike.${userEmail}`);
+            } else if (isUuid) {
+              query = query.eq('user_id', userId.trim());
+            } else if (userEmail) {
+              query = query.ilike('customer_email', userEmail);
+            }
+            const { data, error } = await query;
+            if (!error && Array.isArray(data)) {
+              orderRows = data;
+            }
+          }
+
+          if (Array.isArray(orderRows)) {
+            const mapped = orderRows.map(r => this.normalizeStorefrontOrder(r)).filter(Boolean);
+            safeWrite(STORAGE_KEYS.ORDERS, mapped);
+            this.notify('orders_updated', mapped);
+            return mapped;
+          }
           return currentOrders;
         }
 
-        const { data, error } = await query;
-        if (error || !Array.isArray(data)) return currentOrders;
+        // 2. Guest visitor: check only explicitly placed local order IDs in current session
+        const localIds = currentOrders.map(o => o.orderId || o.orderNumber || o.id).filter(Boolean);
+        if (localIds.length > 0) {
+          const { data, error } = await client
+            .from('orders')
+            .select('*')
+            .in('order_number', localIds)
+            .order('created_at', { ascending: false });
 
-        const mapped = data.map(r => this.normalizeStorefrontOrder(r)).filter(Boolean);
-        const mergedMap = new Map();
-        mapped.forEach(o => mergedMap.set(o.orderId, o));
-        currentOrders.forEach(o => {
-          if (!mergedMap.has(o.orderId)) {
-            mergedMap.set(o.orderId, o);
+          if (!error && Array.isArray(data)) {
+            const mapped = data.map(r => this.normalizeStorefrontOrder(r)).filter(Boolean);
+            safeWrite(STORAGE_KEYS.ORDERS, mapped);
+            this.notify('orders_updated', mapped);
+            return mapped;
           }
-        });
-
-        const mergedList = Array.from(mergedMap.values());
-        const hasChanged = currentOrders.length !== mergedList.length || mergedList.some((mo, idx) => {
-          const co = currentOrders[idx];
-          return !co || co.orderId !== mo.orderId || co.orderStatus !== mo.orderStatus || co.status !== mo.status || co.trackingNumber !== mo.trackingNumber || co.total !== mo.total;
-        });
-
-        if (hasChanged) {
-          safeWrite(STORAGE_KEYS.ORDERS, mergedList);
-          this.notify('orders_updated', mergedList);
+        } else {
+          // Zero leakage: Guests without placed orders have strictly zero orders
+          safeWrite(STORAGE_KEYS.ORDERS, []);
+          this.notify('orders_updated', []);
+          return [];
         }
-        return mergedList;
+
+        return currentOrders;
       } catch (e) {
         return currentOrders;
       } finally {

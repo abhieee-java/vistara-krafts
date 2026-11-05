@@ -3588,7 +3588,10 @@
               <span class="material-symbols-outlined text-base" aria-hidden="true">arrow_back</span>
               <span class="tracking-tight">Back to Shopping</span>
             </button>
-            <span class="font-spec-numeral text-[11px] sm:text-xs px-2.5 py-1 rounded-full bg-surface-container-high text-primary font-semibold whitespace-nowrap border border-[#e4e0d8] shrink-0">Batch #VK-4409</span>
+            <span class="text-[11px] sm:text-xs px-2.5 py-1 rounded-full bg-surface-container-high text-primary font-semibold whitespace-nowrap border border-[#e4e0d8] shrink-0 flex items-center gap-1">
+              <span class="material-symbols-outlined text-xs text-[#266b4e]" aria-hidden="true">verified_user</span>
+              100% Secure Checkout
+            </span>
           </div>
           <div class="flex items-baseline justify-between gap-2">
             <h1 class="font-headline-md text-2xl sm:text-3xl text-primary font-bold tracking-tight">
