@@ -8957,7 +8957,7 @@
     });
     const banner = document.getElementById('dpdp-consent-banner');
     if (banner) banner.classList.add('hidden');
-    window.showToast('DPDP Consent Saved', 'Your privacy choices have been updated.');
+    window.showToast('Preferences Saved', 'Your privacy preferences have been updated.');
   };
 
   window.saveDpdpPreferencesForm = function (ev) {

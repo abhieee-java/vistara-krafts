@@ -3537,29 +3537,20 @@
        DIGITAL PERSONAL DATA PROTECTION (DPDP) ACT 2023 COMPLIANCE SUITE
        ===================================================================== -->
 
-  <!-- 1. Floating DPDP Consent Banner (Shown on first visit) -->
-  <div id="dpdp-consent-banner" role="region" aria-label="Data Protection & Privacy Notice" class="fixed bottom-3 sm:bottom-4 inset-x-3 sm:inset-x-4 max-w-xl mx-auto z-40 bg-[#031a38]/95 backdrop-blur-md text-white rounded-xl border border-[#725a19]/50 shadow-xl p-2.5 sm:p-3 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2.5 transition-all duration-300 hidden">
-    <div class="flex items-center gap-2 min-w-0">
-      <div class="w-7 h-7 rounded-lg bg-[#725a19]/30 border border-[#725a19]/50 flex items-center justify-center shrink-0 text-[#f3e5ab]">
-        <span class="material-symbols-outlined text-base" aria-hidden="true">gavel</span>
-      </div>
-      <div class="min-w-0 text-[11px] leading-tight">
-        <span class="font-bold text-[#f3e5ab]">DPDP Act 2023:</span>
-        <span class="text-white/90">Recipient details &amp; floral media collected strictly for order delivery. No pre-checked trackers.</span>
-      </div>
+  <!-- 1. Single Subtle Cookie & Privacy Bar -->
+  <aside id="dpdp-consent-banner" role="region" aria-label="Cookie and Privacy Notice" class="fixed bottom-20 lg:bottom-4 inset-x-3 sm:inset-x-6 max-w-2xl mx-auto z-40 bg-white/95 backdrop-blur-md text-primary rounded-2xl border border-[#e4e0d8] shadow-lg p-3 sm:py-2.5 sm:px-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 transition-all duration-300 hidden">
+    <div class="flex items-center gap-2.5 min-w-0">
+      <span class="material-symbols-outlined text-secondary text-lg shrink-0" aria-hidden="true">cookie</span>
+      <p class="text-xs text-on-surface-variant leading-snug">
+        We use cookies and similar technologies to improve your experience. By browsing our site, you agree to our <a href="./privacy.html" class="text-primary font-semibold underline hover:text-secondary transition-colors">Privacy Policy</a>.
+      </p>
     </div>
-    <div class="flex items-center gap-1.5 shrink-0 w-full sm:w-auto justify-end">
-      <button type="button" onclick="window.openDpdpModal('notice')" class="px-2 py-1 min-h-[32px] rounded-lg bg-white/10 hover:bg-white/20 text-white text-[10px] font-semibold cursor-pointer border border-white/20 transition">
-        Notice
-      </button>
-      <button type="button" onclick="window.openDpdpModal('preferences')" class="px-2 py-1 min-h-[32px] rounded-lg bg-white/10 hover:bg-white/20 text-white text-[10px] font-semibold cursor-pointer border border-white/20 transition">
-        Preferences
-      </button>
-      <button type="button" onclick="window.acceptDpdpBanner()" class="px-3 py-1 min-h-[32px] rounded-lg bg-[#9e3322] hover:bg-[#852a1b] text-white text-[11px] font-bold shadow-xs cursor-pointer transition">
-        Accept
+    <div class="flex items-center gap-2 shrink-0 self-end sm:self-center">
+      <button type="button" onclick="window.acceptDpdpBanner()" class="min-h-[36px] px-4 py-1.5 rounded-xl bg-primary hover:bg-primary-container text-white text-xs font-semibold cursor-pointer shadow-2xs active:scale-95 transition-all">
+        Got it
       </button>
     </div>
-  </div>
+  </aside>
 
   <!-- 2. DPDP Comprehensive Itemized Notice & Policy Modal -->
   <div id="dpdp-notice-modal" role="dialog" aria-modal="true" aria-labelledby="dpdp-notice-title" class="fixed inset-0 z-50 bg-primary/65 backdrop-blur-xs hidden flex items-center justify-center p-3 sm:p-4" onclick="window.closeModalById('dpdp-notice-modal')">
@@ -3981,9 +3972,9 @@
         </label>
       </div>
       <div class="shrink-0 py-1.5 px-2.5 rounded-lg bg-surface-container-low border border-[#e4e0d8] flex items-center gap-2">
-        <input id="chk-dpdp-consent" type="checkbox" checked required class="w-3.5 h-3.5 accent-primary cursor-pointer shrink-0" aria-label="Consent to processing shipping details under DPDP Act 2023">
+        <input id="chk-dpdp-consent" type="checkbox" checked required class="w-3.5 h-3.5 accent-primary cursor-pointer shrink-0" aria-label="Consent to processing contact and address for delivery">
         <label for="chk-dpdp-consent" class="text-[9.5px] text-on-surface-variant font-medium leading-tight cursor-pointer">
-          I consent to processing contact &amp; address for BlueDart air delivery &amp; GST invoicing under <strong>DPDP Act, 2023</strong>.
+          I consent to processing contact &amp; address for BlueDart delivery &amp; GST invoicing.
         </label>
       </div>
       <div class="pt-0.5 flex flex-col gap-1.5 shrink-0">
