@@ -641,7 +641,7 @@
             isOutOfStock: true,
             stockQuantity: 0,
             stockStatus: 'discontinued',
-            stockWarning: 'Item no longer active in atelier catalog.'
+            stockWarning: 'This item is no longer available in the catalog.'
           };
         }
 

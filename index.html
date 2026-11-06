@@ -2849,7 +2849,7 @@
         </span>
         <div class="min-w-0">
           <p id="offline-banner-title" class="text-xs font-bold text-white flex items-center gap-1.5 flex-wrap">
-            <span>Studio Atelier Offline Mode</span>
+            <span>Offline Mode — Your cart and orders are safely stored locally</span>
             <span class="text-[10px] px-2 py-0.5 rounded-full bg-[#d4af37]/25 text-[#ffdeae] font-normal uppercase tracking-wider">Local Cache Active</span>
           </p>
           <p id="offline-banner-desc" class="text-[11px] text-[#e4e0d8] truncate">Internet connection interrupted. Your Studio Bag and form inputs are safely preserved.</p>
@@ -3035,9 +3035,9 @@
         </div>
 
         <div class="flex flex-col gap-2.5 text-xs">
-          <h2 class="font-headline-sm text-sm font-bold text-primary uppercase tracking-wider">Join the Atelier Circle</h2>
+          <h2 class="font-headline-sm text-sm font-bold text-primary uppercase tracking-wider">Get Studio Updates</h2>
           <p class="text-on-surface-variant">Get ₹150 off with code <strong>KRAFTFIRST</strong> and early access to bridal preservation slots.</p>
-          <form method="POST" class="flex flex-col min-[380px]:flex-row gap-1.5 w-full" onsubmit="event.preventDefault(); window.showToast('Subscribed to Atelier Notes!', 'Welcome code KRAFTFIRST unlocked');">
+          <form method="POST" class="flex flex-col min-[380px]:flex-row gap-1.5 w-full" onsubmit="event.preventDefault(); window.showToast('Subscribed!', 'Use coupon code KRAFTFIRST for 10% off your order');">
             <label for="footer-newsletter-email" class="sr-only">Email address for Atelier Circle newsletter</label>
             <input id="footer-newsletter-email" type="email" required autocomplete="email" placeholder="Your email address" aria-label="Email address for Atelier Circle newsletter" class="min-w-0 flex-1 h-12 px-3 rounded-xl bg-white border border-[#e4e0d8] text-xs">
             <button type="submit" class="px-4 h-12 min-w-[60px] rounded-xl bg-primary text-white text-xs font-semibold cursor-pointer shrink-0">Join</button>
@@ -4123,28 +4123,11 @@
             </button>
           </div>
 
-          <!-- Mobile-Only Hero Liquid Resin Specimen Sphere (Centered on Mobile) -->
-          <div class="md:hidden flex flex-col items-center justify-center pt-1 pb-1 shrink-0">
-            <div class="vk-orb-container w-20 h-20">
-              <div class="vk-orb-glow"></div>
-              <!-- Outer tilted ring -->
-              <div class="vk-orbital-ring-outer w-20 h-20">
-                <span class="vk-orbital-dot"></span>
-              </div>
-              <!-- Inner reverse ring -->
-              <div class="vk-orbital-ring-inner w-16 h-16"></div>
-              <!-- Glowing Resin Sphere -->
-              <div class="vk-orb-sphere w-14 h-14">
-                <div class="vk-orb-glare"></div>
-              </div>
-            </div>
-          </div>
-
           <!-- Screen Titles -->
-          <div class="text-center md:text-left shrink-0">
+          <div class="text-center md:text-left shrink-0 mt-1">
             <h3 id="cloudflare-auth-modal-title" class="font-headline-sm text-xl sm:text-2xl font-bold text-primary tracking-tight">Welcome Back!</h3>
             <p id="cloudflare-auth-modal-subtitle" class="text-xs text-on-surface-variant mt-0.5 leading-relaxed">
-              Sign in to access your bespoke keepsakes and curated feed.
+              Sign in to view your orders, saved items, and personalized picks.
             </p>
           </div>
 
@@ -4368,7 +4351,7 @@
                 <span class="w-11 h-11 rounded-xl bg-surface-container-low text-xl flex items-center justify-center shrink-0 border border-[#e4e0d8]">👔</span>
                 <div class="min-w-0">
                   <strong class="text-xs font-bold text-primary block">👔 Male</strong>
-                  <span class="text-[11px] text-on-surface-variant block truncate">Curated for Him • Executive keepsakes &amp; geometric blocks</span>
+                  <span class="text-[11px] text-on-surface-variant block truncate">For Men • Custom resin clocks, desk decor &amp; geometric art</span>
                 </div>
               </div>
               <span class="material-symbols-outlined text-secondary text-base shrink-0 group-hover:translate-x-0.5 transition-transform" aria-hidden="true">arrow_forward</span>
@@ -4379,7 +4362,7 @@
                 <span class="w-11 h-11 rounded-xl bg-surface-container-low text-xl flex items-center justify-center shrink-0 border border-[#e4e0d8]">🌸</span>
                 <div class="min-w-0">
                   <strong class="text-xs font-bold text-primary block">🌸 Female</strong>
-                  <span class="text-[11px] text-on-surface-variant block truncate">Curated for Her • Bridal varmala preservation &amp; florals</span>
+                  <span class="text-[11px] text-on-surface-variant block truncate">For Women • Wedding flower preservation, jewelry &amp; floral art</span>
                 </div>
               </div>
               <span class="material-symbols-outlined text-secondary text-base shrink-0 group-hover:translate-x-0.5 transition-transform" aria-hidden="true">arrow_forward</span>
@@ -4394,7 +4377,7 @@
             <button type="button" id="cf-persona-skip-btn" onclick="window.skipPersonaAndFinish()" style="min-height: 44px; height: 44px;" class="w-full min-h-[44px] h-11 rounded-xl bg-surface-container-low hover:bg-surface-container border border-[#e4e0d8] text-xs font-bold text-primary transition cursor-pointer flex items-center justify-center">
               Skip for Now &amp; Continue
             </button>
-            <p class="text-[10px] text-on-surface-variant">You can adjust your curation anytime from the catalogue feed bar.</p>
+            <p class="text-[10px] text-on-surface-variant">You can change your preferences anytime in the catalog.</p>
           </div>
         </div>
 
@@ -4415,24 +4398,24 @@
           </div>
         </div>
 
-        <!-- Central Floating Resin Specimen Sphere (Desktop 140px) -->
-        <div class="relative z-10 my-auto py-6 flex flex-col items-center text-center">
-          <div class="vk-orb-container w-36 h-36 mb-5">
+        <!-- Central Floating Resin Specimen Sphere (Desktop Compact) -->
+        <div class="relative z-10 my-auto py-4 flex flex-col items-center text-center">
+          <div class="vk-orb-container w-24 h-24 mb-3">
             <div class="vk-orb-glow"></div>
             <!-- Outer tilted ring -->
-            <div class="vk-orbital-ring-outer w-36 h-36">
+            <div class="vk-orbital-ring-outer w-24 h-24">
               <span class="vk-orbital-dot"></span>
             </div>
             <!-- Inner reverse ring -->
-            <div class="vk-orbital-ring-inner w-28 h-28"></div>
+            <div class="vk-orbital-ring-inner w-20 h-20"></div>
             <!-- Glowing Resin Sphere -->
-            <div class="vk-orb-sphere w-24 h-24">
+            <div class="vk-orb-sphere w-16 h-16">
               <div class="vk-orb-glare"></div>
             </div>
           </div>
-          <h4 class="font-headline-sm text-lg font-bold text-white tracking-wide">Preserved Memories in Glass</h4>
+          <h4 class="font-headline-sm text-base font-bold text-white tracking-wide">Handcrafted Resin Art</h4>
           <p class="text-xs text-white/75 leading-relaxed mt-1 max-w-[240px]">
-            Handcrafted luxury resin art, custom botanical keepsakes &amp; bespoke decor.
+            Preserve your wedding flowers and memories in crystal-clear resin art.
           </p>
         </div>
 
@@ -4448,7 +4431,7 @@
           </div>
           <div class="flex items-center gap-2">
             <span class="material-symbols-outlined text-[#ffd79b] text-base shrink-0" aria-hidden="true">local_shipping</span>
-            <span class="truncate">Track Bespoke Pours Across India</span>
+            <span class="truncate">Track Custom Orders Across India</span>
           </div>
         </div>
       </div>
@@ -4464,7 +4447,7 @@
           <div class="flex items-center gap-2.5 min-w-0">
             <img src="./vistara-krafts-logo.jpg" alt="Vistāra Krafts Logo" width="36" height="36" loading="lazy" decoding="async" class="w-9 h-9 rounded-lg object-cover border border-[#725a19]/25 shrink-0">
             <div class="min-w-0">
-              <span class="text-[10px] uppercase tracking-wider text-secondary font-bold block">Patron Profile &amp; Address</span>
+              <span class="text-[10px] uppercase tracking-wider text-secondary font-bold block">Your Profile &amp; Address</span>
               <h3 id="account-bar-modal-title" class="font-headline-sm text-base text-primary font-bold truncate">Manage Profile &amp; Address</h3>
             </div>
           </div>
@@ -4534,14 +4517,14 @@
           <span class="material-symbols-outlined text-3xl" aria-hidden="true">gavel</span>
         </div>
         <span class="inline-block px-3 py-1 rounded-full bg-red-500/15 border border-red-500/30 text-red-400 text-[11px] font-bold uppercase tracking-widest mb-2">
-          Atelier Restriction
+          Account Suspended
         </span>
         <h2 id="vk-suspended-title" class="font-headline text-xl sm:text-2xl font-bold tracking-tight text-white mb-3">
           Account Access Suspended
         </h2>
         <div class="text-xs sm:text-sm text-white/85 leading-relaxed space-y-3 mb-6">
           <p>
-            Your Vistāra Krafts atelier account associated with <strong id="vk-suspended-email-display" class="text-amber-300 font-mono underline">your registered email</strong> has been suspended by administration.
+            Your Vistāra Krafts account associated with <strong id="vk-suspended-email-display" class="text-amber-300 font-mono underline">your registered email</strong> has been temporarily suspended by our team.
           </p>
           <div class="p-3.5 rounded-2xl bg-red-950/30 border border-red-500/20 text-red-200/90 text-xs text-left space-y-1">
             <span class="font-bold flex items-center gap-1 text-red-300">

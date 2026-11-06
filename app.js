@@ -1524,7 +1524,7 @@
                   <img src="${esc(Store.IMAGES.ultraclearThumb2)}" alt="Optical Clarity Test Disc" class="w-12 h-12 rounded-lg object-cover shrink-0 border border-[#e4e0d8]">
                   <div class="min-w-0 flex-1">
                     <h3 class="font-bold text-xs text-primary truncate">Optical-Grade Epoxy Resin</h3>
-                    <p class="text-[11px] text-on-surface-variant leading-tight mt-0.5 break-words">Bubble-free, non-yellowing HALS UV400 formulation tested to ASTM D1003</p>
+                    <p class="text-[11px] text-on-surface-variant leading-tight mt-0.5 break-words">Bubble-free, crystal-clear resin with UV protection to prevent yellowing over time</p>
                   </div>
                 </div>
               </div>
@@ -1542,7 +1542,7 @@
                     <span class="font-spec-numeral text-xs bg-black/60 px-2.5 py-0.5 rounded-full shrink-0">★ 4.9 (86 reviews)</span>
                   </div>
                   <h2 class="font-headline-sm text-lg sm:text-2xl font-bold break-words">2:1 High-Gloss Epoxy Resin &amp; Hardener Set</h2>
-                  <p class="text-xs text-white/90 mt-1 break-words">Optical clarity gloss casting system with HALS UV400 non-yellowing protection</p>
+                  <p class="text-xs text-white/90 mt-1 break-words">Crystal-clear glossy resin with built-in UV protection that stays clear for years</p>
                   <div class="mt-3 pt-3 border-t border-white/15 flex flex-wrap items-center justify-between gap-2">
                     <div class="flex items-baseline gap-1.5">
                       <span class="font-spec-numeral text-lg sm:text-xl font-bold text-[#ffd79b]">₹599</span>
@@ -1759,7 +1759,7 @@
           <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-3">
             <div>
               <h2 class="font-headline-sm text-2xl sm:text-3xl text-primary font-bold tracking-tight">Precision Silicone Molds &amp; Studio Essentials</h2>
-              <p class="text-xs sm:text-sm text-on-surface-variant mt-1">Mirror-finish platinum silicone molds, holographic powders, and atelier tools.</p>
+              <p class="text-xs sm:text-sm text-on-surface-variant mt-1">Mirror-finish silicone molds, shimmering powders, and artist craft tools.</p>
             </div>
             <button type="button" onclick="window.navigateTo('catalog', 'all')" class="min-h-[44px] px-3 font-label-sm text-xs text-secondary font-semibold inline-flex items-center gap-0.5 hover:underline cursor-pointer shrink-0">
               <span>View Full Catalogue (${Store.getProducts().length})</span>
@@ -1806,7 +1806,7 @@
           <!-- Full Catalog Discovery Callout Banner -->
           <div class="p-5 sm:p-6 rounded-2xl bg-[#faf8f5] border border-[#e4e0d8] flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-2xs mt-2">
             <div class="space-y-1">
-              <h3 class="font-headline-sm text-lg sm:text-xl font-bold text-primary">Discover the Complete 19-Piece Atelier Collection</h3>
+              <h3 class="font-headline-sm text-lg sm:text-xl font-bold text-primary">Discover Our Full 19-Piece Studio Collection</h3>
               <p class="text-xs text-on-surface-variant max-w-xl leading-relaxed">
                 Explore our full professional range: 3:1 Deep Pour epoxy, 2:1 high-gloss resin, UV cure resin, precision agate &amp; floral molds, leafing foils, and magic silica drying crystals.
               </p>
@@ -1909,7 +1909,7 @@
           <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div>
               <h2 class="font-headline-sm text-2xl sm:text-3xl text-primary font-bold tracking-tight">Shop Directly from Our Studio Reels &amp; Stories</h2>
-              <p class="text-xs sm:text-sm text-on-surface-variant mt-1">Real wedding keepsakes poured, demolded, and polished in our Guwahati atelier (@resin.art.memories).</p>
+              <p class="text-xs sm:text-sm text-on-surface-variant mt-1">Real wedding keepsakes poured, cured, and polished by hand in our Guwahati studio (@resin.art.memories).</p>
             </div>
             <button type="button" onclick="window.navigateTo('social')" class="self-start sm:self-auto min-h-[44px] px-5 py-2.5 rounded-xl bg-[#9e3322] text-white font-label-md text-xs font-bold flex items-center gap-1.5 shadow-2xs hover:opacity-95 cursor-pointer">
               <span>Explore Full Social Feed</span>
@@ -3219,7 +3219,7 @@
 
         <!-- Studio Header -->
         <div class="flex flex-col gap-1">
-          <span class="font-label-sm text-xs uppercase tracking-widest text-[#9e3322] font-bold">Bespoke Atelier &amp; Formulation Lab</span>
+          <span class="font-label-sm text-xs uppercase tracking-widest text-[#9e3322] font-bold">Custom Studio &amp; Resin Lab</span>
           <h1 class="font-headline-lg text-2xl sm:text-4xl text-primary font-bold">Custom Memory Preservation &amp; Pour Calculator</h1>
           <p class="text-xs sm:text-sm text-on-surface-variant">Design your one-of-a-kind wedding/anniversary floral block OR calculate exact resin ratios for your own DIY moulds.</p>
         </div>
@@ -3346,7 +3346,7 @@
           <!-- Live Custom Preview & Instant Add to Bag Card (5 cols) -->
           <div class="lg:col-span-5 ram-card p-5 !bg-primary bg-gradient-to-b from-primary to-[#101d33] text-white flex flex-col gap-4 sticky top-24 min-w-0">
             <div class="flex items-center justify-between">
-              <span class="text-[11px] uppercase tracking-widest text-[#ffd79b] font-bold">Live Bespoke Preview</span>
+              <span class="text-[11px] uppercase tracking-widest text-[#ffd79b] font-bold">Live Order Preview</span>
               <span class="px-2 py-0.5 rounded bg-white/10 font-spec-numeral text-[11px]">14-Day Cryo-Cure</span>
             </div>
             <div class="relative aspect-[4/3] rounded-xl overflow-hidden border border-white/15">
@@ -3642,7 +3642,7 @@
             </button>
           </div>
 
-          <!-- Curated Trending Atelier Picks (Eliminates Blank Area Wastage & Boosts Discovery) -->
+          <!-- Curated Popular Studio Favorites (Eliminates Blank Area Wastage & Boosts Discovery) -->
           <div class="flex flex-col gap-3 pt-2">
             <div class="flex items-center justify-between">
               <div class="flex items-center gap-2">
@@ -3723,7 +3723,7 @@
                             ${item.size ? `<span class="px-2 py-0.5 rounded-md bg-secondary-container/50 text-secondary font-bold border border-[#e4e0d8]">Size: ${esc(item.size)}</span>` : ''}
                           </div>
                         ` : ''}
-                        ${item.customNote ? `<p class="text-[10.5px] text-[#9e3322] font-medium mt-0.5 break-anywhere"><span class="font-semibold">Bespoke Note:</span> “${esc(item.customNote)}”</p>` : ''}
+                        ${item.customNote ? `<p class="text-[10.5px] text-[#9e3322] font-medium mt-0.5 break-anywhere"><span class="font-semibold">Custom Note:</span> “${esc(item.customNote)}”</p>` : ''}
                         ${item.isOutOfStock ? `
                           <div class="mt-1.5 p-2 rounded-lg bg-[#ffe4de] text-[#9e3322] border border-[#f5c2b7] text-xs font-semibold flex items-center justify-between gap-2">
                             <div class="flex items-center gap-1.5 min-w-0">
@@ -3947,7 +3947,7 @@
             <div class="w-16 h-16 rounded-2xl bg-surface-container flex items-center justify-center text-secondary mb-1 border border-[#e4e0d8]/80 shadow-2xs">
               <span class="material-symbols-outlined text-3xl" aria-hidden="true">package_2</span>
             </div>
-            <h2 class="text-lg sm:text-xl font-bold text-primary">${allOrders.length === 0 ? 'Your Atelier Orders &amp; Floral Keepsakes' : 'No Matching Orders Found'}</h2>
+            <h2 class="text-lg sm:text-xl font-bold text-primary">${allOrders.length === 0 ? 'Your Orders &amp; Keepsakes' : 'No Matching Orders Found'}</h2>
             <p class="text-xs sm:text-sm text-on-surface-variant max-w-md leading-relaxed">${allOrders.length === 0 ? 'When you place an order, live crafting stages, silica dehydration updates, and BlueDart air express tracking appear right here.' : 'No orders matched your search query. Try clearing your search.'}</p>
             ${allOrders.length === 0 ? `
               <div class="flex flex-col items-center gap-3 w-full max-w-sm mt-1">
@@ -4864,10 +4864,10 @@
 
         <div class="space-y-3 max-w-xl">
           <h1 class="font-headline-lg font-serif text-3xl sm:text-5xl text-primary font-bold tracking-tight">
-            Temporary Atelier System Calibration
+            Temporary Connection Issue
           </h1>
           <p class="text-xs sm:text-sm text-on-surface-variant leading-relaxed">
-            Our optical curing servers or cloud edge are taking a momentary breath. <strong>Your Studio Bag, items, and inputs remain safe.</strong> No orders or patron transactions were compromised.
+            We're having trouble connecting to the server. <strong>Your cart and items are completely safe.</strong> Please check your connection or refresh the page.
           </p>
         </div>
 
@@ -4890,7 +4890,7 @@
           <span class="material-symbols-outlined text-[#d4af37] text-base mt-0.5" aria-hidden="true">verified_user</span>
           <div class="text-[11px] text-on-surface-variant">
             <p class="font-bold text-primary flex items-center gap-1.5">
-              <span>Patron Data & Studio Bag Protected</span>
+              <span>Your Cart & Data Are Safe</span>
               <span class="inline-block w-1.5 h-1.5 rounded-full bg-[#266b4e]"></span>
             </p>
             <p class="text-on-surface-variant/80 mt-0.5">All customer inputs and items are cached safely in your browser. Cloud edge auto-healing is in progress.</p>
@@ -5536,7 +5536,7 @@
     updateGlobalBadges();
     renderActiveView();
     const label = valid === 'masculine' ? 'Curated for Him 👔' : 'Curated for Her 🌸';
-    window.showToast(label, 'Your bespoke catalogue feed is now personalized.');
+    window.showToast(label, 'Your catalog feed is now personalized.');
     if (AppState.pendingCheckoutAfterAuth) {
       AppState.pendingCheckoutAfterAuth = false;
       window.openCheckoutModal();
@@ -5723,7 +5723,7 @@
     if (!prod) return;
     Store.addToCart(prod.id, null, 1);
     updateGlobalBadges();
-    window.showToast(`Added ${prod.shortName || prod.name} to Bag`, 'Handcrafted atelier addition');
+    window.showToast(`Added ${prod.shortName || prod.name} to Bag`, 'Added to your shopping bag');
     renderActiveView();
   };
 
@@ -6545,7 +6545,7 @@
     updateGlobalBadges();
     renderActiveView();
     const prod = Store.getProductById(productId);
-    window.showToast('Saved for Later', prod ? (prod.shortName || prod.name) : 'Moved item to your Atelier Wishlist', {
+    window.showToast('Saved for Later', prod ? (prod.shortName || prod.name) : 'Moved item to your Wishlist', {
       type: 'success',
       icon: 'bookmark',
       action: {
@@ -6796,7 +6796,7 @@
     AppState.editingAccountProfile = false;
     updateGlobalBadges();
     renderActiveView();
-    window.showToast('Patron Profile Saved!', `${name} • Dispatch address updated`);
+    window.showToast('Profile Saved!', `${name} • Delivery address updated`);
   };
 
   // Top-Bar Account & Saved Shipping Popup Drawer Controllers
@@ -7092,7 +7092,7 @@
 
     if (cleanMode === 'signin') {
       if (titleEl) titleEl.textContent = 'Welcome Back!';
-      if (subtitleEl) subtitleEl.textContent = 'Sign in to access your bespoke keepsakes and curated feed.';
+      if (subtitleEl) subtitleEl.textContent = 'Sign in to view your orders, saved items, and personalized picks.';
       if (submitBtn) submitBtn.textContent = 'Sign In';
       if (rememberRow) rememberRow.classList.remove('hidden');
       if (footerText) footerText.textContent = "Don't have an account?";
@@ -7672,7 +7672,7 @@
       try { Store.syncOrdersFromSupabase(); } catch (_e) {}
     }
 
-    window.showToast('Email Verified! ✨', `Welcome, ${res.session.name || 'Patron'}`);
+    window.showToast('Email Verified! ✨', `Welcome, ${res.session.name || 'Friend'}`);
 
     const shouldOpenCheckout = AppState.pendingCheckoutAfterAuth;
     if (shouldOpenCheckout) {
@@ -7769,7 +7769,7 @@
             <span class="material-symbols-outlined text-3xl" aria-hidden="true">gavel</span>
           </div>
           <span class="inline-block px-3 py-1 rounded-full bg-red-500/15 border border-red-500/30 text-red-400 text-[11px] font-bold uppercase tracking-widest mb-2">
-            Atelier Restriction
+            Account Suspended
           </span>
           <h2 id="vk-suspended-title" class="font-headline text-xl sm:text-2xl font-bold tracking-tight text-white mb-3">
             Account Access Suspended
@@ -7972,7 +7972,7 @@
     }
 
     if (mode === 'register' && !name) {
-      window.showAuthError('Please enter your full name so our atelier artisans know who we are crafting for.');
+      window.showAuthError('Please enter your full name.');
       const el = document.getElementById('cf-auth-name');
       if (typeof el?.focus === 'function') el.focus();
       return;
@@ -7981,7 +7981,7 @@
     if (!password || password.length < 6) {
       window.showAuthError(
         mode === 'register'
-          ? 'To keep your bespoke orders and account secure, your password must be at least 6 characters.'
+          ? 'To keep your account secure, your password must be at least 6 characters.'
           : 'Please enter your password (minimum 6 characters).'
       );
       const el = document.getElementById('cf-auth-password');
@@ -8760,7 +8760,7 @@
     if (isConnected) {
       hideOfflineBanner();
       wasNetworkOffline = false;
-      window.showToast('Connection Restored', 'Atelier online. Synchronizing studio queue with Supabase.');
+      window.showToast('Connection Restored', 'Back online. Syncing your cart with the server.');
       if (Store && typeof Store.syncPendingEdgeState === 'function') {
         Store.syncPendingEdgeState();
       }
@@ -8786,7 +8786,7 @@
       hideOfflineBanner();
       if (wasNetworkOffline) {
         wasNetworkOffline = false;
-        window.showToast('Back Online', 'Studio Atelier reconnected. Bag and studio state synchronized.', {
+        window.showToast('Back Online', 'Reconnected. Your cart and orders are up to date.', {
           type: 'online',
           icon: 'wifi',
           duration: 3000
@@ -8870,7 +8870,7 @@
       }
     });
     renderActiveView();
-    window.showToast('New Atelier Edition Live!', 'Rose-Gold Lotus Clock added to catalogue & community feed');
+    window.showToast('New Edition Live!', 'Rose-Gold Lotus Clock added to catalog');
   };
 
   window.simulateExternalAdminPush = window.simulateExternalStudioPush;
