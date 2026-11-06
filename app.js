@@ -3706,7 +3706,7 @@
     const isFreeUnlocked = summary.subtotal >= summary.freeShippingThreshold && summary.subtotal > 0;
 
     return `
-      <div class="route-view-enter flex flex-col w-full max-w-7xl mx-auto px-3.5 sm:px-8 py-3.5 sm:py-5 pb-28 gap-4">
+      <div class="route-view-enter cart-scroll-content flex flex-col w-full max-w-7xl mx-auto px-3.5 sm:px-8 py-3.5 sm:py-5 gap-4">
         <!-- Studio Bag Header Navigation & Title (Unconstrained, Zero Truncation) -->
         <div class="flex flex-col gap-2.5 w-full border-b border-[#e4e0d8] pb-3">
           <div class="flex items-center justify-between gap-3 w-full">
@@ -4044,11 +4044,12 @@
                       Remove Out-of-Stock Items
                     </button>
                   </div>
-                  <button type="button" disabled class="w-full h-11 mt-1 rounded-xl bg-primary/40 text-on-primary/60 font-title-md text-sm font-bold flex items-center justify-center gap-2 cursor-not-allowed">
+                  <button type="button" disabled class="desktop-cart-checkout-btn w-full h-11 mt-1 rounded-xl bg-primary/40 text-on-primary/60 font-title-md text-sm font-bold items-center justify-center gap-2 cursor-not-allowed">
                     <span>Remove Out-of-Stock Items to Checkout</span>
                   </button>
                 ` : `
-                  <button type="button" onclick="window.openCheckoutModal()" class="btn-shimmer w-full h-11 sm:h-12 mt-1 rounded-xl bg-primary hover:bg-primary-container text-on-primary font-title-md text-xs sm:text-sm font-bold flex items-center justify-center gap-2 shadow-md cursor-pointer active:scale-[0.99] transition-transform">
+                  <!-- Desktop In-Card Checkout Button (Hidden on Mobile to eliminate duplicate CTA, preserved on Desktop) -->
+                  <button type="button" onclick="window.openCheckoutModal()" class="desktop-cart-checkout-btn btn-shimmer w-full h-11 sm:h-12 mt-1 rounded-xl bg-primary hover:bg-primary-container text-on-primary font-title-md text-xs sm:text-sm font-bold items-center justify-center gap-2 shadow-md cursor-pointer active:scale-[0.99] transition-transform">
                     <span>Proceed to Secure Checkout • ${formatINR(summary.payable)}</span>
                     <span class="material-symbols-outlined text-base sm:text-lg" aria-hidden="true">arrow_forward</span>
                   </button>
@@ -4063,23 +4064,24 @@
           </div>
 
           <!-- Mobile Sticky Checkout Bar (Apple-Grade Thumb-Zone Priority Bar) -->
-          <aside class="lg:hidden fixed bottom-16 inset-x-0 z-40 bg-white/92 backdrop-blur-xl border-t border-[#e4e0d8] px-4 py-2.5 shadow-[0_-4px_24px_rgba(0,0,0,0.08)]">
+          <aside class="mobile-sticky-checkout-bar lg:hidden px-4 py-3">
             <div class="flex items-center justify-between gap-3 max-w-lg mx-auto">
-              <div class="flex flex-col min-w-0">
-                <span class="text-[10px] text-on-surface-variant uppercase tracking-wider font-semibold">Total Payable</span>
+              <div class="flex flex-col min-w-0 pr-1">
+                <span class="text-[10px] text-on-surface-variant uppercase tracking-wider font-bold">Total Payable</span>
                 <div class="flex items-baseline gap-1.5">
-                  <span class="font-spec-numeral text-base sm:text-lg font-bold text-primary">${formatINR(summary.payable)}</span>
-                  ${summary.isFreeShipping ? `<span class="text-[10px] text-[#266b4e] font-semibold">Free Air Express</span>` : ''}
+                  <span class="font-spec-numeral text-lg sm:text-xl font-extrabold text-primary tracking-tight">${formatINR(summary.payable)}</span>
                 </div>
+                <span class="text-[10px] text-on-surface-variant truncate">${summary.isFreeShipping ? '<span class="text-[#266b4e] font-semibold">Free Express Shipping</span>' : 'Tax Inclusive (18% GST)'}</span>
               </div>
               ${summary.hasOutOfStock ? `
-                <button type="button" onclick="window.handleRemoveAllOutOfStock()" class="h-11 px-4 rounded-xl bg-[#9e3322] text-white text-xs font-bold active:scale-[0.97] transition-all cursor-pointer">
+                <button type="button" onclick="window.handleRemoveAllOutOfStock()" class="h-12 px-5 rounded-xl bg-[#9e3322] hover:bg-[#85281a] text-white text-xs font-bold shadow-sm active:scale-[0.96] transition-all cursor-pointer shrink-0">
                   Remove Out of Stock
                 </button>
               ` : `
-                <button type="button" onclick="window.openCheckoutModal()" class="btn-shimmer flex-1 max-w-[210px] h-11 px-4 rounded-xl bg-primary hover:bg-primary-container text-white font-title-md text-xs sm:text-sm font-bold flex items-center justify-center gap-1.5 shadow-md active:scale-[0.97] transition-all cursor-pointer">
-                  <span>Checkout</span>
-                  <span class="material-symbols-outlined text-base" aria-hidden="true">arrow_forward</span>
+                <button type="button" onclick="window.openCheckoutModal()" class="btn-shimmer flex-1 min-w-[130px] max-w-[215px] h-12 px-3 sm:px-5 rounded-xl bg-primary hover:bg-[#06244c] text-white font-title-md text-xs sm:text-sm font-bold flex items-center justify-center gap-1.5 sm:gap-2 shadow-[0_4px_16px_rgba(3,26,56,0.22)] active:scale-[0.96] transition-all cursor-pointer group shrink-0">
+                  <span class="tracking-tight hidden xs:inline">Proceed to Checkout</span>
+                  <span class="tracking-tight xs:hidden">Checkout</span>
+                  <span class="material-symbols-outlined text-base transition-transform duration-200 group-hover:translate-x-1" aria-hidden="true">arrow_forward</span>
                 </button>
               `}
             </div>

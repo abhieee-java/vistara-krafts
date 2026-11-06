@@ -1476,3 +1476,65 @@ body.has-mini-cart-toast #global-toast {
     padding-right: 0;
   }
 }
+
+/* ==========================================================================
+   Mobile Sticky Checkout Bar & Cart Spacing Architecture
+   ========================================================================== */
+.mobile-sticky-checkout-bar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: calc(4rem + env(safe-area-inset-bottom, 0px));
+  z-index: 40;
+  background-color: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-top: 1px solid var(--structure-30-border, #e4e0d8);
+  box-shadow: 0 -4px 20px rgba(3, 26, 56, 0.08);
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@media (min-width: 640px) {
+  .mobile-sticky-checkout-bar {
+    bottom: calc(4.5rem + env(safe-area-inset-bottom, 0px));
+  }
+}
+
+@media (min-width: 1024px) {
+  .mobile-sticky-checkout-bar {
+    display: none !important;
+  }
+}
+
+/* Desktop In-Card Checkout Action (Hidden on mobile to eliminate duplicate CTA, preserved on desktop) */
+.desktop-cart-checkout-btn {
+  display: none !important;
+}
+
+@media (min-width: 1024px) {
+  .desktop-cart-checkout-btn {
+    display: flex !important;
+  }
+}
+
+/* Scrollable Cart Content Bottom Spacing & Containing-Block Release (Prevents Sticky Bar Overlap & Viewport Decoupling) */
+@keyframes fadeInOnly {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.cart-scroll-content {
+  animation: fadeInOnly 0.24s ease-out forwards !important;
+  transform: none !important;
+  padding-bottom: calc(13rem + env(safe-area-inset-bottom, 0px)) !important;
+}
+
+@media (min-width: 1024px) {
+  .cart-scroll-content {
+    padding-bottom: 4rem !important;
+  }
+}
