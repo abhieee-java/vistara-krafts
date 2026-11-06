@@ -2383,14 +2383,68 @@
         <!-- 5. Product Grid or Empty State -->
         ${filtered.length === 0 ? `
           <div class="ram-card p-10 text-center flex flex-col items-center gap-3.5 my-4 bg-white">
-            <div class="relative w-24 h-24 flex items-center justify-center lottie-anim-float">
-              <div class="absolute inset-0 rounded-full bg-[#d4af37]/15 lottie-anim-pulse blur-md pointer-events-none"></div>
-              <svg class="w-full h-full drop-shadow-sm" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="No formulations found">
-                <circle cx="45" cy="45" r="28" stroke="#0f172a" stroke-width="2.5" fill="#fcf9f5" />
-                <circle cx="45" cy="45" r="22" stroke="#d4af37" stroke-width="1.2" stroke-dasharray="4 4" class="lottie-anim-spin" />
-                <path d="M66 66 L86 86" stroke="#9e3322" stroke-width="4" stroke-linecap="round" />
-                <polygon points="45,34 47,40 53,42 47,44 45,50 43,44 45,50 43,44 37,42 43,40" fill="#d4af37" />
-                <circle cx="28" cy="74" r="2.5" fill="#d4af37" opacity="0.6" />
+            <div class="relative w-28 h-28 sm:w-32 sm:h-32 flex items-center justify-center lottie-anim-float">
+              <svg class="w-full h-full drop-shadow-sm" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Elegant magnifying prism with soft light refraction">
+                <defs>
+                  <filter id="search-prism-shadow" x="-20%" y="-20%" width="140%" height="140%">
+                    <feDropShadow dx="0" dy="6" stdDeviation="6" flood-color="#0f172a" flood-opacity="0.12" />
+                  </filter>
+                  <linearGradient id="search-gold-metal" x1="0" y1="0" x2="1" y2="1">
+                    <stop offset="0%" stop-color="#fff1c7" />
+                    <stop offset="35%" stop-color="#c59b27" />
+                    <stop offset="70%" stop-color="#fdf2cb" />
+                    <stop offset="100%" stop-color="#734e0f" />
+                  </linearGradient>
+                  <linearGradient id="search-gold-stem" x1="0" y1="0" x2="1" y2="0">
+                    <stop offset="0%" stop-color="#8a611c" />
+                    <stop offset="45%" stop-color="#fff1c7" />
+                    <stop offset="70%" stop-color="#c59b27" />
+                    <stop offset="100%" stop-color="#69480e" />
+                  </linearGradient>
+                  <linearGradient id="search-glass-front" x1="28" y1="20" x2="88" y2="76" gradientUnits="userSpaceOnUse">
+                    <stop offset="0%" stop-color="#ffffff" stop-opacity="0.85" />
+                    <stop offset="30%" stop-color="#f8fafc" stop-opacity="0.40" />
+                    <stop offset="70%" stop-color="#e2e8f0" stop-opacity="0.55" />
+                    <stop offset="100%" stop-color="#ffffff" stop-opacity="0.80" />
+                  </linearGradient>
+                  <linearGradient id="search-glass-top" x1="32" y1="18" x2="94" y2="30" gradientUnits="userSpaceOnUse">
+                    <stop offset="0%" stop-color="#ffffff" stop-opacity="0.9" />
+                    <stop offset="100%" stop-color="#e2e8f0" stop-opacity="0.35" />
+                  </linearGradient>
+                  <linearGradient id="search-glass-right" x1="60" y1="30" x2="96" y2="76" gradientUnits="userSpaceOnUse">
+                    <stop offset="0%" stop-color="#ffffff" stop-opacity="0.5" />
+                    <stop offset="50%" stop-color="#cbd5e1" stop-opacity="0.25" />
+                    <stop offset="100%" stop-color="#94a3b8" stop-opacity="0.45" />
+                  </linearGradient>
+                  <linearGradient id="search-refract-beam" x1="68" y1="48" x2="118" y2="76" gradientUnits="userSpaceOnUse">
+                    <stop offset="0%" stop-color="#ffffff" stop-opacity="0.7" />
+                    <stop offset="25%" stop-color="#fef08a" stop-opacity="0.28" />
+                    <stop offset="55%" stop-color="#7dd3fc" stop-opacity="0.25" />
+                    <stop offset="85%" stop-color="#f472b6" stop-opacity="0.18" />
+                    <stop offset="100%" stop-color="#faf8f5" stop-opacity="0" />
+                  </linearGradient>
+                </defs>
+                <ellipse cx="58" cy="103" rx="42" ry="9" fill="#0f172a" fill-opacity="0.08" filter="blur(5px)" />
+                <ellipse cx="56" cy="101" rx="32" ry="6" fill="#0f172a" fill-opacity="0.10" filter="blur(2px)" />
+                <polygon points="68,48 116,68 110,84 62,60" fill="url(#search-refract-beam)" />
+                <g filter="url(#search-prism-shadow)">
+                  <path d="M36 97 L44 94 L72 94 L80 97 L78 101 L38 101 Z" fill="url(#search-gold-metal)" stroke="#734e0f" stroke-width="0.5" />
+                  <line x1="42" y1="94.5" x2="74" y2="94.5" stroke="#ffffff" stroke-width="0.9" stroke-opacity="0.85" />
+                  <rect x="55" y="74" width="6" height="20" rx="1.5" fill="url(#search-gold-stem)" />
+                  <path d="M51 74 L65 74 L63 77 L53 77 Z" fill="url(#search-gold-metal)" stroke="#734e0f" stroke-width="0.4" />
+                  <path d="M44 68 L58 74 L72 68 L70 66 L58 71 L46 66 Z" fill="url(#search-gold-metal)" stroke="#734e0f" stroke-width="0.4" />
+                  <polygon points="36,25 80,25 58,66" fill="#dbeafe" fill-opacity="0.3" />
+                  <polygon points="32,20 84,20 80,25 36,25" fill="url(#search-glass-top)" />
+                  <polygon points="32,20 36,25 58,68 54,63" fill="url(#search-glass-front)" stroke="#ffffff" stroke-width="0.7" stroke-opacity="0.65" />
+                  <polygon points="84,20 80,25 58,68 62,63" fill="url(#search-glass-right)" />
+                  <line x1="48" y1="28" x2="60" y2="58" stroke="#93c5fd" stroke-width="1.4" stroke-opacity="0.55" stroke-linecap="round" />
+                  <line x1="53" y1="30" x2="65" y2="56" stroke="#fef08a" stroke-width="1.2" stroke-opacity="0.45" stroke-linecap="round" />
+                  <line x1="32" y1="20" x2="54" y2="63" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round" stroke-opacity="0.95" />
+                  <line x1="32" y1="20" x2="84" y2="20" stroke="#ffffff" stroke-width="1.4" stroke-linecap="round" stroke-opacity="0.9" />
+                  <line x1="84" y1="20" x2="62" y2="63" stroke="#ffffff" stroke-width="0.9" stroke-linecap="round" stroke-opacity="0.55" />
+                  <circle cx="58" cy="67" r="1.8" fill="#ffffff" />
+                  <polygon points="32,18 33,20 35,20 33,21 32,23 31,21 29,20 31,20" fill="#ffffff" />
+                </g>
               </svg>
             </div>
             <h2 class="font-headline-sm text-xl text-primary font-bold">
@@ -3541,13 +3595,74 @@
 
         ${products.length === 0 ? `
           <div class="ram-card p-10 text-center flex flex-col items-center gap-3.5 bg-white">
-            <div class="relative w-24 h-24 flex items-center justify-center lottie-anim-heart">
-              <div class="absolute inset-0 rounded-full bg-[#ffe4de] lottie-anim-pulse blur-md pointer-events-none"></div>
-              <svg class="w-full h-full drop-shadow-sm" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Saved list empty">
-                <circle cx="50" cy="50" r="44" stroke="#d4af37" stroke-width="1.2" stroke-dasharray="4 6" class="lottie-anim-spin" opacity="0.6" />
-                <path d="M50 78 C50 78 22 58 22 38 C22 26 32 18 42 22 C46 24 49 28 50 32 C51 28 54 24 58 22 C68 18 78 26 78 38 C78 58 50 78 50 78 Z" fill="#ffe4de" stroke="#9e3322" stroke-width="2" />
-                <path d="M44 48 C48 42 54 44 56 40" stroke="#266b4e" stroke-width="1.5" stroke-linecap="round" fill="none" />
-                <circle cx="70" cy="24" r="2.5" fill="#d4af37" />
+            <div class="relative w-28 h-28 sm:w-32 sm:h-32 flex items-center justify-center lottie-anim-heart">
+              <svg class="w-full h-full drop-shadow-sm" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Preserved botanical encapsulated in crystal optical resin">
+                <defs>
+                  <filter id="wish-botanical-shadow" x="-20%" y="-20%" width="140%" height="140%">
+                    <feDropShadow dx="0" dy="6" stdDeviation="6" flood-color="#0f172a" flood-opacity="0.12" />
+                  </filter>
+                  <linearGradient id="wish-resin-body" x1="26" y1="16" x2="94" y2="102" gradientUnits="userSpaceOnUse">
+                    <stop offset="0%" stop-color="#ffffff" stop-opacity="0.82" />
+                    <stop offset="35%" stop-color="#fdfbf8" stop-opacity="0.32" />
+                    <stop offset="70%" stop-color="#eee8dc" stop-opacity="0.52" />
+                    <stop offset="100%" stop-color="#ffffff" stop-opacity="0.78" />
+                  </linearGradient>
+                  <linearGradient id="wish-resin-facet" x1="60" y1="16" x2="94" y2="95" gradientUnits="userSpaceOnUse">
+                    <stop offset="0%" stop-color="#ffffff" stop-opacity="0.58" />
+                    <stop offset="50%" stop-color="#e0d8cc" stop-opacity="0.25" />
+                    <stop offset="100%" stop-color="#c2b49e" stop-opacity="0.40" />
+                  </linearGradient>
+                  <linearGradient id="wish-petal-rose" x1="0" y1="0" x2="1" y2="1">
+                    <stop offset="0%" stop-color="#ea9d88" />
+                    <stop offset="45%" stop-color="#c96550" />
+                    <stop offset="100%" stop-color="#8a3020" />
+                  </linearGradient>
+                  <linearGradient id="wish-petal-deep" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stop-color="#ab4d39" />
+                    <stop offset="100%" stop-color="#691f13" />
+                  </linearGradient>
+                  <linearGradient id="wish-foliage-stem" x1="0" y1="0" x2="1" y2="1">
+                    <stop offset="0%" stop-color="#5a7d65" />
+                    <stop offset="60%" stop-color="#34543d" />
+                    <stop offset="100%" stop-color="#1b3022" />
+                  </linearGradient>
+                  <linearGradient id="wish-gold-collar" x1="30" y1="94" x2="90" y2="106" gradientUnits="userSpaceOnUse">
+                    <stop offset="0%" stop-color="#fff1c7" />
+                    <stop offset="40%" stop-color="#c59b27" />
+                    <stop offset="80%" stop-color="#f5e3ad" />
+                    <stop offset="100%" stop-color="#7a5514" />
+                  </linearGradient>
+                </defs>
+                <ellipse cx="60" cy="104" rx="40" ry="9" fill="#0f172a" fill-opacity="0.08" filter="blur(4.5px)" />
+                <ellipse cx="60" cy="101" rx="32" ry="6" fill="#0f172a" fill-opacity="0.10" filter="blur(2px)" />
+                <ellipse cx="64" cy="101" rx="20" ry="4" fill="#eed9a4" fill-opacity="0.30" filter="blur(3px)" />
+                <g filter="url(#wish-botanical-shadow)">
+                  <path d="M32 96 L38 94 L82 94 L88 96 L86 101 L34 101 Z" fill="url(#wish-gold-collar)" stroke="#7a5514" stroke-width="0.5" />
+                  <line x1="37" y1="94.5" x2="83" y2="94.5" stroke="#ffffff" stroke-width="0.9" stroke-opacity="0.85" />
+                  <path d="M34 96 L34 48 C34 27, 46 16, 60 16 C74 16, 86 27, 86 48 L86 96 Z" fill="url(#wish-resin-body)" stroke="#ffffff" stroke-width="1.2" stroke-opacity="0.75" />
+                  <path d="M60 16 C74 16, 86 27, 86 48 L86 96 L68 96 L68 48 C68 31, 63 21, 60 16 Z" fill="url(#wish-resin-facet)" />
+                  <path d="M60 92 C60 78, 58 66, 57 53" stroke="url(#wish-foliage-stem)" stroke-width="2" stroke-linecap="round" />
+                  <path d="M58 72 C54 67, 47 65, 43 66" stroke="url(#wish-foliage-stem)" stroke-width="1.3" stroke-linecap="round" />
+                  <path d="M58 63 C63 59, 70 58, 74 60" stroke="url(#wish-foliage-stem)" stroke-width="1.3" stroke-linecap="round" />
+                  <path d="M43 66 C40 61, 42 57, 49 59 C53 60, 54 65, 50 67 Z" fill="#3f6048" fill-opacity="0.9" />
+                  <path d="M74 60 C78 56, 75 51, 69 53 C66 55, 66 59, 70 62 Z" fill="#32503a" fill-opacity="0.9" />
+                  <ellipse cx="51" cy="44" rx="8" ry="6" transform="rotate(-25 51 44)" fill="url(#wish-petal-deep)" />
+                  <ellipse cx="65" cy="44" rx="8" ry="6" transform="rotate(25 65 44)" fill="url(#wish-petal-deep)" />
+                  <ellipse cx="58" cy="38" rx="8" ry="6" fill="url(#wish-petal-deep)" />
+                  <ellipse cx="53" cy="48" rx="7.5" ry="5.8" transform="rotate(-15 53 48)" fill="url(#wish-petal-rose)" />
+                  <ellipse cx="63" cy="48" rx="7.5" ry="5.8" transform="rotate(15 63 48)" fill="url(#wish-petal-rose)" />
+                  <ellipse cx="58" cy="45" rx="7" ry="5.8" fill="#de7762" />
+                  <path d="M54 46 C54 42, 62 42, 62 46 C62 50, 59 52, 58 52 C57 52, 54 50, 54 46 Z" fill="#691f13" />
+                  <path d="M55.5 45 C57 42, 59 42, 60.5 45" stroke="#f6c2b7" stroke-width="0.9" stroke-linecap="round" fill="none" />
+                  <circle cx="45" cy="39" r="1.3" fill="#fdf2cb" />
+                  <circle cx="70" cy="36" r="1" fill="#e5c158" />
+                  <polygon points="70,70 72,68 74,70 72,72" fill="#d4af37" fill-opacity="0.9" />
+                  <polygon points="48,77 50,75 51,77 50,78" fill="#fdf2cb" fill-opacity="0.95" />
+                  <circle cx="67" cy="80" r="1" fill="#c59b27" />
+                  <path d="M38 86 L38 48 C38 30, 48 20, 58 17" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round" stroke-opacity="0.9" fill="none" />
+                  <circle cx="58" cy="17.5" r="1.5" fill="#ffffff" />
+                  <path d="M65 25 C74 32, 80 43, 80 58" stroke="#ffffff" stroke-width="0.8" stroke-linecap="round" stroke-opacity="0.45" fill="none" />
+                </g>
               </svg>
             </div>
             <h2 class="font-headline-sm text-xl text-primary font-bold">Your Wishlist is Empty</h2>
@@ -3616,15 +3731,74 @@
 
         ${summary.cart.length === 0 ? `
           <div class="ram-card p-6 sm:p-10 text-center flex flex-col items-center gap-3.5 bg-white border border-[#e4e0d8] rounded-2xl shadow-xs">
-            <div class="relative w-20 h-20 sm:w-24 sm:h-24 flex items-center justify-center lottie-anim-float">
-              <div class="absolute inset-0 rounded-full bg-[#d4af37]/15 lottie-anim-pulse blur-md pointer-events-none"></div>
-              <svg class="w-full h-full drop-shadow-sm" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Studio bag empty">
-                <circle cx="50" cy="50" r="44" stroke="#d4af37" stroke-width="1.2" stroke-dasharray="4 6" class="lottie-anim-spin" opacity="0.6" />
-                <path d="M30 38 L34 82 C34 85 37 88 40 88 H60 C63 88 66 85 66 82 L70 38 Z" fill="#fcf9f5" stroke="#0f172a" stroke-width="2" />
-                <path d="M38 38 C38 24 62 24 62 38" stroke="#d4af37" stroke-width="2" stroke-linecap="round" fill="none" />
-                <polygon points="50,46 52,50 56,52 52,54 50,58 48,54 44,52 48,50" fill="#9e3322" />
-                <circle cx="74" cy="30" r="2.5" fill="#d4af37" />
-                <circle cx="26" cy="68" r="2" fill="#d4af37" opacity="0.7" />
+            <div class="relative w-28 h-28 sm:w-32 sm:h-32 flex items-center justify-center lottie-anim-float">
+              <svg class="w-full h-full drop-shadow-sm" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Transparent resin keepsake tray with gold detailing">
+                <defs>
+                  <filter id="bag-tray-shadow" x="-20%" y="-20%" width="140%" height="140%">
+                    <feDropShadow dx="0" dy="5" stdDeviation="6" flood-color="#0f172a" flood-opacity="0.10" />
+                  </filter>
+                  <linearGradient id="bag-gold-rim" x1="12" y1="24" x2="108" y2="92" gradientUnits="userSpaceOnUse">
+                    <stop offset="0%" stop-color="#e8ca78" />
+                    <stop offset="25%" stop-color="#fff4d1" />
+                    <stop offset="50%" stop-color="#c59b27" />
+                    <stop offset="75%" stop-color="#f5e3ad" />
+                    <stop offset="100%" stop-color="#805914" />
+                  </linearGradient>
+                  <linearGradient id="bag-handle-gold" x1="0" y1="0" x2="1" y2="1">
+                    <stop offset="0%" stop-color="#fff2cc" />
+                    <stop offset="45%" stop-color="#c59b27" />
+                    <stop offset="100%" stop-color="#734e0f" />
+                  </linearGradient>
+                  <linearGradient id="bag-resin-glass" x1="18" y1="34" x2="102" y2="88" gradientUnits="userSpaceOnUse">
+                    <stop offset="0%" stop-color="#ffffff" stop-opacity="0.88" />
+                    <stop offset="30%" stop-color="#faf7f0" stop-opacity="0.45" />
+                    <stop offset="65%" stop-color="#ece2cf" stop-opacity="0.55" />
+                    <stop offset="100%" stop-color="#ffffff" stop-opacity="0.80" />
+                  </linearGradient>
+                  <linearGradient id="bag-resin-wall" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stop-color="#dfd6c5" stop-opacity="0.6" />
+                    <stop offset="100%" stop-color="#b6a68e" stop-opacity="0.75" />
+                  </linearGradient>
+                  <linearGradient id="bag-gloss-streak" x1="20" y1="38" x2="90" y2="82" gradientUnits="userSpaceOnUse">
+                    <stop offset="0%" stop-color="#ffffff" stop-opacity="0.85" />
+                    <stop offset="35%" stop-color="#ffffff" stop-opacity="0.25" />
+                    <stop offset="65%" stop-color="#ffffff" stop-opacity="0.0" />
+                    <stop offset="100%" stop-color="#ffffff" stop-opacity="0.25" />
+                  </linearGradient>
+                </defs>
+                <ellipse cx="60" cy="94" rx="46" ry="11" fill="#0f172a" fill-opacity="0.07" filter="blur(5px)" />
+                <ellipse cx="60" cy="91" rx="40" ry="7" fill="#0f172a" fill-opacity="0.10" filter="blur(2.5px)" />
+                <g filter="url(#bag-tray-shadow)">
+                  <path d="M16 52 L32 40 L88 40 L104 52 L104 76 L88 88 L32 88 L16 76 Z" fill="url(#bag-resin-wall)" stroke="url(#bag-gold-rim)" stroke-width="1.6" stroke-linejoin="round" />
+                  <path d="M16 76 L32 88 L88 88 L104 76 L104 79 L88 91 L32 91 L16 79 Z" fill="#947321" stroke="url(#bag-gold-rim)" stroke-width="0.8" stroke-linejoin="round" />
+                  <path d="M18.5 53 L33 42 L87 42 L101.5 53 L101.5 75 L87 86 L33 86 L18.5 75 Z" fill="url(#bag-resin-glass)" />
+                  <path d="M18.5 53 L34 57 L86 57 L101.5 53" stroke="#ffffff" stroke-width="1.2" stroke-opacity="0.85" fill="none" />
+                  <path d="M34 57 L34 81 L18.5 75" stroke="#ffffff" stroke-width="0.9" stroke-opacity="0.55" fill="none" />
+                  <path d="M86 57 L86 81 L101.5 75" stroke="#a3822d" stroke-width="0.9" stroke-opacity="0.45" fill="none" />
+                  <path d="M34 81 L86 81 L87 86 L33 86 Z" fill="#cfc2ac" fill-opacity="0.4" />
+                  <path d="M40 65 L43 62 L46 66 L42 68 Z" fill="#e5c158" fill-opacity="0.95" />
+                  <path d="M52 73 L55 71 L54 75 Z" fill="#c59b27" fill-opacity="0.85" />
+                  <path d="M78 61 L82 59 L83 63 L80 64 Z" fill="#fdf2cb" fill-opacity="0.95" />
+                  <path d="M70 75 L74 74 L73 78 Z" fill="#c59b27" fill-opacity="0.85" />
+                  <circle cx="60" cy="68" r="1.5" fill="#fdf2cb" fill-opacity="0.95" />
+                  <circle cx="48" cy="54" r="1" fill="#e5c158" fill-opacity="0.85" />
+                  <circle cx="68" cy="62" r="1.2" fill="#c59b27" fill-opacity="0.8" />
+                  <circle cx="82" cy="72" r="1" fill="#fef5d6" fill-opacity="0.9" />
+                  <path d="M22 54 L34 44 L76 44 L54 84 L34 84 Z" fill="url(#bag-gloss-streak)" opacity="0.7" />
+                  <line x1="33" y1="40.5" x2="87" y2="40.5" stroke="#ffffff" stroke-width="1.5" stroke-linecap="round" stroke-opacity="0.95" />
+                  <line x1="16.5" y1="52.5" x2="32.5" y2="40.5" stroke="#ffffff" stroke-width="1.3" stroke-linecap="round" stroke-opacity="0.9" />
+                  <line x1="33" y1="88" x2="87" y2="88" stroke="#fef5d6" stroke-width="0.9" stroke-opacity="0.7" />
+                  <g>
+                    <path d="M8 63 C8 56, 13 52, 20 56 L20 58.5 C15 56, 11.5 58.5, 11.5 63 C11.5 67.5, 15 70, 20 67.5 L20 70 C13 74, 8 70, 8 63 Z" fill="url(#bag-handle-gold)" stroke="#805914" stroke-width="0.4" />
+                    <circle cx="19.5" cy="57" r="1.8" fill="#fff4d1" stroke="#734e0f" stroke-width="0.5" />
+                    <circle cx="19.5" cy="69" r="1.8" fill="#fff4d1" stroke="#734e0f" stroke-width="0.5" />
+                  </g>
+                  <g>
+                    <path d="M112 63 C112 56, 107 52, 100 56 L100 58.5 C105 56, 108.5 58.5, 108.5 63 C108.5 67.5, 105 70, 100 67.5 L100 70 C107 74, 112 70, 112 63 Z" fill="url(#bag-handle-gold)" stroke="#805914" stroke-width="0.4" />
+                    <circle cx="100.5" cy="57" r="1.8" fill="#fff4d1" stroke="#734e0f" stroke-width="0.5" />
+                    <circle cx="100.5" cy="69" r="1.8" fill="#fff4d1" stroke="#734e0f" stroke-width="0.5" />
+                  </g>
+                </g>
               </svg>
             </div>
             <div class="space-y-1 max-w-sm">
@@ -3944,8 +4118,75 @@
         <!-- Orders List or Empty State -->
         ${filteredOrders.length === 0 ? `
           <div class="rounded-2xl border border-[#e4e0d8] bg-white p-8 sm:p-12 text-center flex flex-col items-center gap-3.5 shadow-xs">
-            <div class="w-16 h-16 rounded-2xl bg-surface-container flex items-center justify-center text-secondary mb-1 border border-[#e4e0d8]/80 shadow-2xs">
-              <span class="material-symbols-outlined text-3xl" aria-hidden="true">package_2</span>
+            <div class="w-28 h-28 sm:w-32 sm:h-32 flex items-center justify-center relative mb-1">
+              <svg class="w-full h-full drop-shadow-sm" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Premium ivory keepsake box with gold accents and navy satin ribbon">
+                <defs>
+                  <filter id="orders-box-shadow" x="-20%" y="-20%" width="140%" height="140%">
+                    <feDropShadow dx="0" dy="6" stdDeviation="6" flood-color="#0f172a" flood-opacity="0.14" />
+                  </filter>
+                  <linearGradient id="order-box-lid" x1="60" y1="28" x2="60" y2="65" gradientUnits="userSpaceOnUse">
+                    <stop offset="0%" stop-color="#ffffff" />
+                    <stop offset="55%" stop-color="#fbf9f5" />
+                    <stop offset="100%" stop-color="#f0ece2" />
+                  </linearGradient>
+                  <linearGradient id="order-box-left" x1="16" y1="50" x2="60" y2="92" gradientUnits="userSpaceOnUse">
+                    <stop offset="0%" stop-color="#eee8dc" />
+                    <stop offset="100%" stop-color="#ded5c4" />
+                  </linearGradient>
+                  <linearGradient id="order-box-right" x1="60" y1="65" x2="104" y2="88" gradientUnits="userSpaceOnUse">
+                    <stop offset="0%" stop-color="#ded5c4" />
+                    <stop offset="100%" stop-color="#c6b8a1" />
+                  </linearGradient>
+                  <linearGradient id="order-pinstripe-gold" x1="24" y1="35" x2="96" y2="58" gradientUnits="userSpaceOnUse">
+                    <stop offset="0%" stop-color="#e8ca78" />
+                    <stop offset="50%" stop-color="#fff4d1" />
+                    <stop offset="100%" stop-color="#a67c1e" />
+                  </linearGradient>
+                  <linearGradient id="order-ribbon-top" x1="0" y1="0" x2="1" y2="1">
+                    <stop offset="0%" stop-color="#122a45" />
+                    <stop offset="45%" stop-color="#244b7a" />
+                    <stop offset="100%" stop-color="#081728" />
+                  </linearGradient>
+                  <linearGradient id="order-ribbon-side" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stop-color="#18365c" />
+                    <stop offset="100%" stop-color="#091829" />
+                  </linearGradient>
+                  <linearGradient id="order-ribbon-bow" x1="0" y1="0" x2="1" y2="1">
+                    <stop offset="0%" stop-color="#2c578c" />
+                    <stop offset="50%" stop-color="#163457" />
+                    <stop offset="100%" stop-color="#081525" />
+                  </linearGradient>
+                  <linearGradient id="order-gold-seal" x1="0" y1="0" x2="1" y2="1">
+                    <stop offset="0%" stop-color="#fff1c7" />
+                    <stop offset="50%" stop-color="#c59b27" />
+                    <stop offset="100%" stop-color="#734e0f" />
+                  </linearGradient>
+                </defs>
+                <ellipse cx="60" cy="98" rx="46" ry="12" fill="#0f172a" fill-opacity="0.08" filter="blur(6px)" />
+                <polygon points="14,70 60,96 106,70 60,84" fill="#0f172a" fill-opacity="0.10" filter="blur(2.5px)" />
+                <g filter="url(#orders-box-shadow)">
+                  <polygon points="20,53 60,73 60,95 20,74" fill="url(#order-box-left)" />
+                  <polygon points="60,73 100,53 100,74 60,95" fill="url(#order-box-right)" />
+                  <polygon points="17,50 60,71 60,75 17,54" fill="#ddd4c4" />
+                  <polygon points="60,71 103,50 103,54 60,75" fill="#beaf96" />
+                  <polygon points="60,29 103,50 60,71 17,50" fill="url(#order-box-lid)" stroke="#ffffff" stroke-width="0.9" />
+                  <polygon points="60,34 96,50 60,66 24,50" fill="none" stroke="url(#order-pinstripe-gold)" stroke-width="1.3" stroke-linejoin="round" />
+                  <polygon points="36,41 43,37.5 84,60 77,63.5" fill="url(#order-ribbon-top)" />
+                  <polygon points="56.5,30.5 63.5,30.5 63.5,69.5 56.5,69.5" fill="url(#order-ribbon-top)" />
+                  <polygon points="56.5,71 63.5,71 63.5,95 56.5,95" fill="url(#order-ribbon-side)" />
+                  <line x1="58.2" y1="32" x2="58.2" y2="69" stroke="#ffffff" stroke-width="0.8" stroke-opacity="0.45" />
+                  <path d="M57 51 C48 42, 36 44, 39 51 C40 55, 48 55, 57 52 Z" fill="url(#order-ribbon-bow)" stroke="#122a45" stroke-width="0.5" />
+                  <path d="M41 47 C46 45, 53 48, 56 51" stroke="#487bb0" stroke-width="0.9" stroke-linecap="round" fill="none" />
+                  <path d="M63 51 C72 42, 84 44, 81 51 C80 55, 72 55, 63 52 Z" fill="url(#order-ribbon-bow)" stroke="#122a45" stroke-width="0.5" />
+                  <path d="M79 47 C74 45, 67 48, 64 51" stroke="#487bb0" stroke-width="0.9" stroke-linecap="round" fill="none" />
+                  <ellipse cx="60" cy="51.5" rx="4" ry="3.5" fill="#1b3b63" stroke="#0d1f33" stroke-width="0.5" />
+                  <circle cx="59.3" cy="50.3" r="1.2" fill="#ffffff" fill-opacity="0.55" />
+                  <path d="M57 53 C53 60, 46 67, 43 73 L47 72 L49 75 C51 69, 57 60, 58 53 Z" fill="url(#order-ribbon-side)" />
+                  <path d="M63 53 C67 60, 74 68, 78 74 L75 72 L73 75 C70 68, 65 60, 62 53 Z" fill="url(#order-ribbon-side)" />
+                  <circle cx="60" cy="58" r="3.2" fill="url(#order-gold-seal)" stroke="#734e0f" stroke-width="0.4" />
+                  <circle cx="59.1" cy="57.1" r="0.9" fill="#ffffff" fill-opacity="0.8" />
+                </g>
+              </svg>
             </div>
             <h2 class="text-lg sm:text-xl font-bold text-primary">${allOrders.length === 0 ? 'Your Orders &amp; Keepsakes' : 'No Matching Orders Found'}</h2>
             <p class="text-xs sm:text-sm text-on-surface-variant max-w-md leading-relaxed">${allOrders.length === 0 ? 'When you place an order, live crafting stages, silica dehydration updates, and BlueDart air express tracking appear right here.' : 'No orders matched your search query. Try clearing your search.'}</p>
