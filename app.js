@@ -1001,6 +1001,7 @@
 
     if (typeof document !== 'undefined' && document.body && document.body.classList) {
       document.body.classList.toggle('route-product', AppState.currentRoute === 'product');
+      document.body.classList.toggle('route-cart', AppState.currentRoute === 'cart');
     }
 
     if (typeof window !== 'undefined' && window.VistaraAnalytics && typeof window.VistaraAnalytics.trackPageView === 'function') {
@@ -3854,7 +3855,7 @@
             <div class="flex flex-wrap items-center justify-between gap-2 text-xs font-semibold">
               <div class="flex items-center gap-1.5 sm:gap-2 ${isFreeUnlocked ? 'text-[#266b4e]' : 'text-primary'} min-w-0">
                 <span class="material-symbols-outlined text-base sm:text-lg ${isFreeUnlocked ? 'text-[#266b4e] scale-110' : 'text-secondary'} shrink-0 transition-transform" style="font-variation-settings: 'FILL' 1;" aria-hidden="true">${isFreeUnlocked ? 'verified' : 'local_shipping'}</span>
-                <span class="tracking-tight text-[11px] sm:text-xs truncate">
+                <span class="tracking-tight text-[11px] sm:text-xs break-words leading-tight">
                   ${isFreeUnlocked
                     ? 'Unlocked! Eligible for <strong class="text-[#266b4e]">Free Pan-India BlueDart Air Express Delivery</strong>!'
                     : `Add <strong class="text-secondary font-bold font-spec-numeral">${formatINR(summary.amountToFreeShipping)}</strong> more for <strong>Free Express Delivery</strong>!`}
@@ -3887,7 +3888,7 @@
                         </div>
                         <p class="text-[11px] text-on-surface-variant flex items-center flex-wrap gap-1.5 mt-0.5">
                           ${item.variantLabel ? `<span>${esc(item.variantLabel)}</span>` : ''}
-                          ${item.variantLabel && item.sku ? `<span class="text-outline">•</span>` : ''}
+
                           ${item.sku ? `<span class="sku-badge sku-pill font-mono text-[10px] px-1.5 py-0.5 rounded bg-surface-container-high border border-[#e4e0d8] text-primary whitespace-nowrap shrink-0" data-sku="${esc(item.sku)}">SKU:&nbsp;<span class="sku-text font-bold">${esc(item.sku)}</span></span>` : ''}
                         </p>
                         ${(item.color || item.shape || item.size) ? `

@@ -1517,7 +1517,7 @@ body.has-mini-cart-toast #global-toast {
   }
 }
 
-/* Scrollable Cart Content Bottom Spacing & Containing-Block Release (Prevents Sticky Bar Overlap & Viewport Decoupling) */
+/* Scrollable Cart Content Spacing & Containing-Block Release (Zero Dead Space, Viewport-Relative Stacking) */
 @keyframes fadeInOnly {
   0% {
     opacity: 0;
@@ -1530,11 +1530,30 @@ body.has-mini-cart-toast #global-toast {
 .cart-scroll-content {
   animation: fadeInOnly 0.24s ease-out forwards !important;
   transform: none !important;
-  padding-bottom: calc(13rem + env(safe-area-inset-bottom, 0px)) !important;
+  padding-bottom: 1.5rem !important;
 }
 
 @media (min-width: 1024px) {
   .cart-scroll-content {
-    padding-bottom: 4rem !important;
+    padding-bottom: 2.5rem !important;
+  }
+}
+
+/* Eliminate unnecessary blank area between cart invoice card and footer on mobile */
+body.route-cart main#app-view-root {
+  padding-bottom: 0 !important;
+}
+
+/* Ensure the footer on mobile provides clean safe-area clearance for the sticky checkout bar without overlap */
+body.route-cart footer {
+  padding-bottom: calc(12rem + env(safe-area-inset-bottom, 0px)) !important;
+}
+
+@media (min-width: 1024px) {
+  body.route-cart main#app-view-root {
+    padding-bottom: 3rem !important;
+  }
+  body.route-cart footer {
+    padding-bottom: 5rem !important;
   }
 }
