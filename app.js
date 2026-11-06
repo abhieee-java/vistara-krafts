@@ -3935,17 +3935,17 @@
               `;}).join('')}
 
               <!-- Pincode Dispatch Indicator Card (Tightened) -->
-              <div class="ram-card p-3 sm:p-3.5 bg-white flex flex-col min-[380px]:flex-row items-start min-[380px]:items-center justify-between gap-2.5 min-w-0">
-                <div class="flex items-center gap-2.5 min-w-0 flex-1">
-                  <div class="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center shrink-0">
+              <div class="ram-card p-3 sm:p-3.5 bg-white flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2.5 sm:gap-4 min-w-0 max-w-full overflow-hidden">
+                <div class="flex items-start gap-2.5 min-w-0 flex-1 w-full sm:w-auto">
+                  <div class="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center shrink-0 mt-0.5">
                     <span class="material-symbols-outlined text-base" aria-hidden="true">pin_drop</span>
                   </div>
                   <div class="min-w-0 flex-1">
-                    <p class="text-xs sm:text-sm font-bold text-primary truncate">Delivering to PIN ${esc(pinInfo.pin)} (${esc(pinInfo.city)})</p>
-                    <p class="text-[11px] text-on-surface-variant truncate">${esc(pinInfo.courier)} • Guaranteed in ${esc(pinInfo.days)}</p>
+                    <p class="text-xs sm:text-sm font-bold text-primary break-words leading-snug">Delivering to PIN ${esc(pinInfo.pin)} (${esc(pinInfo.city)})</p>
+                    <p class="text-[11px] sm:text-xs text-on-surface-variant break-words leading-relaxed mt-0.5">${esc(pinInfo.courier)} • Guaranteed in ${esc(pinInfo.days)}</p>
                   </div>
                 </div>
-                <button type="button" onclick="window.promptChangePincode()" class="min-h-[36px] px-2.5 rounded-lg text-xs font-bold text-secondary underline whitespace-nowrap shrink-0 cursor-pointer">Change PIN</button>
+                <button type="button" onclick="window.promptChangePincode()" class="min-h-[36px] px-2.5 py-1 rounded-lg text-xs font-bold text-secondary underline hover:text-primary whitespace-nowrap shrink-0 cursor-pointer self-start sm:self-center transition-colors">Change PIN</button>
               </div>
 
               <!-- B2B GST Input Tax Credit (18%) Box (Tightened) -->
