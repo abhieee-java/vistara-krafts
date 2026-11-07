@@ -267,13 +267,14 @@
   ];
 
   const COUPONS = {
-    STUDIO10: { code: 'STUDIO10', type: 'percent', value: 10, minOrder: 1500, desc: '10% Studio Promo discount applied!' },
-    VISTARA500: { code: 'VISTARA500', type: 'flat', value: 500, minOrder: 3000, desc: '₹500 flat off on your studio bag!' },
-    WELCOME250: { code: 'WELCOME250', type: 'flat', value: 250, minOrder: 1000, desc: '₹250 Welcome Voucher applied!' },
-    KRAFTFIRST: { code: 'KRAFTFIRST', type: 'flat', value: 150, minOrder: 500, desc: '₹150.00 saved on your studio order!' },
-    MEMORIES10: { code: 'MEMORIES10', type: 'percent', value: 10, minOrder: 1000, desc: '10% Instagram Community Discount applied!' },
-    FLIRTY15: { code: 'FLIRTY15', type: 'percent', value: 15, minOrder: 2500, desc: '15% VIP Keepsake & Studio Discount applied!' },
-    STUDIO20: { code: 'STUDIO20', type: 'percent', value: 20, minOrder: 5000, desc: '20% Wholesale Pro Studio Discount applied!' }
+    STUDIO10: { code: 'STUDIO10', type: 'percent', value: 10, minOrder: 1500, showInStorefront: true, desc: '10% Studio Promo discount applied!' },
+    VISTARA500: { code: 'VISTARA500', type: 'flat', value: 500, minOrder: 3000, showInStorefront: true, desc: '₹500 flat off on your studio bag!' },
+    WELCOME250: { code: 'WELCOME250', type: 'flat', value: 250, minOrder: 1000, showInStorefront: true, desc: '₹250 Welcome Voucher applied!' },
+    // Private / unlisted legacy studio vouchers (usable via direct entry; hidden from public storefront)
+    KRAFTFIRST: { code: 'KRAFTFIRST', type: 'flat', value: 150, minOrder: 500, showInStorefront: false, desc: '₹150.00 saved on your studio order!' },
+    MEMORIES10: { code: 'MEMORIES10', type: 'percent', value: 10, minOrder: 1000, showInStorefront: false, desc: '10% Instagram Community Discount applied!' },
+    FLIRTY15: { code: 'FLIRTY15', type: 'percent', value: 15, minOrder: 2500, showInStorefront: false, desc: '15% VIP Keepsake & Studio Discount applied!' },
+    STUDIO20: { code: 'STUDIO20', type: 'percent', value: 20, minOrder: 5000, showInStorefront: false, desc: '20% Wholesale Pro Studio Discount applied!' }
   };
 
   const DYNAMIC_COUPONS = {};
@@ -287,6 +288,22 @@
       result[k] = v;
     }
     return result;
+  }
+
+  function getPublicCoupons() {
+    const all = getAllCoupons();
+    const publicOnly = {};
+    for (const [k, v] of Object.entries(all)) {
+      if (v && v.isActive !== false && v.showInStorefront !== false) {
+        const isExpired = v.isExpired ||
+          (v.expiryDate && new Date(v.expiryDate).getTime() < Date.now()) ||
+          (v.expires_at && new Date(v.expires_at).getTime() < Date.now());
+        if (!isExpired) {
+          publicOnly[k] = v;
+        }
+      }
+    }
+    return publicOnly;
   }
 
   const PINCODE_DIRECTORY = {
@@ -437,7 +454,12 @@
 
   const Store = {
     IMAGES,
-    COUPONS,
+    get COUPONS() {
+      return getAllCoupons();
+    },
+    getPublicCoupons() {
+      return getPublicCoupons();
+    },
     DEFAULT_STORIES,
     backendConfig,
 
@@ -808,7 +830,7 @@
       const allCoupons = getAllCoupons();
       const coupon = allCoupons[normalized];
       if (!coupon) {
-        return { valid: false, ok: false, message: `Invalid voucher code "${normalized}". Try STUDIO10, WELCOME250, or KRAFTFIRST.` };
+        return { valid: false, ok: false, message: `Invalid voucher code "${normalized}". Please check your code and try again.` };
       }
       if (coupon.isActive === false) {
         return { valid: false, ok: false, message: `Voucher code "${normalized}" is currently disabled.` };
@@ -2160,6 +2182,7 @@
             value: Number(c.discount_value || 0),
             minOrder: Number(c.min_order_value || 0),
             isActive: c.is_active !== false,
+            showInStorefront: c.show_in_storefront !== false,
             isExpired,
             expiryDate: c.expires_at || null,
             desc: c.discount_type === 'percentage'
@@ -2644,9 +2667,10 @@
             value: Number(c.discountValue || 0),
             minOrder: Number(c.minOrderValue || 0),
             isActive: c.isActive !== false,
+            showInStorefront: c.showInStorefront !== false,
             isExpired,
             expiryDate: c.expiryDate || null,
-            desc: c.discountType === 'percentage' ? `${c.discountValue}% Studio Discount applied!` : `₹${c.discountValue} flat off applied!`
+            desc: c.discountType === 'percentage' ? `${c.discountValue}% Studio Promo discount applied!` : `₹${c.discountValue} flat off on your studio bag!`
           };
         });
         safeWrite(STORAGE_KEYS.DYNAMIC_COUPONS, DYNAMIC_COUPONS);

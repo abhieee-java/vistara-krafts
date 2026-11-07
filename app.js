@@ -3976,31 +3976,115 @@
 
             <!-- Right Column: Voucher + Single Unified Invoice Summary (5 cols) -->
             <div class="lg:col-span-5 flex flex-col gap-3 sm:gap-4 sticky top-20 min-w-0">
-              <!-- Voucher Box (Compact Apple Style) -->
-              <div class="ram-card p-3.5 sm:p-4 bg-white flex flex-col gap-2 min-w-0">
-                <label for="cart-coupon-input" class="text-xs sm:text-sm font-bold text-primary">Studio Voucher or Promo Code</label>
-                <form class="flex flex-col min-[360px]:flex-row gap-1.5" onsubmit="event.preventDefault(); window.handleApplyCoupon();">
-                  <input id="cart-coupon-input" type="text" value="${esc(summary.couponCode || summary.savedCouponCode)}" placeholder="Enter code (e.g. KRAFTFIRST)" class="flex-1 min-w-0 h-10 px-3 rounded-lg bg-surface-container-low border border-[#e4e0d8] font-spec-numeral text-xs uppercase text-primary">
-                  <button type="submit" class="px-4 h-10 rounded-lg bg-primary text-white text-xs font-bold shrink-0 cursor-pointer">APPLY</button>
-                </form>
-                <div class="flex flex-wrap gap-1.5 pt-0.5">
-                  ${Object.values(Store.COUPONS).map(c => `
-                    <button type="button" onclick="window.quickSelectCoupon('${c.code}')" class="min-h-[32px] px-2.5 py-1 rounded-md text-[11px] font-spec-numeral font-semibold border transition-colors cursor-pointer ${summary.couponCode === c.code ? 'bg-secondary text-white border-secondary' : 'bg-surface-container-low text-primary border-[#e4e0d8] hover:border-secondary'}">
-                      ${c.code}
+              <!-- Vouchers & Studio Offers (Apple, Elevated Luxury Atelier Standard) -->
+              <div class="ram-card p-4 sm:p-5 bg-white flex flex-col gap-3 min-w-0 border border-[#e6e2d8] rounded-2xl shadow-sm">
+                <div class="flex items-center justify-between">
+                  <div class="flex items-center gap-2">
+                    <div class="w-7 h-7 rounded-lg bg-[#faf8f5] border border-[#e6e2d8] flex items-center justify-center text-[#cda851]">
+                      <span class="material-symbols-outlined text-base" aria-hidden="true">local_activity</span>
+                    </div>
+                    <div>
+                      <h3 class="text-xs sm:text-sm font-bold text-primary leading-tight">Studio Voucher or Promo Code</h3>
+                      <p class="text-[10.5px] text-on-surface-variant leading-tight">Enter your exclusive code or select an available studio offer below</p>
+                    </div>
+                  </div>
+                  ${summary.couponCode ? `
+                    <button type="button" onclick="window.handleRemoveCoupon()" class="text-[11px] font-semibold text-rose-600 hover:text-rose-800 transition-colors cursor-pointer px-2 py-0.5 rounded-md hover:bg-rose-50" title="Remove applied coupon">
+                      Remove
                     </button>
-                  `).join('')}
+                  ` : ''}
                 </div>
+
+                <!-- Input Bar -->
+                <form class="flex gap-2" onsubmit="event.preventDefault(); window.handleApplyCoupon();">
+                  <div class="relative flex-1 min-w-0">
+                    <input 
+                      id="cart-coupon-input" 
+                      type="text" 
+                      value="${esc(summary.couponCode || summary.savedCouponCode || '')}" 
+                      placeholder="ENTER PROMO CODE (E.G. STUDIO10)" 
+                      class="w-full h-11 px-3.5 rounded-xl bg-surface-container-low border border-[#e4e0d8] font-spec-numeral text-xs font-semibold tracking-wider uppercase text-primary placeholder:text-gray-400 placeholder:font-normal placeholder:tracking-normal focus:outline-none focus:border-secondary focus:ring-1 focus:ring-secondary transition-all"
+                    >
+                  </div>
+                  <button 
+                    type="submit" 
+                    class="h-11 px-5 rounded-xl bg-[#1c1b18] text-[#cda851] text-xs font-bold tracking-wider hover:bg-[#2d2a24] active:scale-95 transition-all shrink-0 cursor-pointer shadow-sm flex items-center justify-center gap-1.5"
+                  >
+                    <span>APPLY</span>
+                  </button>
+                </form>
+
+                <!-- Feedback Banner: Active Applied State -->
                 ${summary.couponDiscount > 0 ? `
-                  <div class="flex items-center gap-1.5 text-[#266b4e] text-xs font-semibold pt-0.5">
-                    <span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;" aria-hidden="true">check_circle</span>
-                    <span>Code <strong>${esc(summary.couponCode)}</strong> active — ${formatINR(summary.couponDiscount)} saved!</span>
+                  <div class="flex items-center justify-between p-2.5 rounded-xl bg-emerald-50/80 border border-emerald-200 text-xs">
+                    <div class="flex items-center gap-2 text-[#266b4e] font-semibold">
+                      <span class="material-symbols-outlined text-base" style="font-variation-settings: 'FILL' 1;" aria-hidden="true">check_circle</span>
+                      <span>Code <strong>${esc(summary.couponCode)}</strong> active — <span class="font-bold">${formatINR(summary.couponDiscount)} saved!</span></span>
+                    </div>
+                    <button type="button" onclick="window.handleRemoveCoupon()" class="text-[11px] font-bold text-emerald-800 hover:underline cursor-pointer">
+                      Remove
+                    </button>
                   </div>
                 ` : (summary.couponInvalidReason ? `
-                  <div id="cart-coupon-warning" class="flex items-start gap-1.5 text-[#704600] bg-[#fff5e0] p-2 rounded-lg text-xs font-medium mt-0.5">
-                    <span class="material-symbols-outlined text-sm shrink-0 mt-0.5" aria-hidden="true">info</span>
-                    <span>${esc(summary.couponInvalidReason)}</span>
+                  <div id="cart-coupon-warning" class="flex items-start gap-2 text-[#704600] bg-[#fff5e0] p-2.5 rounded-xl border border-[#fae2b4] text-xs font-medium">
+                    <span class="material-symbols-outlined text-base shrink-0 mt-0.5 text-[#b57c1e]" aria-hidden="true">info</span>
+                    <span class="leading-relaxed">${esc(summary.couponInvalidReason)}</span>
                   </div>
                 ` : '')}
+
+                <!-- Available Public Offers (Curated Luxury Cards) -->
+                ${(() => {
+                  const publicCoupons = Store.getPublicCoupons ? Store.getPublicCoupons() : {};
+                  const couponsList = Object.values(publicCoupons);
+                  if (!couponsList.length) return '';
+                  return `
+                    <div class="pt-1.5 space-y-2 border-t border-[#f0ece4]">
+                      <div class="flex items-center justify-between text-[11px] text-on-surface-variant font-semibold">
+                        <span>Available Studio Offers (${couponsList.length})</span>
+                        <span class="text-[10px] text-gray-400 font-normal">Tap to apply to bag</span>
+                      </div>
+                      <div class="grid grid-cols-1 gap-2">
+                        ${couponsList.map(c => {
+                          const isApplied = summary.couponCode === c.code;
+                          const isEligible = summary.subtotal >= c.minOrder;
+                          const shortfall = c.minOrder - summary.subtotal;
+                          return `
+                            <div class="p-3 rounded-xl border transition-all ${isApplied ? 'bg-emerald-50/40 border-emerald-300 ring-1 ring-emerald-200' : 'bg-[#faf8f5]/70 border-[#e6e2d8] hover:border-[#cda851]/60'} flex items-center justify-between gap-3">
+                              <div class="min-w-0 space-y-0.5">
+                                <div class="flex items-center gap-2">
+                                  <span class="inline-flex items-center px-2 py-0.5 rounded-md bg-[#1c1b18] text-[#cda851] font-mono font-bold text-xs tracking-wider">
+                                    ${esc(c.code)}
+                                  </span>
+                                  <span class="text-xs font-bold text-primary">
+                                    ${c.type === 'percent' ? `${c.value}% OFF` : `Flat ${formatINR(c.value)} OFF`}
+                                  </span>
+                                </div>
+                                <p class="text-[11px] text-gray-500 leading-tight">
+                                  ${c.minOrder > 0 ? `On handcrafted orders above ${formatINR(c.minOrder)}` : 'No minimum order required'}
+                                  ${!isEligible && shortfall > 0 ? ` • <span class="text-amber-700 font-medium">Add ${formatINR(shortfall)} more</span>` : ''}
+                                </p>
+                              </div>
+
+                              <button 
+                                type="button" 
+                                onclick="window.quickSelectCoupon('${esc(c.code)}')"
+                                class="shrink-0 px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                                  isApplied 
+                                    ? 'bg-emerald-600 text-white shadow-sm' 
+                                    : (isEligible 
+                                        ? 'bg-[#1c1b18] text-[#cda851] hover:bg-[#2d2a24] active:scale-95 shadow-sm' 
+                                        : 'bg-surface-container-high text-gray-600 hover:bg-surface-container-highest border border-[#e4e0d8]')
+                                }"
+                              >
+                                ${isApplied ? '✓ Applied' : 'Apply'}
+                              </button>
+                            </div>
+                          `;
+                        }).join('')}
+                      </div>
+                    </div>
+                  `;
+                })()}
               </div>
 
               <!-- SINGLE Clean Invoice Summary -->
@@ -6818,6 +6902,15 @@
         icon: 'info'
       });
     }
+  };
+
+  window.handleRemoveCoupon = function () {
+    Store.applyCoupon('');
+    renderActiveView();
+    window.showToast('Coupon Removed', 'Studio voucher removed from your bag.', {
+      type: 'info',
+      icon: 'check'
+    });
   };
 
   window.quickSelectCoupon = function (code) {
