@@ -3874,31 +3874,22 @@
               ${summary.cart.map(item => {
                 const effectiveUnit = Store.getEffectiveUnitPrice(item);
                 const isTierDiscounted = effectiveUnit < item.price;
+                const rawVariant = (item.variantLabel || '').replace(/\s*[•·-]\s*$/, '').trim();
+                const specLine = [rawVariant, item.size].filter(Boolean).join(' • ');
                 return `
-                <div class="ram-card p-3 sm:p-3.5 bg-white flex flex-col gap-2.5 min-w-0" data-cart-item-id="${esc(item.cartItemId)}">
+                <div class="ram-card p-3 sm:p-3.5 bg-white flex flex-col gap-2 min-w-0 rounded-xl border border-[#e6e2d8]" data-cart-item-id="${esc(item.cartItemId)}" ${item.sku ? `data-item-sku="${esc(item.sku)}"` : ''}>
                   <div class="flex gap-2.5 sm:gap-3.5 min-w-0">
-                    <img src="${esc(item.image)}" alt="${esc(item.name)}" onclick="window.navigateTo('product', '${esc(item.productId)}')" class="w-16 h-16 sm:w-20 sm:h-20 rounded-xl object-cover bg-surface-container shrink-0 cursor-pointer border border-[#e4e0d8]">
+                    <img src="${esc(item.image)}" alt="${esc(item.name)}" onclick="window.navigateTo('product', '${esc(item.productId)}')" class="w-14 h-14 sm:w-16 sm:h-16 rounded-lg object-cover bg-surface-container shrink-0 cursor-pointer border border-[#e4e0d8]">
                     <div class="flex-1 min-w-0 flex flex-col justify-between">
                       <div>
                         <div class="flex items-start justify-between gap-1.5">
-                          <h2 onclick="window.navigateTo('product', '${esc(item.productId)}')" class="font-title-md text-xs sm:text-sm text-primary font-bold line-clamp-2 cursor-pointer hover:text-secondary break-words leading-tight">${esc(item.name)}</h2>
-                          <button type="button" aria-label="Remove item" onclick="window.handleCartRemove('${esc(item.cartItemId)}')" class="w-8 h-8 rounded-lg text-on-surface-variant hover:text-error hover:bg-surface-container-low flex items-center justify-center shrink-0 cursor-pointer transition-colors -mr-1 -mt-1">
-                            <span class="material-symbols-outlined text-base" aria-hidden="true">close</span>
+                          <h2 onclick="window.navigateTo('product', '${esc(item.productId)}')" class="font-title-md text-xs sm:text-sm text-primary font-bold line-clamp-1 cursor-pointer hover:text-secondary break-words leading-tight">${esc(item.name)}</h2>
+                          <button type="button" aria-label="Remove item" onclick="window.handleCartRemove('${esc(item.cartItemId)}')" class="w-7 h-7 rounded-lg text-on-surface-variant hover:text-error hover:bg-surface-container-low flex items-center justify-center shrink-0 cursor-pointer transition-colors -mr-1 -mt-1">
+                            <span class="material-symbols-outlined text-sm" aria-hidden="true">close</span>
                           </button>
                         </div>
-                        <p class="text-[11px] text-on-surface-variant flex items-center flex-wrap gap-1.5 mt-0.5">
-                          ${item.variantLabel ? `<span>${esc(item.variantLabel)}</span>` : ''}
-
-                          ${item.sku ? `<span class="sku-badge sku-pill font-mono text-[10px] px-1.5 py-0.5 rounded bg-surface-container-high border border-[#e4e0d8] text-primary whitespace-nowrap shrink-0" data-sku="${esc(item.sku)}">SKU:&nbsp;<span class="sku-text font-bold">${esc(item.sku)}</span></span>` : ''}
-                        </p>
-                        ${(item.color || item.shape || item.size) ? `
-                          <div class="flex flex-wrap items-center gap-1.5 my-1 text-[10px]">
-                            ${item.color ? `<span class="px-2 py-0.5 rounded-md bg-surface-container-high text-primary font-medium border border-[#e4e0d8]">Color: ${esc(item.color)}</span>` : ''}
-                            ${item.shape ? `<span class="px-2 py-0.5 rounded-md bg-surface-container-high text-primary font-medium border border-[#e4e0d8]">Shape: ${esc(item.shape)}</span>` : ''}
-                            ${item.size ? `<span class="px-2 py-0.5 rounded-md bg-secondary-container/50 text-secondary font-bold border border-[#e4e0d8]">Size: ${esc(item.size)}</span>` : ''}
-                          </div>
-                        ` : ''}
-                        ${item.customNote ? `<p class="text-[10.5px] text-[#9e3322] font-medium mt-0.5 break-anywhere"><span class="font-semibold">Custom Note:</span> “${esc(item.customNote)}”</p>` : ''}
+                        ${specLine ? `<p class="text-[11px] text-on-surface-variant truncate font-normal mt-0.5 leading-tight">${esc(specLine)}</p>` : ''}
+                        ${item.customNote ? `<p class="text-[10px] text-[#9e3322] font-medium mt-0.5 truncate"><span class="font-semibold">Custom Note:</span> “${esc(item.customNote)}”</p>` : ''}
                         ${item.isOutOfStock ? `
                           <div class="mt-1.5 p-2 rounded-lg bg-[#ffe4de] text-[#9e3322] border border-[#f5c2b7] text-xs font-semibold flex items-center justify-between gap-2">
                             <div class="flex items-center gap-1.5 min-w-0">
@@ -3909,28 +3900,25 @@
                           </div>
                         ` : ''}
                       </div>
-                      <div class="flex flex-wrap items-baseline gap-1.5 sm:gap-2 mt-1">
-                        <span class="font-spec-numeral text-sm sm:text-base font-bold text-primary" data-line-total="${effectiveUnit * item.qty}">${formatINR(effectiveUnit * item.qty)}</span>
-                        <span class="font-spec-numeral text-[11px] text-outline">(${formatINR(effectiveUnit)} / unit)</span>
-                        ${isTierDiscounted ? `<span class="px-2 py-0.5 rounded-full bg-secondary-container/60 text-secondary font-label-sm text-[10px] font-bold">Volume Tier Applied</span>` : ''}
+
+                      <!-- Compact Integrated Price & Stepper Row -->
+                      <div class="flex items-center justify-between gap-2 mt-2 pt-1.5 border-t border-[#f2eee7]">
+                        <div class="flex items-baseline gap-1.5 min-w-0">
+                          <span class="font-spec-numeral text-xs sm:text-sm font-bold text-primary" data-line-total="${effectiveUnit * item.qty}">${formatINR(effectiveUnit * item.qty)}</span>
+                          <span class="font-spec-numeral text-[10px] text-outline">(${formatINR(effectiveUnit)}/unit)</span>
+                          ${isTierDiscounted ? `<span class="px-1.5 py-0.5 rounded-full bg-secondary-container/60 text-secondary text-[9px] font-bold">Volume Tier Applied</span>` : ''}
+                        </div>
+                        <div class="flex items-center bg-surface-container-low rounded-lg p-0.5 border border-[#e4e0d8] shrink-0">
+                          <button type="button" aria-label="Decrease quantity" onclick="window.handleCartQty('${esc(item.cartItemId)}', -1)" class="w-6 h-6 rounded-md bg-white text-primary flex items-center justify-center font-bold hover:bg-surface-container cursor-pointer transition-colors shadow-2xs">
+                            <span class="material-symbols-outlined text-xs" aria-hidden="true">remove</span>
+                          </button>
+                          <span class="font-spec-numeral text-xs font-bold px-2 text-primary">${item.qty}</span>
+                          <button type="button" aria-label="Increase quantity" onclick="window.handleCartQty('${esc(item.cartItemId)}', 1)" class="w-6 h-6 rounded-md bg-white text-primary flex items-center justify-center font-bold hover:bg-surface-container cursor-pointer transition-colors shadow-2xs">
+                            <span class="material-symbols-outlined text-xs" aria-hidden="true">add</span>
+                          </button>
+                        </div>
                       </div>
                     </div>
-                  </div>
-
-                  <div class="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-surface-container">
-                    <div class="flex items-center bg-surface-container-low rounded-lg p-0.5 border border-[#e4e0d8]">
-                      <button type="button" aria-label="Decrease quantity" onclick="window.handleCartQty('${esc(item.cartItemId)}', -1)" class="w-8 h-8 rounded-md bg-white text-primary flex items-center justify-center font-bold hover:bg-surface-container cursor-pointer transition-colors shadow-2xs">
-                        <span class="material-symbols-outlined text-xs" aria-hidden="true">remove</span>
-                      </button>
-                      <span class="font-spec-numeral text-xs font-bold px-2.5 text-primary">${item.qty}</span>
-                      <button type="button" aria-label="Increase quantity" onclick="window.handleCartQty('${esc(item.cartItemId)}', 1)" class="w-8 h-8 rounded-md bg-white text-primary flex items-center justify-center font-bold hover:bg-surface-container cursor-pointer transition-colors shadow-2xs">
-                        <span class="material-symbols-outlined text-xs" aria-hidden="true">add</span>
-                      </button>
-                    </div>
-                    <button type="button" onclick="window.handleSaveForLater('${esc(item.cartItemId)}', '${esc(item.productId)}')" class="min-h-[36px] px-2.5 rounded-lg text-xs text-secondary font-semibold hover:bg-surface-container-low flex items-center gap-1 cursor-pointer transition-colors">
-                      <span class="material-symbols-outlined text-sm" aria-hidden="true">bookmark_add</span>
-                      <span>Save for later</span>
-                    </button>
                   </div>
                 </div>
               `;}).join('')}
@@ -3976,103 +3964,104 @@
 
             <!-- Right Column: Voucher + Single Unified Invoice Summary (5 cols) -->
             <div class="lg:col-span-5 flex flex-col gap-3 sm:gap-4 sticky top-20 min-w-0">
-              <!-- Vouchers & Studio Offers (Apple, Elevated Luxury Atelier Standard) -->
-              <div class="ram-card p-4 sm:p-5 bg-white flex flex-col gap-3 min-w-0 border border-[#e6e2d8] rounded-2xl shadow-sm">
-                <div class="flex items-center justify-between">
-                  <div class="flex items-center gap-2">
-                    <div class="w-7 h-7 rounded-lg bg-[#faf8f5] border border-[#e6e2d8] flex items-center justify-center text-[#cda851]">
-                      <span class="material-symbols-outlined text-base" aria-hidden="true">local_activity</span>
-                    </div>
-                    <div>
-                      <h3 class="text-xs sm:text-sm font-bold text-primary leading-tight">Studio Voucher or Promo Code</h3>
-                      <p class="text-[10.5px] text-on-surface-variant leading-tight">Enter your exclusive code or select an available studio offer below</p>
-                    </div>
-                  </div>
-                  ${summary.couponCode ? `
-                    <button type="button" onclick="window.handleRemoveCoupon()" class="text-[11px] font-semibold text-rose-600 hover:text-rose-800 transition-colors cursor-pointer px-2 py-0.5 rounded-md hover:bg-rose-50" title="Remove applied coupon">
-                      Remove
-                    </button>
-                  ` : ''}
-                </div>
-
-                <!-- Input Bar -->
-                <form class="flex gap-2" onsubmit="event.preventDefault(); window.handleApplyCoupon();">
-                  <div class="relative flex-1 min-w-0">
-                    <input 
-                      id="cart-coupon-input" 
-                      type="text" 
-                      value="${esc(summary.couponCode || summary.savedCouponCode || '')}" 
-                      placeholder="ENTER PROMO CODE (E.G. STUDIO10)" 
-                      class="w-full h-11 px-3.5 rounded-xl bg-surface-container-low border border-[#e4e0d8] font-spec-numeral text-xs font-semibold tracking-wider uppercase text-primary placeholder:text-gray-400 placeholder:font-normal placeholder:tracking-normal focus:outline-none focus:border-secondary focus:ring-1 focus:ring-secondary transition-all"
-                    >
-                  </div>
-                  <button 
-                    type="submit" 
-                    class="h-11 px-5 rounded-xl bg-[#1c1b18] text-[#cda851] text-xs font-bold tracking-wider hover:bg-[#2d2a24] active:scale-95 transition-all shrink-0 cursor-pointer shadow-sm flex items-center justify-center gap-1.5"
-                  >
-                    <span>APPLY</span>
-                  </button>
-                </form>
-
-                <!-- Feedback Banner: Active Applied State -->
-                ${summary.couponDiscount > 0 ? `
-                  <div class="flex items-center justify-between p-2.5 rounded-xl bg-emerald-50/80 border border-emerald-200 text-xs">
-                    <div class="flex items-center gap-2 text-[#266b4e] font-semibold">
-                      <span class="material-symbols-outlined text-base" style="font-variation-settings: 'FILL' 1;" aria-hidden="true">check_circle</span>
-                      <span>Code <strong>${esc(summary.couponCode)}</strong> active — <span class="font-bold">${formatINR(summary.couponDiscount)} saved!</span></span>
-                    </div>
-                    <button type="button" onclick="window.handleRemoveCoupon()" class="text-[11px] font-bold text-emerald-800 hover:underline cursor-pointer">
-                      Remove
-                    </button>
-                  </div>
-                ` : (summary.couponInvalidReason ? `
-                  <div id="cart-coupon-warning" class="flex items-start gap-2 text-[#704600] bg-[#fff5e0] p-2.5 rounded-xl border border-[#fae2b4] text-xs font-medium">
-                    <span class="material-symbols-outlined text-base shrink-0 mt-0.5 text-[#b57c1e]" aria-hidden="true">info</span>
-                    <span class="leading-relaxed">${esc(summary.couponInvalidReason)}</span>
-                  </div>
-                ` : '')}
-
-                <!-- Available Public Offers (Curated Luxury Cards) -->
-                ${(() => {
-                  const publicCoupons = Store.getPublicCoupons ? Store.getPublicCoupons() : {};
-                  const couponsList = Object.values(publicCoupons);
-                  if (!couponsList.length) return '';
-                  return `
-                    <div class="pt-1.5 space-y-2 border-t border-[#f0ece4]">
-                      <div class="flex items-center justify-between text-[11px] text-on-surface-variant font-semibold">
-                        <span>Available Studio Offers (${couponsList.length})</span>
-                        <span class="text-[10px] text-gray-400 font-normal">Tap to apply to bag</span>
+              <!-- Vouchers & Studio Offers (Zero-Waste, Compact Luxury) -->
+              ${(() => {
+                const publicCoupons = Store.getPublicCoupons ? Store.getPublicCoupons() : {};
+                const couponsList = Object.values(publicCoupons);
+                const hasPublicOffers = couponsList.length > 0;
+                return `
+                <div class="ram-card p-3 sm:p-3.5 bg-white flex flex-col gap-2.5 min-w-0 border border-[#e6e2d8] rounded-xl shadow-2xs">
+                  <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-2">
+                      <div class="w-6 h-6 rounded-md bg-[#faf8f5] border border-[#e6e2d8] flex items-center justify-center text-[#cda851]">
+                        <span class="material-symbols-outlined text-sm" aria-hidden="true">local_activity</span>
                       </div>
-                      <div class="grid grid-cols-1 gap-2">
+                      <div>
+                        <h3 class="text-xs sm:text-sm font-bold text-primary leading-tight">Studio Voucher</h3>
+                        <p class="text-[10px] sm:text-[10.5px] text-on-surface-variant leading-tight">${hasPublicOffers ? 'Enter code or pick an offer below' : 'Enter your promo code'}</p>
+                      </div>
+                    </div>
+                    ${summary.couponCode ? `
+                      <button type="button" onclick="window.handleRemoveCoupon()" class="text-[11px] font-semibold text-rose-600 hover:text-rose-800 transition-colors cursor-pointer px-2 py-0.5 rounded-md hover:bg-rose-50" title="Remove applied coupon">
+                        Remove
+                      </button>
+                    ` : ''}
+                  </div>
+
+                  <!-- Input Bar (Compact 38px / 40px) -->
+                  <form class="flex gap-2" onsubmit="event.preventDefault(); window.handleApplyCoupon();">
+                    <div class="relative flex-1 min-w-0">
+                      <input 
+                        id="cart-coupon-input" 
+                        type="text" 
+                        value="${esc(summary.couponCode || summary.savedCouponCode || '')}" 
+                        placeholder="PROMO CODE" 
+                        class="w-full h-9 sm:h-10 px-3 rounded-lg bg-surface-container-low border border-[#e4e0d8] font-spec-numeral text-xs font-semibold tracking-wider uppercase text-primary placeholder:text-gray-400 placeholder:font-normal placeholder:tracking-normal focus:outline-none focus:border-secondary focus:ring-1 focus:ring-secondary transition-all"
+                      >
+                    </div>
+                    <button 
+                      type="submit" 
+                      class="h-9 sm:h-10 px-4 rounded-lg bg-[#1c1b18] text-[#cda851] text-xs font-bold tracking-wider hover:bg-[#2d2a24] active:scale-95 transition-all shrink-0 cursor-pointer shadow-2xs flex items-center justify-center"
+                    >
+                      <span>APPLY</span>
+                    </button>
+                  </form>
+
+                  <!-- Feedback Banner: Active Applied State -->
+                  ${summary.couponDiscount > 0 ? `
+                    <div class="flex items-center justify-between p-2 rounded-lg bg-emerald-50/80 border border-emerald-200 text-xs">
+                      <div class="flex items-center gap-1.5 text-[#266b4e] font-semibold">
+                        <span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;" aria-hidden="true">check_circle</span>
+                        <span>Code <strong>${esc(summary.couponCode)}</strong> — <span class="font-bold">${formatINR(summary.couponDiscount)} saved!</span></span>
+                      </div>
+                      <button type="button" onclick="window.handleRemoveCoupon()" class="text-[10.5px] font-bold text-emerald-800 hover:underline cursor-pointer">
+                        Remove
+                      </button>
+                    </div>
+                  ` : (summary.couponInvalidReason ? `
+                    <div id="cart-coupon-warning" class="flex items-start gap-1.5 text-[#704600] bg-[#fff5e0] p-2 rounded-lg border border-[#fae2b4] text-xs font-medium">
+                      <span class="material-symbols-outlined text-sm shrink-0 mt-0.5 text-[#b57c1e]" aria-hidden="true">info</span>
+                      <span class="leading-snug">${esc(summary.couponInvalidReason)}</span>
+                    </div>
+                  ` : '')}
+
+                  <!-- Available Public Offers (Only renders when hasPublicOffers is true) -->
+                  ${hasPublicOffers ? `
+                    <div class="pt-1.5 space-y-1.5 border-t border-[#f0ece4]">
+                      <div class="flex items-center justify-between text-[10.5px] text-on-surface-variant font-semibold">
+                        <span>Studio Offers (${couponsList.length})</span>
+                        <span class="text-[9.5px] text-gray-400 font-normal">Tap to apply</span>
+                      </div>
+                      <div class="grid grid-cols-1 gap-1.5">
                         ${couponsList.map(c => {
                           const isApplied = summary.couponCode === c.code;
                           const isEligible = summary.subtotal >= c.minOrder;
                           const shortfall = c.minOrder - summary.subtotal;
                           return `
-                            <div class="p-3 rounded-xl border transition-all ${isApplied ? 'bg-emerald-50/40 border-emerald-300 ring-1 ring-emerald-200' : 'bg-[#faf8f5]/70 border-[#e6e2d8] hover:border-[#cda851]/60'} flex items-center justify-between gap-3">
+                            <div class="p-2.5 rounded-lg border transition-all ${isApplied ? 'bg-emerald-50/40 border-emerald-300 ring-1 ring-emerald-200' : 'bg-[#faf8f5]/70 border-[#e6e2d8] hover:border-[#cda851]/60'} flex items-center justify-between gap-2.5">
                               <div class="min-w-0 space-y-0.5">
-                                <div class="flex items-center gap-2">
-                                  <span class="inline-flex items-center px-2 py-0.5 rounded-md bg-[#1c1b18] text-[#cda851] font-mono font-bold text-xs tracking-wider">
+                                <div class="flex items-center gap-1.5">
+                                  <span class="inline-flex items-center px-1.5 py-0.5 rounded bg-[#1c1b18] text-[#cda851] font-mono font-bold text-[11px] tracking-wider">
                                     ${esc(c.code)}
                                   </span>
                                   <span class="text-xs font-bold text-primary">
                                     ${c.type === 'percent' ? `${c.value}% OFF` : `Flat ${formatINR(c.value)} OFF`}
                                   </span>
                                 </div>
-                                <p class="text-[11px] text-gray-500 leading-tight">
-                                  ${c.minOrder > 0 ? `On handcrafted orders above ${formatINR(c.minOrder)}` : 'No minimum order required'}
-                                  ${!isEligible && shortfall > 0 ? ` • <span class="text-amber-700 font-medium">Add ${formatINR(shortfall)} more</span>` : ''}
+                                <p class="text-[10px] text-gray-500 leading-tight">
+                                  ${c.minOrder > 0 ? `Orders above ${formatINR(c.minOrder)}` : 'No minimum order'}
+                                  ${!isEligible && shortfall > 0 ? ` • <span class="text-amber-700 font-medium">Add ${formatINR(shortfall)}</span>` : ''}
                                 </p>
                               </div>
 
                               <button 
                                 type="button" 
                                 onclick="window.quickSelectCoupon('${esc(c.code)}')"
-                                class="shrink-0 px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                                class="shrink-0 px-2.5 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer ${
                                   isApplied 
-                                    ? 'bg-emerald-600 text-white shadow-sm' 
+                                    ? 'bg-emerald-600 text-white shadow-2xs' 
                                     : (isEligible 
-                                        ? 'bg-[#1c1b18] text-[#cda851] hover:bg-[#2d2a24] active:scale-95 shadow-sm' 
+                                        ? 'bg-[#1c1b18] text-[#cda851] hover:bg-[#2d2a24] active:scale-95 shadow-2xs' 
                                         : 'bg-surface-container-high text-gray-600 hover:bg-surface-container-highest border border-[#e4e0d8]')
                                 }"
                               >
@@ -4083,9 +4072,10 @@
                         }).join('')}
                       </div>
                     </div>
-                  `;
-                })()}
-              </div>
+                  ` : ''}
+                </div>
+                `;
+              })()}
 
               <!-- SINGLE Clean Invoice Summary -->
               <div id="order-invoice-summary" class="ram-card p-4 sm:p-5 bg-white flex flex-col gap-2.5">

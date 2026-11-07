@@ -278,10 +278,17 @@
   };
 
   const DYNAMIC_COUPONS = {};
+  let hasSyncedCouponsFromBackend = false;
 
   function getAllCoupons() {
+    const isDbSynced = hasSyncedCouponsFromBackend || safeRead('vk_coupons_synced_from_db', false);
     const cached = safeRead(STORAGE_KEYS.DYNAMIC_COUPONS, {});
-    const merged = { ...COUPONS, ...(cached || {}), ...DYNAMIC_COUPONS };
+    // If backend database has synced, the database state is STRICTLY authoritative.
+    // Static COUPONS fallback is bypassed so deleted or ghost coupons cannot resurrect.
+    const merged = isDbSynced
+      ? { ...(cached || {}), ...DYNAMIC_COUPONS }
+      : { ...COUPONS, ...(cached || {}), ...DYNAMIC_COUPONS };
+
     const result = {};
     for (const [k, v] of Object.entries(merged)) {
       if (!v || v.isDeleted) continue;
@@ -473,6 +480,8 @@
     },
 
     resetDynamicCoupons() {
+      hasSyncedCouponsFromBackend = false;
+      safeWrite('vk_coupons_synced_from_db', false);
       for (const k of Object.keys(DYNAMIC_COUPONS)) {
         delete DYNAMIC_COUPONS[k];
       }
@@ -2169,6 +2178,9 @@
 
         if (error || !Array.isArray(data)) return;
 
+        hasSyncedCouponsFromBackend = true;
+        safeWrite('vk_coupons_synced_from_db', true);
+
         for (const k of Object.keys(DYNAMIC_COUPONS)) {
           delete DYNAMIC_COUPONS[k];
         }
@@ -2191,6 +2203,7 @@
           };
         });
         safeWrite(STORAGE_KEYS.DYNAMIC_COUPONS, DYNAMIC_COUPONS);
+        this.notify('coupons_updated', DYNAMIC_COUPONS);
 
         // Auto-reconcile active cart coupon if it was deleted, disabled, or expired
         const activeCoupon = this.getCouponCode();
@@ -2648,6 +2661,8 @@
       }
 
       if (payload.type === 'COUPONS_UPDATED' && Array.isArray(payload.coupons)) {
+        hasSyncedCouponsFromBackend = true;
+        safeWrite('vk_coupons_synced_from_db', true);
         const nextCodes = new Set(payload.coupons.map(c => String(c.code).trim().toUpperCase()));
         for (const k of Object.keys(DYNAMIC_COUPONS)) {
           if (!nextCodes.has(k)) {
