@@ -3976,15 +3976,16 @@
                   specParts.push(rawSize);
                 }
                 const specLine = specParts.join(' • ');
+                const itemId = item.cartItemId || item.productId || item.id;
                 return `
-                <div class="ram-card p-3 sm:p-3.5 bg-white flex flex-col gap-2 min-w-0 rounded-xl border border-[#e6e2d8]" data-cart-item-id="${esc(item.cartItemId)}" ${item.sku ? `data-item-sku="${esc(item.sku)}"` : ''}>
+                <div class="ram-card p-3 sm:p-3.5 bg-white flex flex-col gap-2 min-w-0 rounded-xl border border-[#e6e2d8]" data-cart-item-id="${esc(itemId)}" ${item.sku ? `data-item-sku="${esc(item.sku)}"` : ''}>
                   <div class="flex gap-2.5 sm:gap-3.5 min-w-0">
                     <img src="${esc(item.image)}" alt="${esc(item.name)}" onclick="window.navigateTo('product', '${esc(item.productId)}')" class="w-14 h-14 sm:w-16 sm:h-16 rounded-lg object-cover bg-surface-container shrink-0 cursor-pointer border border-[#e4e0d8]">
                     <div class="flex-1 min-w-0 flex flex-col justify-between">
                       <div>
                         <div class="flex items-start justify-between gap-1.5">
                           <h2 onclick="window.navigateTo('product', '${esc(item.productId)}')" class="font-title-md text-xs sm:text-sm text-primary font-bold line-clamp-1 cursor-pointer hover:text-secondary break-words leading-tight">${esc(item.name)}</h2>
-                          <button type="button" aria-label="Remove item" onclick="window.handleCartRemove('${esc(item.cartItemId)}')" class="w-7 h-7 rounded-lg text-on-surface-variant hover:text-error hover:bg-surface-container-low flex items-center justify-center shrink-0 cursor-pointer transition-colors -mr-1 -mt-1">
+                          <button type="button" aria-label="Remove item" onclick="window.handleCartRemove('${esc(itemId)}')" class="w-7 h-7 rounded-lg text-on-surface-variant hover:text-error hover:bg-surface-container-low flex items-center justify-center shrink-0 cursor-pointer transition-colors -mr-1 -mt-1">
                             <span class="material-symbols-outlined text-sm" aria-hidden="true">close</span>
                           </button>
                         </div>
@@ -3996,7 +3997,7 @@
                               <span class="material-symbols-outlined text-sm shrink-0" aria-hidden="true">inventory_2</span>
                               <span class="truncate">${esc(item.stockWarning || 'Currently Out of Stock')}</span>
                             </div>
-                            <button type="button" onclick="window.handleCartRemove('${esc(item.cartItemId)}')" class="font-bold underline cursor-pointer shrink-0">Remove</button>
+                            <button type="button" onclick="window.handleCartRemove('${esc(itemId)}')" class="font-bold underline cursor-pointer shrink-0">Remove</button>
                           </div>
                         ` : ''}
                       </div>
@@ -4014,11 +4015,11 @@
                           </span>
                         </div>
                         <div class="flex items-center bg-surface-container-low rounded-lg p-0.5 border border-[#e4e0d8] shrink-0">
-                          <button type="button" aria-label="Decrease quantity" onclick="window.handleCartQty('${esc(item.cartItemId)}', -1)" class="w-6 h-6 rounded-md bg-white text-primary flex items-center justify-center font-bold hover:bg-surface-container cursor-pointer transition-colors shadow-2xs">
+                          <button type="button" aria-label="Decrease quantity" onclick="window.handleCartQty('${esc(itemId)}', -1)" class="w-6 h-6 rounded-md bg-white text-primary flex items-center justify-center font-bold hover:bg-surface-container cursor-pointer transition-colors shadow-2xs">
                             <span class="material-symbols-outlined text-xs" aria-hidden="true">remove</span>
                           </button>
                           <span class="js-cart-item-qty font-spec-numeral text-xs font-bold px-2 text-primary">${item.qty}</span>
-                          <button type="button" aria-label="Increase quantity" onclick="window.handleCartQty('${esc(item.cartItemId)}', 1)" class="w-6 h-6 rounded-md bg-white text-primary flex items-center justify-center font-bold hover:bg-surface-container cursor-pointer transition-colors shadow-2xs">
+                          <button type="button" aria-label="Increase quantity" onclick="window.handleCartQty('${esc(itemId)}', 1)" class="w-6 h-6 rounded-md bg-white text-primary flex items-center justify-center font-bold hover:bg-surface-container cursor-pointer transition-colors shadow-2xs">
                             <span class="material-symbols-outlined text-xs" aria-hidden="true">add</span>
                           </button>
                         </div>
@@ -7072,8 +7073,10 @@
 
   // Cart & Checkout Handlers
   window.handleCartQty = function (cartItemId, delta) {
+    if (!cartItemId) return;
+    const targetId = String(cartItemId).trim();
     const cart = Store.getCart();
-    const item = cart.find(i => i.cartItemId === cartItemId || i.productId === cartItemId);
+    const item = cart.find(i => i.cartItemId === targetId || i.productId === targetId || i.id === targetId);
     if (!item) return;
 
     if (delta > 0) {
@@ -7090,21 +7093,36 @@
     const nextQty = item.qty + delta;
     if (nextQty <= 0) {
       // Delegate to optimistic slide-out removal
-      window.handleCartRemove(cartItemId);
+      window.handleCartRemove(targetId);
       return;
     }
 
     // 1. Synchronously update local store
-    Store.updateCartQty(cartItemId, delta, false);
+    Store.updateCartQty(targetId, delta, false);
     const newSummary = Store.getCartSummary();
-    const updatedItem = newSummary.cart.find(i => i.cartItemId === cartItemId || i.productId === cartItemId);
+    const updatedItem = newSummary.cart.find(i => i.cartItemId === targetId || i.productId === targetId || i.id === targetId);
     if (!updatedItem) return;
 
     const effectiveUnit = Store.getEffectiveUnitPrice(updatedItem);
     const isTierDiscounted = effectiveUnit < updatedItem.price;
 
     // 2. Surgical In-Place DOM Mutation of the Card
-    const card = document.querySelector(`[data-cart-item-id="${cartItemId}"]`);
+    let card = null;
+    try {
+      card = document.querySelector(`[data-cart-item-id="${CSS.escape(targetId)}"]`);
+    } catch (_) {
+      card = document.querySelector(`[data-cart-item-id="${targetId}"]`);
+    }
+    if (!card) {
+      const allCards = document.querySelectorAll('[data-cart-item-id]');
+      for (const c of allCards) {
+        if (c.getAttribute('data-cart-item-id') === targetId) {
+          card = c;
+          break;
+        }
+      }
+    }
+
     if (card) {
       const qtyEl = card.querySelector('.js-cart-item-qty');
       if (qtyEl) qtyEl.textContent = updatedItem.qty;
@@ -7250,12 +7268,24 @@
   }
 
   window.handleCartRemove = function (cartItemId) {
-    const card = document.querySelector(`[data-cart-item-id="${cartItemId}"]`);
-    
-    // Save snapshot of item for defensive rollback
-    const prevCart = Store.getCart();
-    const removedItemIndex = prevCart.findIndex(i => i.cartItemId === cartItemId || i.productId === cartItemId);
-    const removedItem = removedItemIndex >= 0 ? prevCart[removedItemIndex] : null;
+    if (!cartItemId) return;
+    const targetId = String(cartItemId).trim();
+
+    let card = null;
+    try {
+      card = document.querySelector(`[data-cart-item-id="${CSS.escape(targetId)}"]`);
+    } catch (_) {
+      card = document.querySelector(`[data-cart-item-id="${targetId}"]`);
+    }
+    if (!card) {
+      const allCards = document.querySelectorAll('[data-cart-item-id]');
+      for (const c of allCards) {
+        if (c.getAttribute('data-cart-item-id') === targetId) {
+          card = c;
+          break;
+        }
+      }
+    }
 
     // 1. Optimistic UI (Visuals First): Smooth slide out and collapse height to 0px over 200ms
     if (card) {
@@ -7278,7 +7308,7 @@
     }
 
     // 2. Halt Full Re-render: Synchronously update local store
-    const newSummary = Store.removeFromCart(cartItemId);
+    const newSummary = Store.removeFromCart(targetId);
     updateGlobalBadges();
 
     // 3. Micro-Reconciliation: Update invoice and progress bar numbers in-place
@@ -7303,31 +7333,33 @@
       icon: 'remove_shopping_cart'
     });
 
-    // 6. Silent Background Sync with Supabase & Defensive Rollback
+    // 6. Silent Background Sync with Supabase (if table exists)
     (async function syncCartDelete() {
       try {
         if (window.VistaraSupabase && typeof window.VistaraSupabase.getClient === 'function') {
           const client = window.VistaraSupabase.getClient();
           if (client && typeof client.from === 'function') {
-            const { error } = await client.from('cart').delete().eq('cart_item_id', cartItemId);
-            if (error && error.code !== '42P01' && !error.message?.includes('does not exist') && !error.message?.includes('relation')) {
-              throw error;
+            const { error } = await client.from('cart').delete().eq('cart_item_id', targetId);
+            const isTableMissing = !error ||
+              error.code === 'PGRST205' ||
+              error.code === '42P01' ||
+              error.status === 404 ||
+              (error.message && (
+                error.message.includes('schema cache') ||
+                error.message.includes('Could not find') ||
+                error.message.includes('does not exist') ||
+                error.message.includes('relation')
+              ));
+            if (error && !isTableMissing) {
+              if (error.message && (error.message.includes('Failed to fetch') || error.message.includes('network') || error.message.includes('NetworkError'))) {
+                throw error;
+              }
             }
           }
         }
       } catch (err) {
-        console.warn('[Cart Removal] Background Supabase deletion failed, executing defensive rollback:', err);
-        // Defensive Rollback: Restore item into state and DOM
-        if (removedItem) {
-          const restoredCart = Store.getCart();
-          if (removedItemIndex >= 0 && removedItemIndex <= restoredCart.length) {
-            restoredCart.splice(removedItemIndex, 0, removedItem);
-          } else {
-            restoredCart.push(removedItem);
-          }
-          Store.saveCart(restoredCart);
-          updateGlobalBadges();
-          renderActiveView();
+        console.warn('[Cart Removal] Background Supabase deletion notice:', err);
+        if (err && err.message && (err.message.includes('Failed to fetch') || err.message.includes('network'))) {
           window.showToast('Could not remove item. Please check your connection.', '', {
             type: 'error',
             icon: 'wifi_off'

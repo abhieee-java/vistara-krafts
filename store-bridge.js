@@ -669,6 +669,7 @@
         if (!product) {
           return {
             ...item,
+            cartItemId: item.cartItemId || item.id || `item_${Date.now()}_${Math.random().toString(36).slice(2, 6)}`,
             isOutOfStock: true,
             stockQuantity: 0,
             stockStatus: 'discontinued',
@@ -699,8 +700,10 @@
         const authoritativeStock = matchedVar ? Number(matchedVar.stock ?? 10) : Number(product.stockQuantity ?? 10);
         const isOutOfStock = Boolean(!product.inStock || authoritativeStock <= 0 || product.status === 'out_of_stock' || product.status === 'archived');
 
+        const fallbackItemId = item.cartItemId || item.id || (item.productId ? `${item.productId}_${String(item.variantLabel || 'std').replace(/[^a-zA-Z0-9]/g, '_')}` : `item_${Date.now()}_${Math.random().toString(36).slice(2, 6)}`);
         const updatedItem = {
           ...item,
+          cartItemId: fallbackItemId,
           name: product.name,
           image: item.image || product.image,
           price: authoritativePrice,
@@ -805,7 +808,7 @@
     updateCartQty(cartItemId, deltaOrExact, isExact = false) {
       let cart = this.getCart();
       cart = cart.map(item => {
-        if (item.cartItemId === cartItemId || item.productId === cartItemId) {
+        if (item.cartItemId === cartItemId || item.productId === cartItemId || item.id === cartItemId) {
           const nextQty = isExact ? Number(deltaOrExact) : item.qty + Number(deltaOrExact);
           return { ...item, qty: nextQty };
         }
@@ -816,7 +819,17 @@
     },
 
     removeFromCart(cartItemId) {
-      const cart = this.getCart().filter(item => item.cartItemId !== cartItemId && item.productId !== cartItemId);
+      let removedOne = false;
+      const cart = this.getCart().filter(item => {
+        if (item.cartItemId && item.cartItemId === cartItemId) {
+          return false;
+        }
+        if (!removedOne && (item.productId === cartItemId || item.id === cartItemId)) {
+          removedOne = true;
+          return false;
+        }
+        return true;
+      });
       this.saveCart(cart);
       return this.getCartSummary();
     },
