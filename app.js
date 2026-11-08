@@ -2604,7 +2604,7 @@
               <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
               Batch VK-26-C38 Lab Certified
             </span>
-            <button type="button" onclick="window.shareCurrentProduct('${esc(product.id)}')" class="min-h-[44px] px-2.5 inline-flex items-center gap-1.5 text-xs text-secondary font-semibold hover:text-primary transition-colors cursor-pointer">
+            <button type="button" aria-label="Share this creation" onclick="window.shareCurrentProduct('${esc(product.id)}')" class="min-h-[44px] px-2.5 inline-flex items-center gap-1.5 text-xs text-secondary font-semibold hover:text-primary transition-colors cursor-pointer">
               <span class="material-symbols-outlined text-base" aria-hidden="true">share</span>
               <span class="hidden sm:inline">Share</span>
             </button>
@@ -3034,8 +3034,8 @@
         </section>
       </div>
 
-      <!-- Sticky Bottom PDP Action Bar (De-cluttered dual-CTA layout, Apple-grade restraint) -->
-      <aside class="fixed bottom-16 lg:bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-lg border-t border-[#e4e0d8] px-3 sm:px-8 py-2.5 shadow-lg max-w-full">
+      <!-- Sticky Bottom PDP Action Bar (De-cluttered dual-CTA layout, matching reference image & Vistāra brand) -->
+      <aside class="fixed bottom-16 lg:bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-[#e4e0d8] px-3 sm:px-8 py-2.5 shadow-[0_-4px_20px_rgba(0,0,0,0.06)] max-w-full">
         <div class="max-w-7xl mx-auto flex items-center justify-between gap-3 sm:gap-6 max-w-full">
           
           <!-- Left: Product Context (Desktop / Tablet only, hidden on mobile to eliminate clutter) -->
@@ -3056,30 +3056,30 @@
             </div>
           </div>
 
-          <!-- Right: Clean Dual Action Buttons (Side-by-side 50/50 on mobile, matching reference design) -->
+          <!-- Right: Clean Dual Action Buttons (50/50 side-by-side on mobile, matching reference design) -->
           <div class="grid grid-cols-2 gap-2.5 sm:gap-3 w-full sm:w-auto sm:flex sm:items-center sm:justify-end">
-            <!-- Add to Cart / Bag (Clean white pill button with subtle border) -->
+            <!-- Add to Cart (Clean white pill button with crisp subtle border) -->
             <button
               type="button"
               id="pdp-add-to-cart-btn"
               onclick="window.addPdpToCart()"
               ${product.inStock === false ? 'disabled' : ''}
-              class="w-full sm:min-w-[150px] sm:w-auto h-12 px-3 sm:px-5 rounded-2xl border border-[#e4e0d8] bg-white hover:bg-surface-container active:scale-[0.98] text-primary font-bold text-xs min-[360px]:text-sm sm:text-base flex items-center justify-center transition-all cursor-pointer shadow-2xs ${product.inStock === false ? 'opacity-50 cursor-not-allowed' : ''}"
+              class="w-full sm:min-w-[155px] sm:w-auto h-[50px] min-[380px]:h-[52px] px-3 sm:px-6 rounded-2xl border-[1.5px] border-[#d8d4cb] bg-white hover:bg-surface-container active:scale-[0.97] text-[#1a1a1a] font-bold text-sm min-[380px]:text-base flex items-center justify-center transition-all cursor-pointer shadow-2xs ${product.inStock === false ? 'opacity-50 cursor-not-allowed' : ''}"
             >
               <span id="pdp-cta-label" class="whitespace-nowrap">${product.inStock === false ? 'Out of Stock' : 'Add to cart'}</span>
             </button>
 
-            <!-- Buy Now with Price (Rich brand CTA matching reference layout) -->
+            <!-- Buy Now with Price (Rich brand terracotta CTA matching reference layout) -->
             <button
               type="button"
               id="pdp-buy-now-btn"
               onclick="window.buyNowPdp()"
               ${product.inStock === false ? 'disabled' : ''}
-              class="w-full sm:min-w-[160px] sm:w-auto h-12 px-3 sm:px-5 rounded-2xl bg-[#9e3322] hover:bg-[#852a1b] active:scale-[0.98] text-white font-bold flex flex-col items-center justify-center transition-all cursor-pointer shadow-sm leading-tight py-1 ${product.inStock === false ? 'opacity-50 cursor-not-allowed' : ''}"
+              class="w-full sm:min-w-[165px] sm:w-auto h-[50px] min-[380px]:h-[52px] px-3 sm:px-6 rounded-2xl bg-[#9e3322] hover:bg-[#852a1b] active:scale-[0.97] text-white font-bold flex flex-col items-center justify-center transition-all cursor-pointer shadow-sm leading-tight py-1 ${product.inStock === false ? 'opacity-50 cursor-not-allowed' : ''}"
             >
-              <span class="text-xs min-[360px]:text-sm sm:text-base font-bold leading-none">${product.inStock === false ? 'Unavailable' : 'Buy now'}</span>
+              <span class="text-sm min-[380px]:text-base font-bold leading-none">${product.inStock === false ? 'Unavailable' : 'Buy now'}</span>
               ${product.inStock !== false ? `
-                <span class="text-[10.5px] min-[360px]:text-xs sm:text-xs font-semibold text-[#ffe4de] leading-none mt-1">at ${formatINR(totalCtaPrice)}</span>
+                <span class="text-xs min-[380px]:text-[13px] font-semibold text-[#ffe4de] leading-none mt-1">at ${formatINR(totalCtaPrice)}</span>
               ` : ''}
             </button>
           </div>
