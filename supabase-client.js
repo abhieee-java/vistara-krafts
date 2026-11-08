@@ -139,37 +139,43 @@
     }
   };
 
+  function createChainableBuilder(defaultData) {
+    const builder = {
+      eq(_column, _value) {
+        return builder;
+      },
+      match(_criteria) {
+        return builder;
+      },
+      order(_col, _opts) {
+        return builder;
+      },
+      single() {
+        return Promise.resolve({ data: Array.isArray(defaultData) ? defaultData[0] || null : defaultData, error: null });
+      },
+      then(resolve, reject) {
+        return Promise.resolve({ data: defaultData, error: null }).then(resolve, reject);
+      },
+      catch(reject) {
+        return Promise.resolve({ data: defaultData, error: null }).catch(reject);
+      }
+    };
+    return builder;
+  }
+
   function from(table) {
     return {
       select(_columns = '*') {
-        return {
-          eq(_column, _value) {
-            return Promise.resolve({ data: [], error: null });
-          },
-          order(_col, _opts) {
-            return Promise.resolve({ data: [], error: null });
-          },
-          then(resolve) {
-            resolve({ data: [], error: null });
-          }
-        };
+        return createChainableBuilder([]);
       },
       insert(rows) {
         return Promise.resolve({ data: Array.isArray(rows) ? rows : [rows], error: null });
       },
       update(values) {
-        return {
-          eq(_column, _value) {
-            return Promise.resolve({ data: [values], error: null });
-          }
-        };
+        return createChainableBuilder([values]);
       },
       delete() {
-        return {
-          eq(_column, _value) {
-            return Promise.resolve({ data: null, error: null });
-          }
-        };
+        return createChainableBuilder(null);
       }
     };
   }

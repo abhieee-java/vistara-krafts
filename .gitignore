@@ -3,6 +3,7 @@ node_modules/
 Thumbs.db
 *.log
 dist/
+scratch/
 .env
 .env.*
 .env.local

@@ -1207,7 +1207,7 @@
                   <span class="text-outline font-spec-numeral">(${p.reviewsCount})</span>
                   ${affinityTag ? `<span class="hidden sm:inline-block">${affinityTag}</span>` : ''}
                 </div>
-                <button type="button" aria-label="Toggle Wishlist" onclick="window.handleWishlistToggle(event, '${esc(p.id)}')" class="w-8 h-8 bg-transparent border-0 flex items-center justify-center ${isFav ? 'text-[#9e3322]' : 'text-primary'} hover:scale-110 active:scale-95 transition-transform cursor-pointer" title="Save to Wishlist">
+                <button type="button" aria-label="Toggle Wishlist" data-wishlist-btn="${esc(p.id)}" onclick="window.handleWishlistToggle(event, '${esc(p.id)}')" class="w-8 h-8 bg-transparent border-0 flex items-center justify-center ${isFav ? 'text-[#9e3322]' : 'text-primary'} hover:scale-110 active:scale-95 transition-transform cursor-pointer" title="Save to Wishlist">
                   <svg class="w-4 h-4 ${isFav ? 'fill-[#9e3322] stroke-[#9e3322]' : 'fill-none stroke-current'} transition-colors" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                     <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/>
                   </svg>
@@ -1296,7 +1296,7 @@
               <span class="px-1.5 py-0.5 rounded-md bg-primary/90 text-on-primary font-label-sm text-[8.5px] sm:text-[9px] font-semibold tracking-normal shadow-2xs leading-tight truncate block">${esc(p.badge)}</span>
               ${affinityTag}
             </div>
-            <button type="button" aria-label="Save to Wishlist" onclick="event.stopPropagation(); window.handleWishlistToggle(event, '${esc(p.id)}')" class="absolute top-1.5 right-1.5 z-10 min-w-[36px] min-h-[36px] p-1.5 bg-transparent border-0 flex items-center justify-center ${isFav ? 'text-[#9e3322]' : 'text-white'} hover:scale-110 active:scale-95 transition-transform cursor-pointer" title="Save to Wishlist">
+            <button type="button" aria-label="Save to Wishlist" data-wishlist-btn="${esc(p.id)}" onclick="event.stopPropagation(); window.handleWishlistToggle(event, '${esc(p.id)}')" class="absolute top-1.5 right-1.5 z-10 min-w-[36px] min-h-[36px] p-1.5 bg-transparent border-0 flex items-center justify-center ${isFav ? 'text-[#9e3322]' : 'text-white'} hover:scale-110 active:scale-95 transition-transform cursor-pointer" title="Save to Wishlist">
               <svg class="w-4 h-4 ${isFav ? 'fill-[#9e3322]' : 'fill-none'} filter drop-shadow-[0_1px_3px_rgba(0,0,0,0.6)] transition-colors" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                 <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/>
               </svg>
@@ -2638,7 +2638,7 @@
                 </span>
               </div>
               <!-- Floating Wishlist Heart Button (Minimal Floating Heart SVG, Zero Circular Background) -->
-              <button type="button" aria-label="Save to Wishlist" onclick="window.handleWishlistToggle(event, '${esc(product.id)}')" class="absolute top-3.5 right-3.5 z-10 min-w-[44px] min-h-[44px] p-2 bg-transparent border-0 flex items-center justify-center ${isFav ? 'text-[#9e3322]' : 'text-white'} hover:scale-110 active:scale-95 transition-transform cursor-pointer" title="Save to Wishlist">
+              <button type="button" aria-label="Save to Wishlist" data-wishlist-btn="${esc(product.id)}" onclick="window.handleWishlistToggle(event, '${esc(product.id)}')" class="absolute top-3.5 right-3.5 z-10 min-w-[44px] min-h-[44px] p-2 bg-transparent border-0 flex items-center justify-center ${isFav ? 'text-[#9e3322]' : 'text-white'} hover:scale-110 active:scale-95 transition-transform cursor-pointer" title="Save to Wishlist">
                 <svg class="w-6 h-6 ${isFav ? 'fill-[#9e3322]' : 'fill-none'} filter drop-shadow-[0_1px_4px_rgba(0,0,0,0.65)] transition-colors" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                   <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/>
                 </svg>
@@ -2790,7 +2790,7 @@
                   <span class="material-symbols-outlined text-lg shrink-0" aria-hidden="true">shopping_bag</span>
                   <span class="truncate">Add to Studio Bag • ${formatINR(totalCtaPrice)}</span>
                 </button>
-                <button type="button" aria-label="Save to Wishlist" onclick="window.handleWishlistToggle(event, '${esc(product.id)}')" class="w-12 h-12 rounded-xl bg-surface-container-low border border-[#e4e0d8] flex items-center justify-center ${isFav ? 'text-[#9e3322]' : 'text-primary'} hover:scale-105 active:scale-95 transition-all shrink-0 cursor-pointer" title="Save to Wishlist">
+                <button type="button" aria-label="Save to Wishlist" data-wishlist-btn="${esc(product.id)}" onclick="window.handleWishlistToggle(event, '${esc(product.id)}')" class="w-12 h-12 rounded-xl bg-surface-container-low border border-[#e4e0d8] flex items-center justify-center ${isFav ? 'text-[#9e3322]' : 'text-primary'} hover:scale-105 active:scale-95 transition-all shrink-0 cursor-pointer" title="Save to Wishlist">
                   <svg class="w-6 h-6 ${isFav ? 'fill-[#9e3322] stroke-[#9e3322]' : 'fill-none stroke-current'} transition-colors" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                     <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/>
                   </svg>
@@ -3722,7 +3722,7 @@
           </div>
           <div class="flex items-baseline justify-between gap-2">
             <h1 class="font-headline-md text-2xl sm:text-3xl text-primary font-bold tracking-tight">
-              Studio Bag <span class="text-secondary font-spec-numeral text-lg sm:text-xl font-medium">(${summary.itemsCount})</span>
+              Studio Bag <span id="cart-header-count" class="text-secondary font-spec-numeral text-lg sm:text-xl font-medium">(${summary.itemsCount})</span>
             </h1>
             ${summary.cart.length > 0 ? `
               <span class="text-xs text-on-surface-variant hidden sm:inline">Handcrafted atelier dispatch</span>
@@ -3851,26 +3851,26 @@
           </div>
         ` : `
           <!-- Free Shipping Progression Strip (Architecturally Bound to Authoritative Admin Settings) -->
-          <div class="p-3 sm:p-3.5 rounded-2xl ${isFreeUnlocked ? 'bg-[#f0f7f3] border border-[#266b4e]/30' : 'bg-secondary-container/90 border border-secondary/20'} shadow-2xs flex flex-col gap-2 transition-colors duration-300">
+          <div id="cart-free-shipping-strip" class="p-3 sm:p-3.5 rounded-2xl ${isFreeUnlocked ? 'bg-[#f0f7f3] border border-[#266b4e]/30' : 'bg-secondary-container/90 border border-secondary/20'} shadow-2xs flex flex-col gap-2 transition-colors duration-300">
             <div class="flex flex-wrap items-center justify-between gap-2 text-xs font-semibold">
-              <div class="flex items-center gap-1.5 sm:gap-2 ${isFreeUnlocked ? 'text-[#266b4e]' : 'text-primary'} min-w-0">
-                <span class="material-symbols-outlined text-base sm:text-lg ${isFreeUnlocked ? 'text-[#266b4e] scale-110' : 'text-secondary'} shrink-0 transition-transform" style="font-variation-settings: 'FILL' 1;" aria-hidden="true">${isFreeUnlocked ? 'verified' : 'local_shipping'}</span>
-                <span class="tracking-tight text-[11px] sm:text-xs break-words leading-tight">
+              <div id="cart-free-shipping-icon-wrap" class="flex items-center gap-1.5 sm:gap-2 ${isFreeUnlocked ? 'text-[#266b4e]' : 'text-primary'} min-w-0">
+                <span id="cart-free-shipping-icon" class="material-symbols-outlined text-base sm:text-lg ${isFreeUnlocked ? 'text-[#266b4e] scale-110' : 'text-secondary'} shrink-0 transition-transform" style="font-variation-settings: 'FILL' 1;" aria-hidden="true">${isFreeUnlocked ? 'verified' : 'local_shipping'}</span>
+                <span id="cart-free-shipping-message" class="tracking-tight text-[11px] sm:text-xs break-words leading-tight">
                   ${isFreeUnlocked
                     ? 'Unlocked! Eligible for <strong class="text-[#266b4e]">Free Pan-India BlueDart Air Express Delivery</strong>!'
                     : `Add <strong class="text-secondary font-bold font-spec-numeral">${formatINR(summary.amountToFreeShipping)}</strong> more for <strong>Free Express Delivery</strong>!`}
                 </span>
               </div>
-              <span class="font-spec-numeral font-bold ${isFreeUnlocked ? 'text-[#266b4e]' : 'text-primary'} text-[11px] sm:text-xs whitespace-nowrap bg-white/90 px-2 py-0.5 rounded-full border border-black/5 shadow-2xs shrink-0">${formatINR(summary.subtotal)} / ${formatINR(summary.freeShippingThreshold)}</span>
+              <span id="cart-free-shipping-subtotal-fraction" class="font-spec-numeral font-bold ${isFreeUnlocked ? 'text-[#266b4e]' : 'text-primary'} text-[11px] sm:text-xs whitespace-nowrap bg-white/90 px-2 py-0.5 rounded-full border border-black/5 shadow-2xs shrink-0">${formatINR(summary.subtotal)} / ${formatINR(summary.freeShippingThreshold)}</span>
             </div>
             <div class="relative w-full bg-white/80 h-2 sm:h-2.5 rounded-full overflow-hidden p-0.5 border border-black/5">
-              <div class="${isFreeUnlocked ? 'bg-gradient-to-r from-[#266b4e] to-emerald-400' : 'bg-gradient-to-r from-secondary to-[#d4af37]'} h-full rounded-full transition-all duration-700 ease-out shadow-xs" style="width: ${summary.shippingProgress}%;"></div>
+              <div id="cart-free-shipping-bar" class="${isFreeUnlocked ? 'bg-gradient-to-r from-[#266b4e] to-emerald-400' : 'bg-gradient-to-r from-secondary to-[#d4af37]'} h-full rounded-full transition-all duration-700 ease-out shadow-xs" style="width: ${summary.shippingProgress}%;"></div>
             </div>
           </div>
 
           <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-6 items-start">
             <!-- Left Column: Cart Line Items (7 cols) -->
-            <div class="lg:col-span-7 flex flex-col gap-3">
+            <div id="cart-line-items-container" class="lg:col-span-7 flex flex-col gap-3">
               ${summary.cart.map(item => {
                 const effectiveUnit = Store.getEffectiveUnitPrice(item);
                 const isTierDiscounted = effectiveUnit < item.price;
@@ -4081,23 +4081,21 @@
               <div id="order-invoice-summary" class="ram-card p-4 sm:p-5 bg-white flex flex-col gap-2.5">
                 <h2 class="font-headline-sm text-base sm:text-lg text-primary font-bold border-b border-surface-container pb-2">Invoice Summary</h2>
                 <div class="flex justify-between items-center text-xs sm:text-sm text-on-surface-variant">
-                  <span>Cart Subtotal (${summary.itemsCount} items)</span>
-                  <span class="font-spec-numeral font-bold text-primary">${formatINR(summary.subtotal)}</span>
+                  <span id="cart-subtotal-items-label">Cart Subtotal (${summary.itemsCount} items)</span>
+                  <span id="cart-subtotal" class="font-spec-numeral font-bold text-primary">${formatINR(summary.subtotal)}</span>
                 </div>
-                ${summary.couponDiscount > 0 ? `
-                  <div class="flex justify-between items-center text-xs sm:text-sm text-[#266b4e] font-medium">
-                    <span>Studio Voucher (${esc(summary.couponCode)})</span>
-                    <span class="font-spec-numeral font-bold">-${formatINR(summary.couponDiscount)}</span>
-                  </div>
-                ` : ''}
+                <div id="cart-voucher-discount-row" class="flex justify-between items-center text-xs sm:text-sm text-[#266b4e] font-medium ${summary.couponDiscount > 0 ? '' : 'hidden'}">
+                  <span id="cart-voucher-discount-label">Studio Voucher (${esc(summary.couponCode)})</span>
+                  <span id="cart-voucher-discount-val" class="font-spec-numeral font-bold">-${formatINR(summary.couponDiscount)}</span>
+                </div>
                 <div class="flex justify-between items-center text-xs sm:text-sm text-on-surface-variant">
                   <span>Express Air Logistics</span>
-                  <span class="font-spec-numeral font-bold ${summary.isFreeShipping ? 'text-[#266b4e]' : 'text-primary'}">
+                  <span id="cart-shipping-fee-val" class="font-spec-numeral font-bold ${summary.isFreeShipping ? 'text-[#266b4e]' : 'text-primary'}">
                     ${summary.isFreeShipping ? 'FREE' : formatINR(summary.shippingFee)}
                   </span>
                 </div>
                 <div class="flex justify-between items-center text-xs text-outline">
-                  <span>Includes ₹${summary.gstAmount.toFixed(2)} GST (18%)</span>
+                  <span id="cart-gst">Includes ₹${summary.gstAmount.toFixed(2)} GST (18%)</span>
                   <span>${gstInfo.enabled ? 'Eligible 18% ITC' : 'Tax Inclusive'}</span>
                 </div>
                 <div class="pt-2.5 mt-0.5 border-t border-surface-container flex justify-between items-baseline bg-surface-container-low p-3 rounded-xl">
@@ -4105,7 +4103,7 @@
                     <span class="font-headline-sm text-sm sm:text-base text-primary font-bold block">Total Payable</span>
                     <span class="text-[10.5px] text-on-surface-variant">Zero hidden charges at dispatch</span>
                   </div>
-                  <span class="font-spec-numeral text-xl sm:text-2xl font-bold text-primary">${formatINR(summary.payable)}</span>
+                  <span id="total-payable" class="font-spec-numeral text-xl sm:text-2xl font-bold text-primary">${formatINR(summary.payable)}</span>
                 </div>
 
                 ${summary.hasOutOfStock ? `
@@ -4125,7 +4123,7 @@
                 ` : `
                   <!-- Desktop In-Card Checkout Button (Hidden on Mobile to eliminate duplicate CTA, preserved on Desktop) -->
                   <button type="button" onclick="window.openCheckoutModal()" class="desktop-cart-checkout-btn btn-shimmer w-full h-11 sm:h-12 mt-1 rounded-xl bg-primary hover:bg-primary-container text-on-primary font-title-md text-xs sm:text-sm font-bold items-center justify-center gap-2 shadow-md cursor-pointer active:scale-[0.99] transition-transform">
-                    <span>Proceed to Secure Checkout • ${formatINR(summary.payable)}</span>
+                    <span id="cart-desktop-checkout-btn-text">Proceed to Secure Checkout • ${formatINR(summary.payable)}</span>
                     <span class="material-symbols-outlined text-base sm:text-lg" aria-hidden="true">arrow_forward</span>
                   </button>
                 `}
@@ -4144,9 +4142,9 @@
               <div class="flex flex-col min-w-0 pr-1">
                 <span class="text-[10px] text-on-surface-variant uppercase tracking-wider font-bold">Total Payable</span>
                 <div class="flex items-baseline gap-1.5">
-                  <span class="font-spec-numeral text-lg sm:text-xl font-extrabold text-primary tracking-tight">${formatINR(summary.payable)}</span>
+                  <span id="cart-sticky-total-payable" class="font-spec-numeral text-lg sm:text-xl font-extrabold text-primary tracking-tight">${formatINR(summary.payable)}</span>
                 </div>
-                <span class="text-[10px] text-on-surface-variant truncate">${summary.isFreeShipping ? '<span class="text-[#266b4e] font-semibold">Free Express Shipping</span>' : 'Tax Inclusive (18% GST)'}</span>
+                <span id="cart-sticky-shipping-notice" class="text-[10px] text-on-surface-variant truncate">${summary.isFreeShipping ? '<span class="text-[#266b4e] font-semibold">Free Express Shipping</span>' : 'Tax Inclusive (18% GST)'}</span>
               </div>
               ${summary.hasOutOfStock ? `
                 <button type="button" onclick="window.handleRemoveAllOutOfStock()" class="h-12 px-5 rounded-xl bg-[#9e3322] hover:bg-[#85281a] text-white text-xs font-bold shadow-sm active:scale-[0.96] transition-all cursor-pointer shrink-0">
@@ -5872,17 +5870,85 @@
     }
   };
 
+  // Surgical Wishlist Heart Button Mutator (Zero-Refresh, In-Place DOM Mutation)
+  function mutateWishlistButtonsDom(productId, isAdded) {
+    const selector = `[data-wishlist-btn="${productId}"]`;
+    const buttons = document.querySelectorAll(selector);
+    buttons.forEach(btn => {
+      const isMediaOverlay = btn.classList.contains('text-white') || Boolean(btn.closest('.catalog-card-media')) || btn.classList.contains('absolute');
+      if (isMediaOverlay) {
+        btn.classList.toggle('text-[#9e3322]', isAdded);
+        btn.classList.toggle('text-white', !isAdded);
+      } else {
+        btn.classList.toggle('text-[#9e3322]', isAdded);
+        btn.classList.toggle('text-primary', !isAdded);
+      }
+
+      const svg = btn.querySelector('svg');
+      if (svg) {
+        if (isAdded) {
+          svg.classList.remove('fill-none', 'stroke-current');
+          svg.classList.add('fill-[#9e3322]', 'stroke-[#9e3322]');
+        } else {
+          svg.classList.remove('fill-[#9e3322]', 'stroke-[#9e3322]');
+          svg.classList.add('fill-none');
+          if (!isMediaOverlay) {
+            svg.classList.add('stroke-current');
+          }
+        }
+      }
+    });
+  }
+
   window.handleWishlistToggle = function (ev, productId) {
     if (ev) ev.stopPropagation();
     const btnTarget = ev ? (ev.currentTarget || ev.target) : null;
+    
+    // Previous wishlist state for rollback
+    const prevWishlist = Store.getWishlist();
+    const wasWishlisted = prevWishlist.includes(productId);
+
+    // 1. Synchronously update local state
     const res = Store.toggleWishlist(productId);
     const product = Store.getProductById(productId);
+    const isAdded = res.added;
+
+    // 2. Halt Full Re-render: Zero route refresh or innerHTML replacement
+    // 3. Surgical DOM Mutation: Target specific heart SVG/button clicked and all duplicate buttons
+    mutateWishlistButtonsDom(productId, isAdded);
+
+    // 4. Badge Update: Target wishlist badge element directly via updateGlobalBadges()
     updateGlobalBadges();
-    renderActiveView();
-    if (res.added && btnTarget) {
+
+    // 5. Kinetic SOTD Heart Burst on trigger target
+    if (isAdded && btnTarget) {
       sotdHeartBurst(btnTarget);
     }
-    if (res.added) {
+
+    // 6. Handle Wishlist Route Page: If toggled OFF while viewing #/wishlist, smoothly collapse card
+    if (AppState.currentRoute === 'wishlist' && !isAdded) {
+      const wishCard = document.querySelector(`article[data-product-id="${productId}"]`);
+      if (wishCard) {
+        wishCard.style.overflow = 'hidden';
+        wishCard.style.transition = 'max-height 0.22s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.2s cubic-bezier(0.16, 1, 0.3, 1), transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), margin 0.22s ease-out, padding 0.22s ease-out';
+        wishCard.style.maxHeight = wishCard.offsetHeight + 'px';
+        void wishCard.offsetHeight;
+        wishCard.style.opacity = '0';
+        wishCard.style.transform = 'scale(0.92) translateY(12px)';
+        wishCard.style.maxHeight = '0px';
+        wishCard.style.padding = '0px';
+        wishCard.style.margin = '0px';
+        setTimeout(() => {
+          if (wishCard.parentNode) wishCard.remove();
+          if (Store.getWishlist().length === 0) {
+            renderActiveView();
+          }
+        }, 220);
+      }
+    }
+
+    // 7. Instant Toast Feedback with working Undo action
+    if (isAdded) {
       window.showToast('Added to Your Wishlist', product ? (product.shortName || product.name) : '', {
         type: 'success',
         icon: 'favorite',
@@ -5900,17 +5966,50 @@
         action: {
           label: 'Undo ↺',
           onClick: () => {
-            Store.toggleWishlist(productId);
-            updateGlobalBadges();
-            renderActiveView();
-            window.showToast('Restored to Wishlist', product ? (product.shortName || product.name) : '', {
-              type: 'success',
-              icon: 'favorite'
-            });
+            window.handleWishlistToggle(null, productId);
           }
         }
       });
     }
+
+    // 8. Silent Background Sync with Supabase & Defensive Rollback
+    (async function syncWishlistBackground() {
+      try {
+        if (window.VistaraSupabase && typeof window.VistaraSupabase.getClient === 'function') {
+          const client = window.VistaraSupabase.getClient();
+          const authSession = Store.getAuthSession();
+          const uid = authSession ? (authSession.userId || authSession.id) : null;
+          if (client && uid) {
+            try {
+              if (isAdded) {
+                await client.from('wishlist').insert({ user_id: uid, product_id: productId });
+              } else {
+                await client.from('wishlist').delete().eq('user_id', uid).eq('product_id', productId);
+              }
+            } catch (_tableIgnored) {}
+            if (typeof window.VistaraSupabase.upsertProfile === 'function') {
+              const res = await window.VistaraSupabase.upsertProfile({
+                id: uid,
+                wishlist: Store.getWishlist()
+              });
+              if (res && res.error && res.error.message && res.error.message.includes('network')) {
+                throw res.error;
+              }
+            }
+          }
+        }
+      } catch (err) {
+        console.warn('[Wishlist Toggle] Background Supabase sync failed, rolling back:', err);
+        // Defensive Rollback: Revert local state and DOM in-place
+        Store.toggleWishlist(productId);
+        mutateWishlistButtonsDom(productId, wasWishlisted);
+        updateGlobalBadges();
+        window.showToast('Could not update wishlist. Please check your connection.', '', {
+          type: 'error',
+          icon: 'wifi_off'
+        });
+      }
+    })();
   };
 
   window.selectPersonaGoal = function (goal) {
@@ -6833,14 +6932,202 @@
     renderActiveView();
   };
 
+  // Micro-Reconciliation for Studio Bag Invoice Elements (Zero-Refresh, In-Place DOM Reconciliation)
+  function reconcileCartInvoiceDom(summary) {
+    if (!summary) summary = Store.getCartSummary();
+    const isFreeUnlocked = summary.subtotal >= summary.freeShippingThreshold && summary.subtotal > 0;
+
+    // 1. Header Count
+    const headerCount = document.getElementById('cart-header-count');
+    if (headerCount) {
+      headerCount.textContent = `(${summary.itemsCount})`;
+    }
+
+    // 2. Free Shipping Progression Strip
+    const strip = document.getElementById('cart-free-shipping-strip');
+    if (strip) {
+      if (isFreeUnlocked) {
+        strip.className = 'p-3 sm:p-3.5 rounded-2xl bg-[#f0f7f3] border border-[#266b4e]/30 shadow-2xs flex flex-col gap-2 transition-colors duration-300';
+      } else {
+        strip.className = 'p-3 sm:p-3.5 rounded-2xl bg-secondary-container/90 border border-secondary/20 shadow-2xs flex flex-col gap-2 transition-colors duration-300';
+      }
+    }
+
+    const iconWrap = document.getElementById('cart-free-shipping-icon-wrap');
+    if (iconWrap) {
+      iconWrap.className = `flex items-center gap-1.5 sm:gap-2 ${isFreeUnlocked ? 'text-[#266b4e]' : 'text-primary'} min-w-0`;
+    }
+
+    const icon = document.getElementById('cart-free-shipping-icon');
+    if (icon) {
+      icon.className = `material-symbols-outlined text-base sm:text-lg ${isFreeUnlocked ? 'text-[#266b4e] scale-110' : 'text-secondary'} shrink-0 transition-transform`;
+      icon.textContent = isFreeUnlocked ? 'verified' : 'local_shipping';
+    }
+
+    const message = document.getElementById('cart-free-shipping-message');
+    if (message) {
+      message.innerHTML = isFreeUnlocked
+        ? 'Unlocked! Eligible for <strong class="text-[#266b4e]">Free Pan-India BlueDart Air Express Delivery</strong>!'
+        : `Add <strong class="text-secondary font-bold font-spec-numeral">${formatINR(summary.amountToFreeShipping)}</strong> more for <strong>Free Express Delivery</strong>!`;
+    }
+
+    const fraction = document.getElementById('cart-free-shipping-subtotal-fraction');
+    if (fraction) {
+      fraction.className = `font-spec-numeral font-bold ${isFreeUnlocked ? 'text-[#266b4e]' : 'text-primary'} text-[11px] sm:text-xs whitespace-nowrap bg-white/90 px-2 py-0.5 rounded-full border border-black/5 shadow-2xs shrink-0`;
+      fraction.textContent = `${formatINR(summary.subtotal)} / ${formatINR(summary.freeShippingThreshold)}`;
+    }
+
+    const bar = document.getElementById('cart-free-shipping-bar');
+    if (bar) {
+      bar.className = `${isFreeUnlocked ? 'bg-gradient-to-r from-[#266b4e] to-emerald-400' : 'bg-gradient-to-r from-secondary to-[#d4af37]'} h-full rounded-full transition-all duration-700 ease-out shadow-xs`;
+      bar.style.width = `${summary.shippingProgress}%`;
+    }
+
+    // 3. Invoice Summary Card
+    const subtotalLabel = document.getElementById('cart-subtotal-items-label');
+    if (subtotalLabel) {
+      subtotalLabel.textContent = `Cart Subtotal (${summary.itemsCount} items)`;
+    }
+
+    const subtotalVal = document.getElementById('cart-subtotal');
+    if (subtotalVal) {
+      subtotalVal.textContent = formatINR(summary.subtotal);
+    }
+
+    const voucherRow = document.getElementById('cart-voucher-discount-row');
+    const voucherDiscount = document.getElementById('cart-voucher-discount-val');
+    const voucherLabel = document.getElementById('cart-voucher-discount-label');
+    if (voucherRow) {
+      if (summary.couponDiscount > 0) {
+        voucherRow.classList.remove('hidden');
+        if (voucherLabel) voucherLabel.textContent = `Studio Voucher (${summary.couponCode})`;
+        if (voucherDiscount) voucherDiscount.textContent = `-${formatINR(summary.couponDiscount)}`;
+      } else {
+        voucherRow.classList.add('hidden');
+      }
+    }
+
+    const shippingFee = document.getElementById('cart-shipping-fee-val');
+    if (shippingFee) {
+      shippingFee.className = `font-spec-numeral font-bold ${summary.isFreeShipping ? 'text-[#266b4e]' : 'text-primary'}`;
+      shippingFee.textContent = summary.isFreeShipping ? 'FREE' : formatINR(summary.shippingFee);
+    }
+
+    const gstVal = document.getElementById('cart-gst');
+    if (gstVal) {
+      gstVal.textContent = `Includes ₹${summary.gstAmount.toFixed(2)} GST (18%)`;
+    }
+
+    const totalPayable = document.getElementById('total-payable');
+    if (totalPayable) {
+      totalPayable.textContent = formatINR(summary.payable);
+    }
+
+    const desktopBtnText = document.getElementById('cart-desktop-checkout-btn-text');
+    if (desktopBtnText) {
+      desktopBtnText.textContent = `Proceed to Secure Checkout • ${formatINR(summary.payable)}`;
+    }
+
+    // 4. Mobile Sticky Checkout Bar
+    const stickyPayable = document.getElementById('cart-sticky-total-payable');
+    if (stickyPayable) {
+      stickyPayable.textContent = formatINR(summary.payable);
+    }
+
+    const stickyNotice = document.getElementById('cart-sticky-shipping-notice');
+    if (stickyNotice) {
+      stickyNotice.innerHTML = summary.isFreeShipping
+        ? '<span class="text-[#266b4e] font-semibold">Free Express Shipping</span>'
+        : 'Tax Inclusive (18% GST)';
+    }
+  }
+
   window.handleCartRemove = function (cartItemId) {
-    Store.removeFromCart(cartItemId);
+    const card = document.querySelector(`[data-cart-item-id="${cartItemId}"]`);
+    
+    // Save snapshot of item for defensive rollback
+    const prevCart = Store.getCart();
+    const removedItemIndex = prevCart.findIndex(i => i.cartItemId === cartItemId || i.productId === cartItemId);
+    const removedItem = removedItemIndex >= 0 ? prevCart[removedItemIndex] : null;
+
+    // 1. Optimistic UI (Visuals First): Smooth slide out and collapse height to 0px over 200ms
+    if (card) {
+      const origHeight = card.offsetHeight;
+      card.style.overflow = 'hidden';
+      card.style.transition = 'max-height 0.22s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.2s cubic-bezier(0.16, 1, 0.3, 1), transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), margin 0.22s ease-out, padding 0.22s ease-out, border-width 0.22s ease-out';
+      card.style.maxHeight = origHeight + 'px';
+      
+      // Force layout reflow
+      void card.offsetHeight;
+      
+      card.style.opacity = '0';
+      card.style.transform = 'translateX(24px) scale(0.97)';
+      card.style.maxHeight = '0px';
+      card.style.paddingTop = '0px';
+      card.style.paddingBottom = '0px';
+      card.style.marginTop = '0px';
+      card.style.marginBottom = '0px';
+      card.style.borderWidth = '0px';
+    }
+
+    // 2. Halt Full Re-render: Synchronously update local store
+    const newSummary = Store.removeFromCart(cartItemId);
     updateGlobalBadges();
-    renderActiveView();
+
+    // 3. Micro-Reconciliation: Update invoice and progress bar numbers in-place
+    reconcileCartInvoiceDom(newSummary);
+
+    // 4. Clean DOM removal & Empty Cart View Hand-off
+    setTimeout(() => {
+      if (card && card.parentNode) {
+        card.remove();
+      }
+      if (newSummary.cart.length === 0) {
+        const root = document.getElementById('app-view-root');
+        if (root) {
+          root.innerHTML = renderCartView();
+        }
+      }
+    }, 220);
+
+    // 5. Toast Feedback
     window.showToast('Item Removed from Studio Bag', '', {
       type: 'info',
       icon: 'remove_shopping_cart'
     });
+
+    // 6. Silent Background Sync with Supabase & Defensive Rollback
+    (async function syncCartDelete() {
+      try {
+        if (window.VistaraSupabase && typeof window.VistaraSupabase.getClient === 'function') {
+          const client = window.VistaraSupabase.getClient();
+          if (client && typeof client.from === 'function') {
+            const { error } = await client.from('cart').delete().eq('cart_item_id', cartItemId);
+            if (error && error.code !== '42P01' && !error.message?.includes('does not exist') && !error.message?.includes('relation')) {
+              throw error;
+            }
+          }
+        }
+      } catch (err) {
+        console.warn('[Cart Removal] Background Supabase deletion failed, executing defensive rollback:', err);
+        // Defensive Rollback: Restore item into state and DOM
+        if (removedItem) {
+          const restoredCart = Store.getCart();
+          if (removedItemIndex >= 0 && removedItemIndex <= restoredCart.length) {
+            restoredCart.splice(removedItemIndex, 0, removedItem);
+          } else {
+            restoredCart.push(removedItem);
+          }
+          Store.saveCart(restoredCart);
+          updateGlobalBadges();
+          renderActiveView();
+          window.showToast('Could not remove item. Please check your connection.', '', {
+            type: 'error',
+            icon: 'wifi_off'
+          });
+        }
+      }
+    })();
   };
 
   window.handleRemoveAllOutOfStock = function () {

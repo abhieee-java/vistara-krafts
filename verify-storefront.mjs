@@ -1833,6 +1833,112 @@ if (chromeExe) {
     assert.strictEqual(drawerAccountAudit.drawerAuthHasAddresses, true, 'Headless Chrome: Section 5 must offer Manage Addresses for authenticated customers');
     assert.strictEqual(drawerAccountAudit.drawerAuthHasSignOut, true, 'Headless Chrome: Section 5 must offer Sign Out for authenticated customers');
 
+    // 2c. Verify Zero-Refresh Optimistic UI Architecture (Cart Removal & Wishlist Heart Toggling)
+    const zeroRefreshAudit = await cdpEval(`(async () => {
+      // Test A: Wishlist Heart Toggle (Zero-Refresh & Surgical DOM Mutation)
+      window.navigateTo('catalog', 'all');
+      for (let i = 0; i < 20; i++) {
+        if (document.querySelector('[data-wishlist-btn="vk-cat-res-201"]')) break;
+        await new Promise(r => setTimeout(r, 40));
+      }
+      
+      const wishBtn = document.querySelector('[data-wishlist-btn="vk-cat-res-201"]');
+      const hasWishBtn = Boolean(wishBtn);
+      const initialWishSvgFilled = Boolean(wishBtn?.querySelector('svg')?.classList.contains('fill-[#9e3322]'));
+      
+      // Click heart
+      wishBtn?.click();
+      await new Promise(r => setTimeout(r, 60));
+      const postClickSvgFilled = Boolean(wishBtn?.querySelector('svg')?.classList.contains('fill-[#9e3322]'));
+      const postClickBadge = parseInt(document.querySelector('.js-wishlist-badge')?.textContent || '0', 10);
+
+      // Click heart again to toggle off
+      wishBtn?.click();
+      await new Promise(r => setTimeout(r, 60));
+      const postUnclickSvgFilled = Boolean(wishBtn?.querySelector('svg')?.classList.contains('fill-[#9e3322]'));
+      const postUnclickBadge = parseInt(document.querySelector('.js-wishlist-badge')?.textContent || '0', 10);
+
+      // Test B: Cart Removal (Zero-Refresh, Optimistic UI & In-Place Reconciliation)
+      window.VistaraStore.clearCart();
+      window.VistaraStore.addToCart('vk-cat-res-201', 'var-201-1500g', 1);
+      window.VistaraStore.addToCart('vk-cat-res-301', 'var-301-300g', 1);
+      window.navigateTo('cart', null);
+      for (let i = 0; i < 20; i++) {
+        if (document.querySelectorAll('[data-cart-item-id]').length >= 2) break;
+        await new Promise(r => setTimeout(r, 40));
+      }
+
+      const cartCountInStore = window.VistaraStore.getCart().length;
+      const currentRoute = window.AppState ? window.AppState.currentRoute : '';
+      const cartLineItemsBefore = document.querySelectorAll('[data-cart-item-id]').length;
+      const initialTotalText = document.getElementById('total-payable')?.textContent || '';
+      const initialSubtotalText = document.getElementById('cart-subtotal')?.textContent || '';
+      const initialHeaderCount = document.getElementById('cart-header-count')?.textContent || '';
+
+      const firstRemoveBtn = document.querySelector('[data-cart-item-id] button[aria-label="Remove item"]');
+      const targetCard = firstRemoveBtn?.closest('[data-cart-item-id]');
+      const targetItemId = targetCard?.getAttribute('data-cart-item-id');
+
+      // Trigger removal
+      firstRemoveBtn?.click();
+
+      // Check transition properties applied immediately
+      const duringTransitionMaxHeight = targetCard?.style?.maxHeight;
+      const duringTransitionOpacity = targetCard?.style?.opacity;
+
+      // Check in-place micro-reconciliation immediately
+      const reconciledTotalText = document.getElementById('total-payable')?.textContent || '';
+      const reconciledSubtotalText = document.getElementById('cart-subtotal')?.textContent || '';
+      const reconciledHeaderCount = document.getElementById('cart-header-count')?.textContent || '';
+
+      // Wait for exit transition to complete (220ms + buffer)
+      await new Promise(r => setTimeout(r, 300));
+      const cardStillInDom = Boolean(document.querySelector('[data-cart-item-id="' + targetItemId + '"]'));
+      const remainingCards = Array.from(document.querySelectorAll('[data-cart-item-id]')).map(c => c.getAttribute('data-cart-item-id'));
+      const cartLineItemsAfter = remainingCards.length;
+      const storeCart = window.VistaraStore.getCart();
+
+      return {
+        hasWishBtn,
+        initialWishSvgFilled,
+        postClickSvgFilled,
+        postClickBadge,
+        postUnclickSvgFilled,
+        postUnclickBadge,
+        cartCountInStore,
+        currentRoute,
+        cartLineItemsBefore,
+        initialTotalText,
+        initialSubtotalText,
+        initialHeaderCount,
+        duringTransitionMaxHeight,
+        duringTransitionOpacity,
+        reconciledTotalText,
+        reconciledSubtotalText,
+        reconciledHeaderCount,
+        cardStillInDom,
+        remainingCards,
+        storeCart,
+        cartLineItemsAfter
+      };
+    })()`);
+
+    assert.strictEqual(zeroRefreshAudit.hasWishBtn, true, 'Headless Chrome: Product cards must render [data-wishlist-btn]');
+    assert.strictEqual(zeroRefreshAudit.initialWishSvgFilled, false, 'Headless Chrome: Initial wishlist heart must not be filled');
+    assert.strictEqual(zeroRefreshAudit.postClickSvgFilled, true, 'Headless Chrome: Clicking wishlist heart must surgically fill SVG without full reload');
+    assert.strictEqual(zeroRefreshAudit.postClickBadge, 1, 'Headless Chrome: Wishlist badge must increment in-place');
+    assert.strictEqual(zeroRefreshAudit.postUnclickSvgFilled, false, 'Headless Chrome: Clicking again must surgically unfill heart SVG');
+    assert.strictEqual(zeroRefreshAudit.postUnclickBadge, 0, 'Headless Chrome: Wishlist badge must decrement in-place');
+
+    assert.strictEqual(zeroRefreshAudit.cartLineItemsBefore, 2, 'Headless Chrome: Cart should initially contain 2 items');
+    assert.strictEqual(zeroRefreshAudit.initialHeaderCount, '(2)', 'Headless Chrome: Initial header count must be (2)');
+    assert.strictEqual(zeroRefreshAudit.duringTransitionMaxHeight, '0px', 'Headless Chrome: Cart removal must immediately collapse maxHeight to 0px');
+    assert.strictEqual(zeroRefreshAudit.duringTransitionOpacity, '0', 'Headless Chrome: Cart removal must immediately fade opacity to 0');
+    assert.strictEqual(zeroRefreshAudit.reconciledHeaderCount, '(1)', 'Headless Chrome: Header count must reconcile in-place to (1)');
+    assert.notStrictEqual(zeroRefreshAudit.initialTotalText, zeroRefreshAudit.reconciledTotalText, 'Headless Chrome: Total payable must reconcile in-place');
+    assert.strictEqual(zeroRefreshAudit.cardStillInDom, false, 'Headless Chrome: Card must be removed from DOM after collapse transition');
+    assert.strictEqual(zeroRefreshAudit.cartLineItemsAfter, 1, 'Headless Chrome: Exactly 1 item should remain in cart DOM');
+
     // 3. Verify zero horizontal overflow across all 8 SPA routes and modals at 320x568, 375x812, 390x844 (iPhone 14), 428x926, and 1280x800
     for (const vp of [{ width: 320, height: 568 }, { width: 375, height: 812 }, { width: 390, height: 844 }, { width: 428, height: 926 }, { width: 1280, height: 800 }]) {
       await cdpSend('Emulation.setDeviceMetricsOverride', {
