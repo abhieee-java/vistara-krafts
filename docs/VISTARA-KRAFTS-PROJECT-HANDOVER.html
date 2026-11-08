@@ -657,7 +657,7 @@ npm run build</code></pre>
 <li><strong>Left CTA (<code class="inline-code">Add to cart</code>):</strong> Crisp alabaster white pill button (<code class="inline-code">bg-white border-[#e4e0d8] rounded-2xl</code>), bold charcoal typography (<code class="inline-code">text-primary</code>), and active spring tap feedback (<code class="inline-code">active:scale-[0.98]</code>).</li>
 <li><strong>Right CTA (<code class="inline-code">Buy now</code>):</strong> Rich studio terracotta button (<code class="inline-code">bg-[#9e3322] hover:bg-[#852a1b] rounded-2xl</code>), displaying <code class="inline-code">"Buy now"</code> on line 1 and <code class="inline-code">"at ₹..."</code> on line 2 in soft cream (<code class="inline-code">text-[#ffe4de]</code>).</li>
 <li><strong>Elimination of Mobile Viewport Crowding:</strong> On mobile screens (<code class="inline-code">< 640px</code>), the secondary thumbnail image, discount percentage badges, and duplicate wishlist heart button are hidden (<code class="inline-code">hidden sm:flex</code>), dedicating 100% of horizontal viewport width to primary conversion actions.</li>
-<li><strong>Cache Invalidation:</strong> Query string parameters for scripts and stylesheets updated to <code class="inline-code">?v=20261108_02</code> across <code class="inline-code">index.html</code> to prevent stale browser caching. Detailed in <code class="inline-code">docs/15-PRODUCTION-DATABASE-CLEANUP-AND-PDP-STICKY-BAR.md</code>.</li>
+<li><strong>Cache Invalidation:</strong> Query string parameters for scripts and stylesheets updated to <code class="inline-code">?v=20261108_04</code> across <code class="inline-code">index.html</code> to prevent stale browser caching. Detailed in <code class="inline-code">docs/15-PRODUCTION-DATABASE-CLEANUP-AND-PDP-STICKY-BAR.md</code>.</li>
 </ul>
 <h3 class="subsection-title">11.7 Production Database Clean-State & Data Governance</h3>
 <ul>
@@ -668,6 +668,7 @@ npm run build</code></pre>
 <li><code class="inline-code">payments</code>: 24 test payment records purged.</li>
 <li><code class="inline-code">welcome_emails</code>: 24 test email dispatch logs purged.</li>
 <li><strong>Permanent Data Integrity:</strong> 100% preserved all 19 catalog products, 2 categories, 2 coupons, 4 settings records, and the master administrator credentials in <code class="inline-code">admin_auth</code> (1 row) and <code class="inline-code">admin_security_config</code> (1 row). Verified clean baseline via direct PostgreSQL query.</li>
+<li><strong>Automated Lifecycle & Scheduled Purge (<code class="inline-code">pg_cron</code>):</strong> Implemented <code class="inline-code">public.purge_expired_temporary_data()</code> registered with PostgreSQL native scheduler (<code class="inline-code">hourly_temporary_data_purge</code>, running every hour at <code class="inline-code">0 <em> </em> <em> </em></code>). Automatically prunes expired verification OTPs older than 1 hour and rate-limit attempt logs older than 7 days, eliminating manual maintenance and preventing future database bloat.</li>
 </ul>
 <hr class="section-divider" />
 <h2 class="section-title">12. SIGN-OFF & PROJECT HANDOVER ACCEPTANCE</h2>
