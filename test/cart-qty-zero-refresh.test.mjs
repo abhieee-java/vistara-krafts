@@ -101,7 +101,7 @@ test('Cart Quantity Zero-Refresh & Luxury Wishlist Suite', async (t) => {
     );
   });
 
-  await t.test('8. Footer ASCII Magic Integration: Animated balloon-valley-sunrise piece & compact link spacing', () => {
+  await t.test('8. Footer ASCII Magic Integration: Animated balloon-valley-sunrise piece at final footer position', () => {
     const indexHtmlPath = path.join(__dirname, '..', 'index.html');
     const indexHtmlContent = fs.readFileSync(indexHtmlPath, 'utf8');
     assert.ok(
@@ -115,6 +115,39 @@ test('Cart Quantity Zero-Refresh & Luxury Wishlist Suite', async (t) => {
     assert.ok(
       indexHtmlContent.includes('Atelier Sunrise') && indexHtmlContent.includes('Guwahati, Assam'),
       'Footer must provide real accompanying heading and text next to the ASCII art'
+    );
+
+    // Verify order: Legal/DPDP badges appear BEFORE ASCII art piece
+    const dpdpIdx = indexHtmlContent.indexOf('DPDP Act 2023 Compliant');
+    const isoIdx = indexHtmlContent.indexOf('ISO 9001:2015 Certified');
+    const asciiIdx = indexHtmlContent.indexOf('<ascii-art piece="balloon-valley-sunrise"');
+    assert.ok(dpdpIdx !== -1 && isoIdx !== -1 && asciiIdx !== -1, 'All footer elements must be present');
+    assert.ok(
+      dpdpIdx < asciiIdx && isoIdx < asciiIdx,
+      'ASCII art piece must be positioned at the very end of the footer after DPDP & ISO compliance notes'
+    );
+  });
+
+  await t.test('9. Catalog Search Zero-Refresh & Fine-Grained DOM Reconciliation', () => {
+    assert.ok(
+      appJsContent.includes('function reconcileCatalogDom()') || appJsContent.includes('window.reconcileCatalogDom ='),
+      'app.js must provide reconcileCatalogDom for in-place surgical catalog updates'
+    );
+    assert.ok(
+      appJsContent.includes('id="catalog-products-container"'),
+      'app.js must render #catalog-products-container anchor for zero-refresh updates'
+    );
+    assert.ok(
+      appJsContent.includes('id="catalog-search-clear-btn"'),
+      'app.js must render #catalog-search-clear-btn for toggleable search clear'
+    );
+    assert.ok(
+      appJsContent.includes('id="catalog-active-filter-tags-container"'),
+      'app.js must render #catalog-active-filter-tags-container for active filter pills'
+    );
+    assert.ok(
+      appJsContent.includes('reconcileCatalogDom()'),
+      'window.setCatalogSearch must call reconcileCatalogDom() when on catalog page'
     );
   });
 });

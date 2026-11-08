@@ -2249,6 +2249,134 @@
     return list;
   }
 
+  function renderCatalogActiveFilterTags() {
+    const activeFilterCount = (AppState.catalogCategory !== 'all' ? 1 : 0) +
+      (AppState.catalogRatioFilter !== 'all' ? 1 : 0) +
+      (AppState.catalogMaxPrice < 12000 ? 1 : 0) +
+      (Boolean(AppState.catalogSearch) ? 1 : 0);
+    if (activeFilterCount === 0) return '';
+    return `
+      <div class="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5">
+        ${AppState.catalogCategory !== 'all' ? `
+          <button type="button" onclick="window.setCatalogCategory('all')" class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-primary text-white text-[11px] font-medium shrink-0 cursor-pointer shadow-2xs">
+            <span>Category: ${esc(AppState.catalogCategory)}</span>
+            <span class="material-symbols-outlined text-[12px]" aria-hidden="true">close</span>
+          </button>
+        ` : ''}
+        ${AppState.catalogRatioFilter !== 'all' ? `
+          <button type="button" onclick="window.setCatalogRatio('all')" class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-primary text-white text-[11px] font-medium shrink-0 cursor-pointer shadow-2xs">
+            <span>Ratio: ${esc(AppState.catalogRatioFilter)}</span>
+            <span class="material-symbols-outlined text-[12px]" aria-hidden="true">close</span>
+          </button>
+        ` : ''}
+        ${AppState.catalogMaxPrice < 12000 ? `
+          <button type="button" onclick="window.setCatalogMaxPrice(12000)" class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-primary text-white text-[11px] font-medium shrink-0 cursor-pointer shadow-2xs">
+            <span>Max: ${formatINR(AppState.catalogMaxPrice)}</span>
+            <span class="material-symbols-outlined text-[12px]" aria-hidden="true">close</span>
+          </button>
+        ` : ''}
+        ${AppState.catalogSearch ? `
+          <button type="button" onclick="window.setCatalogSearch('')" class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-primary text-white text-[11px] font-medium shrink-0 cursor-pointer shadow-2xs">
+            <span>"${esc(AppState.catalogSearch)}"</span>
+            <span class="material-symbols-outlined text-[12px]" aria-hidden="true">close</span>
+          </button>
+        ` : ''}
+        <button type="button" onclick="window.resetCatalogFilters()" class="text-[11px] text-[#9e3322] font-semibold underline shrink-0 px-1 cursor-pointer">Reset All</button>
+      </div>
+    `;
+  }
+
+  function renderCatalogProductsContent(filtered) {
+    const visible = filtered;
+    if (filtered.length === 0) {
+      return `
+        <div class="ram-card p-10 text-center flex flex-col items-center gap-3.5 my-4 bg-white animate-fadeInOnly">
+          <div class="relative w-28 h-28 sm:w-32 sm:h-32 flex items-center justify-center lottie-anim-float">
+            <svg class="w-full h-full drop-shadow-sm" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Elegant magnifying prism with soft light refraction">
+              <defs>
+                <filter id="search-prism-shadow" x="-20%" y="-20%" width="140%" height="140%">
+                  <feDropShadow dx="0" dy="6" stdDeviation="6" flood-color="#0f172a" flood-opacity="0.12" />
+                </filter>
+                <linearGradient id="search-gold-metal" x1="0" y1="0" x2="1" y2="1">
+                  <stop offset="0%" stop-color="#fff1c7" />
+                  <stop offset="35%" stop-color="#c59b27" />
+                  <stop offset="70%" stop-color="#fdf2cb" />
+                  <stop offset="100%" stop-color="#734e0f" />
+                </linearGradient>
+                <linearGradient id="search-gold-stem" x1="0" y1="0" x2="1" y2="0">
+                  <stop offset="0%" stop-color="#8a611c" />
+                  <stop offset="45%" stop-color="#fff1c7" />
+                  <stop offset="70%" stop-color="#c59b27" />
+                  <stop offset="100%" stop-color="#69480e" />
+                </linearGradient>
+                <linearGradient id="search-glass-front" x1="28" y1="20" x2="88" y2="76" gradientUnits="userSpaceOnUse">
+                  <stop offset="0%" stop-color="#ffffff" stop-opacity="0.85" />
+                  <stop offset="30%" stop-color="#f8fafc" stop-opacity="0.40" />
+                  <stop offset="70%" stop-color="#e2e8f0" stop-opacity="0.55" />
+                  <stop offset="100%" stop-color="#ffffff" stop-opacity="0.80" />
+                </linearGradient>
+                <linearGradient id="search-glass-top" x1="32" y1="18" x2="94" y2="30" gradientUnits="userSpaceOnUse">
+                  <stop offset="0%" stop-color="#ffffff" stop-opacity="0.9" />
+                  <stop offset="100%" stop-color="#e2e8f0" stop-opacity="0.35" />
+                </linearGradient>
+                <linearGradient id="search-glass-right" x1="60" y1="30" x2="96" y2="76" gradientUnits="userSpaceOnUse">
+                  <stop offset="0%" stop-color="#ffffff" stop-opacity="0.5" />
+                  <stop offset="50%" stop-color="#cbd5e1" stop-opacity="0.25" />
+                  <stop offset="100%" stop-color="#94a3b8" stop-opacity="0.45" />
+                </linearGradient>
+                <linearGradient id="search-refract-beam" x1="68" y1="48" x2="118" y2="76" gradientUnits="userSpaceOnUse">
+                  <stop offset="0%" stop-color="#ffffff" stop-opacity="0.7" />
+                  <stop offset="25%" stop-color="#fef08a" stop-opacity="0.28" />
+                  <stop offset="55%" stop-color="#7dd3fc" stop-opacity="0.25" />
+                  <stop offset="85%" stop-color="#f472b6" stop-opacity="0.18" />
+                  <stop offset="100%" stop-color="#faf8f5" stop-opacity="0" />
+                </linearGradient>
+              </defs>
+              <ellipse cx="58" cy="103" rx="42" ry="9" fill="#0f172a" fill-opacity="0.08" filter="blur(5px)" />
+              <ellipse cx="56" cy="101" rx="32" ry="6" fill="#0f172a" fill-opacity="0.10" filter="blur(2px)" />
+              <polygon points="68,48 116,68 110,84 62,60" fill="url(#search-refract-beam)" />
+              <g filter="url(#search-prism-shadow)">
+                <path d="M36 97 L44 94 L72 94 L80 97 L78 101 L38 101 Z" fill="url(#search-gold-metal)" stroke="#734e0f" stroke-width="0.5" />
+                <line x1="42" y1="94.5" x2="74" y2="94.5" stroke="#ffffff" stroke-width="0.9" stroke-opacity="0.85" />
+                <rect x="55" y="74" width="6" height="20" rx="1.5" fill="url(#search-gold-stem)" />
+                <path d="M51 74 L65 74 L63 77 L53 77 Z" fill="url(#search-gold-metal)" stroke="#734e0f" stroke-width="0.4" />
+                <path d="M44 68 L58 74 L72 68 L70 66 L58 71 L46 66 Z" fill="url(#search-gold-metal)" stroke="#734e0f" stroke-width="0.4" />
+                <polygon points="36,25 80,25 58,66" fill="#dbeafe" fill-opacity="0.3" />
+                <polygon points="32,20 84,20 80,25 36,25" fill="url(#search-glass-top)" />
+                <polygon points="32,20 36,25 58,68 54,63" fill="url(#search-glass-front)" stroke="#ffffff" stroke-width="0.7" stroke-opacity="0.65" />
+                <polygon points="84,20 80,25 58,68 62,63" fill="url(#search-glass-right)" />
+                <line x1="48" y1="28" x2="60" y2="58" stroke="#93c5fd" stroke-width="1.4" stroke-opacity="0.55" stroke-linecap="round" />
+                <line x1="53" y1="30" x2="65" y2="56" stroke="#fef08a" stroke-width="1.2" stroke-opacity="0.45" stroke-linecap="round" />
+                <line x1="32" y1="20" x2="54" y2="63" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round" stroke-opacity="0.95" />
+                <line x1="32" y1="20" x2="84" y2="20" stroke="#ffffff" stroke-width="1.4" stroke-linecap="round" stroke-opacity="0.9" />
+                <line x1="84" y1="20" x2="62" y2="63" stroke="#ffffff" stroke-width="0.9" stroke-linecap="round" stroke-opacity="0.55" />
+                <circle cx="58" cy="67" r="1.8" fill="#ffffff" />
+                <polygon points="32,18 33,20 35,20 33,21 32,23 31,21 29,20 31,20" fill="#ffffff" />
+              </g>
+            </svg>
+          </div>
+          <h2 class="font-headline-sm text-xl text-primary font-bold">
+            ${Store.getProducts().length === 0 ? 'Live Database Catalog Ready' : 'No Matching Formulations Found'}
+          </h2>
+          <p class="text-xs text-on-surface-variant max-w-sm">
+            ${Store.getProducts().length === 0
+              ? 'Your Supabase database is connected with zero mock data. Products added in the Admin Portal or Supabase will appear here automatically.'
+              : 'Try clearing your search keyword, adjusting the viscosity filter, or resetting technical ratio parameters.'}
+          </p>
+          <button type="button" onclick="if(window.Store && window.Store.syncFromSupabase){ window.Store.syncFromSupabase(); } else { window.resetCatalogFilters(); } window.renderApp();" class="min-h-[48px] px-6 py-2.5 rounded-xl bg-primary text-white text-xs font-bold shadow-xs cursor-pointer inline-flex items-center gap-2">
+            <span class="material-symbols-outlined text-sm" aria-hidden="true">sync</span>
+            <span>${Store.getProducts().length === 0 ? 'Sync Live Database' : 'Reset All Filters'}</span>
+          </button>
+        </div>
+      `;
+    }
+    return `
+      <div class="${AppState.catalogView === 'list' ? 'flex flex-col gap-3' : 'grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2.5 sm:gap-4'} animate-fadeInOnly" id="catalog-product-grid">
+        ${visible.map((p, idx) => renderProductCard(p, AppState.catalogView === 'list', idx)).join('')}
+      </div>
+    `;
+  }
+
   function renderCatalogView() {
     const filtered = getFilteredCatalogProducts();
     const visible = filtered; // Render all products smoothly without lazy loading delay!
@@ -2288,14 +2416,13 @@
             <label for="catalog-search-input" class="sr-only">Search catalogue products</label>
             <span class="material-symbols-outlined text-on-surface-variant text-[18px] absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" aria-hidden="true">search</span>
             <input id="catalog-search-input" type="text" aria-label="Search catalogue products" value="${esc(AppState.catalogSearch)}" oninput="window.setCatalogSearch(this.value)" placeholder="Search keepsakes, resins, supplies..." class="w-full h-11 pl-10 pr-9 rounded-2xl bg-white border border-[#e4e0d8] shadow-2xs text-xs sm:text-sm text-primary placeholder:text-outline/70 focus:outline-none focus:ring-1 focus:ring-secondary focus:border-secondary transition-all">
-            ${AppState.catalogSearch ? `
-              <button type="button" aria-label="Clear search" onclick="window.setCatalogSearch('')" class="w-8 h-8 absolute right-1.5 top-1/2 -translate-y-1/2 flex items-center justify-center text-outline hover:text-primary cursor-pointer">
-                <span class="material-symbols-outlined text-sm" aria-hidden="true">close</span>
-              </button>
-            ` : ''}
+            <button id="catalog-search-clear-btn" type="button" aria-label="Clear search" onclick="window.setCatalogSearch('')" class="${AppState.catalogSearch ? '' : 'hidden '}w-8 h-8 absolute right-1.5 top-1/2 -translate-y-1/2 flex items-center justify-center text-outline hover:text-primary cursor-pointer">
+              <span class="material-symbols-outlined text-sm" aria-hidden="true">close</span>
+            </button>
           </div>
 
-          <!-- Active Filter Tags (if any active filters applied) -->
+          <!-- Active Filter Tags Container -->
+          <div id="catalog-active-filter-tags-container">
           ${hasActiveFilters ? `
             <div class="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5">
               ${AppState.catalogCategory !== 'all' ? `
@@ -2325,6 +2452,7 @@
               <button type="button" onclick="window.resetCatalogFilters()" class="text-[11px] text-[#9e3322] font-semibold underline shrink-0 px-1 cursor-pointer">Reset All</button>
             </div>
           ` : ''}
+          </div>
         </div>
 
         <!-- 4. Compact Catalogue Controls (Row 1: Count & View Switcher | Row 2: Sort & Filter) -->
@@ -2359,6 +2487,7 @@
               <button id="catalog-sort-filter-btn" type="button" onclick="window.toggleCatalogFilterDrawer(true)" class="min-h-[38px] px-3 sm:px-3.5 py-1.5 rounded-full bg-white hover:bg-[#faf7f2] active:scale-[0.97] border border-[#e4e0d8] hover:border-secondary/50 text-primary text-xs font-semibold flex items-center gap-1.5 sm:gap-2 shadow-2xs transition-all cursor-pointer">
                 <span class="material-symbols-outlined text-[17px] text-secondary shrink-0" aria-hidden="true">tune</span>
                 <span class="font-medium text-primary whitespace-nowrap">Sort &amp; Filter</span>
+                <span id="catalog-sort-filter-badge" class="inline-flex items-center">
                 ${hasActiveFilters ? `
                   <span class="inline-flex items-center justify-center min-w-[18px] h-[18px] px-1 rounded-full bg-[#8a611c] text-white text-[10px] font-bold leading-none shadow-2xs">
                     ${activeFilterCount}
@@ -2366,6 +2495,7 @@
                 ` : `
                   <span class="text-[11px] text-on-surface-variant font-normal font-spec-numeral hidden xs:inline whitespace-nowrap">• ${currentSortLabel}</span>
                 `}
+                </span>
               </button>
 
               <!-- Grid / List Switcher Capsule -->
@@ -2381,7 +2511,8 @@
           </div>
         </div>
 
-        <!-- 5. Product Grid or Empty State -->
+        <!-- 5. Product Grid or Empty State Container (Zero-Refresh Fine-Grained DOM Mount) -->
+        <div id="catalog-products-container" class="w-full min-h-[300px]">
         ${filtered.length === 0 ? `
           <div class="ram-card p-10 text-center flex flex-col items-center gap-3.5 my-4 bg-white">
             <div class="relative w-28 h-28 sm:w-32 sm:h-32 flex items-center justify-center lottie-anim-float">
@@ -2481,6 +2612,7 @@
           <!-- Quiet Apple-Style Whitespace at End of Catalogue -->
           <div class="pt-6 pb-2"></div>
         `}
+        </div>
 
         <!-- 6. Quality & Trust Section (Moved from Header to below Product Grid) -->
         <section class="mt-8 pt-8 border-t border-[#e4e0d8] flex flex-col gap-5">
@@ -6381,15 +6513,98 @@
     }
   }
 
+  // =========================================================================
+  // ZERO-REFRESH CATALOG DOM RECONCILIATION (Fine-Grained In-Place Mutation)
+  // =========================================================================
+  function reconcileCatalogDom() {
+    const container = document.getElementById('catalog-products-container');
+    if (!container) return false;
+
+    const filtered = getFilteredCatalogProducts();
+
+    // 1. Update Clear Button on Search Input without unmounting input element
+    const clearBtn = document.getElementById('catalog-search-clear-btn');
+    if (clearBtn) {
+      clearBtn.classList.toggle('hidden', !AppState.catalogSearch);
+    }
+
+    // 2. Synchronize search input value only if changed programmatically (prevents cursor jump)
+    const searchInput = document.getElementById('catalog-search-input');
+    if (searchInput && searchInput.value !== AppState.catalogSearch) {
+      searchInput.value = AppState.catalogSearch;
+    }
+
+    // 3. Update Active Filter Tags Container in-place
+    const tagsContainer = document.getElementById('catalog-active-filter-tags-container');
+    if (tagsContainer) {
+      tagsContainer.innerHTML = renderCatalogActiveFilterTags();
+    }
+
+    // 4. Update Product Count Badge
+    const countEl = document.getElementById('catalog-product-count');
+    if (countEl) {
+      countEl.textContent = `${filtered.length} Products`;
+    }
+
+    // 5. Update Filter Button Badge/Label
+    const sortFilterBadge = document.getElementById('catalog-sort-filter-badge');
+    if (sortFilterBadge) {
+      const activeFilterCount = (AppState.catalogCategory !== 'all' ? 1 : 0) +
+        (AppState.catalogRatioFilter !== 'all' ? 1 : 0) +
+        (AppState.catalogMaxPrice < 12000 ? 1 : 0) +
+        (Boolean(AppState.catalogSearch) ? 1 : 0);
+      const sortLabels = {
+        popular: 'Popular',
+        newest: 'Newest First',
+        price_asc: 'Price: Low to High',
+        price_desc: 'Price: High to Low',
+        rating: 'Highest Rated',
+        name_asc: 'A – Z',
+        gifts_him: '👔 For Him',
+        gifts_her: '🌸 For Her',
+        gifting: '🎁 Gift Sets',
+        viscosity: 'Viscosity: Low–High'
+      };
+      const currentSortLabel = sortLabels[AppState.catalogSort] || 'Popular';
+      if (activeFilterCount > 0) {
+        sortFilterBadge.innerHTML = `
+          <span class="inline-flex items-center justify-center min-w-[18px] h-[18px] px-1 rounded-full bg-[#8a611c] text-white text-[10px] font-bold leading-none shadow-2xs">
+            ${activeFilterCount}
+          </span>
+        `;
+      } else {
+        sortFilterBadge.innerHTML = `
+          <span class="text-[11px] text-on-surface-variant font-normal font-spec-numeral hidden xs:inline whitespace-nowrap">• ${currentSortLabel}</span>
+        `;
+      }
+    }
+
+    // 6. Fluid 120 FPS Product Content Mutation (keeps search input mounted, eliminates keyboard dismissal)
+    container.innerHTML = renderCatalogProductsContent(filtered);
+
+    try {
+      if (typeof initSotdInteractions === 'function') initSotdInteractions();
+    } catch (_e) {}
+
+    return true;
+  }
+  window.reconcileCatalogDom = reconcileCatalogDom;
+
   // Catalog handlers
   window.setCatalogCategory = function (cat) {
     AppState.catalogCategory = cat;
     AppState.catalogVisibleCount = 8;
     syncGlobalFilterDrawerDom();
-    renderActiveView();
+    if (AppState.currentRoute === 'catalog' && document.getElementById('catalog-products-container')) {
+      reconcileCatalogDom();
+    } else {
+      renderActiveView();
+    }
   };
 
   let catalogSearchDebounceTimer = null;
+  let catalogAnalyticsDebounceTimer = null;
+
   window.setCatalogSearch = function (val, immediate = false) {
     let cleanVal = val;
     if (typeof window !== 'undefined' && window.ContentModeration) {
@@ -6400,23 +6615,39 @@
     AppState.catalogSearch = cleanVal;
     AppState.catalogVisibleCount = 8;
     clearTimeout(catalogSearchDebounceTimer);
-    const updateSearch = () => {
-      renderActiveView({ preserveScroll: true });
-      const input = document.getElementById('catalog-search-input');
-      if (input && document.activeElement !== input) {
-        if (typeof input.focus === 'function') input.focus();
-        if (typeof input.setSelectionRange === 'function') input.setSelectionRange(input.value.length, input.value.length);
-      }
-      if (cleanVal && typeof window !== 'undefined' && window.VistaraAnalytics && typeof window.VistaraAnalytics.trackSearch === 'function') {
-        window.VistaraAnalytics.trackSearch(cleanVal);
+
+    const performUpdate = () => {
+      // If currently on catalog page and container exists, perform zero-refresh surgical DOM reconciliation
+      if (AppState.currentRoute === 'catalog' && document.getElementById('catalog-products-container')) {
+        reconcileCatalogDom();
+      } else {
+        renderActiveView({ preserveScroll: true });
+        const input = document.getElementById('catalog-search-input');
+        if (input && document.activeElement !== input) {
+          if (typeof input.focus === 'function') input.focus();
+          if (typeof input.setSelectionRange === 'function') input.setSelectionRange(input.value.length, input.value.length);
+        }
       }
     };
+
     const isTest = (typeof global !== 'undefined' && (global.__VK_TEST_ENV__ || global.__VK_TEST_FIXTURES__)) ||
                    (typeof window !== 'undefined' && (window.__VK_TEST_ENV__ || window.__VK_TEST_FIXTURES__));
+
     if (immediate || !val || isTest) {
-      updateSearch();
+      performUpdate();
     } else {
-      catalogSearchDebounceTimer = setTimeout(updateSearch, 250);
+      // 50ms micro-debounce: zero layout shift, instantaneous 120fps typing response
+      catalogSearchDebounceTimer = setTimeout(performUpdate, 50);
+    }
+
+    // Analytics search event with 500ms debounce
+    clearTimeout(catalogAnalyticsDebounceTimer);
+    if (cleanVal) {
+      catalogAnalyticsDebounceTimer = setTimeout(() => {
+        if (typeof window !== 'undefined' && window.VistaraAnalytics && typeof window.VistaraAnalytics.trackSearch === 'function') {
+          window.VistaraAnalytics.trackSearch(cleanVal);
+        }
+      }, 500);
     }
   };
 
