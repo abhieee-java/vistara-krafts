@@ -2659,26 +2659,28 @@
         document.head.appendChild(script);
       }
 
-      if ('IntersectionObserver' in window) {
-        var io = new IntersectionObserver(function (entries) {
-          if (entries.some(function (e) { return e.isIntersecting; })) {
-            loadAsciiComponent();
-            io.disconnect();
-          }
-        }, { rootMargin: '400px' });
-        function attachObserver() {
+      function initAsciiObserver() {
+        if ('IntersectionObserver' in window) {
+          var io = new IntersectionObserver(function (entries) {
+            if (entries.some(function (e) { return e.isIntersecting; })) {
+              loadAsciiComponent();
+              io.disconnect();
+            }
+          }, { rootMargin: '200px' });
           var target = document.querySelector('footer');
           if (target) io.observe(target);
-          else setTimeout(attachObserver, 200);
-        }
-        if (document.readyState === 'loading') {
-          document.addEventListener('DOMContentLoaded', attachObserver);
         } else {
-          attachObserver();
+          setTimeout(loadAsciiComponent, 4000);
         }
+      }
+
+      if (window.requestIdleCallback) {
+        requestIdleCallback(function () {
+          setTimeout(initAsciiObserver, 1200);
+        }, { timeout: 3000 });
       } else {
         window.addEventListener('load', function () {
-          setTimeout(loadAsciiComponent, 1500);
+          setTimeout(initAsciiObserver, 1500);
         });
       }
     })();
