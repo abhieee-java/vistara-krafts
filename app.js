@@ -3657,33 +3657,34 @@
     const savedPosts = Store.getSocialPosts().filter(p => p.saved);
 
     return `
-      <div class="route-view-enter flex flex-col w-full max-w-7xl mx-auto px-4 sm:px-8 py-5 sm:py-6 gap-5 sm:gap-6">
-        <!-- Back Navigation Button -->
-        <div class="flex items-center">
-          <button type="button" onclick="window.handleBackButton('home')" aria-label="Go back to previous page" class="inline-flex items-center gap-1.5 text-xs font-semibold text-primary/80 hover:text-primary min-h-[38px] py-1 px-3 rounded-lg bg-surface-container-low hover:bg-surface-container transition-colors cursor-pointer w-fit">
-            <span class="material-symbols-outlined text-sm" aria-hidden="true">arrow_back</span>
-            <span>Back</span>
-          </button>
-        </div>
-
-        <!-- Atelier Wishlist Header -->
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#e4e0d8] pb-4">
-          <div>
-            <span class="font-label-sm text-[10.5px] uppercase tracking-widest text-[#9e3322] font-bold">Personal Atelier</span>
-            <div class="flex items-center gap-2.5 mt-0.5">
-              <h1 class="font-headline-lg text-xl sm:text-2xl lg:text-3xl text-primary font-bold">Saved Keepsakes</h1>
-              <span id="wishlist-header-count" class="font-spec-numeral text-xs px-2.5 py-0.5 rounded-full bg-[#f4f2ee] border border-[#e4e0d8] font-bold text-primary">${products.length} ${products.length === 1 ? 'item' : 'items'}</span>
-            </div>
-            <p class="text-xs text-on-surface-variant mt-0.5">Formulations, botanical keepsakes, and studio tools reserved for your pours.</p>
+      <div class="route-view-enter flex flex-col w-full max-w-7xl mx-auto px-3.5 sm:px-8 pt-2.5 sm:pt-4 pb-8 gap-3 sm:gap-4.5">
+        <!-- Atelier Wishlist Header (Mobile-First Unified Architecture) -->
+        <div class="flex flex-col gap-2 border-b border-[#e4e0d8] pb-3">
+          <!-- Top Row: Back Action + Atelier Badge -->
+          <div class="flex items-center justify-between gap-3 w-full">
+            <button type="button" onclick="window.handleBackButton('home')" aria-label="Go back to shopping" class="inline-flex items-center gap-1.5 text-xs font-semibold text-primary/80 hover:text-primary min-h-[36px] py-1 px-3 rounded-xl bg-surface-container-low hover:bg-surface-container border border-[#e4e0d8] active:scale-[0.97] transition-all cursor-pointer">
+              <span class="material-symbols-outlined text-base" aria-hidden="true">arrow_back</span>
+              <span class="tracking-tight">Back to Shopping</span>
+            </button>
+            <span class="font-label-sm text-[10.5px] uppercase tracking-wider text-[#9e3322] font-bold px-2.5 py-0.5 rounded-full bg-[#fdf5f3] border border-[#f5c2b7]">
+              Personal Atelier
+            </span>
           </div>
-          ${products.length > 0 ? `
-            <div class="flex items-center gap-2 self-start sm:self-auto">
-              <button type="button" onclick="window.moveAllWishlistToCart()" class="btn-shimmer min-h-[42px] px-5 py-2 rounded-xl bg-primary hover:bg-primary-container text-white text-xs font-bold flex items-center gap-2 cursor-pointer shadow-xs active:scale-95 transition-all">
+
+          <!-- Title Row + Live Counter + Responsive Add All to Bag -->
+          <div class="flex items-center justify-between gap-2.5 flex-wrap">
+            <div class="flex items-baseline gap-2">
+              <h1 class="font-headline-lg text-xl sm:text-2xl lg:text-3xl text-primary font-bold tracking-tight">Saved Keepsakes</h1>
+              <span id="wishlist-header-count" class="font-spec-numeral text-xs sm:text-sm px-2.5 py-0.5 rounded-full bg-[#f4f2ee] border border-[#e4e0d8] font-bold text-primary">${products.length} ${products.length === 1 ? 'item' : 'items'}</span>
+            </div>
+            ${products.length > 0 ? `
+              <button type="button" onclick="window.moveAllWishlistToCart()" class="btn-shimmer h-9 px-4 rounded-xl bg-primary hover:bg-primary-container text-white text-xs font-bold inline-flex items-center gap-1.5 shadow-2xs active:scale-95 transition-all cursor-pointer">
                 <span class="material-symbols-outlined text-sm" aria-hidden="true">shopping_bag</span>
                 <span>Add All to Bag</span>
               </button>
-            </div>
-          ` : ''}
+            ` : ''}
+          </div>
+          <p class="text-[11px] sm:text-xs text-on-surface-variant leading-tight">Formulations, botanical keepsakes, and studio tools reserved for your pours.</p>
         </div>
 
         ${products.length === 0 ? `

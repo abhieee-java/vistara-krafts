@@ -2636,6 +2636,8 @@
   <link rel="stylesheet" href="./tailwind.min.css">
   <link rel="stylesheet" href="./tokens.css">
   <link rel="stylesheet" href="./styles.css?v=20261031_03">
+  <!-- ASCII Magic Web Component (Browser Only) -->
+  <script type="module" src="https://www.ascii-magic.com/ascii/ascii.js"></script>
 
   <script id="tailwind-config">
     window.tailwind = window.tailwind || {};
@@ -2968,9 +2970,9 @@
   </main>
 
   <!-- Global Editorial Footer -->
-  <footer class="bg-surface-container-low border-t border-[#e4e0d8] px-4 sm:px-8 py-10 pb-32 lg:pb-20">
-    <div class="max-w-7xl mx-auto flex flex-col gap-8">
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+  <footer class="bg-surface-container-low border-t border-[#e4e0d8] px-4 sm:px-8 py-7 sm:py-9 pb-28 lg:pb-16">
+    <div class="max-w-7xl mx-auto flex flex-col gap-5 sm:gap-8">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 sm:gap-8">
         <div class="flex flex-col gap-2.5">
           <div class="flex items-center gap-2.5">
             <img src="./vistara-krafts-logo.jpg" alt="Vistāra Krafts VK Logo" width="36" height="36" decoding="async" class="w-9 h-9 rounded-lg border border-[#e4e0d8] bg-white p-0.5 object-contain shrink-0">
@@ -2995,40 +2997,40 @@
 
         <div class="flex flex-col gap-1 text-xs">
           <h2 class="font-headline-sm text-sm font-bold text-primary uppercase tracking-wider mb-1">Shop &amp; Studio</h2>
-          <button type="button" onclick="window.navigateTo('catalog', 'casting')" class="min-h-[44px] py-1.5 text-left text-on-surface-variant hover:text-primary flex items-center cursor-pointer">2:1 High-Gloss Epoxy Resin</button>
-          <button type="button" onclick="window.navigateTo('catalog', 'deep_pour')" class="min-h-[44px] py-1.5 text-left text-on-surface-variant hover:text-primary flex items-center cursor-pointer">3:1 Deep Pour River Table Epoxy</button>
-          <button type="button" onclick="window.navigateTo('catalog', 'molds')" class="min-h-[44px] py-1.5 text-left text-on-surface-variant hover:text-primary flex items-center cursor-pointer">Artisanal Silicone Molds</button>
-          <button type="button" onclick="window.navigateTo('custom-studio')" class="min-h-[44px] py-1.5 text-left text-on-surface-variant hover:text-primary flex items-center cursor-pointer">Interactive Epoxy Pour Calculator</button>
+          <button type="button" onclick="window.navigateTo('catalog', 'casting')" class="py-1 sm:py-1.5 text-left text-on-surface-variant hover:text-primary flex items-center cursor-pointer">2:1 High-Gloss Epoxy Resin</button>
+          <button type="button" onclick="window.navigateTo('catalog', 'deep_pour')" class="py-1 sm:py-1.5 text-left text-on-surface-variant hover:text-primary flex items-center cursor-pointer">3:1 Deep Pour River Table Epoxy</button>
+          <button type="button" onclick="window.navigateTo('catalog', 'molds')" class="py-1 sm:py-1.5 text-left text-on-surface-variant hover:text-primary flex items-center cursor-pointer">Artisanal Silicone Molds</button>
+          <button type="button" onclick="window.navigateTo('custom-studio')" class="py-1 sm:py-1.5 text-left text-on-surface-variant hover:text-primary flex items-center cursor-pointer">Interactive Epoxy Pour Calculator</button>
         </div>
 
         <div class="flex flex-col gap-1 text-xs">
           <h2 class="font-headline-sm text-sm font-bold text-primary uppercase tracking-wider mb-1">Social &amp; Privacy</h2>
-          <button type="button" onclick="window.navigateTo('social')" class="min-h-[44px] py-1.5 text-left text-on-surface-variant hover:text-primary flex items-center cursor-pointer">@resin.art.memories Reels Feed</button>
-          <a href="/about" class="min-h-[44px] py-1.5 text-left text-on-surface-variant hover:text-primary flex items-center gap-1 cursor-pointer">
+          <button type="button" onclick="window.navigateTo('social')" class="py-1 sm:py-1.5 text-left text-on-surface-variant hover:text-primary flex items-center cursor-pointer">@resin.art.memories Reels Feed</button>
+          <a href="/about" class="py-1 sm:py-1.5 text-left text-on-surface-variant hover:text-primary flex items-center gap-1 cursor-pointer">
             <span class="material-symbols-outlined text-sm" aria-hidden="true">info</span>
             <span>About Us</span>
           </a>
-          <a href="/editorial-policy" class="min-h-[44px] py-1.5 text-left text-on-surface-variant hover:text-primary flex items-center gap-1 cursor-pointer">
+          <a href="/editorial-policy" class="py-1 sm:py-1.5 text-left text-on-surface-variant hover:text-primary flex items-center gap-1 cursor-pointer">
             <span class="material-symbols-outlined text-sm" aria-hidden="true">fact_check</span>
             <span>Editorial Policy</span>
           </a>
-          <a href="/privacy" class="min-h-[44px] py-1.5 text-left text-on-surface-variant hover:text-primary flex items-center gap-1 cursor-pointer">
+          <a href="/privacy" class="py-1 sm:py-1.5 text-left text-on-surface-variant hover:text-primary flex items-center gap-1 cursor-pointer">
             <span class="material-symbols-outlined text-sm" aria-hidden="true">policy</span>
             <span>Privacy Policy</span>
           </a>
-          <a href="/terms" class="min-h-[44px] py-1.5 text-left text-on-surface-variant hover:text-primary flex items-center gap-1 cursor-pointer">
+          <a href="/terms" class="py-1 sm:py-1.5 text-left text-on-surface-variant hover:text-primary flex items-center gap-1 cursor-pointer">
             <span class="material-symbols-outlined text-sm" aria-hidden="true">description</span>
             <span>Terms of Service</span>
           </a>
-          <button type="button" onclick="window.openDpdpModal('notice')" class="min-h-[44px] py-1.5 text-left font-semibold text-[#725a19] hover:text-primary flex items-center gap-1 cursor-pointer">
+          <button type="button" onclick="window.openDpdpModal('notice')" class="py-1 sm:py-1.5 text-left font-semibold text-[#725a19] hover:text-primary flex items-center gap-1 cursor-pointer">
             <span class="material-symbols-outlined text-sm" aria-hidden="true">gavel</span>
             <span>DPDP Act 2023 Notice &amp; Privacy</span>
           </button>
-          <button type="button" onclick="window.openDpdpModal('preferences')" class="min-h-[44px] py-1.5 text-left text-on-surface-variant hover:text-primary flex items-center gap-1 cursor-pointer">
+          <button type="button" onclick="window.openDpdpModal('preferences')" class="py-1 sm:py-1.5 text-left text-on-surface-variant hover:text-primary flex items-center gap-1 cursor-pointer">
             <span class="material-symbols-outlined text-sm" aria-hidden="true">tune</span>
             <span>Manage Consent Preferences</span>
           </button>
-          <button type="button" onclick="window.openDpdpModal('grievance')" class="min-h-[44px] py-1.5 text-left text-on-surface-variant hover:text-primary flex items-center gap-1 cursor-pointer">
+          <button type="button" onclick="window.openDpdpModal('grievance')" class="py-1 sm:py-1.5 text-left text-on-surface-variant hover:text-primary flex items-center gap-1 cursor-pointer">
             <span class="material-symbols-outlined text-sm" aria-hidden="true">shield_person</span>
             <span>DPDP Grievance &amp; Rights Portal</span>
           </button>
@@ -3043,6 +3045,20 @@
             <button type="submit" class="px-4 h-12 min-w-[60px] rounded-xl bg-primary text-white text-xs font-semibold cursor-pointer shrink-0">Join</button>
           </form>
           <p class="text-[10px] text-on-surface-variant font-medium">By subscribing, you agree to receive promotional notes under DPDP Act 2023. Unsubscribe anytime.</p>
+        </div>
+      </div>
+
+            <!-- Atelier Signature & Animated ASCII Art ("Balloon Valley Sunrise") -->
+      <div class="pt-5 sm:pt-6 border-t border-[#e4e0d8] flex flex-col md:flex-row items-center justify-between gap-4 text-center md:text-left">
+        <div class="flex flex-col gap-1 max-w-sm">
+          <span class="font-label-sm text-[10.5px] uppercase tracking-widest text-[#9e3322] font-bold">Atelier Sunrise</span>
+          <h3 class="font-headline-sm text-sm sm:text-base text-primary font-bold">Handcrafted in Guwahati, Assam</h3>
+          <p class="text-[11px] text-on-surface-variant leading-relaxed">
+            Preserving floral memories and formulating optical-grade crystal epoxy from the banks of the Brahmaputra.
+          </p>
+        </div>
+        <div class="ascii-art-wrapper overflow-hidden flex items-center justify-center p-2.5 sm:p-3 rounded-2xl bg-white border border-[#e4e0d8] shadow-2xs max-w-full">
+          <ascii-art piece="balloon-valley-sunrise" class="block max-w-[320px] sm:max-w-[400px] text-primary" style="display: block; font-size: 7px; line-height: 1; overflow: hidden;"></ascii-art>
         </div>
       </div>
 

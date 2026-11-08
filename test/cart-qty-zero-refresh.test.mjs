@@ -89,4 +89,32 @@ test('Cart Quantity Zero-Refresh & Luxury Wishlist Suite', async (t) => {
       'In-card checkout button must have hidden lg:flex to prevent duplicate buttons on mobile viewports'
     );
   });
+
+  await t.test('7. Wishlist Mobile Polish: Unified compact header with zero dead space above/below back button', () => {
+    assert.ok(
+      appJsContent.includes('Back to Shopping') && appJsContent.includes('Personal Atelier'),
+      'Wishlist header must feature unified top bar with Back to Shopping and Personal Atelier badge'
+    );
+    assert.ok(
+      appJsContent.includes('wishlist-header-count'),
+      'Wishlist must preserve #wishlist-header-count micro-reconciliation anchor'
+    );
+  });
+
+  await t.test('8. Footer ASCII Magic Integration: Animated balloon-valley-sunrise piece & compact link spacing', () => {
+    const indexHtmlPath = path.join(__dirname, '..', 'index.html');
+    const indexHtmlContent = fs.readFileSync(indexHtmlPath, 'utf8');
+    assert.ok(
+      indexHtmlContent.includes('https://www.ascii-magic.com/ascii/ascii.js'),
+      'index.html must load ASCII Magic module script once in the browser'
+    );
+    assert.ok(
+      indexHtmlContent.includes('<ascii-art piece="balloon-valley-sunrise"'),
+      'index.html footer must embed the balloon-valley-sunrise ASCII art piece'
+    );
+    assert.ok(
+      indexHtmlContent.includes('Atelier Sunrise') && indexHtmlContent.includes('Guwahati, Assam'),
+      'Footer must provide real accompanying heading and text next to the ASCII art'
+    );
+  });
 });
