@@ -3564,33 +3564,125 @@
   }
 
   // =========================================================================
-  // 6. SAVED / WISHLIST VIEW
+  // 6. SAVED / WISHLIST VIEW ("Apple, Elevated" Atelier Edition)
   // =========================================================================
+  function renderWishlistItemCard(p) {
+    const isDiscounted = p.regularPrice > p.price;
+    const discountPct = isDiscounted ? Math.round(((p.regularPrice - p.price) / p.regularPrice) * 100) : 0;
+    const categoryLabel = p.category ? p.category.replace(/_/g, ' ').toUpperCase() : 'STUDIO EDITION';
+    const variantTag = p.tagline || (p.variants && p.variants[0] ? p.variants[0].label : 'Artisan Batch');
+
+    return `
+      <article 
+        class="group relative bg-white rounded-2xl border border-[#e6e2d8] hover:border-[#cda851]/60 p-2.5 sm:p-3.5 flex flex-col justify-between transition-all duration-300 shadow-2xs hover:shadow-xs min-w-0" 
+        data-product-id="${esc(p.id)}" 
+        data-wishlist-card-id="${esc(p.id)}"
+      >
+        <div>
+          <!-- Thumbnail & Media Overlay (Refined Aspect 4:3) -->
+          <div class="relative w-full aspect-[4/3] rounded-xl overflow-hidden bg-[#faf8f5] border border-[#f0ece4] mb-2.5">
+            <img 
+              src="${esc(p.image)}" 
+              alt="${esc(p.name)}" 
+              onclick="window.navigateTo('product', '${esc(p.id)}')" 
+              class="w-full h-full object-cover cursor-pointer group-hover:scale-105 transition-transform duration-500 ease-out" 
+              loading="lazy"
+            >
+            <!-- Category Tag -->
+            <span class="absolute top-2 left-2 px-2 py-0.5 rounded-full bg-white/90 backdrop-blur-md text-[8.5px] sm:text-[9px] font-bold tracking-wider uppercase text-primary border border-black/5 shadow-2xs pointer-events-none truncate max-w-[70%]">
+              ${esc(categoryLabel)}
+            </span>
+            <!-- Remove from Wishlist Heart Button -->
+            <button 
+              type="button" 
+              aria-label="Remove from wishlist" 
+              data-wishlist-btn="${esc(p.id)}" 
+              onclick="window.handleWishlistToggle(event, '${esc(p.id)}')" 
+              class="absolute top-2 right-2 w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-white/95 text-[#9e3322] border border-black/5 flex items-center justify-center shadow-xs hover:scale-110 active:scale-90 transition-transform cursor-pointer" 
+              title="Remove from saved keepsakes"
+            >
+              <svg class="w-3.5 h-3.5 sm:w-4 sm:h-4 fill-[#9e3322] stroke-[#9e3322] transition-colors" viewBox="0 0 24 24" stroke-width="1.8">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
+              </svg>
+            </button>
+          </div>
+
+          <!-- Product Details -->
+          <div class="space-y-0.5">
+            <h3 
+              onclick="window.navigateTo('product', '${esc(p.id)}')" 
+              class="font-title-md text-xs sm:text-sm font-bold text-primary line-clamp-1 hover:text-[#9e3322] cursor-pointer transition-colors leading-snug break-words"
+            >
+              ${esc(p.name)}
+            </h3>
+            <p class="text-[10.5px] sm:text-[11px] text-gray-500 truncate font-normal leading-tight">
+              ${esc(variantTag)}
+            </p>
+          </div>
+        </div>
+
+        <div class="pt-2 sm:pt-2.5 mt-2 border-t border-[#f4f2ee] space-y-2">
+          <!-- Pricing & Stock Row -->
+          <div class="flex items-center justify-between gap-1">
+            <div class="flex items-baseline gap-1 sm:gap-1.5 min-w-0">
+              <span class="font-spec-numeral text-xs sm:text-sm font-bold text-primary">${formatINR(p.price)}</span>
+              ${isDiscounted ? `
+                <span class="font-spec-numeral text-[10px] text-gray-400 line-through truncate">${formatINR(p.regularPrice)}</span>
+              ` : ''}
+            </div>
+            <span class="inline-flex items-center gap-1 text-[9px] sm:text-[9.5px] font-semibold text-emerald-800 shrink-0">
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-600"></span>
+              <span>In Stock</span>
+            </span>
+          </div>
+
+          <!-- 1-Click Move to Bag Button -->
+          <button 
+            type="button" 
+            data-wishlist-add-id="${esc(p.id)}"
+            onclick="window.handleWishlistAddToCart('${esc(p.id)}', this)" 
+            class="btn-shimmer w-full h-8 sm:h-9 rounded-xl bg-[#1c1b18] hover:bg-[#2d2a24] text-white text-[11px] sm:text-xs font-bold flex items-center justify-center gap-1.5 shadow-2xs active:scale-[0.98] transition-all cursor-pointer"
+          >
+            <span class="material-symbols-outlined text-xs sm:text-sm" aria-hidden="true">shopping_bag</span>
+            <span class="js-wishlist-btn-label">Move to Bag</span>
+          </button>
+        </div>
+      </article>
+    `;
+  }
+
   function renderWishlistView() {
     const wishlistIds = Store.getWishlist();
     const products = Store.getProducts().filter(p => wishlistIds.includes(p.id));
     const savedPosts = Store.getSocialPosts().filter(p => p.saved);
 
     return `
-      <div class="route-view-enter flex flex-col w-full max-w-7xl mx-auto px-4 sm:px-8 py-6 gap-6">
+      <div class="route-view-enter flex flex-col w-full max-w-7xl mx-auto px-4 sm:px-8 py-5 sm:py-6 gap-5 sm:gap-6">
         <!-- Back Navigation Button -->
         <div class="flex items-center">
-          <button type="button" onclick="window.handleBackButton('home')" aria-label="Go back to previous page" class="inline-flex items-center gap-1.5 text-xs font-semibold text-primary/80 hover:text-primary min-h-[44px] py-1 px-3 rounded-lg bg-surface-container-low hover:bg-surface-container transition-colors cursor-pointer w-fit">
+          <button type="button" onclick="window.handleBackButton('home')" aria-label="Go back to previous page" class="inline-flex items-center gap-1.5 text-xs font-semibold text-primary/80 hover:text-primary min-h-[38px] py-1 px-3 rounded-lg bg-surface-container-low hover:bg-surface-container transition-colors cursor-pointer w-fit">
             <span class="material-symbols-outlined text-sm" aria-hidden="true">arrow_back</span>
             <span>Back</span>
           </button>
         </div>
 
+        <!-- Atelier Wishlist Header -->
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#e4e0d8] pb-4">
           <div>
-            <span class="font-label-sm text-xs uppercase tracking-widest text-[#9e3322] font-bold">Personal Curation</span>
-            <h1 class="font-headline-lg text-2xl sm:text-3xl text-primary font-bold">Saved Keepsakes &amp; Formulations (${products.length})</h1>
+            <span class="font-label-sm text-[10.5px] uppercase tracking-widest text-[#9e3322] font-bold">Personal Atelier</span>
+            <div class="flex items-center gap-2.5 mt-0.5">
+              <h1 class="font-headline-lg text-xl sm:text-2xl lg:text-3xl text-primary font-bold">Saved Keepsakes</h1>
+              <span id="wishlist-header-count" class="font-spec-numeral text-xs px-2.5 py-0.5 rounded-full bg-[#f4f2ee] border border-[#e4e0d8] font-bold text-primary">${products.length} ${products.length === 1 ? 'item' : 'items'}</span>
+            </div>
+            <p class="text-xs text-on-surface-variant mt-0.5">Formulations, botanical keepsakes, and studio tools reserved for your pours.</p>
           </div>
           ${products.length > 0 ? `
-            <button type="button" onclick="window.moveAllWishlistToCart()" class="min-h-[48px] px-5 py-2.5 rounded-xl bg-primary text-on-primary text-xs font-bold flex items-center gap-2 self-start sm:self-auto cursor-pointer">
-              <span class="material-symbols-outlined text-base" aria-hidden="true">shopping_bag</span>
-              <span>Add All ${products.length} Saved Items to Bag</span>
-            </button>
+            <div class="flex items-center gap-2 self-start sm:self-auto">
+              <button type="button" onclick="window.moveAllWishlistToCart()" class="btn-shimmer min-h-[42px] px-5 py-2 rounded-xl bg-primary hover:bg-primary-container text-white text-xs font-bold flex items-center gap-2 cursor-pointer shadow-xs active:scale-95 transition-all">
+                <span class="material-symbols-outlined text-sm" aria-hidden="true">shopping_bag</span>
+                <span>Add All to Bag</span>
+              </button>
+            </div>
           ` : ''}
         </div>
 
@@ -3668,11 +3760,12 @@
             </div>
             <h2 class="font-headline-sm text-xl text-primary font-bold">Your Wishlist is Empty</h2>
             <p class="text-xs text-on-surface-variant max-w-sm">Tap the heart icon on any resin formulation or floral keepsake to bookmark it for your next pour.</p>
-            <button type="button" onclick="window.navigateTo('catalog', 'all')" class="min-h-[48px] px-6 py-2.5 rounded-xl bg-primary text-white text-xs font-bold shadow-xs cursor-pointer">Explore Catalogue</button>
+            <button type="button" onclick="window.navigateTo('catalog', 'all')" class="min-h-[44px] px-6 py-2.5 rounded-xl bg-primary text-white text-xs font-bold shadow-xs cursor-pointer">Explore Catalogue</button>
           </div>
         ` : `
-          <div class="grid grid-cols-1 min-[360px]:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-            ${products.map(p => renderProductCard(p, false)).join('')}
+          <!-- Compact Luxury Wishlist Grid (2-col Mobile, 3-col Tablet, 4-col Desktop) -->
+          <div id="wishlist-items-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4.5">
+            ${products.map(p => renderWishlistItemCard(p)).join('')}
           </div>
         `}
 
@@ -3874,8 +3967,14 @@
               ${summary.cart.map(item => {
                 const effectiveUnit = Store.getEffectiveUnitPrice(item);
                 const isTierDiscounted = effectiveUnit < item.price;
-                const rawVariant = (item.variantLabel || '').replace(/\s*[•·-]\s*$/, '').trim();
-                const specLine = [rawVariant, item.size].filter(Boolean).join(' • ');
+                const rawVariant = (item.variantLabel || '').replace(/^[\s•·-]+|[\s•·-]+$/g, '').trim();
+                const rawSize = (item.size || '').trim();
+                const specParts = [];
+                if (rawVariant) specParts.push(rawVariant);
+                if (rawSize && !rawVariant.toLowerCase().includes(rawSize.toLowerCase())) {
+                  specParts.push(rawSize);
+                }
+                const specLine = specParts.join(' • ');
                 return `
                 <div class="ram-card p-3 sm:p-3.5 bg-white flex flex-col gap-2 min-w-0 rounded-xl border border-[#e6e2d8]" data-cart-item-id="${esc(item.cartItemId)}" ${item.sku ? `data-item-sku="${esc(item.sku)}"` : ''}>
                   <div class="flex gap-2.5 sm:gap-3.5 min-w-0">
@@ -3901,18 +4000,23 @@
                         ` : ''}
                       </div>
 
-                      <!-- Compact Integrated Price & Stepper Row -->
+                      <!-- Compact Integrated Price & Stepper Row ("Apple, Elevated" Clean Stack) -->
                       <div class="flex items-center justify-between gap-2 mt-2 pt-1.5 border-t border-[#f2eee7]">
-                        <div class="flex items-baseline gap-1.5 min-w-0">
-                          <span class="font-spec-numeral text-xs sm:text-sm font-bold text-primary" data-line-total="${effectiveUnit * item.qty}">${formatINR(effectiveUnit * item.qty)}</span>
-                          <span class="font-spec-numeral text-[10px] text-outline">(${formatINR(effectiveUnit)}/unit)</span>
-                          ${isTierDiscounted ? `<span class="px-1.5 py-0.5 rounded-full bg-secondary-container/60 text-secondary text-[9px] font-bold">Volume Tier Applied</span>` : ''}
+                        <div class="flex flex-col min-w-0 justify-center">
+                          <div class="flex items-baseline gap-1.5 min-w-0">
+                            <span class="js-cart-item-total font-spec-numeral text-xs sm:text-sm font-bold text-primary" data-line-total="${effectiveUnit * item.qty}">${formatINR(effectiveUnit * item.qty)}</span>
+                            <span class="js-cart-item-unit font-spec-numeral text-[10px] text-outline">(${formatINR(effectiveUnit)}/unit)</span>
+                          </div>
+                          <span class="js-cart-item-tier-badge text-[9.5px] font-semibold text-emerald-800 items-center gap-1 whitespace-nowrap mt-0.5 leading-none ${isTierDiscounted ? 'inline-flex' : 'hidden'}">
+                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-600 shrink-0"></span>
+                            <span>Volume Tier Applied</span>
+                          </span>
                         </div>
                         <div class="flex items-center bg-surface-container-low rounded-lg p-0.5 border border-[#e4e0d8] shrink-0">
                           <button type="button" aria-label="Decrease quantity" onclick="window.handleCartQty('${esc(item.cartItemId)}', -1)" class="w-6 h-6 rounded-md bg-white text-primary flex items-center justify-center font-bold hover:bg-surface-container cursor-pointer transition-colors shadow-2xs">
                             <span class="material-symbols-outlined text-xs" aria-hidden="true">remove</span>
                           </button>
-                          <span class="font-spec-numeral text-xs font-bold px-2 text-primary">${item.qty}</span>
+                          <span class="js-cart-item-qty font-spec-numeral text-xs font-bold px-2 text-primary">${item.qty}</span>
                           <button type="button" aria-label="Increase quantity" onclick="window.handleCartQty('${esc(item.cartItemId)}', 1)" class="w-6 h-6 rounded-md bg-white text-primary flex items-center justify-center font-bold hover:bg-surface-container cursor-pointer transition-colors shadow-2xs">
                             <span class="material-symbols-outlined text-xs" aria-hidden="true">add</span>
                           </button>
@@ -3930,7 +4034,13 @@
                     <span class="material-symbols-outlined text-base" aria-hidden="true">pin_drop</span>
                   </div>
                   <div class="min-w-0 flex-1">
-                    <p class="text-xs sm:text-sm font-bold text-primary break-words leading-snug">Delivering to PIN ${esc(pinInfo.pin)} (${esc(pinInfo.city)})</p>
+                    ${(() => {
+                    const cleanCity = (pinInfo.city || '')
+                      .replace(/^Zone\s+PIN\s+\d+\s*\((.*?)\)$/i, '$1')
+                      .replace(/^Zone\s+PIN\s+\d+/i, 'Pan-India Hub')
+                      .replace(/^[\s()]+|[\s()]+$/g, '');
+                    return `<p class="text-xs sm:text-sm font-bold text-primary break-words leading-snug">Delivering to PIN ${esc(pinInfo.pin)} (${esc(cleanCity || 'Pan-India Express Hub')})</p>`;
+                  })()}
                     <p class="text-[11px] sm:text-xs text-on-surface-variant break-words leading-relaxed mt-0.5">${esc(pinInfo.courier)} • Guaranteed in ${esc(pinInfo.days)}</p>
                   </div>
                 </div>
@@ -3981,11 +4091,11 @@
                         <p class="text-[10px] sm:text-[10.5px] text-on-surface-variant leading-tight">${hasPublicOffers ? 'Enter code or pick an offer below' : 'Enter your promo code'}</p>
                       </div>
                     </div>
-                    ${summary.couponCode ? `
+                    <div id="cart-coupon-header-remove-btn-wrap" class="${summary.couponCode ? '' : 'hidden'}">
                       <button type="button" onclick="window.handleRemoveCoupon()" class="text-[11px] font-semibold text-rose-600 hover:text-rose-800 transition-colors cursor-pointer px-2 py-0.5 rounded-md hover:bg-rose-50" title="Remove applied coupon">
                         Remove
                       </button>
-                    ` : ''}
+                    </div>
                   </div>
 
                   <!-- Input Bar (Compact 38px / 40px) -->
@@ -4008,22 +4118,24 @@
                   </form>
 
                   <!-- Feedback Banner: Active Applied State -->
-                  ${summary.couponDiscount > 0 ? `
-                    <div class="flex items-center justify-between p-2 rounded-lg bg-emerald-50/80 border border-emerald-200 text-xs">
-                      <div class="flex items-center gap-1.5 text-[#266b4e] font-semibold">
-                        <span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;" aria-hidden="true">check_circle</span>
-                        <span>Code <strong>${esc(summary.couponCode)}</strong> — <span class="font-bold">${formatINR(summary.couponDiscount)} saved!</span></span>
+                  <div id="cart-coupon-feedback-container">
+                    ${summary.couponDiscount > 0 ? `
+                      <div class="flex items-center justify-between p-2 rounded-lg bg-emerald-50/80 border border-emerald-200 text-xs">
+                        <div class="flex items-center gap-1.5 text-[#266b4e] font-semibold">
+                          <span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;" aria-hidden="true">check_circle</span>
+                          <span>Code <strong>${esc(summary.couponCode)}</strong> — <span class="font-bold">${formatINR(summary.couponDiscount)} saved!</span></span>
+                        </div>
+                        <button type="button" onclick="window.handleRemoveCoupon()" class="text-[10.5px] font-bold text-emerald-800 hover:underline cursor-pointer">
+                          Remove
+                        </button>
                       </div>
-                      <button type="button" onclick="window.handleRemoveCoupon()" class="text-[10.5px] font-bold text-emerald-800 hover:underline cursor-pointer">
-                        Remove
-                      </button>
-                    </div>
-                  ` : (summary.couponInvalidReason ? `
-                    <div id="cart-coupon-warning" class="flex items-start gap-1.5 text-[#704600] bg-[#fff5e0] p-2 rounded-lg border border-[#fae2b4] text-xs font-medium">
-                      <span class="material-symbols-outlined text-sm shrink-0 mt-0.5 text-[#b57c1e]" aria-hidden="true">info</span>
-                      <span class="leading-snug">${esc(summary.couponInvalidReason)}</span>
-                    </div>
-                  ` : '')}
+                    ` : (summary.couponInvalidReason ? `
+                      <div id="cart-coupon-warning" class="flex items-start gap-1.5 text-[#704600] bg-[#fff5e0] p-2 rounded-lg border border-[#fae2b4] text-xs font-medium">
+                        <span class="material-symbols-outlined text-sm shrink-0 mt-0.5 text-[#b57c1e]" aria-hidden="true">info</span>
+                        <span class="leading-snug">${esc(summary.couponInvalidReason)}</span>
+                      </div>
+                    ` : '')}
+                  </div>
 
                   <!-- Available Public Offers (Only renders when hasPublicOffers is true) -->
                   ${hasPublicOffers ? `
@@ -4056,8 +4168,7 @@
 
                               <button 
                                 type="button" 
-                                onclick="window.quickSelectCoupon('${esc(c.code)}')"
-                                class="shrink-0 px-2.5 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                                onclick="window.quickSelectCoupon('${esc(c.code)}')" data-quick-coupon-code="${esc(c.code)}" class="shrink-0 px-2.5 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer ${
                                   isApplied 
                                     ? 'bg-emerald-600 text-white shadow-2xs' 
                                     : (isEligible 
@@ -4096,7 +4207,7 @@
                 </div>
                 <div class="flex justify-between items-center text-xs text-outline">
                   <span id="cart-gst">Includes ₹${summary.gstAmount.toFixed(2)} GST (18%)</span>
-                  <span>${gstInfo.enabled ? 'Eligible 18% ITC' : 'Tax Inclusive'}</span>
+                  <span id="cart-gst-itc-badge">${gstInfo.enabled ? 'Eligible 18% ITC' : 'Tax Inclusive'}</span>
                 </div>
                 <div class="pt-2.5 mt-0.5 border-t border-surface-container flex justify-between items-baseline bg-surface-container-low p-3 rounded-xl">
                   <div>
@@ -4122,7 +4233,7 @@
                   </button>
                 ` : `
                   <!-- Desktop In-Card Checkout Button (Hidden on Mobile to eliminate duplicate CTA, preserved on Desktop) -->
-                  <button type="button" onclick="window.openCheckoutModal()" class="desktop-cart-checkout-btn btn-shimmer w-full h-11 sm:h-12 mt-1 rounded-xl bg-primary hover:bg-primary-container text-on-primary font-title-md text-xs sm:text-sm font-bold items-center justify-center gap-2 shadow-md cursor-pointer active:scale-[0.99] transition-transform">
+                  <button type="button" onclick="window.openCheckoutModal()" class="desktop-cart-checkout-btn hidden lg:flex btn-shimmer w-full h-11 sm:h-12 mt-1 rounded-xl bg-primary hover:bg-primary-container text-on-primary font-title-md text-xs sm:text-sm font-bold items-center justify-center gap-2 shadow-md cursor-pointer active:scale-[0.99] transition-transform">
                     <span id="cart-desktop-checkout-btn-text">Proceed to Secure Checkout • ${formatINR(summary.payable)}</span>
                     <span class="material-symbols-outlined text-base sm:text-lg" aria-hidden="true">arrow_forward</span>
                   </button>
@@ -5940,7 +6051,12 @@
         wishCard.style.margin = '0px';
         setTimeout(() => {
           if (wishCard.parentNode) wishCard.remove();
-          if (Store.getWishlist().length === 0) {
+          const remCount = Store.getWishlist().length;
+          const headerCountEl = document.getElementById('wishlist-header-count');
+          if (headerCountEl) {
+            headerCountEl.textContent = `${remCount} ${remCount === 1 ? 'item' : 'items'}`;
+          }
+          if (remCount === 0) {
             renderActiveView();
           }
         }, 220);
@@ -6891,6 +7007,46 @@
   };
 
   // Wishlist Handlers
+  
+  window.handleWishlistAddToCart = function (productId, btnEl) {
+    const p = Store.getProductById(productId);
+    if (!p) return;
+
+    Store.addToCart({
+      productId: p.id,
+      name: p.name,
+      variantLabel: p.variants && p.variants[0] ? p.variants[0].label : 'Standard Edition',
+      price: p.price,
+      regularPrice: p.regularPrice,
+      qty: 1,
+      image: p.image,
+      sku: p.sku
+    });
+
+    updateGlobalBadges();
+
+    if (btnEl) {
+      const prevHtml = btnEl.innerHTML;
+      btnEl.classList.remove('bg-[#1c1b18]', 'hover:bg-[#2d2a24]');
+      btnEl.classList.add('bg-emerald-700', 'text-white');
+      btnEl.innerHTML = '<span class="material-symbols-outlined text-xs sm:text-sm" aria-hidden="true">check</span><span>Added to Bag</span>';
+      setTimeout(() => {
+        btnEl.classList.remove('bg-emerald-700', 'text-white');
+        btnEl.classList.add('bg-[#1c1b18]', 'hover:bg-[#2d2a24]');
+        btnEl.innerHTML = prevHtml;
+      }, 1200);
+    }
+
+    window.showToast('Added to Studio Bag', p.shortName || p.name, {
+      type: 'success',
+      icon: 'shopping_bag',
+      action: {
+        label: 'View Bag',
+        onClick: () => window.navigateTo('cart')
+      }
+    });
+  };
+
   window.moveAllWishlistToCart = function () {
     const ids = Store.getWishlist();
     ids.forEach(id => {
@@ -6917,7 +7073,9 @@
   window.handleCartQty = function (cartItemId, delta) {
     const cart = Store.getCart();
     const item = cart.find(i => i.cartItemId === cartItemId || i.productId === cartItemId);
-    if (item && delta > 0) {
+    if (!item) return;
+
+    if (delta > 0) {
       const maxStock = item.stockQuantity || 10;
       if (item.qty >= maxStock) {
         window.showToast('Maximum Artisan Stock Reached', `Only ${maxStock} units available for this handcrafted batch.`, {
@@ -6927,9 +7085,57 @@
         return;
       }
     }
+
+    const nextQty = item.qty + delta;
+    if (nextQty <= 0) {
+      // Delegate to optimistic slide-out removal
+      window.handleCartRemove(cartItemId);
+      return;
+    }
+
+    // 1. Synchronously update local store
     Store.updateCartQty(cartItemId, delta, false);
+    const newSummary = Store.getCartSummary();
+    const updatedItem = newSummary.cart.find(i => i.cartItemId === cartItemId || i.productId === cartItemId);
+    if (!updatedItem) return;
+
+    const effectiveUnit = Store.getEffectiveUnitPrice(updatedItem);
+    const isTierDiscounted = effectiveUnit < updatedItem.price;
+
+    // 2. Surgical In-Place DOM Mutation of the Card
+    const card = document.querySelector(`[data-cart-item-id="${cartItemId}"]`);
+    if (card) {
+      const qtyEl = card.querySelector('.js-cart-item-qty');
+      if (qtyEl) qtyEl.textContent = updatedItem.qty;
+
+      const totalEl = card.querySelector('.js-cart-item-total');
+      if (totalEl) {
+        totalEl.textContent = formatINR(effectiveUnit * updatedItem.qty);
+        totalEl.setAttribute('data-line-total', effectiveUnit * updatedItem.qty);
+      }
+
+      const unitEl = card.querySelector('.js-cart-item-unit');
+      if (unitEl) {
+        unitEl.textContent = `(${formatINR(effectiveUnit)}/unit)`;
+      }
+
+      const tierBadge = card.querySelector('.js-cart-item-tier-badge');
+      if (tierBadge) {
+        if (isTierDiscounted) {
+          tierBadge.classList.remove('hidden');
+          tierBadge.classList.add('inline-flex');
+        } else {
+          tierBadge.classList.add('hidden');
+          tierBadge.classList.remove('inline-flex');
+        }
+      }
+    }
+
+    // 3. Micro-reconcile invoice summary in-place
+    reconcileCartInvoiceDom(newSummary);
+
+    // 4. Update header badge with subtle bounce
     updateGlobalBadges();
-    renderActiveView();
   };
 
   // Micro-Reconciliation for Studio Bag Invoice Elements (Zero-Refresh, In-Place DOM Reconciliation)
@@ -7162,12 +7368,71 @@
     });
   };
 
+  function reconcileVoucherSectionDom(summary) {
+    if (!summary) summary = Store.getCartSummary();
+
+    const input = document.getElementById('cart-coupon-input');
+    if (input) {
+      input.value = summary.couponCode || '';
+    }
+
+    const headerRemoveWrap = document.getElementById('cart-coupon-header-remove-btn-wrap');
+    if (headerRemoveWrap) {
+      if (summary.couponCode) {
+        headerRemoveWrap.classList.remove('hidden');
+      } else {
+        headerRemoveWrap.classList.add('hidden');
+      }
+    }
+
+    const feedbackContainer = document.getElementById('cart-coupon-feedback-container');
+    if (feedbackContainer) {
+      if (summary.couponDiscount > 0) {
+        feedbackContainer.innerHTML = `
+          <div class="flex items-center justify-between p-2 rounded-lg bg-emerald-50/80 border border-emerald-200 text-xs">
+            <div class="flex items-center gap-1.5 text-[#266b4e] font-semibold">
+              <span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;" aria-hidden="true">check_circle</span>
+              <span>Code <strong>${esc(summary.couponCode)}</strong> — <span class="font-bold">${formatINR(summary.couponDiscount)} saved!</span></span>
+            </div>
+            <button type="button" onclick="window.handleRemoveCoupon()" class="text-[10.5px] font-bold text-emerald-800 hover:underline cursor-pointer">
+              Remove
+            </button>
+          </div>
+        `;
+      } else if (summary.couponInvalidReason) {
+        feedbackContainer.innerHTML = `
+          <div id="cart-coupon-warning" class="flex items-start gap-1.5 text-[#704600] bg-[#fff5e0] p-2 rounded-lg border border-[#fae2b4] text-xs font-medium">
+            <span class="material-symbols-outlined text-sm shrink-0 mt-0.5 text-[#b57c1e]" aria-hidden="true">info</span>
+            <span class="leading-snug">${esc(summary.couponInvalidReason)}</span>
+          </div>
+        `;
+      } else {
+        feedbackContainer.innerHTML = '';
+      }
+    }
+
+    document.querySelectorAll('[data-quick-coupon-code]').forEach(btn => {
+      const cCode = btn.getAttribute('data-quick-coupon-code');
+      const isApplied = summary.couponCode === cCode;
+      if (isApplied) {
+        btn.className = 'shrink-0 px-2.5 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer bg-emerald-600 text-white shadow-2xs';
+        btn.textContent = '✓ Applied';
+      } else {
+        btn.className = 'shrink-0 px-2.5 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer bg-[#1c1b18] text-[#cda851] hover:bg-[#2d2a24] active:scale-95 shadow-2xs';
+        btn.textContent = 'Apply';
+      }
+    });
+
+    reconcileCartInvoiceDom(summary);
+  }
+
   window.handleApplyCoupon = function () {
     const code = document.getElementById('cart-coupon-input')?.value || '';
     const res = Store.applyCoupon(code);
-    renderActiveView();
+    const summary = Store.getCartSummary();
+    reconcileVoucherSectionDom(summary);
+
     if (res.valid) {
-      const summary = Store.getCartSummary();
       const savedStr = summary.couponDiscount > 0 ? ` — ${formatINR(summary.couponDiscount)} saved!` : '';
       window.showToast(`Coupon ${code.toUpperCase()} Applied!`, `Discount active${savedStr}`, {
         type: 'success',
@@ -7183,7 +7448,8 @@
 
   window.handleRemoveCoupon = function () {
     Store.applyCoupon('');
-    renderActiveView();
+    const summary = Store.getCartSummary();
+    reconcileVoucherSectionDom(summary);
     window.showToast('Coupon Removed', 'Studio voucher removed from your bag.', {
       type: 'info',
       icon: 'check'
@@ -7192,9 +7458,10 @@
 
   window.quickSelectCoupon = function (code) {
     const res = Store.applyCoupon(code);
-    renderActiveView();
+    const summary = Store.getCartSummary();
+    reconcileVoucherSectionDom(summary);
+
     if (res.valid) {
-      const summary = Store.getCartSummary();
       const savedStr = summary.couponDiscount > 0 ? ` — ${formatINR(summary.couponDiscount)} saved!` : '';
       window.showToast(`Applied ${code}!`, `Special offer active${savedStr}`, {
         type: 'success',
@@ -7210,7 +7477,20 @@
 
   window.toggleGstClaim = function (checked) {
     Store.saveGstInfo({ enabled: checked });
-    renderActiveView();
+    const gstFields = document.getElementById('cart-gst-fields');
+    if (gstFields) {
+      if (checked) {
+        gstFields.classList.remove('hidden');
+        gstFields.classList.add('grid');
+      } else {
+        gstFields.classList.add('hidden');
+        gstFields.classList.remove('grid');
+      }
+    }
+    const itcBadge = document.getElementById('cart-gst-itc-badge');
+    if (itcBadge) {
+      itcBadge.textContent = checked ? 'Eligible 18% ITC' : 'Tax Inclusive';
+    }
   };
 
   window.saveGstField = function () {
