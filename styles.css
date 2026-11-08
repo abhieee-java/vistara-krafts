@@ -1560,26 +1560,22 @@ body.route-cart footer {
 }
 
 /* ==========================================================================
-   ASCII Magic Web Component & Footer Responsive Styling
+   ASCII Magic Web Component Panoramic Stretched Architecture
    ========================================================================== */
 ascii-art {
-  display: block;
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace !important;
+  display: block !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  overflow: hidden !important;
   user-select: none;
   pointer-events: none;
-  overflow: hidden;
 }
 
 .ascii-art-wrapper {
+  width: 100% !important;
+  display: block !important;
+  overflow: hidden !important;
   background-color: #ffffff;
   border: 1px solid var(--structure-30-border, #e4e0d8);
   box-shadow: 0 1px 3px rgba(3, 26, 56, 0.04);
-}
-
-@media (max-width: 640px) {
-  ascii-art {
-    font-size: 6px !important;
-    line-height: 1 !important;
-    max-width: 100% !important;
-  }
 }

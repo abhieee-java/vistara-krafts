@@ -2638,6 +2638,28 @@
   <link rel="stylesheet" href="./styles.css?v=20261031_03">
   <!-- ASCII Magic Web Component (Browser Only) -->
   <script type="module" src="https://www.ascii-magic.com/ascii/ascii.js"></script>
+  <script>
+    // Ensure ASCII Magic canvas stretches cleanly to fill container with true 192:108 panoramic ratio
+    (function () {
+      function styleAsciiArt() {
+        document.querySelectorAll('ascii-art').forEach(function (el) {
+          if (el.shadowRoot && !el.shadowRoot.querySelector('#ascii-panoramic-style')) {
+            var s = document.createElement('style');
+            s.id = 'ascii-panoramic-style';
+            s.textContent = ':host{display:block!important;width:100%!important;max-width:100%!important;}canvas{display:block!important;width:100%!important;height:auto!important;aspect-ratio:192/108!important;max-width:100%!important;object-fit:fill!important;}';
+            el.shadowRoot.appendChild(s);
+          }
+        });
+      }
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', styleAsciiArt);
+      } else {
+        styleAsciiArt();
+      }
+      var observer = new MutationObserver(styleAsciiArt);
+      observer.observe(document.documentElement, { childList: true, subtree: true });
+    })();
+  </script>
 
   <script id="tailwind-config">
     window.tailwind = window.tailwind || {};
@@ -3048,17 +3070,18 @@
         </div>
       </div>
 
-            <!-- Atelier Signature & Animated ASCII Art ("Balloon Valley Sunrise") -->
-      <div class="pt-5 sm:pt-6 border-t border-[#e4e0d8] flex flex-col md:flex-row items-center justify-between gap-4 text-center md:text-left">
-        <div class="flex flex-col gap-1 max-w-sm">
-          <span class="font-label-sm text-[10.5px] uppercase tracking-widest text-[#9e3322] font-bold">Atelier Sunrise</span>
-          <h3 class="font-headline-sm text-sm sm:text-base text-primary font-bold">Handcrafted in Guwahati, Assam</h3>
-          <p class="text-[11px] text-on-surface-variant leading-relaxed">
-            Preserving floral memories and formulating optical-grade crystal epoxy from the banks of the Brahmaputra.
-          </p>
+            <!-- Panoramic Atelier Signature: Animated ASCII Art ("Balloon Valley Sunrise") -->
+      <div class="w-full flex flex-col gap-2.5 sm:gap-3 pt-5 sm:pt-6 border-t border-[#e4e0d8]">
+        <div class="flex flex-col sm:flex-row sm:items-baseline justify-between gap-1 text-center sm:text-left">
+          <div class="flex items-center gap-2 justify-center sm:justify-start">
+            <span class="font-label-sm text-[10.5px] uppercase tracking-widest text-[#9e3322] font-bold">Atelier Sunrise</span>
+            <span class="text-on-surface-variant/40 hidden sm:inline">•</span>
+            <h3 class="font-headline-sm text-sm sm:text-base text-primary font-bold">Handcrafted in Guwahati, Assam</h3>
+          </div>
+          <p class="text-[11px] text-on-surface-variant">Preserving floral memories and formulating optical-grade crystal epoxy from the banks of the Brahmaputra.</p>
         </div>
-        <div class="ascii-art-wrapper overflow-hidden flex items-center justify-center p-2.5 sm:p-3 rounded-2xl bg-white border border-[#e4e0d8] shadow-2xs max-w-full">
-          <ascii-art piece="balloon-valley-sunrise" class="block max-w-[320px] sm:max-w-[400px] text-primary" style="display: block; font-size: 7px; line-height: 1; overflow: hidden;"></ascii-art>
+        <div class="ascii-art-wrapper w-full overflow-hidden rounded-2xl bg-white border border-[#e4e0d8] shadow-2xs p-1 sm:p-2">
+          <ascii-art piece="balloon-valley-sunrise" class="w-full block"></ascii-art>
         </div>
       </div>
 
