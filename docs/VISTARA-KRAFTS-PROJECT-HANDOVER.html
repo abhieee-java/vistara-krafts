@@ -627,6 +627,48 @@ npm run build</code></pre>
 <div class="ordered-step"><span class="step-num">2</span><span class="step-content">Navigate to <strong>Deployments</strong>.</span></div>
 <div class="ordered-step"><span class="step-num">3</span><span class="step-content">Locate the previous stable production deployment.</span></div>
 <div class="ordered-step"><span class="step-num">4</span><span class="step-content">Click <strong>Instant Rollback</strong>. Traffic is rerouted in under 5 seconds with zero server downtime.</span></div>
+<h3 class="subsection-title">11.4 E-Commerce Ad Tracking & Conversion Pixels</h3>
+<ul>
+<li><strong>Google Analytics 4 (GA4):</strong> Measurement Tag <code class="inline-code">G-QVM9JT6BW3</code>.</li>
+<li><strong>Meta Pixel (Facebook/Instagram Ads):</strong> Pixel ID <code class="inline-code">1183595563273188</code>.</li>
+<li><strong>Ad Tracking Engine (<code class="inline-code">analytics.js</code>):</strong> Unified, defensive e-commerce tracking module exposing <code class="inline-code">window.VistaraAnalytics</code>:</li>
+<li><code class="inline-code">page_view</code> / <code class="inline-code">PageView</code>: Virtual route transitions on SPA hash changes.</li>
+<li><code class="inline-code">view_item</code> / <code class="inline-code">ViewContent</code>: Product detail views with variant-level pricing in INR.</li>
+<li><code class="inline-code">add_to_cart</code> / <code class="inline-code">AddToCart</code>: Items added to bag with quantity and selected variety.</li>
+<li><code class="inline-code">begin_checkout</code> & <code class="inline-code">initiate_checkout</code> / <code class="inline-code">InitiateCheckout</code>: Delivery address modal trigger.</li>
+<li><code class="inline-code">purchase</code> / <code class="inline-code">Purchase</code>: Verified payment capture with transaction ID, tax, shipping, and exact-once deduplication.</li>
+<li><code class="inline-code">search</code> / <code class="inline-code">Search</code>: Catalogue and home search query telemetry.</li>
+<li><strong>Defensive Safeguards:</strong> CSP whitelisted in <code class="inline-code">vercel.json</code>; ad-blocker suppression never interrupts user checkout.</li>
+</ul>
+<h3 class="subsection-title">11.5 Binary Choice Cookie & Tracker Privacy Architecture</h3>
+<ul>
+<li><strong>Binary Choice Floating Bar:</strong> Replaced old single-button banners with an Apple-grade, floating frosted-glass bar (<code class="inline-code">bg-white/95 backdrop-blur-md border-[#e4e0d8]</code>) docked at <code class="inline-code">bottom-20 lg:bottom-4</code>:</li>
+<li><em>Copy:</em> "We use cookies to personalize your atelier experience and analyze traffic. You can choose to accept all or keep only essential cookies."</li>
+<li><em>[Accept All] (Primary Navy Pill):</em> Enables Google Analytics 4 (<code class="inline-code">G-QVM9JT6BW3</code>), Meta Pixel (<code class="inline-code">1183595563273188</code>), and Microsoft Clarity (<code class="inline-code">z6d831rvdh</code>) with Google Consent Mode v2 <code class="inline-code">granted</code>.</li>
+<li><em>[Essential Only] (Subtle Outline / Ghost Button):</em> Disables advertising and analytics trackers (<code class="inline-code">ga-disable = true</code>, <code class="inline-code">gtag consent denied</code>, <code class="inline-code">fbq consent revoke</code>, <code class="inline-code">clarity consent false</code>), while preserving Cart, Wishlist, Supabase Auth, and Razorpay Order Checkout.</li>
+<li><em>[Privacy Policy]:</em> Direct link to full statutory disclosures in <code class="inline-code">./privacy.html</code>.</li>
+<li><strong>Authoritative Statutory Privacy Policy (<code class="inline-code">privacy.html</code>):</strong> Permanent footer link covering full DPDP Act 2023 Section 5/6 disclosures, Data Fiduciary identity, DPO and Grievance Officer details (<code class="inline-code">grievance@vistarakrafts.com</code>), cookie classifications, data retention, and 7-day resolution SLAs.</li>
+<li><strong>Streamlined Checkout Consent:</strong> Clean, distraction-free consent line positioned directly above the primary order placement action: <em>"I consent to processing contact & address for BlueDart delivery & GST invoicing."</em></li>
+<li>Detailed specifications maintained in <code class="inline-code">docs/04-COOKIE-BINARY-CHOICE-SPEC.md</code> and <code class="inline-code">docs/COOKIE-PRIVACY-BAR-SPEC.md</code>.</li>
+</ul>
+<h3 class="subsection-title">11.6 Mobile Product Detail (PDP) Sticky Action Bar Architecture</h3>
+<ul>
+<li><strong>Decluttered 50/50 Dual-CTA Grid:</strong> Re-engineered the mobile sticky action bar (<code class="inline-code">fixed bottom-16 lg:bottom-0</code>) into a balanced two-button layout strictly adhering to brand colors:</li>
+<li><strong>Left CTA (<code class="inline-code">Add to cart</code>):</strong> Crisp alabaster white pill button (<code class="inline-code">bg-white border-[#e4e0d8] rounded-2xl</code>), bold charcoal typography (<code class="inline-code">text-primary</code>), and active spring tap feedback (<code class="inline-code">active:scale-[0.98]</code>).</li>
+<li><strong>Right CTA (<code class="inline-code">Buy now</code>):</strong> Rich studio terracotta button (<code class="inline-code">bg-[#9e3322] hover:bg-[#852a1b] rounded-2xl</code>), displaying <code class="inline-code">"Buy now"</code> on line 1 and <code class="inline-code">"at ₹..."</code> on line 2 in soft cream (<code class="inline-code">text-[#ffe4de]</code>).</li>
+<li><strong>Elimination of Mobile Viewport Crowding:</strong> On mobile screens (<code class="inline-code">< 640px</code>), the secondary thumbnail image, discount percentage badges, and duplicate wishlist heart button are hidden (<code class="inline-code">hidden sm:flex</code>), dedicating 100% of horizontal viewport width to primary conversion actions.</li>
+<li><strong>Cache Invalidation:</strong> Query string parameters for scripts and stylesheets updated to <code class="inline-code">?v=20261108_02</code> across <code class="inline-code">index.html</code> to prevent stale browser caching. Detailed in <code class="inline-code">docs/15-PRODUCTION-DATABASE-CLEANUP-AND-PDP-STICKY-BAR.md</code>.</li>
+</ul>
+<h3 class="subsection-title">11.7 Production Database Clean-State & Data Governance</h3>
+<ul>
+<li><strong>Zero-Mock Policy Enforcement:</strong> Purged 100% of accumulated test records and expired verification data generated by automated security and test runners:</li>
+<li><code class="inline-code">email_verification_codes</code>: 336 expired OTP records purged (<code class="inline-code">expires_at < NOW()</code>).</li>
+<li><code class="inline-code">orders</code>: 258 mock test runner orders purged.</li>
+<li><code class="inline-code">profiles</code>: 96 test runner patron accounts purged.</li>
+<li><code class="inline-code">payments</code>: 24 test payment records purged.</li>
+<li><code class="inline-code">welcome_emails</code>: 24 test email dispatch logs purged.</li>
+<li><strong>Permanent Data Integrity:</strong> 100% preserved all 19 catalog products, 2 categories, 2 coupons, 4 settings records, and the master administrator credentials in <code class="inline-code">admin_auth</code> (1 row) and <code class="inline-code">admin_security_config</code> (1 row). Verified clean baseline via direct PostgreSQL query.</li>
+</ul>
 <hr class="section-divider" />
 <h2 class="section-title">12. SIGN-OFF & PROJECT HANDOVER ACCEPTANCE</h2>
 <p>The Vistāra Krafts digital commerce platform is verified, secured, and ready for continuous production operations.</p>
@@ -638,6 +680,10 @@ npm run build</code></pre>
 <tr><td><strong>Supabase PostgreSQL & RLS</strong></td><td><strong>APPROVED</strong></td><td>Abhijit</td><td>November 2026</td></tr>
 <tr><td><strong>Razorpay Payment Integration</strong></td><td><strong>APPROVED</strong></td><td>Abhijit</td><td>November 2026</td></tr>
 <tr><td><strong>Resend Email Delivery Engine</strong></td><td><strong>APPROVED</strong></td><td>Abhijit</td><td>November 2026</td></tr>
+<tr><td><strong>GA4 & Meta Pixel Ad Tracking</strong></td><td><strong>APPROVED</strong></td><td>Abhijit</td><td>November 2026</td></tr>
+<tr><td><strong>Binary Choice Cookie & Privacy Bar</strong></td><td><strong>APPROVED</strong></td><td>Abhijit</td><td>November 2026</td></tr>
+<tr><td><strong>Mobile PDP Sticky Action Bar Polish</strong></td><td><strong>APPROVED</strong></td><td>Abhijit</td><td>November 2026</td></tr>
+<tr><td><strong>Production Database Clean Slate</strong></td><td><strong>APPROVED</strong></td><td>Abhijit</td><td>November 2026</td></tr>
 <tr><td><strong>End-to-End Automated Verification</strong></td><td><strong>PASSED (27/27)</strong></td><td>Abhijit</td><td>November 2026</td></tr>
 </tbody></table></div>
 <p><em>Official project handover concluded. The system is in active production service.</em></p>
