@@ -35,7 +35,7 @@ This resulted in thumbnail clipping, cramped text, and crushed interactive targe
      - **Buy now**: Brand studio terracotta (`#9e3322`), with `"Buy now"` on line 1 and `"at ₹..."` on line 2 in soft cream (`#ffe4de`).
    - **Desktop / Tablet (`≥ 640px`)**: Maintains the rich context layout showing high-res product thumbnail, name, live price, and savings badge on the left, with the dual actions docked cleanly to the right.
 2. **Aggressive Cache Invalidation**:
-   - Bumped `index.html` cache query parameters for `styles.css`, `store-bridge.js`, and `app.js` to `?v=20261108_02`.
+   - Bumped `index.html` cache query parameters for `styles.css`, `store-bridge.js`, and `app.js` to `?v=20261108_04`.
    - Pushed live to remote repository (`origin/main`, commit `185c54b`) for instant production CDN synchronization on `https://www.vistarakrafts.com/`.
 
 ---
