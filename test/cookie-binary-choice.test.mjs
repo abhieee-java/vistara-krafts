@@ -29,8 +29,8 @@ describe('Vistāra Krafts — Binary Cookie & Privacy Choice Suite', () => {
     assert.ok(indexHtml.includes('Essential Only'), 'index.html must have "Essential Only" button text');
     assert.ok(indexHtml.includes('border border-primary/25'), 'Essential Only must use subtle outline styling');
 
-    // Privacy Policy link
-    assert.ok(indexHtml.includes('href="./privacy.html"'), 'index.html must link to ./privacy.html');
+    // Privacy Policy link (supports either clean /privacy or relative ./privacy.html)
+    assert.ok(indexHtml.includes('href="/privacy"') || indexHtml.includes('href="./privacy.html"'), 'index.html must link to privacy policy');
     assert.ok(indexHtml.includes('Privacy Policy'), 'index.html banner must show Privacy Policy link');
   });
 

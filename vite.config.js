@@ -5,6 +5,7 @@ import createOrderHandler from './api/create-order.js';
 import verifyPaymentHandler from './api/verify-payment.js';
 import webhookHandler from './api/razorpay-webhook.js';
 import sendWelcomeEmailHandler from './api/send-welcome-email.js';
+import downloadHandler from './api/download.js';
 
 const STATIC_ASSETS = [
   'supabase-config.js',
@@ -75,6 +76,10 @@ function apiMiddlewarePlugin() {
               await webhookHandler(req, res);
             } else if (url === '/api/send-welcome-email') {
               await sendWelcomeEmailHandler(req, res);
+            } else if (url === '/api/download') {
+              const parsedUrl = new URL(req.url, 'http://localhost:3000');
+              req.query = Object.fromEntries(parsedUrl.searchParams.entries());
+              await downloadHandler(req, res);
             } else {
               res.status(404).json({ success: false, error: 'Endpoint not found' });
             }

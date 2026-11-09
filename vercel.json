@@ -15,6 +15,14 @@
   ],
   "rewrites": [
     {
+      "source": "/cdn-assets/:bucket/:path*",
+      "destination": "https://niamxrskqhjvzwxomxrx.supabase.co/storage/v1/object/public/:bucket/:path*"
+    },
+    {
+      "source": "/storage/:bucket/:path*",
+      "destination": "https://niamxrskqhjvzwxomxrx.supabase.co/storage/v1/object/public/:bucket/:path*"
+    },
+    {
       "source": "/verify",
       "destination": "/"
     },
