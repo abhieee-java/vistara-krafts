@@ -931,11 +931,11 @@
     }
     const { route, param, queryParams } = parseHash();
     if (route === 'privacy') {
-      window.location.href = './privacy.html';
+      window.location.href = '/privacy';
       return;
     }
     if (route === 'terms') {
-      window.location.href = './terms.html';
+      window.location.href = '/terms';
       return;
     }
     if (route === 'verify' || route === 'confirm' || route === 'auth') {

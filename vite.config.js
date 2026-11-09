@@ -23,7 +23,9 @@ const STATIC_ASSETS = [
   'llms.txt',
   'llms-full.txt',
   'privacy.html',
-  'terms.html'
+  'terms.html',
+  'about.html',
+  'editorial-policy.html'
 ];
 
 function apiMiddlewarePlugin() {
