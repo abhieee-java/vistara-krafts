@@ -2143,8 +2143,11 @@
 
           if (Array.isArray(orderRows)) {
             const mapped = orderRows.map(r => this.normalizeStorefrontOrder(r)).filter(Boolean);
-            safeWrite(STORAGE_KEYS.ORDERS, mapped);
-            this.notify('orders_updated', mapped);
+            const isUnchanged = JSON.stringify(currentOrders) === JSON.stringify(mapped);
+            if (!isUnchanged) {
+              safeWrite(STORAGE_KEYS.ORDERS, mapped);
+              this.notify('orders_updated', mapped);
+            }
             return mapped;
           }
           return currentOrders;
@@ -2161,14 +2164,19 @@
 
           if (!error && Array.isArray(data)) {
             const mapped = data.map(r => this.normalizeStorefrontOrder(r)).filter(Boolean);
-            safeWrite(STORAGE_KEYS.ORDERS, mapped);
-            this.notify('orders_updated', mapped);
+            const isUnchanged = JSON.stringify(currentOrders) === JSON.stringify(mapped);
+            if (!isUnchanged) {
+              safeWrite(STORAGE_KEYS.ORDERS, mapped);
+              this.notify('orders_updated', mapped);
+            }
             return mapped;
           }
         } else {
           // Zero leakage: Guests without placed orders have strictly zero orders
-          safeWrite(STORAGE_KEYS.ORDERS, []);
-          this.notify('orders_updated', []);
+          if (currentOrders && currentOrders.length > 0) {
+            safeWrite(STORAGE_KEYS.ORDERS, []);
+            this.notify('orders_updated', []);
+          }
           return [];
         }
 
