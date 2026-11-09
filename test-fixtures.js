@@ -1,24 +1,24 @@
 export const IMAGES = {
   "logoVistara": "./vistara-krafts-logo.jpg",
-  "resin201": "https://res.cloudinary.com/ecugysfd/image/upload/v1792353785/catalog_cata1_resin_bottles_set_1792353782.png",
-  "resin301": "https://res.cloudinary.com/ecugysfd/image/upload/v1792353785/catalog_cata1_resin_bottles_set_1792353782.png",
-  "uvResin": "https://res.cloudinary.com/ecugysfd/image/upload/v1792353851/catalog_cata1_uv_resin_25g_box_1792353847.png",
-  "decoMarkers": "https://res.cloudinary.com/ecugysfd/image/upload/v1792353788/catalog_cata1_deco_markers_1792353786.jpg",
-  "metalStand": "https://res.cloudinary.com/ecugysfd/image/upload/v1792353791/catalog_cata1_metal_folding_stands_1792353789.png",
-  "agateMold": "https://res.cloudinary.com/ecugysfd/image/upload/v1792353794/catalog_cata1_agate_mould_single_1792353792.png",
-  "foilFlakes": "https://res.cloudinary.com/ecugysfd/image/upload/v1792353797/catalog_cata1_foil_flakes_1792353795.jpg",
-  "opaquePigments": "https://res.cloudinary.com/ecugysfd/image/upload/v1792353801/catalog_cata1_opaque_pigments_1792353798.png",
-  "inkPearlPigments": "https://res.cloudinary.com/ecugysfd/image/upload/v1792353804/catalog_cata1_ink_pearl_pigments_1792353802.png",
-  "bubblesBuster": "https://res.cloudinary.com/ecugysfd/image/upload/v1792353829/catalog_cata1_bubbles_buster_1792353815.png",
-  "resinPolish": "https://res.cloudinary.com/ecugysfd/image/upload/v1792353814/catalog_cata1_resin_polish_1792353811.png",
-  "blowTorch": "https://res.cloudinary.com/ecugysfd/image/upload/v1792353806/catalog_cata1_blow_torch_1792353805.png",
-  "liquidLatex": "https://res.cloudinary.com/ecugysfd/image/upload/v1792353810/catalog_cata1_liquid_latex_1792353808.png",
-  "flowerMold4in1": "https://res.cloudinary.com/ecugysfd/image/upload/v1792353832/catalog_cata1_mould_4in1_flower_1792353830.png",
-  "magicSilicaGel": "https://res.cloudinary.com/ecugysfd/image/upload/v1792353842/catalog_cata1_magic_silica_gel_1792353840.png",
-  "mould6CavityAgate": "https://res.cloudinary.com/ecugysfd/image/upload/v1792353835/catalog_cata1_mould_6cavity_agate_1792353833.png",
-  "bookmarkMold": "https://res.cloudinary.com/ecugysfd/image/upload/v1792353839/catalog_cata1_mould_bookmark_6in_1792353836.png",
-  "leafMold": "https://res.cloudinary.com/ecugysfd/image/upload/v1792353865/catalog_cata1_leaf_mould_1_1792353857.png",
-  "smallFlowers": "https://res.cloudinary.com/ecugysfd/image/upload/v1792353895/catalog_cata1_small_flowers_03_1792353883.png"
+  "resin201": "https://niamxrskqhjvzwxomxrx.supabase.co/storage/v1/object/public/product-images/resin_bottles_set.webp",
+  "resin301": "https://niamxrskqhjvzwxomxrx.supabase.co/storage/v1/object/public/product-images/resin_bottles_set.webp",
+  "uvResin": "https://niamxrskqhjvzwxomxrx.supabase.co/storage/v1/object/public/product-images/uv_resin_25g_box.webp",
+  "decoMarkers": "https://niamxrskqhjvzwxomxrx.supabase.co/storage/v1/object/public/product-images/deco_markers.webp",
+  "metalStand": "https://niamxrskqhjvzwxomxrx.supabase.co/storage/v1/object/public/product-images/metal_folding_stands.webp",
+  "agateMold": "https://niamxrskqhjvzwxomxrx.supabase.co/storage/v1/object/public/product-images/agate_mould_single.webp",
+  "foilFlakes": "https://niamxrskqhjvzwxomxrx.supabase.co/storage/v1/object/public/product-images/foil_flakes.webp",
+  "opaquePigments": "https://niamxrskqhjvzwxomxrx.supabase.co/storage/v1/object/public/product-images/opaque_pigments.webp",
+  "inkPearlPigments": "https://niamxrskqhjvzwxomxrx.supabase.co/storage/v1/object/public/product-images/ink_pearl_pigments.webp",
+  "bubblesBuster": "https://niamxrskqhjvzwxomxrx.supabase.co/storage/v1/object/public/product-images/bubbles_buster.webp",
+  "resinPolish": "https://niamxrskqhjvzwxomxrx.supabase.co/storage/v1/object/public/product-images/resin_polish.webp",
+  "blowTorch": "https://niamxrskqhjvzwxomxrx.supabase.co/storage/v1/object/public/product-images/blow_torch.webp",
+  "liquidLatex": "https://niamxrskqhjvzwxomxrx.supabase.co/storage/v1/object/public/product-images/liquid_latex.webp",
+  "flowerMold4in1": "https://niamxrskqhjvzwxomxrx.supabase.co/storage/v1/object/public/product-images/mould_4in1_flower.webp",
+  "magicSilicaGel": "https://niamxrskqhjvzwxomxrx.supabase.co/storage/v1/object/public/product-images/magic_silica_gel.webp",
+  "mould6CavityAgate": "https://niamxrskqhjvzwxomxrx.supabase.co/storage/v1/object/public/product-images/mould_6cavity_agate.webp",
+  "bookmarkMold": "https://niamxrskqhjvzwxomxrx.supabase.co/storage/v1/object/public/product-images/mould_bookmark_6in.webp",
+  "leafMold": "https://niamxrskqhjvzwxomxrx.supabase.co/storage/v1/object/public/product-images/leaf_mould_1.webp",
+  "smallFlowers": "https://niamxrskqhjvzwxomxrx.supabase.co/storage/v1/object/public/product-images/small_flowers_03.webp"
 };
 
 export const TEST_PRODUCTS = [
@@ -55,12 +55,12 @@ export const TEST_PRODUCTS = [
     "viscosity": "medium",
     "cureTime": "18-24 Hours",
     "potLife": "45 mins",
-    "image": "https://res.cloudinary.com/ecugysfd/image/upload/v1792353785/catalog_cata1_resin_bottles_set_1792353782.png",
+    "image": "https://niamxrskqhjvzwxomxrx.supabase.co/storage/v1/object/public/product-images/resin_bottles_set.webp",
     "gallery": [
-      "https://res.cloudinary.com/ecugysfd/image/upload/v1792353785/catalog_cata1_resin_bottles_set_1792353782.png"
+      "https://niamxrskqhjvzwxomxrx.supabase.co/storage/v1/object/public/product-images/resin_bottles_set.webp"
     ],
     "images": [
-      "https://res.cloudinary.com/ecugysfd/image/upload/v1792353785/catalog_cata1_resin_bottles_set_1792353782.png"
+      "https://niamxrskqhjvzwxomxrx.supabase.co/storage/v1/object/public/product-images/resin_bottles_set.webp"
     ],
     "variants": [
       {
@@ -150,12 +150,12 @@ export const TEST_PRODUCTS = [
     "viscosity": "low",
     "cureTime": "24-36 Hours",
     "potLife": "90 mins",
-    "image": "https://res.cloudinary.com/ecugysfd/image/upload/v1792353785/catalog_cata1_resin_bottles_set_1792353782.png",
+    "image": "https://niamxrskqhjvzwxomxrx.supabase.co/storage/v1/object/public/product-images/resin_bottles_set.webp",
     "gallery": [
-      "https://res.cloudinary.com/ecugysfd/image/upload/v1792353785/catalog_cata1_resin_bottles_set_1792353782.png"
+      "https://niamxrskqhjvzwxomxrx.supabase.co/storage/v1/object/public/product-images/resin_bottles_set.webp"
     ],
     "images": [
-      "https://res.cloudinary.com/ecugysfd/image/upload/v1792353785/catalog_cata1_resin_bottles_set_1792353782.png"
+      "https://niamxrskqhjvzwxomxrx.supabase.co/storage/v1/object/public/product-images/resin_bottles_set.webp"
     ],
     "variants": [
       {
@@ -244,12 +244,12 @@ export const TEST_PRODUCTS = [
     "viscosity": "low",
     "cureTime": "24h",
     "potLife": "30m",
-    "image": "https://res.cloudinary.com/ecugysfd/image/upload/v1792353788/catalog_cata1_deco_markers_1792353786.jpg",
+    "image": "https://niamxrskqhjvzwxomxrx.supabase.co/storage/v1/object/public/product-images/deco_markers.webp",
     "gallery": [
-      "https://res.cloudinary.com/ecugysfd/image/upload/v1792353788/catalog_cata1_deco_markers_1792353786.jpg"
+      "https://niamxrskqhjvzwxomxrx.supabase.co/storage/v1/object/public/product-images/deco_markers.webp"
     ],
     "images": [
-      "https://res.cloudinary.com/ecugysfd/image/upload/v1792353788/catalog_cata1_deco_markers_1792353786.jpg"
+      "https://niamxrskqhjvzwxomxrx.supabase.co/storage/v1/object/public/product-images/deco_markers.webp"
     ],
     "variants": [
       {
@@ -356,12 +356,12 @@ export const TEST_PRODUCTS = [
     "viscosity": "low",
     "cureTime": "24h",
     "potLife": "30m",
-    "image": "https://res.cloudinary.com/ecugysfd/image/upload/v1792353791/catalog_cata1_metal_folding_stands_1792353789.png",
+    "image": "https://niamxrskqhjvzwxomxrx.supabase.co/storage/v1/object/public/product-images/metal_folding_stands.webp",
     "gallery": [
-      "https://res.cloudinary.com/ecugysfd/image/upload/v1792353791/catalog_cata1_metal_folding_stands_1792353789.png"
+      "https://niamxrskqhjvzwxomxrx.supabase.co/storage/v1/object/public/product-images/metal_folding_stands.webp"
     ],
     "images": [
-      "https://res.cloudinary.com/ecugysfd/image/upload/v1792353791/catalog_cata1_metal_folding_stands_1792353789.png"
+      "https://niamxrskqhjvzwxomxrx.supabase.co/storage/v1/object/public/product-images/metal_folding_stands.webp"
     ],
     "variants": [
       {
@@ -473,12 +473,12 @@ export const TEST_PRODUCTS = [
     "viscosity": "low",
     "cureTime": "24h",
     "potLife": "30m",
-    "image": "https://res.cloudinary.com/ecugysfd/image/upload/v1792353794/catalog_cata1_agate_mould_single_1792353792.png",
+    "image": "https://niamxrskqhjvzwxomxrx.supabase.co/storage/v1/object/public/product-images/agate_mould_single.webp",
     "gallery": [
-      "https://res.cloudinary.com/ecugysfd/image/upload/v1792353794/catalog_cata1_agate_mould_single_1792353792.png"
+      "https://niamxrskqhjvzwxomxrx.supabase.co/storage/v1/object/public/product-images/agate_mould_single.webp"
     ],
     "images": [
-      "https://res.cloudinary.com/ecugysfd/image/upload/v1792353794/catalog_cata1_agate_mould_single_1792353792.png"
+      "https://niamxrskqhjvzwxomxrx.supabase.co/storage/v1/object/public/product-images/agate_mould_single.webp"
     ],
     "variants": [
       {
@@ -577,12 +577,12 @@ export const TEST_PRODUCTS = [
     "viscosity": "low",
     "cureTime": "24h",
     "potLife": "30m",
-    "image": "https://res.cloudinary.com/ecugysfd/image/upload/v1792353797/catalog_cata1_foil_flakes_1792353795.jpg",
+    "image": "https://niamxrskqhjvzwxomxrx.supabase.co/storage/v1/object/public/product-images/foil_flakes.webp",
     "gallery": [
-      "https://res.cloudinary.com/ecugysfd/image/upload/v1792353797/catalog_cata1_foil_flakes_1792353795.jpg"
+      "https://niamxrskqhjvzwxomxrx.supabase.co/storage/v1/object/public/product-images/foil_flakes.webp"
     ],
     "images": [
-      "https://res.cloudinary.com/ecugysfd/image/upload/v1792353797/catalog_cata1_foil_flakes_1792353795.jpg"
+      "https://niamxrskqhjvzwxomxrx.supabase.co/storage/v1/object/public/product-images/foil_flakes.webp"
     ],
     "variants": [
       {
@@ -689,12 +689,12 @@ export const TEST_PRODUCTS = [
     "viscosity": "low",
     "cureTime": "24h",
     "potLife": "30m",
-    "image": "https://res.cloudinary.com/ecugysfd/image/upload/v1792353801/catalog_cata1_opaque_pigments_1792353798.png",
+    "image": "https://niamxrskqhjvzwxomxrx.supabase.co/storage/v1/object/public/product-images/opaque_pigments.webp",
     "gallery": [
-      "https://res.cloudinary.com/ecugysfd/image/upload/v1792353801/catalog_cata1_opaque_pigments_1792353798.png"
+      "https://niamxrskqhjvzwxomxrx.supabase.co/storage/v1/object/public/product-images/opaque_pigments.webp"
     ],
     "images": [
-      "https://res.cloudinary.com/ecugysfd/image/upload/v1792353801/catalog_cata1_opaque_pigments_1792353798.png"
+      "https://niamxrskqhjvzwxomxrx.supabase.co/storage/v1/object/public/product-images/opaque_pigments.webp"
     ],
     "variants": [
       {
@@ -812,12 +812,12 @@ export const TEST_PRODUCTS = [
     "viscosity": "low",
     "cureTime": "24h",
     "potLife": "30m",
-    "image": "https://res.cloudinary.com/ecugysfd/image/upload/v1792353804/catalog_cata1_ink_pearl_pigments_1792353802.png",
+    "image": "https://niamxrskqhjvzwxomxrx.supabase.co/storage/v1/object/public/product-images/ink_pearl_pigments.webp",
     "gallery": [
-      "https://res.cloudinary.com/ecugysfd/image/upload/v1792353804/catalog_cata1_ink_pearl_pigments_1792353802.png"
+      "https://niamxrskqhjvzwxomxrx.supabase.co/storage/v1/object/public/product-images/ink_pearl_pigments.webp"
     ],
     "images": [
-      "https://res.cloudinary.com/ecugysfd/image/upload/v1792353804/catalog_cata1_ink_pearl_pigments_1792353802.png"
+      "https://niamxrskqhjvzwxomxrx.supabase.co/storage/v1/object/public/product-images/ink_pearl_pigments.webp"
     ],
     "variants": [
       {
@@ -914,12 +914,12 @@ export const TEST_PRODUCTS = [
     "viscosity": "low",
     "cureTime": "24h",
     "potLife": "30m",
-    "image": "https://res.cloudinary.com/ecugysfd/image/upload/v1792353829/catalog_cata1_bubbles_buster_1792353815.png",
+    "image": "https://niamxrskqhjvzwxomxrx.supabase.co/storage/v1/object/public/product-images/bubbles_buster.webp",
     "gallery": [
-      "https://res.cloudinary.com/ecugysfd/image/upload/v1792353829/catalog_cata1_bubbles_buster_1792353815.png"
+      "https://niamxrskqhjvzwxomxrx.supabase.co/storage/v1/object/public/product-images/bubbles_buster.webp"
     ],
     "images": [
-      "https://res.cloudinary.com/ecugysfd/image/upload/v1792353829/catalog_cata1_bubbles_buster_1792353815.png"
+      "https://niamxrskqhjvzwxomxrx.supabase.co/storage/v1/object/public/product-images/bubbles_buster.webp"
     ],
     "variants": [
       {
@@ -1007,12 +1007,12 @@ export const TEST_PRODUCTS = [
     "viscosity": "low",
     "cureTime": "24h",
     "potLife": "30m",
-    "image": "https://res.cloudinary.com/ecugysfd/image/upload/v1792353814/catalog_cata1_resin_polish_1792353811.png",
+    "image": "https://niamxrskqhjvzwxomxrx.supabase.co/storage/v1/object/public/product-images/resin_polish.webp",
     "gallery": [
-      "https://res.cloudinary.com/ecugysfd/image/upload/v1792353814/catalog_cata1_resin_polish_1792353811.png"
+      "https://niamxrskqhjvzwxomxrx.supabase.co/storage/v1/object/public/product-images/resin_polish.webp"
     ],
     "images": [
-      "https://res.cloudinary.com/ecugysfd/image/upload/v1792353814/catalog_cata1_resin_polish_1792353811.png"
+      "https://niamxrskqhjvzwxomxrx.supabase.co/storage/v1/object/public/product-images/resin_polish.webp"
     ],
     "variants": [
       {
@@ -1100,12 +1100,12 @@ export const TEST_PRODUCTS = [
     "viscosity": "low",
     "cureTime": "24h",
     "potLife": "30m",
-    "image": "https://res.cloudinary.com/ecugysfd/image/upload/v1792353806/catalog_cata1_blow_torch_1792353805.png",
+    "image": "https://niamxrskqhjvzwxomxrx.supabase.co/storage/v1/object/public/product-images/blow_torch.webp",
     "gallery": [
-      "https://res.cloudinary.com/ecugysfd/image/upload/v1792353806/catalog_cata1_blow_torch_1792353805.png"
+      "https://niamxrskqhjvzwxomxrx.supabase.co/storage/v1/object/public/product-images/blow_torch.webp"
     ],
     "images": [
-      "https://res.cloudinary.com/ecugysfd/image/upload/v1792353806/catalog_cata1_blow_torch_1792353805.png"
+      "https://niamxrskqhjvzwxomxrx.supabase.co/storage/v1/object/public/product-images/blow_torch.webp"
     ],
     "variants": [
       {
@@ -1199,12 +1199,12 @@ export const TEST_PRODUCTS = [
     "viscosity": "low",
     "cureTime": "24h",
     "potLife": "30m",
-    "image": "https://res.cloudinary.com/ecugysfd/image/upload/v1792353810/catalog_cata1_liquid_latex_1792353808.png",
+    "image": "https://niamxrskqhjvzwxomxrx.supabase.co/storage/v1/object/public/product-images/liquid_latex.webp",
     "gallery": [
-      "https://res.cloudinary.com/ecugysfd/image/upload/v1792353810/catalog_cata1_liquid_latex_1792353808.png"
+      "https://niamxrskqhjvzwxomxrx.supabase.co/storage/v1/object/public/product-images/liquid_latex.webp"
     ],
     "images": [
-      "https://res.cloudinary.com/ecugysfd/image/upload/v1792353810/catalog_cata1_liquid_latex_1792353808.png"
+      "https://niamxrskqhjvzwxomxrx.supabase.co/storage/v1/object/public/product-images/liquid_latex.webp"
     ],
     "variants": [
       {
@@ -1292,12 +1292,12 @@ export const TEST_PRODUCTS = [
     "viscosity": "low",
     "cureTime": "24h",
     "potLife": "30m",
-    "image": "https://res.cloudinary.com/ecugysfd/image/upload/v1792353832/catalog_cata1_mould_4in1_flower_1792353830.png",
+    "image": "https://niamxrskqhjvzwxomxrx.supabase.co/storage/v1/object/public/product-images/mould_4in1_flower.webp",
     "gallery": [
-      "https://res.cloudinary.com/ecugysfd/image/upload/v1792353832/catalog_cata1_mould_4in1_flower_1792353830.png"
+      "https://niamxrskqhjvzwxomxrx.supabase.co/storage/v1/object/public/product-images/mould_4in1_flower.webp"
     ],
     "images": [
-      "https://res.cloudinary.com/ecugysfd/image/upload/v1792353832/catalog_cata1_mould_4in1_flower_1792353830.png"
+      "https://niamxrskqhjvzwxomxrx.supabase.co/storage/v1/object/public/product-images/mould_4in1_flower.webp"
     ],
     "variants": [
       {
@@ -1379,12 +1379,12 @@ export const TEST_PRODUCTS = [
     "viscosity": "low",
     "cureTime": "24h",
     "potLife": "30m",
-    "image": "https://res.cloudinary.com/ecugysfd/image/upload/v1792353842/catalog_cata1_magic_silica_gel_1792353840.png",
+    "image": "https://niamxrskqhjvzwxomxrx.supabase.co/storage/v1/object/public/product-images/magic_silica_gel.webp",
     "gallery": [
-      "https://res.cloudinary.com/ecugysfd/image/upload/v1792353842/catalog_cata1_magic_silica_gel_1792353840.png"
+      "https://niamxrskqhjvzwxomxrx.supabase.co/storage/v1/object/public/product-images/magic_silica_gel.webp"
     ],
     "images": [
-      "https://res.cloudinary.com/ecugysfd/image/upload/v1792353842/catalog_cata1_magic_silica_gel_1792353840.png"
+      "https://niamxrskqhjvzwxomxrx.supabase.co/storage/v1/object/public/product-images/magic_silica_gel.webp"
     ],
     "variants": [
       {
@@ -1479,12 +1479,12 @@ export const TEST_PRODUCTS = [
     "viscosity": "low",
     "cureTime": "24h",
     "potLife": "30m",
-    "image": "https://res.cloudinary.com/ecugysfd/image/upload/v1792353835/catalog_cata1_mould_6cavity_agate_1792353833.png",
+    "image": "https://niamxrskqhjvzwxomxrx.supabase.co/storage/v1/object/public/product-images/mould_6cavity_agate.webp",
     "gallery": [
-      "https://res.cloudinary.com/ecugysfd/image/upload/v1792353835/catalog_cata1_mould_6cavity_agate_1792353833.png"
+      "https://niamxrskqhjvzwxomxrx.supabase.co/storage/v1/object/public/product-images/mould_6cavity_agate.webp"
     ],
     "images": [
-      "https://res.cloudinary.com/ecugysfd/image/upload/v1792353835/catalog_cata1_mould_6cavity_agate_1792353833.png"
+      "https://niamxrskqhjvzwxomxrx.supabase.co/storage/v1/object/public/product-images/mould_6cavity_agate.webp"
     ],
     "variants": [
       {
@@ -1565,12 +1565,12 @@ export const TEST_PRODUCTS = [
     "viscosity": "low",
     "cureTime": "24h",
     "potLife": "30m",
-    "image": "https://res.cloudinary.com/ecugysfd/image/upload/v1792353839/catalog_cata1_mould_bookmark_6in_1792353836.png",
+    "image": "https://niamxrskqhjvzwxomxrx.supabase.co/storage/v1/object/public/product-images/mould_bookmark_6in.webp",
     "gallery": [
-      "https://res.cloudinary.com/ecugysfd/image/upload/v1792353839/catalog_cata1_mould_bookmark_6in_1792353836.png"
+      "https://niamxrskqhjvzwxomxrx.supabase.co/storage/v1/object/public/product-images/mould_bookmark_6in.webp"
     ],
     "images": [
-      "https://res.cloudinary.com/ecugysfd/image/upload/v1792353839/catalog_cata1_mould_bookmark_6in_1792353836.png"
+      "https://niamxrskqhjvzwxomxrx.supabase.co/storage/v1/object/public/product-images/mould_bookmark_6in.webp"
     ],
     "variants": [
       {
@@ -1659,16 +1659,16 @@ export const TEST_PRODUCTS = [
     "viscosity": "low",
     "cureTime": "90s UV",
     "potLife": "30m",
-    "image": "https://res.cloudinary.com/ecugysfd/image/upload/v1792353851/catalog_cata1_uv_resin_25g_box_1792353847.png",
+    "image": "https://niamxrskqhjvzwxomxrx.supabase.co/storage/v1/object/public/product-images/uv_resin_25g_box.webp",
     "gallery": [
-      "https://res.cloudinary.com/ecugysfd/image/upload/v1792353851/catalog_cata1_uv_resin_25g_box_1792353847.png",
-      "https://res.cloudinary.com/ecugysfd/image/upload/v1792353846/catalog_cata1_uv_resin_10g_1792353843.png",
-      "https://res.cloudinary.com/ecugysfd/image/upload/v1792353856/catalog_cata1_uv_resin_100g_1792353852.png"
+      "https://niamxrskqhjvzwxomxrx.supabase.co/storage/v1/object/public/product-images/uv_resin_25g_box.webp",
+      "https://niamxrskqhjvzwxomxrx.supabase.co/storage/v1/object/public/product-images/uv_resin_10g.webp",
+      "https://niamxrskqhjvzwxomxrx.supabase.co/storage/v1/object/public/product-images/uv_resin_100g.webp"
     ],
     "images": [
-      "https://res.cloudinary.com/ecugysfd/image/upload/v1792353851/catalog_cata1_uv_resin_25g_box_1792353847.png",
-      "https://res.cloudinary.com/ecugysfd/image/upload/v1792353846/catalog_cata1_uv_resin_10g_1792353843.png",
-      "https://res.cloudinary.com/ecugysfd/image/upload/v1792353856/catalog_cata1_uv_resin_100g_1792353852.png"
+      "https://niamxrskqhjvzwxomxrx.supabase.co/storage/v1/object/public/product-images/uv_resin_25g_box.webp",
+      "https://niamxrskqhjvzwxomxrx.supabase.co/storage/v1/object/public/product-images/uv_resin_10g.webp",
+      "https://niamxrskqhjvzwxomxrx.supabase.co/storage/v1/object/public/product-images/uv_resin_100g.webp"
     ],
     "variants": [
       {
@@ -1765,14 +1765,14 @@ export const TEST_PRODUCTS = [
     "viscosity": "low",
     "cureTime": "24h",
     "potLife": "30m",
-    "image": "https://res.cloudinary.com/ecugysfd/image/upload/v1792353865/catalog_cata1_leaf_mould_1_1792353857.png",
+    "image": "https://niamxrskqhjvzwxomxrx.supabase.co/storage/v1/object/public/product-images/leaf_mould_1.webp",
     "gallery": [
-      "https://res.cloudinary.com/ecugysfd/image/upload/v1792353865/catalog_cata1_leaf_mould_1_1792353857.png",
-      "https://res.cloudinary.com/ecugysfd/image/upload/v1792353871/catalog_cata1_leaf_mould_2_1792353866.png"
+      "https://niamxrskqhjvzwxomxrx.supabase.co/storage/v1/object/public/product-images/leaf_mould_1.webp",
+      "https://niamxrskqhjvzwxomxrx.supabase.co/storage/v1/object/public/product-images/leaf_mould_2.webp"
     ],
     "images": [
-      "https://res.cloudinary.com/ecugysfd/image/upload/v1792353865/catalog_cata1_leaf_mould_1_1792353857.png",
-      "https://res.cloudinary.com/ecugysfd/image/upload/v1792353871/catalog_cata1_leaf_mould_2_1792353866.png"
+      "https://niamxrskqhjvzwxomxrx.supabase.co/storage/v1/object/public/product-images/leaf_mould_1.webp",
+      "https://niamxrskqhjvzwxomxrx.supabase.co/storage/v1/object/public/product-images/leaf_mould_2.webp"
     ],
     "variants": [
       {
@@ -1873,22 +1873,22 @@ export const TEST_PRODUCTS = [
     "viscosity": "low",
     "cureTime": "24h",
     "potLife": "30m",
-    "image": "https://res.cloudinary.com/ecugysfd/image/upload/v1792353895/catalog_cata1_small_flowers_03_1792353883.png",
+    "image": "https://niamxrskqhjvzwxomxrx.supabase.co/storage/v1/object/public/product-images/small_flowers_03.webp",
     "gallery": [
-      "https://res.cloudinary.com/ecugysfd/image/upload/v1792353895/catalog_cata1_small_flowers_03_1792353883.png",
-      "https://res.cloudinary.com/ecugysfd/image/upload/v1792353883/catalog_cata1_small_flowers_06_1792353873.png",
-      "https://res.cloudinary.com/ecugysfd/image/upload/v1792353914/catalog_cata1_small_flowers_15_1792353896.png",
-      "https://res.cloudinary.com/ecugysfd/image/upload/v1792353924/catalog_cata1_small_flowers_07_1792353915.png",
-      "https://res.cloudinary.com/ecugysfd/image/upload/v1792353929/catalog_cata1_small_flowers_17_1792353925.jpg",
-      "https://res.cloudinary.com/ecugysfd/image/upload/v1792353933/catalog_cata1_small_flowers_11_1792353930.png"
+      "https://niamxrskqhjvzwxomxrx.supabase.co/storage/v1/object/public/product-images/small_flowers_03.webp",
+      "https://niamxrskqhjvzwxomxrx.supabase.co/storage/v1/object/public/product-images/small_flowers_06.webp",
+      "https://niamxrskqhjvzwxomxrx.supabase.co/storage/v1/object/public/product-images/small_flowers_15.webp",
+      "https://niamxrskqhjvzwxomxrx.supabase.co/storage/v1/object/public/product-images/small_flowers_07.webp",
+      "https://niamxrskqhjvzwxomxrx.supabase.co/storage/v1/object/public/product-images/small_flowers_17.webp",
+      "https://niamxrskqhjvzwxomxrx.supabase.co/storage/v1/object/public/product-images/small_flowers_11.webp"
     ],
     "images": [
-      "https://res.cloudinary.com/ecugysfd/image/upload/v1792353895/catalog_cata1_small_flowers_03_1792353883.png",
-      "https://res.cloudinary.com/ecugysfd/image/upload/v1792353883/catalog_cata1_small_flowers_06_1792353873.png",
-      "https://res.cloudinary.com/ecugysfd/image/upload/v1792353914/catalog_cata1_small_flowers_15_1792353896.png",
-      "https://res.cloudinary.com/ecugysfd/image/upload/v1792353924/catalog_cata1_small_flowers_07_1792353915.png",
-      "https://res.cloudinary.com/ecugysfd/image/upload/v1792353929/catalog_cata1_small_flowers_17_1792353925.jpg",
-      "https://res.cloudinary.com/ecugysfd/image/upload/v1792353933/catalog_cata1_small_flowers_11_1792353930.png"
+      "https://niamxrskqhjvzwxomxrx.supabase.co/storage/v1/object/public/product-images/small_flowers_03.webp",
+      "https://niamxrskqhjvzwxomxrx.supabase.co/storage/v1/object/public/product-images/small_flowers_06.webp",
+      "https://niamxrskqhjvzwxomxrx.supabase.co/storage/v1/object/public/product-images/small_flowers_15.webp",
+      "https://niamxrskqhjvzwxomxrx.supabase.co/storage/v1/object/public/product-images/small_flowers_07.webp",
+      "https://niamxrskqhjvzwxomxrx.supabase.co/storage/v1/object/public/product-images/small_flowers_17.webp",
+      "https://niamxrskqhjvzwxomxrx.supabase.co/storage/v1/object/public/product-images/small_flowers_11.webp"
     ],
     "variants": [
       {

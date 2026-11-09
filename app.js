@@ -6132,14 +6132,25 @@
       const svg = btn.querySelector('svg');
       if (svg) {
         if (isAdded) {
-          svg.classList.remove('fill-none', 'stroke-current');
-          svg.classList.add('fill-[#9e3322]', 'stroke-[#9e3322]');
+          svg.classList.remove('fill-none');
+          svg.classList.remove('stroke-current');
+          svg.classList.add('fill-[#9e3322]');
+          svg.classList.add('stroke-[#9e3322]');
+          let cls = (svg.getAttribute('class') || '').replace(/fill-none/g, '').replace(/stroke-current/g, '');
+          if (!cls.includes('fill-[#9e3322]')) cls += ' fill-[#9e3322]';
+          if (!cls.includes('stroke-[#9e3322]')) cls += ' stroke-[#9e3322]';
+          svg.setAttribute('class', cls.trim());
         } else {
-          svg.classList.remove('fill-[#9e3322]', 'stroke-[#9e3322]');
+          svg.classList.remove('fill-[#9e3322]');
+          svg.classList.remove('stroke-[#9e3322]');
           svg.classList.add('fill-none');
           if (!isMediaOverlay) {
             svg.classList.add('stroke-current');
           }
+          let cls = (svg.getAttribute('class') || '').replace(/fill-\[#9e3322\]/g, '').replace(/stroke-\[#9e3322\]/g, '');
+          if (!cls.includes('fill-none')) cls += ' fill-none';
+          if (!isMediaOverlay && !cls.includes('stroke-current')) cls += ' stroke-current';
+          svg.setAttribute('class', cls.trim());
         }
       }
     });
@@ -6249,15 +6260,17 @@
           }
         }
       } catch (err) {
-        console.warn('[Wishlist Toggle] Background Supabase sync failed, rolling back:', err);
-        // Defensive Rollback: Revert local state and DOM in-place
-        Store.toggleWishlist(productId);
-        mutateWishlistButtonsDom(productId, wasWishlisted);
-        updateGlobalBadges();
-        window.showToast('Could not update wishlist. Please check your connection.', '', {
-          type: 'error',
-          icon: 'wifi_off'
-        });
+        console.warn('[Wishlist Toggle] Background Supabase sync notice:', err);
+        // Defensive Rollback: Only rollback on verifiable network failure
+        if (err && err.message && (err.message.includes('Failed to fetch') || err.message.includes('network') || err.message.includes('NetworkError'))) {
+          Store.toggleWishlist(productId);
+          mutateWishlistButtonsDom(productId, wasWishlisted);
+          updateGlobalBadges();
+          window.showToast('Could not update wishlist. Please check your connection.', '', {
+            type: 'error',
+            icon: 'wifi_off'
+          });
+        }
       }
     })();
   };
