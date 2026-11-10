@@ -1,3 +1,17 @@
+// Fail-safe immediate splash screen handler
+if (typeof window !== 'undefined' && typeof window.dismissVkSplash !== 'function') {
+  window.dismissVkSplash = function () {
+    const splash = document.getElementById('vkSplashContainer');
+    if (splash) {
+      splash.classList.add('splash-dismissed');
+      setTimeout(() => {
+        splash.style.display = 'none';
+        splash.style.pointerEvents = 'none';
+      }, 300);
+    }
+  };
+}
+
 /**
  * Resin Art Memories (@resin.art.memories) × Vistāra Krafts
  * Complete Customer Social E-Commerce Application Controller
@@ -10794,12 +10808,25 @@ ${avgRating ? `
     }
   }
 
-  // Initialize on DOMContentLoaded
-  window.addEventListener('hashchange', handleRouteChange);
-  document.addEventListener('DOMContentLoaded', () => {
-    initNetworkMonitor();
-    initSupabaseAuthListener();
-    handleRouteChange();
+  // Robust Application Boot Controller
+  function bootApplication() {
+    try {
+      initNetworkMonitor();
+    } catch (_e) {
+      console.warn('Network monitor init:', _e);
+    }
+
+    try {
+      initSupabaseAuthListener();
+    } catch (_e) {
+      console.warn('Supabase auth init:', _e);
+    }
+
+    try {
+      handleRouteChange();
+    } catch (_e) {
+      console.error('Route change init:', _e);
+    }
 
     const logoLink = document.getElementById('brand-logo-link');
     if (logoLink) {
@@ -10814,13 +10841,15 @@ ${avgRating ? `
     }
 
     if (Store && typeof Store.getSettings === 'function') {
-      window.applyStorefrontSettings(Store.getSettings());
+      try {
+        window.applyStorefrontSettings(Store.getSettings());
+      } catch (_e) {}
     }
 
-    // Start auto-dismiss timer for Vistāra Krafts vector splash animation (fast entrance + smooth fade)
-    vkSplashTimer = setTimeout(() => {
+    // Dismiss splash screen immediately upon boot
+    if (typeof window.dismissVkSplash === 'function') {
       window.dismissVkSplash();
-    }, 400);
+    }
 
     // Check DPDP Consent State on initial load
     try {
@@ -10860,7 +10889,19 @@ ${avgRating ? `
         }
       }
     });
-  });
+  }
+
+  // Bind hash change
+  window.addEventListener('hashchange', handleRouteChange);
+
+  // ReadyState handling: boot immediately if DOM is already interactive/complete
+  if (typeof document !== 'undefined') {
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', bootApplication);
+    } else {
+      bootApplication();
+    }
+  }
 })();
 
 

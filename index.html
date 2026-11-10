@@ -2889,6 +2889,24 @@
         </div>
       </div>
     </div>
+
+  <!-- Immediate Inline Fail-Safe: define dismissVkSplash and auto-dismiss within 500ms -->
+  <script>
+    window.dismissVkSplash = function () {
+      var s = document.getElementById('vkSplashContainer');
+      if (s) {
+        s.classList.add('splash-dismissed');
+        setTimeout(function () {
+          if (s) {
+            s.style.display = 'none';
+            s.style.pointerEvents = 'none';
+          }
+        }, 300);
+      }
+    };
+    // Guarantee auto-dismissal within 500ms regardless of script loading state
+    setTimeout(window.dismissVkSplash, 500);
+  </script>
   </div>
 
   <!-- Offline Atelier Resilience Banner (Auto-Toggled by Network Monitor) -->
@@ -4625,7 +4643,7 @@
   <script src="./cloudinary-config.js" defer></script>
   <script src="./content-moderation.js" defer></script>
   <script src="./analytics.js?v=20261106_01" defer></script>
-  <script src="./store-bridge.js?v=20261108_04" defer></script>
-  <script src="./app.js?v=20261108_04" defer></script>
+  <script src="./store-bridge.js?v=20261110_06" defer></script>
+  <script src="./app.js?v=20261110_06" defer></script>
 </body>
 </html>
