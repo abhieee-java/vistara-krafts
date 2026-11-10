@@ -422,6 +422,12 @@
   }
   window.sotdHeartBurst = sotdHeartBurst;
 
+  if (typeof window !== 'undefined' && window.history && 'scrollRestoration' in window.history) {
+    try {
+      window.history.scrollRestoration = 'manual';
+    } catch (_e) {}
+  }
+
   // Universal Back Navigation for Non-Technical Users & Accessibility
   window.handleBackButton = function (fallbackRoute = 'home') {
     if (typeof window !== 'undefined' && window.history && window.history.length > 1) {
@@ -966,6 +972,13 @@
     }
     const validRoutes = ['home', 'catalog', 'product', 'social', 'custom-studio', 'wishlist', 'cart', 'account', 'orders', 'profile', '404', '500'];
 
+    if (AppState.currentRoute === 'catalog' && (route === 'product' || route === 'cart')) {
+      try {
+        sessionStorage.setItem('vk_catalog_scrollY', String(Math.round(window.scrollY)));
+        sessionStorage.setItem('vk_catalog_visibleCount', String(AppState.catalogVisibleCount || 8));
+      } catch (_e) {}
+    }
+
     if (!validRoutes.includes(route)) {
       AppState.currentRoute = '404';
     } else if (route === 'product') {
@@ -992,6 +1005,15 @@
 
     if (AppState.currentRoute === 'catalog' && queryParams && Object.prototype.hasOwnProperty.call(queryParams, 'q')) {
       AppState.catalogSearch = queryParams.q || '';
+    }
+
+    if (AppState.currentRoute === 'catalog') {
+      try {
+        const savedCount = parseInt(sessionStorage.getItem('vk_catalog_visibleCount') || '0', 10);
+        if (savedCount > AppState.catalogVisibleCount) {
+          AppState.catalogVisibleCount = savedCount;
+        }
+      } catch (_e) {}
     }
 
     const nextRouteKey = `${AppState.currentRoute}:${AppState.currentRoute === 'product' ? AppState.currentProductId : AppState.currentRoute === 'catalog' ? `${AppState.catalogCategory}:${AppState.catalogSearch}` : ''}`;
@@ -5805,16 +5827,29 @@ ${avgRating ? `
         initCatalogScrollListener();
       } catch (_e) {}
 
+      let didRestoreCatalogScroll = false;
       const savedCatalogY = sessionStorage.getItem('vk_catalog_scrollY');
       if (savedCatalogY) {
         const y = parseInt(savedCatalogY, 10);
         if (!isNaN(y) && y > 0) {
-          sessionStorage.removeItem('vk_catalog_scrollY');
+          didRestoreCatalogScroll = true;
           try {
             window.scrollTo({ top: y, left: 0, behavior: 'instant' });
           } catch (_e) {
             window.scrollTo(0, y);
           }
+          requestAnimationFrame(() => {
+            try {
+              window.scrollTo({ top: y, left: 0, behavior: 'instant' });
+            } catch (_e) {}
+          });
+          setTimeout(() => {
+            if (AppState.currentRoute === 'catalog' && Math.abs(window.scrollY - y) > 50) {
+              try {
+                window.scrollTo({ top: y, left: 0, behavior: 'instant' });
+              } catch (_e) {}
+            }
+          }, 60);
         }
       }
     }
@@ -5825,7 +5860,7 @@ ${avgRating ? `
       } catch (_e) {
         window.scrollTo(0, prevScrollY);
       }
-    } else if (!preserveScroll) {
+    } else if (!preserveScroll && !didRestoreCatalogScroll) {
       try {
         window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
       } catch (_e) {
@@ -6660,6 +6695,10 @@ ${avgRating ? `
 
   // Catalog handlers
   window.setCatalogCategory = function (cat) {
+    try {
+      sessionStorage.removeItem('vk_catalog_scrollY');
+      sessionStorage.removeItem('vk_catalog_visibleCount');
+    } catch (_e) {}
     AppState.catalogCategory = cat;
     AppState.catalogVisibleCount = 8;
     syncGlobalFilterDrawerDom();
@@ -6961,6 +7000,12 @@ ${avgRating ? `
     if (typeof window === 'undefined') return;
     window.addEventListener('scroll', () => {
       if (AppState.currentRoute !== 'catalog') return;
+      if (window.scrollY > 0) {
+        try {
+          sessionStorage.setItem('vk_catalog_scrollY', String(Math.round(window.scrollY)));
+          sessionStorage.setItem('vk_catalog_visibleCount', String(AppState.catalogVisibleCount || 8));
+        } catch (_e) {}
+      }
       const sentinel = document.getElementById('catalog-scroll-sentinel');
       if (!sentinel) return;
       const rect = sentinel.getBoundingClientRect();
