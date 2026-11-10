@@ -1189,6 +1189,11 @@
     const currentSize = currentSizeIdx >= 0 ? sizes[currentSizeIdx] : null;
     const isOpen = Boolean(varState.open);
     const activePrice = p.price + (currentSize?.priceDelta || 0);
+    const prodReviews = (AppState.reviews && AppState.reviews[p.id]) || [];
+    const reviewsCount = prodReviews.length;
+    const avgRating = reviewsCount > 0
+      ? (prodReviews.reduce((acc, r) => acc + (Number(r.rating) || 5), 0) / reviewsCount).toFixed(1)
+      : null;
 
     const isMasculine = p.gender === 'men' || p.genderAffinity === 'masculine';
     const isFeminine = p.gender === 'women' || p.genderAffinity === 'feminine';
@@ -1209,12 +1214,14 @@
           <div class="flex-1 min-w-0 w-full flex flex-col justify-between gap-2">
             <div>
               <div class="flex items-center justify-between gap-2">
-                <div class="flex items-center gap-1.5 text-xs text-secondary">
-                  <span class="material-symbols-outlined text-[14px]" style="font-variation-settings: 'FILL' 1;" aria-hidden="true">star</span>
-                  <span class="font-spec-numeral font-bold text-primary">${p.rating.toFixed(1)}</span>
-                  <span class="text-outline font-spec-numeral">(${p.reviewsCount})</span>
-                  ${affinityTag ? `<span class="hidden sm:inline-block">${affinityTag}</span>` : ''}
-                </div>
+${avgRating ? `
+                  <div class="flex items-center gap-1.5 text-xs text-secondary">
+                    <span class="material-symbols-outlined text-[14px]" style="font-variation-settings: 'FILL' 1;" aria-hidden="true">star</span>
+                    <span class="font-spec-numeral font-bold text-primary">${avgRating}</span>
+                    <span class="text-outline font-spec-numeral">(${reviewsCount})</span>
+                    ${affinityTag ? `<span class="hidden sm:inline-block">${affinityTag}</span>` : ''}
+                  </div>
+                ` : (affinityTag ? `<div class="flex items-center gap-1.5">${affinityTag}</div>` : `<div></div>`)}
                 <button type="button" aria-label="Toggle Wishlist" data-wishlist-btn="${esc(p.id)}" onclick="window.handleWishlistToggle(event, '${esc(p.id)}')" class="w-8 h-8 bg-transparent border-0 flex items-center justify-center ${isFav ? 'text-[#9e3322]' : 'text-primary'} hover:scale-110 active:scale-95 transition-transform cursor-pointer" title="Save to Wishlist">
                   <svg class="w-4 h-4 ${isFav ? 'fill-[#9e3322] stroke-[#9e3322]' : 'fill-none stroke-current'} transition-colors" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                     <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/>
@@ -1313,11 +1320,13 @@
 
           <!-- Section B: Product Information (Compact, Well-Organized Hierarchy) -->
           <div class="flex items-center justify-between gap-1 mb-0.5">
-            <div class="flex items-center gap-1 min-w-0">
-              <span class="material-symbols-outlined text-secondary text-[13px] shrink-0" style="font-variation-settings: 'FILL' 1;" aria-hidden="true">star</span>
-              <span class="font-spec-numeral text-xs text-primary font-bold">${p.rating.toFixed(1)}</span>
-              <span class="font-spec-numeral text-[10px] text-outline truncate">(${p.reviewsCount})</span>
-            </div>
+            ${avgRating ? `
+              <div class="flex items-center gap-1 min-w-0">
+                <span class="material-symbols-outlined text-secondary text-[13px] shrink-0" style="font-variation-settings: 'FILL' 1;" aria-hidden="true">star</span>
+                <span class="font-spec-numeral text-xs text-primary font-bold">${avgRating}</span>
+                <span class="font-spec-numeral text-[10px] text-outline truncate">(${reviewsCount})</span>
+              </div>
+            ` : `<div class="min-w-0"></div>`}
             ${discountPct > 0 ? `<span class="font-spec-numeral text-[9px] font-bold px-1 py-0.5 rounded bg-[#ffe4de] text-[#9e3322] shrink-0 leading-none">${discountPct}% OFF</span>` : ''}
           </div>
 
@@ -2721,10 +2730,10 @@
     const isFav = Store.isWishlisted(product.id);
     const pinInfo = Store.getPincodeInfo();
     const prodReviews = (AppState.reviews && AppState.reviews[product.id]) || [];
-    const reviewsCount = prodReviews.length || Number(product.reviewsCount || 0);
-    const avgRating = prodReviews.length
-      ? (prodReviews.reduce((acc, r) => acc + (Number(r.rating) || 5), 0) / prodReviews.length).toFixed(1)
-      : (Number(product.rating || 0) > 0 ? Number(product.rating).toFixed(1) : null);
+    const reviewsCount = prodReviews.length;
+    const avgRating = reviewsCount > 0
+      ? (prodReviews.reduce((acc, r) => acc + (Number(r.rating) || 5), 0) / reviewsCount).toFixed(1)
+      : null;
 
     if (typeof window !== 'undefined' && window.VistaraAnalytics && typeof window.VistaraAnalytics.trackViewItem === 'function') {
       window.VistaraAnalytics.trackViewItem(product, { ...activeVariant, price: currentPrice });
@@ -2799,9 +2808,9 @@
             </div>
 
             <!-- Multi-Image Thumbnail Selector -->
-            <div class="flex flex-wrap gap-2.5">
+            <div id="pdp-thumbnails-list" class="flex flex-wrap gap-2.5">
               ${gallery.map((imgUrl, idx) => `
-                <button type="button" aria-label="View Gallery Angle ${idx + 1}" onclick="window.selectPdpGallery(${idx})" class="w-16 h-16 sm:w-20 sm:h-20 aspect-square rounded-xl overflow-hidden border-2 transition-all cursor-pointer ${idx === AppState.pdpGalleryIdx ? 'border-primary ring-2 ring-primary/30 scale-[1.02]' : 'border-[#e4e0d8] opacity-75 hover:opacity-100'}">
+                <button type="button" data-gallery-idx="${idx}" aria-label="View Gallery Angle ${idx + 1}" onclick="window.selectPdpGallery(${idx})" class="pdp-thumb-btn w-16 h-16 sm:w-20 sm:h-20 aspect-square rounded-xl overflow-hidden border-2 transition-all cursor-pointer ${idx === AppState.pdpGalleryIdx ? 'border-primary ring-2 ring-primary/30 scale-[1.02]' : 'border-[#e4e0d8] opacity-75 hover:opacity-100'}">
                   <img src="${esc(imgUrl)}" alt="Angle ${idx + 1}" class="w-full h-full object-cover">
                 </button>
               `).join('')}
@@ -2826,12 +2835,7 @@
                     ${reviewsCount} ${reviewsCount === 1 ? 'rating' : 'ratings'}
                   </button>
                   <span class="text-outline/30">•</span>
-                ` : `
-                  <button type="button" onclick="window.scrollToSection('pdp-reviews')" class="text-xs text-[#1a56db] hover:underline cursor-pointer font-medium">
-                    Be the first to review
-                  </button>
-                  <span class="text-outline/30">•</span>
-                `}
+                ` : ''}
                 <span class="text-xs text-[#266b4e] font-semibold inline-flex items-center gap-1">
                   <span class="w-1.5 h-1.5 rounded-full bg-[#266b4e] inline-block animate-pulse"></span> In Stock
                 </span>
@@ -3131,7 +3135,7 @@
           <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-t border-[#e4e0d8] pt-8">
             <div>
               <span class="font-label-sm text-xs uppercase tracking-wider text-secondary font-bold">Customer Feedback</span>
-              <h2 class="font-headline-sm text-xl text-primary font-bold">Customer Reviews (${prodReviews.length})</h2>
+              <h2 class="font-headline-sm text-xl text-primary font-bold">Customer Reviews${prodReviews.length > 0 ? ` (${prodReviews.length})` : ''}</h2>
             </div>
             <button type="button" onclick="window.toggleReviewForm()" class="self-start min-h-[44px] px-4 py-2 rounded-lg border border-primary text-primary text-xs font-bold hover:bg-surface-container-high cursor-pointer">
               + Write a Review
@@ -5082,13 +5086,15 @@
             }
           }
         },
-        aggregateRating: {
-          '@type': 'AggregateRating',
-          ratingValue: String(prod.rating || 4.9),
-          reviewCount: String(prod.reviewsCount || 120),
-          bestRating: '5',
-          worstRating: '1'
-        },
+        ...(schemaReviews && schemaReviews.length > 0 ? {
+          aggregateRating: {
+            '@type': 'AggregateRating',
+            ratingValue: String((schemaReviews.reduce((acc, r) => acc + (Number(r.reviewRating?.ratingValue) || 5), 0) / schemaReviews.length).toFixed(1)),
+            reviewCount: String(schemaReviews.length),
+            bestRating: '5',
+            worstRating: '1'
+          }
+        } : {}),
         review: schemaReviews,
         additionalProperty: specsList
       };
@@ -5583,7 +5589,7 @@
           sku: prodSku,
           variantLabel: varLabel,
           title: `${prodName} (${varLabel} — ₹${priceNum.toLocaleString('en-IN')}) | Vistāra Krafts (@resin.art.memories)`,
-          description: `${prodSubtitle}. SKU: ${prodSku}. Mix Ratio: ${prodRatio}, Max Pour Depth: ${prodDepth}, Cure Time: ${prodCure}, Pot Life: ${prodPotLife}. Rated ${prodRating}/5 (${prodReviewsCount} reviews). Pan-India Express Delivery.`,
+          description: `${prodSubtitle}. SKU: ${prodSku}. Mix Ratio: ${prodRatio}, Max Pour Depth: ${prodDepth}, Cure Time: ${prodCure}, Pot Life: ${prodPotLife}. Pan-India Express Delivery.`,
           keywords: `${prodName}, ${prodShort}, ${prodSku}, ${varLabel}, ${prodCategory} epoxy resin India, Vistara Krafts, @resin.art.memories`,
           robots: 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1',
           canonicalUrl,
@@ -7015,8 +7021,50 @@
 
   // PDP handlers
   window.selectPdpGallery = function (idx) {
+    if (AppState.pdpGalleryIdx === idx) return;
     AppState.pdpGalleryIdx = idx;
-    renderActiveView();
+
+    const prod = Store.getProductById(AppState.currentProductId);
+    if (!prod) {
+      renderActiveView({ preserveScroll: true });
+      return;
+    }
+
+    const gallery = (Array.isArray(prod.gallery) && prod.gallery.length)
+      ? prod.gallery
+      : (Array.isArray(prod.images) && prod.images.length)
+      ? prod.images
+      : (prod.image ? [prod.image] : []);
+
+    const newImgUrl = gallery[idx] || prod.image;
+    if (!newImgUrl) return;
+
+    const mainImg = document.getElementById('pdp-main-img');
+    const loupeImg = document.getElementById('pdp-loupe-img');
+    const counter = document.getElementById('pdp-gallery-counter');
+    const thumbs = document.querySelectorAll('#pdp-thumbnails-list .pdp-thumb-btn');
+
+    if (mainImg) {
+      // In-place zero-refresh DOM update: NO route reload, NO page jump
+      mainImg.src = newImgUrl;
+      if (loupeImg) loupeImg.src = newImgUrl;
+      if (counter && gallery.length > 0) {
+        counter.textContent = `${idx + 1} of ${gallery.length}`;
+      }
+      if (thumbs && thumbs.length) {
+        thumbs.forEach((btn, thumbIdx) => {
+          const isActive = thumbIdx === idx;
+          btn.classList.toggle('border-primary', isActive);
+          btn.classList.toggle('ring-2', isActive);
+          btn.classList.toggle('ring-primary/30', isActive);
+          btn.classList.toggle('scale-[1.02]', isActive);
+          btn.classList.toggle('border-[#e4e0d8]', !isActive);
+          btn.classList.toggle('opacity-75', !isActive);
+        });
+      }
+    } else {
+      renderActiveView({ preserveScroll: true });
+    }
   };
 
   window.selectPdpVariant = function (idx) {
