@@ -2551,12 +2551,13 @@
           pourDepth: targetProduct.pourDepth || existingProd.pourDepth || '20mm',
           cureTime: targetProduct.cureTime || existingProd.cureTime || '24h',
           potLife: targetProduct.potLife || existingProd.potLife || '45m',
-          rating: Number(targetProduct.rating ?? existingProd.rating ?? 4.9),
-          reviewsCount: Number(targetProduct.reviewsCount ?? existingProd.reviewsCount ?? 24),
+          rating: Number(targetProduct.rating ?? existingProd.rating ?? 0),
+          reviewsCount: Number(targetProduct.reviewsCount ?? existingProd.reviewsCount ?? 0),
           inStock: targetProduct.inStock !== undefined ? Boolean(targetProduct.inStock) : (existingProd.inStock !== undefined ? Boolean(existingProd.inStock) : true),
           isCustomizable: Boolean(targetProduct.isCustomizable ?? existingProd.isCustomizable ?? false),
           image: defaultImg,
-          gallery: targetProduct.gallery || targetProduct.images || existingProd.gallery || [defaultImg],
+          gallery: Array.isArray(targetProduct.gallery) && targetProduct.gallery.length > 0 ? targetProduct.gallery : (Array.isArray(targetProduct.images) && targetProduct.images.length > 0 ? targetProduct.images : (existingProd.gallery || [defaultImg])),
+          images: Array.isArray(targetProduct.gallery) && targetProduct.gallery.length > 0 ? targetProduct.gallery : (Array.isArray(targetProduct.images) && targetProduct.images.length > 0 ? targetProduct.images : (existingProd.images || [defaultImg])),
           variants: Array.isArray(targetProduct.variants) && targetProduct.variants.length > 0
             ? targetProduct.variants
             : (Array.isArray(existingProd.variants) && existingProd.variants.length > 0
@@ -2973,6 +2974,14 @@
           };
           const specs = parseField(row.specs, {});
           const variants = parseField(row.variants, []);
+          const rawGallery = parseField(row.gallery, null);
+          const rawImages = parseField(row.images, null);
+          const galleryList = (Array.isArray(rawGallery) && rawGallery.length > 0)
+            ? rawGallery
+            : (Array.isArray(rawImages) && rawImages.length > 0)
+            ? rawImages
+            : (row.image ? [row.image] : [IMAGES.resin201]);
+          const mainImg = row.image || galleryList[0] || IMAGES.resin201;
 
           return {
             id: row.id,
@@ -2993,15 +3002,16 @@
             featured: Boolean(row.featured),
             hero: Boolean(row.hero),
             isNew: Boolean(row.is_new),
-            rating: Number(row.rating || 4.9),
-            reviewsCount: Number(row.reviews_count || 12),
+            rating: Number(row.rating || 0),
+            reviewsCount: Number(row.reviews_count || 0),
             ratio: row.ratio || specs.ratio || '',
             viscosity: row.viscosity || specs.viscosity || 'low',
             cureTime: row.cure_time || specs.cureTime || '',
             specs: specs,
             variants: Array.isArray(variants) ? variants : [],
-            image: row.image || (Array.isArray(row.gallery) && row.gallery[0]) || (Array.isArray(row.images) && row.images[0]) || IMAGES.resin201,
-            images: (Array.isArray(row.gallery) && row.gallery.length > 0) ? row.gallery : (Array.isArray(row.images) && row.images.length > 0 ? row.images : (row.image ? [row.image] : [IMAGES.resin201])),
+            image: mainImg,
+            gallery: galleryList,
+            images: galleryList,
             colors: Array.isArray(row.colors) ? row.colors : [],
             shapes: Array.isArray(row.shapes) ? row.shapes : [],
             sizes: Array.isArray(row.sizes) ? row.sizes : [],

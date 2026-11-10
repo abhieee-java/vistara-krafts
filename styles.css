@@ -41,7 +41,6 @@ img, svg, video, canvas, iframe {
 }
 
 html {
-  scroll-behavior: smooth;
   scroll-padding-top: 104px;
   background-color: var(--surface-60-canvas);
   color: var(--structure-30-ink);

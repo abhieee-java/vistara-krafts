@@ -55,20 +55,23 @@
     calcSystem: '3:1',
     activeStoryIdx: null,
     storyTimer: null,
-    reviews: {
-      'vk-cat-res-301': [
-        { author: 'Diya Sharma • Jaipur Resin Studio', rating: 5, date: '2 days ago', verified: true, text: 'Zero micro-bubbles even in 32°C weather! Used the 1.2kg kit for 3 bridal varmala blocks and the optical clarity is like liquid diamond.' },
-        { author: 'Rohan Kulkarni • Pune Woodworks', rating: 5, date: '1 week ago', verified: true, text: 'The 3:1 weight ratio is super forgiving when weighed on a digital kitchen scale. Hardens to a rock-solid 82D finish without any amine blush.' }
-      ],
-      'vk-cat-res-201': [
-        { author: 'Ananya & Kabir • Udaipur Wedding', rating: 5, date: '3 days ago', verified: true, text: 'BlueDart picked up our wedding garlands the next morning and 2 weeks later we received the most breathtaking 12-inch floral block with gold calligraphy!' },
-        { author: 'Pooja Iyer • Bengaluru Atelier', rating: 5, date: '5 days ago', verified: true, text: 'Crystal clear finish with the 2:1 formula. Fast cure and flawless surface gloss for high-end coaster sets.' }
-      ],
-      'vk-epx-301': [
-        { author: 'Diya Sharma • Jaipur Resin Studio', rating: 5, date: '2 days ago', verified: true, text: 'Zero micro-bubbles even in 32°C weather! Used the 1.2kg kit for 3 bridal varmala blocks and the optical clarity is like liquid diamond.' }
-      ]
-    }
+    reviews: getStoredReviews()
   };
+
+
+  function getStoredReviews() {
+    try {
+      const raw = localStorage.getItem('vk_customer_reviews_v1');
+      if (raw) return JSON.parse(raw);
+    } catch (_e) {}
+    return {};
+  }
+
+  function saveStoredReviews(reviews) {
+    try {
+      localStorage.setItem('vk_customer_reviews_v1', JSON.stringify(reviews));
+    } catch (_e) {}
+  }
 
   // Utility: Escape HTML to prevent XSS on user inputs
   function esc(str) {
@@ -862,6 +865,11 @@
 
   // Route Navigation
   window.navigateTo = function (route, param = null) {
+    if (AppState.currentRoute === 'catalog' && route === 'product') {
+      try {
+        sessionStorage.setItem('vk_catalog_scrollY', String(window.scrollY));
+      } catch (_e) {}
+    }
     let targetHash = '#/' + route;
     if (route === 'product' && param) {
       AppState.currentProductId = param;
@@ -2704,11 +2712,19 @@
     const effectiveUnit = Store.getEffectiveUnitPrice(currentPrice, AppState.pdpQty);
     const totalCtaPrice = effectiveUnit * AppState.pdpQty;
 
-    const gallery = product.gallery && product.gallery.length ? product.gallery : [product.image];
+    const gallery = (Array.isArray(product.gallery) && product.gallery.length)
+      ? product.gallery
+      : (Array.isArray(product.images) && product.images.length)
+      ? product.images
+      : [product.image];
     const activeImg = gallery[AppState.pdpGalleryIdx] || gallery[0];
     const isFav = Store.isWishlisted(product.id);
     const pinInfo = Store.getPincodeInfo();
-    const prodReviews = AppState.reviews[product.id] || AppState.reviews['vk-cat-res-301'] || AppState.reviews['vk-epx-301'] || [];
+    const prodReviews = (AppState.reviews && AppState.reviews[product.id]) || [];
+    const reviewsCount = prodReviews.length || Number(product.reviewsCount || 0);
+    const avgRating = prodReviews.length
+      ? (prodReviews.reduce((acc, r) => acc + (Number(r.rating) || 5), 0) / prodReviews.length).toFixed(1)
+      : (Number(product.rating || 0) > 0 ? Number(product.rating).toFixed(1) : null);
 
     if (typeof window !== 'undefined' && window.VistaraAnalytics && typeof window.VistaraAnalytics.trackViewItem === 'function') {
       window.VistaraAnalytics.trackViewItem(product, { ...activeVariant, price: currentPrice });
@@ -2782,10 +2798,10 @@
               </div>
             </div>
 
-            <!-- 4-Angle Thumbnail Selector -->
-            <div class="grid grid-cols-4 gap-2.5">
+            <!-- Multi-Image Thumbnail Selector -->
+            <div class="flex flex-wrap gap-2.5">
               ${gallery.map((imgUrl, idx) => `
-                <button type="button" aria-label="View Gallery Angle ${idx + 1}" onclick="window.selectPdpGallery(${idx})" class="aspect-square rounded-xl overflow-hidden border-2 transition-all cursor-pointer ${idx === AppState.pdpGalleryIdx ? 'border-primary ring-2 ring-primary/30 scale-[1.02]' : 'border-[#e4e0d8] opacity-75 hover:opacity-100'}">
+                <button type="button" aria-label="View Gallery Angle ${idx + 1}" onclick="window.selectPdpGallery(${idx})" class="w-16 h-16 sm:w-20 sm:h-20 aspect-square rounded-xl overflow-hidden border-2 transition-all cursor-pointer ${idx === AppState.pdpGalleryIdx ? 'border-primary ring-2 ring-primary/30 scale-[1.02]' : 'border-[#e4e0d8] opacity-75 hover:opacity-100'}">
                   <img src="${esc(imgUrl)}" alt="Angle ${idx + 1}" class="w-full h-full object-cover">
                 </button>
               `).join('')}
@@ -2800,15 +2816,22 @@
               <h1 class="font-headline-lg text-2xl sm:text-3xl lg:text-4xl text-primary font-bold tracking-tight">${esc(product.name)}</h1>
               <p class="text-xs sm:text-sm text-on-surface-variant italic">${esc(product.subtitle || 'Museum-Grade Optical Epoxy & Handcrafted Keepsake Edition')}</p>
 
-              <!-- Compact Rating & Stock Line (Shortened, No Chunky Pill Bars) -->
+              <!-- Compact Rating & Stock Line -->
               <div class="flex items-center gap-2 pt-1 flex-wrap">
-                <span class="inline-flex items-center gap-1 bg-[#266b4e] text-white text-xs font-bold px-2 py-0.5 rounded shadow-2xs">
-                  ${Number(product.rating || 4.9).toFixed(1)} ★
-                </span>
-                <button type="button" onclick="window.scrollToSection('pdp-reviews')" class="text-xs text-[#1a56db] hover:underline cursor-pointer font-medium">
-                  ${Number(product.reviewsCount || 24)} ratings
-                </button>
-                <span class="text-outline/30">•</span>
+                ${avgRating ? `
+                  <span class="inline-flex items-center gap-1 bg-[#266b4e] text-white text-xs font-bold px-2 py-0.5 rounded shadow-2xs">
+                    ${avgRating} ★
+                  </span>
+                  <button type="button" onclick="window.scrollToSection('pdp-reviews')" class="text-xs text-[#1a56db] hover:underline cursor-pointer font-medium">
+                    ${reviewsCount} ${reviewsCount === 1 ? 'rating' : 'ratings'}
+                  </button>
+                  <span class="text-outline/30">•</span>
+                ` : `
+                  <button type="button" onclick="window.scrollToSection('pdp-reviews')" class="text-xs text-[#1a56db] hover:underline cursor-pointer font-medium">
+                    Be the first to review
+                  </button>
+                  <span class="text-outline/30">•</span>
+                `}
                 <span class="text-xs text-[#266b4e] font-semibold inline-flex items-center gap-1">
                   <span class="w-1.5 h-1.5 rounded-full bg-[#266b4e] inline-block animate-pulse"></span> In Stock
                 </span>
@@ -3107,48 +3130,61 @@
         <section id="pdp-reviews" class="px-4 sm:px-8 pt-10 flex flex-col gap-4">
           <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-t border-[#e4e0d8] pt-8">
             <div>
-              <span class="font-label-sm text-xs uppercase tracking-wider text-secondary font-bold">Verified Studio Patrons</span>
-              <h2 class="font-headline-sm text-xl text-primary font-bold">Artisan &amp; Bride Reviews (${prodReviews.length})</h2>
+              <span class="font-label-sm text-xs uppercase tracking-wider text-secondary font-bold">Customer Feedback</span>
+              <h2 class="font-headline-sm text-xl text-primary font-bold">Customer Reviews (${prodReviews.length})</h2>
             </div>
             <button type="button" onclick="window.toggleReviewForm()" class="self-start min-h-[44px] px-4 py-2 rounded-lg border border-primary text-primary text-xs font-bold hover:bg-surface-container-high cursor-pointer">
-              + Write a Studio Review
+              + Write a Review
             </button>
           </div>
 
           <form id="pdp-review-form" onsubmit="event.preventDefault(); window.submitPdpReview('${esc(product.id)}');" class="hidden ram-card p-4 flex flex-col gap-3 bg-surface-container-low">
-            <h3 class="text-xs font-bold text-primary uppercase font-body-md">Submit Your Experience</h3>
+            <h3 class="text-xs font-bold text-primary uppercase font-body-md">Write a Customer Review</h3>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
                 <label for="rev-author" class="text-[11px] font-bold text-primary block mb-1">Your Name &amp; City</label>
-                <input id="rev-author" type="text" required aria-label="Your Name and City" placeholder="Your Name & City (e.g. Kavya • Bengaluru)" class="w-full h-12 px-3 rounded-lg bg-white border border-[#e4e0d8] text-xs">
+                <input id="rev-author" type="text" required aria-label="Your Name and City" placeholder="Your Name &amp; City (e.g. Kavya — Bengaluru)" class="w-full h-12 px-3 rounded-lg bg-white border border-[#e4e0d8] text-xs">
               </div>
               <div>
-                <label for="rev-rating" class="text-[11px] font-bold text-primary block mb-1">Review Rating</label>
+                <label for="rev-rating" class="text-[11px] font-bold text-primary block mb-1">Rating</label>
                 <select id="rev-rating" aria-label="Review Rating" class="w-full h-12 px-3 rounded-lg bg-white border border-[#e4e0d8] text-xs">
-                  <option value="5">★★★★★ (5.0 — Flawless Pour / Keepsake)</option>
+                  <option value="5">★★★★★ (5.0 — Excellent)</option>
                   <option value="4">★★★★☆ (4.0 — Very Good)</option>
+                  <option value="3">★★★☆☆ (3.0 — Average)</option>
+                  <option value="2">★★☆☆☆ (2.0 — Below Average)</option>
+                  <option value="1">★☆☆☆☆ (1.0 — Poor)</option>
                 </select>
               </div>
             </div>
             <div>
-              <label for="rev-text" class="text-[11px] font-bold text-primary block mb-1">Review Details</label>
-              <textarea id="rev-text" rows="2" required aria-label="Review Details" placeholder="Share how the clarity, pot life, or floral preservation turned out..." class="w-full p-3 rounded-lg bg-white border border-[#e4e0d8] text-xs"></textarea>
+              <label for="rev-text" class="text-[11px] font-bold text-primary block mb-1">Review</label>
+              <textarea id="rev-text" rows="2" required aria-label="Review Details" placeholder="Write your review here..." class="w-full p-3 rounded-lg bg-white border border-[#e4e0d8] text-xs"></textarea>
             </div>
-            <button type="submit" class="self-start min-h-[48px] px-5 py-2.5 rounded-lg bg-primary text-on-primary text-xs font-semibold cursor-pointer">Post Verified Review</button>
+            <button type="submit" class="self-start min-h-[48px] px-5 py-2.5 rounded-lg bg-primary text-on-primary text-xs font-semibold cursor-pointer">Submit Review</button>
           </form>
 
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            ${prodReviews.map(r => `
-              <div class="ram-card p-4 flex flex-col gap-2 bg-white min-w-0">
-                <div class="flex items-center justify-between gap-2">
-                  <span class="text-xs font-bold text-primary truncate">${esc(r.author)}</span>
-                  <span class="text-[11px] text-[#266b4e] font-semibold shrink-0">✓ Verified Purchase • ${esc(r.date)}</span>
+          ${prodReviews.length > 0 ? `
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              ${prodReviews.map(r => `
+                <div class="ram-card p-4 flex flex-col gap-2 bg-white min-w-0">
+                  <div class="flex items-center justify-between gap-2">
+                    <span class="text-xs font-bold text-primary truncate">${esc(r.author)}</span>
+                    <span class="text-[11px] text-[#266b4e] font-semibold shrink-0">✓ Verified Purchase • ${esc(r.date)}</span>
+                  </div>
+                  <div class="flex items-center text-amber-500 text-xs">${'★'.repeat(r.rating || 5)}${'☆'.repeat(Math.max(0, 5 - (r.rating || 5)))}</div>
+                  <p class="text-xs text-on-surface-variant leading-relaxed break-anywhere">${esc(r.text)}</p>
                 </div>
-                <div class="flex items-center text-amber-500 text-xs">${'★'.repeat(r.rating)}</div>
-                <p class="text-xs text-on-surface-variant leading-relaxed break-anywhere">${esc(r.text)}</p>
-              </div>
-            `).join('')}
-          </div>
+              `).join('')}
+            </div>
+          ` : `
+            <div class="p-6 rounded-2xl bg-surface-container-low border border-[#e4e0d8] text-center flex flex-col items-center gap-2">
+              <p class="text-sm font-semibold text-primary">No customer reviews yet</p>
+              <p class="text-xs text-on-surface-variant">Be the first customer to share your thoughts on this product.</p>
+              <button type="button" onclick="window.toggleReviewForm()" class="mt-2 min-h-[44px] px-4 py-2 rounded-lg bg-primary text-white text-xs font-bold cursor-pointer">
+                Write a Review
+              </button>
+            </div>
+          `}
         </section>
 
         <!-- Recently Viewed & Curated Recommendations -->
@@ -5762,6 +5798,19 @@
         initCatalogInfiniteScroll();
         initCatalogScrollListener();
       } catch (_e) {}
+
+      const savedCatalogY = sessionStorage.getItem('vk_catalog_scrollY');
+      if (savedCatalogY) {
+        const y = parseInt(savedCatalogY, 10);
+        if (!isNaN(y) && y > 0) {
+          sessionStorage.removeItem('vk_catalog_scrollY');
+          try {
+            window.scrollTo({ top: y, left: 0, behavior: 'instant' });
+          } catch (_e) {
+            window.scrollTo(0, y);
+          }
+        }
+      }
     }
 
     if (preserveScroll && prevScrollY > 0) {
@@ -7122,11 +7171,32 @@
   };
 
   window.toggleReviewForm = function () {
+    const isAuth = Store && (Store.getAuthSession() || (Store.getPatronProfile() && Store.getPatronProfile().email));
+    if (!isAuth) {
+      if (typeof window.openCloudflareAuthModal === 'function') {
+        window.openCloudflareAuthModal(false);
+      }
+      if (typeof window.showToast === 'function') {
+        window.showToast('Authentication Required', 'Please sign in to write a verified customer review.');
+      }
+      return;
+    }
     const form = document.getElementById('pdp-review-form');
     if (form) form.classList.toggle('hidden');
   };
 
   window.submitPdpReview = function (productId) {
+    const isAuth = Store && (Store.getAuthSession() || (Store.getPatronProfile() && Store.getPatronProfile().email));
+    if (!isAuth) {
+      if (typeof window.openCloudflareAuthModal === 'function') {
+        window.openCloudflareAuthModal(false);
+      }
+      if (typeof window.showToast === 'function') {
+        window.showToast('Authentication Required', 'Please sign in to write a verified customer review.');
+      }
+      return;
+    }
+
     const author = document.getElementById('rev-author')?.value.trim();
     const rating = parseInt(document.getElementById('rev-rating')?.value || '5', 10);
     const text = document.getElementById('rev-text')?.value.trim();
@@ -7140,8 +7210,9 @@
       verified: true,
       text
     });
+    saveStoredReviews(AppState.reviews);
     renderActiveView();
-    window.showToast('Thank you for your review!', 'Published to verified studio feed');
+    window.showToast('Thank you for your review!', 'Published to Customer Reviews');
   };
 
   window.shareCurrentProduct = function (productId) {
