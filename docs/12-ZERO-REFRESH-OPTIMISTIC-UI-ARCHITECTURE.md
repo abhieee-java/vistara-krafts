@@ -26,7 +26,7 @@ This brute-force DOM replacement has three severe UX flaws:
    }
    ```
    This manifests to the customer as a jarring 240ms blank opacity flash.
-3. **Perceived Latency & Jitter:** Unlike tier-1 e-commerce storefronts (Apple, Amazon, Nykaa, Flipkart), the user experiences a perceived page reload rather than a buttery-smooth in-place mutation.
+3. **Perceived Latency & Jitter:** Unlike tier-1 e-commerce storefronts (Apple, Amazon, Vistāra Atelier, Flipkart), the user experiences a perceived page reload rather than a buttery-smooth in-place mutation.
 
 ---
 

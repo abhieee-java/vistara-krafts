@@ -47,6 +47,7 @@ if (typeof window !== 'undefined' && typeof window.dismissVkSplash !== 'function
     customBuilder: {
       shape: '12" Royal Heirloom Block',
       shapePrice: 4499,
+      occasion: 'Wedding Varmala & Jaimala',
       flowerSource: 'Fresh Wedding Varmala (Free Doorstep Pickup)',
       sourceAddon: 0,
       metallic: '24K Gold Leaf + Champagne Rim',
@@ -56,7 +57,11 @@ if (typeof window !== 'undefined' && typeof window.dismissVkSplash !== 'function
       eventDate: '2026-11-18',
       pickupSlot: 'Morning Slot (9:00 AM – 1:00 PM)',
       engraving: '',
-      ledBase: true
+      fontStyle: 'Royal Italic Serif',
+      ledBase: true,
+      photoUrl: '',
+      photoName: '',
+      photoSizeKb: 0
     },
     orderSearchQuery: '',
     editingAccountProfile: false,
@@ -1457,7 +1462,7 @@ ${avgRating ? `
   }
 
   // =========================================================================
-  // 1. HOME / DISCOVER VIEW (Nykaa-Inspired High-Conversion Visual E-Commerce)
+  // 1. HOME / DISCOVER VIEW (Bespoke Luxury Resin Atelier Architecture)
   // =========================================================================
   function renderHomeView() {
     const products = Store.getProducts();
@@ -1499,7 +1504,7 @@ ${avgRating ? `
     }
     const bestsellersToShow = bestsellers.slice(0, 8);
 
-    // Top Category Circles (Nykaa Signature Circles)
+    // Top Category Curation Circles
     const categoryCircles = [
       { id: 'casting', label: 'Epoxy Kits', image: Store.IMAGES.resin201, badge: 'From ₹599', route: 'catalog', param: 'casting' },
       { id: 'keepsakes', label: 'Bridal Flowers', image: Store.IMAGES.floralCube, badge: 'Bespoke', route: 'custom-studio', param: null },
@@ -1560,12 +1565,12 @@ ${avgRating ? `
           </div>
         </section>
 
-        <!-- 2. Nykaa-Style Iconic Top Category Circles Strip -->
+        <!-- 2. Atelier Iconic Category Circles Strip -->
         <section class="w-full px-3.5 sm:px-8 py-4 sm:py-5 bg-white border-b border-[#e4e0d8]">
-          <div class="nykaa-cat-strip flex items-center justify-start lg:justify-between gap-4 sm:gap-6 overflow-x-auto py-1">
+          <div class="atelier-curation-strip flex items-center justify-start lg:justify-between gap-4 sm:gap-6 overflow-x-auto py-1">
             ${categoryCircles.map(c => `
               <button type="button" onclick="window.navigateTo('${c.route}', ${c.param ? `'${c.param}'` : 'null'})" class="flex flex-col items-center gap-2 group cursor-pointer shrink-0 text-center">
-                <div class="nykaa-cat-circle w-16 h-16 sm:w-20 sm:h-20 rounded-full border-2 border-[#e4e0d8] overflow-hidden p-0.5 bg-white shadow-2xs relative">
+                <div class="atelier-curation-circle w-16 h-16 sm:w-20 sm:h-20 rounded-full border-2 border-[#e4e0d8] overflow-hidden p-0.5 bg-white shadow-2xs relative">
                   <img src="${esc(c.image)}" alt="${esc(c.label)}" class="w-full h-full object-cover rounded-full group-hover:scale-110 transition-transform duration-500">
                 </div>
                 <div class="flex flex-col items-center">
@@ -1577,12 +1582,12 @@ ${avgRating ? `
           </div>
         </section>
 
-        <!-- 3. Nykaa Signature Hero Promotional Carousel (Visual-First, Zero Text Clutter) -->
+        <!-- 3. Atelier Signature Hero Promotional Carousel (Visual-First, Zero Clutter) -->
         <section class="w-full px-3.5 sm:px-8 py-4 sm:py-6 bg-[#faf8f5] border-b border-[#e4e0d8]">
-          <div id="nykaa-hero-carousel-container" class="relative rounded-2xl sm:rounded-3xl overflow-hidden shadow-lg border border-[#e4e0d8] bg-[#0d0d12]">
-            <div id="nykaa-hero-carousel-track" class="nykaa-carousel-track">
+          <div id="atelier-hero-carousel-container" class="atelier-hero-carousel-container relative rounded-2xl sm:rounded-3xl overflow-hidden shadow-lg border border-[#e4e0d8] bg-[#0d0d12]">
+            <div id="atelier-hero-carousel-track" class="atelier-carousel-track">
               <!-- Slide 1: Wedding Varmala Preservation -->
-              <div class="nykaa-hero-slide min-h-[340px] sm:min-h-[420px] lg:min-h-[460px] flex items-center relative overflow-hidden">
+              <div class="atelier-hero-slide min-h-[340px] sm:min-h-[420px] lg:min-h-[460px] flex items-center relative overflow-hidden">
                 <div class="absolute inset-0 z-0">
                   <img src="${esc(Store.IMAGES.floralCube)}" alt="Wedding Flowers Preserved in Resin" class="w-full h-full object-cover object-right scale-105">
                   <div class="absolute inset-0 bg-gradient-to-r from-[#0d0d12] via-[#0d0d12]/90 to-transparent sm:w-3/4"></div>
@@ -1609,7 +1614,7 @@ ${avgRating ? `
               </div>
 
               <!-- Slide 2: Optical-Grade Epoxy Resins -->
-              <div class="nykaa-hero-slide min-h-[340px] sm:min-h-[420px] lg:min-h-[460px] flex items-center relative overflow-hidden">
+              <div class="atelier-hero-slide min-h-[340px] sm:min-h-[420px] lg:min-h-[460px] flex items-center relative overflow-hidden">
                 <div class="absolute inset-0 z-0">
                   <img src="${esc(Store.IMAGES.resin201)}" alt="Optical Epoxy Resin Systems" class="w-full h-full object-cover object-right scale-105">
                   <div class="absolute inset-0 bg-gradient-to-r from-[#0d0d12] via-[#0d0d12]/90 to-transparent sm:w-3/4"></div>
@@ -1636,7 +1641,7 @@ ${avgRating ? `
               </div>
 
               <!-- Slide 3: Silicone Art Molds & Shimmer Pigments -->
-              <div class="nykaa-hero-slide min-h-[340px] sm:min-h-[420px] lg:min-h-[460px] flex items-center relative overflow-hidden">
+              <div class="atelier-hero-slide min-h-[340px] sm:min-h-[420px] lg:min-h-[460px] flex items-center relative overflow-hidden">
                 <div class="absolute inset-0 z-0">
                   <img src="${esc(Store.IMAGES.agateMold)}" alt="Silicone Molds & Inks" class="w-full h-full object-cover object-right scale-105">
                   <div class="absolute inset-0 bg-gradient-to-r from-[#0d0d12] via-[#0d0d12]/90 to-transparent sm:w-3/4"></div>
@@ -1663,7 +1668,7 @@ ${avgRating ? `
               </div>
 
               <!-- Slide 4: Handcrafted Luxury Resin Living -->
-              <div class="nykaa-hero-slide min-h-[340px] sm:min-h-[420px] lg:min-h-[460px] flex items-center relative overflow-hidden">
+              <div class="atelier-hero-slide min-h-[340px] sm:min-h-[420px] lg:min-h-[460px] flex items-center relative overflow-hidden">
                 <div class="absolute inset-0 z-0">
                   <img src="${esc(Store.IMAGES.oceanWave)}" alt="Handcrafted Ocean Wave Resin Decor" class="w-full h-full object-cover object-right scale-105">
                   <div class="absolute inset-0 bg-gradient-to-r from-[#0d0d12] via-[#0d0d12]/90 to-transparent sm:w-3/4"></div>
@@ -1700,10 +1705,10 @@ ${avgRating ? `
 
             <!-- Indicator Dots -->
             <div class="absolute bottom-4 inset-x-0 flex items-center justify-center gap-2 z-20">
-              <button type="button" aria-label="Slide 1" onclick="window.setHomeBanner(0)" class="nykaa-carousel-dot w-7 h-2 rounded-full bg-[#aa771c] transition-all"></button>
-              <button type="button" aria-label="Slide 2" onclick="window.setHomeBanner(1)" class="nykaa-carousel-dot w-2 h-2 rounded-full bg-white/40 transition-all"></button>
-              <button type="button" aria-label="Slide 3" onclick="window.setHomeBanner(2)" class="nykaa-carousel-dot w-2 h-2 rounded-full bg-white/40 transition-all"></button>
-              <button type="button" aria-label="Slide 4" onclick="window.setHomeBanner(3)" class="nykaa-carousel-dot w-2 h-2 rounded-full bg-white/40 transition-all"></button>
+              <button type="button" aria-label="Slide 1" onclick="window.setHomeBanner(0)" class="atelier-carousel-dot w-7 h-2 rounded-full bg-[#aa771c] transition-all"></button>
+              <button type="button" aria-label="Slide 2" onclick="window.setHomeBanner(1)" class="atelier-carousel-dot w-2 h-2 rounded-full bg-white/40 transition-all"></button>
+              <button type="button" aria-label="Slide 3" onclick="window.setHomeBanner(2)" class="atelier-carousel-dot w-2 h-2 rounded-full bg-white/40 transition-all"></button>
+              <button type="button" aria-label="Slide 4" onclick="window.setHomeBanner(3)" class="atelier-carousel-dot w-2 h-2 rounded-full bg-white/40 transition-all"></button>
             </div>
           </div>
         </section>
@@ -1742,7 +1747,7 @@ ${avgRating ? `
           </div>
         </section>
 
-        <!-- 5. Bestsellers & Trending Now Section (The Heart of Nykaa E-Commerce) -->
+        <!-- 5. Bestsellers & Trending Now Section -->
         <section class="px-4 sm:px-8 py-8 sm:py-10 bg-[#faf8f5] flex flex-col gap-6 border-b border-[#e4e0d8]" id="home-catalogue">
           <div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
             <div>
@@ -1753,21 +1758,21 @@ ${avgRating ? `
               <h2 class="font-headline-sm text-2xl sm:text-3xl text-primary font-bold tracking-tight mt-1">Bestsellers &amp; Trending Now</h2>
             </div>
 
-            <!-- Nykaa-Style Category Quick Filter Tabs -->
+            <!-- Atelier Category Quick Filter Tabs -->
             <div class="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5 shrink-0">
-              <button type="button" data-tab="all" onclick="window.filterHomeBestsellers('all')" class="nykaa-tab-btn px-4 py-1.5 rounded-full text-xs font-bold transition-all shrink-0 cursor-pointer ${activeBestsellerTab === 'all' ? 'bg-primary text-white border-primary' : 'bg-white text-primary border border-[#e4e0d8]'}">
+              <button type="button" data-tab="all" onclick="window.filterHomeBestsellers('all')" class="atelier-tab-btn px-4 py-1.5 rounded-full text-xs font-bold transition-all shrink-0 cursor-pointer ${activeBestsellerTab === 'all' ? 'bg-primary text-white border-primary' : 'bg-white text-primary border border-[#e4e0d8]'}">
                 All Bestsellers
               </button>
-              <button type="button" data-tab="casting" onclick="window.filterHomeBestsellers('casting')" class="nykaa-tab-btn px-4 py-1.5 rounded-full text-xs font-bold transition-all shrink-0 cursor-pointer ${activeBestsellerTab === 'casting' ? 'bg-primary text-white border-primary' : 'bg-white text-primary border border-[#e4e0d8]'}">
+              <button type="button" data-tab="casting" onclick="window.filterHomeBestsellers('casting')" class="atelier-tab-btn px-4 py-1.5 rounded-full text-xs font-bold transition-all shrink-0 cursor-pointer ${activeBestsellerTab === 'casting' ? 'bg-primary text-white border-primary' : 'bg-white text-primary border border-[#e4e0d8]'}">
                 Resin Kits
               </button>
-              <button type="button" data-tab="molds" onclick="window.filterHomeBestsellers('molds')" class="nykaa-tab-btn px-4 py-1.5 rounded-full text-xs font-bold transition-all shrink-0 cursor-pointer ${activeBestsellerTab === 'molds' ? 'bg-primary text-white border-primary' : 'bg-white text-primary border border-[#e4e0d8]'}">
+              <button type="button" data-tab="molds" onclick="window.filterHomeBestsellers('molds')" class="atelier-tab-btn px-4 py-1.5 rounded-full text-xs font-bold transition-all shrink-0 cursor-pointer ${activeBestsellerTab === 'molds' ? 'bg-primary text-white border-primary' : 'bg-white text-primary border border-[#e4e0d8]'}">
                 Silicone Molds
               </button>
-              <button type="button" data-tab="keepsakes" onclick="window.filterHomeBestsellers('keepsakes')" class="nykaa-tab-btn px-4 py-1.5 rounded-full text-xs font-bold transition-all shrink-0 cursor-pointer ${activeBestsellerTab === 'keepsakes' ? 'bg-primary text-white border-primary' : 'bg-white text-primary border border-[#e4e0d8]'}">
+              <button type="button" data-tab="keepsakes" onclick="window.filterHomeBestsellers('keepsakes')" class="atelier-tab-btn px-4 py-1.5 rounded-full text-xs font-bold transition-all shrink-0 cursor-pointer ${activeBestsellerTab === 'keepsakes' ? 'bg-primary text-white border-primary' : 'bg-white text-primary border border-[#e4e0d8]'}">
                 Floral Keepsakes
               </button>
-              <button type="button" data-tab="pigments" onclick="window.filterHomeBestsellers('pigments')" class="nykaa-tab-btn px-4 py-1.5 rounded-full text-xs font-bold transition-all shrink-0 cursor-pointer ${activeBestsellerTab === 'pigments' ? 'bg-primary text-white border-primary' : 'bg-white text-primary border border-[#e4e0d8]'}">
+              <button type="button" data-tab="pigments" onclick="window.filterHomeBestsellers('pigments')" class="atelier-tab-btn px-4 py-1.5 rounded-full text-xs font-bold transition-all shrink-0 cursor-pointer ${activeBestsellerTab === 'pigments' ? 'bg-primary text-white border-primary' : 'bg-white text-primary border border-[#e4e0d8]'}">
                 Pigments &amp; Foils
               </button>
             </div>
@@ -1808,7 +1813,7 @@ ${avgRating ? `
           </div>
         </section>
 
-        <!-- 6. Categories in Spotlight (Nykaa 4-Banner Grid) -->
+        <!-- 6. Categories in Spotlight (4-Banner Atelier Grid) -->
         <section class="px-4 sm:px-8 py-8 sm:py-10 bg-white border-b border-[#e4e0d8] flex flex-col gap-6">
           <div class="flex items-end justify-between">
             <div>
@@ -1823,7 +1828,7 @@ ${avgRating ? `
 
           <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
             <!-- Banner 1: Epoxy Resin Chemistry -->
-            <div class="nykaa-banner-card group relative h-64 rounded-2xl overflow-hidden cursor-pointer shadow-sm border border-[#e4e0d8]" onclick="window.navigateTo('catalog', 'casting')">
+            <div class="atelier-spotlight-tile group relative h-64 rounded-2xl overflow-hidden cursor-pointer shadow-sm border border-[#e4e0d8]" onclick="window.navigateTo('catalog', 'casting')">
               <img src="${esc(Store.IMAGES.resin201)}" alt="Epoxy Resin Systems" class="w-full h-full object-cover group-hover:scale-108 transition-transform duration-700">
               <div class="absolute inset-0 bg-gradient-to-t from-[#0d0d12] via-[#0d0d12]/50 to-transparent flex flex-col justify-end p-5 text-white">
                 <span class="text-[10px] font-bold uppercase tracking-wider text-[#ffd79b]">From ₹599</span>
@@ -1837,7 +1842,7 @@ ${avgRating ? `
             </div>
 
             <!-- Banner 2: Silicone Art Molds -->
-            <div class="nykaa-banner-card group relative h-64 rounded-2xl overflow-hidden cursor-pointer shadow-sm border border-[#e4e0d8]" onclick="window.navigateTo('catalog', 'molds')">
+            <div class="atelier-spotlight-tile group relative h-64 rounded-2xl overflow-hidden cursor-pointer shadow-sm border border-[#e4e0d8]" onclick="window.navigateTo('catalog', 'molds')">
               <img src="${esc(Store.IMAGES.agateMold)}" alt="Silicone Molds" class="w-full h-full object-cover group-hover:scale-108 transition-transform duration-700">
               <div class="absolute inset-0 bg-gradient-to-t from-[#0d0d12] via-[#0d0d12]/50 to-transparent flex flex-col justify-end p-5 text-white">
                 <span class="text-[10px] font-bold uppercase tracking-wider text-[#ffd79b]">From ₹249</span>
@@ -1851,7 +1856,7 @@ ${avgRating ? `
             </div>
 
             <!-- Banner 3: Wedding Keepsake Preservation -->
-            <div class="nykaa-banner-card group relative h-64 rounded-2xl overflow-hidden cursor-pointer shadow-sm border border-[#e4e0d8]" onclick="window.navigateTo('custom-studio')">
+            <div class="atelier-spotlight-tile group relative h-64 rounded-2xl overflow-hidden cursor-pointer shadow-sm border border-[#e4e0d8]" onclick="window.navigateTo('custom-studio')">
               <img src="${esc(Store.IMAGES.floralCube)}" alt="Wedding Keepsakes" class="w-full h-full object-cover group-hover:scale-108 transition-transform duration-700">
               <div class="absolute inset-0 bg-gradient-to-t from-[#0d0d12] via-[#0d0d12]/50 to-transparent flex flex-col justify-end p-5 text-white">
                 <span class="text-[10px] font-bold uppercase tracking-wider text-[#ffd79b]">Bespoke Craft</span>
@@ -1865,7 +1870,7 @@ ${avgRating ? `
             </div>
 
             <!-- Banner 4: Pigments, Foils & Inks -->
-            <div class="nykaa-banner-card group relative h-64 rounded-2xl overflow-hidden cursor-pointer shadow-sm border border-[#e4e0d8]" onclick="window.navigateTo('catalog', 'pigments')">
+            <div class="atelier-spotlight-tile group relative h-64 rounded-2xl overflow-hidden cursor-pointer shadow-sm border border-[#e4e0d8]" onclick="window.navigateTo('catalog', 'pigments')">
               <img src="${esc(Store.IMAGES.foilFlakes)}" alt="Pigments and Foils" class="w-full h-full object-cover group-hover:scale-108 transition-transform duration-700">
               <div class="absolute inset-0 bg-gradient-to-t from-[#0d0d12] via-[#0d0d12]/50 to-transparent flex flex-col justify-end p-5 text-white">
                 <span class="text-[10px] font-bold uppercase tracking-wider text-[#ffd79b]">From ₹149</span>
@@ -3538,17 +3543,23 @@ ${avgRating ? `
           <p class="text-xs sm:text-sm text-on-surface-variant">Design your one-of-a-kind wedding/anniversary floral block OR calculate exact resin ratios for your own DIY moulds.</p>
         </div>
 
-        <!-- Part A: Interactive 5-Step Custom Keepsake Configurator -->
+        <!-- Part A: Interactive 7-Step Custom Keepsake Configurator -->
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-          <div class="lg:col-span-7 ram-card p-5 sm:p-6 flex flex-col gap-5 bg-white">
+          <div class="lg:col-span-7 ram-card p-5 sm:p-6 flex flex-col gap-6 bg-white">
             <div class="flex flex-wrap items-center justify-between gap-2 border-b border-surface-container pb-3">
-              <h2 class="font-headline-sm text-xl text-primary font-bold">1. Configure Your Custom Resin Keepsake</h2>
+              <div>
+                <h2 class="font-headline-sm text-xl text-primary font-bold">1. Configure Your Custom Resin Keepsake</h2>
+                <p class="text-xs text-on-surface-variant mt-0.5">Every keepsake is individually hand-cast with museum-grade UV400 optical epoxy.</p>
+              </div>
               <span class="px-2.5 py-1 rounded-full bg-[#ffe4de] text-[#9e3322] text-xs font-bold whitespace-nowrap shrink-0">Doorstep Flower Pickup</span>
             </div>
 
             <!-- Step 1: Vessel Architecture -->
             <div>
-              <span class="text-xs font-bold text-primary uppercase tracking-wider block mb-2">Step 1: Choose Keepsake Geometry</span>
+              <div class="flex items-center justify-between mb-2">
+                <span class="text-xs font-bold text-primary uppercase tracking-wider">Step 1: Choose Keepsake Geometry</span>
+                <span class="text-[11px] text-on-surface-variant font-medium">50mm optical depth</span>
+              </div>
               <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
                 ${[
                   { label: '8" Romantic Cube', price: 2999, desc: '8–12 Roses • 50mm deep' },
@@ -3566,9 +3577,30 @@ ${avgRating ? `
               </div>
             </div>
 
-            <!-- Step 2: Flower / Memory Source -->
+            <!-- Step 2: Memory Occasion -->
             <div>
-              <span class="text-xs font-bold text-primary uppercase tracking-wider block mb-2">Step 2: How Will Your Flowers Reach Our Studio?</span>
+              <span class="text-xs font-bold text-primary uppercase tracking-wider block mb-2">Step 2: What Memory Are You Preserving?</span>
+              <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+                ${[
+                  { label: 'Wedding Varmala & Jaimala', icon: 'local_florist', badge: 'Most Popular' },
+                  { label: 'Anniversary Milestone', icon: 'celebration', badge: 'Timeless' },
+                  { label: 'Memorial Tribute', icon: 'favorite', badge: 'Eternal' },
+                  { label: 'Special Celebration', icon: 'card_giftcard', badge: 'Cherished' }
+                ].map(occ => `
+                  <button type="button" onclick="window.updateCustomBuilderOccasion('${esc(occ.label)}')" class="p-3 rounded-xl border text-left transition-all cursor-pointer flex flex-col justify-between min-h-[82px] ${(b.occasion || 'Wedding Varmala & Jaimala') === occ.label ? 'border-primary bg-primary text-white shadow-xs' : 'border-[#e4e0d8] bg-surface-container-low text-primary hover:border-secondary'}">
+                    <div class="flex items-center justify-between w-full">
+                      <span class="material-symbols-outlined text-lg ${(b.occasion || 'Wedding Varmala & Jaimala') === occ.label ? 'text-[#ffd79b]' : 'text-secondary'}" aria-hidden="true">${occ.icon}</span>
+                      <span class="text-[9px] font-bold uppercase px-1.5 py-0.5 rounded ${(b.occasion || 'Wedding Varmala & Jaimala') === occ.label ? 'bg-white/20 text-white' : 'bg-white text-secondary'}">${occ.badge}</span>
+                    </div>
+                    <p class="text-[11px] font-bold mt-1 leading-snug">${esc(occ.label)}</p>
+                  </button>
+                `).join('')}
+              </div>
+            </div>
+
+            <!-- Step 3: Flower / Memory Source -->
+            <div>
+              <span class="text-xs font-bold text-primary uppercase tracking-wider block mb-2">Step 3: How Will Your Flowers Reach Our Studio?</span>
               <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                 ${[
                   { label: 'Fresh Wedding Varmala (Free Doorstep Pickup)', addon: 0 },
@@ -3576,15 +3608,59 @@ ${avgRating ? `
                 ].map(src => `
                   <button type="button" onclick="window.updateCustomBuilder('flowerSource', '${esc(src.label)}', ${src.addon})" class="p-3 rounded-xl border text-left transition-all cursor-pointer ${b.flowerSource === src.label ? 'border-[#9e3322] bg-[#ffe4de]/40 ring-1 ring-[#9e3322]' : 'border-[#e4e0d8] bg-white'}">
                     <p class="text-xs font-bold text-primary">${esc(src.label)}</p>
-                    <p class="font-spec-numeral text-[11px] text-secondary font-semibold mt-1">${src.addon === 0 ? 'Complimentary Courier Kit' : '+ ' + formatINR(src.addon)}</p>
+                    <p class="font-spec-numeral text-[11px] text-secondary font-semibold mt-1">${src.addon === 0 ? 'Complimentary Insured Courier Kit' : '+ ' + formatINR(src.addon)}</p>
                   </button>
                 `).join('')}
               </div>
             </div>
 
-            <!-- Step 3: Metallic & Pigment Accents -->
+            <!-- Step 4: Real Floral Reference Photo Upload -->
             <div>
-              <span class="text-xs font-bold text-primary uppercase tracking-wider block mb-2">Step 3: Select Luxury Inclusions</span>
+              <div class="flex items-center justify-between mb-2">
+                <span class="text-xs font-bold text-primary uppercase tracking-wider">Step 4: Attach Flower Photo (Optional Reference)</span>
+                <span class="text-[11px] text-[#266b4e] font-semibold">JPG, PNG, WebP up to 15MB</span>
+              </div>
+              <input id="custom-flower-photo-input" type="file" accept="image/*" class="sr-only" onchange="window.handleCustomFlowerPhotoUpload(event)">
+              
+              ${b.photoUrl ? `
+                <div class="p-3.5 rounded-xl border-2 border-emerald-500/40 bg-emerald-50/30 flex items-center justify-between gap-3 shadow-2xs">
+                  <div class="flex items-center gap-3 min-w-0">
+                    <img src="${esc(b.photoUrl)}" alt="Uploaded Flower Reference" class="w-14 h-14 rounded-lg object-cover border border-emerald-300 shrink-0">
+                    <div class="min-w-0">
+                      <div class="flex items-center gap-1.5">
+                        <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[10px] font-bold">
+                          <span class="material-symbols-outlined text-xs" aria-hidden="true">check_circle</span>
+                          <span>Photo Attached</span>
+                        </span>
+                        <span class="text-[11px] text-gray-500 font-mono">${b.photoSizeKb ? b.photoSizeKb + ' KB' : ''}</span>
+                      </div>
+                      <p class="text-xs font-semibold text-primary truncate mt-0.5">${esc(b.photoName || 'flower_reference.jpg')}</p>
+                      <p class="text-[10px] text-on-surface-variant">Our master artisan will review this photo before commencing the 21-day cryo-cure.</p>
+                    </div>
+                  </div>
+                  <div class="flex items-center gap-2 shrink-0">
+                    <label for="custom-flower-photo-input" class="px-3 py-1.5 rounded-lg border border-[#e4e0d8] bg-white text-xs font-semibold text-primary hover:bg-surface-container cursor-pointer transition-colors">
+                      Change
+                    </label>
+                    <button type="button" onclick="window.removeCustomFlowerPhoto()" class="p-1.5 rounded-lg text-red-600 hover:bg-red-50 cursor-pointer transition-colors" title="Remove photo">
+                      <span class="material-symbols-outlined text-lg" aria-hidden="true">delete</span>
+                    </button>
+                  </div>
+                </div>
+              ` : `
+                <label for="custom-flower-photo-input" class="atelier-dropzone flex flex-col items-center justify-center p-6 rounded-2xl border-2 border-dashed border-[#e4e0d8] hover:border-[#b08d57] bg-[#faf8f5] hover:bg-[#fdf6f3] cursor-pointer transition-all text-center group">
+                  <div class="w-12 h-12 rounded-full bg-white shadow-xs border border-[#e4e0d8] flex items-center justify-center text-secondary group-hover:scale-105 transition-transform mb-2">
+                    <span class="material-symbols-outlined text-2xl" aria-hidden="true">add_photo_alternate</span>
+                  </div>
+                  <p class="text-xs font-bold text-primary">Click to upload photo of your garland or bouquet</p>
+                  <p class="text-[11px] text-on-surface-variant mt-0.5">Helps our studio verify flower volume, petal colors, and mold cavity depth.</p>
+                </label>
+              `}
+            </div>
+
+            <!-- Step 5: Metallic & Pigment Accents -->
+            <div>
+              <span class="text-xs font-bold text-primary uppercase tracking-wider block mb-2">Step 5: Select Luxury Inclusions</span>
               <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
                 ${[
                   { label: 'Pure Crystal Clear (Zero Flakes)', addon: 0 },
@@ -3599,9 +3675,9 @@ ${avgRating ? `
               </div>
             </div>
 
-            <!-- Step 4: Complementary Keepsake Add-ons (Spare Petals) -->
+            <!-- Step 6: Complementary Keepsake Add-ons (Spare Petals) -->
             <div>
-              <span class="text-xs font-bold text-primary uppercase tracking-wider block mb-2">Step 4: Complementary Spare-Petal Add-Ons</span>
+              <span class="text-xs font-bold text-primary uppercase tracking-wider block mb-2">Step 6: Complementary Spare-Petal Add-Ons</span>
               <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
                 ${[
                   { label: 'None (Main Keepsake Only)', addon: 0 },
@@ -3616,29 +3692,47 @@ ${avgRating ? `
               </div>
             </div>
 
-            <!-- Step 5: Event Date, Pickup Slot, Calligraphy Engraving & Warm LED Pedestal -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1 border-t border-surface-container">
+            <!-- Step 7: Calligraphy Style, Custom Names, Schedule & LED Base -->
+            <div class="space-y-3 pt-2 border-t border-surface-container">
               <div>
-                <label class="text-xs font-bold text-primary block mb-1" for="custom-event-date">Wedding / Event Date</label>
-                <input id="custom-event-date" type="date" value="${esc(b.eventDate || '2026-11-18')}" onchange="window.updateCustomBuilderSchedule('eventDate', this.value)" class="w-full h-12 px-3 rounded-lg bg-surface-container-low border border-[#e4e0d8] font-spec-numeral text-xs text-primary">
+                <span class="text-xs font-bold text-primary uppercase tracking-wider block mb-2">Step 7: Personalization &amp; Calligraphy</span>
+                <div class="grid grid-cols-3 gap-2 mb-3">
+                  ${[
+                    { id: 'Royal Italic Serif', label: 'Royal Italic Serif', sample: 'Aarav & Meera', fontClass: 'font-serif italic' },
+                    { id: 'Modern Minimalist Grotesk', label: 'Modern Minimalist', sample: 'AARAV & MEERA', fontClass: 'font-sans uppercase tracking-widest text-[10px] font-bold' },
+                    { id: 'Signature Flourish Script', label: 'Signature Flourish', sample: 'Aarav & Meera', fontClass: 'font-serif italic tracking-wide' }
+                  ].map(f => `
+                    <button type="button" onclick="window.updateCustomBuilderFont('${esc(f.id)}')" class="p-2.5 rounded-xl border text-center transition-all cursor-pointer ${(b.fontStyle || 'Royal Italic Serif') === f.id ? 'border-primary bg-primary text-white shadow-2xs' : 'border-[#e4e0d8] bg-surface-container-low text-primary'}">
+                      <p class="text-[10px] font-bold mb-1 opacity-75">${esc(f.label)}</p>
+                      <p class="${f.fontClass} text-xs ${(b.fontStyle || 'Royal Italic Serif') === f.id ? 'text-[#ffd79b]' : 'text-primary'}">${f.sample}</p>
+                    </button>
+                  `).join('')}
+                </div>
               </div>
-              <div>
-                <label class="text-xs font-bold text-primary block mb-1" for="custom-pickup-slot">Preferred Doorstep Pickup Window</label>
-                <select id="custom-pickup-slot" onchange="window.updateCustomBuilderSchedule('pickupSlot', this.value)" class="w-full h-12 px-3 rounded-lg bg-surface-container-low border border-[#e4e0d8] text-xs font-semibold text-primary">
-                  <option value="Morning Slot (9:00 AM – 1:00 PM)" ${b.pickupSlot === 'Morning Slot (9:00 AM – 1:00 PM)' ? 'selected' : ''}>Morning Slot (9:00 AM – 1:00 PM)</option>
-                  <option value="Afternoon Slot (2:00 PM – 6:00 PM)" ${b.pickupSlot === 'Afternoon Slot (2:00 PM – 6:00 PM)' ? 'selected' : ''}>Afternoon Slot (2:00 PM – 6:00 PM)</option>
-                  <option value="Self-Ship via Air Courier (Reimbursed)" ${b.pickupSlot === 'Self-Ship via Air Courier (Reimbursed)' ? 'selected' : ''}>Self-Ship via Air Courier (Reimbursed)</option>
-                </select>
-              </div>
-              <div>
-                <label class="text-xs font-bold text-primary block mb-1" for="custom-engraving-input">Custom Names / Date Calligraphy</label>
-                <input id="custom-engraving-input" type="text" value="${esc(b.engraving)}" oninput="window.updateCustomBuilderText(this.value)" placeholder="e.g. Aarav & Meera • 12.10.2026" class="w-full h-12 px-3 rounded-lg bg-surface-container-low border border-[#e4e0d8] text-xs text-primary">
-              </div>
-              <div class="flex items-end">
-                <label class="w-full h-12 px-3 rounded-lg bg-surface-container-low border border-[#e4e0d8] flex items-center justify-between gap-2 cursor-pointer">
-                  <span class="text-xs font-semibold text-primary">Warm Teak LED Light Base (+₹499)</span>
-                  <input type="checkbox" ${b.ledBase ? 'checked' : ''} onchange="window.updateCustomBuilderLed(this.checked)" class="w-5 h-5 accent-primary shrink-0">
-                </label>
+
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label class="text-xs font-bold text-primary block mb-1" for="custom-engraving-input">Custom Names / Date Engraving</label>
+                  <input id="custom-engraving-input" type="text" value="${esc(b.engraving)}" oninput="window.updateCustomBuilderText(this.value)" placeholder="e.g. Aarav & Meera • 12.10.2026" class="w-full h-12 px-3 rounded-lg bg-surface-container-low border border-[#e4e0d8] text-xs text-primary font-medium">
+                </div>
+                <div>
+                  <label class="text-xs font-bold text-primary block mb-1" for="custom-event-date">Wedding / Event Date</label>
+                  <input id="custom-event-date" type="date" value="${esc(b.eventDate || '2026-11-18')}" onchange="window.updateCustomBuilderSchedule('eventDate', this.value)" class="w-full h-12 px-3 rounded-lg bg-surface-container-low border border-[#e4e0d8] font-spec-numeral text-xs text-primary font-medium">
+                </div>
+                <div>
+                  <label class="text-xs font-bold text-primary block mb-1" for="custom-pickup-slot">Doorstep Pickup Window</label>
+                  <select id="custom-pickup-slot" onchange="window.updateCustomBuilderSchedule('pickupSlot', this.value)" class="w-full h-12 px-3 rounded-lg bg-surface-container-low border border-[#e4e0d8] text-xs font-semibold text-primary">
+                    <option value="Morning Slot (9:00 AM – 1:00 PM)" ${b.pickupSlot === 'Morning Slot (9:00 AM – 1:00 PM)' ? 'selected' : ''}>Morning Slot (9:00 AM – 1:00 PM)</option>
+                    <option value="Afternoon Slot (2:00 PM – 6:00 PM)" ${b.pickupSlot === 'Afternoon Slot (2:00 PM – 6:00 PM)' ? 'selected' : ''}>Afternoon Slot (2:00 PM – 6:00 PM)</option>
+                    <option value="Self-Ship via Air Courier (Reimbursed)" ${b.pickupSlot === 'Self-Ship via Air Courier (Reimbursed)' ? 'selected' : ''}>Self-Ship via Air Courier (Reimbursed)</option>
+                  </select>
+                </div>
+                <div class="flex items-end">
+                  <label class="w-full h-12 px-3 rounded-lg bg-surface-container-low border border-[#e4e0d8] flex items-center justify-between gap-2 cursor-pointer hover:bg-surface-container transition-colors">
+                    <span class="text-xs font-semibold text-primary">Warm Teak LED Stand (+₹499)</span>
+                    <input type="checkbox" ${b.ledBase ? 'checked' : ''} onchange="window.updateCustomBuilderLed(this.checked)" class="w-5 h-5 accent-primary shrink-0">
+                  </label>
+                </div>
               </div>
             </div>
 
@@ -3664,16 +3758,25 @@ ${avgRating ? `
               <span class="px-2 py-0.5 rounded bg-white/10 font-spec-numeral text-[11px]">14-Day Cryo-Cure</span>
             </div>
             <div class="relative aspect-[4/3] rounded-xl overflow-hidden border border-white/15">
-              <img src="${esc(Store.IMAGES.floralCube)}" alt="Custom Keepsake Preview" class="w-full h-full object-cover">
+              <img src="${esc(b.photoUrl || Store.IMAGES.floralCube)}" alt="Custom Keepsake Preview" class="w-full h-full object-cover">
+              ${b.photoUrl ? `
+                <div class="absolute top-2.5 left-2.5 px-2.5 py-1 rounded-full bg-black/75 backdrop-blur-md text-[#ffd79b] border border-[#ffd79b]/40 text-[10px] font-bold uppercase tracking-wider flex items-center gap-1">
+                  <span class="material-symbols-outlined text-xs" aria-hidden="true">image</span>
+                  <span>Your Flower Reference</span>
+                </div>
+              ` : ''}
               <div class="absolute inset-0 bg-black/55 bg-gradient-to-t from-black/85 via-black/40 to-transparent flex flex-col justify-end p-4">
-                <p id="custom-preview-engraving" class="font-serif italic text-base text-[#ffd79b] text-center tracking-wide break-anywhere line-clamp-2">“${esc(b.engraving || 'Your Forever Memory')}”</p>
+                <p id="custom-preview-engraving" class="${(b.fontStyle === 'Modern Minimalist Grotesk') ? 'font-sans uppercase tracking-widest text-xs font-bold' : ((b.fontStyle === 'Signature Flourish Script') ? 'font-serif italic text-lg' : 'font-serif italic text-base')} text-[#ffd79b] text-center tracking-wide break-anywhere line-clamp-2">“${esc(b.engraving || 'Your Forever Memory')}”</p>
               </div>
             </div>
             <div class="space-y-1.5 text-xs border-y border-white/15 py-3">
               <div class="flex justify-between gap-2"><span class="text-white/75">Architecture:</span><span class="font-semibold text-right">${esc(b.shape)}</span></div>
+              <div class="flex justify-between gap-2"><span class="text-white/75">Occasion:</span><span class="font-semibold text-right text-[#ffd79b]">${esc(b.occasion || 'Wedding Varmala & Jaimala')}</span></div>
               <div class="flex justify-between gap-2"><span class="text-white/75">Floral Source:</span><span class="font-semibold truncate max-w-[200px] text-right">${esc(b.flowerSource)}</span></div>
+              <div class="flex justify-between gap-2"><span class="text-white/75">Photo Ref:</span><span class="font-semibold text-right ${b.photoUrl ? 'text-emerald-300' : 'text-white/50'}">${b.photoUrl ? 'Attached (' + (b.photoSizeKb || '0') + ' KB)' : 'Not attached'}</span></div>
               <div class="flex justify-between gap-2"><span class="text-white/75">Inclusions:</span><span class="font-semibold text-right">${esc(b.metallic)}</span></div>
               <div class="flex justify-between gap-2"><span class="text-white/75">Add-On Piece:</span><span class="font-semibold text-right">${esc(b.secondaryKeepsake || 'None')}</span></div>
+              <div class="flex justify-between gap-2"><span class="text-white/75">Calligraphy Style:</span><span class="font-semibold text-right">${esc(b.fontStyle || 'Royal Italic Serif')}</span></div>
               <div class="flex justify-between gap-2"><span class="text-white/75">Pickup Schedule:</span><span class="font-semibold text-right">${esc(b.eventDate)} • ${esc((b.pickupSlot || '').split(' ')[0])}</span></div>
               <div class="flex justify-between gap-2"><span class="text-white/75">Teak LED Stand:</span><span class="font-semibold text-right">${b.ledBase ? 'Yes (+₹499)' : 'No'}</span></div>
             </div>
@@ -3688,6 +3791,8 @@ ${avgRating ? `
               <span class="material-symbols-outlined text-lg" aria-hidden="true">redeem</span>
               <span>Book &amp; Add Custom Keepsake to Bag</span>
             </button>
+          </div>
+        </div>
           </div>
         </div>
 
@@ -4666,6 +4771,21 @@ ${avgRating ? `
                 ? (new Date(ord.created_at || ord.createdAt).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }) + ' at ' + new Date(ord.created_at || ord.createdAt).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', hour12: true }))
                 : (ord.date || 'Recent');
 
+              const isCustom = Boolean(ord.isCustomPreservation || ord.customDetails || (ord.items && ord.items.some(i => i.isCustomPreservation || i.customDetails)));
+              const customDetails = ord.customDetails || (ord.items && ord.items.find(i => i.customDetails)?.customDetails) || null;
+              const preservationStages = [
+                'Floral Awaiting Pickup',
+                'Cryo-Silica Dehydration',
+                'Botanical Prep & Color Lock',
+                'Base Layer Optical Pour',
+                'Deep Pour & Pressure Curing',
+                'Diamond Milling & Lapping',
+                'Ceramic Coating & QA Inspection',
+                'Dispatched in Velvet Vault'
+              ];
+              const curStage = ord.preservationStage || (customDetails && customDetails.preservationStage) || 'Floral Awaiting Pickup';
+              const curStageIdx = Math.max(0, preservationStages.indexOf(curStage));
+
               let statusBadge = `<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-amber-50 text-amber-800 border border-amber-200 text-[11px] font-semibold"><span class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></span><span>Processing &amp; Crafting</span></span>`;
               if (isDelivered) {
                 statusBadge = `<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200 text-[11px] font-semibold"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span><span>Delivered</span></span>`;
@@ -4673,6 +4793,8 @@ ${avgRating ? `
                 statusBadge = `<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-red-50 text-red-800 border border-red-200 text-[11px] font-semibold"><span class="w-1.5 h-1.5 rounded-full bg-red-400"></span><span>Cancelled</span></span>`;
               } else if (isShipped) {
                 statusBadge = `<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-blue-50 text-blue-800 border border-blue-200 text-[11px] font-semibold"><span class="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse"></span><span>In Transit</span></span>`;
+              } else if (isCustom) {
+                statusBadge = `<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-rose-50 text-rose-800 border border-rose-200 text-[11px] font-semibold"><span class="w-1.5 h-1.5 rounded-full bg-rose-500 animate-pulse"></span><span>${esc(curStage)}</span></span>`;
               }
 
               return `
@@ -4684,6 +4806,7 @@ ${avgRating ? `
                         <span class="font-spec-numeral text-xs font-bold text-secondary whitespace-nowrap">ORDER #${esc(cleanOrderId)}</span>
                         <span class="text-xs text-on-surface-variant">• ${esc(orderTimestamp)}</span>
                         ${statusBadge}
+                        ${isCustom ? `<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-[#fdf6f3] text-[#9e3322] border border-[#f5c2b7]/60 text-[10px] font-bold uppercase tracking-wider">🌸 Bespoke Atelier Keepsake</span>` : ''}
                         ${ord.giftWrap ? `<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-[#fdf6f3] text-[#9e3322] border border-[#f5c2b7]/60 text-[10px] font-semibold"><span class="material-symbols-outlined text-[13px]" aria-hidden="true">featured_seasonal_and_gifts</span><span>Silk Potli Wrap</span></span>` : ''}
                       </div>
                       ${ord.status ? `<p class="text-xs font-semibold text-primary mt-1">${esc(ord.status)}</p>` : ''}
@@ -4692,6 +4815,74 @@ ${avgRating ? `
                       <span class="font-spec-numeral text-base sm:text-lg font-bold text-primary">${formatINR(ord.total)}</span>
                     </div>
                   </div>
+
+                  <!-- Bespoke Floral Preservation 8-Stage Tracker (if custom commission) -->
+                  ${isCustom ? `
+                    <div class="p-3.5 sm:p-4 rounded-xl bg-[#faf8f5] border border-[#b08d57]/30 flex flex-col gap-3">
+                      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5">
+                        <div class="flex items-center gap-2">
+                          <span class="material-symbols-outlined text-[#9e3322] text-lg" aria-hidden="true">science</span>
+                          <span class="text-xs font-bold text-primary uppercase tracking-wider">Floral Preservation Milestone</span>
+                        </div>
+                        <span class="text-[11px] font-semibold text-[#aa771c]">Stage ${curStageIdx + 1} of 8: <strong>${esc(curStage)}</strong></span>
+                      </div>
+
+                      <!-- Stepper Track -->
+                      <div class="relative w-full overflow-x-auto no-scrollbar py-2">
+                        <div class="flex items-center justify-between min-w-[540px] gap-2 relative">
+                          <div class="absolute top-1/2 left-3 right-3 h-0.5 bg-[#e4e0d8] -translate-y-1/2 z-0"></div>
+                          <div class="absolute top-1/2 left-3 h-0.5 bg-[#aa771c] -translate-y-1/2 z-0 transition-all duration-500" style="width: ${Math.min(100, Math.max(0, (curStageIdx / 7) * 100))}%;"></div>
+                          ${preservationStages.map((st, i) => {
+                            const isDone = i < curStageIdx;
+                            const isCurrent = i === curStageIdx;
+                            return `
+                              <div class="flex flex-col items-center gap-1 z-10 shrink-0 text-center w-14">
+                                <div class="w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold transition-all ${
+                                  isDone
+                                    ? 'bg-[#266b4e] text-white shadow-2xs'
+                                    : isCurrent
+                                    ? 'bg-[#aa771c] text-white ring-4 ring-[#aa771c]/20 shadow-xs scale-110'
+                                    : 'bg-white border-2 border-[#e4e0d8] text-gray-400'
+                                }">
+                                  ${isDone ? '✓' : (i + 1)}
+                                </div>
+                                <span class="text-[9px] font-semibold leading-tight line-clamp-2 ${isCurrent ? 'text-primary font-bold' : (isDone ? 'text-primary/75' : 'text-gray-400')}">
+                                  ${st.split(' ')[0]} ${st.split(' ')[1] || ''}
+                                </span>
+                              </div>
+                            `;
+                          }).join('')}
+                        </div>
+                      </div>
+
+                      <!-- Custom Keepsake Specs Strip -->
+                      ${customDetails ? `
+                        <div class="pt-2 border-t border-[#e4e0d8] grid grid-cols-2 sm:grid-cols-4 gap-2 text-[11px]">
+                          <div><span class="text-gray-500 block">Occasion:</span><strong class="text-primary">${esc(customDetails.occasion || 'Wedding')}</strong></div>
+                          <div><span class="text-gray-500 block">Keepsake:</span><strong class="text-primary">${esc(customDetails.shape || '50mm Block')}</strong></div>
+                          <div><span class="text-gray-500 block">Inclusions:</span><strong class="text-primary">${esc(customDetails.metallic || '24K Gold')}</strong></div>
+                          <div><span class="text-gray-500 block">Doorstep Pickup:</span><strong class="text-primary">${esc(customDetails.eventDate || 'Scheduled')}</strong></div>
+                        </div>
+                        ${customDetails.engraving ? `
+                          <div class="text-[11px] p-2 rounded-lg bg-white border border-[#e4e0d8] flex items-center gap-1.5">
+                            <span class="material-symbols-outlined text-xs text-secondary" aria-hidden="true">history_edu</span>
+                            <span class="text-gray-600">Calligraphy:</span>
+                            <span class="font-serif italic font-bold text-primary">“${esc(customDetails.engraving)}”</span>
+                            <span class="text-gray-400 text-[10px] ml-auto">(${esc(customDetails.fontStyle || 'Serif')})</span>
+                          </div>
+                        ` : ''}
+                        ${customDetails.photoUrl ? `
+                          <div class="flex items-center gap-2 p-2 rounded-lg bg-white border border-[#e4e0d8]">
+                            <img src="${esc(customDetails.photoUrl)}" alt="Attached Flower Photo" class="w-10 h-10 rounded object-cover border border-[#e4e0d8]">
+                            <div class="text-[11px]">
+                              <span class="font-semibold text-primary block">Your Flower Photo Reference</span>
+                              <span class="text-gray-500 text-[10px]">Transmitted to studio resin master</span>
+                            </div>
+                          </div>
+                        ` : ''}
+                      ` : ''}
+                    </div>
+                  ` : ''}
 
                   <!-- Tracking Banner (if available) -->
                   ${trackingNum ? `
@@ -6509,12 +6700,12 @@ ${avgRating ? `
     window.showToast(`Calculated: ~${res.totalGrams}g Required`, `Part A: ${res.partAGrams}g Resin + Part B: ${res.partBGrams}g Hardener`);
   };
 
-  // Nykaa-Style Home Carousel Controller
+  // Atelier Home Promotional Carousel Controller
   let homeBannerTimer = null;
   window.setHomeBanner = function (idx) {
-    const track = document.getElementById('nykaa-hero-carousel-track');
-    const dots = document.querySelectorAll('.nykaa-carousel-dot');
-    const slides = document.querySelectorAll('.nykaa-hero-slide');
+    const track = document.getElementById('atelier-hero-carousel-track');
+    const dots = document.querySelectorAll('.atelier-carousel-dot');
+    const slides = document.querySelectorAll('.atelier-hero-slide');
     if (!track || slides.length === 0) return;
     const maxIdx = slides.length - 1;
     const targetIdx = Math.max(0, Math.min(idx, maxIdx));
@@ -6532,14 +6723,14 @@ ${avgRating ? `
   };
 
   window.nextHomeBanner = function () {
-    const slides = document.querySelectorAll('.nykaa-hero-slide');
+    const slides = document.querySelectorAll('.atelier-hero-slide');
     if (!slides || slides.length === 0) return;
     const nextIdx = ((AppState.homeBannerIdx || 0) + 1) % slides.length;
     window.setHomeBanner(nextIdx);
   };
 
   window.prevHomeBanner = function () {
-    const slides = document.querySelectorAll('.nykaa-hero-slide');
+    const slides = document.querySelectorAll('.atelier-hero-slide');
     if (!slides || slides.length === 0) return;
     const prevIdx = ((AppState.homeBannerIdx || 0) - 1 + slides.length) % slides.length;
     window.setHomeBanner(prevIdx);
@@ -6550,7 +6741,7 @@ ${avgRating ? `
       clearInterval(homeBannerTimer);
       homeBannerTimer = null;
     }
-    const container = document.getElementById('nykaa-hero-carousel-container');
+    const container = document.getElementById('atelier-hero-carousel-container');
     if (!container) return;
 
     window.setHomeBanner(AppState.homeBannerIdx || 0);
@@ -6585,7 +6776,7 @@ ${avgRating ? `
     }, { passive: true });
   };
 
-  // Nykaa Bestsellers Category Filter Tabs
+  // Atelier Bestsellers Category Filter Tabs
   window.filterHomeBestsellers = function (cat) {
     AppState.homeBestsellerTab = cat;
     const grid = document.getElementById('home-bestsellers-grid');
@@ -6604,7 +6795,7 @@ ${avgRating ? `
     const displayList = filtered.slice(0, 8);
     grid.innerHTML = displayList.map(p => renderProductCard(p, false)).join('');
 
-    document.querySelectorAll('.nykaa-tab-btn').forEach(btn => {
+    document.querySelectorAll('.atelier-tab-btn').forEach(btn => {
       if (btn.getAttribute('data-tab') === cat) {
         btn.classList.add('bg-primary', 'text-white', 'border-primary');
         btn.classList.remove('bg-white', 'text-primary', 'border-[#e4e0d8]');
@@ -7561,6 +7752,45 @@ ${avgRating ? `
     renderActiveView();
   };
 
+  window.updateCustomBuilderOccasion = function (occ) {
+    AppState.customBuilder.occasion = occ;
+    renderActiveView();
+  };
+
+  window.updateCustomBuilderFont = function (fontStyle) {
+    AppState.customBuilder.fontStyle = fontStyle;
+    renderActiveView();
+  };
+
+  window.handleCustomFlowerPhotoUpload = function (event) {
+    const file = event.target.files && event.target.files[0];
+    if (!file) return;
+    if (!file.type.startsWith('image/')) {
+      window.showToast('Invalid File Format', 'Please upload a JPG, PNG, or WebP photo of your wedding flowers.');
+      return;
+    }
+    if (file.size > 15 * 1024 * 1024) {
+      window.showToast('File Too Large', 'Maximum image size is 15MB.');
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = function (e) {
+      AppState.customBuilder.photoUrl = e.target.result;
+      AppState.customBuilder.photoName = file.name;
+      AppState.customBuilder.photoSizeKb = Math.round(file.size / 1024);
+      renderActiveView();
+      window.showToast('Flower Photo Attached!', `${file.name} (${AppState.customBuilder.photoSizeKb} KB) loaded for artisan reference.`);
+    };
+    reader.readAsDataURL(file);
+  };
+
+  window.removeCustomFlowerPhoto = function () {
+    AppState.customBuilder.photoUrl = '';
+    AppState.customBuilder.photoName = '';
+    AppState.customBuilder.photoSizeKb = 0;
+    renderActiveView();
+  };
+
   window.updateCustomBuilderSchedule = function (field, val) {
     if (field === 'eventDate' || field === 'pickupSlot') {
       AppState.customBuilder[field] = val;
@@ -7584,16 +7814,35 @@ ${avgRating ? `
     const secondaryCost = Number(b.secondaryAddon) || 0;
     const total = b.shapePrice + b.sourceAddon + b.metallicAddon + secondaryCost + (b.ledBase ? 499 : 0);
     const addonSuffix = b.secondaryKeepsake && !b.secondaryKeepsake.startsWith('None') ? ` + ${b.secondaryKeepsake}` : '';
+
+    const customDetails = {
+      shape: b.shape,
+      occasion: b.occasion || 'Wedding Varmala & Jaimala',
+      flowerSource: b.flowerSource,
+      metallic: b.metallic,
+      secondaryKeepsake: b.secondaryKeepsake,
+      engraving: b.engraving,
+      fontStyle: b.fontStyle || 'Royal Italic Serif',
+      eventDate: b.eventDate,
+      pickupSlot: b.pickupSlot,
+      ledBase: Boolean(b.ledBase),
+      photoUrl: b.photoUrl || '',
+      photoName: b.photoName || '',
+      preservationStage: 'Floral Awaiting Pickup'
+    };
+
     Store.addToCart({
       productId: 'vk-cat-res-301',
       sku: 'RAM-CUSTOM-KEEP',
       name: `Custom Preserved Keepsake (${b.shape})`,
-      variantLabel: `${b.metallic}${addonSuffix}${b.ledBase ? ' + Warm LED Stand' : ''}`,
+      variantLabel: `${b.occasion || 'Wedding Keepsake'} • ${b.metallic}${addonSuffix}${b.ledBase ? ' + Warm LED Stand' : ''}`,
       price: total,
       regularPrice: total + 1000,
       qty: 1,
-      image: Store.IMAGES.resin301,
-      customNote: `${b.engraving} | Source: ${b.flowerSource} | Pickup: ${b.eventDate} (${b.pickupSlot})`
+      image: b.photoUrl || Store.IMAGES.floralCube,
+      customNote: `${b.engraving ? 'Calligraphy: "' + b.engraving + '" (' + (b.fontStyle || 'Royal Italic Serif') + ')' : ''} | Occasion: ${b.occasion || 'Wedding'} | Source: ${b.flowerSource} | Pickup: ${b.eventDate} (${b.pickupSlot}) | Inclusions: ${b.metallic}`,
+      isCustomPreservation: true,
+      customDetails
     });
     updateGlobalBadges();
     window.showToast('Custom Keepsake Added to Bag!', `${formatINR(total)} • Doorstep pickup slot reserved`);

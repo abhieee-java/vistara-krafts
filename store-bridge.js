@@ -780,6 +780,9 @@
 
       if (existingIndex > -1) {
         cart[existingIndex].qty = Math.min(99, cart[existingIndex].qty + Number(qty || 1));
+        if (opts.customDetails) {
+          cart[existingIndex].customDetails = opts.customDetails;
+        }
       } else {
         cart.push({
           cartItemId: 'item_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6),
@@ -798,7 +801,9 @@
           ratio: product ? `Ratio: ${product.ratio}` : 'Studio Grade',
           viscosity: product && product.specs ? product.specs.dynamicViscosity : 'Lab Certified',
           hsn: '39073010',
-          customNote: customNote || ''
+          customNote: customNote || '',
+          isCustomPreservation: Boolean(opts.isCustomPreservation || sku === 'RAM-CUSTOM-KEEP'),
+          customDetails: opts.customDetails || null
         });
       }
       this.saveCart(cart);
@@ -1586,6 +1591,11 @@
 
       const rawOrderId = 'VK-' + new Date().getFullYear() + '-' + Math.floor(1000 + Math.random() * 9000);
       const uniqueId = 'ord_' + Date.now().toString(36) + '_' + Math.random().toString(36).substring(2, 7);
+      
+      const customItem = summary.cart.find(i => i.isCustomPreservation || i.customDetails || (i.sku && i.sku === 'RAM-CUSTOM-KEEP'));
+      const isCustomOrder = Boolean(customItem);
+      const customPreservationDetails = customItem ? customItem.customDetails : null;
+
       const newOrder = {
         orderId: rawOrderId,
         id: uniqueId,
@@ -1607,10 +1617,15 @@
         pincode: resolvedPin || this.getPincodeInfo().pin,
         giftWrap: checkoutDetails.giftWrap !== undefined ? Boolean(checkoutDetails.giftWrap) : true,
         mockupApproved: false,
-        status: 'Order Confirmed • Studio Batch Allocated',
+        status: isCustomOrder ? 'Custom Keepsake Commission • Floral Awaiting Pickup' : 'Order Confirmed • Studio Batch Allocated',
         orderStatus: 'new',
+        isCustomPreservation: isCustomOrder,
+        preservationStage: isCustomOrder ? ((customPreservationDetails && customPreservationDetails.preservationStage) || 'Floral Awaiting Pickup') : undefined,
+        customDetails: customPreservationDetails,
         stageIndex: 1,
-        stages: ['Order Confirmed', 'Flowers / Materials Prepped', 'Silica & Vacuum Degassing', 'Deep Optical Cast Pour', 'Diamond Polish & Dispatch'],
+        stages: isCustomOrder
+          ? ['Floral Awaiting Pickup', 'Cryo-Silica Dehydration', 'Botanical Prep & Color Lock', 'Base Layer Optical Pour', 'Deep Pour & Pressure Curing', 'Diamond Milling & Lapping', 'Ceramic Coating & QA Inspection', 'Dispatched in Velvet Vault']
+          : ['Order Confirmed', 'Flowers / Materials Prepped', 'Silica & Vacuum Degassing', 'Deep Optical Cast Pour', 'Diamond Polish & Dispatch'],
         items: summary.cart.map(i => ({
           productId: i.productId || 'vk-cat-res-301',
           name: `${i.name} (${i.variantLabel || 'Standard'})`,
@@ -1624,7 +1639,11 @@
           price: i.price,
           unitPrice: i.price,
           totalPrice: (i.price || 0) * (i.qty || 1),
-          customNote: i.customNote || ''
+          customNote: i.customNote || '',
+          sku: i.sku || '',
+          image: i.image || '',
+          isCustomPreservation: Boolean(i.isCustomPreservation || (i.sku && i.sku === 'RAM-CUSTOM-KEEP')),
+          customDetails: i.customDetails || null
         })),
         courier: `BlueDart Priority Air • PIN ${resolvedPin || this.getPincodeInfo().pin}`,
         trackingNumber: '',
@@ -1652,6 +1671,9 @@
         payment_method: newOrder.paymentMethod,
         payment_status: 'paid',
         order_status: 'new',
+        is_custom_preservation: isCustomOrder,
+        preservation_stage: isCustomOrder ? ((customPreservationDetails && customPreservationDetails.preservationStage) || 'Floral Awaiting Pickup') : null,
+        custom_details: customPreservationDetails,
         stage_index: 1,
         gift_wrap: Boolean(newOrder.giftWrap),
         mockup_approved: false,
@@ -2051,6 +2073,28 @@
         ? new Date(row.created_at || row.createdAt).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })
         : new Date().toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }));
 
+      const isCustomPreservation = Boolean(
+        row.is_custom_preservation ||
+        row.isCustomPreservation ||
+        (Array.isArray(row.items) && row.items.some(it => it.sku === 'RAM-CUSTOM-KEEP' || it.isCustomPreservation || it.customDetails))
+      );
+      const customDetails = row.custom_details || row.customDetails || (Array.isArray(row.items) ? (row.items.find(it => it.customDetails)?.customDetails || null) : null);
+      const preservationStage = row.preservation_stage || row.preservationStage || (isCustomPreservation ? 'Floral Awaiting Pickup' : undefined);
+
+      const customStages = [
+        'Floral Awaiting Pickup',
+        'Cryo-Silica Dehydration',
+        'Botanical Prep & Color Lock',
+        'Base Layer Optical Pour',
+        'Deep Pour & Pressure Curing',
+        'Diamond Milling & Lapping',
+        'Ceramic Coating & QA Inspection',
+        'Dispatched in Velvet Vault'
+      ];
+      const customStageIdx = isCustomPreservation && preservationStage
+        ? Math.max(0, customStages.indexOf(preservationStage))
+        : stageIdx;
+
       return {
         orderId: row.order_number || row.orderNumber || row.orderId || row.id,
         id: row.id || row.order_number || row.orderNumber || row.orderId,
@@ -2069,10 +2113,15 @@
         pincode: row.pincode || (row.shippingAddress && row.shippingAddress.pincode) || '',
         giftWrap: Boolean(row.gift_wrap ?? row.giftWrap),
         mockupApproved: Boolean(row.mockup_approved ?? row.mockupApproved),
-        status: (row.status && !['new','pending','processing','curing','packed','shipped','delivered','cancelled','refunded'].includes(String(row.status).toLowerCase())) ? row.status : statusText,
+        status: (row.status && !['new','pending','processing','curing','packed','shipped','delivered','cancelled','refunded'].includes(String(row.status).toLowerCase())) ? row.status : (isCustomPreservation && preservationStage ? `Floral Preservation: ${preservationStage}` : statusText),
         orderStatus: ordStatus,
-        stageIndex: stageIdx,
-        stages: ['Order Confirmed', 'Flowers / Materials Prepped', 'Silica & Vacuum Degassing', 'Deep Optical Cast Pour', 'Diamond Polish & Dispatch'],
+        isCustomPreservation,
+        preservationStage,
+        customDetails,
+        stageIndex: isCustomPreservation ? customStageIdx : stageIdx,
+        stages: isCustomPreservation
+          ? customStages
+          : ['Order Confirmed', 'Flowers / Materials Prepped', 'Silica & Vacuum Degassing', 'Deep Optical Cast Pour', 'Diamond Polish & Dispatch'],
         items: Array.isArray(row.items) ? row.items.map(it => ({
           name: it.productName || it.name,
           productName: it.productName || it.name,
@@ -2083,7 +2132,10 @@
           color: it.color || '',
           shape: it.shape || '',
           size: it.size || '',
-          sku: it.sku || ''
+          sku: it.sku || '',
+          image: it.image || '',
+          isCustomPreservation: Boolean(it.isCustomPreservation || it.sku === 'RAM-CUSTOM-KEEP'),
+          customDetails: it.customDetails || null
         })) : [],
         courier: courierName,
         carrier: courierName,

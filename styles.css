@@ -1581,66 +1581,91 @@ ascii-art {
 }
 
 /* ==========================================================================
-   Nykaa-Inspired High-Conversion Visual E-Commerce Architecture
+   Bespoke Luxury Resin Atelier Architecture (Vistāra Krafts Signature Design)
    ========================================================================== */
-.nykaa-cat-strip {
+.atelier-curation-strip {
   scrollbar-width: none;
   -ms-overflow-style: none;
 }
-.nykaa-cat-strip::-webkit-scrollbar {
+.atelier-curation-strip::-webkit-scrollbar {
   display: none;
 }
 
-.nykaa-cat-circle {
+.atelier-curation-circle {
   transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.28s ease, border-color 0.28s ease;
 }
-.nykaa-cat-circle:hover {
-  transform: translateY(-3px) scale(1.04);
-  box-shadow: 0 8px 24px -4px rgba(18, 18, 23, 0.12);
-  border-color: #aa771c;
+.atelier-curation-circle:hover {
+  transform: translateY(-4px) scale(1.05);
+  box-shadow: 0 10px 28px -4px rgba(18, 18, 23, 0.16), 0 0 0 1px rgba(176, 141, 87, 0.4);
+  border-color: #b08d57;
 }
-.nykaa-cat-circle:active {
-  transform: scale(0.96);
+.atelier-curation-circle:active {
+  transform: scale(0.95);
 }
 
-.nykaa-hero-carousel-container {
+.atelier-hero-carousel-container {
   position: relative;
   width: 100%;
   overflow: hidden;
 }
 
-.nykaa-carousel-track {
+.atelier-carousel-track {
   display: flex;
-  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: transform 0.65s cubic-bezier(0.16, 1, 0.3, 1);
   will-change: transform;
 }
 
-.nykaa-hero-slide {
+.atelier-hero-slide {
   flex: 0 0 100%;
   width: 100%;
   min-width: 100%;
   position: relative;
 }
 
-.nykaa-carousel-dot {
+.atelier-carousel-dot {
   transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   cursor: pointer;
 }
 
-.nykaa-banner-card {
+.atelier-spotlight-tile {
   transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.35s ease, border-color 0.35s ease;
 }
-.nykaa-banner-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 14px 34px -6px rgba(18, 18, 23, 0.14);
+.atelier-spotlight-tile:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 18px 40px -8px rgba(18, 18, 23, 0.16), 0 0 0 1px rgba(176, 141, 87, 0.3);
 }
 
-.nykaa-tab-btn {
+.atelier-tab-btn {
   transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
-.nykaa-tab-btn:hover {
+.atelier-tab-btn:hover {
   transform: translateY(-1px);
 }
-.nykaa-tab-btn:active {
+.atelier-tab-btn:active {
   transform: scale(0.96);
+}
+
+/* Custom Memory Preservation Studio Luxury Accents */
+.atelier-dropzone {
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+.atelier-dropzone:hover {
+  border-color: #b08d57;
+  background-color: rgba(253, 246, 243, 0.6);
+}
+
+.atelier-step-active {
+  box-shadow: 0 0 0 2px #9e3322, 0 8px 24px -4px rgba(158, 51, 34, 0.2);
+}
+
+.atelier-stage-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.25rem 0.625rem;
+  border-radius: 9999px;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
 }
