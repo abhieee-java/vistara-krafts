@@ -771,17 +771,26 @@
       const chosenSize = opts.size || opts.selectedSize || (product && product.sizes && product.sizes[0] ? product.sizes[0].label : 'Standard Studio');
       const unitPrice = Number(price || (product ? product.price : 1299));
       const regPrice = Number(regularPrice || (product ? product.regularPrice : unitPrice));
-      const itemKey = `${productId || targetName}__${targetVariant}__${chosenColor}__${chosenShape}__${chosenSize}__${customNote || ''}`;
+      const isCustomPreservation = Boolean(opts.isCustomPreservation || sku === 'RAM-CUSTOM-KEEP');
+      
+      let customDetails = opts.customDetails ? { ...opts.customDetails } : null;
+      if (isCustomPreservation && customDetails && !customDetails.customId) {
+        customDetails.customId = 'custom_' + Date.now() + '_' + Math.random().toString(36).slice(2, 7);
+      }
+      const customUniqueToken = (isCustomPreservation && customDetails && customDetails.customId) ? `__${customDetails.customId}` : '';
+      const itemKey = `${productId || targetName}__${targetVariant}__${chosenColor}__${chosenShape}__${chosenSize}__${customNote || ''}${customUniqueToken}`;
 
-      const existingIndex = cart.findIndex(item =>
-        (item.itemKey && item.itemKey === itemKey) ||
-        (item.productId === productId && item.variantLabel === targetVariant && (item.color || '') === chosenColor && (item.shape || '') === chosenShape && (item.size || '') === chosenSize && (item.customNote || '') === (customNote || ''))
-      );
+      const existingIndex = isCustomPreservation
+        ? (customDetails && customDetails.customId ? cart.findIndex(item => item.customDetails && item.customDetails.customId === customDetails.customId) : -1)
+        : cart.findIndex(item =>
+            (item.itemKey && item.itemKey === itemKey) ||
+            (item.productId === productId && item.variantLabel === targetVariant && (item.color || '') === chosenColor && (item.shape || '') === chosenShape && (item.size || '') === chosenSize && (item.customNote || '') === (customNote || ''))
+          );
 
       if (existingIndex > -1) {
         cart[existingIndex].qty = Math.min(99, cart[existingIndex].qty + Number(qty || 1));
-        if (opts.customDetails) {
-          cart[existingIndex].customDetails = opts.customDetails;
+        if (customDetails) {
+          cart[existingIndex].customDetails = customDetails;
         }
       } else {
         cart.push({
@@ -802,8 +811,8 @@
           viscosity: product && product.specs ? product.specs.dynamicViscosity : 'Lab Certified',
           hsn: '39073010',
           customNote: customNote || '',
-          isCustomPreservation: Boolean(opts.isCustomPreservation || sku === 'RAM-CUSTOM-KEEP'),
-          customDetails: opts.customDetails || null
+          isCustomPreservation,
+          customDetails
         });
       }
       this.saveCart(cart);
