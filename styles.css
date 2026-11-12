@@ -1579,3 +1579,68 @@ ascii-art {
   border: 1px solid var(--structure-30-border, #e4e0d8);
   box-shadow: 0 1px 3px rgba(3, 26, 56, 0.04);
 }
+
+/* ==========================================================================
+   Nykaa-Inspired High-Conversion Visual E-Commerce Architecture
+   ========================================================================== */
+.nykaa-cat-strip {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.nykaa-cat-strip::-webkit-scrollbar {
+  display: none;
+}
+
+.nykaa-cat-circle {
+  transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.28s ease, border-color 0.28s ease;
+}
+.nykaa-cat-circle:hover {
+  transform: translateY(-3px) scale(1.04);
+  box-shadow: 0 8px 24px -4px rgba(18, 18, 23, 0.12);
+  border-color: #aa771c;
+}
+.nykaa-cat-circle:active {
+  transform: scale(0.96);
+}
+
+.nykaa-hero-carousel-container {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+}
+
+.nykaa-carousel-track {
+  display: flex;
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform;
+}
+
+.nykaa-hero-slide {
+  flex: 0 0 100%;
+  width: 100%;
+  min-width: 100%;
+  position: relative;
+}
+
+.nykaa-carousel-dot {
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  cursor: pointer;
+}
+
+.nykaa-banner-card {
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.35s ease, border-color 0.35s ease;
+}
+.nykaa-banner-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 14px 34px -6px rgba(18, 18, 23, 0.14);
+}
+
+.nykaa-tab-btn {
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.nykaa-tab-btn:hover {
+  transform: translateY(-1px);
+}
+.nykaa-tab-btn:active {
+  transform: scale(0.96);
+}

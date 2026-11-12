@@ -1744,7 +1744,7 @@ if (chromeExe) {
       document.getElementById('chk-address').value = '108 MG Road, Bengaluru';
       document.getElementById('chk-pincode').value = '560001';
       window.submitCheckoutOrder(new Event('submit', { cancelable: true }));
-      await new Promise(r => setTimeout(r, 150));
+      await new Promise(r => setTimeout(r, 400));
 
       const ordersAfterCheckout = window.VistaraStore.getOrders();
       const savedAddressInProfile = window.VistaraStore.getAuthSession().address;
@@ -1848,13 +1848,13 @@ if (chromeExe) {
       
       // Click heart
       wishBtn?.click();
-      await new Promise(r => setTimeout(r, 60));
+      await new Promise(r => setTimeout(r, 200));
       const postClickSvgFilled = Boolean(wishBtn?.querySelector('svg')?.classList.contains('fill-[#9e3322]'));
       const postClickBadge = parseInt(document.querySelector('.js-wishlist-badge')?.textContent || '0', 10);
 
       // Click heart again to toggle off
       wishBtn?.click();
-      await new Promise(r => setTimeout(r, 60));
+      await new Promise(r => setTimeout(r, 200));
       const postUnclickSvgFilled = Boolean(wishBtn?.querySelector('svg')?.classList.contains('fill-[#9e3322]'));
       const postUnclickBadge = parseInt(document.querySelector('.js-wishlist-badge')?.textContent || '0', 10);
 
