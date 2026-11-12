@@ -1555,26 +1555,26 @@ ${avgRating ? `
           <div id="atelier-hero-carousel-container" class="atelier-hero-carousel-container relative rounded-2xl sm:rounded-3xl overflow-hidden shadow-lg border border-[#e4e0d8] bg-[#0d0d12]">
             <div id="atelier-hero-carousel-track" class="atelier-carousel-track">
               <!-- Slide 1: Wedding Varmala Preservation -->
-              <div class="atelier-hero-slide min-h-[220px] min-[380px]:min-h-[240px] sm:min-h-[340px] lg:min-h-[390px] flex items-center relative overflow-hidden">
+              <div class="atelier-hero-slide h-full sm:min-h-[340px] lg:min-h-[390px] flex items-end sm:items-center relative overflow-hidden">
                 <div class="absolute inset-0 z-0">
-                  <img src="${esc(Store.IMAGES.floralCube)}" alt="Wedding Flowers Preserved in Resin" class="w-full h-full object-cover object-right scale-105">
-                  <div class="absolute inset-0 bg-gradient-to-t from-[#0a0a0f] via-[#0a0a0f]/90 to-[#0a0a0f]/60 sm:bg-gradient-to-r sm:from-[#0a0a0f] sm:via-[#0a0a0f]/95 sm:via-60% sm:to-transparent z-0"></div>
+                  <img src="${esc(Store.IMAGES.floralCube)}" alt="Wedding Flowers Preserved in Resin" class="w-full h-full object-cover object-center sm:object-right scale-105">
+                  <div class="absolute inset-0 bg-gradient-to-t from-[#0a0a0f] via-[#0a0a0f]/85 via-50% to-transparent sm:bg-gradient-to-r sm:from-[#0a0a0f] sm:via-[#0a0a0f]/95 sm:via-60% sm:to-transparent z-0"></div>
                 </div>
-                <div class="relative z-10 px-4 sm:px-10 lg:px-12 py-3.5 sm:py-6 max-w-2xl flex flex-col items-start gap-1.5 sm:gap-3 text-white">
-                  <span class="px-2.5 py-0.5 sm:px-3 sm:py-1 rounded-full bg-black/60 backdrop-blur-md border border-[#aa771c]/70 text-[#ffd79b] text-[9.5px] sm:text-[11px] font-bold tracking-wider uppercase shadow-xs">
+                <div class="relative z-10 px-3.5 min-[360px]:px-4 sm:px-10 lg:px-12 pt-3 pb-8 sm:py-6 max-w-2xl flex flex-col items-start gap-1.5 min-[360px]:gap-2 sm:gap-3 text-white">
+                  <span class="px-2.5 py-0.5 sm:px-3 sm:py-1 rounded-full bg-black/60 backdrop-blur-md border border-[#aa771c]/70 text-[#ffd79b] text-[9px] min-[360px]:text-[9.5px] sm:text-[11px] font-bold tracking-wider uppercase shadow-xs">
                     ✦ ATELIER EXCLUSIVE • WEDDING SEASON 2026
                   </span>
-                  <h1 class="font-headline-lg text-lg min-[360px]:text-xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight leading-[1.14] text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)]">
+                  <h1 class="font-headline-lg text-[17px] min-[360px]:text-lg sm:text-3xl lg:text-4xl font-extrabold tracking-tight leading-[1.18] text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)]">
                     Handcrafted Resin Art &amp; Wedding Keepsakes.
                   </h1>
-                  <p class="text-[11.5px] sm:text-sm text-[#f5f3ef] font-medium max-w-lg leading-snug sm:leading-relaxed line-clamp-2 sm:line-clamp-none drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]">
+                  <p class="text-[11px] min-[360px]:text-[11.5px] sm:text-sm text-[#f5f3ef] font-medium max-w-lg leading-snug sm:leading-relaxed line-clamp-2 sm:line-clamp-none drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]">
                     Turn your sacred wedding flowers and varmalas into 50mm diamond-polished crystal keepsakes. 24h temperature-controlled doorstep pickup across India.
                   </p>
-                  <div class="flex flex-wrap items-center gap-2 sm:gap-3 pt-0.5 sm:pt-1">
-                    <button type="button" onclick="window.navigateTo('custom-studio')" class="btn-shimmer min-h-[36px] sm:min-h-[42px] px-4 sm:px-6 rounded-lg sm:rounded-xl bg-white text-primary font-bold text-[11px] sm:text-xs uppercase tracking-wider shadow-md hover:bg-[#faf8f5] active:scale-95 transition-all cursor-pointer">
+                  <div class="flex flex-wrap items-center gap-1.5 min-[360px]:gap-2 sm:gap-3 pt-0.5 sm:pt-1">
+                    <button type="button" onclick="window.navigateTo('custom-studio')" class="btn-shimmer min-h-[34px] sm:min-h-[42px] px-3.5 sm:px-6 rounded-lg sm:rounded-xl bg-white text-primary font-bold text-[10.5px] min-[360px]:text-[11px] sm:text-xs uppercase tracking-wider shadow-md hover:bg-[#faf8f5] active:scale-95 transition-all cursor-pointer">
                       Preserve Your Flowers
                     </button>
-                    <button type="button" onclick="window.navigateTo('catalog', 'all')" class="min-h-[36px] sm:min-h-[42px] px-3.5 sm:px-5 rounded-lg sm:rounded-xl border border-white/40 hover:border-white bg-black/30 backdrop-blur-xs text-white font-bold text-[11px] sm:text-xs uppercase tracking-wider active:scale-95 transition-all cursor-pointer">
+                    <button type="button" onclick="window.navigateTo('catalog', 'all')" class="min-h-[34px] sm:min-h-[42px] px-3 sm:px-5 rounded-lg sm:rounded-xl border border-white/40 hover:border-white bg-black/30 backdrop-blur-xs text-white font-bold text-[10.5px] min-[360px]:text-[11px] sm:text-xs uppercase tracking-wider active:scale-95 transition-all cursor-pointer">
                       Explore All Collections
                     </button>
                   </div>
@@ -1582,26 +1582,26 @@ ${avgRating ? `
               </div>
 
               <!-- Slide 2: Optical-Grade Epoxy Resins -->
-              <div class="atelier-hero-slide min-h-[220px] min-[380px]:min-h-[240px] sm:min-h-[340px] lg:min-h-[390px] flex items-center relative overflow-hidden">
+              <div class="atelier-hero-slide h-full sm:min-h-[340px] lg:min-h-[390px] flex items-end sm:items-center relative overflow-hidden">
                 <div class="absolute inset-0 z-0">
-                  <img src="${esc(Store.IMAGES.resin201)}" alt="Optical Epoxy Resin Systems" class="w-full h-full object-cover object-right scale-105">
-                  <div class="absolute inset-0 bg-gradient-to-t from-[#0a0a0f] via-[#0a0a0f]/90 to-[#0a0a0f]/60 sm:bg-gradient-to-r sm:from-[#0a0a0f] sm:via-[#0a0a0f]/95 sm:via-60% sm:to-transparent z-0"></div>
+                  <img src="${esc(Store.IMAGES.resin201)}" alt="Optical Epoxy Resin Systems" class="w-full h-full object-cover object-center sm:object-right scale-105">
+                  <div class="absolute inset-0 bg-gradient-to-t from-[#0a0a0f] via-[#0a0a0f]/85 via-50% to-transparent sm:bg-gradient-to-r sm:from-[#0a0a0f] sm:via-[#0a0a0f]/95 sm:via-60% sm:to-transparent z-0"></div>
                 </div>
-                <div class="relative z-10 px-4 sm:px-10 lg:px-12 py-3.5 sm:py-6 max-w-2xl flex flex-col items-start gap-1.5 sm:gap-3 text-white">
-                  <span class="px-2.5 py-0.5 sm:px-3 sm:py-1 rounded-full bg-black/60 backdrop-blur-md border border-[#9e3322]/70 text-[#ffb4a8] text-[9.5px] sm:text-[11px] font-bold tracking-wider uppercase shadow-xs">
+                <div class="relative z-10 px-3.5 min-[360px]:px-4 sm:px-10 lg:px-12 pt-3 pb-8 sm:py-6 max-w-2xl flex flex-col items-start gap-1.5 min-[360px]:gap-2 sm:gap-3 text-white">
+                  <span class="px-2.5 py-0.5 sm:px-3 sm:py-1 rounded-full bg-black/60 backdrop-blur-md border border-[#9e3322]/70 text-[#ffb4a8] text-[9px] min-[360px]:text-[9.5px] sm:text-[11px] font-bold tracking-wider uppercase shadow-xs">
                     ✦ BESTSELLER • FLAT 15% OFF STARTER KITS
                   </span>
-                  <h2 class="font-headline-lg text-lg min-[360px]:text-xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight leading-[1.14] text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)]">
+                  <h2 class="font-headline-lg text-[17px] min-[360px]:text-lg sm:text-3xl lg:text-4xl font-extrabold tracking-tight leading-[1.18] text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)]">
                     Crystal-Clear. Zero Yellowing. Bubble-Free.
                   </h2>
-                  <p class="text-[11.5px] sm:text-sm text-[#f5f3ef] font-medium max-w-lg leading-snug sm:leading-relaxed line-clamp-2 sm:line-clamp-none drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]">
+                  <p class="text-[11px] min-[360px]:text-[11.5px] sm:text-sm text-[#f5f3ef] font-medium max-w-lg leading-snug sm:leading-relaxed line-clamp-2 sm:line-clamp-none drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]">
                     Museum-grade 3:1 Deep Pour &amp; 2:1 High-Gloss optical epoxy formulations fortified with dual HALS UV400 light stabilizers.
                   </p>
-                  <div class="flex flex-wrap items-center gap-2 sm:gap-3 pt-0.5 sm:pt-1">
-                    <button type="button" onclick="window.navigateTo('catalog', 'casting')" class="btn-shimmer min-h-[36px] sm:min-h-[42px] px-4 sm:px-6 rounded-lg sm:rounded-xl bg-white text-primary font-bold text-[11px] sm:text-xs uppercase tracking-wider shadow-md hover:bg-[#faf8f5] active:scale-95 transition-all cursor-pointer">
+                  <div class="flex flex-wrap items-center gap-1.5 min-[360px]:gap-2 sm:gap-3 pt-0.5 sm:pt-1">
+                    <button type="button" onclick="window.navigateTo('catalog', 'casting')" class="btn-shimmer min-h-[34px] sm:min-h-[42px] px-3.5 sm:px-6 rounded-lg sm:rounded-xl bg-white text-primary font-bold text-[10.5px] min-[360px]:text-[11px] sm:text-xs uppercase tracking-wider shadow-md hover:bg-[#faf8f5] active:scale-95 transition-all cursor-pointer">
                       Shop Epoxy Kits
                     </button>
-                    <button type="button" onclick="window.openTdsModal('301')" class="min-h-[36px] sm:min-h-[42px] px-3.5 sm:px-5 rounded-lg sm:rounded-xl border border-white/40 hover:border-white bg-black/30 backdrop-blur-xs text-white font-bold text-[11px] sm:text-xs uppercase tracking-wider active:scale-95 transition-all cursor-pointer">
+                    <button type="button" onclick="window.openTdsModal('301')" class="min-h-[34px] sm:min-h-[42px] px-3 sm:px-5 rounded-lg sm:rounded-xl border border-white/40 hover:border-white bg-black/30 backdrop-blur-xs text-white font-bold text-[10.5px] min-[360px]:text-[11px] sm:text-xs uppercase tracking-wider active:scale-95 transition-all cursor-pointer">
                       View Technical Specs
                     </button>
                   </div>
@@ -1609,26 +1609,26 @@ ${avgRating ? `
               </div>
 
               <!-- Slide 3: Silicone Art Molds & Shimmer Pigments -->
-              <div class="atelier-hero-slide min-h-[220px] min-[380px]:min-h-[240px] sm:min-h-[340px] lg:min-h-[390px] flex items-center relative overflow-hidden">
+              <div class="atelier-hero-slide h-full sm:min-h-[340px] lg:min-h-[390px] flex items-end sm:items-center relative overflow-hidden">
                 <div class="absolute inset-0 z-0">
-                  <img src="${esc(Store.IMAGES.agateMold)}" alt="Silicone Molds & Inks" class="w-full h-full object-cover object-right scale-105">
-                  <div class="absolute inset-0 bg-gradient-to-t from-[#0a0a0f] via-[#0a0a0f]/90 to-[#0a0a0f]/60 sm:bg-gradient-to-r sm:from-[#0a0a0f] sm:via-[#0a0a0f]/95 sm:via-60% sm:to-transparent z-0"></div>
+                  <img src="${esc(Store.IMAGES.agateMold)}" alt="Silicone Molds & Inks" class="w-full h-full object-cover object-center sm:object-right scale-105">
+                  <div class="absolute inset-0 bg-gradient-to-t from-[#0a0a0f] via-[#0a0a0f]/85 via-50% to-transparent sm:bg-gradient-to-r sm:from-[#0a0a0f] sm:via-[#0a0a0f]/95 sm:via-60% sm:to-transparent z-0"></div>
                 </div>
-                <div class="relative z-10 px-4 sm:px-10 lg:px-12 py-3.5 sm:py-6 max-w-2xl flex flex-col items-start gap-1.5 sm:gap-3 text-white">
-                  <span class="px-2.5 py-0.5 sm:px-3 sm:py-1 rounded-full bg-black/60 backdrop-blur-md border border-[#266b4e]/70 text-[#a3e4c4] text-[9.5px] sm:text-[11px] font-bold tracking-wider uppercase shadow-xs">
+                <div class="relative z-10 px-3.5 min-[360px]:px-4 sm:px-10 lg:px-12 pt-3 pb-8 sm:py-6 max-w-2xl flex flex-col items-start gap-1.5 min-[360px]:gap-2 sm:gap-3 text-white">
+                  <span class="px-2.5 py-0.5 sm:px-3 sm:py-1 rounded-full bg-black/60 backdrop-blur-md border border-[#266b4e]/70 text-[#a3e4c4] text-[9.5px] min-[360px]:text-[9.5px] sm:text-[11px] font-bold tracking-wider uppercase shadow-xs">
                     ✦ NEW DROPS • 50+ CASTS REUSABLE
                   </span>
-                  <h2 class="font-headline-lg text-lg min-[360px]:text-xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight leading-[1.14] text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)]">
+                  <h2 class="font-headline-lg text-[17px] min-[360px]:text-lg sm:text-3xl lg:text-4xl font-extrabold tracking-tight leading-[1.18] text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)]">
                     Precision Mirror-Finish Silicone Molds.
                   </h2>
-                  <p class="text-[11.5px] sm:text-sm text-[#f5f3ef] font-medium max-w-lg leading-snug sm:leading-relaxed line-clamp-2 sm:line-clamp-none drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]">
+                  <p class="text-[11px] min-[360px]:text-[11.5px] sm:text-sm text-[#f5f3ef] font-medium max-w-lg leading-snug sm:leading-relaxed line-clamp-2 sm:line-clamp-none drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]">
                     High-tear platinum silicone molds for agate geodes, resin clocks, fluted coasters, and botanical pendants.
                   </p>
-                  <div class="flex flex-wrap items-center gap-2 sm:gap-3 pt-0.5 sm:pt-1">
-                    <button type="button" onclick="window.navigateTo('catalog', 'molds')" class="btn-shimmer min-h-[36px] sm:min-h-[42px] px-4 sm:px-6 rounded-lg sm:rounded-xl bg-white text-primary font-bold text-[11px] sm:text-xs uppercase tracking-wider shadow-md hover:bg-[#faf8f5] active:scale-95 transition-all cursor-pointer">
+                  <div class="flex flex-wrap items-center gap-1.5 min-[360px]:gap-2 sm:gap-3 pt-0.5 sm:pt-1">
+                    <button type="button" onclick="window.navigateTo('catalog', 'molds')" class="btn-shimmer min-h-[34px] sm:min-h-[42px] px-3.5 sm:px-6 rounded-lg sm:rounded-xl bg-white text-primary font-bold text-[10.5px] min-[360px]:text-[11px] sm:text-xs uppercase tracking-wider shadow-md hover:bg-[#faf8f5] active:scale-95 transition-all cursor-pointer">
                       Shop Molds &amp; Tools
                     </button>
-                    <button type="button" onclick="window.navigateTo('catalog', 'pigments')" class="min-h-[36px] sm:min-h-[42px] px-3.5 sm:px-5 rounded-lg sm:rounded-xl border border-white/40 hover:border-white bg-black/30 backdrop-blur-xs text-white font-bold text-[11px] sm:text-xs uppercase tracking-wider active:scale-95 transition-all cursor-pointer">
+                    <button type="button" onclick="window.navigateTo('catalog', 'pigments')" class="min-h-[34px] sm:min-h-[42px] px-3 sm:px-5 rounded-lg sm:rounded-xl border border-white/40 hover:border-white bg-black/30 backdrop-blur-xs text-white font-bold text-[10.5px] min-[360px]:text-[11px] sm:text-xs uppercase tracking-wider active:scale-95 transition-all cursor-pointer">
                       Explore Inks &amp; Foils
                     </button>
                   </div>
@@ -1636,26 +1636,26 @@ ${avgRating ? `
               </div>
 
               <!-- Slide 4: Handcrafted Luxury Resin Living -->
-              <div class="atelier-hero-slide min-h-[220px] min-[380px]:min-h-[240px] sm:min-h-[340px] lg:min-h-[390px] flex items-center relative overflow-hidden">
+              <div class="atelier-hero-slide h-full sm:min-h-[340px] lg:min-h-[390px] flex items-end sm:items-center relative overflow-hidden">
                 <div class="absolute inset-0 z-0">
-                  <img src="${esc(Store.IMAGES.oceanWave)}" alt="Handcrafted Ocean Wave Resin Decor" class="w-full h-full object-cover object-right scale-105">
-                  <div class="absolute inset-0 bg-gradient-to-t from-[#0a0a0f] via-[#0a0a0f]/90 to-[#0a0a0f]/60 sm:bg-gradient-to-r sm:from-[#0a0a0f] sm:via-[#0a0a0f]/95 sm:via-60% sm:to-transparent z-0"></div>
+                  <img src="${esc(Store.IMAGES.oceanWave)}" alt="Handcrafted Ocean Wave Resin Decor" class="w-full h-full object-cover object-center sm:object-right scale-105">
+                  <div class="absolute inset-0 bg-gradient-to-t from-[#0a0a0f] via-[#0a0a0f]/85 via-50% to-transparent sm:bg-gradient-to-r sm:from-[#0a0a0f] sm:via-[#0a0a0f]/95 sm:via-60% sm:to-transparent z-0"></div>
                 </div>
-                <div class="relative z-10 px-4 sm:px-10 lg:px-12 py-3.5 sm:py-6 max-w-2xl flex flex-col items-start gap-1.5 sm:gap-3 text-white">
-                  <span class="px-2.5 py-0.5 sm:px-3 sm:py-1 rounded-full bg-black/60 backdrop-blur-md border border-[#aa771c]/70 text-[#ffd79b] text-[9.5px] sm:text-[11px] font-bold tracking-wider uppercase shadow-xs">
+                <div class="relative z-10 px-3.5 min-[360px]:px-4 sm:px-10 lg:px-12 pt-3 pb-8 sm:py-6 max-w-2xl flex flex-col items-start gap-1.5 min-[360px]:gap-2 sm:gap-3 text-white">
+                  <span class="px-2.5 py-0.5 sm:px-3 sm:py-1 rounded-full bg-black/60 backdrop-blur-md border border-[#aa771c]/70 text-[#ffd79b] text-[9px] min-[360px]:text-[9.5px] sm:text-[11px] font-bold tracking-wider uppercase shadow-xs">
                     ✦ READY TO DISPATCH • LUXURY LIVING
                   </span>
-                  <h2 class="font-headline-lg text-lg min-[360px]:text-xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight leading-[1.14] text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)]">
+                  <h2 class="font-headline-lg text-[17px] min-[360px]:text-lg sm:text-3xl lg:text-4xl font-extrabold tracking-tight leading-[1.18] text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)]">
                     Ocean Wave Boards &amp; Geode Wall Art.
                   </h2>
-                  <p class="text-[11.5px] sm:text-sm text-[#f5f3ef] font-medium max-w-lg leading-snug sm:leading-relaxed line-clamp-2 sm:line-clamp-none drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]">
+                  <p class="text-[11px] min-[360px]:text-[11.5px] sm:text-sm text-[#f5f3ef] font-medium max-w-lg leading-snug sm:leading-relaxed line-clamp-2 sm:line-clamp-none drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]">
                     Natural teak wood with hand-poured multi-layered ocean resin waves and solid brass fittings. Handcrafted in Guwahati.
                   </p>
-                  <div class="flex flex-wrap items-center gap-2 sm:gap-3 pt-0.5 sm:pt-1">
-                    <button type="button" onclick="window.navigateTo('catalog', 'decor')" class="btn-shimmer min-h-[36px] sm:min-h-[42px] px-4 sm:px-6 rounded-lg sm:rounded-xl bg-white text-primary font-bold text-[11px] sm:text-xs uppercase tracking-wider shadow-md hover:bg-[#faf8f5] active:scale-95 transition-all cursor-pointer">
+                  <div class="flex flex-wrap items-center gap-1.5 min-[360px]:gap-2 sm:gap-3 pt-0.5 sm:pt-1">
+                    <button type="button" onclick="window.navigateTo('catalog', 'decor')" class="btn-shimmer min-h-[34px] sm:min-h-[42px] px-3.5 sm:px-6 rounded-lg sm:rounded-xl bg-white text-primary font-bold text-[10.5px] min-[360px]:text-[11px] sm:text-xs uppercase tracking-wider shadow-md hover:bg-[#faf8f5] active:scale-95 transition-all cursor-pointer">
                       Shop Ready Decor
                     </button>
-                    <button type="button" onclick="window.navigateTo('catalog', 'all')" class="min-h-[36px] sm:min-h-[42px] px-3.5 sm:px-5 rounded-lg sm:rounded-xl border border-white/40 hover:border-white bg-black/30 backdrop-blur-xs text-white font-bold text-[11px] sm:text-xs uppercase tracking-wider active:scale-95 transition-all cursor-pointer">
+                    <button type="button" onclick="window.navigateTo('catalog', 'all')" class="min-h-[34px] sm:min-h-[42px] px-3 sm:px-5 rounded-lg sm:rounded-xl border border-white/40 hover:border-white bg-black/30 backdrop-blur-xs text-white font-bold text-[10.5px] min-[360px]:text-[11px] sm:text-xs uppercase tracking-wider active:scale-95 transition-all cursor-pointer">
                       View Full Catalog
                     </button>
                   </div>

@@ -1615,6 +1615,19 @@ ascii-art {
   overflow: hidden;
 }
 
+@media (max-width: 639.98px) {
+  .atelier-hero-carousel-container {
+    aspect-ratio: 1 / 1;
+  }
+  .atelier-carousel-track {
+    height: 100%;
+  }
+  .atelier-hero-slide {
+    height: 100%;
+    min-height: 0;
+  }
+}
+
 .atelier-carousel-track {
   display: flex;
   transition: transform 0.65s cubic-bezier(0.16, 1, 0.3, 1);
