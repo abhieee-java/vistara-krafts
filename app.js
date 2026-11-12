@@ -2519,6 +2519,23 @@ ${avgRating ? `
           </h1>
         </div>
 
+        <!-- Bespoke Keepsake Callout Banner in Catalog -->
+        <div class="p-3.5 sm:p-4 rounded-2xl bg-gradient-to-r from-[#fcf7ee] via-[#f7eedf] to-[#f4e6d0] border border-[#e8d8b8] flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-2xs">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl bg-white border border-[#e8d8b8] flex items-center justify-center text-[#9e3322] shrink-0 shadow-2xs">
+              <span class="material-symbols-outlined text-xl" aria-hidden="true">local_florist</span>
+            </div>
+            <div>
+              <p class="text-xs sm:text-sm font-bold text-primary">Preserve Your Own Bridal Flowers in Crystal Epoxy</p>
+              <p class="text-[11px] text-on-surface-variant">Free insured doorstep pickup across India • Handcrafted 21-day cryo-cure atelier block.</p>
+            </div>
+          </div>
+          <button type="button" onclick="window.navigateTo('custom-studio')" class="min-h-[40px] px-4 py-2 rounded-xl bg-primary text-white text-xs font-bold shrink-0 hover:bg-[#101d33] transition-colors flex items-center gap-1.5 shadow-2xs cursor-pointer self-start sm:self-auto">
+            <span>Customize Keepsake</span>
+            <span class="material-symbols-outlined text-sm text-[#ffd79b]" aria-hidden="true">arrow_forward</span>
+          </button>
+        </div>
+
         <!-- 3. Search Bar -->
         <div class="md:sticky md:top-[93px] z-30 bg-surface/95 backdrop-blur-md py-1 flex flex-col gap-2 w-full min-w-0">
           <div class="relative w-full min-w-0">
@@ -3526,6 +3543,10 @@ ${avgRating ? `
     const recommendedProdId = AppState.calcSystem === '2:1' ? 'vk-cat-res-201' : (AppState.calcSystem === '1:1' ? 'vk-cat-res-201' : 'vk-cat-res-301');
     const recommendedProd = Store.getProductById(recommendedProdId);
 
+    const isWeddingPreset = b.shape === '12" Royal Heirloom Block' && b.metallic === '24K Gold Leaf + Champagne Rim' && b.ledBase && (!b.secondaryKeepsake || b.secondaryKeepsake.startsWith('None'));
+    const isMinimalPreset = b.shape === '8" Romantic Cube' && b.metallic === 'Pure Crystal Clear (Zero Flakes)' && !b.ledBase && (!b.secondaryKeepsake || b.secondaryKeepsake.startsWith('None'));
+    const isGrandPreset = b.shape === '14" Mughal Arch Block' && b.metallic === 'Rose-Gold Foil + Crushed Quartz' && b.secondaryKeepsake === 'Matching Resin Ring Platter';
+
     return `
       <div class="route-view-enter flex flex-col w-full max-w-7xl mx-auto px-4 sm:px-8 py-6 gap-6">
         <!-- Back Navigation Button -->
@@ -3537,222 +3558,410 @@ ${avgRating ? `
         </div>
 
         <!-- Studio Header -->
-        <div class="flex flex-col gap-1">
-          <span class="font-label-sm text-xs uppercase tracking-widest text-[#9e3322] font-bold">Custom Studio &amp; Resin Lab</span>
+        <div class="flex flex-col gap-1.5">
+          <div class="flex items-center gap-2 flex-wrap">
+            <span class="font-label-sm text-xs uppercase tracking-widest text-[#9e3322] font-bold">Bespoke Floral Preservation Atelier</span>
+            <span class="text-on-surface-variant/40 hidden sm:inline">•</span>
+            <span class="text-xs font-semibold text-[#266b4e] flex items-center gap-1">
+              <span class="w-1.5 h-1.5 rounded-full bg-[#266b4e] animate-pulse"></span>
+              <span>Accepting Bookings for 2026/2027 Weddings</span>
+            </span>
+          </div>
           <h1 class="font-headline-lg text-2xl sm:text-4xl text-primary font-bold">Custom Memory Preservation &amp; Pour Calculator</h1>
-          <p class="text-xs sm:text-sm text-on-surface-variant">Design your one-of-a-kind wedding/anniversary floral block OR calculate exact resin ratios for your own DIY moulds.</p>
+          <p class="text-xs sm:text-sm text-on-surface-variant max-w-3xl leading-relaxed">
+            Turn your fresh bridal varmala, anniversary flowers, or precious memories into an optical 85D diamond crystal resin keepsake. Handcrafted in our Guwahati atelier with complimentary insured doorstep pickup across India.
+          </p>
         </div>
 
-        <!-- Part A: Interactive 7-Step Custom Keepsake Configurator -->
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-          <div class="lg:col-span-7 ram-card p-5 sm:p-6 flex flex-col gap-6 bg-white">
-            <div class="flex flex-wrap items-center justify-between gap-2 border-b border-surface-container pb-3">
+        <!-- 4-Step Process & Trust Ribbon -->
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-3 p-3.5 sm:p-4 rounded-2xl bg-white border border-[#e4e0d8] shadow-2xs">
+          <div class="flex items-start gap-2.5">
+            <span class="w-7 h-7 rounded-full bg-[#fdf6f3] text-[#9e3322] border border-[#9e3322]/20 text-xs font-bold flex items-center justify-center shrink-0">1</span>
+            <div>
+              <p class="text-xs font-bold text-primary">1. Configure Online</p>
+              <p class="text-[11px] text-on-surface-variant">Pick shape, occasion &amp; custom inscription.</p>
+            </div>
+          </div>
+          <div class="flex items-start gap-2.5">
+            <span class="w-7 h-7 rounded-full bg-[#fbf6ee] text-[#855d14] border border-[#855d14]/20 text-xs font-bold flex items-center justify-center shrink-0">2</span>
+            <div>
+              <p class="text-xs font-bold text-primary">2. Free Doorstep Pickup</p>
+              <p class="text-[11px] text-on-surface-variant">Insulated priority courier collects fresh flowers.</p>
+            </div>
+          </div>
+          <div class="flex items-start gap-2.5">
+            <span class="w-7 h-7 rounded-full bg-[#f0f7f3] text-[#266b4e] border border-[#266b4e]/20 text-xs font-bold flex items-center justify-center shrink-0">3</span>
+            <div>
+              <p class="text-xs font-bold text-primary">3. 21-Day Cryo-Cure</p>
+              <p class="text-[11px] text-on-surface-variant">Zero moisture dehydration &amp; WhatsApp 3D preview.</p>
+            </div>
+          </div>
+          <div class="flex items-start gap-2.5">
+            <span class="w-7 h-7 rounded-full bg-[#f5f0ff] text-[#6b21a8] border border-[#6b21a8]/20 text-xs font-bold flex items-center justify-center shrink-0">4</span>
+            <div>
+              <p class="text-xs font-bold text-primary">4. Lifetime Diamond Cast</p>
+              <p class="text-[11px] text-on-surface-variant">Delivered in velvet heirloom gift box.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Curated 1-Click Packages (No Confusion, Instant Start) -->
+        <div class="p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-[#fbf8f4] via-[#f7f2ea] to-[#f4ede2] border border-[#e8d8b8] flex flex-col gap-3 shadow-2xs">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1 border-b border-[#e4d6be]/70 pb-2">
+            <div class="flex items-center gap-2">
+              <span class="material-symbols-outlined text-base text-[#b08d57]" aria-hidden="true">auto_awesome</span>
+              <h2 class="text-xs sm:text-sm font-bold text-primary uppercase tracking-wider">Curated Quick Packages (Instant 1-Click Setup)</h2>
+            </div>
+            <span class="text-[11px] text-on-surface-variant">Tap any package to auto-fill all options, or customize step-by-step below.</span>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <!-- Package 1: The Wedding Varmala Signature (Most Popular) -->
+            <button type="button" onclick="window.applyCustomPreset('wedding')" class="p-3.5 rounded-xl border text-left transition-all cursor-pointer relative flex flex-col justify-between gap-2.5 ${isWeddingPreset ? 'bg-primary text-white border-primary shadow-sm ring-2 ring-[#ffd79b]' : 'bg-white text-primary border-[#e4e0d8] hover:border-secondary'}">
+              <div class="flex items-center justify-between gap-2">
+                <span class="text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full ${isWeddingPreset ? 'bg-[#ffd79b] text-primary' : 'bg-[#ffe4de] text-[#9e3322]'}">
+                  ⭐ Most Popular
+                </span>
+                ${isWeddingPreset ? '<span class="inline-flex items-center gap-1 text-[10px] font-bold text-[#ffd79b]"><span class="material-symbols-outlined text-xs" aria-hidden="true">check_circle</span>Active</span>' : ''}
+              </div>
               <div>
-                <h2 class="font-headline-sm text-xl text-primary font-bold">1. Configure Your Custom Resin Keepsake</h2>
-                <p class="text-xs text-on-surface-variant mt-0.5">Every keepsake is individually hand-cast with museum-grade UV400 optical epoxy.</p>
+                <p class="text-xs sm:text-sm font-bold leading-snug">The Classic Wedding Varmala</p>
+                <p class="text-[11px] ${isWeddingPreset ? 'text-white/80' : 'text-on-surface-variant'} mt-0.5">12" Heirloom Block • Free Pickup • 24K Gold Leaf • Teak LED Base</p>
               </div>
-              <span class="px-2.5 py-1 rounded-full bg-[#ffe4de] text-[#9e3322] text-xs font-bold whitespace-nowrap shrink-0">Doorstep Flower Pickup</span>
-            </div>
+              <div class="flex items-baseline justify-between pt-1 border-t ${isWeddingPreset ? 'border-white/20' : 'border-[#f0ede6]'}">
+                <span class="font-spec-numeral text-sm font-bold ${isWeddingPreset ? 'text-[#ffd79b]' : 'text-secondary'}">₹5,348</span>
+                <span class="text-[10px] ${isWeddingPreset ? 'text-white/70' : 'text-gray-400'}">All-Inclusive</span>
+              </div>
+            </button>
 
-            <!-- Step 1: Vessel Architecture -->
-            <div>
-              <div class="flex items-center justify-between mb-2">
-                <span class="text-xs font-bold text-primary uppercase tracking-wider">Step 1: Choose Keepsake Geometry</span>
-                <span class="text-[11px] text-on-surface-variant font-medium">50mm optical depth</span>
+            <!-- Package 2: Petite Romance Cube -->
+            <button type="button" onclick="window.applyCustomPreset('minimal')" class="p-3.5 rounded-xl border text-left transition-all cursor-pointer relative flex flex-col justify-between gap-2.5 ${isMinimalPreset ? 'bg-primary text-white border-primary shadow-sm ring-2 ring-[#ffd79b]' : 'bg-white text-primary border-[#e4e0d8] hover:border-secondary'}">
+              <div class="flex items-center justify-between gap-2">
+                <span class="text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full ${isMinimalPreset ? 'bg-[#ffd79b] text-primary' : 'bg-surface-container text-secondary'}">
+                  Essential
+                </span>
+                ${isMinimalPreset ? '<span class="inline-flex items-center gap-1 text-[10px] font-bold text-[#ffd79b]"><span class="material-symbols-outlined text-xs" aria-hidden="true">check_circle</span>Active</span>' : ''}
               </div>
-              <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
-                ${[
-                  { label: '8" Romantic Cube', price: 2999, desc: '8–12 Roses • 50mm deep' },
-                  { label: '10" Royal Hexagon Frame', price: 3899, desc: 'Half Garland • 45mm deep' },
-                  { label: '12" Royal Heirloom Block', price: 4499, desc: 'Full Varmala • 50mm deep' },
-                  { label: '14" Mughal Arch Block', price: 5299, desc: 'Jaimala + Wedding Invite' },
-                  { label: '16" Gallery Mantel Frame', price: 6999, desc: 'Dual Garlands + 2 Coasters' }
-                ].map(item => `
-                  <button type="button" onclick="window.updateCustomBuilder('shape', '${esc(item.label)}', ${item.price})" class="p-3 rounded-xl border text-left transition-all cursor-pointer ${b.shape === item.label ? 'bg-primary text-white border-primary shadow-sm' : 'bg-surface-container-low text-primary border-[#e4e0d8]'}">
-                    <p class="text-xs font-bold">${esc(item.label)}</p>
-                    <p class="text-[11px] ${b.shape === item.label ? 'text-white/85' : 'text-on-surface-variant'} mt-0.5">${esc(item.desc)}</p>
-                    <p class="font-spec-numeral text-sm font-bold mt-1.5 ${b.shape === item.label ? 'text-[#ffd79b]' : 'text-secondary'}">${formatINR(item.price)}</p>
-                  </button>
-                `).join('')}
+              <div>
+                <p class="text-xs sm:text-sm font-bold leading-snug">The Petite Romance Cube</p>
+                <p class="text-[11px] ${isMinimalPreset ? 'text-white/80' : 'text-on-surface-variant'} mt-0.5">8" Cube • Free Pickup • Pure Crystal Clear • 8–12 Roses</p>
               </div>
-            </div>
+              <div class="flex items-baseline justify-between pt-1 border-t ${isMinimalPreset ? 'border-white/20' : 'border-[#f0ede6]'}">
+                <span class="font-spec-numeral text-sm font-bold ${isMinimalPreset ? 'text-[#ffd79b]' : 'text-secondary'}">₹2,999</span>
+                <span class="text-[10px] ${isMinimalPreset ? 'text-white/70' : 'text-gray-400'}">All-Inclusive</span>
+              </div>
+            </button>
 
-            <!-- Step 2: Memory Occasion -->
-            <div>
-              <span class="text-xs font-bold text-primary uppercase tracking-wider block mb-2">Step 2: What Memory Are You Preserving?</span>
-              <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
-                ${[
-                  { label: 'Wedding Varmala & Jaimala', icon: 'local_florist', badge: 'Most Popular' },
-                  { label: 'Anniversary Milestone', icon: 'celebration', badge: 'Timeless' },
-                  { label: 'Memorial Tribute', icon: 'favorite', badge: 'Eternal' },
-                  { label: 'Special Celebration', icon: 'card_giftcard', badge: 'Cherished' }
-                ].map(occ => `
-                  <button type="button" onclick="window.updateCustomBuilderOccasion('${esc(occ.label)}')" class="p-3 rounded-xl border text-left transition-all cursor-pointer flex flex-col justify-between min-h-[82px] ${(b.occasion || 'Wedding Varmala & Jaimala') === occ.label ? 'border-primary bg-primary text-white shadow-xs' : 'border-[#e4e0d8] bg-surface-container-low text-primary hover:border-secondary'}">
-                    <div class="flex items-center justify-between w-full">
-                      <span class="material-symbols-outlined text-lg ${(b.occasion || 'Wedding Varmala & Jaimala') === occ.label ? 'text-[#ffd79b]' : 'text-secondary'}" aria-hidden="true">${occ.icon}</span>
-                      <span class="text-[9px] font-bold uppercase px-1.5 py-0.5 rounded ${(b.occasion || 'Wedding Varmala & Jaimala') === occ.label ? 'bg-white/20 text-white' : 'bg-white text-secondary'}">${occ.badge}</span>
-                    </div>
-                    <p class="text-[11px] font-bold mt-1 leading-snug">${esc(occ.label)}</p>
-                  </button>
-                `).join('')}
+            <!-- Package 3: Royal Arch & Platter Suite -->
+            <button type="button" onclick="window.applyCustomPreset('grand')" class="p-3.5 rounded-xl border text-left transition-all cursor-pointer relative flex flex-col justify-between gap-2.5 ${isGrandPreset ? 'bg-primary text-white border-primary shadow-sm ring-2 ring-[#ffd79b]' : 'bg-white text-primary border-[#e4e0d8] hover:border-secondary'}">
+              <div class="flex items-center justify-between gap-2">
+                <span class="text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full ${isGrandPreset ? 'bg-[#ffd79b] text-primary' : 'bg-[#e8def8] text-[#4a2574]'}">
+                  Grand Suite
+                </span>
+                ${isGrandPreset ? '<span class="inline-flex items-center gap-1 text-[10px] font-bold text-[#ffd79b]"><span class="material-symbols-outlined text-xs" aria-hidden="true">check_circle</span>Active</span>' : ''}
               </div>
-            </div>
+              <div>
+                <p class="text-xs sm:text-sm font-bold leading-snug">The Royal Arch &amp; Platter Suite</p>
+                <p class="text-[11px] ${isGrandPreset ? 'text-white/80' : 'text-on-surface-variant'} mt-0.5">14" Mughal Arch • Rose-Gold Quartz • Matching Ring Platter • Teak LED</p>
+              </div>
+              <div class="flex items-baseline justify-between pt-1 border-t ${isGrandPreset ? 'border-white/20' : 'border-[#f0ede6]'}">
+                <span class="font-spec-numeral text-sm font-bold ${isGrandPreset ? 'text-[#ffd79b]' : 'text-secondary'}">₹7,147</span>
+                <span class="text-[10px] ${isGrandPreset ? 'text-white/70' : 'text-gray-400'}">All-Inclusive</span>
+              </div>
+            </button>
+          </div>
+        </div>
 
-            <!-- Step 3: Flower / Memory Source -->
-            <div>
-              <span class="text-xs font-bold text-primary uppercase tracking-wider block mb-2">Step 3: How Will Your Flowers Reach Our Studio?</span>
-              <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-                ${[
-                  { label: 'Fresh Wedding Varmala (Free Doorstep Pickup)', addon: 0 },
-                  { label: 'Studio Pre-Sourced Ecuadorian Roses & Orchids', addon: 650 }
-                ].map(src => `
-                  <button type="button" onclick="window.updateCustomBuilder('flowerSource', '${esc(src.label)}', ${src.addon})" class="p-3 rounded-xl border text-left transition-all cursor-pointer ${b.flowerSource === src.label ? 'border-[#9e3322] bg-[#ffe4de]/40 ring-1 ring-[#9e3322]' : 'border-[#e4e0d8] bg-white'}">
-                    <p class="text-xs font-bold text-primary">${esc(src.label)}</p>
-                    <p class="font-spec-numeral text-[11px] text-secondary font-semibold mt-1">${src.addon === 0 ? 'Complimentary Insured Courier Kit' : '+ ' + formatINR(src.addon)}</p>
-                  </button>
-                `).join('')}
-              </div>
-            </div>
+        <!-- Stage Anchor Jump Navigation -->
+        <div class="flex items-center gap-2 overflow-x-auto no-scrollbar py-1">
+          <span class="text-[11px] font-bold uppercase tracking-wider text-secondary shrink-0">Configure Steps:</span>
+          <button type="button" onclick="document.getElementById('studio-stage-1')?.scrollIntoView({ behavior: 'smooth' })" class="px-3.5 py-1.5 rounded-full bg-white border border-[#e4e0d8] hover:border-primary text-primary text-xs font-semibold shrink-0 cursor-pointer shadow-2xs transition-all flex items-center gap-1.5">
+            <span class="w-4 h-4 rounded-full bg-primary text-white text-[10px] font-bold flex items-center justify-center">1</span>
+            <span>Shape &amp; Occasion</span>
+          </button>
+          <button type="button" onclick="document.getElementById('studio-stage-2')?.scrollIntoView({ behavior: 'smooth' })" class="px-3.5 py-1.5 rounded-full bg-white border border-[#e4e0d8] hover:border-primary text-primary text-xs font-semibold shrink-0 cursor-pointer shadow-2xs transition-all flex items-center gap-1.5">
+            <span class="w-4 h-4 rounded-full bg-primary text-white text-[10px] font-bold flex items-center justify-center">2</span>
+            <span>Flowers &amp; Accents</span>
+          </button>
+          <button type="button" onclick="document.getElementById('studio-stage-3')?.scrollIntoView({ behavior: 'smooth' })" class="px-3.5 py-1.5 rounded-full bg-white border border-[#e4e0d8] hover:border-primary text-primary text-xs font-semibold shrink-0 cursor-pointer shadow-2xs transition-all flex items-center gap-1.5">
+            <span class="w-4 h-4 rounded-full bg-primary text-white text-[10px] font-bold flex items-center justify-center">3</span>
+            <span>Names &amp; Pickup</span>
+          </button>
+        </div>
 
-            <!-- Step 4: Real Floral Reference Photo Upload -->
-            <div>
-              <div class="flex items-center justify-between mb-2">
-                <span class="text-xs font-bold text-primary uppercase tracking-wider">Step 4: Attach Flower Photo (Optional Reference)</span>
-                <span class="text-[11px] text-[#266b4e] font-semibold">JPG, PNG, WebP up to 15MB</span>
-              </div>
-              <input id="custom-flower-photo-input" type="file" accept="image/*" class="sr-only" onchange="window.handleCustomFlowerPhotoUpload(event)">
-              
-              ${b.photoUrl ? `
-                <div class="p-3.5 rounded-xl border-2 border-emerald-500/40 bg-emerald-50/30 flex items-center justify-between gap-3 shadow-2xs">
-                  <div class="flex items-center gap-3 min-w-0">
-                    <img src="${esc(b.photoUrl)}" alt="Uploaded Flower Reference" class="w-14 h-14 rounded-lg object-cover border border-emerald-300 shrink-0">
-                    <div class="min-w-0">
-                      <div class="flex items-center gap-1.5">
-                        <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[10px] font-bold">
-                          <span class="material-symbols-outlined text-xs" aria-hidden="true">check_circle</span>
-                          <span>Photo Attached</span>
-                        </span>
-                        <span class="text-[11px] text-gray-500 font-mono">${b.photoSizeKb ? b.photoSizeKb + ' KB' : ''}</span>
-                      </div>
-                      <p class="text-xs font-semibold text-primary truncate mt-0.5">${esc(b.photoName || 'flower_reference.jpg')}</p>
-                      <p class="text-[10px] text-on-surface-variant">Our master artisan will review this photo before commencing the 21-day cryo-cure.</p>
-                    </div>
-                  </div>
-                  <div class="flex items-center gap-2 shrink-0">
-                    <label for="custom-flower-photo-input" class="px-3 py-1.5 rounded-lg border border-[#e4e0d8] bg-white text-xs font-semibold text-primary hover:bg-surface-container cursor-pointer transition-colors">
-                      Change
-                    </label>
-                    <button type="button" onclick="window.removeCustomFlowerPhoto()" class="p-1.5 rounded-lg text-red-600 hover:bg-red-50 cursor-pointer transition-colors" title="Remove photo">
-                      <span class="material-symbols-outlined text-lg" aria-hidden="true">delete</span>
-                    </button>
+        <!-- Part A: Interactive Custom Keepsake Configurator Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+          <!-- Left Column: 3 Grouped Stage Cards (col-span-7) -->
+          <div class="lg:col-span-7 flex flex-col gap-6">
+
+            <!-- Card 1: Stage 1 — Keepsake Shape & Occasion -->
+            <div id="studio-stage-1" class="ram-card p-5 sm:p-6 flex flex-col gap-5 bg-white">
+              <div class="flex flex-wrap items-center justify-between gap-2 border-b border-surface-container pb-3">
+                <div class="flex items-center gap-2">
+                  <span class="w-6 h-6 rounded-full bg-primary text-white text-xs font-bold flex items-center justify-center shrink-0">1</span>
+                  <div>
+                    <h2 class="font-headline-sm text-lg sm:text-xl text-primary font-bold">Keepsake Shape &amp; Memory Occasion</h2>
+                    <p class="text-xs text-on-surface-variant">Select your optical resin vessel architecture and memory type.</p>
                   </div>
                 </div>
-              ` : `
-                <label for="custom-flower-photo-input" class="atelier-dropzone flex flex-col items-center justify-center p-6 rounded-2xl border-2 border-dashed border-[#e4e0d8] hover:border-[#b08d57] bg-[#faf8f5] hover:bg-[#fdf6f3] cursor-pointer transition-all text-center group">
-                  <div class="w-12 h-12 rounded-full bg-white shadow-xs border border-[#e4e0d8] flex items-center justify-center text-secondary group-hover:scale-105 transition-transform mb-2">
-                    <span class="material-symbols-outlined text-2xl" aria-hidden="true">add_photo_alternate</span>
-                  </div>
-                  <p class="text-xs font-bold text-primary">Click to upload photo of your garland or bouquet</p>
-                  <p class="text-[11px] text-on-surface-variant mt-0.5">Helps our studio verify flower volume, petal colors, and mold cavity depth.</p>
-                </label>
-              `}
-            </div>
-
-            <!-- Step 5: Metallic & Pigment Accents -->
-            <div>
-              <span class="text-xs font-bold text-primary uppercase tracking-wider block mb-2">Step 5: Select Luxury Inclusions</span>
-              <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
-                ${[
-                  { label: 'Pure Crystal Clear (Zero Flakes)', addon: 0 },
-                  { label: '24K Gold Leaf + Champagne Rim', addon: 350 },
-                  { label: 'Rose-Gold Foil + Crushed Quartz', addon: 450 }
-                ].map(inc => `
-                  <button type="button" onclick="window.updateCustomBuilder('metallic', '${esc(inc.label)}', ${inc.addon})" class="p-3 rounded-xl border text-left transition-all cursor-pointer ${b.metallic === inc.label ? 'border-secondary bg-secondary-container/30 font-bold' : 'border-[#e4e0d8] bg-white'}">
-                    <p class="text-xs text-primary">${esc(inc.label)}</p>
-                    <p class="font-spec-numeral text-[11px] text-secondary mt-1">${inc.addon === 0 ? 'Included' : '+ ' + formatINR(inc.addon)}</p>
-                  </button>
-                `).join('')}
+                <span class="px-2.5 py-1 rounded-full bg-[#ffe4de] text-[#9e3322] text-xs font-bold whitespace-nowrap shrink-0">50mm Optical Depth</span>
               </div>
-            </div>
 
-            <!-- Step 6: Complementary Keepsake Add-ons (Spare Petals) -->
-            <div>
-              <span class="text-xs font-bold text-primary uppercase tracking-wider block mb-2">Step 6: Complementary Spare-Petal Add-Ons</span>
-              <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
-                ${[
-                  { label: 'None (Main Keepsake Only)', addon: 0 },
-                  { label: 'Matching Resin Ring Platter', addon: 899 },
-                  { label: '2x Preserved Petal Bookmarks', addon: 599 }
-                ].map(sec => `
-                  <button type="button" onclick="window.updateCustomBuilder('secondaryKeepsake', '${esc(sec.label)}', ${sec.addon})" class="p-3 rounded-xl border text-left transition-all cursor-pointer ${b.secondaryKeepsake === sec.label ? 'border-primary bg-surface-container-high font-bold' : 'border-[#e4e0d8] bg-white'}">
-                    <p class="text-xs text-primary">${esc(sec.label)}</p>
-                    <p class="font-spec-numeral text-[11px] text-secondary mt-1">${sec.addon === 0 ? 'No extra charge' : '+ ' + formatINR(sec.addon)}</p>
-                  </button>
-                `).join('')}
-              </div>
-            </div>
-
-            <!-- Step 7: Calligraphy Style, Custom Names, Schedule & LED Base -->
-            <div class="space-y-3 pt-2 border-t border-surface-container">
+              <!-- Step 1: Vessel Architecture -->
               <div>
-                <span class="text-xs font-bold text-primary uppercase tracking-wider block mb-2">Step 7: Personalization &amp; Calligraphy</span>
-                <div class="grid grid-cols-3 gap-2 mb-3">
+                <div class="flex items-center justify-between mb-2">
+                  <span class="text-xs font-bold text-primary uppercase tracking-wider">Step 1: Choose Keepsake Geometry</span>
+                  <span class="text-[11px] text-[#266b4e] font-semibold">Hand-polished 85D Mirror Glass</span>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
                   ${[
-                    { id: 'Royal Italic Serif', label: 'Royal Italic Serif', sample: 'Aarav & Meera', fontClass: 'font-serif italic' },
-                    { id: 'Modern Minimalist Grotesk', label: 'Modern Minimalist', sample: 'AARAV & MEERA', fontClass: 'font-sans uppercase tracking-widest text-[10px] font-bold' },
-                    { id: 'Signature Flourish Script', label: 'Signature Flourish', sample: 'Aarav & Meera', fontClass: 'font-serif italic tracking-wide' }
-                  ].map(f => `
-                    <button type="button" onclick="window.updateCustomBuilderFont('${esc(f.id)}')" class="p-2.5 rounded-xl border text-center transition-all cursor-pointer ${(b.fontStyle || 'Royal Italic Serif') === f.id ? 'border-primary bg-primary text-white shadow-2xs' : 'border-[#e4e0d8] bg-surface-container-low text-primary'}">
-                      <p class="text-[10px] font-bold mb-1 opacity-75">${esc(f.label)}</p>
-                      <p class="${f.fontClass} text-xs ${(b.fontStyle || 'Royal Italic Serif') === f.id ? 'text-[#ffd79b]' : 'text-primary'}">${f.sample}</p>
+                    { label: '8" Romantic Cube', price: 2999, desc: '8–12 Roses • 50mm deep', badge: 'Petite' },
+                    { label: '10" Royal Hexagon Frame', price: 3899, desc: 'Half Garland • 45mm deep', badge: 'Ring Tray' },
+                    { label: '12" Royal Heirloom Block', price: 4499, desc: 'Full Varmala • 50mm deep', badge: 'Most Popular' },
+                    { label: '14" Mughal Arch Block', price: 5299, desc: 'Jaimala + Wedding Invite', badge: 'Grand Arch' },
+                    { label: '16" Gallery Mantel Frame', price: 6999, desc: 'Dual Garlands + 2 Coasters', badge: 'Gallery Suite' }
+                  ].map(item => `
+                    <button type="button" onclick="window.updateCustomBuilder('shape', '${esc(item.label)}', ${item.price})" class="p-3.5 rounded-xl border text-left transition-all cursor-pointer relative flex flex-col justify-between ${b.shape === item.label ? 'bg-primary text-white border-primary shadow-sm' : 'bg-surface-container-low text-primary border-[#e4e0d8] hover:border-secondary'}">
+                      <div>
+                        <div class="flex items-center justify-between gap-1 mb-1">
+                          <p class="text-xs font-bold">${esc(item.label)}</p>
+                          <span class="text-[9px] font-bold px-1.5 py-0.5 rounded ${b.shape === item.label ? 'bg-white/20 text-[#ffd79b]' : 'bg-white text-secondary'}">${esc(item.badge)}</span>
+                        </div>
+                        <p class="text-[11px] ${b.shape === item.label ? 'text-white/85' : 'text-on-surface-variant'} mt-0.5 leading-snug">${esc(item.desc)}</p>
+                      </div>
+                      <p class="font-spec-numeral text-sm font-bold mt-2 ${b.shape === item.label ? 'text-[#ffd79b]' : 'text-secondary'}">${formatINR(item.price)}</p>
                     </button>
                   `).join('')}
                 </div>
               </div>
 
-              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <div>
-                  <label class="text-xs font-bold text-primary block mb-1" for="custom-engraving-input">Custom Names / Date Engraving</label>
-                  <input id="custom-engraving-input" type="text" value="${esc(b.engraving)}" oninput="window.updateCustomBuilderText(this.value)" placeholder="e.g. Aarav & Meera • 12.10.2026" class="w-full h-12 px-3 rounded-lg bg-surface-container-low border border-[#e4e0d8] text-xs text-primary font-medium">
+              <!-- Step 2: Memory Occasion -->
+              <div>
+                <span class="text-xs font-bold text-primary uppercase tracking-wider block mb-2">Step 2: What Memory Are You Preserving?</span>
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+                  ${[
+                    { label: 'Wedding Varmala & Jaimala', icon: 'local_florist', badge: 'Most Popular' },
+                    { label: 'Anniversary Milestone', icon: 'celebration', badge: 'Timeless' },
+                    { label: 'Memorial Tribute', icon: 'favorite', badge: 'Eternal' },
+                    { label: 'Special Celebration', icon: 'card_giftcard', badge: 'Cherished' }
+                  ].map(occ => `
+                    <button type="button" onclick="window.updateCustomBuilderOccasion('${esc(occ.label)}')" class="p-3 rounded-xl border text-left transition-all cursor-pointer flex flex-col justify-between min-h-[82px] ${(b.occasion || 'Wedding Varmala & Jaimala') === occ.label ? 'border-primary bg-primary text-white shadow-xs' : 'border-[#e4e0d8] bg-surface-container-low text-primary hover:border-secondary'}">
+                      <div class="flex items-center justify-between w-full">
+                        <span class="material-symbols-outlined text-lg ${(b.occasion || 'Wedding Varmala & Jaimala') === occ.label ? 'text-[#ffd79b]' : 'text-secondary'}" aria-hidden="true">${occ.icon}</span>
+                        <span class="text-[9px] font-bold uppercase px-1.5 py-0.5 rounded ${(b.occasion || 'Wedding Varmala & Jaimala') === occ.label ? 'bg-white/20 text-white' : 'bg-white text-secondary'}">${occ.badge}</span>
+                      </div>
+                      <p class="text-[11px] font-bold mt-1 leading-snug">${esc(occ.label)}</p>
+                    </button>
+                  `).join('')}
                 </div>
-                <div>
-                  <label class="text-xs font-bold text-primary block mb-1" for="custom-event-date">Wedding / Event Date</label>
-                  <input id="custom-event-date" type="date" value="${esc(b.eventDate || '2026-11-18')}" onchange="window.updateCustomBuilderSchedule('eventDate', this.value)" class="w-full h-12 px-3 rounded-lg bg-surface-container-low border border-[#e4e0d8] font-spec-numeral text-xs text-primary font-medium">
+              </div>
+
+              <div class="flex justify-end pt-2 border-t border-[#f0ede6]">
+                <button type="button" onclick="document.getElementById('studio-stage-2')?.scrollIntoView({ behavior: 'smooth' })" class="px-4 py-2 rounded-xl bg-surface-container hover:bg-surface-container-high text-primary text-xs font-bold inline-flex items-center gap-1.5 transition-colors cursor-pointer">
+                  <span>Continue to Flowers &amp; Accents</span>
+                  <span class="material-symbols-outlined text-sm" aria-hidden="true">arrow_downward</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Card 2: Stage 2 — Flower Logistics & Luxury Inclusions -->
+            <div id="studio-stage-2" class="ram-card p-5 sm:p-6 flex flex-col gap-5 bg-white">
+              <div class="flex flex-wrap items-center justify-between gap-2 border-b border-surface-container pb-3">
+                <div class="flex items-center gap-2">
+                  <span class="w-6 h-6 rounded-full bg-primary text-white text-xs font-bold flex items-center justify-center shrink-0">2</span>
+                  <div>
+                    <h2 class="font-headline-sm text-lg sm:text-xl text-primary font-bold">Flower Logistics &amp; Luxury Inclusions</h2>
+                    <p class="text-xs text-on-surface-variant">How we receive your petals and embellish your crystal block.</p>
+                  </div>
                 </div>
-                <div>
-                  <label class="text-xs font-bold text-primary block mb-1" for="custom-pickup-slot">Doorstep Pickup Window</label>
-                  <select id="custom-pickup-slot" onchange="window.updateCustomBuilderSchedule('pickupSlot', this.value)" class="w-full h-12 px-3 rounded-lg bg-surface-container-low border border-[#e4e0d8] text-xs font-semibold text-primary">
-                    <option value="Morning Slot (9:00 AM – 1:00 PM)" ${b.pickupSlot === 'Morning Slot (9:00 AM – 1:00 PM)' ? 'selected' : ''}>Morning Slot (9:00 AM – 1:00 PM)</option>
-                    <option value="Afternoon Slot (2:00 PM – 6:00 PM)" ${b.pickupSlot === 'Afternoon Slot (2:00 PM – 6:00 PM)' ? 'selected' : ''}>Afternoon Slot (2:00 PM – 6:00 PM)</option>
-                    <option value="Self-Ship via Air Courier (Reimbursed)" ${b.pickupSlot === 'Self-Ship via Air Courier (Reimbursed)' ? 'selected' : ''}>Self-Ship via Air Courier (Reimbursed)</option>
-                  </select>
+                <span class="px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200 text-xs font-bold whitespace-nowrap shrink-0">Free Air Courier Kit</span>
+              </div>
+
+              <!-- Step 3: Flower / Memory Source -->
+              <div>
+                <span class="text-xs font-bold text-primary uppercase tracking-wider block mb-2">Step 3: How Will Your Flowers Reach Our Studio?</span>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                  ${[
+                    { label: 'Fresh Wedding Varmala (Free Doorstep Pickup)', addon: 0, sub: 'We send an insulated BlueDart airbox to your doorstep across India' },
+                    { label: 'Studio Pre-Sourced Ecuadorian Roses & Orchids', addon: 650, sub: 'Studio provides fresh exotic blooms if you do not have your own flowers' }
+                  ].map(src => `
+                    <button type="button" onclick="window.updateCustomBuilder('flowerSource', '${esc(src.label)}', ${src.addon})" class="p-3.5 rounded-xl border text-left transition-all cursor-pointer ${b.flowerSource === src.label ? 'border-[#9e3322] bg-[#ffe4de]/40 ring-1 ring-[#9e3322]' : 'border-[#e4e0d8] bg-white hover:border-secondary'}">
+                      <p class="text-xs font-bold text-primary">${esc(src.label)}</p>
+                      <p class="text-[11px] text-on-surface-variant mt-0.5 leading-snug">${esc(src.sub)}</p>
+                      <p class="font-spec-numeral text-[11px] text-secondary font-semibold mt-1.5">${src.addon === 0 ? '✓ Complimentary Insured Courier Kit' : '+ ' + formatINR(src.addon)}</p>
+                    </button>
+                  `).join('')}
                 </div>
-                <div class="flex items-end">
-                  <label class="w-full h-12 px-3 rounded-lg bg-surface-container-low border border-[#e4e0d8] flex items-center justify-between gap-2 cursor-pointer hover:bg-surface-container transition-colors">
-                    <span class="text-xs font-semibold text-primary">Warm Teak LED Stand (+₹499)</span>
-                    <input type="checkbox" ${b.ledBase ? 'checked' : ''} onchange="window.updateCustomBuilderLed(this.checked)" class="w-5 h-5 accent-primary shrink-0">
+              </div>
+
+              <!-- Step 4: Real Floral Reference Photo Upload -->
+              <div>
+                <div class="flex items-center justify-between mb-2">
+                  <span class="text-xs font-bold text-primary uppercase tracking-wider">Step 4: Attach Flower Photo (Optional Reference)</span>
+                  <span class="text-[11px] text-[#266b4e] font-semibold">JPG, PNG, WebP up to 15MB</span>
+                </div>
+                <input id="custom-flower-photo-input" type="file" accept="image/*" class="sr-only" onchange="window.handleCustomFlowerPhotoUpload(event)">
+                
+                ${b.photoUrl ? `
+                  <div class="p-3.5 rounded-xl border-2 border-emerald-500/40 bg-emerald-50/30 flex items-center justify-between gap-3 shadow-2xs">
+                    <div class="flex items-center gap-3 min-w-0">
+                      <img src="${esc(b.photoUrl)}" alt="Uploaded Flower Reference" class="w-14 h-14 rounded-lg object-cover border border-emerald-300 shrink-0">
+                      <div class="min-w-0">
+                        <div class="flex items-center gap-1.5">
+                          <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[10px] font-bold">
+                            <span class="material-symbols-outlined text-xs" aria-hidden="true">check_circle</span>
+                            <span>Photo Attached</span>
+                          </span>
+                          <span class="text-[11px] text-gray-500 font-mono">${b.photoSizeKb ? b.photoSizeKb + ' KB' : ''}</span>
+                        </div>
+                        <p class="text-xs font-semibold text-primary truncate mt-0.5">${esc(b.photoName || 'flower_reference.jpg')}</p>
+                        <p class="text-[10px] text-on-surface-variant">Our master artisan will review this photo before commencing the 21-day cryo-cure.</p>
+                      </div>
+                    </div>
+                    <div class="flex items-center gap-2 shrink-0">
+                      <label for="custom-flower-photo-input" class="px-3 py-1.5 rounded-lg border border-[#e4e0d8] bg-white text-xs font-semibold text-primary hover:bg-surface-container cursor-pointer transition-colors">
+                        Change
+                      </label>
+                      <button type="button" onclick="window.removeCustomFlowerPhoto()" class="p-1.5 rounded-lg text-red-600 hover:bg-red-50 cursor-pointer transition-colors" title="Remove photo">
+                        <span class="material-symbols-outlined text-lg" aria-hidden="true">delete</span>
+                      </button>
+                    </div>
+                  </div>
+                ` : `
+                  <label for="custom-flower-photo-input" class="atelier-dropzone flex flex-col items-center justify-center p-6 rounded-2xl border-2 border-dashed border-[#e4e0d8] hover:border-[#b08d57] bg-[#faf8f5] hover:bg-[#fdf6f3] cursor-pointer transition-all text-center group">
+                    <div class="w-12 h-12 rounded-full bg-white shadow-xs border border-[#e4e0d8] flex items-center justify-center text-secondary group-hover:scale-105 transition-transform mb-2">
+                      <span class="material-symbols-outlined text-2xl" aria-hidden="true">add_photo_alternate</span>
+                    </div>
+                    <p class="text-xs font-bold text-primary">Click to upload a phone photo of your flowers (Optional)</p>
+                    <p class="text-[11px] text-on-surface-variant mt-0.5">Don't have photos yet? Book now to reserve your date—our artisan calls you to guide flower packing.</p>
                   </label>
+                `}
+              </div>
+
+              <!-- Step 5: Metallic & Pigment Accents -->
+              <div>
+                <span class="text-xs font-bold text-primary uppercase tracking-wider block mb-2">Step 5: Select Luxury Inclusions</span>
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+                  ${[
+                    { label: 'Pure Crystal Clear (Zero Flakes)', addon: 0, desc: 'Pure minimalist optical clarity' },
+                    { label: '24K Gold Leaf + Champagne Rim', addon: 350, desc: '⭐ Most Popular bridal accent' },
+                    { label: 'Rose-Gold Foil + Crushed Quartz', addon: 450, desc: 'Warm rose tones & crystalline shimmer' }
+                  ].map(inc => `
+                    <button type="button" onclick="window.updateCustomBuilder('metallic', '${esc(inc.label)}', ${inc.addon})" class="p-3.5 rounded-xl border text-left transition-all cursor-pointer flex flex-col justify-between ${b.metallic === inc.label ? 'border-secondary bg-secondary-container/30 font-bold shadow-2xs' : 'border-[#e4e0d8] bg-white hover:border-secondary'}">
+                      <div>
+                        <p class="text-xs text-primary font-bold">${esc(inc.label)}</p>
+                        <p class="text-[11px] text-on-surface-variant mt-0.5 leading-snug">${esc(inc.desc)}</p>
+                      </div>
+                      <p class="font-spec-numeral text-[11px] text-secondary mt-1.5">${inc.addon === 0 ? 'Included' : '+ ' + formatINR(inc.addon)}</p>
+                    </button>
+                  `).join('')}
+                </div>
+              </div>
+
+              <!-- Step 6: Complementary Keepsake Add-ons (Spare Petals) -->
+              <div>
+                <span class="text-xs font-bold text-primary uppercase tracking-wider block mb-2">Step 6: Complementary Spare-Petal Add-Ons</span>
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+                  ${[
+                    { label: 'None (Main Keepsake Only)', addon: 0, desc: 'All flowers used in primary block' },
+                    { label: 'Matching Resin Ring Platter', addon: 899, desc: 'Cast using remaining garland petals' },
+                    { label: '2x Preserved Petal Bookmarks', addon: 599, desc: 'Gold tasselled heirloom keepsakes' }
+                  ].map(sec => `
+                    <button type="button" onclick="window.updateCustomBuilder('secondaryKeepsake', '${esc(sec.label)}', ${sec.addon})" class="p-3.5 rounded-xl border text-left transition-all cursor-pointer flex flex-col justify-between ${b.secondaryKeepsake === sec.label ? 'border-primary bg-surface-container-high font-bold shadow-2xs' : 'border-[#e4e0d8] bg-white hover:border-secondary'}">
+                      <div>
+                        <p class="text-xs text-primary font-bold">${esc(sec.label)}</p>
+                        <p class="text-[11px] text-on-surface-variant mt-0.5 leading-snug">${esc(sec.desc)}</p>
+                      </div>
+                      <p class="font-spec-numeral text-[11px] text-secondary mt-1.5">${sec.addon === 0 ? 'No extra charge' : '+ ' + formatINR(sec.addon)}</p>
+                    </button>
+                  `).join('')}
+                </div>
+              </div>
+
+              <div class="flex justify-end pt-2 border-t border-[#f0ede6]">
+                <button type="button" onclick="document.getElementById('studio-stage-3')?.scrollIntoView({ behavior: 'smooth' })" class="px-4 py-2 rounded-xl bg-surface-container hover:bg-surface-container-high text-primary text-xs font-bold inline-flex items-center gap-1.5 transition-colors cursor-pointer">
+                  <span>Continue to Names &amp; Scheduling</span>
+                  <span class="material-symbols-outlined text-sm" aria-hidden="true">arrow_downward</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Card 3: Stage 3 — Personalization, Scheduling & Add to Bag -->
+            <div id="studio-stage-3" class="ram-card p-5 sm:p-6 flex flex-col gap-5 bg-white">
+              <div class="flex flex-wrap items-center justify-between gap-2 border-b border-surface-container pb-3">
+                <div class="flex items-center gap-2">
+                  <span class="w-6 h-6 rounded-full bg-primary text-white text-xs font-bold flex items-center justify-center shrink-0">3</span>
+                  <div>
+                    <h2 class="font-headline-sm text-lg sm:text-xl text-primary font-bold">Personalization &amp; Doorstep Pickup</h2>
+                    <p class="text-xs text-on-surface-variant">Custom engraving, event scheduling, and optional display pedestal.</p>
+                  </div>
+                </div>
+                <span class="px-2.5 py-1 rounded-full bg-[#fdf6f3] text-[#9e3322] border border-[#9e3322]/20 text-xs font-bold whitespace-nowrap shrink-0">Custom Engraved</span>
+              </div>
+
+              <!-- Step 7: Calligraphy Style, Custom Names, Schedule & LED Base -->
+              <div class="space-y-4">
+                <div>
+                  <span class="text-xs font-bold text-primary uppercase tracking-wider block mb-2">Step 7: Personalization &amp; Calligraphy</span>
+                  <div class="grid grid-cols-3 gap-2 mb-3">
+                    ${[
+                      { id: 'Royal Italic Serif', label: 'Royal Italic Serif', sample: 'Aarav & Meera', fontClass: 'font-serif italic' },
+                      { id: 'Modern Minimalist Grotesk', label: 'Modern Minimalist', sample: 'AARAV & MEERA', fontClass: 'font-sans uppercase tracking-widest text-[10px] font-bold' },
+                      { id: 'Signature Flourish Script', label: 'Signature Flourish', sample: 'Aarav & Meera', fontClass: 'font-serif italic tracking-wide' }
+                    ].map(f => `
+                      <button type="button" onclick="window.updateCustomBuilderFont('${esc(f.id)}')" class="p-2.5 rounded-xl border text-center transition-all cursor-pointer ${(b.fontStyle || 'Royal Italic Serif') === f.id ? 'border-primary bg-primary text-white shadow-2xs' : 'border-[#e4e0d8] bg-surface-container-low text-primary hover:border-secondary'}">
+                        <p class="text-[10px] font-bold mb-1 opacity-75">${esc(f.label)}</p>
+                        <p class="${f.fontClass} text-xs ${(b.fontStyle || 'Royal Italic Serif') === f.id ? 'text-[#ffd79b]' : 'text-primary'}">${f.sample}</p>
+                      </button>
+                    `).join('')}
+                  </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div>
+                    <label class="text-xs font-bold text-primary block mb-1" for="custom-engraving-input">Custom Names / Date Engraving</label>
+                    <input id="custom-engraving-input" type="text" value="${esc(b.engraving)}" oninput="window.updateCustomBuilderText(this.value)" placeholder="e.g. Aarav & Meera • 12.10.2026" class="w-full h-12 px-3 rounded-lg bg-surface-container-low border border-[#e4e0d8] text-xs text-primary font-medium focus:outline-none focus:border-primary">
+                  </div>
+                  <div>
+                    <label class="text-xs font-bold text-primary block mb-1" for="custom-event-date">Wedding / Event Date</label>
+                    <input id="custom-event-date" type="date" value="${esc(b.eventDate || '2026-11-18')}" onchange="window.updateCustomBuilderSchedule('eventDate', this.value)" class="w-full h-12 px-3 rounded-lg bg-surface-container-low border border-[#e4e0d8] font-spec-numeral text-xs text-primary font-medium">
+                  </div>
+                  <div>
+                    <label class="text-xs font-bold text-primary block mb-1" for="custom-pickup-slot">Doorstep Pickup Window</label>
+                    <select id="custom-pickup-slot" onchange="window.updateCustomBuilderSchedule('pickupSlot', this.value)" class="w-full h-12 px-3 rounded-lg bg-surface-container-low border border-[#e4e0d8] text-xs font-semibold text-primary">
+                      <option value="Morning Slot (9:00 AM – 1:00 PM)" ${b.pickupSlot === 'Morning Slot (9:00 AM – 1:00 PM)' ? 'selected' : ''}>Morning Slot (9:00 AM – 1:00 PM)</option>
+                      <option value="Afternoon Slot (2:00 PM – 6:00 PM)" ${b.pickupSlot === 'Afternoon Slot (2:00 PM – 6:00 PM)' ? 'selected' : ''}>Afternoon Slot (2:00 PM – 6:00 PM)</option>
+                      <option value="Self-Ship via Air Courier (Reimbursed)" ${b.pickupSlot === 'Self-Ship via Air Courier (Reimbursed)' ? 'selected' : ''}>Self-Ship via Air Courier (Reimbursed)</option>
+                    </select>
+                  </div>
+                  <div class="flex items-end">
+                    <label class="w-full h-12 px-3 rounded-lg bg-surface-container-low border border-[#e4e0d8] flex items-center justify-between gap-2 cursor-pointer hover:bg-surface-container transition-colors">
+                      <span class="text-xs font-semibold text-primary">Warm Teak LED Stand (+₹499)</span>
+                      <input type="checkbox" ${b.ledBase ? 'checked' : ''} onchange="window.updateCustomBuilderLed(this.checked)" class="w-5 h-5 accent-primary shrink-0">
+                    </label>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Bridal Flower Care & Packing Rules Box -->
+              <div class="p-4 rounded-xl bg-[#fdf6f3] border border-[#9e3322]/25 flex flex-col gap-2">
+                <div class="flex items-center gap-2">
+                  <span class="material-symbols-outlined text-[#9e3322] text-base" aria-hidden="true">verified_user</span>
+                  <h3 class="text-xs font-bold text-primary uppercase tracking-wider">Essential Post-Wedding Flower Care Protocol</h3>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-[11px] text-on-surface-variant leading-relaxed">
+                  <p><strong>1. Never Freeze:</strong> Store garlands in the normal refrigerator crisper (4°C–8°C), never in the deep freezer.</p>
+                  <p><strong>2. No Water Spray:</strong> Keep petals dry; wrap only the cut stems in a slightly damp paper towel.</p>
+                  <p><strong>3. Breathable Box:</strong> Pack loosely in newspaper inside a carton—avoid airtight plastic zip bags.</p>
+                  <p><strong>4. Pre-Pour Approval:</strong> We WhatsApp you a 3D digital arrangement layout before casting resin.</p>
                 </div>
               </div>
             </div>
 
-            <!-- Bridal Flower Care & Packing Rules Box -->
-            <div class="p-4 rounded-xl bg-[#fdf6f3] border border-[#9e3322]/25 flex flex-col gap-2">
-              <div class="flex items-center gap-2">
-                <span class="material-symbols-outlined text-[#9e3322] text-base" aria-hidden="true">verified_user</span>
-                <h3 class="text-xs font-bold text-primary uppercase tracking-wider">Essential Post-Wedding Flower Care Protocol</h3>
-              </div>
-              <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-[11px] text-on-surface-variant">
-                <p><strong>1. Never Freeze:</strong> Store garlands in the normal refrigerator crisper (4°C–8°C), never in the deep freezer.</p>
-                <p><strong>2. No Water/Perfume Spray:</strong> Keep petals dry; wrap only the cut stems in a slightly damp tissue.</p>
-                <p><strong>3. Breathable Carton:</strong> Pack loosely in newspaper or cotton inside a sturdy box—avoid sealed plastic bags.</p>
-                <p><strong>4. Pre-Pour Approval:</strong> We WhatsApp &amp; upload your digital floral arrangement mockup before pouring resin.</p>
-              </div>
-            </div>
           </div>
 
-          <!-- Live Custom Preview & Instant Add to Bag Card (5 cols) -->
-          <div class="lg:col-span-5 ram-card p-5 !bg-primary bg-gradient-to-b from-primary to-[#101d33] text-white flex flex-col gap-4 sticky top-24 min-w-0">
+          <!-- Right Column: Live Custom Preview & Instant Add to Bag Card (col-span-5) -->
+          <div class="lg:col-span-5 ram-card p-5 !bg-primary bg-gradient-to-b from-primary to-[#101d33] text-white flex flex-col gap-4 sticky top-24 min-w-0 shadow-xl">
             <div class="flex items-center justify-between">
               <span class="text-[11px] uppercase tracking-widest text-[#ffd79b] font-bold">Live Order Preview</span>
               <span class="px-2 py-0.5 rounded bg-white/10 font-spec-numeral text-[11px]">14-Day Cryo-Cure</span>
@@ -3791,8 +4000,10 @@ ${avgRating ? `
               <span class="material-symbols-outlined text-lg" aria-hidden="true">redeem</span>
               <span>Book &amp; Add Custom Keepsake to Bag</span>
             </button>
-          </div>
-        </div>
+            <div class="flex items-center justify-center gap-2 text-[11px] text-white/70">
+              <span class="material-symbols-outlined text-xs text-[#ffd79b]" aria-hidden="true">lock</span>
+              <span>100% Guaranteed Anti-Yellowing (Museum UV400)</span>
+            </div>
           </div>
         </div>
 
@@ -3846,6 +4057,15 @@ ${avgRating ? `
 
         <!-- Part B: Interactive Epoxy Pour & Ratio Calculator (Rectangular & Circular Moulds) -->
         <div id="studio-pour-calculator" class="ram-card p-5 sm:p-6 bg-white flex flex-col gap-5">
+          <div class="p-3.5 rounded-xl bg-surface-container-low border border-[#e4e0d8] flex items-center justify-between gap-3">
+            <div class="flex items-center gap-2">
+              <span class="material-symbols-outlined text-secondary text-lg" aria-hidden="true">science</span>
+              <p class="text-xs text-on-surface-variant">
+                <strong>For DIY Resin Artists &amp; Crafters:</strong> Not required for custom flower preservation orders. Use this precision calculator when pouring resin into your own silicone moulds at home.
+              </p>
+            </div>
+          </div>
+
           <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-surface-container pb-3">
             <div>
               <span class="font-label-sm text-[11px] uppercase tracking-widest text-secondary font-bold">Vistāra Krafts Chemical Lab</span>
@@ -3930,7 +4150,7 @@ ${avgRating ? `
   // =========================================================================
   // 6. SAVED / WISHLIST VIEW ("Apple, Elevated" Atelier Edition)
   // =========================================================================
-  function renderWishlistItemCard(p) {
+function renderWishlistItemCard(p) {
     const isDiscounted = p.regularPrice > p.price;
     const discountPct = isDiscounted ? Math.round(((p.regularPrice - p.price) / p.regularPrice) * 100) : 0;
     const categoryLabel = p.category ? p.category.replace(/_/g, ' ').toUpperCase() : 'STUDIO EDITION';
@@ -7735,6 +7955,48 @@ ${avgRating ? `
   };
 
   // Custom Studio Builder Handlers
+  window.applyCustomPreset = function (presetKey) {
+    if (presetKey === 'wedding') {
+      AppState.customBuilder.shape = '12" Royal Heirloom Block';
+      AppState.customBuilder.shapePrice = 4499;
+      AppState.customBuilder.occasion = 'Wedding Varmala & Jaimala';
+      AppState.customBuilder.flowerSource = 'Fresh Wedding Varmala (Free Doorstep Pickup)';
+      AppState.customBuilder.sourceAddon = 0;
+      AppState.customBuilder.metallic = '24K Gold Leaf + Champagne Rim';
+      AppState.customBuilder.metallicAddon = 350;
+      AppState.customBuilder.secondaryKeepsake = 'None (Main Keepsake Only)';
+      AppState.customBuilder.secondaryAddon = 0;
+      AppState.customBuilder.fontStyle = 'Royal Italic Serif';
+      AppState.customBuilder.ledBase = true;
+    } else if (presetKey === 'minimal') {
+      AppState.customBuilder.shape = '8" Romantic Cube';
+      AppState.customBuilder.shapePrice = 2999;
+      AppState.customBuilder.occasion = 'Wedding Varmala & Jaimala';
+      AppState.customBuilder.flowerSource = 'Fresh Wedding Varmala (Free Doorstep Pickup)';
+      AppState.customBuilder.sourceAddon = 0;
+      AppState.customBuilder.metallic = 'Pure Crystal Clear (Zero Flakes)';
+      AppState.customBuilder.metallicAddon = 0;
+      AppState.customBuilder.secondaryKeepsake = 'None (Main Keepsake Only)';
+      AppState.customBuilder.secondaryAddon = 0;
+      AppState.customBuilder.fontStyle = 'Royal Italic Serif';
+      AppState.customBuilder.ledBase = false;
+    } else if (presetKey === 'grand') {
+      AppState.customBuilder.shape = '14" Mughal Arch Block';
+      AppState.customBuilder.shapePrice = 5299;
+      AppState.customBuilder.occasion = 'Wedding Varmala & Jaimala';
+      AppState.customBuilder.flowerSource = 'Fresh Wedding Varmala (Free Doorstep Pickup)';
+      AppState.customBuilder.sourceAddon = 0;
+      AppState.customBuilder.metallic = 'Rose-Gold Foil + Crushed Quartz';
+      AppState.customBuilder.metallicAddon = 450;
+      AppState.customBuilder.secondaryKeepsake = 'Matching Resin Ring Platter';
+      AppState.customBuilder.secondaryAddon = 899;
+      AppState.customBuilder.fontStyle = 'Royal Italic Serif';
+      AppState.customBuilder.ledBase = true;
+    }
+    renderActiveView();
+    window.showToast('Package Applied!', 'Loaded ' + (presetKey === 'wedding' ? 'Classic Wedding Varmala' : (presetKey === 'minimal' ? 'Petite Romance' : 'Royal Mughal Arch')) + ' configuration.');
+  };
+
   window.updateCustomBuilder = function (field, label, priceVal) {
     if (field === 'shape') {
       AppState.customBuilder.shape = label;
