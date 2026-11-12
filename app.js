@@ -7494,7 +7494,7 @@ function renderWishlistItemCard(p) {
 
     if (matches.length === 0) {
       dropdown.innerHTML = `
-        <div class="p-5 text-center flex flex-col items-center gap-2">
+        <div class="p-5 text-center flex flex-col items-center gap-2 bg-white">
           <span class="material-symbols-outlined text-3xl text-outline/60" aria-hidden="true">search_off</span>
           <p class="text-xs font-bold text-primary">No products found for "${esc(rawVal)}"</p>
           <p class="text-[11px] text-on-surface-variant">Try searching for "epoxy", "bridal", "pigment", or "mold".</p>
@@ -7508,20 +7508,20 @@ function renderWishlistItemCard(p) {
     }
 
     dropdown.innerHTML = `
-      <div class="p-2.5 border-b border-[#e4e0d8] bg-surface-container-low/70 flex items-center justify-between text-[11px] font-semibold text-on-surface-variant">
+      <div class="p-2.5 sm:p-3 border-b border-[#e4e0d8] bg-[#f7f5f0] flex items-center justify-between text-[11px] font-semibold text-on-surface-variant">
         <span>Instant Matches (${matches.length})</span>
         <button type="button" onclick="window.submitHomeSearch()" class="text-secondary font-bold hover:underline cursor-pointer">
           View All in Catalogue →
         </button>
       </div>
-      <div class="divide-y divide-[#e4e0d8]/50">
+      <div class="divide-y divide-[#e4e0d8]/60 bg-white">
         ${matches.map(p => `
-          <div onclick="window.navigateTo('product', '${esc(p.id)}'); window.closeHomeSearchDropdown(); if (typeof window.closeHeaderSearch === 'function') window.closeHeaderSearch();" class="p-2.5 sm:p-3 hover:bg-surface-container-low transition-colors flex items-center gap-3 cursor-pointer group">
-            <img src="${esc(p.image)}" alt="${esc(p.name)}" class="w-12 h-12 rounded-xl object-cover bg-surface-container shrink-0 border border-[#e4e0d8] group-hover:scale-105 transition-transform" />
+          <div onclick="window.navigateTo('product', '${esc(p.id)}'); window.closeHomeSearchDropdown(); if (typeof window.closeHeaderSearch === 'function') window.closeHeaderSearch();" class="search-result-item p-2.5 sm:p-3 bg-white hover:bg-[#faf8f5] transition-colors flex items-center gap-3 cursor-pointer group">
+            <img src="${esc(p.image)}" alt="${esc(p.name)}" class="w-12 h-12 rounded-xl object-cover bg-[#f3f0e8] shrink-0 border border-[#e4e0d8] group-hover:scale-105 transition-transform" />
             <div class="flex-1 min-w-0">
               <div class="flex items-center gap-1.5 flex-wrap">
                 <span class="text-xs font-bold text-primary group-hover:text-secondary transition-colors line-clamp-1">${esc(p.name)}</span>
-                <span class="px-1.5 py-0.5 rounded text-[9px] font-mono bg-surface-container-high text-on-surface-variant">${esc(p.category)}</span>
+                <span class="px-1.5 py-0.5 rounded text-[9px] font-mono bg-[#eeebe2] text-[#484f5c] font-medium">${esc(p.category)}</span>
                 ${p.inStock === false ? '<span class="px-1.5 py-0.5 rounded text-[9px] font-bold bg-red-100 text-red-800">Out of Stock</span>' : ''}
               </div>
               <p class="text-[11px] text-on-surface-variant line-clamp-1 mt-0.5">${esc(p.subtitle || p.shortName)}</p>

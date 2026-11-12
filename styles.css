@@ -1646,6 +1646,24 @@ ascii-art {
   cursor: pointer;
 }
 
+/* Header Search Drawer & Predictive Dropdown Solid Surface (Zero Transparency / Zero Background Bleed) */
+#header-search-bar-drawer {
+  background-color: #ffffff !important;
+}
+
+#home-search-dropdown {
+  background-color: #ffffff !important;
+  box-shadow: 0 24px 48px -12px rgba(18, 18, 23, 0.28), 0 0 0 1px rgba(228, 224, 216, 0.95) !important;
+}
+
+#home-search-dropdown .search-result-item {
+  background-color: #ffffff;
+}
+
+#home-search-dropdown .search-result-item:hover {
+  background-color: #faf8f5;
+}
+
 .atelier-spotlight-tile {
   transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.35s ease, border-color 0.35s ease;
 }
