@@ -1586,9 +1586,15 @@ ascii-art {
 .atelier-curation-strip {
   scrollbar-width: none;
   -ms-overflow-style: none;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
 }
 .atelier-curation-strip::-webkit-scrollbar {
   display: none;
+}
+
+.atelier-curation-item {
+  scroll-snap-align: start;
 }
 
 .atelier-curation-circle {
