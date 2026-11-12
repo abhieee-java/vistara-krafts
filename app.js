@@ -907,9 +907,14 @@ if (typeof window !== 'undefined' && typeof window.dismissVkSplash !== 'function
 
   // Route Navigation
   window.navigateTo = function (route, param = null) {
-    if (AppState.currentRoute === 'catalog') {
+    if (AppState.currentRoute === 'catalog' && route === 'product') {
       try {
         sessionStorage.setItem('vk_catalog_scrollY', String(Math.round(window.scrollY)));
+      } catch (_e) {}
+    } else if (route === 'catalog') {
+      try {
+        sessionStorage.removeItem('vk_catalog_scrollY');
+        sessionStorage.removeItem('vk_last_viewed_product_id');
       } catch (_e) {}
     }
     let targetHash = '#/' + route;
@@ -2483,9 +2488,9 @@ ${avgRating ? `
     } catch (e) {}
 
     return `
-      <div class="route-view-enter flex flex-col w-full max-w-7xl mx-auto px-3 sm:px-8 py-3 sm:py-5 pb-44 sm:pb-28 gap-3 sm:gap-4">
+      <div class="route-view-enter flex flex-col w-full max-w-7xl mx-auto px-3.5 sm:px-8 pt-5 sm:pt-7 pb-44 sm:pb-28 gap-3.5 sm:gap-4">
         <!-- 1. Clean, Uncluttered Catalogue Header (Apple-Restrained) -->
-        <div class="max-w-2xl min-w-0 pt-0.5">
+        <div class="max-w-2xl min-w-0 pt-1">
           <h1 class="font-headline-lg text-2xl sm:text-3xl lg:text-4xl text-primary font-bold tracking-tight leading-snug break-words">
             Keepsake Art &amp; Epoxy Resin Supplies
           </h1>
@@ -6450,10 +6455,16 @@ function renderWishlistItemCard(p) {
             restored = true;
           }
         }
+        if (restored) {
+          try {
+            sessionStorage.removeItem('vk_catalog_scrollY');
+            sessionStorage.removeItem('vk_last_viewed_product_id');
+          } catch (_e) {}
+        }
         return restored;
       };
 
-      if (scrollToCatalogTarget()) {
+      if (!options?.resetScroll && scrollToCatalogTarget()) {
         didRestoreCatalogScroll = true;
         requestAnimationFrame(scrollToCatalogTarget);
         setTimeout(scrollToCatalogTarget, 60);
@@ -11988,6 +11999,11 @@ function renderWishlistItemCard(p) {
 
   // Robust Application Boot Controller
   function bootApplication() {
+    // When booting or refreshing the application, clear any stale catalog scroll targets
+    try {
+      sessionStorage.removeItem('vk_catalog_scrollY');
+      sessionStorage.removeItem('vk_last_viewed_product_id');
+    } catch (_e) {}
     try {
       initNetworkMonitor();
     } catch (_e) {
