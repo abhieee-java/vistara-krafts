@@ -2477,6 +2477,10 @@ ${avgRating ? `
       viscosity: 'Viscosity: Low–High'
     };
     const currentSortLabel = sortLabels[AppState.catalogSort] || 'Popular';
+    let isBridalBannerDismissed = false;
+    try {
+      isBridalBannerDismissed = Boolean(localStorage.getItem('vk_dismissed_bridal_banner'));
+    } catch (e) {}
 
     return `
       <div class="route-view-enter flex flex-col w-full max-w-7xl mx-auto px-3 sm:px-8 py-3 sm:py-5 pb-44 sm:pb-28 gap-3 sm:gap-4">
@@ -2488,7 +2492,11 @@ ${avgRating ? `
         </div>
 
         <!-- Bespoke Keepsake Callout Banner in Catalog -->
-        <div class="p-3.5 sm:p-4 rounded-2xl bg-gradient-to-r from-[#fcf7ee] via-[#f7eedf] to-[#f4e6d0] border border-[#e8d8b8] flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-2xs">
+        ${!isBridalBannerDismissed ? `
+        <div id="catalog-bridal-banner" class="relative p-3.5 sm:p-4 pr-11 sm:pr-14 rounded-2xl bg-gradient-to-r from-[#fcf7ee] via-[#f7eedf] to-[#f4e6d0] border border-[#e8d8b8] flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-2xs">
+          <button type="button" aria-label="Dismiss banner" title="Dismiss" onclick="window.dismissBridalBanner(event)" class="catalog-bridal-banner-close">
+            <span class="material-symbols-outlined text-base sm:text-lg" aria-hidden="true">close</span>
+          </button>
           <div class="flex items-center gap-3">
             <div class="w-10 h-10 rounded-xl bg-white border border-[#e8d8b8] flex items-center justify-center text-[#9e3322] shrink-0 shadow-2xs">
               <span class="material-symbols-outlined text-xl" aria-hidden="true">local_florist</span>
@@ -2503,6 +2511,7 @@ ${avgRating ? `
             <span class="material-symbols-outlined text-sm text-[#ffd79b]" aria-hidden="true">arrow_forward</span>
           </button>
         </div>
+        ` : ''}
 
         <!-- 3. Search Bar -->
         <div class="md:sticky md:top-[93px] z-30 bg-surface/95 backdrop-blur-md py-1 flex flex-col gap-2 w-full min-w-0">
@@ -7639,6 +7648,31 @@ function renderWishlistItemCard(p) {
       if (typeof window.closeHeaderSearch === 'function') {
         window.closeHeaderSearch();
       }
+    }
+  };
+
+  window.dismissBridalBanner = function (e) {
+    if (e && typeof e.stopPropagation === 'function') e.stopPropagation();
+    try {
+      localStorage.setItem('vk_dismissed_bridal_banner', 'true');
+    } catch (err) {
+      console.warn('[Vistāra] Could not write to localStorage:', err);
+    }
+    const banner = document.getElementById('catalog-bridal-banner');
+    if (banner) {
+      banner.style.transition = 'opacity 0.25s ease, transform 0.25s ease, max-height 0.3s ease, margin 0.3s ease, padding 0.3s ease';
+      banner.style.opacity = '0';
+      banner.style.transform = 'scale(0.97)';
+      banner.style.maxHeight = banner.scrollHeight + 'px';
+      setTimeout(() => {
+        banner.style.maxHeight = '0px';
+        banner.style.marginTop = '0px';
+        banner.style.marginBottom = '0px';
+        banner.style.paddingTop = '0px';
+        banner.style.paddingBottom = '0px';
+        banner.style.overflow = 'hidden';
+        setTimeout(() => banner.remove(), 300);
+      }, 10);
     }
   };
 
