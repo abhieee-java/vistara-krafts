@@ -2035,7 +2035,7 @@ try {
   // 1. Verify 500.html exists, has trace ID, reload button, and catalog link
   assert.ok(fs.existsSync(path.join(ROOT, '500.html')), '500.html standalone server error page must exist');
   const static500Html = fs.readFileSync(path.join(ROOT, '500.html'), 'utf8');
-  assert.ok(static500Html.includes('HTTP 500') && static500Html.includes('Studio System Interruption'), '500.html must display HTTP 500 notice');
+  assert.ok(static500Html.includes('HTTP 500') && (static500Html.includes('Studio System Interruption') || static500Html.includes('System Interruption')), '500.html must display HTTP 500 notice');
   assert.ok(static500Html.includes('VK-EDGE-500-'), '500.html must generate Edge incident trace ID');
   assert.ok(static500Html.includes('window.location.reload()'), '500.html must offer reload action');
   assert.ok(static500Html.includes('href="./#/catalog/all"'), '500.html must offer catalog link');
@@ -2114,7 +2114,7 @@ try {
   // 7. Verify In-App 500 View & kinetic empty states in app.js
   sandbox.window.navigateTo('500');
   const view500 = mockDocument.getElementById('app-view-root').innerHTML;
-  assert.ok(view500.includes('500') && view500.includes('Studio System Interruption'), 'In-app 500 view must render 500 error state');
+  assert.ok(view500.includes('500') && (view500.includes('Studio System Interruption') || view500.includes('System Interruption')), 'In-app 500 view must render 500 error state');
   assert.ok(view500.includes('lottie-anim-spin'), 'In-app 500 view must feature kinetic SVG animation');
   assert.ok(view500.includes('VK-ERR-') || view500.includes('VK-EDGE-'), 'In-app 500 view must display incident trace ID');
 
@@ -2122,7 +2122,7 @@ try {
   Store.saveCart([]);
   sandbox.window.navigateTo('cart');
   const cartHtml = mockDocument.getElementById('app-view-root').innerHTML;
-  assert.ok(cartHtml.includes('Your Studio Bag is Empty') && (cartHtml.includes('lottie-anim-float') || cartHtml.includes('svg')), 'Empty cart must render kinetic studio bag SVG');
+  assert.ok((cartHtml.includes('Your Bag is Empty') || cartHtml.includes('Your Studio Bag is Empty')) && (cartHtml.includes('lottie-anim-float') || cartHtml.includes('svg')), 'Empty cart must render kinetic bag SVG');
 
   // Empty wishlist kinetic state
   Store.saveWishlist([]);

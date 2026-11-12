@@ -357,7 +357,7 @@ if (typeof window !== 'undefined' && typeof window.dismissVkSplash !== 'function
     const nameEl = document.getElementById('mini-cart-toast-name');
     const detailEl = document.getElementById('mini-cart-toast-detail');
     if (imgEl && item.image) imgEl.src = item.image;
-    if (nameEl) nameEl.textContent = item.name || item.shortName || 'Added to Studio Bag';
+    if (nameEl) nameEl.textContent = item.name || item.shortName || 'Added to Bag';
     if (detailEl) {
       const priceStr = formatINR(item.price || 0);
       const variantStr = item.variantLabel ? ` • ${item.variantLabel}` : '';
@@ -606,7 +606,7 @@ if (typeof window !== 'undefined' && typeof window.dismissVkSplash !== 'function
     reveals.forEach(el => obs.observe(el));
   }
 
-  // Master Studio Interaction Binder
+  // Master Interaction Binder
   function initSotdInteractions() {
     initSotdTilt();
     initSotdMagnetic();
@@ -617,7 +617,7 @@ if (typeof window !== 'undefined' && typeof window.dismissVkSplash !== 'function
 
   function renderBarOrdersHtml(orders) {
     if (!Array.isArray(orders) || orders.length === 0) {
-      return `<p class="text-xs text-on-surface-variant">No studio orders placed yet.</p>`;
+      return `<p class="text-xs text-on-surface-variant">No orders placed yet.</p>`;
     }
     return orders.map(ord => {
       const stages = ord.stages || ['Order Confirmed', 'Materials Prepped', 'Silica Dehydration', 'Deep Cast Pour', 'Polish & Dispatch'];
@@ -1648,7 +1648,7 @@ ${avgRating ? `
                 </div>
                 <div class="relative z-10 px-6 sm:px-12 py-8 max-w-2xl flex flex-col items-start gap-3.5 text-white">
                   <span class="px-3 py-1 rounded-full bg-[#266b4e]/25 border border-[#266b4e]/60 text-[#a3e4c4] text-[11px] font-bold tracking-widest uppercase">
-                    ✦ STUDIO DROPS • 50+ CASTS REUSABLE
+                    ✦ NEW DROPS • 50+ CASTS REUSABLE
                   </span>
                   <h2 class="font-headline-lg text-2xl min-[360px]:text-3xl sm:text-5xl font-bold tracking-tight leading-[1.1] text-white">
                     Precision Mirror-Finish Silicone Molds.
@@ -1807,7 +1807,7 @@ ${avgRating ? `
 
           <div class="flex justify-center pt-2">
             <button type="button" onclick="window.navigateTo('catalog', 'all')" class="min-h-[46px] px-8 rounded-xl bg-primary text-white text-xs font-bold uppercase tracking-wider inline-flex items-center gap-2 shadow-xs hover:bg-primary-container active:scale-95 transition-all cursor-pointer">
-              <span>View Full Studio Catalogue (${Store.getProducts().length})</span>
+              <span>View Full Catalogue (${Store.getProducts().length})</span>
               <span class="material-symbols-outlined text-base" aria-hidden="true">arrow_forward</span>
             </button>
           </div>
@@ -1889,7 +1889,7 @@ ${avgRating ? `
         <section class="px-4 sm:px-8 py-8 sm:py-10 bg-[#faf8f5] flex flex-col gap-6 border-b border-[#e4e0d8]" id="home-epoxy-kits">
           <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-3">
             <div>
-              <span class="text-xs font-bold text-secondary uppercase tracking-widest block">Studio Grade Formulations</span>
+              <span class="text-xs font-bold text-secondary uppercase tracking-widest block">Master Grade Formulations</span>
               <h2 class="font-headline-sm text-2xl sm:text-3xl text-primary font-bold tracking-tight mt-0.5">Professional Epoxy Resin Systems</h2>
             </div>
             <button type="button" onclick="window.navigateTo('catalog', 'casting')" class="min-h-[44px] px-5 py-2 rounded-xl bg-primary text-on-primary font-label-sm text-xs font-semibold inline-flex items-center gap-1.5 cursor-pointer shrink-0 shadow-2xs">
@@ -1986,7 +1986,7 @@ ${avgRating ? `
           ` : ''}
         </section>
 
-        <!-- 9. Studio Utilities: Ratio Calculator & Express Transit Verifier (Compact Side-by-Side) -->
+        <!-- 9. Craft Utilities: Ratio Calculator & Express Transit Verifier (Compact Side-by-Side) -->
         <section class="px-4 sm:px-8 py-8 sm:py-10 grid grid-cols-1 lg:grid-cols-12 gap-6 bg-[#faf8f5] border-b border-[#e4e0d8]">
           <!-- Interactive Pour Calculator Card (6 cols) -->
           <div class="lg:col-span-6 p-5 sm:p-6 rounded-2xl bg-white border border-[#e4e0d8] flex flex-col justify-between gap-4 shadow-2xs">
@@ -2066,10 +2066,10 @@ ${avgRating ? `
           <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div>
               <span class="text-xs font-bold text-secondary uppercase tracking-widest block">Behind The Scenes</span>
-              <h2 class="font-headline-sm text-2xl sm:text-3xl text-primary font-bold tracking-tight mt-0.5">Shop Our Studio Reels &amp; Stories</h2>
+              <h2 class="font-headline-sm text-2xl sm:text-3xl text-primary font-bold tracking-tight mt-0.5">Shop Our Reels &amp; Stories</h2>
             </div>
             <button type="button" onclick="window.navigateTo('social')" class="self-start sm:self-auto min-h-[42px] px-5 py-2 rounded-xl bg-primary text-white font-label-md text-xs font-bold flex items-center gap-1.5 shadow-2xs hover:opacity-95 cursor-pointer">
-              <span>Explore Studio Feed</span>
+              <span>Explore Community Feed</span>
               <span class="material-symbols-outlined text-base" aria-hidden="true">arrow_forward</span>
             </button>
           </div>
@@ -2205,7 +2205,7 @@ ${avgRating ? `
           <div class="grid grid-cols-1 md:grid-cols-2 gap-3.5">
             ${[
               {
-                q: 'Do I need to dry my wedding varmala before sending it to the studio?',
+                q: 'Do I need to dry my wedding varmala before sending it to you?',
                 a: 'No! Please send your garlands fresh within 24 to 72 hours of your ceremony. Wrap cut stem ends in a slightly damp tissue, place inside a breathable box, and book our 24h doorstep pickup.'
               },
               {
@@ -2269,7 +2269,7 @@ ${avgRating ? `
       <div class="flex items-center gap-3">
         <img src="${esc(Store.IMAGES.resin301 || Store.IMAGES.ultraclearMain)}" alt="Deep Pour 3:1" class="w-12 h-12 rounded-lg object-cover shrink-0">
         <div>
-          <span class="text-[10px] uppercase tracking-wider text-[#ffd79b] font-bold">#1 Studio Formulation</span>
+          <span class="text-[10px] uppercase tracking-wider text-[#ffd79b] font-bold">#1 Bestseller Formulation</span>
           <p class="text-xs sm:text-sm font-bold text-white">3:1 Deep Pour &amp; Casting Epoxy Resin System (₹649)</p>
         </div>
       </div>
@@ -2760,7 +2760,7 @@ ${avgRating ? `
             <div class="p-4 rounded-xl bg-white border border-[#e4e0d8] shadow-2xs flex flex-col gap-1.5">
               <span class="material-symbols-outlined text-[#9e3322] text-xl" aria-hidden="true">eco</span>
               <h4 class="text-xs font-bold text-primary">Zero VOC &amp; Low Odor</h4>
-              <p class="text-[11px] text-on-surface-variant leading-relaxed">ASTM D6866 tested formula, safe for residential artist studios and boutiques.</p>
+              <p class="text-[11px] text-on-surface-variant leading-relaxed">ASTM D6866 tested formula, safe for residential artist workshops and boutiques.</p>
             </div>
             <div class="p-4 rounded-xl bg-white border border-[#e4e0d8] shadow-2xs flex flex-col gap-1.5">
               <span class="material-symbols-outlined text-secondary text-xl" aria-hidden="true">shield</span>
@@ -2897,7 +2897,7 @@ ${avgRating ? `
               </div>
 
               <div class="absolute top-3.5 left-3.5 flex flex-col gap-1.5 items-start">
-                <span class="bg-secondary text-on-secondary px-3 py-1 rounded-full font-label-sm text-[11px] tracking-wider uppercase font-bold shadow-xs">${esc(product.badge || 'Studio Edition')}</span>
+                <span class="bg-secondary text-on-secondary px-3 py-1 rounded-full font-label-sm text-[11px] tracking-wider uppercase font-bold shadow-xs">${esc(product.badge || 'Artisan Edition')}</span>
                 <span class="bg-primary/90 text-on-primary px-3 py-1 rounded-full font-label-sm text-[11px] flex items-center gap-1 shadow-xs">
                   <span class="material-symbols-outlined text-xs text-secondary-fixed" aria-hidden="true">verified</span>
                   Optical Grade
@@ -2930,7 +2930,7 @@ ${avgRating ? `
           <div class="lg:col-span-6 lg:col-start-7 lg:row-start-1 lg:row-span-2 flex flex-col gap-5">
             <!-- Product Identity & Social Proof Header (Amazon / Flipkart Style) -->
             <div class="flex flex-col gap-1.5">
-              <span class="font-label-sm text-secondary uppercase tracking-widest text-[11px] font-bold">Vistāra Krafts Studio</span>
+              <span class="font-label-sm text-secondary uppercase tracking-widest text-[11px] font-bold">Vistāra Krafts</span>
               <h1 class="font-headline-lg text-2xl sm:text-3xl lg:text-4xl text-primary font-bold tracking-tight">${esc(product.name)}</h1>
               <p class="text-xs sm:text-sm text-on-surface-variant italic">${esc(product.subtitle || 'Museum-Grade Optical Epoxy & Handcrafted Keepsake Edition')}</p>
 
@@ -3056,7 +3056,7 @@ ${avgRating ? `
                 </div>
                 <button type="button" onclick="window.addPdpToCart()" class="btn-shimmer min-w-0 flex-1 h-12 px-3 sm:px-4 rounded-xl bg-primary hover:bg-primary-container text-on-primary font-title-md text-xs sm:text-sm font-bold flex items-center justify-center gap-1.5 shadow-sm active:scale-[0.99] transition-all cursor-pointer">
                   <span class="material-symbols-outlined text-lg shrink-0" aria-hidden="true">shopping_bag</span>
-                  <span class="truncate">Add to Studio Bag • ${formatINR(totalCtaPrice)}</span>
+                  <span class="truncate">Add to Bag • ${formatINR(totalCtaPrice)}</span>
                 </button>
                 <button type="button" aria-label="Save to Wishlist" data-wishlist-btn="${esc(product.id)}" onclick="window.handleWishlistToggle(event, '${esc(product.id)}')" class="w-12 h-12 rounded-xl bg-surface-container-low border border-[#e4e0d8] flex items-center justify-center ${isFav ? 'text-[#9e3322]' : 'text-primary'} hover:scale-105 active:scale-95 transition-all shrink-0 cursor-pointer" title="Save to Wishlist">
                   <svg class="w-6 h-6 ${isFav ? 'fill-[#9e3322] stroke-[#9e3322]' : 'fill-none stroke-current'} transition-colors" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -3075,19 +3075,19 @@ ${avgRating ? `
               <div class="flex items-center justify-between gap-2">
                 <label for="pdp-custom-note" class="text-xs font-bold text-primary flex items-center gap-1.5">
                   <span class="material-symbols-outlined text-sm text-[#9e3322]" aria-hidden="true">edit_note</span>
-                  <span>${product.isCustomizable ? 'Personalization / Couple Name & Date Engraving (Free)' : 'Studio Batch Note / COA Request (Optional)'}</span>
+                  <span>${product.isCustomizable ? 'Personalization / Couple Name & Date Engraving (Free)' : 'Order Note / Batch Request (Optional)'}</span>
                 </label>
                 <span class="text-[10px] font-bold text-[#9e3322] uppercase tracking-wider bg-[#ffe4de] px-2 py-0.5 rounded-full shrink-0">Included</span>
               </div>
               <input id="pdp-custom-note" type="text" value="${esc(AppState.pdpCustomNote)}" oninput="window.setPdpCustomNote(this.value)" placeholder="${product.isCustomizable ? 'e.g. Aarav & Meera • 12 Oct 2026 • Gold Foil Calligraphy' : 'e.g. Include printed ASTM Certificate of Analysis with shipment'}" class="w-full h-11 px-3 rounded-lg bg-white border border-[#e4e0d8] text-xs text-primary focus:outline-none focus:ring-1 focus:ring-primary">
             </div>
 
-            <!-- Compact Tiered Studio Volume Strip -->
+            <!-- Compact Tiered Volume Strip -->
             <div class="p-3.5 rounded-xl bg-surface-container-low border border-[#e4e0d8] flex flex-col gap-2">
               <div class="flex items-center justify-between">
                 <h2 class="text-[11px] font-bold text-primary flex items-center gap-1.5 uppercase tracking-wider">
                   <span class="material-symbols-outlined text-secondary text-sm" aria-hidden="true">local_offer</span>
-                  <span>Tiered Studio Volume Pricing</span>
+                  <span>Tiered Volume Pricing</span>
                 </h2>
                 <span class="text-[11px] text-secondary font-semibold">Auto-applied in bag</span>
               </div>
@@ -3130,10 +3130,10 @@ ${avgRating ? `
             </div>
           </div>
 
-          <!-- Frequently Paired Studio Bundle (Desktop Left Col Row 2, Mobile after Purchase) -->
+          <!-- Frequently Paired Bundle (Desktop Left Col Row 2, Mobile after Purchase) -->
           <div class="lg:col-span-6 lg:col-start-1 rounded-2xl p-4 bg-surface-container-low/80 border border-[#e4e0d8] flex flex-col gap-3">
             <div class="flex items-center justify-between gap-2">
-              <h2 class="font-headline-sm text-base text-primary font-bold">Frequently Paired Studio Bundle</h2>
+              <h2 class="font-headline-sm text-base text-primary font-bold">Frequently Paired Bundle</h2>
               <span class="bg-secondary text-on-secondary font-spec-numeral text-[11px] px-2.5 py-0.5 rounded-full font-bold shrink-0">Save ₹349</span>
             </div>
             <div class="flex items-center justify-between gap-2 py-1 overflow-x-auto no-scrollbar">
@@ -3186,7 +3186,7 @@ ${avgRating ? `
               <!-- Left 5 specs -->
               <div class="divide-y divide-[#e4e0d8]">
                 ${[
-                  ['Manufacturer SKU', product.sku || 'VK-EPX-STUDIO'],
+                  ['Manufacturer SKU', product.sku || 'VK-EPX-DIRECT'],
                   ['Mix Ratio / Structure', (product.specs && product.specs.mixRatioWeight) || `${product.ratio || '3:1'} by Weight`],
                   ['Volume Ratio', (product.specs && product.specs.mixRatioVolume) || '2.6 : 1'],
                   ['Working Pot Life', (product.specs && product.specs.workingPotLife) || product.potLife || '45 Minutes'],
@@ -3524,7 +3524,7 @@ ${avgRating ? `
   }
 
   // =========================================================================
-  // 5. CUSTOM MEMORY PRESERVATION BUILDER & EPOXY CALCULATOR STUDIO
+  // 5. CUSTOM MEMORY PRESERVATION BUILDER & EPOXY CALCULATOR
   // =========================================================================
   function renderCustomStudioView() {
     const b = AppState.customBuilder;
@@ -3557,7 +3557,7 @@ ${avgRating ? `
           </button>
         </div>
 
-        <!-- Studio Header -->
+        <!-- Header -->
         <div class="flex flex-col gap-1.5">
           <div class="flex items-center gap-2 flex-wrap">
             <span class="font-label-sm text-xs uppercase tracking-widest text-[#9e3322] font-bold">Bespoke Floral Preservation Atelier</span>
@@ -3779,11 +3779,11 @@ ${avgRating ? `
 
               <!-- Step 3: Flower / Memory Source -->
               <div>
-                <span class="text-xs font-bold text-primary uppercase tracking-wider block mb-2">Step 3: How Will Your Flowers Reach Our Studio?</span>
+                <span class="text-xs font-bold text-primary uppercase tracking-wider block mb-2">Step 3: How Will Your Flowers Reach Us?</span>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                   ${[
                     { label: 'Fresh Wedding Varmala (Free Doorstep Pickup)', addon: 0, sub: 'We send an insulated BlueDart airbox to your doorstep across India' },
-                    { label: 'Studio Pre-Sourced Ecuadorian Roses & Orchids', addon: 650, sub: 'Studio provides fresh exotic blooms if you do not have your own flowers' }
+                    { label: 'Pre-Sourced Ecuadorian Roses & Orchids', addon: 650, sub: 'We provide fresh exotic blooms if you do not have your own flowers' }
                   ].map(src => `
                     <button type="button" onclick="window.updateCustomBuilder('flowerSource', '${esc(src.label)}', ${src.addon})" class="p-3.5 rounded-xl border text-left transition-all cursor-pointer ${b.flowerSource === src.label ? 'border-[#9e3322] bg-[#ffe4de]/40 ring-1 ring-[#9e3322]' : 'border-[#e4e0d8] bg-white hover:border-secondary'}">
                       <p class="text-xs font-bold text-primary">${esc(src.label)}</p>
@@ -4153,7 +4153,7 @@ ${avgRating ? `
 function renderWishlistItemCard(p) {
     const isDiscounted = p.regularPrice > p.price;
     const discountPct = isDiscounted ? Math.round(((p.regularPrice - p.price) / p.regularPrice) * 100) : 0;
-    const categoryLabel = p.category ? p.category.replace(/_/g, ' ').toUpperCase() : 'STUDIO EDITION';
+    const categoryLabel = p.category ? p.category.replace(/_/g, ' ').toUpperCase() : 'ARTISAN EDITION';
     const variantTag = p.tagline || (p.variants && p.variants[0] ? p.variants[0].label : 'Artisan Batch');
 
     return `
@@ -4268,7 +4268,7 @@ function renderWishlistItemCard(p) {
               </button>
             ` : ''}
           </div>
-          <p class="text-[11px] sm:text-xs text-on-surface-variant leading-tight">Formulations, botanical keepsakes, and studio tools reserved for your pours.</p>
+          <p class="text-[11px] sm:text-xs text-on-surface-variant leading-tight">Formulations, botanical keepsakes, and craft tools reserved for your pours.</p>
         </div>
 
         ${products.length === 0 ? `
@@ -4386,7 +4386,7 @@ function renderWishlistItemCard(p) {
 
     return `
       <div class="route-view-enter cart-scroll-content flex flex-col w-full max-w-7xl mx-auto px-3.5 sm:px-8 py-3.5 sm:py-5 gap-4">
-        <!-- Studio Bag Header Navigation & Title (Unconstrained, Zero Truncation) -->
+        <!-- Shopping Bag Header Navigation & Title (Unconstrained, Zero Truncation) -->
         <div class="flex flex-col gap-2.5 w-full border-b border-[#e4e0d8] pb-3">
           <div class="flex items-center justify-between gap-3 w-full">
             <button type="button" onclick="window.handleBackButton('catalog')" aria-label="Go back to catalogue" class="inline-flex items-center gap-1.5 text-xs font-semibold text-primary/80 hover:text-primary min-h-[38px] py-1.5 px-3 rounded-xl bg-surface-container-low hover:bg-surface-container border border-[#e4e0d8] active:scale-[0.97] transition-all cursor-pointer">
@@ -4400,7 +4400,7 @@ function renderWishlistItemCard(p) {
           </div>
           <div class="flex items-baseline justify-between gap-2">
             <h1 class="font-headline-md text-2xl sm:text-3xl text-primary font-bold tracking-tight">
-              Studio Bag <span id="cart-header-count" class="text-secondary font-spec-numeral text-lg sm:text-xl font-medium">(${summary.itemsCount})</span>
+              Shopping Bag <span id="cart-header-count" class="text-secondary font-spec-numeral text-lg sm:text-xl font-medium">(${summary.itemsCount})</span>
             </h1>
             ${summary.cart.length > 0 ? `
               <span class="text-xs text-on-surface-variant hidden sm:inline">Handcrafted atelier dispatch</span>
@@ -4481,7 +4481,7 @@ function renderWishlistItemCard(p) {
               </svg>
             </div>
             <div class="space-y-1 max-w-sm">
-              <h2 class="font-headline-sm text-lg sm:text-2xl text-primary font-bold tracking-tight">Your Studio Bag is Empty</h2>
+              <h2 class="font-headline-sm text-lg sm:text-2xl text-primary font-bold tracking-tight">Your Bag is Empty</h2>
               <p class="text-xs sm:text-sm text-on-surface-variant leading-relaxed">
                 Explore our preserved bridal keepsakes, ocean serving boards, or optical 3:1 &amp; 2:1 epoxy systems.
               </p>
@@ -4495,7 +4495,7 @@ function renderWishlistItemCard(p) {
             </button>
           </div>
 
-          <!-- Curated Popular Studio Favorites (Eliminates Blank Area Wastage & Boosts Discovery) -->
+          <!-- Curated Popular Favorites (Eliminates Blank Area Wastage & Boosts Discovery) -->
           <div class="flex flex-col gap-3 pt-2">
             <div class="flex items-center justify-between">
               <div class="flex items-center gap-2">
@@ -4642,7 +4642,7 @@ function renderWishlistItemCard(p) {
                       <span>Claim GST Input Tax Credit (18% ITC)</span>
                       <span class="material-symbols-outlined text-xs text-secondary" aria-hidden="true">verified_user</span>
                     </span>
-                    <p class="text-[11px] text-on-surface-variant mt-0.5 break-words">Automated B2B tax invoice with HSN 39073010 for registered studios.</p>
+                    <p class="text-[11px] text-on-surface-variant mt-0.5 break-words">Automated B2B tax invoice with HSN 39073010 for registered entities.</p>
                   </div>
                 </label>
                 <div id="cart-gst-fields" class="${gstInfo.enabled ? 'grid' : 'hidden'} grid-cols-1 sm:grid-cols-2 gap-2.5 pt-2 border-t border-surface-container">
@@ -4651,7 +4651,7 @@ function renderWishlistItemCard(p) {
                     <input id="cart-gstin-input" type="text" maxlength="15" value="${esc(gstInfo.gstin)}" onchange="window.saveGstField()" class="w-full h-10 px-3 rounded-lg bg-surface-container-low border border-[#e4e0d8] font-spec-numeral text-xs uppercase text-primary">
                   </div>
                   <div>
-                    <label for="cart-tradename-input" class="text-[10.5px] text-on-surface-variant font-medium block mb-1">Registered Legal Studio / Entity Name</label>
+                    <label for="cart-tradename-input" class="text-[10.5px] text-on-surface-variant font-medium block mb-1">Registered Legal Business / Entity Name</label>
                     <input id="cart-tradename-input" type="text" value="${esc(gstInfo.tradeName)}" onchange="window.saveGstField()" class="w-full h-10 px-3 rounded-lg bg-surface-container-low border border-[#e4e0d8] text-xs text-primary">
                   </div>
                 </div>
@@ -4660,7 +4660,7 @@ function renderWishlistItemCard(p) {
 
             <!-- Right Column: Voucher + Single Unified Invoice Summary (5 cols) -->
             <div class="lg:col-span-5 flex flex-col gap-3 sm:gap-4 sticky top-20 min-w-0">
-              <!-- Vouchers & Studio Offers (Zero-Waste, Compact Luxury) -->
+              <!-- Vouchers & Offers (Zero-Waste, Compact Luxury) -->
               ${(() => {
                 const publicCoupons = Store.getPublicCoupons ? Store.getPublicCoupons() : {};
                 const couponsList = Object.values(publicCoupons);
@@ -4673,7 +4673,7 @@ function renderWishlistItemCard(p) {
                         <span class="material-symbols-outlined text-sm" aria-hidden="true">local_activity</span>
                       </div>
                       <div>
-                        <h3 class="text-xs sm:text-sm font-bold text-primary leading-tight">Studio Voucher</h3>
+                        <h3 class="text-xs sm:text-sm font-bold text-primary leading-tight">Promo Voucher</h3>
                         <p class="text-[10px] sm:text-[10.5px] text-on-surface-variant leading-tight">${hasPublicOffers ? 'Enter code or pick an offer below' : 'Enter your promo code'}</p>
                       </div>
                     </div>
@@ -4727,7 +4727,7 @@ function renderWishlistItemCard(p) {
                   ${hasPublicOffers ? `
                     <div class="pt-1.5 space-y-1.5 border-t border-[#f0ece4]">
                       <div class="flex items-center justify-between text-[10.5px] text-on-surface-variant font-semibold">
-                        <span>Studio Offers (${couponsList.length})</span>
+                        <span>Exclusive Offers (${couponsList.length})</span>
                         <span class="text-[9.5px] text-gray-400 font-normal">Tap to apply</span>
                       </div>
                       <div class="grid grid-cols-1 gap-1.5">
@@ -4782,7 +4782,7 @@ function renderWishlistItemCard(p) {
                   <span id="cart-subtotal" class="font-spec-numeral font-bold text-primary">${formatINR(summary.subtotal)}</span>
                 </div>
                 <div id="cart-voucher-discount-row" class="flex justify-between items-center text-xs sm:text-sm text-[#266b4e] font-medium ${summary.couponDiscount > 0 ? '' : 'hidden'}">
-                  <span id="cart-voucher-discount-label">Studio Voucher (${esc(summary.couponCode)})</span>
+                  <span id="cart-voucher-discount-label">Promo Voucher (${esc(summary.couponCode)})</span>
                   <span id="cart-voucher-discount-val" class="font-spec-numeral font-bold">-${formatINR(summary.couponDiscount)}</span>
                 </div>
                 <div class="flex justify-between items-center text-xs sm:text-sm text-on-surface-variant">
@@ -5096,7 +5096,7 @@ function renderWishlistItemCard(p) {
                             <img src="${esc(customDetails.photoUrl)}" alt="Attached Flower Photo" class="w-10 h-10 rounded object-cover border border-[#e4e0d8]">
                             <div class="text-[11px]">
                               <span class="font-semibold text-primary block">Your Flower Photo Reference</span>
-                              <span class="text-gray-500 text-[10px]">Transmitted to studio resin master</span>
+                              <span class="text-gray-500 text-[10px]">Transmitted to resin artisan</span>
                             </div>
                           </div>
                         ` : ''}
@@ -5401,7 +5401,7 @@ function renderWishlistItemCard(p) {
         contentUrl: `${siteUrl}/vistara-krafts-logo.jpg`,
         width: 512,
         height: 512,
-        caption: 'Vistāra Krafts × Resin Art Memories (@resin.art.memories) Official Studio Emblem'
+        caption: 'Vistāra Krafts × Resin Art Memories (@resin.art.memories) Official Emblem'
       },
       image: `${siteUrl}/vistara-krafts-logo.jpg`,
       description: seoCfg.defaultDescription,
@@ -5456,7 +5456,7 @@ function renderWishlistItemCard(p) {
       '@type': 'WebSite',
       '@id': `${siteUrl}/#website`,
       url: `${siteUrl}/`,
-      name: 'Vistāra Krafts (@resin.art.memories) — Epoxy Resin & Bridal Keepsake Studio',
+      name: 'Vistāra Krafts (@resin.art.memories) — Epoxy Resin & Bridal Keepsakes',
       inLanguage: 'en-IN',
       publisher: { '@id': `${siteUrl}/#organization` },
       potentialAction: {
@@ -5505,8 +5505,8 @@ function renderWishlistItemCard(p) {
     const mapProductToSchema = (prod, isPrimaryActive) => {
       const specsObj = (prod.specs && typeof prod.specs === 'object') ? prod.specs : {};
       const specsList = [
-        { '@type': 'PropertyValue', name: 'Mix Ratio by Weight', value: String(specsObj.mixRatioWeight || prod.ratio || 'Custom Studio') },
-        { '@type': 'PropertyValue', name: 'Dynamic Viscosity', value: String(specsObj.viscosity || prod.viscosity || 'Studio Tuned') },
+        { '@type': 'PropertyValue', name: 'Mix Ratio by Weight', value: String(specsObj.mixRatioWeight || prod.ratio || 'Custom Blend') },
+        { '@type': 'PropertyValue', name: 'Dynamic Viscosity', value: String(specsObj.viscosity || prod.viscosity || 'Precision Tuned') },
         { '@type': 'PropertyValue', name: 'Max Single Pour Depth', value: String(specsObj.maxDepth || prod.pourDepth || 'Up to 50mm') },
         { '@type': 'PropertyValue', name: 'Full Glass Cure', value: String(specsObj.fullCure || prod.cureTime || '24 hrs') },
         { '@type': 'PropertyValue', name: 'HSN Code', value: String(specsObj.hsnCode || '39073010 (18% GST)') }
@@ -5534,7 +5534,7 @@ function renderWishlistItemCard(p) {
               '@type': 'Review',
               author: { '@type': 'Person', name: 'Verified Vistāra Patron' },
               reviewRating: { '@type': 'Rating', ratingValue: '5', bestRating: '5' },
-              reviewBody: `${prod.name} delivered optical-grade clarity and zero micro-bubbles in Indian studio conditions.`
+              reviewBody: `${prod.name} delivered optical-grade clarity and zero micro-bubbles in ambient workshop conditions.`
             }
           ];
 
@@ -5680,7 +5680,7 @@ function renderWishlistItemCard(p) {
       '@type': 'HowTo',
       '@id': `${siteUrl}/#howto-epoxy-mixing`,
       name: 'How to Measure, Mix, and Pour 3:1 & 2:1 Crystal Epoxy Resin Without Bubbles',
-      description: 'Studio protocol for achieving glass-clear, bubble-free epoxy resin casts in Indian ambient temperatures (24°C–30°C).',
+      description: 'Craft protocol for achieving glass-clear, bubble-free epoxy resin casts in Indian ambient temperatures (24°C–30°C).',
       totalTime: 'PT45M',
       estimatedCost: { '@type': 'MonetaryAmount', currency: 'INR', value: '1299' },
       supply: [
@@ -5849,7 +5849,7 @@ function renderWishlistItemCard(p) {
           </button>
           <button type="button" onclick="window.navigateTo('custom-studio')" class="min-h-[44px] px-5 py-2.5 rounded-xl bg-white border border-[#e4e0d8] hover:bg-surface-container-low text-primary text-xs font-bold inline-flex items-center gap-2 cursor-pointer transition shadow-2xs">
             <span class="material-symbols-outlined text-base text-[#9e3322]" aria-hidden="true">auto_awesome</span>
-            <span>Custom Studio</span>
+            <span>Custom Keepsakes</span>
           </button>
         </div>
 
@@ -5960,7 +5960,7 @@ function renderWishlistItemCard(p) {
 
         <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#fdf6f3] border border-[#9e3322]/20 text-[#9e3322] text-xs font-bold uppercase tracking-wider">
           <span class="material-symbols-outlined text-sm" aria-hidden="true">precision_manufacturing</span>
-          <span>HTTP 500 • Studio System Interruption</span>
+          <span>HTTP 500 • System Interruption</span>
         </div>
 
         <div class="space-y-3 max-w-xl">
@@ -6072,7 +6072,7 @@ function renderWishlistItemCard(p) {
         const prodShort = activeProduct.shortName || prodName;
         const prodSku = activeProduct.sku || `VK-${String(activeProduct.id).toUpperCase()}`;
         const prodSubtitle = activeProduct.subtitle || `${prodName} — Handcrafted by Vistāra Krafts × Resin Art Memories (@resin.art.memories)`;
-        const prodRatio = activeProduct.ratio || 'Custom Studio';
+        const prodRatio = activeProduct.ratio || 'Custom Keepsakes';
         const prodDepth = activeProduct.pourDepth || 'Up to 50mm';
         const prodCure = activeProduct.cureTime || '24 hrs';
         const prodPotLife = activeProduct.potLife || '45 mins';
@@ -6125,21 +6125,21 @@ function renderWishlistItemCard(p) {
       const shapePrice = (AppState.customBuilder && AppState.customBuilder.shapePrice) || 4499;
       routeMeta = {
         ...routeMeta,
-        title: `Custom Bridal Varmala Preservation & Epoxy Pour Calculator Studio | Vistāra Krafts (@resin.art.memories)`,
-        description: `Commission a bespoke 50mm museum-grade bridal varmala or wedding bouquet resin block with free Pan-India BlueDart air flower pickup, or calculate exact Part A + Part B epoxy resin weight with our interactive studio calculator.`,
+        title: `Custom Bridal Varmala Preservation & Epoxy Pour Calculator | Vistāra Krafts (@resin.art.memories)`,
+        description: `Commission a bespoke 50mm museum-grade bridal varmala or wedding bouquet resin block with free Pan-India BlueDart air flower pickup, or calculate exact Part A + Part B epoxy resin weight with our interactive calculator.`,
         canonicalUrl,
         priceAmount: String(shapePrice),
         pageSchemaType: 'WebPage',
         breadcrumbs: [
           { name: 'Vistāra Krafts Home', url: `${siteUrl}/` },
-          { name: 'Custom Bridal Varmala & Pour Calculator Studio', url: canonicalUrl }
+          { name: 'Custom Bridal Varmala & Pour Calculator', url: canonicalUrl }
         ]
       };
     } else if (route === 'social') {
       const canonicalUrl = `${siteUrl}/#/social`;
       routeMeta = {
         ...routeMeta,
-        title: `@resin.art.memories Community Feed & Shoppable Studio Reels | Vistāra Krafts India`,
+        title: `@resin.art.memories Community Feed & Shoppable Reels | Vistāra Krafts India`,
         description: `Explore 50,000+ community creations, bridal varmala unboxings, ocean wave charcuterie pours, and deep-pour river table tutorials from @resin.art.memories.`,
         canonicalUrl,
         priceAmount: '1299',
@@ -6376,7 +6376,7 @@ function renderWishlistItemCard(p) {
     const product = Store.getProductById(productId);
     if (!product) return;
     if (product.inStock === false) {
-      window.showToast('Item Out of Stock', 'This studio piece is currently unavailable.', {
+      window.showToast('Item Out of Stock', 'This piece is currently unavailable.', {
         type: 'error',
         icon: 'block'
       });
@@ -6542,7 +6542,7 @@ function renderWishlistItemCard(p) {
     const prod = Store.getProductById(productId);
     if (!prod) return;
     if (prod.inStock === false) {
-      window.showToast('Item Out of Stock', 'This studio piece is currently unavailable.');
+      window.showToast('Item Out of Stock', 'This piece is currently unavailable.');
       return;
     }
     const varState = AppState.cardVarieties[productId] || { colorIdx: 0, shapeIdx: 0, sizeIdx: 0 };
@@ -6606,7 +6606,7 @@ function renderWishlistItemCard(p) {
     if (typeof Store.setPersonaPreference === 'function') {
       Store.setPersonaPreference(valid);
     }
-    const label = valid === 'masculine' ? '👔 Gifts for Him' : (valid === 'feminine' ? '🌸 Gifts for Her' : 'Curated Studio Collections');
+    const label = valid === 'masculine' ? '👔 Gifts for Him' : (valid === 'feminine' ? '🌸 Gifts for Her' : 'Curated Collections');
     window.showToast(`Feed Curated: ${label}`, 'Catalogue order adjusted to your preferred aesthetic & gifting style.');
     syncGlobalFilterDrawerDom();
     renderActiveView({ preserveScroll: false });
@@ -7387,7 +7387,7 @@ function renderWishlistItemCard(p) {
       dropdown.innerHTML = `
         <div class="p-5 text-center flex flex-col items-center gap-2">
           <span class="material-symbols-outlined text-3xl text-outline/60" aria-hidden="true">search_off</span>
-          <p class="text-xs font-bold text-primary">No studio products found for "${esc(rawVal)}"</p>
+          <p class="text-xs font-bold text-primary">No products found for "${esc(rawVal)}"</p>
           <p class="text-[11px] text-on-surface-variant">Try searching for "epoxy", "bridal", "pigment", or "mold".</p>
           <button type="button" onclick="window.navigateTo('catalog', 'all'); window.closeHomeSearchDropdown();" class="mt-1 px-4 py-1.5 rounded-xl bg-primary text-white text-xs font-bold shadow-xs cursor-pointer">
             Browse All Catalogue Products (${allProducts.length})
@@ -7713,7 +7713,7 @@ function renderWishlistItemCard(p) {
     renderActiveView({ preserveScroll: true });
     const prod = Store.getProductById(AppState.currentProductId);
     const v = prod && prod.variants && prod.variants[idx];
-    if (v) window.showToast(`Selected ${v.label}`, `${formatINR(v.price)} • ${v.unitPrice || 'Studio Edition'}`);
+    if (v) window.showToast(`Selected ${v.label}`, `${formatINR(v.price)} • ${v.unitPrice || 'Artisan Edition'}`);
   };
 
   window.setPdpCustomNote = function (val) {
@@ -7742,7 +7742,7 @@ function renderWishlistItemCard(p) {
     const prod = Store.getProductById(AppState.currentProductId);
     if (!prod) return;
     if (prod.inStock === false) {
-      window.showToast('Item Out of Stock', 'This studio piece is currently unavailable.', {
+      window.showToast('Item Out of Stock', 'This piece is currently unavailable.', {
         type: 'error',
         icon: 'block'
       });
@@ -7817,7 +7817,7 @@ function renderWishlistItemCard(p) {
   window.buyNowPdp = function () {
     const prod = Store.getProductById(AppState.currentProductId);
     if (!prod || prod.inStock === false) {
-      window.showToast('Item Out of Stock', 'This studio piece is currently unavailable.');
+      window.showToast('Item Out of Stock', 'This piece is currently unavailable.');
       return;
     }
     window.addPdpToCart();
@@ -7830,7 +7830,7 @@ function renderWishlistItemCard(p) {
     Store.addToCart({ productId: 'vk-cat-mld-agat', variantLabel: 'Agate Geode Coaster Mold (Bundle)', price: 399, regularPrice: 449, qty: 1 });
     Store.addToCart({ productId: 'vk-cat-pig-foil', variantLabel: 'Artisanal Foil Flakes (Bundle)', price: 750, regularPrice: 899, qty: 1 });
     updateGlobalBadges();
-    window.showToast('Added 3-Piece Studio Bundle to Bag!', 'Saved ₹349 on combo');
+    window.showToast('Added 3-Piece Bundle to Bag!', 'Saved ₹349 on combo');
   };
 
   window.verifyPdpPincode = function () {
@@ -7945,9 +7945,9 @@ function renderWishlistItemCard(p) {
         window.showToast('Notice', check.reason || 'Please remove inappropriate language or links.');
         return;
       }
-      Store.addComment(postId, '@studio.patron', check.cleanText);
+      Store.addComment(postId, '@patron.collector', check.cleanText);
     } else {
-      Store.addComment(postId, '@studio.patron', rawText.slice(0, 250));
+      Store.addComment(postId, '@patron.collector', rawText.slice(0, 250));
     }
     input.value = '';
     renderActiveView();
@@ -8142,7 +8142,7 @@ function renderWishlistItemCard(p) {
       }, 1200);
     }
 
-    window.showToast('Added to Studio Bag', p.shortName || p.name, {
+    window.showToast('Added to Bag', p.shortName || p.name, {
       type: 'success',
       icon: 'shopping_bag',
       action: {
@@ -8170,7 +8170,7 @@ function renderWishlistItemCard(p) {
       }
     });
     updateGlobalBadges();
-    window.showToast(`Added ${ids.length} Saved Items to Studio Bag!`);
+    window.showToast(`Added ${ids.length} Saved Items to Bag!`);
     window.navigateTo('cart');
   };
 
@@ -8328,7 +8328,7 @@ function renderWishlistItemCard(p) {
     if (voucherRow) {
       if (summary.couponDiscount > 0) {
         voucherRow.classList.remove('hidden');
-        if (voucherLabel) voucherLabel.textContent = `Studio Voucher (${summary.couponCode})`;
+        if (voucherLabel) voucherLabel.textContent = `Voucher (${summary.couponCode})`;
         if (voucherDiscount) voucherDiscount.textContent = `-${formatINR(summary.couponDiscount)}`;
       } else {
         voucherRow.classList.add('hidden');
@@ -8431,7 +8431,7 @@ function renderWishlistItemCard(p) {
     }, 220);
 
     // 5. Toast Feedback
-    window.showToast('Item Removed from Studio Bag', '', {
+    window.showToast('Item Removed from Bag', '', {
       type: 'info',
       icon: 'remove_shopping_cart'
     });
@@ -8477,7 +8477,7 @@ function renderWishlistItemCard(p) {
       Store.removeOutOfStockItems();
       updateGlobalBadges();
       renderActiveView();
-      window.showToast('Out-of-Stock Items Removed', 'Your studio bag has been refreshed.', {
+      window.showToast('Out-of-Stock Items Removed', 'Your shopping bag has been refreshed.', {
         type: 'info',
         icon: 'cleaning_services'
       });
@@ -8575,7 +8575,7 @@ function renderWishlistItemCard(p) {
         icon: 'local_offer'
       });
     } else {
-      window.showToast(res.message ? res.message : 'Coupon Notice', 'Add more studio items to reach eligibility threshold.', {
+      window.showToast(res.message ? res.message : 'Coupon Notice', 'Add more items to reach eligibility threshold.', {
         type: 'warning',
         icon: 'info'
       });
@@ -8586,7 +8586,7 @@ function renderWishlistItemCard(p) {
     Store.applyCoupon('');
     const summary = Store.getCartSummary();
     reconcileVoucherSectionDom(summary);
-    window.showToast('Coupon Removed', 'Studio voucher removed from your bag.', {
+    window.showToast('Coupon Removed', 'Voucher removed from your bag.', {
       type: 'info',
       icon: 'check'
     });
@@ -8604,7 +8604,7 @@ function renderWishlistItemCard(p) {
         icon: 'local_offer'
       });
     } else {
-      window.showToast(res.message ? res.message : 'Coupon Notice', 'Add more studio items to reach eligibility threshold.', {
+      window.showToast(res.message ? res.message : 'Coupon Notice', 'Add more items to reach eligibility threshold.', {
         type: 'warning',
         icon: 'info'
       });
@@ -8734,18 +8734,18 @@ function renderWishlistItemCard(p) {
         <ul class="list-disc pl-5 space-y-1 text-xs text-on-surface mt-2">
           <li><strong>VOC Content:</strong> 0.0 g/L (100% reactive solids, solvent-free).</li>
           <li><strong>Flash Point:</strong> &gt; 150°C (Non-flammable air &amp; surface cargo certified).</li>
-          <li><strong>PPE Recommendation:</strong> Nitrile gloves and splash eyewear in studio ventilation.</li>
+          <li><strong>PPE Recommendation:</strong> Nitrile gloves and splash eyewear in ventilated work area.</li>
           <li><strong>Food Contact Safety:</strong> Complies with FDA 21 CFR 175.300 once fully cured for 72 hours at 25°C.</li>
         </ul>
       `;
     } else if (docType === 'wholesale') {
-      title.textContent = '2026 Studio & B2B Wholesale Slab Pricing';
+      title.textContent = '2026 Wholesale & B2B Slab Pricing';
       body.innerHTML = `
-        <p class="text-xs text-on-surface-variant">Official GST Input Tax Credit (18%) invoices provided on all studio tiers:</p>
+        <p class="text-xs text-on-surface-variant">Official GST Input Tax Credit (18%) invoices provided on all volume tiers:</p>
         <div class="mt-2 border border-[#e4e0d8] rounded-lg overflow-hidden text-xs">
           <div class="flex justify-between p-2 bg-surface-container-low font-bold"><span>Volume Tier</span><span>Rate per kg (3:1 / 2:1)</span></div>
           <div class="flex justify-between p-2 border-t border-surface-container"><span>12 kg Commercial Barrel</span><span class="font-spec-numeral font-bold">₹833 / kg</span></div>
-          <div class="flex justify-between p-2 border-t border-surface-container"><span>36 kg Studio Pallet</span><span class="font-spec-numeral font-bold">₹740 / kg</span></div>
+          <div class="flex justify-between p-2 border-t border-surface-container"><span>36 kg Master Bulk Pack</span><span class="font-spec-numeral font-bold">₹740 / kg</span></div>
           <div class="flex justify-between p-2 border-t border-surface-container"><span>200 kg Industrial Drum</span><span class="font-spec-numeral font-bold">₹645 / kg</span></div>
         </div>
       `;
@@ -8756,7 +8756,7 @@ function renderWishlistItemCard(p) {
         <ul class="list-disc pl-5 space-y-1 text-xs text-on-surface mt-2">
           <li><strong>Weighing Protocol:</strong> Always weigh Part A and Part B on a digital gram scale (3:1 by weight or 2:1 for Deep Pour).</li>
           <li><strong>Mixing Cadence:</strong> Stir slowly for 3–4 minutes scraping beaker walls and base corners twice.</li>
-          <li><strong>Ambient Cure Window:</strong> Ideal studio temperature 22°C – 30°C with &lt; 65% relative humidity.</li>
+          <li><strong>Ambient Cure Window:</strong> Ideal curing temperature 22°C – 30°C with &lt; 65% relative humidity.</li>
         </ul>
       `;
     }
@@ -10314,7 +10314,7 @@ function renderWishlistItemCard(p) {
             <span class="font-spec-numeral text-secondary">${formatINR(ord.total)}</span>
           </div>
         </div>
-        <p class="text-[11px] text-on-surface-variant">Shipped to: <strong>${esc(ord.customerName || 'Verified Studio Patron')}</strong> — ${esc(ord.address || 'Bengaluru, KA 560001')} (${esc(ord.courier)})</p>
+        <p class="text-[11px] text-on-surface-variant">Shipped to: <strong>${esc(ord.customerName || 'Verified Buyer')}</strong> — ${esc(ord.address || 'Bengaluru, KA 560001')} (${esc(ord.courier)})</p>
       </div>
     `;
     modal.classList.remove('hidden');
@@ -10344,7 +10344,7 @@ function renderWishlistItemCard(p) {
       }
     });
     updateGlobalBadges();
-    window.showToast(`Reordered #${orderId} Items to Studio Bag!`);
+    window.showToast(`Reordered #${orderId} Items to Bag!`);
     window.navigateTo('cart');
   };
 
@@ -10414,7 +10414,7 @@ function renderWishlistItemCard(p) {
 
     const summary = Store.getCartSummary();
     if (summary.itemsCount === 0) {
-      window.showToast('Your Studio Bag is Empty');
+      window.showToast('Your Bag is Empty');
       return;
     }
 
@@ -10619,7 +10619,7 @@ function renderWishlistItemCard(p) {
     const statusEl = document.getElementById('pay-proc-status');
     if (timeoutBox) timeoutBox.classList.add('hidden');
     if (statusEl) {
-      statusEl.innerHTML = '<span class="w-2 h-2 rounded-full bg-secondary animate-ping"></span><span>Verifying Studio Order...</span>';
+      statusEl.innerHTML = '<span class="w-2 h-2 rounded-full bg-secondary animate-ping"></span><span>Verifying Order...</span>';
     }
     if (procModal) procModal.classList.remove('hidden');
     syncBodyModalLock();
@@ -10841,7 +10841,7 @@ function renderWishlistItemCard(p) {
     const newId = 'ram-lotus-drop-' + Math.floor(100 + Math.random() * 899);
     Store.receiveStudioPush({
       type: 'STUDIO_LIVE_DROP',
-      summary: `Studio Edition "Rose-Gold Anniversary Lotus Clock (${newId})" + New Reel`,
+      summary: `Limited Edition "Rose-Gold Anniversary Lotus Clock (${newId})" + New Reel`,
       product: {
         id: newId,
         sku: 'RAM-LOTUS-' + Math.floor(10 + Math.random() * 89),
@@ -10851,7 +10851,7 @@ function renderWishlistItemCard(p) {
         category: 'keepsakes',
         subCategory: 'floral_preservation',
         relatedCategories: ['casting', 'deep_pour'],
-        badge: 'New Studio Edition',
+        badge: 'Limited Edition',
         price: 3499,
         regularPrice: 4299,
         unitPriceLabel: '16" Brass Sweep',
@@ -10889,9 +10889,9 @@ function renderWishlistItemCard(p) {
         location: 'Bengaluru Preservation Lab',
         timeAgo: 'Just now',
         tag: 'BridalVarmala',
-        badge: 'New Studio Reel',
+        badge: 'New Reel',
         image: Store.IMAGES.jewelryBezel,
-        caption: '✨ NEW ATELIER EDITION: Just finished curing this 24K Rose-Gold Lotus & Bridal Pearl keepsake clock! Available immediately in our studio catalogue.',
+        caption: '✨ NEW ATELIER EDITION: Just finished curing this 24K Rose-Gold Lotus & Bridal Pearl keepsake clock! Available immediately in our catalogue.',
         likes: 128,
         saved: false,
         liked: true,

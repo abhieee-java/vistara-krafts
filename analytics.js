@@ -160,7 +160,7 @@
       if (!product) return;
       const price = Number(activeVariant?.price || product.price || 0);
       const itemId = String(product.id || product.sku || '');
-      const itemName = String(product.name || 'Handcrafted Studio Product');
+      const itemName = String(product.name || 'Handcrafted Product');
       const itemCategory = String(product.category || 'Resin Art');
       const variantName = activeVariant?.label || 'Standard Edition';
 
@@ -202,7 +202,7 @@
       const unitPrice = Number(activeVariant?.price || product.price || 0);
       const totalPrice = unitPrice * quantity;
       const itemId = String(product.id || product.sku || '');
-      const itemName = String(product.name || 'Handcrafted Studio Product');
+      const itemName = String(product.name || 'Handcrafted Product');
       const itemCategory = String(product.category || 'Resin Art');
       const variantName = activeVariant?.label || 'Standard Edition';
 
@@ -244,7 +244,7 @@
 
       const gaItems = cartItems.map(item => ({
         item_id: String(item.productId || item.id || ''),
-        item_name: String(item.name || item.productName || 'Studio Item'),
+        item_name: String(item.name || item.productName || 'Craft Item'),
         item_variant: String(item.variantLabel || 'Standard Edition'),
         price: Number(item.price || 0),
         quantity: Number(item.qty || 1)
@@ -296,7 +296,7 @@
 
       const gaItems = items.map(item => ({
         item_id: String(item.productId || item.id || ''),
-        item_name: String(item.name || item.productName || 'Studio Item'),
+        item_name: String(item.name || item.productName || 'Craft Item'),
         item_variant: String(item.variantLabel || 'Standard Edition'),
         price: Number(item.price || 0),
         quantity: Number(item.qty || 1)
@@ -315,7 +315,7 @@
 
       // 2. Meta Pixel: Purchase
       sendFbq('track', 'Purchase', {
-        content_name: 'Vistāra Krafts Studio Order',
+        content_name: 'Vistāra Krafts Order',
         content_type: 'product',
         content_ids: items.map(i => String(i.productId || i.id || '')),
         num_items: items.reduce((sum, i) => sum + (Number(i.qty) || 1), 0),
