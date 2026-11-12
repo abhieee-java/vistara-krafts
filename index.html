@@ -3015,7 +3015,7 @@
           <span class="js-header-pin font-semibold">560001</span>
         </button>
 
-        <button id="btn-header-search" type="button" aria-label="Search Catalogue" onclick="window.navigateTo('catalog', 'all'); setTimeout(() => document.getElementById('catalog-search-input')?.focus(), 120);" class="hidden sm:flex w-11 h-11 sm:w-12 sm:h-12 min-w-[44px] min-h-[44px] rounded-xl items-center justify-center text-primary bg-surface-container/50 hover:bg-surface-container active:scale-95 border border-[#e4e0d8]/80 cursor-pointer shrink-0 transition-all">
+        <button id="btn-header-search" type="button" aria-label="Search Products & Keepsakes" onclick="window.toggleHeaderSearch()" class="w-11 h-11 sm:w-12 sm:h-12 min-w-[44px] min-h-[44px] rounded-xl flex items-center justify-center text-primary bg-surface-container/50 hover:bg-surface-container active:scale-95 border border-[#e4e0d8]/80 cursor-pointer shrink-0 transition-all">
           <span class="material-symbols-outlined text-[24px]" aria-hidden="true">search</span>
         </button>
 
@@ -3029,6 +3029,57 @@
           <span class="js-cart-badge hidden absolute top-0.5 right-0.5 min-w-[18px] h-[18px] px-1 bg-[#9e3322] text-white rounded-full font-spec-numeral text-[10px] font-bold flex items-center justify-center border-2 border-white shadow-xs">0</span>
         </button>
       </div>
+    </div>
+
+    <!-- Header Dropdown / Expandable Search Bar (Toggled by Search Icon Button) -->
+    <div id="header-search-bar-drawer" class="hidden w-full border-t border-[#e4e0d8] bg-white/98 backdrop-blur-2xl shadow-lg transition-all duration-300 z-50">
+      <div class="max-w-4xl mx-auto px-3.5 sm:px-8 py-3 sm:py-4 flex flex-col gap-2.5 relative">
+        <div class="relative flex items-center w-full">
+          <label for="home-product-search-input" class="sr-only">Search products</label>
+          <span class="material-symbols-outlined text-lg sm:text-xl text-primary/60 absolute left-3.5 pointer-events-none transition-transform duration-200" aria-hidden="true">search</span>
+          <input
+            id="home-product-search-input"
+            type="search"
+            inputmode="search"
+            autocomplete="off"
+            placeholder="Search bridal keepsakes, 3:1 &amp; 2:1 epoxy kits, silicone molds, mica pigments..."
+            class="w-full h-11 sm:h-12 pl-10 sm:pl-11 pr-28 rounded-2xl bg-[#faf8f5] sm:bg-white border border-[#e4e0d8] shadow-2xs text-xs sm:text-sm text-primary placeholder:text-on-surface-variant/70 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all font-medium"
+            style="-webkit-appearance: none; appearance: none;"
+            oninput="window.handleHomeSearchInput(this.value)"
+            onkeydown="window.handleHomeSearchKeyDown(event)"
+            onfocus="window.handleHomeSearchFocus()"
+          />
+          <div class="absolute right-2 flex items-center gap-1.5">
+            <button id="home-search-clear-btn" type="button" aria-label="Clear search" onclick="window.clearHomeSearch()" class="hidden w-7 h-7 rounded-lg text-primary/70 hover:text-primary hover:bg-surface-container flex items-center justify-center transition-colors cursor-pointer">
+              <svg class="w-3.5 h-3.5 pointer-events-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+              </svg>
+            </button>
+            <button type="button" onclick="window.submitHomeSearch()" class="px-4 py-1.5 rounded-xl bg-primary hover:bg-primary-container active:scale-95 text-white text-xs font-bold transition-all shadow-2xs cursor-pointer">
+              Search
+            </button>
+            <button type="button" onclick="window.closeHeaderSearch()" aria-label="Close search" class="w-8 h-8 rounded-lg text-primary/70 hover:text-primary hover:bg-surface-container flex items-center justify-center transition-colors cursor-pointer" title="Close search">
+              <span class="material-symbols-outlined text-lg" aria-hidden="true">close</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Trending Suggested Search Chips -->
+        <div class="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5 text-xs text-on-surface-variant">
+          <span class="text-[11px] font-semibold text-primary/70 shrink-0">Trending:</span>
+          <button type="button" onclick="window.applyHomeSearchQuery('Bridal Varmala')" class="px-3 py-1 rounded-full bg-white border border-[#e4e0d8] hover:border-primary hover:text-primary text-[11px] font-medium text-primary transition-colors whitespace-nowrap shrink-0 shadow-2xs active:scale-95 cursor-pointer">Bridal Varmala</button>
+          <button type="button" onclick="window.applyHomeSearchQuery('UltraClear 3:1')" class="px-3 py-1 rounded-full bg-white border border-[#e4e0d8] hover:border-primary hover:text-primary text-[11px] font-medium text-primary transition-colors whitespace-nowrap shrink-0 shadow-2xs active:scale-95 cursor-pointer">UltraClear 3:1</button>
+          <button type="button" onclick="window.applyHomeSearchQuery('River Flow 2:1')" class="px-3 py-1 rounded-full bg-white border border-[#e4e0d8] hover:border-primary hover:text-primary text-[11px] font-medium text-primary transition-colors whitespace-nowrap shrink-0 shadow-2xs active:scale-95 cursor-pointer">River Flow 2:1</button>
+          <button type="button" onclick="window.applyHomeSearchQuery('Rose Quartz Geode')" class="px-3 py-1 rounded-full bg-white border border-[#e4e0d8] hover:border-primary hover:text-primary text-[11px] font-medium text-primary transition-colors whitespace-nowrap shrink-0 shadow-2xs active:scale-95 cursor-pointer">Rose Quartz Geode</button>
+          <button type="button" onclick="window.applyHomeSearchQuery('Silicone Mold')" class="px-3 py-1 rounded-full bg-white border border-[#e4e0d8] hover:border-primary hover:text-primary text-[11px] font-medium text-primary transition-colors whitespace-nowrap shrink-0 shadow-2xs active:scale-95 cursor-pointer">Silicone Molds</button>
+        </div>
+
+        <!-- Instant Live Search Dropdown -->
+        <div id="home-search-dropdown" class="hidden absolute top-full left-0 right-0 mt-1 bg-white/98 backdrop-blur-2xl rounded-2xl border border-[#e4e0d8] shadow-xl overflow-hidden z-50 max-h-[22rem] overflow-y-auto">
+        </div>
+      </div>
+    </div>
     </div>
   </header>
 
