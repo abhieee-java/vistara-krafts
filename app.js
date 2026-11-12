@@ -890,13 +890,19 @@ if (typeof window !== 'undefined' && typeof window.dismissVkSplash !== 'function
 
   // Route Navigation
   window.navigateTo = function (route, param = null) {
-    if (AppState.currentRoute === 'catalog' && route === 'product') {
+    if (AppState.currentRoute === 'catalog') {
       try {
-        sessionStorage.setItem('vk_catalog_scrollY', String(window.scrollY));
+        sessionStorage.setItem('vk_catalog_scrollY', String(Math.round(window.scrollY)));
       } catch (_e) {}
     }
     let targetHash = '#/' + route;
     if (route === 'product' && param) {
+      try {
+        sessionStorage.setItem('vk_last_viewed_product_id', String(param));
+        if (AppState.currentRoute === 'catalog') {
+          sessionStorage.setItem('vk_catalog_scrollY', String(Math.round(window.scrollY)));
+        }
+      } catch (_e) {}
       AppState.currentProductId = param;
       AppState.selectedVariantIdx = 0;
       const prod = Store.getProductById(param);
@@ -1244,7 +1250,7 @@ if (typeof window !== 'undefined' && typeof window.dismissVkSplash !== 'function
 
     if (isListView) {
       return `
-        <article class="ram-card product-card-contain sotd-reveal p-3 sm:p-3.5 flex flex-col sm:flex-row gap-3.5 items-start sm:items-center group" data-product-id="${esc(p.id)}">
+        <article id="product-card-${esc(p.id)}" class="ram-card product-card-contain sotd-reveal p-3 sm:p-3.5 flex flex-col sm:flex-row gap-3.5 items-start sm:items-center group" data-product-id="${esc(p.id)}">
           <div class="relative w-full sm:w-28 h-32 sm:h-28 rounded-xl bg-surface-container-low overflow-hidden shrink-0 cursor-pointer" onclick="window.navigateTo('product', '${esc(p.id)}')">
             <img src="${esc(p.image)}" alt="${esc(p.name)}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" loading="eager" decoding="async">
             <div class="absolute top-1.5 left-1.5 flex flex-col gap-0.5 max-w-[calc(100%-1rem)] pointer-events-none">
@@ -1343,7 +1349,7 @@ ${avgRating ? `
     }
 
     return `
-      <article class="ram-card product-card-contain sotd-tilt sotd-reveal p-2 sm:p-2.5 flex flex-col justify-between relative group h-full" data-product-id="${esc(p.id)}" data-price="${activePrice}" data-ratio="${esc(p.ratio)}">
+      <article id="product-card-${esc(p.id)}" class="ram-card product-card-contain sotd-tilt sotd-reveal p-2 sm:p-2.5 flex flex-col justify-between relative group h-full" data-product-id="${esc(p.id)}" data-price="${activePrice}" data-ratio="${esc(p.ratio)}">
         <div class="flex flex-col flex-1">
           <!-- Section A: Primary Image Focus (~48-50% Card Height, Tactile & Dominant) -->
           <div class="catalog-card-media relative w-full aspect-square rounded-xl bg-surface-container-low overflow-hidden mb-1.5 cursor-pointer" onclick="window.navigateTo('product', '${esc(p.id)}')">
@@ -6313,33 +6319,42 @@ function renderWishlistItemCard(p) {
       } catch (_e) {}
 
       let savedCatalogY = null;
+      let lastViewedProdId = null;
       try {
         if (typeof sessionStorage !== 'undefined') {
           savedCatalogY = sessionStorage.getItem('vk_catalog_scrollY');
+          lastViewedProdId = sessionStorage.getItem('vk_last_viewed_product_id');
         }
       } catch (_e) {}
-      if (savedCatalogY) {
-        const y = parseInt(savedCatalogY, 10);
-        if (!isNaN(y) && y > 0) {
-          didRestoreCatalogScroll = true;
-          try {
-            window.scrollTo({ top: y, left: 0, behavior: 'instant' });
-          } catch (_e) {
-            window.scrollTo(0, y);
+
+      const scrollToCatalogTarget = () => {
+        let restored = false;
+        if (lastViewedProdId) {
+          const targetCard = document.getElementById('product-card-' + lastViewedProdId);
+          if (targetCard) {
+            targetCard.scrollIntoView({ behavior: 'instant', block: 'center' });
+            restored = true;
           }
-          requestAnimationFrame(() => {
+        }
+        if (!restored && savedCatalogY) {
+          const y = parseInt(savedCatalogY, 10);
+          if (!isNaN(y) && y > 0) {
             try {
               window.scrollTo({ top: y, left: 0, behavior: 'instant' });
-            } catch (_e) {}
-          });
-          setTimeout(() => {
-            if (AppState.currentRoute === 'catalog' && Math.abs(window.scrollY - y) > 50) {
-              try {
-                window.scrollTo({ top: y, left: 0, behavior: 'instant' });
-              } catch (_e) {}
+            } catch (_e) {
+              window.scrollTo(0, y);
             }
-          }, 60);
+            restored = true;
+          }
         }
+        return restored;
+      };
+
+      if (scrollToCatalogTarget()) {
+        didRestoreCatalogScroll = true;
+        requestAnimationFrame(scrollToCatalogTarget);
+        setTimeout(scrollToCatalogTarget, 60);
+        setTimeout(scrollToCatalogTarget, 180);
       }
     }
 
