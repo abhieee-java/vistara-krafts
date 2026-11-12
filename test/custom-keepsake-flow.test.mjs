@@ -49,6 +49,17 @@ test('Guided Custom Keepsake Flow & Cart Order Isolation Suite', async (t) => {
     assert.ok(appCode.includes('customBuilderNextStep'), 'Next step handler exists');
     assert.ok(appCode.includes('customBuilderPrevStep'), 'Prev step handler exists');
     assert.ok(appCode.includes('customBuilderGoToStep'), 'Go to step handler exists');
+
+    // Rule 6: Zero Scroll-Up Invariant: In-place DOM updates & no scrollIntoView calls in custom builder navigation
+    assert.ok(appCode.includes('function updateCustomBuilderView()'), 'Fine-grained in-place updater updateCustomBuilderView exists');
+    assert.ok(
+      !appCode.includes("custom-keepsake-builder')?.scrollIntoView") &&
+      !appCode.includes("custom-keepsake-builder').scrollIntoView") &&
+      !appCode.includes("custom-keepsake-builder\").scrollIntoView"),
+      'custom-keepsake-builder must not invoke scrollIntoView'
+    );
+    const navSlice = appCode.slice(appCode.indexOf('window.customBuilderNextStep = function'), appCode.indexOf('window.applyCustomPreset = function'));
+    assert.ok(!navSlice.includes('scrollIntoView'), 'customBuilder navigation handlers must not invoke scrollIntoView');
   });
 
   // 2. State Machine & Navigation Verification

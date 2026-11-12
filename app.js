@@ -3546,6 +3546,38 @@ ${avgRating ? `
     `;
   }
 
+  function renderCustomStickyActionBar(b, totalCustomPrice) {
+    return `
+      ${b.step > 1 ? `
+        <button type="button" onclick="window.customBuilderPrevStep()" class="min-h-[44px] px-4 py-2 rounded-xl border border-[#e4e0d8] hover:bg-surface-container text-xs font-bold text-primary flex items-center gap-1.5 transition-colors cursor-pointer shrink-0">
+          <span class="material-symbols-outlined text-base" aria-hidden="true">arrow_back</span>
+          <span>Back</span>
+        </button>
+      ` : '<div></div>'}
+
+      <div class="flex items-center gap-3 ml-auto">
+        ${b.step >= 4 ? `
+          <div class="text-right">
+            <span class="text-[10px] text-on-surface-variant block uppercase tracking-wider font-semibold">Running Total</span>
+            <span class="font-spec-numeral text-base sm:text-lg font-bold text-primary">${formatINR(totalCustomPrice)}</span>
+          </div>
+        ` : ''}
+
+        ${b.step < 6 ? `
+          <button type="button" onclick="window.customBuilderNextStep()" class="btn-shimmer min-h-[44px] px-6 py-2 rounded-xl bg-primary hover:opacity-95 text-white text-xs font-bold flex items-center gap-2 cursor-pointer shadow-sm">
+            <span>Next</span>
+            <span class="material-symbols-outlined text-base" aria-hidden="true">arrow_forward</span>
+          </button>
+        ` : `
+          <button type="button" onclick="window.addCustomCommissionToCart()" class="btn-shimmer min-h-[44px] px-7 py-2.5 rounded-xl bg-[#9e3322] hover:opacity-95 text-white text-xs font-bold flex items-center gap-2 cursor-pointer shadow-md">
+            <span class="material-symbols-outlined text-base" aria-hidden="true">shopping_bag</span>
+            <span>Add to bag</span>
+          </button>
+        `}
+      </div>
+    `;
+  }
+
   // =========================================================================
   // 5. CUSTOM MEMORY PRESERVATION GUIDED FLOW (1-QUESTION-AT-A-TIME JOURNEY)
   // =========================================================================
@@ -3593,51 +3625,25 @@ ${avgRating ? `
         </div>
 
         <!-- Step Indicator & Header (Short, Focused Mobile Layout) -->
-        <div class="flex flex-col gap-2">
+        <div class="flex flex-col gap-2" id="custom-step-header-container">
           <div class="flex items-center justify-between text-xs">
-            <span class="font-bold text-[#855d14] uppercase tracking-wider font-mono">Step ${b.step} of 6</span>
-            <span class="text-on-surface-variant font-medium">${stepTitles[b.step]}</span>
+            <span class="font-bold text-[#855d14] uppercase tracking-wider font-mono" id="custom-step-counter">Step ${b.step} of 6</span>
+            <span class="text-on-surface-variant font-medium" id="custom-step-title">${stepTitles[b.step]}</span>
           </div>
           <!-- Clean Step Progress Bar -->
           <div class="w-full h-1.5 bg-[#e4e0d8] rounded-full overflow-hidden">
-            <div class="h-full bg-primary transition-all duration-300" style="width: ${(b.step / 6) * 100}%;"></div>
+            <div id="custom-step-progress-bar" class="h-full bg-primary transition-all duration-300" style="width: ${(b.step / 6) * 100}%;"></div>
           </div>
         </div>
 
         <!-- Active Question Card (Only ONE Question Shown at a Time) -->
-        <div class="bg-white rounded-2xl border border-[#e4e0d8] p-5 sm:p-7 shadow-xs flex flex-col gap-5 sm:gap-6 min-h-[380px]">
+        <div id="custom-step-card-container" class="bg-white rounded-2xl border border-[#e4e0d8] p-5 sm:p-7 shadow-xs flex flex-col gap-5 sm:gap-6 min-h-[380px]">
           ${renderGuidedStepContent(b)}
         </div>
 
         <!-- Consistent Action Bar Above Mobile Navigation -->
-        <div class="sticky bottom-20 sm:bottom-6 z-20 bg-white/95 backdrop-blur-md rounded-2xl border border-[#e4e0d8] p-3.5 sm:p-4 shadow-lg flex items-center justify-between gap-3">
-          ${b.step > 1 ? `
-            <button type="button" onclick="window.customBuilderPrevStep()" class="min-h-[44px] px-4 py-2 rounded-xl border border-[#e4e0d8] hover:bg-surface-container text-xs font-bold text-primary flex items-center gap-1.5 transition-colors cursor-pointer shrink-0">
-              <span class="material-symbols-outlined text-base" aria-hidden="true">arrow_back</span>
-              <span>Back</span>
-            </button>
-          ` : '<div></div>'}
-
-          <div class="flex items-center gap-3 ml-auto">
-            ${b.step >= 4 ? `
-              <div class="text-right">
-                <span class="text-[10px] text-on-surface-variant block uppercase tracking-wider font-semibold">Running Total</span>
-                <span class="font-spec-numeral text-base sm:text-lg font-bold text-primary">${formatINR(totalCustomPrice)}</span>
-              </div>
-            ` : ''}
-
-            ${b.step < 6 ? `
-              <button type="button" onclick="window.customBuilderNextStep()" class="btn-shimmer min-h-[44px] px-6 py-2 rounded-xl bg-primary hover:opacity-95 text-white text-xs font-bold flex items-center gap-2 cursor-pointer shadow-sm">
-                <span>Next</span>
-                <span class="material-symbols-outlined text-base" aria-hidden="true">arrow_forward</span>
-              </button>
-            ` : `
-              <button type="button" onclick="window.addCustomCommissionToCart()" class="btn-shimmer min-h-[44px] px-7 py-2.5 rounded-xl bg-[#9e3322] hover:opacity-95 text-white text-xs font-bold flex items-center gap-2 cursor-pointer shadow-md">
-                <span class="material-symbols-outlined text-base" aria-hidden="true">shopping_bag</span>
-                <span>Add to bag</span>
-              </button>
-            `}
-          </div>
+        <div id="custom-sticky-actions-bar" class="sticky bottom-20 sm:bottom-6 z-20 bg-white/95 backdrop-blur-md rounded-2xl border border-[#e4e0d8] p-3.5 sm:p-4 shadow-lg flex items-center justify-between gap-3">
+          ${renderCustomStickyActionBar(b, totalCustomPrice)}
         </div>
 
         <!-- Secondary Information & Tools (Care Protocol, Transformation Slider, DIY Pour Calculator) -->
@@ -8114,7 +8120,58 @@ function renderWishlistItemCard(p) {
 
   // =========================================================================
   // CUSTOM GUIDED SHOPPING FLOW HANDLERS (Step 1 to Step 6)
+  // Fine-Grained In-Place Custom Keepsake View Updater
+  // Prevents full DOM destruction, stops route-view-enter jumps, and eliminates scroll-up effects!
   // =========================================================================
+  function updateCustomBuilderView() {
+    const cardContainer = document.getElementById('custom-step-card-container');
+    if (!cardContainer || AppState.currentRoute !== 'custom-studio') {
+      renderActiveView();
+      return;
+    }
+
+    const b = AppState.customBuilder;
+    if (!b.step) b.step = 1;
+    if (!b.productType) b.productType = 'block';
+    if (!b.shapePrice) b.shapePrice = 4499;
+
+    const ledCost = b.ledBase ? 499 : 0;
+    const secondaryCost = Number(b.secondaryAddon) || 0;
+    const sourceCost = Number(b.sourceAddon) || 0;
+    const accentCost = Number(b.metallicAddon) || 0;
+    const totalCustomPrice = (b.shapePrice || 4499) + sourceCost + accentCost + secondaryCost + ledCost;
+
+    const stepTitles = {
+      1: 'Product Type',
+      2: 'Item to Preserve',
+      3: 'Show Us Your Item',
+      4: 'Choose Size',
+      5: 'Make It Yours',
+      6: 'Review Keepsake'
+    };
+
+    // 1. In-place update of step indicator & title
+    const counterEl = document.getElementById('custom-step-counter');
+    if (counterEl) counterEl.textContent = `Step ${b.step} of 6`;
+
+    const titleEl = document.getElementById('custom-step-title');
+    if (titleEl) titleEl.textContent = stepTitles[b.step] || '';
+
+    // 2. In-place update of progress bar width
+    const progressEl = document.getElementById('custom-step-progress-bar');
+    if (progressEl) progressEl.style.width = `${(b.step / 6) * 100}%`;
+
+    // 3. In-place update of active step card content (ZERO scroll jump, ZERO whole-page re-render)
+    cardContainer.innerHTML = renderGuidedStepContent(b);
+
+    // 4. In-place update of sticky action bar (Back, Next, Running Total)
+    const actionsBar = document.getElementById('custom-sticky-actions-bar');
+    if (actionsBar) {
+      actionsBar.innerHTML = renderCustomStickyActionBar(b, totalCustomPrice);
+    }
+  }
+  window.updateCustomBuilderView = updateCustomBuilderView;
+
   window.selectCustomProductType = function (id, name, shape, price, dims) {
     const b = AppState.customBuilder;
     b.productType = id;
@@ -8123,7 +8180,7 @@ function renderWishlistItemCard(p) {
     b.shapePrice = Number(price);
     b.sizeDimensions = dims;
     b.stepError = '';
-    renderActiveView();
+    updateCustomBuilderView();
   };
 
   window.selectCustomItemToPreserve = function (label) {
@@ -8138,7 +8195,7 @@ function renderWishlistItemCard(p) {
       b.sourceAddon = 0;
     }
     b.stepError = '';
-    renderActiveView();
+    updateCustomBuilderView();
   };
 
   window.selectCustomSize = function (shapeLabel, dims, price) {
@@ -8147,31 +8204,31 @@ function renderWishlistItemCard(p) {
     b.sizeDimensions = dims;
     b.shapePrice = Number(price);
     b.stepError = '';
-    renderActiveView();
+    updateCustomBuilderView();
   };
 
   window.selectCustomAccent = function (label, price) {
     const b = AppState.customBuilder;
     b.metallic = label;
     b.metallicAddon = Number(price);
-    renderActiveView();
+    updateCustomBuilderView();
   };
 
   window.selectCustomSecondaryAddon = function (label, price) {
     const b = AppState.customBuilder;
     b.secondaryKeepsake = label;
     b.secondaryAddon = Number(price);
-    renderActiveView();
+    updateCustomBuilderView();
   };
 
   window.toggleCustomLed = function (checked) {
     AppState.customBuilder.ledBase = checked;
-    renderActiveView();
+    updateCustomBuilderView();
   };
 
   window.toggleCustomEngraving = function (checked) {
     AppState.customBuilder.hasEngraving = checked;
-    renderActiveView();
+    updateCustomBuilderView();
   };
 
   window.updateCustomEngravingText = function (val) {
@@ -8185,12 +8242,12 @@ function renderWishlistItemCard(p) {
 
   window.updateCustomPickupSlot = function (val) {
     AppState.customBuilder.pickupSlot = val;
-    renderActiveView();
+    updateCustomBuilderView();
   };
 
   window.updateCustomFontStyle = function (font) {
     AppState.customBuilder.fontStyle = font;
-    renderActiveView();
+    updateCustomBuilderView();
   };
 
   // Direct Supabase Storage Photo Upload (Item & Reference Photos)
@@ -8281,7 +8338,7 @@ function renderWishlistItemCard(p) {
       b.uploadError = 'We could not upload your photo. Please check your connection and try again.';
       window.showToast('Upload Issue', b.uploadError);
     }
-    renderActiveView();
+    updateCustomBuilderView();
   };
 
   window.removeCustomKeepsakePhoto = function (photoType) {
@@ -8299,10 +8356,10 @@ function renderWishlistItemCard(p) {
       b.referencePhotoSizeKb = 0;
     }
     b.uploadError = '';
-    renderActiveView();
+    updateCustomBuilderView();
   };
 
-  // Step Navigation Engine
+  // Step Navigation Engine (Smooth in-place step change with ZERO scroll-up jumps)
   window.customBuilderNextStep = function () {
     const b = AppState.customBuilder;
     b.stepError = '';
@@ -8311,7 +8368,7 @@ function renderWishlistItemCard(p) {
     if (b.step === 2) {
       if (!b.itemToPreserve) {
         b.stepError = 'Please choose what you would like to preserve to continue.';
-        renderActiveView();
+        updateCustomBuilderView();
         return;
       }
     } else if (b.step === 3) {
@@ -8319,22 +8376,20 @@ function renderWishlistItemCard(p) {
       const needsPhoto = b.itemToPreserve !== 'Atelier Fresh Flowers';
       if (needsPhoto && !b.itemPhotoUrl) {
         b.stepError = 'Please add a photo of your item to continue.';
-        renderActiveView();
+        updateCustomBuilderView();
         return;
       }
     } else if (b.step === 4) {
       if (!b.shape || !b.shapePrice) {
         b.stepError = 'Please choose a size to continue.';
-        renderActiveView();
+        updateCustomBuilderView();
         return;
       }
     }
 
     if (b.step < 6) {
       b.step++;
-      renderActiveView();
-      const el = document.getElementById('custom-keepsake-builder');
-      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      updateCustomBuilderView();
     }
   };
 
@@ -8343,9 +8398,7 @@ function renderWishlistItemCard(p) {
     b.stepError = '';
     if (b.step > 1) {
       b.step--;
-      renderActiveView();
-      const el = document.getElementById('custom-keepsake-builder');
-      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      updateCustomBuilderView();
     }
   };
 
@@ -8354,9 +8407,7 @@ function renderWishlistItemCard(p) {
     b.stepError = '';
     if (targetStep >= 1 && targetStep <= 6) {
       b.step = targetStep;
-      renderActiveView();
-      const el = document.getElementById('custom-keepsake-builder');
-      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      updateCustomBuilderView();
     }
   };
 
@@ -8431,18 +8482,18 @@ function renderWishlistItemCard(p) {
       b.secondaryKeepsake = label;
       b.secondaryAddon = Number(priceVal);
     }
-    renderActiveView();
+    updateCustomBuilderView();
   };
 
   window.updateCustomBuilderOccasion = function (occ) {
     AppState.customBuilder.occasion = occ;
     AppState.customBuilder.itemToPreserve = occ;
-    renderActiveView();
+    updateCustomBuilderView();
   };
 
   window.updateCustomBuilderFont = function (fontStyle) {
     AppState.customBuilder.fontStyle = fontStyle;
-    renderActiveView();
+    updateCustomBuilderView();
   };
 
   window.handleCustomFlowerPhotoUpload = function (event) {
@@ -8456,7 +8507,7 @@ function renderWishlistItemCard(p) {
   window.updateCustomBuilderSchedule = function (field, val) {
     if (field === 'eventDate' || field === 'pickupSlot') {
       AppState.customBuilder[field] = val;
-      renderActiveView();
+      updateCustomBuilderView();
     }
   };
 
@@ -8466,7 +8517,7 @@ function renderWishlistItemCard(p) {
 
   window.updateCustomBuilderLed = function (checked) {
     AppState.customBuilder.ledBase = checked;
-    renderActiveView();
+    updateCustomBuilderView();
   };
 
   // Final Add to Bag with Separate Line Item & Photo Integrity
