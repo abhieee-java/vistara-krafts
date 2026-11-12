@@ -1541,72 +1541,74 @@ ${avgRating ? `
 
     return `
       <div class="route-view-enter flex flex-col w-full max-w-7xl mx-auto">
-        <!-- 1. Instant Search Hero Bar (Clean, Minimal, E-Commerce Search) -->
-        <section class="home-search-hero-bar w-full px-3.5 sm:px-8 pt-3.5 pb-3 bg-[#faf8f5] border-b border-[#e4e0d8] relative z-20">
-          <div class="max-w-4xl mx-auto flex flex-col gap-2.5 relative">
-            <div class="relative flex items-center w-full">
-              <label for="home-product-search-input" class="sr-only">Search products</label>
-              <span class="material-symbols-outlined text-lg sm:text-xl text-primary/60 absolute left-3.5 pointer-events-none transition-transform duration-200" aria-hidden="true">search</span>
-              <input
-                id="home-product-search-input"
-                type="search"
-                inputmode="search"
-                autocomplete="off"
-                placeholder="Search bridal keepsakes, 3:1 &amp; 2:1 epoxy kits, silicone molds, mica pigments..."
-                class="w-full h-11 sm:h-12 pl-10 sm:pl-11 pr-24 rounded-2xl bg-white border border-[#e4e0d8] shadow-2xs text-xs sm:text-sm text-primary placeholder:text-on-surface-variant/70 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all font-medium"
-                style="-webkit-appearance: none; appearance: none;"
-                oninput="window.handleHomeSearchInput(this.value)"
-                onkeydown="window.handleHomeSearchKeyDown(event)"
-                onfocus="window.handleHomeSearchFocus()"
-              />
-              <div class="absolute right-2 flex items-center gap-1">
-                <button id="home-search-clear-btn" type="button" aria-label="Clear search" onclick="window.clearHomeSearch()" class="hidden w-7 h-7 rounded-lg text-primary/70 hover:text-primary hover:bg-surface-container flex items-center justify-center transition-colors">
-                  <svg class="w-3.5 h-3.5 pointer-events-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                    <line x1="18" y1="6" x2="6" y2="18"></line>
-                    <line x1="6" y1="6" x2="18" y2="18"></line>
-                  </svg>
-                </button>
-                <button type="button" onclick="window.submitHomeSearch()" class="px-4 py-1.5 rounded-xl bg-primary hover:bg-primary-container active:scale-95 text-white text-xs font-bold transition-all shadow-2xs cursor-pointer">
-                  Search
-                </button>
+        <!-- 1. Unified Luxury Discovery & Curation Bar (Search + Trending Chips + Category Circles) -->
+        <section class="home-discovery-hub home-search-hero-bar w-full">
+          <div class="max-w-7xl mx-auto flex flex-col gap-1.5 sm:gap-2 relative">
+            <!-- Search & Trending Bar (Unified Row on Desktop, Tight Stack on Mobile) -->
+            <div class="home-discovery-top-bar relative">
+              <!-- Search Input with Embedded Clear & Search Buttons -->
+              <div class="home-search-input-wrap">
+                <label for="home-product-search-input" class="sr-only">Search products</label>
+                <span class="material-symbols-outlined text-lg sm:text-xl text-primary/60 absolute left-3.5 pointer-events-none transition-transform duration-200" aria-hidden="true">search</span>
+                <input
+                  id="home-product-search-input"
+                  type="search"
+                  inputmode="search"
+                  autocomplete="off"
+                  placeholder="Search bridal keepsakes, epoxy kits, molds..."
+                  class="w-full h-10 sm:h-10.5 pl-10 pr-22 rounded-xl bg-[#faf8f5] sm:bg-white border border-[#e4e0d8] shadow-2xs text-xs sm:text-sm text-primary placeholder:text-on-surface-variant/70 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all font-medium"
+                  style="-webkit-appearance: none; appearance: none;"
+                  oninput="window.handleHomeSearchInput(this.value)"
+                  onkeydown="window.handleHomeSearchKeyDown(event)"
+                  onfocus="window.handleHomeSearchFocus()"
+                />
+                <div class="absolute right-1.5 flex items-center gap-1">
+                  <button id="home-search-clear-btn" type="button" aria-label="Clear search" onclick="window.clearHomeSearch()" class="hidden w-6 h-6 rounded-md text-primary/70 hover:text-primary hover:bg-surface-container flex items-center justify-center transition-colors">
+                    <svg class="w-3 h-3 pointer-events-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                      <line x1="18" y1="6" x2="6" y2="18"></line>
+                      <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                  </button>
+                  <button type="button" onclick="window.submitHomeSearch()" class="px-3 py-1 rounded-lg bg-primary hover:bg-primary-container active:scale-95 text-white text-xs font-bold transition-all shadow-2xs cursor-pointer min-h-[30px]">
+                    Search
+                  </button>
+                </div>
+
+                <!-- Instant Live Search Dropdown Anchored Cleanly to Input -->
+                <div id="home-search-dropdown" class="hidden absolute top-full left-0 right-0 mt-1 bg-white/98 backdrop-blur-2xl rounded-2xl border border-[#e4e0d8] shadow-xl overflow-hidden z-50 max-h-[22rem] overflow-y-auto">
+                </div>
+              </div>
+
+              <!-- Trending Suggested Search Chips -->
+              <div class="home-trending-chips-wrap text-xs text-on-surface-variant">
+                <span class="text-[11px] font-semibold text-primary/70 shrink-0">Trending:</span>
+                <button type="button" onclick="window.applyHomeSearchQuery('Bridal Varmala')" class="px-2.5 py-0.5 sm:px-3 sm:py-1 rounded-full bg-[#faf8f5] sm:bg-white border border-[#e4e0d8] hover:border-primary hover:text-primary text-[10.5px] sm:text-[11px] font-medium text-primary transition-colors whitespace-nowrap shrink-0 shadow-2xs active:scale-95 cursor-pointer">Bridal Varmala</button>
+                <button type="button" onclick="window.applyHomeSearchQuery('UltraClear 3:1')" class="px-2.5 py-0.5 sm:px-3 sm:py-1 rounded-full bg-[#faf8f5] sm:bg-white border border-[#e4e0d8] hover:border-primary hover:text-primary text-[10.5px] sm:text-[11px] font-medium text-primary transition-colors whitespace-nowrap shrink-0 shadow-2xs active:scale-95 cursor-pointer">UltraClear 3:1</button>
+                <button type="button" onclick="window.applyHomeSearchQuery('River Flow 2:1')" class="px-2.5 py-0.5 sm:px-3 sm:py-1 rounded-full bg-[#faf8f5] sm:bg-white border border-[#e4e0d8] hover:border-primary hover:text-primary text-[10.5px] sm:text-[11px] font-medium text-primary transition-colors whitespace-nowrap shrink-0 shadow-2xs active:scale-95 cursor-pointer">River Flow 2:1</button>
+                <button type="button" onclick="window.applyHomeSearchQuery('Rose Quartz Geode')" class="px-2.5 py-0.5 sm:px-3 sm:py-1 rounded-full bg-[#faf8f5] sm:bg-white border border-[#e4e0d8] hover:border-primary hover:text-primary text-[10.5px] sm:text-[11px] font-medium text-primary transition-colors whitespace-nowrap shrink-0 shadow-2xs active:scale-95 cursor-pointer">Rose Quartz Geode</button>
+                <button type="button" onclick="window.applyHomeSearchQuery('Silicone Mold')" class="px-2.5 py-0.5 sm:px-3 sm:py-1 rounded-full bg-[#faf8f5] sm:bg-white border border-[#e4e0d8] hover:border-primary hover:text-primary text-[10.5px] sm:text-[11px] font-medium text-primary transition-colors whitespace-nowrap shrink-0 shadow-2xs active:scale-95 cursor-pointer">Silicone Molds</button>
               </div>
             </div>
 
-            <!-- Trending Suggested Search Chips -->
-            <div class="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5 text-xs text-on-surface-variant">
-              <span class="text-[11px] font-semibold text-primary/70 shrink-0">Trending:</span>
-              <button type="button" onclick="window.applyHomeSearchQuery('Bridal Varmala')" class="px-3 py-1 rounded-full bg-white border border-[#e4e0d8] hover:border-primary hover:text-primary text-[11px] font-medium text-primary transition-colors whitespace-nowrap shrink-0 shadow-2xs active:scale-95 cursor-pointer">Bridal Varmala</button>
-              <button type="button" onclick="window.applyHomeSearchQuery('UltraClear 3:1')" class="px-3 py-1 rounded-full bg-white border border-[#e4e0d8] hover:border-primary hover:text-primary text-[11px] font-medium text-primary transition-colors whitespace-nowrap shrink-0 shadow-2xs active:scale-95 cursor-pointer">UltraClear 3:1</button>
-              <button type="button" onclick="window.applyHomeSearchQuery('River Flow 2:1')" class="px-3 py-1 rounded-full bg-white border border-[#e4e0d8] hover:border-primary hover:text-primary text-[11px] font-medium text-primary transition-colors whitespace-nowrap shrink-0 shadow-2xs active:scale-95 cursor-pointer">River Flow 2:1</button>
-              <button type="button" onclick="window.applyHomeSearchQuery('Rose Quartz Geode')" class="px-3 py-1 rounded-full bg-white border border-[#e4e0d8] hover:border-primary hover:text-primary text-[11px] font-medium text-primary transition-colors whitespace-nowrap shrink-0 shadow-2xs active:scale-95 cursor-pointer">Rose Quartz Geode</button>
-              <button type="button" onclick="window.applyHomeSearchQuery('Silicone Mold')" class="px-3 py-1 rounded-full bg-white border border-[#e4e0d8] hover:border-primary hover:text-primary text-[11px] font-medium text-primary transition-colors whitespace-nowrap shrink-0 shadow-2xs active:scale-95 cursor-pointer">Silicone Molds</button>
+            <!-- Integrated Atelier Category Circles Strip -->
+            <div class="atelier-curation-strip home-curation-strip-compact">
+              ${categoryCircles.map(c => `
+                <button type="button" onclick="window.navigateTo('${c.route}', ${c.param ? `'${c.param}'` : 'null'})" class="flex flex-col items-center gap-1 group cursor-pointer shrink-0 text-center py-0.5">
+                  <div class="atelier-curation-circle home-curation-circle-compact">
+                    <img src="${esc(c.image)}" alt="${esc(c.label)}" class="w-full h-full object-cover rounded-full group-hover:scale-110 transition-transform duration-500">
+                  </div>
+                  <div class="flex flex-col items-center leading-tight">
+                    <span class="text-[11px] sm:text-xs font-bold text-primary group-hover:text-secondary transition-colors whitespace-nowrap">${c.label}</span>
+                    <span class="text-[9.5px] sm:text-[10px] text-on-surface-variant/80 font-medium whitespace-nowrap">${c.badge}</span>
+                  </div>
+                </button>
+              `).join('')}
             </div>
-
-            <!-- Instant Live Search Dropdown -->
-            <div id="home-search-dropdown" class="hidden absolute top-full left-0 right-0 mt-1 bg-white/98 backdrop-blur-2xl rounded-2xl border border-[#e4e0d8] shadow-xl overflow-hidden z-50 max-h-[22rem] overflow-y-auto">
-            </div>
-          </div>
-        </section>
-
-        <!-- 2. Atelier Iconic Category Circles Strip -->
-        <section class="w-full px-3.5 sm:px-8 py-4 sm:py-5 bg-white border-b border-[#e4e0d8]">
-          <div class="atelier-curation-strip flex items-center justify-start lg:justify-between gap-4 sm:gap-6 overflow-x-auto py-1">
-            ${categoryCircles.map(c => `
-              <button type="button" onclick="window.navigateTo('${c.route}', ${c.param ? `'${c.param}'` : 'null'})" class="flex flex-col items-center gap-2 group cursor-pointer shrink-0 text-center">
-                <div class="atelier-curation-circle w-16 h-16 sm:w-20 sm:h-20 rounded-full border-2 border-[#e4e0d8] overflow-hidden p-0.5 bg-white shadow-2xs relative">
-                  <img src="${esc(c.image)}" alt="${esc(c.label)}" class="w-full h-full object-cover rounded-full group-hover:scale-110 transition-transform duration-500">
-                </div>
-                <div class="flex flex-col items-center">
-                  <span class="text-xs font-bold text-primary group-hover:text-secondary transition-colors whitespace-nowrap">${c.label}</span>
-                  <span class="text-[10px] text-on-surface-variant/80 font-medium whitespace-nowrap">${c.badge}</span>
-                </div>
-              </button>
-            `).join('')}
           </div>
         </section>
 
         <!-- 3. Atelier Signature Hero Promotional Carousel (Visual-First, Zero Clutter) -->
-        <section class="w-full px-3.5 sm:px-8 py-4 sm:py-6 bg-[#faf8f5] border-b border-[#e4e0d8]">
+        <section class="w-full px-3.5 sm:px-8 pt-2.5 sm:pt-3.5 pb-4 sm:pb-6 bg-[#faf8f5] border-b border-[#e4e0d8]">
           <div id="atelier-hero-carousel-container" class="atelier-hero-carousel-container relative rounded-2xl sm:rounded-3xl overflow-hidden shadow-lg border border-[#e4e0d8] bg-[#0d0d12]">
             <div id="atelier-hero-carousel-track" class="atelier-carousel-track">
               <!-- Slide 1: Wedding Varmala Preservation -->
