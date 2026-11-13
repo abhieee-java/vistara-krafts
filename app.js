@@ -909,19 +909,24 @@ if (typeof window !== 'undefined' && typeof window.dismissVkSplash !== 'function
   window.navigateTo = function (route, param = null) {
     if (AppState.currentRoute === 'catalog' && route === 'product') {
       try {
-        sessionStorage.setItem('vk_catalog_scrollY', String(Math.round(window.scrollY)));
+        if (window.scrollY >= 150) {
+          sessionStorage.setItem('vk_catalog_scrollY', String(Math.round(window.scrollY)));
+        } else {
+          sessionStorage.removeItem('vk_catalog_scrollY');
+        }
       } catch (_e) {}
     } else if (route === 'catalog') {
       try {
         sessionStorage.removeItem('vk_catalog_scrollY');
         sessionStorage.removeItem('vk_last_viewed_product_id');
+        window.scrollTo(0, 0);
       } catch (_e) {}
     }
     let targetHash = '#/' + route;
     if (route === 'product' && param) {
       try {
         sessionStorage.setItem('vk_last_viewed_product_id', String(param));
-        if (AppState.currentRoute === 'catalog') {
+        if (AppState.currentRoute === 'catalog' && window.scrollY >= 150) {
           sessionStorage.setItem('vk_catalog_scrollY', String(Math.round(window.scrollY)));
         }
       } catch (_e) {}
@@ -2488,9 +2493,9 @@ ${avgRating ? `
     } catch (e) {}
 
     return `
-      <div class="route-view-enter flex flex-col w-full max-w-7xl mx-auto px-3.5 sm:px-8 pt-5 sm:pt-7 pb-44 sm:pb-28 gap-3.5 sm:gap-4">
+      <div class="route-view-enter flex flex-col w-full max-w-7xl mx-auto px-3.5 sm:px-8 pt-6 sm:pt-8 pb-44 sm:pb-28 gap-3.5 sm:gap-4">
         <!-- 1. Clean, Uncluttered Catalogue Header (Apple-Restrained) -->
-        <div class="max-w-2xl min-w-0 pt-1">
+        <div class="max-w-2xl min-w-0 pt-2 scroll-mt-24">
           <h1 class="font-headline-lg text-2xl sm:text-3xl lg:text-4xl text-primary font-bold tracking-tight leading-snug break-words">
             Keepsake Art &amp; Epoxy Resin Supplies
           </h1>
@@ -6446,7 +6451,7 @@ function renderWishlistItemCard(p) {
         }
         if (!restored && savedCatalogY) {
           const y = parseInt(savedCatalogY, 10);
-          if (!isNaN(y) && y > 0) {
+          if (!isNaN(y) && y >= 150) {
             try {
               window.scrollTo({ top: y, left: 0, behavior: 'instant' });
             } catch (_e) {
@@ -6468,17 +6473,30 @@ function renderWishlistItemCard(p) {
         didRestoreCatalogScroll = true;
         requestAnimationFrame(scrollToCatalogTarget);
         setTimeout(scrollToCatalogTarget, 60);
-        setTimeout(scrollToCatalogTarget, 180);
       }
     }
 
     if (preserveScroll && prevScrollY > 0) {
-      try {
-        window.scrollTo({ top: prevScrollY, left: 0, behavior: 'instant' });
-      } catch (_e) {
-        window.scrollTo(0, prevScrollY);
+      if (AppState.currentRoute === 'catalog' && prevScrollY < 120) {
+        try {
+          window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+        } catch (_e) {
+          window.scrollTo(0, 0);
+        }
+      } else {
+        try {
+          window.scrollTo({ top: prevScrollY, left: 0, behavior: 'instant' });
+        } catch (_e) {
+          window.scrollTo(0, prevScrollY);
+        }
       }
     } else if (!preserveScroll && !didRestoreCatalogScroll) {
+      try {
+        window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+      } catch (_e) {
+        window.scrollTo(0, 0);
+      }
+    } else if (AppState.currentRoute === 'catalog' && !didRestoreCatalogScroll) {
       try {
         window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
       } catch (_e) {
@@ -6490,7 +6508,7 @@ function renderWishlistItemCard(p) {
       try {
         const restored = document.getElementById(activeId);
         if (restored && typeof restored.focus === 'function') {
-          restored.focus();
+          restored.focus({ preventScroll: true });
           if (selStart !== null && typeof restored.setSelectionRange === 'function') {
             restored.setSelectionRange(selStart, selEnd);
           }
@@ -7791,12 +7809,9 @@ function renderWishlistItemCard(p) {
     if (typeof window === 'undefined') return;
     window.addEventListener('scroll', () => {
       if (AppState.currentRoute !== 'catalog') return;
-      if (window.scrollY > 0) {
-        try {
-          sessionStorage.setItem('vk_catalog_scrollY', String(Math.round(window.scrollY)));
-          sessionStorage.setItem('vk_catalog_visibleCount', String(AppState.catalogVisibleCount || 8));
-        } catch (_e) {}
-      }
+      try {
+        sessionStorage.setItem('vk_catalog_visibleCount', String(AppState.catalogVisibleCount || 8));
+      } catch (_e) {}
       const sentinel = document.getElementById('catalog-scroll-sentinel');
       if (!sentinel) return;
       const rect = sentinel.getBoundingClientRect();
@@ -12003,6 +12018,12 @@ function renderWishlistItemCard(p) {
     try {
       sessionStorage.removeItem('vk_catalog_scrollY');
       sessionStorage.removeItem('vk_last_viewed_product_id');
+      if (typeof window !== 'undefined' && 'scrollRestoration' in history) {
+        history.scrollRestoration = 'manual';
+      }
+      if (window.location.hash && (window.location.hash.startsWith('#/cat') || window.location.hash === '#/catalog')) {
+        window.scrollTo(0, 0);
+      }
     } catch (_e) {}
     try {
       initNetworkMonitor();
@@ -12087,6 +12108,16 @@ function renderWishlistItemCard(p) {
 
   // Bind hash change
   window.addEventListener('hashchange', handleRouteChange);
+
+  // Clear stale scroll locks before unload or refresh on catalog
+  window.addEventListener('beforeunload', () => {
+    try {
+      if (AppState.currentRoute === 'catalog') {
+        sessionStorage.removeItem('vk_catalog_scrollY');
+        sessionStorage.removeItem('vk_last_viewed_product_id');
+      }
+    } catch (_e) {}
+  });
 
   // ReadyState handling: boot immediately if DOM is already interactive/complete
   if (typeof document !== 'undefined') {

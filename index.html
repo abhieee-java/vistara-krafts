@@ -18,6 +18,22 @@
   <meta name="format-detection" content="telephone=no">
   <meta name="google-site-verification" content="YNQCw9oCgQojRu345QHRsTi7wfpvcZ3uTE7KZR-5X-E">
 
+  <!-- Instant Manual Scroll Restoration & Catalog Scroll Reset Guard -->
+  <script>
+    if (typeof window !== 'undefined' && 'scrollRestoration' in history) {
+      try {
+        history.scrollRestoration = 'manual';
+      } catch (_e) {}
+    }
+    try {
+      if (location.hash && (location.hash.startsWith('#/cat') || location.hash === '#/catalog')) {
+        sessionStorage.removeItem('vk_catalog_scrollY');
+        sessionStorage.removeItem('vk_last_viewed_product_id');
+        window.scrollTo(0, 0);
+      }
+    } catch (_e) {}
+  </script>
+
   <!-- Early Cookie & Privacy Consent Resolution for GA4, Meta Pixel, and Microsoft Clarity -->
   <script>
     (function () {
@@ -2967,6 +2983,17 @@
         </div>
       </div>
     </aside>
+    <script>
+      (function () {
+        try {
+          var h = window.location.hash || '';
+          if (h && h !== '#/' && h !== '#' && !h.startsWith('#/home')) {
+            var b = document.getElementById('top-announcement-bar');
+            if (b) { b.classList.add('hidden'); b.style.display = 'none'; }
+          }
+        } catch (_e) {}
+      })();
+    </script>
 
     <div class="max-w-7xl mx-auto h-16 sm:h-20 px-3 sm:px-6 lg:px-8 flex items-center justify-between gap-1.5 sm:gap-3 w-full min-w-0">
       <!-- Strict Brand Identity: Vistāra Krafts + Uploaded VK Monogram Logo -->
