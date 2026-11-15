@@ -2576,11 +2576,27 @@
       }
 
       if ((payload.type === 'PRODUCTS_UPDATED' || payload.action === 'PRODUCTS_UPDATED') && Array.isArray(payload.products)) {
-        safeWrite(STORAGE_KEYS.PRODUCTS, payload.products);
-        this.notify('products_updated', payload.products);
+        let prods = payload.products;
+        if (payload.deletedId) {
+          prods = prods.filter(p => p.id !== payload.deletedId);
+        }
+        safeWrite(STORAGE_KEYS.PRODUCTS, prods);
+        this.notify('products_updated', prods);
         log.unshift(entry);
         safeWrite(STORAGE_KEYS.STUDIO_SYNC_LOG, log.slice(0, 20));
-        return { ok: true, count: payload.products.length };
+        return { ok: true, count: prods.length };
+      }
+
+      if (payload.type === 'PRODUCT_DELETED' || payload.action === 'PRODUCT_DELETED') {
+        const delId = payload.deletedId || payload.productId || payload.id;
+        if (delId) {
+          const current = this.getProducts().filter(p => p.id !== delId);
+          safeWrite(STORAGE_KEYS.PRODUCTS, current);
+          this.notify('products_updated', current);
+          log.unshift(entry);
+          safeWrite(STORAGE_KEYS.STUDIO_SYNC_LOG, log.slice(0, 20));
+          return { ok: true, deletedId: delId };
+        }
       }
 
       const targetProduct = payload.product || (payload.action === 'STUDIO_UPSERT_PRODUCT' || payload.action === 'ADMIN_UPSERT_PRODUCT' ? payload.payload : null);
