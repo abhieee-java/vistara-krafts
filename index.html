@@ -25,13 +25,26 @@
         history.scrollRestoration = 'manual';
       } catch (_e) {}
     }
-    try {
-      if (location.hash && (location.hash.startsWith('#/cat') || location.hash === '#/catalog')) {
-        sessionStorage.removeItem('vk_catalog_scrollY');
-        sessionStorage.removeItem('vk_last_viewed_product_id');
-        window.scrollTo(0, 0);
-      }
-    } catch (_e) {}
+    function __resetCatalogScroll() {
+      try {
+        var h = window.location.hash || '';
+        if (h && (h.startsWith('#/cat') || h === '#/catalog')) {
+          sessionStorage.removeItem('vk_catalog_scrollY');
+          sessionStorage.removeItem('vk_last_viewed_product_id');
+          window.scrollTo(0, 0);
+          if (document.documentElement) document.documentElement.scrollTop = 0;
+          if (document.body) document.body.scrollTop = 0;
+        }
+      } catch (_e) {}
+    }
+    __resetCatalogScroll();
+    window.addEventListener('pageshow', __resetCatalogScroll);
+    window.addEventListener('load', function() {
+      __resetCatalogScroll();
+      setTimeout(__resetCatalogScroll, 50);
+      setTimeout(__resetCatalogScroll, 150);
+      setTimeout(__resetCatalogScroll, 350);
+    });
   </script>
 
   <!-- Early Cookie & Privacy Consent Resolution for GA4, Meta Pixel, and Microsoft Clarity -->
@@ -3106,7 +3119,6 @@
         <div id="home-search-dropdown" class="hidden absolute top-full left-0 right-0 mt-1.5 bg-white rounded-2xl border border-[#e4e0d8] shadow-2xl overflow-hidden z-50 max-h-[24rem] overflow-y-auto">
         </div>
       </div>
-    </div>
     </div>
   </header>
 

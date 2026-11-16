@@ -971,7 +971,10 @@ if (typeof window !== 'undefined' && typeof window.dismissVkSplash !== 'function
     const pathPart = qIdx >= 0 ? raw.slice(0, qIdx) : raw;
     const queryPart = qIdx >= 0 ? raw.slice(qIdx + 1) : '';
     const parts = (pathPart || '').split('/');
-    const route = parts[0] || 'home';
+    let route = parts[0] || 'home';
+    if (route === 'cat' || route === 'catalogue') {
+      route = 'catalog';
+    }
     const param = parts[1] || null;
     const queryParams = {};
     if (queryPart) {
@@ -1022,12 +1025,16 @@ if (typeof window !== 'undefined' && typeof window.dismissVkSplash !== 'function
       }, 150);
       return;
     }
-    const validRoutes = ['home', 'catalog', 'product', 'social', 'custom-studio', 'wishlist', 'cart', 'account', 'orders', 'profile', '404', '500'];
+    const validRoutes = ['home', 'catalog', 'cat', 'catalogue', 'product', 'social', 'custom-studio', 'wishlist', 'cart', 'account', 'orders', 'profile', '404', '500'];
 
     if (AppState.currentRoute === 'catalog' && (route === 'product' || route === 'cart')) {
       try {
-        sessionStorage.setItem('vk_catalog_scrollY', String(Math.round(window.scrollY)));
-        sessionStorage.setItem('vk_catalog_visibleCount', String(AppState.catalogVisibleCount || 8));
+        if (window.scrollY >= 150) {
+          sessionStorage.setItem('vk_catalog_scrollY', String(Math.round(window.scrollY)));
+          sessionStorage.setItem('vk_catalog_visibleCount', String(AppState.catalogVisibleCount || 8));
+        } else {
+          sessionStorage.removeItem('vk_catalog_scrollY');
+        }
       } catch (_e) {}
     }
 
@@ -2493,9 +2500,9 @@ ${avgRating ? `
     } catch (e) {}
 
     return `
-      <div class="route-view-enter flex flex-col w-full max-w-7xl mx-auto px-3.5 sm:px-8 pt-6 sm:pt-8 pb-44 sm:pb-28 gap-3.5 sm:gap-4">
+      <div class="route-view-enter flex flex-col w-full max-w-7xl mx-auto px-3.5 sm:px-8 pt-7 sm:pt-9 pb-44 sm:pb-28 gap-3.5 sm:gap-4">
         <!-- 1. Clean, Uncluttered Catalogue Header (Apple-Restrained) -->
-        <div class="max-w-2xl min-w-0 pt-2 scroll-mt-24">
+        <div class="max-w-2xl min-w-0 pt-3 sm:pt-4 scroll-mt-24">
           <h1 class="font-headline-lg text-2xl sm:text-3xl lg:text-4xl text-primary font-bold tracking-tight leading-snug break-words">
             Keepsake Art &amp; Epoxy Resin Supplies
           </h1>
@@ -6451,7 +6458,7 @@ function renderWishlistItemCard(p) {
         }
         if (!restored && savedCatalogY) {
           const y = parseInt(savedCatalogY, 10);
-          if (!isNaN(y) && y >= 150) {
+          if (!isNaN(y) && y >= 200) {
             try {
               window.scrollTo({ top: y, left: 0, behavior: 'instant' });
             } catch (_e) {
@@ -6477,9 +6484,11 @@ function renderWishlistItemCard(p) {
     }
 
     if (preserveScroll && prevScrollY > 0) {
-      if (AppState.currentRoute === 'catalog' && prevScrollY < 120) {
+      if (AppState.currentRoute === 'catalog' && prevScrollY < 180) {
         try {
           window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+          if (document.documentElement) document.documentElement.scrollTop = 0;
+          if (document.body) document.body.scrollTop = 0;
         } catch (_e) {
           window.scrollTo(0, 0);
         }
@@ -6490,15 +6499,19 @@ function renderWishlistItemCard(p) {
           window.scrollTo(0, prevScrollY);
         }
       }
-    } else if (!preserveScroll && !didRestoreCatalogScroll) {
-      try {
-        window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
-      } catch (_e) {
-        window.scrollTo(0, 0);
-      }
     } else if (AppState.currentRoute === 'catalog' && !didRestoreCatalogScroll) {
       try {
         window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+        if (document.documentElement) document.documentElement.scrollTop = 0;
+        if (document.body) document.body.scrollTop = 0;
+      } catch (_e) {
+        window.scrollTo(0, 0);
+      }
+    } else if (!preserveScroll && !didRestoreCatalogScroll) {
+      try {
+        window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+        if (document.documentElement) document.documentElement.scrollTop = 0;
+        if (document.body) document.body.scrollTop = 0;
       } catch (_e) {
         window.scrollTo(0, 0);
       }
@@ -12012,17 +12025,38 @@ function renderWishlistItemCard(p) {
     }
   }
 
+  function enforceCatalogScrollTop() {
+    const h = (typeof window !== 'undefined' && window.location.hash) || '';
+    if (h && (h.startsWith('#/cat') || h === '#/catalog' || AppState.currentRoute === 'catalog')) {
+      try {
+        sessionStorage.removeItem('vk_catalog_scrollY');
+        sessionStorage.removeItem('vk_last_viewed_product_id');
+        if (typeof window !== 'undefined') {
+          window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+          if (document.documentElement) document.documentElement.scrollTop = 0;
+          if (document.body) document.body.scrollTop = 0;
+        }
+      } catch (_e) {
+        if (typeof window !== 'undefined') window.scrollTo(0, 0);
+      }
+    }
+  }
+
   // Robust Application Boot Controller
   function bootApplication() {
     // When booting or refreshing the application, clear any stale catalog scroll targets
     try {
-      sessionStorage.removeItem('vk_catalog_scrollY');
-      sessionStorage.removeItem('vk_last_viewed_product_id');
-      if (typeof window !== 'undefined' && 'scrollRestoration' in history) {
-        history.scrollRestoration = 'manual';
-      }
-      if (window.location.hash && (window.location.hash.startsWith('#/cat') || window.location.hash === '#/catalog')) {
-        window.scrollTo(0, 0);
+      enforceCatalogScrollTop();
+      if (typeof window !== 'undefined') {
+        if ('scrollRestoration' in history) {
+          history.scrollRestoration = 'manual';
+        }
+        if (typeof requestAnimationFrame === 'function') {
+          requestAnimationFrame(enforceCatalogScrollTop);
+        }
+        setTimeout(enforceCatalogScrollTop, 50);
+        setTimeout(enforceCatalogScrollTop, 150);
+        setTimeout(enforceCatalogScrollTop, 350);
       }
     } catch (_e) {}
     try {
@@ -12118,6 +12152,15 @@ function renderWishlistItemCard(p) {
       }
     } catch (_e) {}
   });
+
+  if (typeof window !== 'undefined') {
+    window.addEventListener('pageshow', enforceCatalogScrollTop);
+    window.addEventListener('load', () => {
+      enforceCatalogScrollTop();
+      setTimeout(enforceCatalogScrollTop, 60);
+      setTimeout(enforceCatalogScrollTop, 200);
+    });
+  }
 
   // ReadyState handling: boot immediately if DOM is already interactive/complete
   if (typeof document !== 'undefined') {
