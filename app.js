@@ -2500,9 +2500,9 @@ ${avgRating ? `
     } catch (e) {}
 
     return `
-      <div class="route-view-enter flex flex-col w-full max-w-7xl mx-auto px-3.5 sm:px-8 pt-8 sm:pt-10 pb-44 sm:pb-28 gap-3.5 sm:gap-4">
+      <div class="route-view-enter flex flex-col w-full max-w-7xl mx-auto px-3.5 sm:px-8 pt-6 sm:pt-7 pb-44 sm:pb-28 gap-3.5 sm:gap-4">
         <!-- 1. Clean, Uncluttered Catalogue Header (Apple-Restrained) -->
-        <div class="max-w-2xl min-w-0 pt-3.5 sm:pt-4 scroll-mt-24">
+        <div class="max-w-2xl min-w-0 scroll-mt-24">
           <h1 class="font-headline-lg text-2xl sm:text-3xl lg:text-4xl text-primary font-bold tracking-tight leading-snug break-words">
             Keepsake Art &amp; Epoxy Resin Supplies
           </h1>
