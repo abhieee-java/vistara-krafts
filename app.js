@@ -2500,9 +2500,9 @@ ${avgRating ? `
     } catch (e) {}
 
     return `
-      <div class="route-view-enter flex flex-col w-full max-w-7xl mx-auto px-3.5 sm:px-8 pt-7 sm:pt-9 pb-44 sm:pb-28 gap-3.5 sm:gap-4">
+      <div class="route-view-enter flex flex-col w-full max-w-7xl mx-auto px-3.5 sm:px-8 pt-8 sm:pt-10 pb-44 sm:pb-28 gap-3.5 sm:gap-4">
         <!-- 1. Clean, Uncluttered Catalogue Header (Apple-Restrained) -->
-        <div class="max-w-2xl min-w-0 pt-3 sm:pt-4 scroll-mt-24">
+        <div class="max-w-2xl min-w-0 pt-3.5 sm:pt-4 scroll-mt-24">
           <h1 class="font-headline-lg text-2xl sm:text-3xl lg:text-4xl text-primary font-bold tracking-tight leading-snug break-words">
             Keepsake Art &amp; Epoxy Resin Supplies
           </h1>
@@ -6483,8 +6483,8 @@ function renderWishlistItemCard(p) {
       }
     }
 
-    if (preserveScroll && prevScrollY > 0) {
-      if (AppState.currentRoute === 'catalog' && prevScrollY < 180) {
+    if (AppState.currentRoute === 'catalog') {
+      if (!didRestoreCatalogScroll) {
         try {
           window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
           if (document.documentElement) document.documentElement.scrollTop = 0;
@@ -6492,22 +6492,14 @@ function renderWishlistItemCard(p) {
         } catch (_e) {
           window.scrollTo(0, 0);
         }
-      } else {
-        try {
-          window.scrollTo({ top: prevScrollY, left: 0, behavior: 'instant' });
-        } catch (_e) {
-          window.scrollTo(0, prevScrollY);
-        }
       }
-    } else if (AppState.currentRoute === 'catalog' && !didRestoreCatalogScroll) {
+    } else if (preserveScroll && prevScrollY > 0) {
       try {
-        window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
-        if (document.documentElement) document.documentElement.scrollTop = 0;
-        if (document.body) document.body.scrollTop = 0;
+        window.scrollTo({ top: prevScrollY, left: 0, behavior: 'instant' });
       } catch (_e) {
-        window.scrollTo(0, 0);
+        window.scrollTo(0, prevScrollY);
       }
-    } else if (!preserveScroll && !didRestoreCatalogScroll) {
+    } else if (!didRestoreCatalogScroll) {
       try {
         window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
         if (document.documentElement) document.documentElement.scrollTop = 0;
@@ -7486,7 +7478,7 @@ function renderWishlistItemCard(p) {
         renderActiveView({ preserveScroll: true });
         const input = document.getElementById('catalog-search-input');
         if (input && document.activeElement !== input) {
-          if (typeof input.focus === 'function') input.focus();
+          if (typeof input.focus === 'function') input.focus({ preventScroll: true });
           if (typeof input.setSelectionRange === 'function') input.setSelectionRange(input.value.length, input.value.length);
         }
       }
@@ -12057,6 +12049,8 @@ function renderWishlistItemCard(p) {
         setTimeout(enforceCatalogScrollTop, 50);
         setTimeout(enforceCatalogScrollTop, 150);
         setTimeout(enforceCatalogScrollTop, 350);
+        setTimeout(enforceCatalogScrollTop, 600);
+        setTimeout(enforceCatalogScrollTop, 1000);
       }
     } catch (_e) {}
     try {

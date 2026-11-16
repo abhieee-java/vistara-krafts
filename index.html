@@ -39,11 +39,20 @@
     }
     __resetCatalogScroll();
     window.addEventListener('pageshow', __resetCatalogScroll);
+    window.addEventListener('hashchange', function() {
+      var h = window.location.hash || '';
+      if (h.startsWith('#/cat') || h === '#/catalog') {
+        __resetCatalogScroll();
+        setTimeout(__resetCatalogScroll, 20);
+        setTimeout(__resetCatalogScroll, 60);
+      }
+    });
     window.addEventListener('load', function() {
       __resetCatalogScroll();
       setTimeout(__resetCatalogScroll, 50);
       setTimeout(__resetCatalogScroll, 150);
       setTimeout(__resetCatalogScroll, 350);
+      setTimeout(__resetCatalogScroll, 600);
     });
   </script>
 
