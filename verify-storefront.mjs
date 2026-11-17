@@ -1321,7 +1321,7 @@ test('QA Audit & UX Reliability: Accessible Back Navigation on Subpages, Custom 
   assert.ok(fs.existsSync(path.join(ROOT, '404.html')), '404.html static fallback page must exist in root');
   const static404Html = fs.readFileSync(path.join(ROOT, '404.html'), 'utf8');
   assert.ok(static404Html.includes('HTTP 404 • Page Not Found'), '404.html must display Page Not Found message');
-  assert.ok(static404Html.includes('href="./#/home"'), '404.html must provide link back home');
+  assert.ok(static404Html.includes('href="/#/home"') || static404Html.includes('href="./#/home"'), '404.html must provide link back home');
 
   // 2. Verify SPA 404 routing for invalid route
   sandbox.window.location.hash = '#/non-existent-route-xyz';

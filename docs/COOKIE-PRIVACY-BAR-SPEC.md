@@ -79,7 +79,7 @@ The privacy architecture was restructured into a **three-tier professional stand
 All comprehensive Indian regulatory and statutory declarations reside authoritatively in `privacy.html`, linked permanently in both the primary footer navigation and copyright sub-bar:
 
 - **Data Fiduciary Identity:** Vistāra Krafts Studio (@resin.art.memories).
-- **Data Protection & Grievance Officer:** Abhijit Kalita (`grievance@vistarakrafts.com` / `ad4064773@gmail.com`).
+- **Data Protection & Grievance Officer:** Kakoli Borah (`grievance@vistarakrafts.com`).
 - **Statutory Notice:** Compliant with Section 5 of the Digital Personal Data Protection Act, 2023.
 - **Data Retention & Purpose Limitation:** Customer contact and delivery addresses are utilized strictly for BlueDart insured transit, GST tax invoicing, and artisan batch provenance.
 - **Statutory Rights:** Right to access, right to correction, right to erasure, and right of grievance redressal with a guaranteed 7-day resolution SLA.
