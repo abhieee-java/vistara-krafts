@@ -26,7 +26,8 @@ const STATIC_ASSETS = [
   'privacy.html',
   'terms.html',
   'about.html',
-  'editorial-policy.html'
+  'editorial-policy.html',
+  '404.html'
 ];
 
 function apiMiddlewarePlugin() {
