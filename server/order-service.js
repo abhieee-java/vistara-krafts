@@ -183,8 +183,8 @@ export class OrderService {
       gift_wrap: Boolean(giftWrap),
       mockup_approved: false,
       items: calc.items,
-      courier: `BlueDart Priority Air • PIN ${cleanPin}`,
-      tracking_number: rzpOrder.id, // Stores authoritative Razorpay Order ID for reconciliation
+      courier: null,
+      tracking_number: null,
       notes: notes ? `${String(notes).substring(0, 400)} | RZP:${rzpOrder.id}` : `RZP:${rzpOrder.id}`,
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString()

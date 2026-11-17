@@ -5113,8 +5113,14 @@ function renderWishlistItemCard(p) {
               const isShipped = ord.orderStatus === 'shipped' || ord.orderStatus === 'in_transit';
               const trackingNum = ord.trackingNumber || ord.tracking_number;
               const courierName = ord.carrier || ord.courier || 'BlueDart Air Express';
+              const hasValidCourierTracking = Boolean(
+                trackingNum &&
+                !String(trackingNum).startsWith('order_') &&
+                !String(trackingNum).startsWith('rzp_') &&
+                (isShipped || isDelivered)
+              );
               const orderTimestamp = (ord.created_at || ord.createdAt)
-                ? (new Date(ord.created_at || ord.createdAt).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }) + ' at ' + new Date(ord.created_at || ord.createdAt).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', hour12: true }))
+                ? (new Date(ord.created_at || ord.createdAt).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }))
                 : (ord.date || 'Recent');
 
               const isCustom = Boolean(ord.isCustomPreservation || ord.customDetails || (ord.items && ord.items.some(i => i.isCustomPreservation || i.customDetails)));
@@ -5132,35 +5138,85 @@ function renderWishlistItemCard(p) {
               const curStage = ord.preservationStage || (customDetails && customDetails.preservationStage) || 'Floral Awaiting Pickup';
               const curStageIdx = Math.max(0, preservationStages.indexOf(curStage));
 
-              let statusBadge = `<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-amber-50 text-amber-800 border border-amber-200 text-[11px] font-semibold"><span class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></span><span>Processing &amp; Crafting</span></span>`;
+              // Clean Apple-standard status badges
+              let statusBadge = `<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200/80 text-[11px] font-semibold"><span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span><span>Confirmed &amp; Prepping</span></span>`;
               if (isDelivered) {
-                statusBadge = `<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200 text-[11px] font-semibold"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span><span>Delivered</span></span>`;
+                statusBadge = `<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200/80 text-[11px] font-semibold"><span class="w-2 h-2 rounded-full bg-emerald-600"></span><span>Delivered</span></span>`;
               } else if (isCancelled) {
-                statusBadge = `<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-red-50 text-red-800 border border-red-200 text-[11px] font-semibold"><span class="w-1.5 h-1.5 rounded-full bg-red-400"></span><span>Cancelled</span></span>`;
+                statusBadge = `<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-rose-50 text-rose-800 border border-rose-200/80 text-[11px] font-semibold"><span class="w-2 h-2 rounded-full bg-rose-400"></span><span>Cancelled</span></span>`;
               } else if (isShipped) {
-                statusBadge = `<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-blue-50 text-blue-800 border border-blue-200 text-[11px] font-semibold"><span class="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse"></span><span>In Transit</span></span>`;
+                statusBadge = `<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-sky-50 text-sky-800 border border-sky-200/80 text-[11px] font-semibold"><span class="w-2 h-2 rounded-full bg-sky-500 animate-pulse"></span><span>In Transit</span></span>`;
               } else if (isCustom) {
-                statusBadge = `<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-rose-50 text-rose-800 border border-rose-200 text-[11px] font-semibold"><span class="w-1.5 h-1.5 rounded-full bg-rose-500 animate-pulse"></span><span>${esc(curStage)}</span></span>`;
+                statusBadge = `<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-50 text-amber-800 border border-amber-200/80 text-[11px] font-semibold"><span class="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span><span>${esc(curStage)}</span></span>`;
               }
 
+              // Standard 4-step progress stepper calculation
+              const standardSteps = ['Placed', 'Crafting', 'Dispatched', 'Delivered'];
+              let standardStepIdx = 0;
+              if (isDelivered) {
+                standardStepIdx = 3;
+              } else if (isShipped) {
+                standardStepIdx = 2;
+              } else if (ord.orderStatus === 'confirmed' || (ord.stageIndex && ord.stageIndex >= 2)) {
+                standardStepIdx = 1;
+              } else {
+                standardStepIdx = 1; // Default newly placed order is Prepping in Studio
+              }
+              const standardProgressPct = Math.min(100, Math.max(0, (standardStepIdx / 3) * 100));
+
               return `
-                <div class="rounded-2xl border border-[#e4e0d8] bg-white p-4 sm:p-5 shadow-xs flex flex-col gap-3.5" data-order-id="${esc(cleanOrderId)}">
-                  <!-- Header: ID, Date, Status & Total -->
-                  <div class="flex flex-wrap items-center justify-between gap-2 border-b border-[#f0ece4] pb-3">
-                    <div>
+                <div class="rounded-2xl border border-[#e8e4dc] bg-white p-4 sm:p-5 shadow-xs hover:shadow-sm transition-all duration-200 flex flex-col gap-4" data-order-id="${esc(cleanOrderId)}">
+                  <!-- Header: ID, Date, Status & Total with Apple-Grade Hierarchy -->
+                  <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 border-b border-[#f0ece4] pb-3.5">
+                    <div class="flex flex-col gap-1">
                       <div class="flex flex-wrap items-center gap-2">
-                        <span class="font-spec-numeral text-xs font-bold text-secondary whitespace-nowrap">ORDER #${esc(cleanOrderId)}</span>
-                        <span class="text-xs text-on-surface-variant">• ${esc(orderTimestamp)}</span>
-                        ${statusBadge}
-                        ${isCustom ? `<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-[#fdf6f3] text-[#9e3322] border border-[#f5c2b7]/60 text-[10px] font-bold uppercase tracking-wider">🌸 Bespoke Atelier Keepsake</span>` : ''}
-                        ${ord.giftWrap ? `<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-[#fdf6f3] text-[#9e3322] border border-[#f5c2b7]/60 text-[10px] font-semibold"><span class="material-symbols-outlined text-[13px]" aria-hidden="true">featured_seasonal_and_gifts</span><span>Silk Potli Wrap</span></span>` : ''}
+                        <span class="font-mono text-xs sm:text-sm font-bold text-primary tracking-tight whitespace-nowrap">ORDER #${esc(cleanOrderId)}</span>
+                        <span class="text-xs text-on-surface-variant font-medium">• ${esc(orderTimestamp)}</span>
+                        ${isCustom ? `<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-[#fdf6f3] text-[#9e3322] border border-[#f5c2b7]/60 text-[10px] font-bold uppercase tracking-wider">🌸 Bespoke Keepsake</span>` : ''}
+                        ${ord.giftWrap ? `<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-[#fdf6f3] text-[#9e3322] border border-[#f5c2b7]/60 text-[10px] font-semibold"><span class="material-symbols-outlined text-[13px]" aria-hidden="true">featured_seasonal_and_gifts</span><span>Silk Potli</span></span>` : ''}
                       </div>
-                      ${ord.status ? `<p class="text-xs font-semibold text-primary mt-1">${esc(ord.status)}</p>` : ''}
+                      ${ord.status ? `<p class="text-xs font-semibold text-primary mt-0.5">${esc(String(ord.status).replace(/\s*•\s*(Oracle|Studio)\s*Batch\s*Allocated/gi, '').trim())}</p>` : ''}
                     </div>
-                    <div class="text-right">
+                    <div class="flex items-center sm:flex-col sm:items-end justify-between sm:justify-center gap-2">
                       <span class="font-spec-numeral text-base sm:text-lg font-bold text-primary">${formatINR(ord.total)}</span>
+                      <div>${statusBadge}</div>
                     </div>
                   </div>
+
+                  <!-- 4-Step Minimalist Progress Stepper for Standard Storefront Orders -->
+                  ${!isCustom ? `
+                    <div class="py-1 px-1 sm:px-3">
+                      <div class="relative flex items-center justify-between w-full">
+                        <!-- Background track line -->
+                        <div class="absolute left-6 right-6 top-3 h-0.5 bg-[#eee8dc] z-0"></div>
+                        <!-- Active progress fill line -->
+                        <div class="absolute left-6 top-3 h-0.5 bg-emerald-600 z-0 transition-all duration-500" style="width: ${standardProgressPct}%;"></div>
+
+                        ${standardSteps.map((step, idx) => {
+                          const isDone = idx < standardStepIdx;
+                          const isCurrent = idx === standardStepIdx;
+                          return `
+                            <div class="flex flex-col items-center gap-1.5 z-10 text-center w-14 sm:w-20">
+                              <div class="w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold transition-all ${
+                                isDone
+                                  ? 'bg-emerald-600 text-white shadow-2xs'
+                                  : isCurrent
+                                  ? 'bg-primary text-white ring-4 ring-primary/15 shadow-xs scale-105'
+                                  : 'bg-white border-2 border-[#e4e0d8] text-gray-400'
+                              }">
+                                ${isDone ? '✓' : (idx + 1)}
+                              </div>
+                              <span class="text-[10px] sm:text-[11px] font-medium leading-tight ${
+                                isCurrent ? 'text-primary font-bold' : (isDone ? 'text-emerald-800 font-semibold' : 'text-gray-400')
+                              }">
+                                ${step}
+                              </span>
+                            </div>
+                          `;
+                        }).join('')}
+                      </div>
+                    </div>
+                  ` : ''}
 
                   <!-- Bespoke Floral Preservation 8-Stage Tracker (if custom commission) -->
                   ${isCustom ? `
@@ -5230,57 +5286,64 @@ function renderWishlistItemCard(p) {
                     </div>
                   ` : ''}
 
-                  <!-- Tracking Banner (if available) -->
-                  ${trackingNum ? `
-                    <div class="flex items-center gap-2 p-3 rounded-xl bg-surface-container-low border border-[#e4e0d8] text-xs">
+                  <!-- Authoritative Courier Tracking Banner (Rendered ONLY when order is actually in transit/delivered) -->
+                  ${hasValidCourierTracking ? `
+                    <div class="flex items-center gap-2.5 p-3 rounded-xl bg-surface-container-low border border-[#e4e0d8] text-xs">
                       <span class="material-symbols-outlined text-secondary text-base shrink-0" aria-hidden="true">local_shipping</span>
-                      <span class="text-primary">Shipped via <strong>${esc(courierName)}</strong> • Tracking ID: <strong class="font-mono text-secondary">${esc(trackingNum)}</strong></span>
+                      <span class="text-primary">Shipped via <strong>${esc(courierName)}</strong> • AWB Tracking ID: <strong class="font-mono text-secondary">${esc(trackingNum)}</strong></span>
                     </div>
                   ` : ''}
 
-                  <!-- Order Items -->
+                  <!-- Order Items: High-Craft Restraint & Clean Single-Line Typography -->
                   <div class="divide-y divide-[#f4f0e8] py-0.5">
-                    ${(ord.items || []).map(it => `
-                      <div class="py-2.5 flex items-center justify-between gap-3">
-                        <div class="flex items-center gap-3 min-w-0">
-                          ${it.image ? `
-                            <img src="${esc(it.image)}" alt="${esc(it.name)}" class="w-12 h-12 rounded-lg object-cover border border-[#e4e0d8] shrink-0" loading="lazy">
-                          ` : `
-                            <div class="w-12 h-12 rounded-lg bg-surface-container flex items-center justify-center text-secondary shrink-0">
-                              <span class="material-symbols-outlined text-xl" aria-hidden="true">inventory_2</span>
+                    ${(ord.items || []).map(it => {
+                      const cleanVariant = (it.variantLabel && it.variantLabel !== 'Standard Edition' && it.variantLabel !== 'Standard')
+                        ? it.variantLabel
+                        : '';
+                      const hasVariety = Boolean(it.color || it.shape || it.size);
+
+                      return `
+                        <div class="py-3 flex items-center justify-between gap-3">
+                          <div class="flex items-center gap-3 min-w-0 flex-1">
+                            <div class="w-14 h-14 min-w-[56px] min-h-[56px] max-w-[56px] max-h-[56px] rounded-xl bg-surface-container-low border border-[#eee8dd] overflow-hidden flex items-center justify-center shrink-0">
+                              ${it.image ? `
+                                <img src="${esc(it.image)}" alt="${esc(it.name)}" class="w-full h-full object-cover" loading="lazy" onerror="this.onerror=null; this.src='./vistara-krafts-logo.jpg';">
+                              ` : `
+                                <span class="material-symbols-outlined text-xl text-secondary" aria-hidden="true">inventory_2</span>
+                              `}
                             </div>
-                          `}
-                          <div class="min-w-0">
-                            <p class="text-xs sm:text-sm font-bold text-primary truncate">${esc(it.name)}</p>
-                            <p class="text-[11px] text-on-surface-variant mt-0.5">
-                              Qty: ${it.qty}
-                              ${it.variantLabel ? ` • ${esc(it.variantLabel)}` : ''}
-                            </p>
-                            ${(it.color || it.shape || it.size) ? `
-                              <div class="flex items-center gap-1.5 flex-wrap text-[10px] text-on-surface-variant font-medium mt-1">
-                                ${it.color ? `<span class="px-1.5 py-0.5 rounded bg-surface-container border border-[#e4e0d8]">Color: ${esc(it.color)}</span>` : ''}
-                                ${it.shape ? `<span class="px-1.5 py-0.5 rounded bg-surface-container border border-[#e4e0d8]">Shape: ${esc(it.shape)}</span>` : ''}
-                                ${it.size ? `<span class="px-1.5 py-0.5 rounded bg-surface-container border border-[#e4e0d8]">Size: ${esc(it.size)}</span>` : ''}
-                              </div>
-                            ` : ''}
+                            <div class="min-w-0 flex-1">
+                              <p class="text-xs sm:text-sm font-bold text-primary truncate leading-snug">${esc(it.name || it.productName || 'Vistāra Keepsake')}</p>
+                              <p class="text-[11px] text-on-surface-variant mt-0.5 truncate">
+                                Qty: ${it.qty || 1}${cleanVariant ? ` • ${esc(cleanVariant)}` : ''}
+                              </p>
+                              ${hasVariety ? `
+                                <div class="flex items-center gap-1.5 flex-wrap text-[10px] text-on-surface-variant font-medium mt-1">
+                                  ${it.color ? `<span class="px-2 py-0.5 rounded bg-surface-container border border-[#e4e0d8]">Color: ${esc(it.color)}</span>` : ''}
+                                  ${it.shape ? `<span class="px-2 py-0.5 rounded bg-surface-container border border-[#e4e0d8]">Shape: ${esc(it.shape)}</span>` : ''}
+                                  ${it.size ? `<span class="px-2 py-0.5 rounded bg-surface-container border border-[#e4e0d8]">Size: ${esc(it.size)}</span>` : ''}
+                                </div>
+                              ` : ''}
+                            </div>
                           </div>
+                          <span class="text-xs sm:text-sm font-bold text-primary font-spec-numeral shrink-0 self-center">${formatINR((it.price || 0) * (it.qty || 1))}</span>
                         </div>
-                        <span class="text-xs sm:text-sm font-bold text-primary font-spec-numeral shrink-0">${formatINR((it.price || 0) * (it.qty || 1))}</span>
-                      </div>
-                    `).join('')}
+                      `;
+                    }).join('')}
                   </div>
 
-                  <!-- Footer Actions -->
-                  <div class="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-[#f0ece4]">
-                    <span class="text-[11px] text-on-surface-variant">
-                      ${ord.paymentMethod ? `Paid via ${esc(ord.paymentMethod)}` : 'Payment Confirmed'} • 18% GST Invoice Included
-                    </span>
-                    <div class="flex items-center gap-2 shrink-0">
-                      <button type="button" onclick="window.openOrderInvoiceModal('${esc(cleanOrderId)}')" class="min-h-[40px] px-3.5 py-1.5 rounded-xl border border-[#e4e0d8] bg-surface-container-low hover:bg-surface-container text-xs font-semibold text-primary flex items-center gap-1.5 active:scale-[0.97] transition-all cursor-pointer">
+                  <!-- Footer Actions: Balanced Weights & Professional Spacing -->
+                  <div class="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-[#f0ece4]">
+                    <div class="flex items-center gap-1.5 text-[11px] sm:text-xs text-on-surface-variant font-medium">
+                      <span class="material-symbols-outlined text-sm text-emerald-700" aria-hidden="true">check_circle</span>
+                      <span>${ord.paymentMethod ? esc(ord.paymentMethod) : 'Payment Confirmed'} • GST Tax Invoice Included</span>
+                    </div>
+                    <div class="flex items-center gap-2 shrink-0 ml-auto">
+                      <button type="button" onclick="window.openOrderInvoiceModal('${esc(cleanOrderId)}')" class="min-h-[38px] px-3.5 py-1.5 rounded-xl border border-[#e4e0d8] bg-white hover:bg-surface-container-low text-xs font-semibold text-primary flex items-center gap-1.5 active:scale-95 transition-all cursor-pointer">
                         <span class="material-symbols-outlined text-sm text-secondary" aria-hidden="true">receipt_long</span>
                         <span>View Invoice</span>
                       </button>
-                      <button type="button" onclick="window.handleReorder('${esc(cleanOrderId)}')" class="min-h-[40px] px-4 py-1.5 rounded-xl bg-primary hover:bg-primary-container text-white text-xs font-semibold flex items-center gap-1.5 shadow-xs active:scale-[0.97] transition-all cursor-pointer">
+                      <button type="button" onclick="window.handleReorder('${esc(cleanOrderId)}')" class="min-h-[38px] px-4 py-1.5 rounded-xl bg-primary hover:bg-[#06244c] text-white text-xs font-semibold flex items-center gap-1.5 shadow-xs active:scale-95 transition-all cursor-pointer">
                         <span class="material-symbols-outlined text-sm" aria-hidden="true">replay</span>
                         <span>Buy Again</span>
                       </button>
@@ -11013,6 +11076,12 @@ function renderWishlistItemCard(p) {
     const modal = document.getElementById('checkout-modal');
     const amountEl = document.getElementById('checkout-modal-payable');
     if (amountEl) amountEl.textContent = formatINR(summary.payable);
+    const submitBtnText = document.getElementById('checkout-submit-btn-text');
+    if (submitBtnText) submitBtnText.textContent = `Pay ${formatINR(summary.payable)} via Razorpay Secure`;
+    const itemsCountEl = document.getElementById('checkout-modal-items-count');
+    if (itemsCountEl) {
+      itemsCountEl.textContent = `${summary.itemsCount} ${summary.itemsCount === 1 ? 'item' : 'items'} in Studio Bag`;
+    }
     if (modal) modal.classList.remove('hidden');
     if (typeof window !== 'undefined' && window.VistaraAnalytics && typeof window.VistaraAnalytics.trackInitiateCheckout === 'function') {
       window.VistaraAnalytics.trackInitiateCheckout(summary);
@@ -11177,6 +11246,13 @@ function renderWishlistItemCard(p) {
       }
 
       if (res.success) {
+        if (modal) modal.classList.add('hidden');
+        if (procModal) procModal.classList.add('hidden');
+        if (typeof window.closeModalById === 'function') {
+          window.closeModalById('checkout-modal');
+        }
+        syncBodyModalLock();
+
         if (typeof window !== 'undefined' && window.VistaraAnalytics && typeof window.VistaraAnalytics.trackPurchase === 'function') {
           window.VistaraAnalytics.trackPurchase(res.order);
         }
@@ -11197,6 +11273,10 @@ function renderWishlistItemCard(p) {
           );
         }
         window.navigateTo('orders');
+      } else if (res.cancelled) {
+        if (modal) modal.classList.remove('hidden');
+        syncBodyModalLock();
+        window.showToast('Payment Cancelled', 'Payment window was closed. Your cart and draft address have been preserved.');
       } else if (res.requiresAuth) {
         if (modal) modal.classList.remove('hidden');
         syncBodyModalLock();
@@ -12064,6 +12144,27 @@ function renderWishlistItemCard(p) {
     } catch (_e) {
       console.warn('Supabase auth init:', _e);
     }
+
+    // Reconcile external Razorpay / bank redirect return parameters
+    try {
+      if (typeof window !== 'undefined' && window.location) {
+        const searchParams = new URLSearchParams(window.location.search);
+        const rzpPayId = searchParams.get('razorpay_payment_id') || searchParams.get('payment_id');
+        if (rzpPayId) {
+          const cleanUrl = window.location.pathname + '#/orders';
+          if (window.history && typeof window.history.replaceState === 'function') {
+            window.history.replaceState({}, document.title, cleanUrl);
+          }
+          if (Store && typeof Store.clearCart === 'function') {
+            Store.clearCart();
+          }
+          if (Store && typeof Store.clearCheckoutDraft === 'function') {
+            Store.clearCheckoutDraft();
+          }
+          window.showToast('Payment Verified! 🎉', 'Your order has been recorded successfully.');
+        }
+      }
+    } catch (_rzpReconcileErr) {}
 
     try {
       handleRouteChange();

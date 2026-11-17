@@ -4178,43 +4178,56 @@
   </div>
 
   <!-- 7. Multi-Step Checkout Modal (Step 2: Delivery Address & Payment) -->
-  <div id="checkout-modal" role="dialog" aria-modal="true" aria-labelledby="checkout-modal-title" class="fixed inset-0 z-50 bg-primary/60 backdrop-blur-xs hidden flex items-center justify-center p-3 sm:p-4" onclick="window.closeModalById('checkout-modal')">
-    <form method="POST" onsubmit="window.submitCheckoutOrder(event)" class="w-full max-w-md max-w-[calc(100vw-20px)] max-h-[96dvh] overflow-y-auto bg-white rounded-2xl p-3.5 sm:p-5 shadow-2xl flex flex-col gap-2 sm:gap-2.5 my-auto" onclick="event.stopPropagation()">
-      <div class="flex items-center justify-between gap-2 border-b border-surface-container pb-2 shrink-0">
+  <div id="checkout-modal" role="dialog" aria-modal="true" aria-labelledby="checkout-modal-title" class="fixed inset-0 z-50 bg-primary/65 backdrop-blur-md hidden flex items-center justify-center p-3 sm:p-4" onclick="window.closeModalById('checkout-modal')">
+    <form method="POST" onsubmit="window.submitCheckoutOrder(event)" class="w-full max-w-md max-w-[calc(100vw-24px)] max-h-[94dvh] overflow-y-auto bg-white rounded-3xl p-4 sm:p-6 shadow-[0_25px_60px_-15px_rgba(3,26,56,0.35)] border border-[#e8e4dc] flex flex-col gap-2.5 sm:gap-3 my-auto transition-all" onclick="event.stopPropagation()">
+      <div class="flex items-center justify-between gap-2 border-b border-surface-container pb-2.5 shrink-0">
         <div class="min-w-0">
-          <span class="text-[9.5px] uppercase tracking-wider text-secondary font-bold block leading-none">100% Secure Checkout</span>
-          <h3 id="checkout-modal-title" class="font-headline-sm text-base sm:text-lg text-primary font-bold truncate mt-0.5">Delivery Address</h3>
+          <span class="inline-flex items-center gap-1.5 text-[9.5px] uppercase tracking-wider text-secondary font-bold leading-none">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-600 animate-pulse"></span>
+            <span>100% Secure Checkout • 256-Bit Encrypted</span>
+          </span>
+          <h3 id="checkout-modal-title" class="font-headline-sm text-base sm:text-lg text-primary font-bold truncate mt-0.5">Delivery &amp; Payment</h3>
         </div>
-        <button type="button" aria-label="Close Checkout Modal" onclick="window.closeModalById('checkout-modal')" class="w-8 h-8 rounded-full bg-surface-container-low hover:bg-surface-container flex items-center justify-center shrink-0 cursor-pointer transition-colors">
+        <button type="button" aria-label="Close Checkout Modal" onclick="window.closeModalById('checkout-modal')" class="w-8 h-8 rounded-full bg-surface-container-low hover:bg-surface-container flex items-center justify-center shrink-0 cursor-pointer transition-colors active:scale-95">
           <span class="material-symbols-outlined text-base" aria-hidden="true">close</span>
         </button>
       </div>
+
+      <!-- Studio Bag Mini Overview Strip -->
+      <div id="checkout-modal-bag-preview" class="p-2 sm:p-2.5 rounded-xl bg-[#faf8f5] border border-[#eee8dd] flex items-center justify-between gap-2 text-xs shrink-0">
+        <div class="flex items-center gap-2 min-w-0">
+          <span class="material-symbols-outlined text-base text-secondary" aria-hidden="true">shopping_bag</span>
+          <span id="checkout-modal-items-count" class="font-semibold text-primary truncate">Your Studio Bag</span>
+        </div>
+        <span class="text-[10px] text-emerald-800 font-semibold bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200/60 shrink-0">Free Insured Air Dispatch</span>
+      </div>
+
       <div class="grid grid-cols-1 min-[360px]:grid-cols-2 sm:grid-cols-2 gap-2 shrink-0">
         <div>
           <label for="chk-name" class="text-[10px] uppercase tracking-wider font-bold text-primary block mb-0.5">Recipient Name *</label>
-          <input id="chk-name" type="text" required autocomplete="name" aria-label="Full Recipient Name" aria-describedby="chk-name-err" value="" placeholder="Full Name" class="w-full h-11 px-2.5 rounded-lg bg-surface-container-low border border-[#e4e0d8] text-xs focus:outline-none focus:border-primary">
+          <input id="chk-name" type="text" required autocomplete="name" aria-label="Full Recipient Name" aria-describedby="chk-name-err" value="" placeholder="Full Name" class="w-full h-11 px-2.5 rounded-xl bg-surface-container-low border border-[#e4e0d8] text-xs focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/20 transition-all">
           <p id="chk-name-err" class="hidden text-[9px] text-[#9e3322] font-semibold mt-0.5" role="alert"></p>
         </div>
         <div>
           <label for="chk-phone" class="text-[10px] uppercase tracking-wider font-bold text-primary block mb-0.5">Mobile / WhatsApp *</label>
-          <input id="chk-phone" type="tel" required autocomplete="tel" aria-label="WhatsApp or Mobile Number for Tracking" aria-describedby="chk-phone-err" value="" placeholder="+91 Mobile" class="w-full h-11 px-2.5 rounded-lg bg-surface-container-low border border-[#e4e0d8] text-xs focus:outline-none focus:border-primary">
+          <input id="chk-phone" type="tel" required autocomplete="tel" aria-label="WhatsApp or Mobile Number for Tracking" aria-describedby="chk-phone-err" value="" placeholder="+91 Mobile" class="w-full h-11 px-2.5 rounded-xl bg-surface-container-low border border-[#e4e0d8] text-xs focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/20 transition-all">
           <p id="chk-phone-err" class="hidden text-[9px] text-[#9e3322] font-semibold mt-0.5" role="alert"></p>
         </div>
       </div>
       <div class="grid grid-cols-1 sm:grid-cols-3 min-[360px]:grid-cols-3 gap-2 shrink-0">
         <div class="min-[360px]:col-span-2 sm:col-span-2">
           <label for="chk-address" class="text-[10px] uppercase tracking-wider font-bold text-primary block mb-0.5">Street Address &amp; City *</label>
-          <input id="chk-address" type="text" required autocomplete="street-address" aria-label="Complete Street Address and PIN" aria-describedby="chk-address-err" value="" placeholder="Flat/House, Street, City" class="w-full h-11 px-2.5 rounded-lg bg-surface-container-low border border-[#e4e0d8] text-xs focus:outline-none focus:border-primary">
+          <input id="chk-address" type="text" required autocomplete="street-address" aria-label="Complete Street Address and PIN" aria-describedby="chk-address-err" value="" placeholder="Flat/House, Street, City" class="w-full h-11 px-2.5 rounded-xl bg-surface-container-low border border-[#e4e0d8] text-xs focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/20 transition-all">
           <p id="chk-address-err" class="hidden text-[9px] text-[#9e3322] font-semibold mt-0.5" role="alert"></p>
         </div>
         <div class="min-[360px]:col-span-1 sm:col-span-1">
           <label for="chk-pincode" class="text-[10px] uppercase tracking-wider font-bold text-primary block mb-0.5">PIN Code *</label>
-          <input id="chk-pincode" type="text" required maxlength="6" pattern="[1-9][0-9]{5}" autocomplete="postal-code" aria-label="6-Digit Delivery PIN Code" aria-describedby="chk-pincode-err" value="" placeholder="6 Digits" class="w-full h-11 px-2.5 rounded-lg bg-surface-container-low border border-[#e4e0d8] font-spec-numeral text-xs focus:outline-none focus:border-primary">
+          <input id="chk-pincode" type="text" required maxlength="6" pattern="[1-9][0-9]{5}" autocomplete="postal-code" aria-label="6-Digit Delivery PIN Code" aria-describedby="chk-pincode-err" value="" placeholder="6 Digits" class="w-full h-11 px-2.5 rounded-xl bg-surface-container-low border border-[#e4e0d8] font-spec-numeral text-xs focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/20 transition-all">
           <p id="chk-pincode-err" class="hidden text-[9px] text-[#9e3322] font-semibold mt-0.5" role="alert"></p>
         </div>
       </div>
       <div class="shrink-0">
-        <label for="chk-gift-wrap" class="py-1.5 px-2.5 rounded-lg bg-[#fdf6f3] border border-[#9e3322]/20 flex items-center justify-between gap-2 cursor-pointer hover:bg-[#faeeea] transition-colors">
+        <label for="chk-gift-wrap" class="py-1.5 px-2.5 rounded-xl bg-[#fdf6f3] border border-[#9e3322]/20 flex items-center justify-between gap-2 cursor-pointer hover:bg-[#faeeea] transition-colors">
           <span class="text-[11px] font-semibold text-primary truncate flex items-center gap-1.5">
             <span class="material-symbols-outlined text-sm text-[#9e3322]" aria-hidden="true">featured_seasonal_and_gifts</span>
             <span>Complimentary Silk Potli &amp; Gift Note</span>
@@ -4222,19 +4235,30 @@
           <input id="chk-gift-wrap" type="checkbox" checked aria-label="Add Complimentary Silk Potli and Wax-Sealed Gift Note" class="w-4 h-4 accent-primary shrink-0 cursor-pointer">
         </label>
       </div>
-      <div class="shrink-0 py-1.5 px-2.5 rounded-lg bg-surface-container-low border border-[#e4e0d8] flex items-center gap-2">
+
+      <!-- Payment Gateway Method Pill -->
+      <div class="p-2 px-2.5 rounded-xl bg-surface-container-low border border-[#e4e0d8] flex items-center justify-between text-[11px] shrink-0">
+        <div class="flex items-center gap-1.5 text-primary font-semibold">
+          <span class="material-symbols-outlined text-sm text-secondary" aria-hidden="true">lock</span>
+          <span>Razorpay Gateway</span>
+        </div>
+        <span class="text-[10.5px] text-on-surface-variant font-medium">Instant UPI • Cards • NetBanking</span>
+      </div>
+
+      <div class="shrink-0 py-1.5 px-2.5 rounded-xl bg-surface-container-low border border-[#e4e0d8] flex items-center gap-2">
         <input id="chk-dpdp-consent" type="checkbox" checked required class="w-3.5 h-3.5 accent-primary cursor-pointer shrink-0" aria-label="Consent to processing contact and address for delivery">
         <label for="chk-dpdp-consent" class="text-[9.5px] text-on-surface-variant font-medium leading-tight cursor-pointer">
           I consent to processing contact &amp; address for BlueDart delivery &amp; GST invoicing.
         </label>
       </div>
-      <div class="pt-0.5 flex flex-col gap-1.5 shrink-0">
-        <div class="py-1.5 px-3 rounded-lg bg-surface-container-low flex items-center justify-between gap-2">
+      <div class="pt-1 flex flex-col gap-2 shrink-0">
+        <div class="py-1.5 px-3 rounded-xl bg-surface-container-low flex items-center justify-between gap-2">
           <span class="text-[11px] font-semibold text-primary">Total Payable <span class="text-[9.5px] text-on-surface-variant font-normal">(incl. 18% GST)</span></span>
           <span id="checkout-modal-payable" class="font-spec-numeral text-base font-bold text-primary shrink-0">₹0</span>
         </div>
-        <button type="submit" id="checkout-submit-btn" class="btn-shimmer w-full h-11 py-2 rounded-xl bg-primary text-white text-xs font-bold shadow-md shrink-0 cursor-pointer flex items-center justify-center gap-1.5 active:scale-[0.97] transition-all">
-          <span>Place Order &amp; Save Delivery Address</span>
+        <button type="submit" id="checkout-submit-btn" class="btn-shimmer w-full h-11 py-2 rounded-xl bg-primary hover:bg-[#06244c] text-white text-xs font-bold shadow-md shrink-0 cursor-pointer flex items-center justify-center gap-1.5 active:scale-[0.97] transition-all">
+          <span class="material-symbols-outlined text-sm" aria-hidden="true">lock</span>
+          <span id="checkout-submit-btn-text">Pay via Razorpay Secure</span>
           <span class="material-symbols-outlined text-sm" aria-hidden="true">arrow_forward</span>
         </button>
       </div>

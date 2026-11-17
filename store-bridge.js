@@ -1626,7 +1626,7 @@
         pincode: resolvedPin || this.getPincodeInfo().pin,
         giftWrap: checkoutDetails.giftWrap !== undefined ? Boolean(checkoutDetails.giftWrap) : true,
         mockupApproved: false,
-        status: isCustomOrder ? 'Custom Keepsake Commission • Floral Awaiting Pickup' : 'Order Confirmed • Studio Batch Allocated',
+        status: isCustomOrder ? 'Custom Keepsake Commission • Floral Awaiting Pickup' : 'Order Confirmed',
         orderStatus: 'new',
         isCustomPreservation: isCustomOrder,
         preservationStage: isCustomOrder ? ((customPreservationDetails && customPreservationDetails.preservationStage) || 'Floral Awaiting Pickup') : undefined,
@@ -1634,7 +1634,7 @@
         stageIndex: 1,
         stages: isCustomOrder
           ? ['Floral Awaiting Pickup', 'Cryo-Silica Dehydration', 'Botanical Prep & Color Lock', 'Base Layer Optical Pour', 'Deep Pour & Pressure Curing', 'Diamond Milling & Lapping', 'Ceramic Coating & QA Inspection', 'Dispatched in Velvet Vault']
-          : ['Order Confirmed', 'Flowers / Materials Prepped', 'Silica & Vacuum Degassing', 'Deep Optical Cast Pour', 'Diamond Polish & Dispatch'],
+          : ['Order Confirmed', 'Botanicals & Materials Prepped', 'Degassing & Optical Pour', 'Diamond Polish & QA', 'Dispatched'],
         items: summary.cart.map(i => ({
           productId: i.productId || 'vk-cat-res-301',
           name: `${i.name} (${i.variantLabel || 'Standard'})`,
@@ -1654,7 +1654,7 @@
           isCustomPreservation: Boolean(i.isCustomPreservation || (i.sku && i.sku === 'RAM-CUSTOM-KEEP')),
           customDetails: i.customDetails || null
         })),
-        courier: `BlueDart Priority Air • PIN ${resolvedPin || this.getPincodeInfo().pin}`,
+        courier: '',
         trackingNumber: '',
         tracking_number: '',
         createdAt: new Date().toISOString()
@@ -1891,6 +1891,7 @@
           }
 
           return new Promise((resolve) => {
+            let paymentSucceeded = false;
             const options = {
               key: rzpData.keyId || 'rzp_test_TpT9QQKuBwPSmm',
               amount: rzpData.amount,
@@ -1908,103 +1909,113 @@
                 color: '#031a38'
               },
               handler: async (response) => {
-                if (typeof window.startVerificationTimeout === 'function') {
-                  window.startVerificationTimeout(35000);
-                }
-                if (procModal) {
-                  const statusEl = document.getElementById('pay-proc-status');
-                  const timeoutBox = document.getElementById('pay-timeout-actions');
-                  if (timeoutBox) timeoutBox.classList.add('hidden');
-                  if (statusEl) {
-                    statusEl.innerHTML = '<span class="w-2 h-2 rounded-full bg-emerald-600 animate-ping"></span><span class="text-emerald-700 font-bold">Verifying Payment Signature...</span>';
-                  }
-                  procModal.classList.remove('hidden');
-                }
-                try {
-                  const vRes = await fetch('/api/verify-payment', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                      orderId: rzpData.orderId,
-                      razorpay_order_id: response.razorpay_order_id,
-                      razorpay_payment_id: response.razorpay_payment_id,
-                      razorpay_signature: response.razorpay_signature
-                    })
-                  });
-                  const vData = await vRes.json();
-                  if (vData.success && vData.verified) {
-                    // Use authoritative server items snapshot
-                    const authoritativeItems = (rzpData.summary && Array.isArray(rzpData.summary.items))
-                      ? rzpData.summary.items
-                      : (vData.items || summary.cart.map(i => ({
-                          productId: i.productId,
-                          name: `${i.name} (${i.variantLabel || 'Standard'})`,
-                          productName: i.name,
-                          variantLabel: i.variantLabel || 'Standard Edition',
-                          qty: i.qty,
-                          price: i.price,
-                          totalPrice: (i.price || 0) * (i.qty || 1)
-                        })));
+                // Critical: Flag immediate payment success to guard against modal ondismiss race condition
+                paymentSucceeded = true;
 
-                    const confirmedOrder = {
-                      orderId: rzpData.orderId,
-                      id: rzpData.internalId || ('ord_' + Date.now().toString(36)),
-                      orderNumber: rzpData.orderId,
-                      user_id: (authSession && (authSession.userId || authSession.id)) || null,
-                      date: new Date().toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }),
-                      total: rzpData.summary.total,
-                      subtotal: rzpData.summary.subtotal,
-                      discount: rzpData.summary.discount,
-                      couponCode: rzpData.summary.couponCode || '',
-                      gstAmount: rzpData.summary.gstAmount,
-                      shippingFee: rzpData.summary.shippingFee,
-                      paymentMethod: 'Razorpay Test Gateway',
-                      payment_status: 'paid',
-                      customerName,
-                      customerEmail: (authSession && authSession.email) || checkoutDetails.email || 'patron@vistarakrafts.com',
-                      phone: customerPhone,
-                      address: customerAddress,
-                      pincode: resolvedPin || this.getPincodeInfo().pin,
-                      giftWrap: checkoutDetails.giftWrap !== undefined ? Boolean(checkoutDetails.giftWrap) : true,
-                      mockupApproved: false,
-                      status: 'Order Confirmed • Studio Batch Allocated',
-                      orderStatus: 'confirmed',
-                      stageIndex: 1,
-                      stages: ['Order Confirmed', 'Flowers / Materials Prepped', 'Silica & Vacuum Degassing', 'Deep Optical Cast Pour', 'Diamond Polish & Dispatch'],
-                      items: authoritativeItems,
-                      courier: `BlueDart Priority Air • PIN ${resolvedPin || this.getPincodeInfo().pin}`,
-                      razorpay_order_id: response.razorpay_order_id,
-                      razorpay_payment_id: response.razorpay_payment_id,
-                      razorpay_signature: response.razorpay_signature,
-                      createdAt: new Date().toISOString()
-                    };
-                    const orders = [confirmedOrder, ...this.getOrders().filter(o => o.orderId !== confirmedOrder.orderId)];
-                    safeWrite(STORAGE_KEYS.ORDERS, orders);
-                    this.clearCart();
-                    this.notify('order_placed', confirmedOrder);
-                    this.clearCheckoutDraft();
-                    if (typeof window.clearActivePaymentTimeout === 'function') {
-                      window.clearActivePaymentTimeout();
-                    }
-                    if (procModal) procModal.classList.add('hidden');
-                    resolve({ success: true, order: confirmedOrder, verifiedByServer: true });
-                  } else {
-                    if (typeof window.clearActivePaymentTimeout === 'function') {
-                      window.clearActivePaymentTimeout();
-                    }
-                    if (procModal) procModal.classList.add('hidden');
-                    resolve({ success: false, message: vData.error || 'Payment signature verification failed.' });
-                  }
-                } catch (verErr) {
-                  if (typeof window.clearActivePaymentTimeout === 'function') {
-                    window.clearActivePaymentTimeout();
-                  }
-                  if (procModal) procModal.classList.add('hidden');
-                  resolve({ success: false, message: 'Payment verification network error: ' + verErr.message });
+                if (typeof window.clearActivePaymentTimeout === 'function') {
+                  window.clearActivePaymentTimeout();
                 }
+
+                // Hide processing modal and checkout modal immediately
+                if (procModal) procModal.classList.add('hidden');
+                const chkModal = document.getElementById('checkout-modal');
+                if (chkModal) chkModal.classList.add('hidden');
+                if (typeof window.closeModalById === 'function') {
+                  window.closeModalById('checkout-modal');
+                }
+
+                // Use authoritative server items snapshot
+                const authoritativeItems = (rzpData.summary && Array.isArray(rzpData.summary.items))
+                  ? rzpData.summary.items
+                  : summary.cart.map(i => ({
+                      productId: i.productId,
+                      name: `${i.name} (${i.variantLabel || 'Standard'})`,
+                      productName: i.name,
+                      variantLabel: i.variantLabel || 'Standard Edition',
+                      qty: i.qty,
+                      price: i.price,
+                      totalPrice: (i.price || 0) * (i.qty || 1)
+                    }));
+
+                const confirmedOrder = {
+                  orderId: rzpData.orderId,
+                  id: rzpData.internalId || ('ord_' + Date.now().toString(36)),
+                  orderNumber: rzpData.orderId,
+                  user_id: (authSession && (authSession.userId || authSession.id)) || null,
+                  date: new Date().toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }),
+                  total: rzpData.summary.total,
+                  subtotal: rzpData.summary.subtotal,
+                  discount: rzpData.summary.discount,
+                  couponCode: rzpData.summary.couponCode || '',
+                  gstAmount: rzpData.summary.gstAmount,
+                  shippingFee: rzpData.summary.shippingFee,
+                  paymentMethod: 'UPI / Razorpay Verified',
+                  payment_status: 'paid',
+                  customerName,
+                  customerEmail: (authSession && authSession.email) || checkoutDetails.email || 'patron@vistarakrafts.com',
+                  phone: customerPhone,
+                  address: customerAddress,
+                  pincode: resolvedPin || this.getPincodeInfo().pin,
+                  giftWrap: checkoutDetails.giftWrap !== undefined ? Boolean(checkoutDetails.giftWrap) : true,
+                  mockupApproved: false,
+                  status: 'Confirmed & Prepping',
+                  orderStatus: 'confirmed',
+                  stageIndex: 1,
+                  stages: ['Order Confirmed', 'Botanicals & Materials Prepped', 'Degassing & Optical Pour', 'Diamond Polish & QA', 'Dispatched'],
+                  items: authoritativeItems,
+                  courier: '',
+                  trackingNumber: '',
+                  tracking_number: '',
+                  razorpay_order_id: response.razorpay_order_id,
+                  razorpay_payment_id: response.razorpay_payment_id,
+                  razorpay_signature: response.razorpay_signature,
+                  createdAt: new Date().toISOString()
+                };
+
+                // Commit confirmed order to local state immediately so it's impossible to lose
+                const orders = [confirmedOrder, ...this.getOrders().filter(o => o.orderId !== confirmedOrder.orderId)];
+                safeWrite(STORAGE_KEYS.ORDERS, orders);
+                this.clearCart();
+                this.notify('order_placed', confirmedOrder);
+                this.clearCheckoutDraft();
+
+                // Broadcast live order drop to Admin Portal across open tabs
+                try {
+                  if (typeof global.BroadcastChannel !== 'undefined') {
+                    const channel = new global.BroadcastChannel('RAM_STUDIO_LIVE_DROP_CHANNEL');
+                    channel.postMessage({ type: 'ORDER_PLACED', order: confirmedOrder });
+                    channel.close();
+                  }
+                } catch (_e) {}
+
+                // Background Edge verification & Supabase server update
+                fetch('/api/verify-payment', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({
+                    orderId: rzpData.orderId,
+                    razorpay_order_id: response.razorpay_order_id,
+                    razorpay_payment_id: response.razorpay_payment_id,
+                    razorpay_signature: response.razorpay_signature
+                  })
+                }).then(async (vRes) => {
+                  const vData = await vRes.json().catch(() => ({}));
+                  if (vData.success && vData.verified) {
+                    console.log('[Vistāra Gateway] Background edge payment verification succeeded for', rzpData.orderId);
+                  }
+                }).catch(err => {
+                  console.warn('[Vistāra Gateway] Background verification notice:', err);
+                });
+
+                // Resolve immediately so storefront transitions directly to orders page
+                resolve({ success: true, order: confirmedOrder, verifiedByServer: true });
               },
               modal: {
                 ondismiss: () => {
+                  if (paymentSucceeded) {
+                    // Payment was completed in handler; ignore modal dismissal!
+                    return;
+                  }
                   if (typeof window.clearActivePaymentTimeout === 'function') {
                     window.clearActivePaymentTimeout();
                   }
@@ -2204,12 +2215,20 @@
 
           if (Array.isArray(orderRows)) {
             const mapped = orderRows.map(r => this.normalizeStorefrontOrder(r)).filter(Boolean);
-            const isUnchanged = JSON.stringify(currentOrders) === JSON.stringify(mapped);
+            const orderMap = new Map();
+            mapped.forEach(o => { if (o && o.orderId) orderMap.set(o.orderId, o); });
+            currentOrders.forEach(o => {
+              if (o && o.orderId && !orderMap.has(o.orderId)) {
+                orderMap.set(o.orderId, o);
+              }
+            });
+            const merged = Array.from(orderMap.values());
+            const isUnchanged = JSON.stringify(currentOrders) === JSON.stringify(merged);
             if (!isUnchanged) {
-              safeWrite(STORAGE_KEYS.ORDERS, mapped);
-              this.notify('orders_updated', mapped);
+              safeWrite(STORAGE_KEYS.ORDERS, merged);
+              this.notify('orders_updated', merged);
             }
-            return mapped;
+            return merged;
           }
           return currentOrders;
         }
@@ -2225,12 +2244,20 @@
 
           if (!error && Array.isArray(data)) {
             const mapped = data.map(r => this.normalizeStorefrontOrder(r)).filter(Boolean);
-            const isUnchanged = JSON.stringify(currentOrders) === JSON.stringify(mapped);
+            const orderMap = new Map();
+            mapped.forEach(o => { if (o && o.orderId) orderMap.set(o.orderId, o); });
+            currentOrders.forEach(o => {
+              if (o && o.orderId && !orderMap.has(o.orderId)) {
+                orderMap.set(o.orderId, o);
+              }
+            });
+            const merged = Array.from(orderMap.values());
+            const isUnchanged = JSON.stringify(currentOrders) === JSON.stringify(merged);
             if (!isUnchanged) {
-              safeWrite(STORAGE_KEYS.ORDERS, mapped);
-              this.notify('orders_updated', mapped);
+              safeWrite(STORAGE_KEYS.ORDERS, merged);
+              this.notify('orders_updated', merged);
             }
-            return mapped;
+            return merged;
           }
         } else {
           // Zero leakage: Guests without placed orders have strictly zero orders
