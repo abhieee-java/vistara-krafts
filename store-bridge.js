@@ -1275,6 +1275,7 @@
       safeWrite(STORAGE_KEYS.REGISTERED_USERS, registeredUsers);
       safeWrite(STORAGE_KEYS.AUTH_SESSION, userRecord);
       safeWrite(STORAGE_KEYS.PATRON_PROFILE, userRecord);
+      this.clearCheckoutDraft();
       this.setPersonaPreference(normalizedPref);
 
       // Sync with backend (/api/auth/google, /api/auth/apple, /api/auth/login, /api/auth/register)
@@ -1359,6 +1360,7 @@
       safeWrite(STORAGE_KEYS.WISHLIST, []);
       safeWrite(STORAGE_KEYS.ORDERS, []);
       safeWrite(STORAGE_KEYS.PATRON_PROFILE, guestDefaultProfile);
+      this.clearCheckoutDraft();
       callCloudflareEdge('/auth/logout', 'POST');
       edgeSessionToken = '';
 
@@ -1439,6 +1441,7 @@
       next.tier = resolvedTier;
       next.memberTier = resolvedTier;
       safeWrite(STORAGE_KEYS.PATRON_PROFILE, next);
+      this.clearCheckoutDraft();
 
       // Synchronize authenticated session state & D1 when user is signed in or saving profile details
       const existingAuth = this.getAuthSession();
@@ -1740,14 +1743,24 @@
     saveCheckoutDraft(data = {}) {
       if (!data || typeof data !== 'object') return;
       try {
+        const auth = this.getAuthSession();
+        const userEmail = (auth && auth.email) ? auth.email.toLowerCase() : 'guest';
         const existing = this.getCheckoutDraft() || {};
-        const merged = { ...existing, ...data, updatedAt: Date.now() };
+        const merged = { ...existing, ...data, userEmail, updatedAt: Date.now() };
         safeWrite(STORAGE_KEYS.CHECKOUT_DRAFT, merged);
       } catch (_e) {}
     },
 
     getCheckoutDraft() {
-      return safeRead(STORAGE_KEYS.CHECKOUT_DRAFT, {}) || {};
+      const draft = safeRead(STORAGE_KEYS.CHECKOUT_DRAFT, {}) || {};
+      const auth = this.getAuthSession();
+      const currentEmail = (auth && auth.email) ? auth.email.toLowerCase() : 'guest';
+      // Strict multi-account isolation: if draft was saved under another account/email, discard it immediately
+      if (draft.userEmail && draft.userEmail !== currentEmail) {
+        this.clearCheckoutDraft();
+        return {};
+      }
+      return draft;
     },
 
     clearCheckoutDraft() {

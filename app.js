@@ -9428,6 +9428,9 @@ function renderWishlistItemCard(p) {
       return;
     }
     Store.savePatronProfile({ name, phone, email, defaultAddress });
+    if (typeof Store.clearCheckoutDraft === 'function') {
+      Store.clearCheckoutDraft();
+    }
     AppState.editingAccountProfile = false;
     updateGlobalBadges();
     renderActiveView();
@@ -9453,6 +9456,9 @@ function renderWishlistItemCard(p) {
       return;
     }
     Store.savePatronProfile({ name, phone, email, defaultAddress });
+    if (typeof Store.clearCheckoutDraft === 'function') {
+      Store.clearCheckoutDraft();
+    }
     updateGlobalBadges();
     renderActiveView();
     window.showToast('Account & Shipping Updated!', `${name} • Saved to session`);
@@ -11051,11 +11057,19 @@ function renderWishlistItemCard(p) {
     clearCheckoutFieldError('chk-address', 'chk-address-err');
     clearCheckoutFieldError('chk-pincode', 'chk-pincode-err');
 
-    const resolvedName = draft.name || (auth.name && auth.name !== 'Vistāra Studio Guest' ? auth.name : '') || (profile.name && profile.name !== 'Vistāra Studio Guest' ? profile.name : '');
-    const resolvedPhone = draft.phone || auth.phone || profile.phone || '';
-    const resolvedAddr = draft.address || auth.address || profile.defaultAddress || profile.address || '';
+    // 1. Authoritative Account Section Address takes strict priority over any stale cached draft
+    const accountAddr = (auth.address || profile.defaultAddress || profile.address || '').trim();
+    const accountPin = (auth.pincode || profile.pincode || '').trim();
+    const accountName = (auth.name && auth.name !== 'Vistāra Studio Guest' ? auth.name : '') || 
+                        (profile.name && profile.name !== 'Vistāra Studio Guest' ? profile.name : '');
+    const accountPhone = (auth.phone || profile.phone || '').trim();
+
+    // If account has an address saved in the account section, it strictly takes precedence over any draft cache
+    const resolvedAddr = accountAddr || draft.address || '';
     const pinMatch = resolvedAddr.match(/\b([1-9][0-9]{5})\b/);
-    const resolvedPin = draft.pincode || auth.pincode || profile.pincode || (pinMatch ? pinMatch[1] : '') || '';
+    const resolvedPin = accountPin || (accountAddr && pinMatch ? pinMatch[1] : '') || draft.pincode || (pinMatch ? pinMatch[1] : '') || '';
+    const resolvedName = accountName || draft.name || '';
+    const resolvedPhone = accountPhone || draft.phone || '';
 
     if (nameEl) nameEl.value = resolvedName;
     if (phoneEl) phoneEl.value = resolvedPhone;
