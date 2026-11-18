@@ -2046,74 +2046,7 @@ ${avgRating ? `
           </div>
         </section>
 
-        <!-- 10. Real Customer Reviews & Verified Buyer Love -->
-        <section class="px-4 sm:px-8 py-8 sm:py-10 bg-[#faf8f5] border-b border-[#e4e0d8] flex flex-col gap-6">
-          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-            <div>
-              <span class="text-xs font-bold text-secondary uppercase tracking-widest block">Customer Testimonials</span>
-              <h2 class="font-headline-sm text-2xl sm:text-3xl text-primary font-bold tracking-tight mt-0.5">Real Reviews from Verified Buyers</h2>
-            </div>
-            <div class="flex items-center gap-1.5 text-xs text-primary font-bold">
-              <span class="text-secondary font-spec-numeral text-sm">★★★★★</span>
-              <span>4.9 / 5.0 (250+ Patrons)</span>
-            </div>
-          </div>
-
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div class="p-5 rounded-2xl bg-white border border-[#e4e0d8] shadow-2xs flex flex-col justify-between gap-3">
-              <div>
-                <div class="flex items-center justify-between mb-2">
-                  <span class="text-xs text-secondary font-spec-numeral">★★★★★</span>
-                  <span class="text-[10px] text-[#266b4e] font-semibold bg-[#f0f7f3] px-2 py-0.5 rounded-full border border-[#266b4e]/20">✓ Verified Bride</span>
-                </div>
-                <p class="text-xs text-primary leading-relaxed font-medium">"The optical clarity on my 50mm wedding varmala keepsake is stunning. It looks like high-end museum glass. Truly treasured forever!"</p>
-              </div>
-              <div class="pt-2 border-t border-[#e4e0d8] flex items-center justify-between">
-                <div>
-                  <p class="text-xs font-bold text-primary">Priyanka M.</p>
-                  <p class="text-[10px] text-on-surface-variant">Guwahati, Assam</p>
-                </div>
-                <span class="text-[10px] text-on-surface-variant font-medium">Keepsake Cube</span>
-              </div>
-            </div>
-
-            <div class="p-5 rounded-2xl bg-white border border-[#e4e0d8] shadow-2xs flex flex-col justify-between gap-3">
-              <div>
-                <div class="flex items-center justify-between mb-2">
-                  <span class="text-xs text-secondary font-spec-numeral">★★★★★</span>
-                  <span class="text-[10px] text-[#266b4e] font-semibold bg-[#f0f7f3] px-2 py-0.5 rounded-full border border-[#266b4e]/20">✓ Verified Artist</span>
-                </div>
-                <p class="text-xs text-primary leading-relaxed font-medium">"UltraClear 3:1 is easily the best deep pour resin in India. Zero micro-bubbles even without vacuum degassing, perfectly flat cure."</p>
-              </div>
-              <div class="pt-2 border-t border-[#e4e0d8] flex items-center justify-between">
-                <div>
-                  <p class="text-xs font-bold text-primary">Rajesh S.</p>
-                  <p class="text-[10px] text-on-surface-variant">Bangalore, Karnataka</p>
-                </div>
-                <span class="text-[10px] text-on-surface-variant font-medium">UltraClear 3:1</span>
-              </div>
-            </div>
-
-            <div class="p-5 rounded-2xl bg-white border border-[#e4e0d8] shadow-2xs flex flex-col justify-between gap-3">
-              <div>
-                <div class="flex items-center justify-between mb-2">
-                  <span class="text-xs text-secondary font-spec-numeral">★★★★★</span>
-                  <span class="text-[10px] text-[#266b4e] font-semibold bg-[#f0f7f3] px-2 py-0.5 rounded-full border border-[#266b4e]/20">✓ Verified Buyer</span>
-                </div>
-                <p class="text-xs text-primary leading-relaxed font-medium">"Fast BlueDart delivery, excellent packaging, and the silicone molds are super smooth. 10/10 experience!"</p>
-              </div>
-              <div class="pt-2 border-t border-[#e4e0d8] flex items-center justify-between">
-                <div>
-                  <p class="text-xs font-bold text-primary">Ananya D.</p>
-                  <p class="text-[10px] text-on-surface-variant">Mumbai, Maharashtra</p>
-                </div>
-                <span class="text-[10px] text-on-surface-variant font-medium">Agate Geode Mold</span>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <!-- 12. Frequently Asked Questions (Maintains #home-faqs ID) -->
+        <!-- 11. Frequently Asked Questions (Maintains #home-faqs ID) -->
         <section id="home-faqs" class="px-4 sm:px-8 py-8 sm:py-10 bg-white flex flex-col gap-5">
           <div>
             <span class="text-xs font-bold text-secondary uppercase tracking-widest block">Customer Support</span>
