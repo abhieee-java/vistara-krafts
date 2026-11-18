@@ -5171,6 +5171,7 @@ function renderWishlistItemCard(p) {
                     <div class="flex flex-col gap-1">
                       <div class="flex flex-wrap items-center gap-2">
                         <span class="font-mono text-xs sm:text-sm font-bold text-primary tracking-tight whitespace-nowrap">ORDER #${esc(cleanOrderId)}</span>
+                        ${ord.id && ord.id !== cleanOrderId ? `<span class="text-[10.5px] font-mono text-on-surface-variant/80 bg-surface-container-low px-1.5 py-0.5 rounded border border-[#e4e0d8]">ID: ${esc(ord.id)}</span>` : ''}
                         <span class="text-xs text-on-surface-variant font-medium">• ${esc(orderTimestamp)}</span>
                         ${isCustom ? `<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-[#fdf6f3] text-[#9e3322] border border-[#f5c2b7]/60 text-[10px] font-bold uppercase tracking-wider">🌸 Bespoke Keepsake</span>` : ''}
                         ${ord.giftWrap ? `<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-[#fdf6f3] text-[#9e3322] border border-[#f5c2b7]/60 text-[10px] font-semibold"><span class="material-symbols-outlined text-[13px]" aria-hidden="true">featured_seasonal_and_gifts</span><span>Silk Potli</span></span>` : ''}
@@ -5428,6 +5429,12 @@ function renderWishlistItemCard(p) {
                 <p class="text-xs text-on-surface-variant truncate mt-0.5">
                   ${esc(activeName ? `${activeName} • ${activeEmail || activePhone || 'Patron'}` : (activeEmail || 'Sign in to access your saved addresses across devices'))}
                 </p>
+                ${isAuth && (auth.id || auth.userId || profile.id) ? `
+                  <div class="flex items-center gap-1.5 mt-1 text-[11px] font-mono text-on-surface-variant">
+                    <span class="text-[9.5px] uppercase font-bold text-outline">User ID:</span>
+                    <span class="bg-surface-container-low px-1.5 py-0.5 rounded border border-[#e4e0d8] text-primary font-semibold select-all">${esc(auth.id || auth.userId || profile.id)}</span>
+                  </div>
+                ` : ''}
               </div>
             </div>
 
