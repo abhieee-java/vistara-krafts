@@ -3043,27 +3043,23 @@ ${avgRating ? `
             </div>
             ` : ''}
 
-            <!-- Inline Primary Conversion Actions (Directly Below Product Options for High Conversion) -->
-            <div class="p-3.5 rounded-2xl bg-white border border-[#e4e0d8] shadow-sm flex flex-col gap-2.5">
-              <div class="flex items-center gap-2">
-                <div class="h-12 bg-surface-container-low rounded-xl flex items-center px-1 shrink-0 border border-[#e4e0d8]">
-                  <button type="button" aria-label="Decrease quantity" onclick="window.changePdpQty(-1)" class="w-11 h-11 flex items-center justify-center text-primary font-bold cursor-pointer hover:bg-surface-container rounded-lg transition-colors">
-                    <span class="material-symbols-outlined text-base" aria-hidden="true">remove</span>
+            <!-- Compact Quantity Selector (Express Buy Now (Instant UPI / Cards) & Add to Cart served via Sticky Footer) -->
+            <div class="flex items-center justify-between py-2 border-y border-[#e4e0d8]/80 my-1">
+              <span class="text-xs font-bold text-primary tracking-tight">Quantity</span>
+              <div class="flex items-center gap-3">
+                <div class="h-9 bg-surface-container-low rounded-xl flex items-center px-1 border border-[#e4e0d8]">
+                  <button type="button" aria-label="Decrease quantity" onclick="window.changePdpQty(-1)" class="w-8 h-8 flex items-center justify-center text-primary font-bold cursor-pointer hover:bg-surface-container active:scale-95 rounded-lg transition-all">
+                    <span class="material-symbols-outlined text-sm" aria-hidden="true">remove</span>
                   </button>
-                  <span class="w-7 text-center font-spec-numeral text-sm text-primary font-bold">${AppState.pdpQty}</span>
-                  <button type="button" aria-label="Increase quantity" onclick="window.changePdpQty(1)" class="w-11 h-11 flex items-center justify-center text-primary font-bold cursor-pointer hover:bg-surface-container rounded-lg transition-colors">
-                    <span class="material-symbols-outlined text-base" aria-hidden="true">add</span>
+                  <span class="w-8 text-center font-spec-numeral text-xs font-bold text-primary">${AppState.pdpQty}</span>
+                  <button type="button" aria-label="Increase quantity" onclick="window.changePdpQty(1)" class="w-8 h-8 flex items-center justify-center text-primary font-bold cursor-pointer hover:bg-surface-container active:scale-95 rounded-lg transition-all">
+                    <span class="material-symbols-outlined text-sm" aria-hidden="true">add</span>
                   </button>
                 </div>
-                <button type="button" onclick="window.addPdpToCart()" class="btn-shimmer min-w-0 flex-1 h-12 px-3 sm:px-4 rounded-xl bg-primary hover:bg-primary-container text-on-primary font-title-md text-xs sm:text-sm font-bold flex items-center justify-center gap-1.5 shadow-sm active:scale-[0.99] transition-all cursor-pointer">
-                  <span class="material-symbols-outlined text-lg shrink-0" aria-hidden="true">shopping_bag</span>
-                  <span class="truncate">Add to Bag • ${formatINR(totalCtaPrice)}</span>
-                </button>
+                ${AppState.pdpQty > 1 ? `
+                  <span class="text-xs font-spec-numeral font-bold text-secondary">Total: ${formatINR(totalCtaPrice)}</span>
+                ` : ''}
               </div>
-              <button type="button" onclick="window.buyNowPdp()" class="w-full h-12 px-4 rounded-xl bg-[#9e3322] hover:opacity-95 text-white font-title-md text-xs sm:text-sm font-bold flex items-center justify-center gap-2 shadow-sm active:scale-[0.99] transition-all cursor-pointer">
-                <span class="material-symbols-outlined text-lg shrink-0" aria-hidden="true">bolt</span>
-                <span>Express Buy Now (Instant UPI / Cards)</span>
-              </button>
             </div>
 
             <!-- Custom Memory / Engraving Note (Included Free) -->
@@ -3343,7 +3339,7 @@ ${avgRating ? `
               ${product.inStock === false ? 'disabled' : ''}
               class="w-full sm:min-w-[155px] sm:w-auto h-[50px] min-[380px]:h-[52px] px-3 sm:px-6 rounded-2xl border-[1.5px] border-[#d8d4cb] bg-white hover:bg-surface-container active:scale-[0.97] text-[#1a1a1a] font-bold text-sm min-[380px]:text-base flex items-center justify-center transition-all cursor-pointer shadow-2xs ${product.inStock === false ? 'opacity-50 cursor-not-allowed' : ''}"
             >
-              <span id="pdp-cta-label" class="whitespace-nowrap">${product.inStock === false ? 'Out of Stock' : 'Add to cart'}</span>
+              <span id="pdp-cta-label" class="whitespace-nowrap">${product.inStock === false ? 'Out of Stock' : 'Add to Cart'}</span>
             </button>
 
             <!-- Buy Now with Price (Rich brand terracotta CTA matching reference layout) -->
@@ -3354,7 +3350,7 @@ ${avgRating ? `
               ${product.inStock === false ? 'disabled' : ''}
               class="w-full sm:min-w-[165px] sm:w-auto h-[50px] min-[380px]:h-[52px] px-3 sm:px-6 rounded-2xl bg-[#9e3322] hover:bg-[#852a1b] active:scale-[0.97] text-white font-bold flex flex-col items-center justify-center transition-all cursor-pointer shadow-sm leading-tight py-1 ${product.inStock === false ? 'opacity-50 cursor-not-allowed' : ''}"
             >
-              <span class="text-sm min-[380px]:text-base font-bold leading-none">${product.inStock === false ? 'Unavailable' : 'Buy now'}</span>
+              <span class="text-sm min-[380px]:text-base font-bold leading-none">${product.inStock === false ? 'Unavailable' : 'Buy Now'}</span>
               ${product.inStock !== false ? `
                 <span class="text-xs min-[380px]:text-[13px] font-semibold text-[#ffe4de] leading-none mt-1">at ${formatINR(totalCtaPrice)}</span>
               ` : ''}
@@ -8026,7 +8022,7 @@ function renderWishlistItemCard(p) {
     renderActiveView();
   };
 
-  window.addPdpToCart = function () {
+  window.addPdpToCart = function (opts = {}) {
     const prod = Store.getProductById(AppState.currentProductId);
     if (!prod) return;
     if (prod.inStock === false) {
@@ -8099,17 +8095,19 @@ function renderWishlistItemCard(p) {
       );
     }
     const detailSubtitle = [activeColor?.label, activeShape?.label, activeSize?.label ? `(${activeSize.label})` : ''].filter(Boolean).join(' • ');
-    window.showToast(
-      `Added ${AppState.pdpQty} × ${prod.shortName || prod.name} to Bag`,
-      detailSubtitle ? `${detailSubtitle} • Ready for checkout` : 'Ready for checkout'
-    );
-    if (typeof window.showMiniCartToast === 'function') {
-      window.showMiniCartToast({
-        name: prod.shortName || prod.name,
-        price: finalPrice * AppState.pdpQty,
-        image: prod.image,
-        variantLabel: varietyParts.join(' • ')
-      });
+    if (!opts || !opts.silent) {
+      window.showToast(
+        `Added ${AppState.pdpQty} × ${prod.shortName || prod.name} to Bag`,
+        detailSubtitle ? `${detailSubtitle} • Ready for checkout` : 'Ready for checkout'
+      );
+      if (typeof window.showMiniCartToast === 'function') {
+        window.showMiniCartToast({
+          name: prod.shortName || prod.name,
+          price: finalPrice * AppState.pdpQty,
+          image: prod.image,
+          variantLabel: varietyParts.join(' • ')
+        });
+      }
     }
   };
 
@@ -8119,8 +8117,7 @@ function renderWishlistItemCard(p) {
       window.showToast('Item Out of Stock', 'This piece is currently unavailable.');
       return;
     }
-    window.addPdpToCart();
-    window.navigateTo('cart');
+    window.addPdpToCart({ silent: true });
     window.openCheckoutModal();
   };
 
