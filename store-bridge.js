@@ -2217,56 +2217,47 @@
 
       try {
         let orderRows = null;
+        const localIds = currentOrders.map(o => o.orderId || o.orderNumber || o.id).filter(Boolean);
 
-        // 1. Authenticated customer: authoritatively fetch real orders from Supabase
-        if (auth && (isUuid || userEmail)) {
-          // Primary: Dedicated SECURITY DEFINER RPC
-          if (typeof client.rpc === 'function') {
+        // 1. Primary: Dedicated SECURITY DEFINER RPC to fetch live orders by session order numbers or patron email
+        if (typeof client.rpc === 'function') {
+          try {
+            const { data: rpcOrders, error: rpcErr } = await client.rpc('get_storefront_orders', {
+              p_order_numbers: localIds.length > 0 ? localIds : null,
+              p_email: userEmail || null
+            });
+            if (!rpcErr && Array.isArray(rpcOrders) && rpcOrders.length > 0) {
+              orderRows = rpcOrders;
+            }
+          } catch (_rpcErr) {}
+
+          // Resilient fallback to get_my_orders for authenticated patrons
+          if (!orderRows && auth && (isUuid || userEmail)) {
             try {
               const { data: rpcOrders, error: rpcErr } = await client.rpc('get_my_orders');
-              if (!rpcErr && Array.isArray(rpcOrders)) {
+              if (!rpcErr && Array.isArray(rpcOrders) && rpcOrders.length > 0) {
                 orderRows = rpcOrders;
               }
             } catch (_rpcErr) {}
           }
-
-          // Fallback: Table query under RLS
-          if (!orderRows) {
-            let query = client.from('orders').select('*').order('created_at', { ascending: false });
-            if (isUuid) {
-              query = query.eq('user_id', userId.trim());
-            } else if (userEmail) {
-              query = typeof query.ilike === 'function' ? query.ilike('customer_email', userEmail) : query.eq('customer_email', userEmail);
-            }
-            const { data, error } = await query;
-            if (!error && Array.isArray(data)) {
-              orderRows = data;
-            }
-          }
-
-          if (Array.isArray(orderRows)) {
-            const mapped = orderRows.map(r => this.normalizeStorefrontOrder(r)).filter(Boolean);
-            const orderMap = new Map();
-            mapped.forEach(o => { if (o && o.orderId) orderMap.set(o.orderId, o); });
-            currentOrders.forEach(o => {
-              if (o && o.orderId && !orderMap.has(o.orderId)) {
-                orderMap.set(o.orderId, o);
-              }
-            });
-            const merged = Array.from(orderMap.values());
-            const isUnchanged = JSON.stringify(currentOrders) === JSON.stringify(merged);
-            if (!isUnchanged) {
-              safeWrite(STORAGE_KEYS.ORDERS, merged);
-              this.notify('orders_updated', merged);
-            }
-            return merged;
-          }
-          return currentOrders;
         }
 
-        // 2. Guest visitor: check only explicitly placed local order IDs in current session
-        const localIds = currentOrders.map(o => o.orderId || o.orderNumber || o.id).filter(Boolean);
-        if (localIds.length > 0) {
+        // 2. Authenticated customer fallback: Table query under RLS
+        if (!orderRows && auth && (isUuid || userEmail)) {
+          let query = client.from('orders').select('*').order('created_at', { ascending: false });
+          if (isUuid) {
+            query = query.eq('user_id', userId.trim());
+          } else if (userEmail) {
+            query = typeof query.ilike === 'function' ? query.ilike('customer_email', userEmail) : query.eq('customer_email', userEmail);
+          }
+          const { data, error } = await query;
+          if (!error && Array.isArray(data)) {
+            orderRows = data;
+          }
+        }
+
+        // 3. Guest visitor fallback: check only explicitly placed local order IDs in current session
+        if (!orderRows && !auth && localIds.length > 0) {
           const { data, error } = await client
             .from('orders')
             .select('*')
@@ -2274,23 +2265,39 @@
             .order('created_at', { ascending: false });
 
           if (!error && Array.isArray(data)) {
-            const mapped = data.map(r => this.normalizeStorefrontOrder(r)).filter(Boolean);
-            const orderMap = new Map();
-            mapped.forEach(o => { if (o && o.orderId) orderMap.set(o.orderId, o); });
-            currentOrders.forEach(o => {
-              if (o && o.orderId && !orderMap.has(o.orderId)) {
-                orderMap.set(o.orderId, o);
-              }
-            });
-            const merged = Array.from(orderMap.values());
-            const isUnchanged = JSON.stringify(currentOrders) === JSON.stringify(merged);
-            if (!isUnchanged) {
-              safeWrite(STORAGE_KEYS.ORDERS, merged);
-              this.notify('orders_updated', merged);
-            }
-            return merged;
+            orderRows = data;
           }
-        } else {
+        }
+
+        if (Array.isArray(orderRows)) {
+          const mapped = orderRows.map(r => this.normalizeStorefrontOrder(r)).filter(Boolean);
+          const orderMap = new Map();
+          mapped.forEach(o => {
+            if (o && o.orderId) {
+              const existing = currentOrders.find(co =>
+                (co.orderId && co.orderId === o.orderId) ||
+                (co.orderNumber && co.orderNumber === o.orderNumber) ||
+                (co.id && co.id === o.id)
+              );
+              const mergedOrder = existing ? { ...existing, ...o } : o;
+              orderMap.set(o.orderId, mergedOrder);
+            }
+          });
+          currentOrders.forEach(o => {
+            if (o && o.orderId && !orderMap.has(o.orderId)) {
+              orderMap.set(o.orderId, o);
+            }
+          });
+          const merged = Array.from(orderMap.values());
+          const isUnchanged = JSON.stringify(currentOrders) === JSON.stringify(merged);
+          if (!isUnchanged) {
+            safeWrite(STORAGE_KEYS.ORDERS, merged);
+            this.notify('orders_updated', merged);
+          }
+          return merged;
+        }
+
+        if (!auth && localIds.length === 0) {
           // Zero leakage: Guests without placed orders have strictly zero orders
           if (currentOrders && currentOrders.length > 0) {
             safeWrite(STORAGE_KEYS.ORDERS, []);
@@ -3263,6 +3270,27 @@
               const record = payload.new || {};
               if (record.id === 'store_published_version' && record.description) {
                 handleIncomingVersion(record.description);
+              }
+            })
+            .on('postgres_changes', { event: '*', schema: 'public', table: 'orders' }, (payload) => {
+              const record = payload.new || {};
+              if (record && (record.order_number || record.id)) {
+                const currentOrders = Store.getOrders();
+                const targetNum = record.order_number || record.id;
+                const matches = currentOrders.some(o => o.orderId === targetNum || o.orderNumber === targetNum || o.id === targetNum || o.id === record.id);
+                if (matches) {
+                  const norm = Store.normalizeStorefrontOrder(record);
+                  if (norm) {
+                    const updated = currentOrders.map(co => {
+                      if (co.orderId === targetNum || co.orderNumber === targetNum || co.id === targetNum || co.id === record.id) {
+                        return { ...co, ...norm };
+                      }
+                      return co;
+                    });
+                    safeWrite(STORAGE_KEYS.ORDERS, updated);
+                    Store.notify('orders_updated', updated);
+                  }
+                }
               }
             })
             .subscribe();

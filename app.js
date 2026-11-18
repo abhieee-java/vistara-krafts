@@ -4962,9 +4962,14 @@ function renderWishlistItemCard(p) {
           <div class="flex flex-col gap-4 w-full">
             ${filteredOrders.map(ord => {
               const cleanOrderId = String(ord.orderId || ord.orderNumber || ord.id || '').replace(/^#/, '');
-              const isDelivered = ord.orderStatus === 'delivered';
-              const isCancelled = ord.orderStatus === 'cancelled' || ord.orderStatus === 'refunded';
-              const isShipped = ord.orderStatus === 'shipped' || ord.orderStatus === 'in_transit';
+              const st = String(ord.orderStatus || 'new').toLowerCase().trim();
+              const isDelivered = st === 'delivered';
+              const isCancelled = st === 'cancelled';
+              const isRefunded = st === 'refunded';
+              const isShipped = st === 'shipped' || st === 'in_transit';
+              const isPacked = st === 'packed';
+              const isProcessing = st === 'processing' || st === 'curing';
+              const isNewOrPending = st === 'new' || st === 'pending' || st === 'confirmed';
               const trackingNum = ord.trackingNumber || ord.tracking_number;
               const courierName = ord.carrier || ord.courier || 'BlueDart Air Express';
               const hasValidCourierTracking = Boolean(
@@ -4993,13 +4998,19 @@ function renderWishlistItemCard(p) {
               const curStageIdx = Math.max(0, preservationStages.indexOf(curStage));
 
               // Clean Apple-standard status badges
-              let statusBadge = `<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200/80 text-[11px] font-semibold"><span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span><span>Confirmed &amp; Prepping</span></span>`;
+              let statusBadge = `<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200/80 text-[11px] font-semibold"><span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span><span>Order Confirmed</span></span>`;
               if (isDelivered) {
                 statusBadge = `<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200/80 text-[11px] font-semibold"><span class="w-2 h-2 rounded-full bg-emerald-600"></span><span>Delivered</span></span>`;
               } else if (isCancelled) {
                 statusBadge = `<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-rose-50 text-rose-800 border border-rose-200/80 text-[11px] font-semibold"><span class="w-2 h-2 rounded-full bg-rose-400"></span><span>Cancelled</span></span>`;
+              } else if (isRefunded) {
+                statusBadge = `<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-purple-50 text-purple-800 border border-purple-200/80 text-[11px] font-semibold"><span class="w-2 h-2 rounded-full bg-purple-400"></span><span>Refunded</span></span>`;
               } else if (isShipped) {
                 statusBadge = `<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-sky-50 text-sky-800 border border-sky-200/80 text-[11px] font-semibold"><span class="w-2 h-2 rounded-full bg-sky-500 animate-pulse"></span><span>In Transit</span></span>`;
+              } else if (isPacked) {
+                statusBadge = `<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-teal-50 text-teal-800 border border-teal-200/80 text-[11px] font-semibold"><span class="w-2 h-2 rounded-full bg-teal-500 animate-pulse"></span><span>Packed &amp; Ready</span></span>`;
+              } else if (isProcessing) {
+                statusBadge = `<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-indigo-50 text-indigo-800 border border-indigo-200/80 text-[11px] font-semibold"><span class="w-2 h-2 rounded-full bg-indigo-500 animate-pulse"></span><span>Studio Crafting</span></span>`;
               } else if (isCustom) {
                 statusBadge = `<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-50 text-amber-800 border border-amber-200/80 text-[11px] font-semibold"><span class="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span><span>${esc(curStage)}</span></span>`;
               }
@@ -5011,10 +5022,10 @@ function renderWishlistItemCard(p) {
                 standardStepIdx = 3;
               } else if (isShipped) {
                 standardStepIdx = 2;
-              } else if (ord.orderStatus === 'confirmed' || (ord.stageIndex && ord.stageIndex >= 2)) {
+              } else if (isPacked || isProcessing || (ord.stageIndex && ord.stageIndex >= 2)) {
                 standardStepIdx = 1;
               } else {
-                standardStepIdx = 1; // Default newly placed order is Prepping in Studio
+                standardStepIdx = 0; // Default newly placed order is Placed
               }
               const standardProgressPct = Math.min(100, Math.max(0, (standardStepIdx / 3) * 100));
 
