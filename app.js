@@ -844,22 +844,22 @@ if (typeof window !== 'undefined' && typeof window.dismissVkSplash !== 'function
           <form onsubmit="window.saveBarAccountDetails(event)" class="p-3.5 rounded-xl bg-white border border-[#e4e0d8] space-y-2.5">
             <h4 class="text-xs font-bold text-primary uppercase tracking-wider">Update Account &amp; Delivery Address</h4>
             <div>
-              <label for="bar-prof-name" class="text-[11px] font-semibold text-primary block mb-0.5">Full Name *</label>
-              <input id="bar-prof-name" type="text" required value="${esc(curName)}" class="w-full h-11 px-2.5 rounded-lg bg-surface-container-low border border-[#e4e0d8] text-xs text-primary">
+              <label for="bar-prof-name" class="text-[11.5px] font-semibold text-primary block mb-1">Full Name *</label>
+              <input id="bar-prof-name" type="text" required value="${esc(curName)}" style="height: 40px; min-height: 40px;" class="w-full h-10 min-h-[40px] px-3 py-2 rounded-[10px] bg-white border border-[#d1d1d6] hover:border-gray-400 text-[13.5px] text-primary focus:border-primary focus:ring-1 focus:ring-primary/20 outline-none transition box-border leading-normal">
             </div>
             <div>
-              <label for="bar-prof-phone" class="text-[11px] font-semibold text-primary block mb-0.5">Mobile / WhatsApp *</label>
-              <input id="bar-prof-phone" type="tel" required value="${esc(curPhone)}" placeholder="+91 98765 43210" class="w-full h-11 px-2.5 rounded-lg bg-surface-container-low border border-[#e4e0d8] text-xs text-primary">
+              <label for="bar-prof-phone" class="text-[11.5px] font-semibold text-primary block mb-1">Mobile / WhatsApp *</label>
+              <input id="bar-prof-phone" type="tel" required value="${esc(curPhone)}" placeholder="+91 98765 43210" style="height: 40px; min-height: 40px;" class="w-full h-10 min-h-[40px] px-3 py-2 rounded-[10px] bg-white border border-[#d1d1d6] hover:border-gray-400 font-spec-numeral text-[13.5px] text-primary focus:border-primary focus:ring-1 focus:ring-primary/20 outline-none transition box-border leading-normal">
             </div>
             <div>
-              <label for="bar-prof-email" class="text-[11px] font-semibold text-primary block mb-0.5">Email Address *</label>
-              <input id="bar-prof-email" type="email" required value="${esc(curEmail)}" class="w-full h-11 px-2.5 rounded-lg bg-surface-container-low border border-[#e4e0d8] text-xs text-primary">
+              <label for="bar-prof-email" class="text-[11.5px] font-semibold text-primary block mb-1">Email Address *</label>
+              <input id="bar-prof-email" type="email" required value="${esc(curEmail)}" style="height: 40px; min-height: 40px;" class="w-full h-10 min-h-[40px] px-3 py-2 rounded-[10px] bg-white border border-[#d1d1d6] hover:border-gray-400 text-[13.5px] text-primary focus:border-primary focus:ring-1 focus:ring-primary/20 outline-none transition box-border leading-normal">
             </div>
             <div>
-              <label for="bar-prof-address" class="text-[11px] font-semibold text-primary block mb-0.5">Shipping Street Address &amp; PIN *</label>
-              <input id="bar-prof-address" type="text" required value="${esc(curAddr)}" placeholder="Flat / House No., Street, City &amp; 6-Digit PIN" class="w-full h-11 px-2.5 rounded-lg bg-surface-container-low border border-[#e4e0d8] text-xs text-primary">
+              <label for="bar-prof-address" class="text-[11.5px] font-semibold text-primary block mb-1">Shipping Street Address &amp; PIN *</label>
+              <input id="bar-prof-address" type="text" required value="${esc(curAddr)}" placeholder="Flat / House No., Street, City &amp; 6-Digit PIN" style="height: 40px; min-height: 40px;" class="w-full h-10 min-h-[40px] px-3 py-2 rounded-[10px] bg-white border border-[#d1d1d6] hover:border-gray-400 text-[13.5px] text-primary focus:border-primary focus:ring-1 focus:ring-primary/20 outline-none transition box-border leading-normal">
             </div>
-            <button type="submit" class="w-full min-h-[44px] py-2 rounded-xl bg-primary text-white text-xs font-bold cursor-pointer">Save Account Details</button>
+            <button type="submit" style="height: 40px; min-height: 40px;" class="w-full min-h-[40px] h-10 py-2 rounded-[10px] bg-primary text-white text-[13.5px] font-semibold cursor-pointer shadow-2xs active:scale-98 transition">Save Account Details</button>
           </form>
 
           <div class="pt-2 border-t border-[#e4e0d8]">
@@ -2031,8 +2031,8 @@ ${avgRating ? `
 
             <form class="flex gap-2" onsubmit="event.preventDefault(); window.submitHomePincode();">
               <label for="home-pincode-input" class="sr-only">Enter 6-digit PIN code</label>
-              <input id="home-pincode-input" type="text" maxlength="6" aria-label="Enter 6-digit PIN code" value="${esc(pinInfo.pin)}" placeholder="Enter 6-digit PIN (e.g. 781001)" class="min-w-0 flex-1 h-11 px-3.5 rounded-xl bg-[#faf8f5] border border-[#e4e0d8] font-spec-numeral text-xs text-primary">
-              <button type="submit" class="h-11 px-5 rounded-xl bg-primary hover:bg-primary-container text-on-primary font-label-md text-xs font-semibold shrink-0 active:scale-95 transition-transform cursor-pointer">
+              <input id="home-pincode-input" type="text" maxlength="6" aria-label="Enter 6-digit PIN code" value="${esc(pinInfo.pin)}" placeholder="Enter 6-digit PIN (e.g. 781001)" style="height: 40px; min-height: 40px;" class="min-w-0 flex-1 h-10 min-h-[40px] px-3 py-2 rounded-[10px] bg-white border border-[#d1d1d6] hover:border-gray-400 font-spec-numeral text-[13.5px] text-primary focus:border-primary focus:ring-1 focus:ring-primary/20 outline-none transition box-border leading-normal">
+              <button type="submit" style="height: 40px; min-height: 40px;" class="h-10 min-h-[40px] px-4 rounded-[10px] bg-primary hover:bg-primary-container text-on-primary font-label-md text-xs font-semibold shrink-0 active:scale-95 transition-transform cursor-pointer shadow-2xs">
                 Verify PIN
               </button>
             </form>
@@ -2402,7 +2402,7 @@ ${avgRating ? `
           <div class="relative w-full min-w-0">
             <label for="catalog-search-input" class="sr-only">Search catalogue products</label>
             <span class="material-symbols-outlined text-on-surface-variant text-[18px] absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" aria-hidden="true">search</span>
-            <input id="catalog-search-input" type="text" aria-label="Search catalogue products" value="${esc(AppState.catalogSearch)}" oninput="window.setCatalogSearch(this.value)" placeholder="Search keepsakes, resins, supplies..." class="w-full h-11 pl-10 pr-9 rounded-2xl bg-white border border-[#e4e0d8] shadow-2xs text-xs sm:text-sm text-primary placeholder:text-outline/70 focus:outline-none focus:ring-1 focus:ring-secondary focus:border-secondary transition-all">
+            <input id="catalog-search-input" type="text" aria-label="Search catalogue products" value="${esc(AppState.catalogSearch)}" oninput="window.setCatalogSearch(this.value)" placeholder="Search keepsakes, resins, supplies..." style="height: 40px; min-height: 40px;" class="w-full h-10 min-h-[40px] pl-10 pr-9 rounded-[10px] bg-white border border-[#d1d1d6] hover:border-gray-400 shadow-2xs text-[13.5px] text-primary placeholder:text-outline/70 focus:outline-none focus:ring-1 focus:ring-secondary/20 focus:border-secondary transition-all box-border leading-normal">
             <button id="catalog-search-clear-btn" type="button" aria-label="Clear search" onclick="window.setCatalogSearch('')" class="${AppState.catalogSearch ? '' : 'hidden '}w-8 h-8 absolute right-1.5 top-1/2 -translate-y-1/2 flex items-center justify-center text-outline hover:text-primary cursor-pointer">
               <span class="material-symbols-outlined text-sm" aria-hidden="true">close</span>
             </button>
@@ -2936,7 +2936,7 @@ ${avgRating ? `
                 </label>
                 <span class="text-[10px] font-bold text-[#9e3322] uppercase tracking-wider bg-[#ffe4de] px-2 py-0.5 rounded-full shrink-0">Included</span>
               </div>
-              <input id="pdp-custom-note" type="text" value="${esc(AppState.pdpCustomNote)}" oninput="window.setPdpCustomNote(this.value)" placeholder="${product.isCustomizable ? 'e.g. Aarav & Meera • 12 Oct 2026 • Gold Foil Calligraphy' : 'e.g. Include printed ASTM Certificate of Analysis with shipment'}" class="w-full h-11 px-3 rounded-lg bg-white border border-[#e4e0d8] text-xs text-primary focus:outline-none focus:ring-1 focus:ring-primary">
+              <input id="pdp-custom-note" type="text" value="${esc(AppState.pdpCustomNote)}" oninput="window.setPdpCustomNote(this.value)" placeholder="${product.isCustomizable ? 'e.g. Aarav & Meera • 12 Oct 2026 • Gold Foil Calligraphy' : 'e.g. Include printed ASTM Certificate of Analysis with shipment'}" style="height: 40px; min-height: 40px;" class="w-full h-10 min-h-[40px] px-3 py-2 rounded-[10px] bg-white border border-[#d1d1d6] hover:border-gray-400 text-[13.5px] text-primary placeholder:text-gray-400 placeholder:text-[13px] focus:outline-none focus:ring-1 focus:ring-primary/20 focus:border-primary transition-all box-border leading-normal">
             </div>
 
             <!-- Compact Tiered Volume Strip -->
@@ -2977,8 +2977,8 @@ ${avgRating ? `
                 <span class="text-[11px] text-secondary font-semibold shrink-0">Solvent Safe Sealed</span>
               </div>
               <form class="flex gap-2" onsubmit="event.preventDefault(); window.verifyPdpPincode();">
-                <input id="pdp-pincode-input" type="text" maxlength="6" aria-label="Enter 6-digit PIN code" value="${esc(pinInfo.pin)}" placeholder="Enter 6-digit PIN code" class="min-w-0 flex-1 h-11 px-3 bg-white rounded-lg border border-[#e4e0d8] font-spec-numeral text-xs text-primary focus:outline-none focus:ring-1 focus:ring-primary">
-                <button type="submit" class="px-4 h-11 rounded-lg bg-primary text-on-primary text-xs font-semibold hover:bg-primary-container transition-colors cursor-pointer shrink-0">Verify</button>
+                <input id="pdp-pincode-input" type="text" maxlength="6" aria-label="Enter 6-digit PIN code" value="${esc(pinInfo.pin)}" placeholder="Enter 6-digit PIN code" style="height: 40px; min-height: 40px;" class="min-w-0 flex-1 h-10 min-h-[40px] px-3 py-2 bg-white rounded-[10px] border border-[#d1d1d6] hover:border-gray-400 font-spec-numeral text-[13.5px] text-primary focus:outline-none focus:ring-1 focus:ring-primary/20 focus:border-primary transition-all box-border leading-normal">
+                <button type="submit" style="height: 40px; min-height: 40px;" class="px-4 h-10 min-h-[40px] rounded-[10px] bg-primary text-on-primary text-xs font-semibold hover:bg-primary-container active:scale-95 transition-all cursor-pointer shrink-0 shadow-2xs">Verify</button>
               </form>
               <div id="pdp-pincode-result" class="p-2.5 rounded-lg bg-white border border-[#e4e0d8]/60 text-xs text-primary flex items-start gap-2">
                 <span class="material-symbols-outlined text-[#266b4e] text-base shrink-0 mt-0.5" aria-hidden="true">verified_user</span>
@@ -3998,17 +3998,17 @@ ${avgRating ? `
 
               <!-- Text to engrave (Keep label visible) -->
               <div>
-                <label for="custom-engraving-input" class="text-xs font-bold text-primary block mb-1">Text to engrave</label>
-                <input id="custom-engraving-input" type="text" value="${esc(b.engraving || '')}" oninput="window.updateCustomEngravingText(this.value)" placeholder="Aarav &amp; Diya" class="w-full h-11 px-3 rounded-lg bg-surface-container-low border border-[#e4e0d8] text-xs text-primary font-medium focus:outline-none focus:border-primary">
+                <label for="custom-engraving-input" class="text-[11.5px] font-semibold text-primary block mb-1">Text to engrave</label>
+                <input id="custom-engraving-input" type="text" value="${esc(b.engraving || '')}" oninput="window.updateCustomEngravingText(this.value)" placeholder="Aarav &amp; Diya" style="height: 40px; min-height: 40px;" class="w-full h-10 min-h-[40px] px-3 py-2 rounded-[10px] bg-white border border-[#d1d1d6] hover:border-gray-400 text-[13.5px] text-primary placeholder:text-gray-400 placeholder:text-[13px] font-normal focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/20 box-border leading-normal">
               </div>
 
               <!-- Wedding date (Keep label visible) -->
               <div>
                 <div class="flex items-center justify-between mb-1">
-                  <label for="custom-wedding-date-input" class="text-xs font-bold text-primary block">Wedding date</label>
+                  <label for="custom-wedding-date-input" class="text-[11.5px] font-semibold text-primary block">Wedding date</label>
                   <span class="text-[11px] text-gray-500 font-medium">${(b.weddingDate || b.eventDate) ? esc(b.weddingDate || b.eventDate) : 'Select a date'}</span>
                 </div>
-                <input id="custom-wedding-date-input" type="date" value="${esc(b.weddingDate || b.eventDate || '')}" onchange="window.updateCustomWeddingDate(this.value)" placeholder="Select a date" class="w-full h-11 px-3 rounded-lg bg-surface-container-low border border-[#e4e0d8] text-xs text-primary font-medium focus:outline-none focus:border-primary">
+                <input id="custom-wedding-date-input" type="date" value="${esc(b.weddingDate || b.eventDate || '')}" onchange="window.updateCustomWeddingDate(this.value)" placeholder="Select a date" style="height: 40px; min-height: 40px;" class="w-full h-10 min-h-[40px] px-3 py-2 rounded-[10px] bg-white border border-[#d1d1d6] hover:border-gray-400 text-[13.5px] text-primary font-normal focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/20 box-border leading-normal">
               </div>
             </div>
           ` : ''}
@@ -4016,8 +4016,8 @@ ${avgRating ? `
 
         <!-- Option 5: Doorstep Pickup Details -->
         <div class="p-4 rounded-xl border border-[#e4e0d8] bg-white space-y-2">
-          <label for="custom-pickup-slot" class="text-xs font-bold text-primary block">Doorstep pickup window</label>
-          <select id="custom-pickup-slot" onchange="window.updateCustomPickupSlot(this.value)" class="w-full h-11 px-3 rounded-lg bg-surface-container-low border border-[#e4e0d8] text-xs font-semibold text-primary">
+          <label for="custom-pickup-slot" class="text-[11.5px] font-semibold text-primary block">Doorstep pickup window</label>
+          <select id="custom-pickup-slot" onchange="window.updateCustomPickupSlot(this.value)" style="height: 40px; min-height: 40px;" class="w-full h-10 min-h-[40px] px-3 py-2 rounded-[10px] bg-white border border-[#d1d1d6] hover:border-gray-400 text-[13.5px] font-medium text-primary">
             <option value="Morning Slot (9:00 AM – 1:00 PM)" ${(b.pickupSlot || '').startsWith('Morning') ? 'selected' : ''}>Morning Slot (9:00 AM – 1:00 PM)</option>
             <option value="Afternoon Slot (2:00 PM – 6:00 PM)" ${(b.pickupSlot || '').startsWith('Afternoon') ? 'selected' : ''}>Afternoon Slot (2:00 PM – 6:00 PM)</option>
             <option value="Self-Ship via Air Courier (Reimbursed)" ${(b.pickupSlot || '').startsWith('Self') ? 'selected' : ''}>Self-Ship via Air Courier (Reimbursed)</option>
@@ -4649,12 +4649,14 @@ function renderWishlistItemCard(p) {
                         type="text" 
                         value="${esc(summary.couponCode || summary.savedCouponCode || '')}" 
                         placeholder="PROMO CODE" 
-                        class="w-full h-9 sm:h-10 px-3 rounded-lg bg-surface-container-low border border-[#e4e0d8] font-spec-numeral text-xs font-semibold tracking-wider uppercase text-primary placeholder:text-gray-400 placeholder:font-normal placeholder:tracking-normal focus:outline-none focus:border-secondary focus:ring-1 focus:ring-secondary transition-all"
+                        style="height: 40px; min-height: 40px;"
+                        class="w-full h-10 min-h-[40px] px-3 py-2 rounded-[10px] bg-white border border-[#d1d1d6] hover:border-gray-400 font-spec-numeral text-[13px] font-semibold tracking-wider uppercase text-primary placeholder:text-gray-400 placeholder:font-normal placeholder:tracking-normal focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/20 transition-all box-border leading-normal"
                       >
                     </div>
                     <button 
                       type="submit" 
-                      class="h-9 sm:h-10 px-4 rounded-lg bg-[#1c1b18] text-[#cda851] text-xs font-bold tracking-wider hover:bg-[#2d2a24] active:scale-95 transition-all shrink-0 cursor-pointer shadow-2xs flex items-center justify-center"
+                      style="height: 40px; min-height: 40px;"
+                      class="h-10 min-h-[40px] px-4 rounded-[10px] bg-[#1c1b18] text-[#cda851] text-xs font-semibold tracking-wider hover:bg-[#2d2a24] active:scale-95 transition-all shrink-0 cursor-pointer shadow-2xs flex items-center justify-center"
                     >
                       <span>APPLY</span>
                     </button>
@@ -4838,7 +4840,7 @@ function renderWishlistItemCard(p) {
               <label for="account-order-search" class="sr-only">Search orders</label>
               <div class="relative flex items-center">
                 <span class="material-symbols-outlined text-base text-outline absolute left-3 pointer-events-none" aria-hidden="true">search</span>
-                <input id="account-order-search" type="search" value="${esc(AppState.orderSearchQuery)}" oninput="window.setAccountOrderSearch(this.value)" placeholder="Search orders..." class="w-full h-11 pl-9 pr-3 rounded-xl bg-white border border-[#e4e0d8] text-xs text-primary focus:border-primary focus:ring-1 focus:ring-primary outline-none transition">
+                <input id="account-order-search" type="search" value="${esc(AppState.orderSearchQuery)}" oninput="window.setAccountOrderSearch(this.value)" placeholder="Search orders..." style="height: 40px; min-height: 40px;" class="w-full h-10 min-h-[40px] pl-9 pr-3 py-2 rounded-[10px] bg-white border border-[#d1d1d6] hover:border-gray-400 text-[13.5px] text-primary focus:border-primary focus:ring-1 focus:ring-primary/20 outline-none transition box-border leading-normal">
               </div>
             </div>
           ` : ''}
@@ -5300,67 +5302,67 @@ function renderWishlistItemCard(p) {
             </p>
           </div>
 
-          <form id="account-profile-form" onsubmit="window.saveAccountProfile(event)" class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
+          <form id="account-profile-form" onsubmit="window.saveAccountProfile(event)" class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
             <!-- Full Name -->
-            <div class="flex flex-col gap-1.5">
-              <label for="acc-prof-name" class="text-xs font-bold text-primary flex items-center justify-between">
+            <div class="flex flex-col gap-1">
+              <label for="acc-prof-name" class="text-[11.5px] font-semibold text-primary flex items-center justify-between">
                 <span>Full Name <span class="text-[#9e3322]">*</span></span>
               </label>
               <div class="relative">
-                <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-[18px] text-outline-variant pointer-events-none" aria-hidden="true">person</span>
-                <input id="acc-prof-name" type="text" required value="${esc(activeName)}" placeholder="e.g. Meera Kapoor" class="w-full h-12 pl-10 pr-3.5 rounded-xl bg-surface-container-low/70 border border-[#e4e0d8] text-xs sm:text-sm text-primary placeholder:text-outline-variant focus:bg-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none font-medium">
+                <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[16px] text-outline-variant pointer-events-none" aria-hidden="true">person</span>
+                <input id="acc-prof-name" type="text" required value="${esc(activeName)}" placeholder="e.g. Meera Kapoor" style="height: 40px; min-height: 40px;" class="w-full h-10 min-h-[40px] pl-9 pr-3 py-2 rounded-[10px] bg-white border border-[#d1d1d6] hover:border-gray-400 text-[13.5px] sm:text-[14px] text-primary placeholder:text-gray-400 placeholder:text-[13px] focus:ring-1 focus:ring-primary/20 focus:border-primary transition-all outline-none font-normal box-border leading-normal">
               </div>
-              <p class="text-[10.5px] text-on-surface-variant">Name printed on delivery parcel label</p>
+              <p class="text-[10px] text-on-surface-variant">Name printed on delivery parcel label</p>
             </div>
 
             <!-- Mobile / WhatsApp -->
-            <div class="flex flex-col gap-1.5">
-              <label for="acc-prof-phone" class="text-xs font-bold text-primary flex items-center justify-between">
+            <div class="flex flex-col gap-1">
+              <label for="acc-prof-phone" class="text-[11.5px] font-semibold text-primary flex items-center justify-between">
                 <span>Mobile / WhatsApp Number <span class="text-[#9e3322]">*</span></span>
               </label>
               <div class="relative">
-                <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-[18px] text-outline-variant pointer-events-none" aria-hidden="true">call</span>
-                <input id="acc-prof-phone" type="tel" required value="${esc(activePhone)}" placeholder="+91 98765 43210" class="w-full h-12 pl-10 pr-3.5 rounded-xl bg-surface-container-low/70 border border-[#e4e0d8] font-spec-numeral text-xs sm:text-sm text-primary placeholder:text-outline-variant focus:bg-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none font-medium">
+                <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[16px] text-outline-variant pointer-events-none" aria-hidden="true">call</span>
+                <input id="acc-prof-phone" type="tel" required value="${esc(activePhone)}" placeholder="+91 98765 43210" style="height: 40px; min-height: 40px;" class="w-full h-10 min-h-[40px] pl-9 pr-3 py-2 rounded-[10px] bg-white border border-[#d1d1d6] hover:border-gray-400 font-spec-numeral text-[13.5px] sm:text-[14px] text-primary placeholder:text-gray-400 placeholder:text-[13px] focus:ring-1 focus:ring-primary/20 focus:border-primary transition-all outline-none font-normal box-border leading-normal">
               </div>
-              <p class="text-[10.5px] text-on-surface-variant">For courier OTP and live dispatch WhatsApp tracking</p>
+              <p class="text-[10px] text-on-surface-variant">For courier OTP and live dispatch WhatsApp tracking</p>
             </div>
 
             <!-- Email Address -->
-            <div class="flex flex-col gap-1.5 sm:col-span-2">
-              <label for="acc-prof-email" class="text-xs font-bold text-primary flex items-center justify-between">
+            <div class="flex flex-col gap-1 sm:col-span-2">
+              <label for="acc-prof-email" class="text-[11.5px] font-semibold text-primary flex items-center justify-between">
                 <span>Email Address (for invoices &amp; tracking) <span class="text-[#9e3322]">*</span></span>
               </label>
               <div class="relative">
-                <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-[18px] text-outline-variant pointer-events-none" aria-hidden="true">mail</span>
-                <input id="acc-prof-email" type="email" required value="${esc(activeEmail)}" placeholder="you@example.com" class="w-full h-12 pl-10 pr-3.5 rounded-xl bg-surface-container-low/70 border border-[#e4e0d8] text-xs sm:text-sm text-primary placeholder:text-outline-variant focus:bg-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none font-medium">
+                <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[16px] text-outline-variant pointer-events-none" aria-hidden="true">mail</span>
+                <input id="acc-prof-email" type="email" required value="${esc(activeEmail)}" placeholder="you@example.com" style="height: 40px; min-height: 40px;" class="w-full h-10 min-h-[40px] pl-9 pr-3 py-2 rounded-[10px] bg-white border border-[#d1d1d6] hover:border-gray-400 text-[13.5px] sm:text-[14px] text-primary placeholder:text-gray-400 placeholder:text-[13px] focus:ring-1 focus:ring-primary/20 focus:border-primary transition-all outline-none font-normal box-border leading-normal">
               </div>
-              <p class="text-[10.5px] text-on-surface-variant">Tax invoices, payment receipts, and tracking links are dispatched here</p>
+              <p class="text-[10px] text-on-surface-variant">Tax invoices, payment receipts, and tracking links are dispatched here</p>
             </div>
 
             <!-- Default Delivery Address -->
-            <div class="flex flex-col gap-1.5 sm:col-span-2">
-              <label for="acc-prof-address" class="text-xs font-bold text-primary flex items-center justify-between">
+            <div class="flex flex-col gap-1 sm:col-span-2">
+              <label for="acc-prof-address" class="text-[11.5px] font-semibold text-primary flex items-center justify-between">
                 <span>Default Delivery Address <span class="text-[#9e3322]">*</span></span>
-                <span class="text-[10.5px] text-secondary font-semibold">Pan-India Delivery</span>
+                <span class="text-[10px] text-secondary font-semibold">Pan-India Delivery</span>
               </label>
               <div class="relative">
-                <span class="material-symbols-outlined absolute left-3.5 top-3.5 text-[18px] text-outline-variant pointer-events-none" aria-hidden="true">home_pin</span>
-                <input id="acc-prof-address" type="text" required value="${esc(activeAddress)}" placeholder="House/Flat No., Street, Landmark, City &amp; 6-digit PIN Code" class="w-full h-12 pl-10 pr-3.5 rounded-xl bg-surface-container-low/70 border border-[#e4e0d8] text-xs sm:text-sm text-primary placeholder:text-outline-variant focus:bg-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none font-medium">
+                <span class="material-symbols-outlined absolute left-3 top-3 text-[16px] text-outline-variant pointer-events-none" aria-hidden="true">home_pin</span>
+                <input id="acc-prof-address" type="text" required value="${esc(activeAddress)}" placeholder="House/Flat No., Street, Landmark, City &amp; 6-digit PIN Code" style="height: 40px; min-height: 40px;" class="w-full h-10 min-h-[40px] pl-9 pr-3 py-2 rounded-[10px] bg-white border border-[#d1d1d6] hover:border-gray-400 text-[13.5px] sm:text-[14px] text-primary placeholder:text-gray-400 placeholder:text-[13px] focus:ring-1 focus:ring-primary/20 focus:border-primary transition-all outline-none font-normal box-border leading-normal">
               </div>
-              <p class="text-[10.5px] text-on-surface-variant flex items-center gap-1.5">
+              <p class="text-[10px] text-on-surface-variant flex items-center gap-1.5">
                 <span class="material-symbols-outlined text-[13px] text-[#266b4e]" aria-hidden="true">verified_user</span>
                 <span>Include your 6-digit Indian PIN code for express BlueDart/Delhivery air shipping</span>
               </p>
             </div>
 
             <!-- Status Feedback & Save Action -->
-            <div class="sm:col-span-2 flex flex-col sm:flex-row items-center justify-between gap-3 pt-3 border-t border-[#e4e0d8]/70 mt-1">
-              <div id="acc-prof-status" class="text-xs font-medium text-on-surface-variant flex items-center gap-1.5 text-center sm:text-left">
-                <span class="material-symbols-outlined text-[16px] text-secondary" aria-hidden="true">shield</span>
+            <div class="sm:col-span-2 flex flex-col sm:flex-row items-center justify-between gap-3 pt-3 border-t border-[#e4e0d8]/70 mt-0.5">
+              <div id="acc-prof-status" class="text-[11px] font-medium text-on-surface-variant flex items-center gap-1.5 text-center sm:text-left">
+                <span class="material-symbols-outlined text-[15px] text-secondary" aria-hidden="true">shield</span>
                 <span>Your contact coordinates remain strictly private under DPDP Act 2023</span>
               </div>
-              <button type="submit" aria-label="Save updated profile and delivery details" class="w-full sm:w-auto min-h-[48px] px-7 py-3 rounded-xl bg-primary text-white text-xs sm:text-sm font-bold inline-flex items-center justify-center gap-2 cursor-pointer hover:bg-primary-container active:scale-[0.98] transition shadow-xs">
-                <span class="material-symbols-outlined text-[18px]" aria-hidden="true">save</span>
+              <button type="submit" aria-label="Save updated profile and delivery details" style="height: 40px; min-height: 40px;" class="w-full sm:w-auto min-h-[40px] h-10 px-6 py-2 rounded-[10px] bg-primary text-white text-[13.5px] font-semibold inline-flex items-center justify-center gap-2 cursor-pointer hover:bg-primary-container active:scale-[0.98] transition shadow-2xs">
+                <span class="material-symbols-outlined text-[16px]" aria-hidden="true">save</span>
                 <span>Save Details</span>
               </button>
             </div>

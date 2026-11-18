@@ -4187,35 +4187,35 @@
       </div>
 
       <!-- Field 1: Full name * -->
-      <div class="shrink-0 space-y-0.5">
-        <label for="chk-name" class="text-[11px] font-semibold text-gray-700 block">Full name *</label>
-        <input id="chk-name" type="text" required autocomplete="name" aria-label="Full Recipient Name" aria-describedby="chk-name-err" value="" placeholder="Enter full name" class="w-full h-11 px-3 rounded-xl border border-gray-300 focus:border-primary focus:ring-2 focus:ring-primary/10 text-xs sm:text-sm text-gray-900 bg-white shadow-2xs placeholder:text-gray-400 transition-all outline-none">
+      <div class="shrink-0 space-y-1">
+        <label for="chk-name" class="text-[11.5px] font-semibold text-gray-700 block">Full name *</label>
+        <input id="chk-name" type="text" required autocomplete="name" aria-label="Full Recipient Name" aria-describedby="chk-name-err" value="" placeholder="Enter full name" style="height: 40px; min-height: 40px;" class="w-full h-10 min-h-[40px] px-3 py-2 rounded-[10px] border border-[#d1d1d6] hover:border-gray-400 focus:border-primary focus:ring-1 focus:ring-primary/20 text-[13.5px] sm:text-[14px] text-gray-900 bg-white placeholder:text-gray-400 placeholder:text-[13px] transition-all outline-none box-border leading-normal">
         <p id="chk-name-err" class="hidden text-[10px] text-[#9e3322] font-semibold mt-0.5" role="alert"></p>
       </div>
 
       <!-- Field 2: Mobile number * -->
-      <div class="shrink-0 space-y-0.5">
-        <label for="chk-phone" class="text-[11px] font-semibold text-gray-700 block">Mobile number *</label>
-        <input id="chk-phone" type="tel" required autocomplete="tel" aria-label="WhatsApp or Mobile Number for Tracking" aria-describedby="chk-phone-err" value="" placeholder="+91 Mobile number" class="w-full h-11 px-3 rounded-xl border border-gray-300 focus:border-primary focus:ring-2 focus:ring-primary/10 font-spec-numeral text-xs sm:text-sm text-gray-900 bg-white shadow-2xs placeholder:text-gray-400 transition-all outline-none">
+      <div class="shrink-0 space-y-1">
+        <label for="chk-phone" class="text-[11.5px] font-semibold text-gray-700 block">Mobile number *</label>
+        <input id="chk-phone" type="tel" required autocomplete="tel" aria-label="WhatsApp or Mobile Number for Tracking" aria-describedby="chk-phone-err" value="" placeholder="+91 Mobile number" style="height: 40px; min-height: 40px;" class="w-full h-10 min-h-[40px] px-3 py-2 rounded-[10px] border border-[#d1d1d6] hover:border-gray-400 focus:border-primary focus:ring-1 focus:ring-primary/20 font-spec-numeral text-[13.5px] sm:text-[14px] text-gray-900 bg-white placeholder:text-gray-400 placeholder:text-[13px] transition-all outline-none box-border leading-normal">
         <p id="chk-phone-err" class="hidden text-[10px] text-[#9e3322] font-semibold mt-0.5" role="alert"></p>
       </div>
 
       <!-- Field 3 & 4: Street address and city * & PIN code * (grid-cols-1 sm:grid-cols-3) -->
       <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 shrink-0">
-        <div class="sm:col-span-2 space-y-0.5">
-          <label for="chk-address" class="text-[11px] font-semibold text-gray-700 block">Street address and city *</label>
-          <textarea id="chk-address" rows="1" required autocomplete="street-address" aria-label="Complete Street Address and City" aria-describedby="chk-address-err" placeholder="Flat, house, street, locality & city" style="scrollbar-width: none;" class="w-full h-11 min-h-[44px] max-h-[100px] py-2.5 px-3 rounded-xl border border-gray-300 focus:border-primary focus:ring-2 focus:ring-primary/10 text-xs sm:text-sm text-gray-900 bg-white shadow-2xs placeholder:text-gray-400 resize-none transition-all outline-none leading-normal"></textarea>
+        <div class="sm:col-span-2 space-y-1">
+          <label for="chk-address" class="text-[11.5px] font-semibold text-gray-700 block">Street address and city *</label>
+          <textarea id="chk-address" rows="1" required autocomplete="street-address" aria-label="Complete Street Address and City" aria-describedby="chk-address-err" placeholder="Flat, house, street, locality & city" style="scrollbar-width: none; min-height: 40px; height: 40px;" class="w-full h-10 min-h-[40px] max-h-[88px] py-2 px-3 rounded-[10px] border border-[#d1d1d6] hover:border-gray-400 focus:border-primary focus:ring-2 focus:ring-primary/20 text-[13.5px] sm:text-[14px] text-gray-900 bg-white placeholder:text-gray-400 placeholder:text-[13px] resize-none transition-all outline-none leading-snug box-border"></textarea>
           <p id="chk-address-err" class="hidden text-[10px] text-[#9e3322] font-semibold mt-0.5" role="alert"></p>
         </div>
-        <div class="sm:col-span-1 space-y-0.5">
-          <label for="chk-pincode" class="text-[11px] font-semibold text-gray-700 block">PIN code *</label>
-          <input id="chk-pincode" type="text" required maxlength="6" pattern="[1-9][0-9]{5}" autocomplete="postal-code" aria-label="6-Digit Delivery PIN Code" aria-describedby="chk-pincode-err" value="" placeholder="6 Digits" class="w-full h-11 px-3 rounded-xl border border-gray-300 focus:border-primary focus:ring-2 focus:ring-primary/10 font-spec-numeral text-xs sm:text-sm text-gray-900 bg-white shadow-2xs placeholder:text-gray-400 transition-all outline-none">
+        <div class="sm:col-span-1 space-y-1">
+          <label for="chk-pincode" class="text-[11.5px] font-semibold text-gray-700 block">PIN code *</label>
+          <input id="chk-pincode" type="text" required maxlength="6" pattern="[1-9][0-9]{5}" autocomplete="postal-code" aria-label="6-Digit Delivery PIN Code" aria-describedby="chk-pincode-err" value="" placeholder="6 Digits" style="height: 40px; min-height: 40px;" class="w-full h-10 min-h-[40px] px-3 py-2 rounded-[10px] border border-[#d1d1d6] hover:border-gray-400 focus:border-primary focus:ring-1 focus:ring-primary/20 font-spec-numeral text-[13.5px] sm:text-[14px] text-gray-900 bg-white placeholder:text-gray-400 placeholder:text-[13px] transition-all outline-none box-border leading-normal">
           <p id="chk-pincode-err" class="hidden text-[10px] text-[#9e3322] font-semibold mt-0.5" role="alert"></p>
         </div>
       </div>
 
       <!-- Delivery Preferences & Legal DPDP Consent Card -->
-      <div class="shrink-0 rounded-xl bg-[#FAF9F6] border border-[#EAE6DE] px-3 py-2 flex flex-col gap-1.5">
+      <div class="shrink-0 rounded-[10px] bg-[#FAF9F6] border border-[#EAE6DE] px-3 py-2 flex flex-col gap-1.5">
         <label for="chk-gift-wrap" class="flex items-center justify-between gap-2 cursor-pointer text-xs font-medium text-gray-700 select-none">
           <span class="flex items-center gap-1.5 truncate">
             <span class="material-symbols-outlined text-sm text-[#9e3322]" aria-hidden="true">featured_seasonal_and_gifts</span>
@@ -4226,7 +4226,7 @@
         <div class="flex items-start gap-2 pt-1.5 border-t border-[#EAE6DE]/70 text-left">
           <input id="chk-dpdp-consent" type="checkbox" checked required class="w-3.5 h-3.5 mt-0.5 accent-primary rounded cursor-pointer shrink-0" aria-label="Consent to processing contact and address for delivery under DPDP Act 2023">
           <label for="chk-dpdp-consent" class="text-[10px] text-gray-500 font-normal leading-tight cursor-pointer select-none">
-            I consent to processing my address &amp; contact for BlueDart delivery &amp; tax invoicing under the Digital Personal Data Protection (DPDP) Act 2023.
+            I consent to processing my address &amp; contact for BlueDart delivery &amp; order invoicing under the Digital Personal Data Protection (DPDP) Act 2023.
           </label>
         </div>
       </div>
@@ -4244,7 +4244,7 @@
 
       <!-- Primary CTA & Razorpay Trust Seal -->
       <div class="pt-0.5 flex flex-col gap-1.5 shrink-0">
-        <button type="submit" id="checkout-submit-btn" class="btn-shimmer group w-full h-11 rounded-xl bg-primary hover:bg-[#06244c] text-white text-xs sm:text-sm font-semibold shadow-md shrink-0 cursor-pointer flex items-center justify-center gap-2 active:scale-[0.98] transition-all">
+        <button type="submit" id="checkout-submit-btn" style="height: 40px; min-height: 40px;" class="btn-shimmer group w-full h-10 min-h-[40px] rounded-[10px] bg-primary hover:bg-[#06244c] text-white text-[13.5px] sm:text-[14px] font-semibold shadow-xs shrink-0 cursor-pointer flex items-center justify-center gap-2 active:scale-[0.98] transition-all">
           <span id="checkout-submit-btn-text">Pay securely</span>
           <span class="material-symbols-outlined text-sm transition-transform group-hover:translate-x-1" aria-hidden="true">arrow_forward</span>
         </button>
@@ -4305,10 +4305,10 @@
       </div>
       <p class="text-xs text-on-surface-variant shrink-0">Check BlueDart / Delhivery express transit &amp; 24-hour bridal floral pickup availability:</p>
       <form method="POST" class="flex flex-col gap-2 shrink-0" onsubmit="event.preventDefault(); window.saveModalPincode();">
-        <label for="modal-pincode-input" class="text-[11px] font-bold text-primary block">6-Digit Indian PIN Code</label>
+        <label for="modal-pincode-input" class="text-[11.5px] font-semibold text-primary block">6-Digit Indian PIN Code</label>
         <div class="flex gap-2">
-          <input id="modal-pincode-input" type="text" maxlength="6" aria-label="6-Digit Indian PIN Code" value="560001" placeholder="e.g. 560001, 400001, 110001" class="min-w-0 flex-1 h-12 px-3 rounded-lg bg-surface-container-low border border-[#e4e0d8] font-spec-numeral text-xs">
-          <button type="submit" class="px-5 h-12 rounded-lg bg-primary text-white text-xs font-bold cursor-pointer shrink-0">Apply</button>
+          <input id="modal-pincode-input" type="text" maxlength="6" aria-label="6-Digit Indian PIN Code" value="560001" placeholder="e.g. 560001, 400001, 110001" style="height: 40px; min-height: 40px;" class="min-w-0 flex-1 h-10 min-h-[40px] px-3 py-2 rounded-[10px] bg-white border border-[#d1d1d6] hover:border-gray-400 font-spec-numeral text-[13.5px] sm:text-[14px] text-primary focus:border-primary focus:ring-1 focus:ring-primary/20 outline-none transition box-border leading-normal">
+          <button type="submit" style="height: 40px; min-height: 40px;" class="px-4 h-10 min-h-[40px] rounded-[10px] bg-primary text-white text-xs font-semibold cursor-pointer shrink-0 active:scale-95 transition-all shadow-2xs">Apply</button>
         </div>
         <p id="modal-pincode-error" role="alert" class="hidden text-xs text-error font-semibold"></p>
       </form>
@@ -4351,8 +4351,8 @@
 
         <!-- 1-Click Social Sign-In Button (Google Premier 1-Click) -->
         <div id="cf-auth-social-row" class="w-full shrink-0">
-          <!-- Continue with Google (Clean White Pill, 48px) -->
-          <button type="button" id="cf-oauth-google-btn" onclick="window.startCloudflareOAuth('google')" aria-label="Continue with Google" style="min-height: 48px; height: 48px;" class="w-full min-h-[48px] h-12 px-4 py-2.5 rounded-xl bg-white hover:bg-surface-container-low border border-[#dadce0] hover:border-secondary/40 text-primary text-xs font-semibold flex items-center justify-center gap-2.5 shadow-2xs active:scale-[0.98] transition cursor-pointer">
+          <!-- Continue with Google (Apple Standard 40px, rounded-[10px]) -->
+          <button type="button" id="cf-oauth-google-btn" onclick="window.startCloudflareOAuth('google')" aria-label="Continue with Google" style="min-height: 40px; height: 40px;" class="w-full min-h-[40px] h-10 px-3.5 py-2 rounded-[10px] bg-white hover:bg-surface-container-low border border-[#d1d1d6] hover:border-gray-400 text-primary text-[13.5px] font-semibold flex items-center justify-center gap-2.5 shadow-2xs active:scale-[0.98] transition cursor-pointer">
             <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" aria-hidden="true">
               <path fill="#4285F4" d="M23.49 12.27c0-.79-.07-1.54-.19-2.27H12v4.51h6.47c-.29 1.48-1.14 2.73-2.4 3.58v3h3.86c2.26-2.09 3.56-5.17 3.56-8.82z"/>
               <path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.86-3c-1.08.72-2.45 1.16-4.07 1.16-3.13 0-5.78-2.11-6.73-4.96H1.29v3.09C3.26 21.3 7.31 24 12 24z"/>
@@ -4372,11 +4372,11 @@
         </div>
 
         <!-- Mode Switcher Tabs (Sign In vs Create Account) -->
-        <div class="grid grid-cols-2 gap-1.5 p-1 rounded-xl bg-surface-container-low border border-[#e4e0d8] shrink-0">
-          <button type="button" id="cf-tab-signin" onclick="window.setEmailAuthTab('signin')" style="min-height: 44px; height: 44px;" class="min-h-[44px] h-11 rounded-lg bg-primary text-white text-xs font-bold shadow-xs transition cursor-pointer">
+        <div class="grid grid-cols-2 gap-1 p-1 rounded-[10px] bg-surface-container-low border border-[#d1d1d6] shrink-0">
+          <button type="button" id="cf-tab-signin" onclick="window.setEmailAuthTab('signin')" style="min-height: 36px; height: 36px;" class="min-h-[36px] h-9 rounded-[8px] bg-primary text-white text-[13px] font-semibold shadow-xs transition cursor-pointer">
             Sign In
           </button>
-          <button type="button" id="cf-tab-register" onclick="window.setEmailAuthTab('register')" style="min-height: 44px; height: 44px;" class="min-h-[44px] h-11 rounded-lg bg-transparent text-primary hover:bg-white/70 text-xs font-bold transition cursor-pointer">
+          <button type="button" id="cf-tab-register" onclick="window.setEmailAuthTab('register')" style="min-height: 36px; height: 36px;" class="min-h-[36px] h-9 rounded-[8px] bg-transparent text-primary hover:bg-white/70 text-[13px] font-semibold transition cursor-pointer">
             Create Account
           </button>
         </div>
@@ -4389,26 +4389,26 @@
           <!-- Registration Only Fields -->
           <div id="cf-register-fields-wrap" class="hidden grid-cols-1 min-[350px]:grid-cols-2 gap-2">
             <div>
-              <label for="cf-auth-name" class="text-[11px] font-bold text-primary block mb-1">Full Name *</label>
-              <input id="cf-auth-name" type="text" autocomplete="name" aria-label="Full Name" placeholder="Your Full Name" style="min-height: 44px; height: 44px;" class="w-full h-11 min-h-[44px] px-3 rounded-xl bg-surface-container-low border border-[#e4e0d8] text-primary placeholder:text-outline-variant text-base sm:text-xs focus:border-primary focus:ring-1 focus:ring-primary/20 outline-none transition box-border">
+              <label for="cf-auth-name" class="text-[11.5px] font-semibold text-primary block mb-1">Full Name *</label>
+              <input id="cf-auth-name" type="text" autocomplete="name" aria-label="Full Name" placeholder="Your Full Name" style="min-height: 40px; height: 40px;" class="w-full h-10 min-h-[40px] px-3 py-2 rounded-[10px] bg-white border border-[#d1d1d6] hover:border-gray-400 text-primary placeholder:text-gray-400 placeholder:text-[13px] text-[13.5px] sm:text-[14px] focus:border-primary focus:ring-1 focus:ring-primary/20 outline-none transition box-border">
             </div>
             <div>
-              <label for="cf-auth-phone" class="text-[11px] font-bold text-primary block mb-1">Mobile Number</label>
-              <input id="cf-auth-phone" type="tel" autocomplete="tel" aria-label="Mobile Number" placeholder="+91 98765 43210" style="min-height: 44px; height: 44px;" class="w-full h-11 min-h-[44px] px-3 rounded-xl bg-surface-container-low border border-[#e4e0d8] text-primary placeholder:text-outline-variant text-base sm:text-xs focus:border-primary focus:ring-1 focus:ring-primary/20 outline-none transition box-border">
+              <label for="cf-auth-phone" class="text-[11.5px] font-semibold text-primary block mb-1">Mobile Number</label>
+              <input id="cf-auth-phone" type="tel" autocomplete="tel" aria-label="Mobile Number" placeholder="+91 98765 43210" style="min-height: 40px; height: 40px;" class="w-full h-10 min-h-[40px] px-3 py-2 rounded-[10px] bg-white border border-[#d1d1d6] hover:border-gray-400 text-primary placeholder:text-gray-400 placeholder:text-[13px] text-[13.5px] sm:text-[14px] font-spec-numeral focus:border-primary focus:ring-1 focus:ring-primary/20 outline-none transition box-border">
             </div>
           </div>
 
           <!-- Email & Password Inputs -->
           <div class="grid grid-cols-1 gap-2">
             <div id="cf-auth-email-wrap">
-              <label for="cf-auth-email" class="text-[11px] font-bold text-primary block mb-1">Email Address *</label>
-              <input id="cf-auth-email" type="email" required autocomplete="email" aria-label="Email Address" placeholder="you@example.com" oninput="window.onAuthEmailInput && window.onAuthEmailInput(this.value)" style="min-height: 44px; height: 44px;" class="w-full h-11 min-h-[44px] px-3 rounded-xl bg-surface-container-low border border-[#e4e0d8] text-primary placeholder:text-outline-variant text-base sm:text-xs focus:border-primary focus:ring-1 focus:ring-primary/20 outline-none transition box-border">
+              <label for="cf-auth-email" class="text-[11.5px] font-semibold text-primary block mb-1">Email Address *</label>
+              <input id="cf-auth-email" type="email" required autocomplete="email" aria-label="Email Address" placeholder="you@example.com" oninput="window.onAuthEmailInput && window.onAuthEmailInput(this.value)" style="min-height: 40px; height: 40px;" class="w-full h-10 min-h-[40px] px-3 py-2 rounded-[10px] bg-white border border-[#d1d1d6] hover:border-gray-400 text-primary placeholder:text-gray-400 placeholder:text-[13px] text-[13.5px] sm:text-[14px] focus:border-primary focus:ring-1 focus:ring-primary/20 outline-none transition box-border">
             </div>
             <div id="cf-auth-password-wrap">
-              <label for="cf-auth-password" class="text-[11px] font-bold text-primary block mb-1">Password *</label>
+              <label for="cf-auth-password" class="text-[11.5px] font-semibold text-primary block mb-1">Password *</label>
               <div class="relative flex items-center">
-                <input id="cf-auth-password" type="password" required minlength="6" autocomplete="current-password" aria-label="Password" placeholder="Min. 6 characters" style="min-height: 44px; height: 44px;" class="w-full h-11 min-h-[44px] pl-3 pr-11 rounded-xl bg-surface-container-low border border-[#e4e0d8] text-primary placeholder:text-outline-variant text-base sm:text-xs focus:border-primary focus:ring-1 focus:ring-primary/20 outline-none transition box-border">
-                <button type="button" id="cf-auth-pwd-toggle" onclick="window.toggleAuthPasswordVisibility()" aria-label="Toggle password visibility" style="height: 44px; min-height: 44px; width: 44px; min-width: 44px;" class="absolute right-0 h-11 min-h-[44px] w-11 min-w-[44px] flex items-center justify-center text-on-surface-variant hover:text-primary transition cursor-pointer">
+                <input id="cf-auth-password" type="password" required minlength="6" autocomplete="current-password" aria-label="Password" placeholder="Min. 6 characters" style="min-height: 40px; height: 40px;" class="w-full h-10 min-h-[40px] pl-3 pr-10 py-2 rounded-[10px] bg-white border border-[#d1d1d6] hover:border-gray-400 text-primary placeholder:text-gray-400 placeholder:text-[13px] text-[13.5px] sm:text-[14px] focus:border-primary focus:ring-1 focus:ring-primary/20 outline-none transition box-border">
+                <button type="button" id="cf-auth-pwd-toggle" onclick="window.toggleAuthPasswordVisibility()" aria-label="Toggle password visibility" style="height: 40px; min-height: 40px; width: 40px; min-width: 40px;" class="absolute right-0 h-10 min-h-[40px] w-10 min-w-[40px] flex items-center justify-center text-on-surface-variant hover:text-primary transition cursor-pointer">
                   <span id="cf-auth-pwd-toggle-icon" class="material-symbols-outlined text-lg" aria-hidden="true">visibility</span>
                 </button>
               </div>
@@ -4438,7 +4438,7 @@
           </div>
 
           <!-- Primary Submit CTA -->
-          <button type="submit" id="cf-auth-submit-btn" style="min-height: 48px; height: 48px;" class="btn-shimmer w-full min-h-[48px] h-12 rounded-xl bg-primary text-white text-xs font-bold tracking-wide shadow-md hover:bg-primary/95 active:scale-[0.99] transition cursor-pointer mt-0.5">
+          <button type="submit" id="cf-auth-submit-btn" style="height: 40px; min-height: 40px;" class="btn-shimmer w-full min-h-[40px] h-10 rounded-[10px] bg-primary text-white text-[13.5px] sm:text-[14px] font-semibold tracking-wide shadow-xs hover:bg-primary/95 active:scale-[0.99] transition cursor-pointer mt-0.5">
             Sign In
           </button>
         </form>
@@ -4452,21 +4452,21 @@
 
         <div id="cf-google-gis-button-slot" class="hidden justify-center shrink-0"></div>
 
-        <!-- 1-Click OAuth Account Chooser Sheet (Google / Apple) -->
-        <div id="cf-oauth-chooser-sheet" class="hidden rounded-2xl border border-[#dadce0] bg-[#fcf9f5] p-3.5 space-y-2.5 shrink-0 shadow-xl">
+        <!-- 1-Click OAuth Account Chooser Sheet (Google) -->
+        <div id="cf-oauth-chooser-sheet" class="hidden rounded-[12px] border border-[#d1d1d6] bg-[#fcf9f5] p-3 space-y-2 shrink-0 shadow-lg">
           <div class="flex items-center justify-between gap-2">
             <span id="cf-oauth-chooser-title" class="text-xs font-bold text-primary">Choose an account to continue to Vistāra Krafts</span>
-            <button type="button" id="cf-oauth-chooser-close-btn" aria-label="Close Account Chooser" onclick="window.closeOAuthChooser()" style="height: 44px; min-height: 44px; width: 44px; min-width: 44px;" class="w-11 h-11 min-w-[44px] min-h-[44px] shrink-0 rounded-lg flex items-center justify-center text-on-surface-variant hover:text-primary cursor-pointer">
+            <button type="button" id="cf-oauth-chooser-close-btn" aria-label="Close Account Chooser" onclick="window.closeOAuthChooser()" style="height: 36px; min-height: 36px; width: 36px; min-width: 36px;" class="w-9 h-9 min-w-[36px] min-h-[36px] shrink-0 rounded-lg flex items-center justify-center text-on-surface-variant hover:text-primary cursor-pointer">
               <span class="material-symbols-outlined text-base" aria-hidden="true">close</span>
             </button>
           </div>
           <div id="cf-oauth-chooser-accounts" class="space-y-1.5"></div>
-          <div class="pt-2 border-t border-surface-container space-y-2">
+          <div class="pt-2 border-t border-surface-container space-y-1.5">
             <label for="cf-oauth-custom-email" class="text-[11px] font-semibold text-on-surface-variant block">Or sign in with another account email</label>
             <div class="flex flex-col sm:flex-row gap-1.5">
-              <input id="cf-oauth-custom-name" type="text" aria-label="Your Name" placeholder="Your Name" style="min-height: 44px; height: 44px;" class="min-w-0 sm:w-2/5 h-11 min-h-[44px] px-2.5 rounded-lg bg-white border border-[#e4e0d8] text-primary text-base sm:text-xs box-border">
-              <input id="cf-oauth-custom-email" type="email" autocomplete="email" aria-label="Google or Apple Email Address" placeholder="you@gmail.com" style="min-height: 44px; height: 44px;" class="min-w-0 sm:flex-1 h-11 min-h-[44px] px-2.5 rounded-lg bg-white border border-[#e4e0d8] text-primary text-base sm:text-xs box-border">
-              <button type="button" id="cf-oauth-custom-submit" onclick="window.submitOAuthChooserCustom()" style="min-height: 44px; height: 44px;" class="min-h-[44px] px-3.5 rounded-lg bg-primary text-white text-xs font-bold shrink-0 cursor-pointer">Continue</button>
+              <input id="cf-oauth-custom-name" type="text" aria-label="Your Name" placeholder="Your Name" style="min-height: 40px; height: 40px;" class="min-w-0 sm:w-2/5 h-10 min-h-[40px] px-3 py-2 rounded-[10px] bg-white border border-[#d1d1d6] text-primary text-[13.5px] box-border">
+              <input id="cf-oauth-custom-email" type="email" autocomplete="email" aria-label="Google Email Address" placeholder="you@gmail.com" style="min-height: 40px; height: 40px;" class="min-w-0 sm:flex-1 h-10 min-h-[40px] px-3 py-2 rounded-[10px] bg-white border border-[#d1d1d6] text-primary text-[13.5px] box-border">
+              <button type="button" id="cf-oauth-custom-submit" onclick="window.submitOAuthChooserCustom()" style="min-height: 40px; height: 40px;" class="min-h-[40px] h-10 px-4 rounded-[10px] bg-primary text-white text-[13.5px] font-semibold shrink-0 cursor-pointer">Continue</button>
             </div>
           </div>
         </div>
@@ -4501,12 +4501,12 @@
           <!-- 6-Digit OTP Form -->
           <form method="POST" id="cf-auth-otp-form" onsubmit="window.submitEmailOtp(event)" class="flex flex-col gap-3 shrink-0">
             <div>
-              <label for="cf-auth-otp-input" class="text-[11px] font-bold text-primary block mb-1.5 text-center">Enter 6-Digit Code</label>
-              <input id="cf-auth-otp-input" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="6" required autocomplete="one-time-code" placeholder="123456" style="min-height: 48px; height: 48px;" class="w-full h-12 min-h-[48px] px-4 rounded-xl bg-surface-container-low border border-[#e4e0d8] text-primary text-center font-mono text-xl tracking-[0.5em] font-bold focus:border-primary focus:ring-1 focus:ring-primary/20 outline-none transition box-border">
+              <label for="cf-auth-otp-input" class="text-[11.5px] font-semibold text-primary block mb-1 text-center">Enter 6-Digit Code</label>
+              <input id="cf-auth-otp-input" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="6" required autocomplete="one-time-code" placeholder="123456" style="min-height: 42px; height: 42px;" class="w-full h-10 min-h-[40px] px-3 rounded-[10px] bg-white border border-[#d1d1d6] hover:border-gray-400 text-primary text-center font-mono text-lg tracking-[0.4em] font-bold focus:border-primary focus:ring-1 focus:ring-primary/20 outline-none transition box-border">
             </div>
 
             <!-- Human-Friendly OTP Error Banner -->
-            <div id="cf-auth-otp-error-box" class="hidden rounded-xl bg-red-50/90 border border-red-200/80 p-3 text-xs text-red-900 transition-all duration-200 shadow-2xs">
+            <div id="cf-auth-otp-error-box" class="hidden rounded-[10px] bg-red-50/90 border border-red-200/80 p-3 text-xs text-red-900 transition-all duration-200 shadow-2xs">
               <div class="flex items-start gap-2.5">
                 <span class="material-symbols-outlined text-red-600 text-base shrink-0 mt-0.5" aria-hidden="true">error</span>
                 <div class="flex-1 min-w-0">
@@ -4515,7 +4515,7 @@
               </div>
             </div>
 
-            <button type="submit" id="cf-auth-otp-submit-btn" style="min-height: 48px; height: 48px;" class="btn-shimmer w-full min-h-[48px] h-12 rounded-xl bg-primary text-white text-xs font-bold tracking-wide shadow-md hover:bg-primary/95 active:scale-[0.99] transition cursor-pointer">
+            <button type="submit" id="cf-auth-otp-submit-btn" style="min-height: 40px; height: 40px;" class="btn-shimmer w-full min-h-[40px] h-10 rounded-[10px] bg-primary text-white text-[13.5px] sm:text-[14px] font-semibold tracking-wide shadow-xs hover:bg-primary/95 active:scale-[0.99] transition cursor-pointer">
               Verify &amp; Continue
             </button>
 
