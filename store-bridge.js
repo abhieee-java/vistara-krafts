@@ -262,7 +262,7 @@
       image: IMAGES.magicSilicaGel,
       productId: 'vk-cat-acc-sili',
       caption: 'Preserve wedding varmalas and botanical flowers with reusable moisture-indicating silica crystals.',
-      ctaText: 'Shop Silica Gel • ₹599'
+      ctaText: 'Shop Silica Gel'
     }
   ];
 
@@ -547,6 +547,18 @@
         p = cloneFallback(DEFAULT_PRODUCTS.find(item => item.id === resolvedId) || null);
       }
       if (!p) return null;
+      if (Array.isArray(p.variants) && p.variants.length > 0) {
+        p.variants = p.variants.map((v, idx) => {
+          if (idx === 0) {
+            return {
+              ...v,
+              price: Number(p.price || v.price || 0),
+              regularPrice: Number(p.regularPrice || v.regularPrice || Math.round((p.price || 0) * 1.25))
+            };
+          }
+          return v;
+        });
+      }
       if (!Array.isArray(p.colors)) p.colors = [];
       if (!Array.isArray(p.shapes)) p.shapes = [];
       if (!Array.isArray(p.sizes)) p.sizes = [];
@@ -695,8 +707,14 @@
           }
         }
 
-        const authoritativePrice = (matchedVar ? Number(matchedVar.price) : Number(product.price)) + sizeDelta;
-        const authoritativeRegular = (matchedVar ? Number(matchedVar.regularPrice || authoritativePrice) : Number(product.regularPrice || authoritativePrice)) + sizeDelta;
+        const isBaseVariant = !matchedVar || (product.variants && matchedVar === product.variants[0]);
+        const varBasePrice = isBaseVariant ? Number(product.price || 0) : Number(matchedVar.price || product.price || 0);
+        const varBaseRegPrice = isBaseVariant
+          ? Number(product.regularPrice || Math.round((product.price || 0) * 1.25))
+          : Number(matchedVar.regularPrice || product.regularPrice || Math.round((varBasePrice || 0) * 1.25));
+
+        const authoritativePrice = varBasePrice + sizeDelta;
+        const authoritativeRegular = Math.max(authoritativePrice, varBaseRegPrice + sizeDelta);
         const authoritativeStock = matchedVar ? Number(matchedVar.stock ?? 10) : Number(product.stockQuantity ?? 10);
         const isOutOfStock = Boolean(!product.inStock || authoritativeStock <= 0 || product.status === 'out_of_stock' || product.status === 'archived');
 
@@ -3087,6 +3105,22 @@
             : (row.image ? [row.image] : [IMAGES.resin201]);
           const mainImg = row.image || galleryList[0] || IMAGES.resin201;
 
+          const pPrice = Number(row.price || 0);
+          const pRegPrice = Number(row.compare_at_price || Math.round((row.price || 0) * 1.25));
+          let parsedVariants = Array.isArray(variants) ? variants : [];
+          if (parsedVariants.length > 0) {
+            parsedVariants = parsedVariants.map((v, idx) => {
+              if (idx === 0) {
+                return {
+                  ...v,
+                  price: pPrice,
+                  regularPrice: Math.max(pPrice, pRegPrice)
+                };
+              }
+              return v;
+            });
+          }
+
           return {
             id: row.id,
             sku: row.sku,
@@ -3097,8 +3131,8 @@
             category: row.category || 'resin',
             subCategory: row.subcategory || 'atelier',
             badge: row.badge || '',
-            price: Number(row.price || 0),
-            regularPrice: Number(row.compare_at_price || Math.round((row.price || 0) * 1.25)),
+            price: pPrice,
+            regularPrice: pRegPrice,
             costPrice: Number(row.cost_price || 0),
             discount: Number(row.discount || 0),
             stockQuantity: Number(row.stock ?? 10),
@@ -3112,7 +3146,7 @@
             viscosity: row.viscosity || specs.viscosity || 'low',
             cureTime: row.cure_time || specs.cureTime || '',
             specs: specs,
-            variants: Array.isArray(variants) ? variants : [],
+            variants: parsedVariants,
             image: mainImg,
             gallery: galleryList,
             images: galleryList,

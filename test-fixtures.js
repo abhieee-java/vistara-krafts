@@ -1358,11 +1358,11 @@ export const TEST_PRODUCTS = [
     "subCategory": "Botanical Preservation",
     "subcategory": "Botanical Preservation",
     "badge": "Real Flower Keeper",
-    "price": 599,
+    "price": 400,
     "regularPrice": 699,
     "compare_at_price": 699,
     "cost_price": 270,
-    "discount": 14,
+    "discount": 43,
     "tax_rate": 18,
     "hsn_code": "28112200",
     "stock": 65,
@@ -1390,7 +1390,7 @@ export const TEST_PRODUCTS = [
       {
         "id": "var-sil-1kg",
         "label": "1000g (1 Kg) Airtight Resealable Pouch",
-        "price": 599,
+        "price": 400,
         "regularPrice": 699,
         "stock": 45,
         "sku": "VK-SIL-1KG"
@@ -1398,8 +1398,8 @@ export const TEST_PRODUCTS = [
       {
         "id": "var-sil-2kg",
         "label": "2000g (2 Kg) Studio Value Pouch",
-        "price": 1099,
-        "regularPrice": 1398,
+        "price": 750,
+        "regularPrice": 1299,
         "stock": 20,
         "sku": "VK-SIL-2KG"
       }
@@ -1852,11 +1852,11 @@ export const TEST_PRODUCTS = [
     "subCategory": "Floral Inclusions & Shaker Elements",
     "subcategory": "Floral Inclusions & Shaker Elements",
     "badge": "Handmade Filler",
-    "price": 199,
+    "price": 238,
     "regularPrice": 249,
     "compare_at_price": 249,
     "cost_price": 70,
-    "discount": 20,
+    "discount": 4,
     "tax_rate": 18,
     "hsn_code": "39269099",
     "stock": 120,
@@ -1894,7 +1894,7 @@ export const TEST_PRODUCTS = [
       {
         "id": "var-flw-03",
         "label": "Shade 03: Soft Lilac with Gold Rim (Pack of 50)",
-        "price": 199,
+        "price": 238,
         "regularPrice": 249,
         "stock": 25,
         "sku": "VK-FLW-SH-03"
@@ -1902,7 +1902,7 @@ export const TEST_PRODUCTS = [
       {
         "id": "var-flw-06",
         "label": "Shade 06: Pastel Violet & White Blend (Pack of 50)",
-        "price": 199,
+        "price": 238,
         "regularPrice": 249,
         "stock": 25,
         "sku": "VK-FLW-SH-06"
@@ -1910,7 +1910,7 @@ export const TEST_PRODUCTS = [
       {
         "id": "var-flw-07",
         "label": "Shade 07: Mint Blue & Frost White (Pack of 50)",
-        "price": 199,
+        "price": 238,
         "regularPrice": 249,
         "stock": 25,
         "sku": "VK-FLW-SH-07"
@@ -1918,7 +1918,7 @@ export const TEST_PRODUCTS = [
       {
         "id": "var-flw-11",
         "label": "Shade 11: Sunset Coral & Peach (Pack of 50)",
-        "price": 199,
+        "price": 238,
         "regularPrice": 249,
         "stock": 25,
         "sku": "VK-FLW-SH-11"
@@ -1926,7 +1926,7 @@ export const TEST_PRODUCTS = [
       {
         "id": "var-flw-15",
         "label": "Shade 15: Cherry Blossom Pink (Pack of 50)",
-        "price": 199,
+        "price": 238,
         "regularPrice": 249,
         "stock": 25,
         "sku": "VK-FLW-SH-15"
@@ -1934,7 +1934,7 @@ export const TEST_PRODUCTS = [
       {
         "id": "var-flw-17",
         "label": "Shade 17: Marigold Shimmer Yellow (Pack of 50)",
-        "price": 199,
+        "price": 238,
         "regularPrice": 249,
         "stock": 25,
         "sku": "VK-FLW-SH-17"

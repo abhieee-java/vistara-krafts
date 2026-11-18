@@ -2223,12 +2223,14 @@ ${avgRating ? `
   function renderPersonaRecommendation() {
     const goal = AppState.quizAnswers.goal;
     if (goal === 'preserve') {
+      const recProd = Store.getProductById('vk-cat-acc-sili');
+      const recPriceLabel = recProd ? formatINR(recProd.price) : '₹400';
       return `
         <div class="flex items-center gap-3">
           <img src="${esc(Store.IMAGES.magicSilicaGel || Store.IMAGES.floralCube)}" alt="Silica Gel Crystals" class="w-12 h-12 rounded-lg object-cover shrink-0">
           <div>
             <span class="text-[10px] uppercase tracking-wider text-[#ffd79b] font-bold">98% Match for Bridal Keepsake Preparation</span>
-            <p class="text-xs sm:text-sm font-bold text-white">Magic Flower Drying Silica Gel Crystals (1000g) (₹599)</p>
+            <p class="text-xs sm:text-sm font-bold text-white">Magic Flower Drying Silica Gel Crystals (1000g) (${recPriceLabel})</p>
           </div>
         </div>
         <div class="flex items-center gap-2 shrink-0 w-full sm:w-auto">
@@ -2786,7 +2788,8 @@ ${avgRating ? `
       return render404View();
     }
     const variants = product.variants || [];
-    const activeVariant = variants[AppState.selectedVariantIdx] || variants[0] || {
+    const activeVarIdx = AppState.selectedVariantIdx || 0;
+    const activeVariant = variants[activeVarIdx] || variants[0] || {
       id: 'default',
       label: 'Standard Edition',
       desc: product.subtitle,
@@ -2813,8 +2816,16 @@ ${avgRating ? `
     const activeSize = activeSizeIdx >= 0 ? sizes[activeSizeIdx] : null;
     const sizeDelta = activeSize ? (activeSize.priceDelta || 0) : 0;
 
-    const currentPrice = activeVariant.price + sizeDelta;
-    const regularPrice = (activeVariant.regularPrice || activeVariant.price) + sizeDelta;
+    // Authoritative pricing: base edition is strictly anchored to product.price
+    const baseVariantPrice = (activeVarIdx === 0 || !activeVariant.price)
+      ? Number(product.price || 0)
+      : Number(activeVariant.price || product.price || 0);
+    const baseVariantRegPrice = (activeVarIdx === 0 || !activeVariant.regularPrice)
+      ? Number(product.regularPrice || Math.round((product.price || 0) * 1.25))
+      : Number(activeVariant.regularPrice || product.regularPrice || Math.round((product.price || 0) * 1.25));
+
+    const currentPrice = baseVariantPrice + sizeDelta;
+    const regularPrice = Math.max(currentPrice, baseVariantRegPrice + sizeDelta);
     const discountPct = regularPrice > currentPrice ? Math.round(((regularPrice - currentPrice) / regularPrice) * 100) : 0;
 
     // Tiered volume pricing calculation synced with Store.getEffectiveUnitPrice
@@ -2859,15 +2870,11 @@ ${avgRating ? `
               <li class="text-primary font-bold truncate pl-0.5">${esc(product.shortName || product.name)}</li>
             </ol>
           </div>
-          <div class="flex items-center gap-3 shrink-0">
-            <span class="hidden sm:inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200/60 text-emerald-800 text-[11px] font-medium font-spec-numeral">
+          <div class="hidden sm:flex items-center gap-3 shrink-0">
+            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200/60 text-emerald-800 text-[11px] font-medium font-spec-numeral">
               <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
               Batch VK-26-C38 Lab Certified
             </span>
-            <button type="button" aria-label="Share this creation" onclick="window.shareCurrentProduct('${esc(product.id)}')" class="min-h-[44px] px-2.5 inline-flex items-center gap-1.5 text-xs text-secondary font-semibold hover:text-primary transition-colors cursor-pointer">
-              <span class="material-symbols-outlined text-base" aria-hidden="true">share</span>
-              <span class="hidden sm:inline">Share</span>
-            </button>
           </div>
         </nav>
 
@@ -3017,7 +3024,7 @@ ${avgRating ? `
                       const v = variants[szIdx];
                       const priceLabel = (sz.priceDelta || 0) > 0
                         ? '+' + formatINR(sz.priceDelta)
-                        : (v && v.price ? formatINR(v.price) : 'Standard');
+                        : (szIdx === 0 ? formatINR(product.price) : (v && v.price ? formatINR(v.price) : formatINR(product.price)));
                       const isPopular = sz.popular || (v && v.popular);
                       return `
                         <button type="button" onclick="window.selectPdpVariety('size', ${szIdx})" class="min-h-[46px] p-2.5 rounded-xl border text-left flex flex-col justify-between transition-all cursor-pointer ${isSelected ? 'bg-primary text-white border-primary shadow-xs' : 'bg-white text-primary border-[#e4e0d8] hover:bg-surface-container'}">
@@ -3051,11 +3058,6 @@ ${avgRating ? `
                 <button type="button" onclick="window.addPdpToCart()" class="btn-shimmer min-w-0 flex-1 h-12 px-3 sm:px-4 rounded-xl bg-primary hover:bg-primary-container text-on-primary font-title-md text-xs sm:text-sm font-bold flex items-center justify-center gap-1.5 shadow-sm active:scale-[0.99] transition-all cursor-pointer">
                   <span class="material-symbols-outlined text-lg shrink-0" aria-hidden="true">shopping_bag</span>
                   <span class="truncate">Add to Bag • ${formatINR(totalCtaPrice)}</span>
-                </button>
-                <button type="button" aria-label="Save to Wishlist" data-wishlist-btn="${esc(product.id)}" onclick="window.handleWishlistToggle(event, '${esc(product.id)}')" class="w-12 h-12 rounded-xl bg-surface-container-low border border-[#e4e0d8] flex items-center justify-center ${isFav ? 'text-[#9e3322]' : 'text-primary'} hover:scale-105 active:scale-95 transition-all shrink-0 cursor-pointer" title="Save to Wishlist">
-                  <svg class="w-6 h-6 ${isFav ? 'fill-[#9e3322] stroke-[#9e3322]' : 'fill-none stroke-current'} transition-colors" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                    <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/>
-                  </svg>
                 </button>
               </div>
               <button type="button" onclick="window.buyNowPdp()" class="w-full h-12 px-4 rounded-xl bg-[#9e3322] hover:opacity-95 text-white font-title-md text-xs sm:text-sm font-bold flex items-center justify-center gap-2 shadow-sm active:scale-[0.99] transition-all cursor-pointer">
@@ -8045,7 +8047,8 @@ function renderWishlistItemCard(p) {
       });
       return;
     }
-    const v = (prod.variants && prod.variants[AppState.selectedVariantIdx]) || {
+    const activeVarIdx = AppState.selectedVariantIdx || 0;
+    const v = (prod.variants && prod.variants[activeVarIdx]) || {
       label: 'Standard Edition',
       price: prod.price,
       regularPrice: prod.regularPrice
@@ -8058,7 +8061,17 @@ function renderWishlistItemCard(p) {
     const activeShape = shapes.length > 0 ? (shapes[AppState.pdpSelectedShapeIdx] || shapes[0]) : null;
     const activeSize = sizes.length > 0 ? (sizes[AppState.pdpSelectedSizeIdx] || sizes[0]) : null;
     const sizeDelta = activeSize?.priceDelta || 0;
-    const finalPrice = v.price + sizeDelta;
+
+    // Anchor base edition to prod.price to guarantee 100% price match with catalogue and PDP
+    const baseVPrice = (activeVarIdx === 0 || !v.price)
+      ? Number(prod.price || 0)
+      : Number(v.price || prod.price || 0);
+    const baseVRegPrice = (activeVarIdx === 0 || !v.regularPrice)
+      ? Number(prod.regularPrice || Math.round((prod.price || 0) * 1.25))
+      : Number(v.regularPrice || prod.regularPrice || Math.round((prod.price || 0) * 1.25));
+
+    const finalPrice = baseVPrice + sizeDelta;
+    const finalRegPrice = Math.max(finalPrice, baseVRegPrice + sizeDelta);
 
     const varietyParts = [v.label, activeShape?.label, activeSize?.label ? `(${activeSize.label})` : ''].filter(Boolean);
 
@@ -8071,7 +8084,7 @@ function renderWishlistItemCard(p) {
       shape: activeShape ? activeShape.label : '',
       size: activeSize ? activeSize.label : '',
       price: finalPrice,
-      regularPrice: (v.regularPrice || v.price) + sizeDelta,
+      regularPrice: finalRegPrice,
       qty: AppState.pdpQty,
       image: prod.image,
       customNote: AppState.pdpCustomNote
