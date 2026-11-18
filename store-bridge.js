@@ -1264,9 +1264,6 @@
         passwordVerifier: provider === 'email'
           ? hashSecretLocal(password)
           : (existingUser ? existingUser.passwordVerifier : ''),
-        memberTier: payload.memberTier || (existingUser && existingUser.memberTier) || 'Gold Atelier Member',
-        tier: payload.memberTier || (existingUser && existingUser.tier) || 'Gold Atelier Member',
-        loyaltyPoints: payload.loyaltyPoints || (existingUser && existingUser.loyaltyPoints) || 250,
         authenticated: true,
         authenticatedAt: new Date().toISOString()
       };
@@ -1350,10 +1347,7 @@
         address: '',
         defaultAddress: '',
         pincode: '',
-        eventDate: '2026-11-18',
-        tier: 'Gold Atelier Member',
-        memberTier: 'Gold Atelier Member',
-        loyaltyPoints: 250
+        eventDate: '2026-11-18'
       };
 
       safeWrite(STORAGE_KEYS.AUTH_SESSION, null);
@@ -1384,9 +1378,7 @@
           personaPreference: authSession.personaPreference || currentPersona,
           gender: authSession.gender || authSession.personaPreference || currentPersona,
           address: authSession.address || '',
-          defaultAddress: authSession.address || '',
-          tier: authSession.memberTier || 'Verified Vistāra Patron',
-          memberTier: authSession.memberTier || 'Verified Vistāra Patron'
+          defaultAddress: authSession.address || ''
         };
       }
       const profile = safeRead(STORAGE_KEYS.PATRON_PROFILE, {
@@ -1398,21 +1390,15 @@
         pincode: '',
         gender: currentPersona,
         personaPreference: currentPersona,
-        eventDate: '2026-11-18',
-        tier: 'Gold Atelier Member',
-        memberTier: 'Gold Atelier Member',
-        loyaltyPoints: 250
+        eventDate: '2026-11-18'
       });
       const resolvedAddress = profile.defaultAddress || profile.address || '';
-      const resolvedTier = profile.memberTier || profile.tier || 'Gold Atelier Member';
       return {
         ...profile,
         personaPreference: profile.personaPreference || currentPersona,
         gender: profile.gender || profile.personaPreference || currentPersona,
         address: resolvedAddress,
-        defaultAddress: resolvedAddress,
-        tier: resolvedTier,
-        memberTier: resolvedTier
+        defaultAddress: resolvedAddress
       };
     },
 
@@ -1434,12 +1420,9 @@
       if (resolvedPin && /^[1-9][0-9]{5}$/.test(resolvedPin)) {
         this.verifyPincode(resolvedPin);
       }
-      const resolvedTier = updates.memberTier || updates.tier || next.memberTier || next.tier || 'Gold Atelier Member';
       next.address = resolvedAddress;
       next.defaultAddress = resolvedAddress;
       next.pincode = resolvedPin;
-      next.tier = resolvedTier;
-      next.memberTier = resolvedTier;
       safeWrite(STORAGE_KEYS.PATRON_PROFILE, next);
       this.clearCheckoutDraft();
 
@@ -2380,7 +2363,7 @@
         freeShippingThreshold: 999,
         defaultCourier: 'Delhivery Express',
         announcementBarActive: true,
-        announcementBarText: 'Vistāra Krafts • 24h Bridal Varmala Pickup • Free Express Shipping > ₹999 • 18% GST ITC • Handcrafted Guwahati Atelier • Insured Air Dispatch',
+        announcementBarText: 'Vistāra Krafts • 24h Bridal Varmala Pickup • Free Express Shipping > ₹999 • Handcrafted Guwahati Atelier • Insured Air Dispatch',
         enableFloralTransformationSection: false
       };
       const v2 = safeRead(STORAGE_KEYS.SETTINGS, null);

@@ -667,7 +667,7 @@ if (typeof window !== 'undefined' && typeof window.dismissVkSplash !== 'function
               <span class="min-h-[44px] px-2.5 py-1.5 rounded-lg bg-emerald-50 text-emerald-800 border border-emerald-200 text-[10px] font-bold inline-flex items-center">✓ Layout Approved</span>
             `}
             <button type="button" onclick="window.openOrderInvoiceModal('${esc(ord.orderId)}')" class="min-h-[44px] px-2.5 py-1.5 rounded-lg bg-white border border-[#e4e0d8] text-primary text-[11px] font-semibold cursor-pointer">
-              GST Invoice
+              Tax Invoice
             </button>
             <button type="button" onclick="window.closeModalById('account-bar-modal'); window.handleReorder('${esc(ord.orderId)}');" class="min-h-[44px] px-2.5 py-1.5 rounded-lg bg-white border border-[#e4e0d8] text-primary text-[11px] font-semibold cursor-pointer">
               Reorder
@@ -1725,8 +1725,8 @@ ${avgRating ? `
             <div class="flex items-center gap-2.5 p-2.5 rounded-xl bg-[#faf8f5] border border-[#e4e0d8]">
               <span class="material-symbols-outlined text-primary text-2xl" aria-hidden="true">receipt_long</span>
               <div>
-                <p class="font-bold text-xs text-primary leading-tight">18% GST Invoicing</p>
-                <p class="text-[11px] text-on-surface-variant leading-tight">Official ITC &amp; COA Batch</p>
+                <p class="font-bold text-xs text-primary leading-tight">Tax Invoice Included</p>
+                <p class="text-[11px] text-on-surface-variant leading-tight">Official COA &amp; Batch Certified</p>
               </div>
             </div>
           </div>
@@ -4234,12 +4234,15 @@ function renderWishlistItemCard(p) {
         <!-- Atelier Wishlist Header -->
         <div class="flex items-center justify-between gap-3 border-b border-[#e4e0d8] pb-3">
           <div class="flex items-center gap-2.5 min-w-0">
-            <button type="button" onclick="window.handleBackButton('home')" aria-label="Go back to shopping" class="w-10 h-10 min-w-[40px] min-h-[40px] rounded-full bg-surface-container-low hover:bg-surface-container border border-[#e4e0d8] text-primary flex items-center justify-center shrink-0 active:scale-[0.95] transition cursor-pointer">
+            <button type="button" onclick="window.handleBackButton('home')" aria-label="Go back to shopping" title="Back to Shopping" class="w-10 h-10 min-w-[40px] min-h-[40px] rounded-full bg-surface-container-low hover:bg-surface-container border border-[#e4e0d8] text-primary flex items-center justify-center shrink-0 active:scale-[0.95] transition cursor-pointer">
               <span class="material-symbols-outlined text-lg" aria-hidden="true">arrow_back</span>
+              <span class="sr-only">Back to Shopping</span>
             </button>
             <div class="min-w-0">
-              <h1 class="font-headline-lg text-xl sm:text-2xl text-primary font-bold tracking-tight truncate">
-                Saved Keepsakes <span id="wishlist-header-count" class="font-spec-numeral text-sm sm:text-base font-medium text-secondary">(${products.length})</span>
+              <h1 class="font-headline-lg text-xl sm:text-2xl text-primary font-bold tracking-tight truncate flex items-center gap-2">
+                <span>Saved Keepsakes</span>
+                <span id="wishlist-header-count" class="font-spec-numeral text-sm sm:text-base font-medium text-secondary">(${products.length})</span>
+                <span class="hidden sm:inline-block text-[11px] text-secondary font-medium px-2 py-0.5 rounded-full bg-secondary/10">Personal Atelier</span>
               </h1>
             </div>
           </div>
@@ -4365,7 +4368,6 @@ function renderWishlistItemCard(p) {
   function renderCartView() {
     const summary = Store.getCartSummary();
     const pinInfo = Store.getPincodeInfo();
-    const gstInfo = Store.getGstInfo();
     const isFreeUnlocked = summary.subtotal >= summary.freeShippingThreshold && summary.subtotal > 0;
 
     return `
@@ -4613,32 +4615,7 @@ function renderWishlistItemCard(p) {
                 <button type="button" onclick="window.promptChangePincode()" class="min-h-[36px] px-2.5 py-1 rounded-lg text-xs font-bold text-secondary underline hover:text-primary whitespace-nowrap shrink-0 cursor-pointer self-start sm:self-center transition-colors">Change PIN</button>
               </div>
 
-              <!-- B2B GST Input Tax Credit (18%) Box (Tightened) -->
-              <div class="ram-card p-3 sm:p-3.5 bg-white flex flex-col gap-2.5 min-w-0">
-                <label class="flex items-start gap-2.5 cursor-pointer">
-                  <input type="checkbox" ${gstInfo.enabled ? 'checked' : ''} onchange="window.toggleGstClaim(this.checked)" class="mt-0.5 w-4 h-4 accent-primary rounded shrink-0">
-                  <div class="flex-1 min-w-0">
-                    <span class="text-xs sm:text-sm font-bold text-primary flex items-center gap-1.5 flex-wrap leading-tight">
-                      <span>Claim GST Input Tax Credit (18% ITC)</span>
-                      <span class="material-symbols-outlined text-xs text-secondary" aria-hidden="true">verified_user</span>
-                    </span>
-                    <p class="text-[11px] text-on-surface-variant mt-0.5 break-words">Automated B2B tax invoice with HSN 39073010 for registered entities.</p>
-                  </div>
-                </label>
-                <div id="cart-gst-fields" class="${gstInfo.enabled ? 'grid' : 'hidden'} grid-cols-1 sm:grid-cols-2 gap-2.5 pt-2 border-t border-surface-container">
-                  <div>
-                    <label for="cart-gstin-input" class="text-[10.5px] text-on-surface-variant font-medium block mb-1">GSTIN (15-Character ID)</label>
-                    <input id="cart-gstin-input" type="text" maxlength="15" value="${esc(gstInfo.gstin)}" onchange="window.saveGstField()" class="w-full h-10 px-3 rounded-lg bg-surface-container-low border border-[#e4e0d8] font-spec-numeral text-xs uppercase text-primary">
-                  </div>
-                  <div>
-                    <label for="cart-tradename-input" class="text-[10.5px] text-on-surface-variant font-medium block mb-1">Registered Legal Business / Entity Name</label>
-                    <input id="cart-tradename-input" type="text" value="${esc(gstInfo.tradeName)}" onchange="window.saveGstField()" class="w-full h-10 px-3 rounded-lg bg-surface-container-low border border-[#e4e0d8] text-xs text-primary">
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <!-- Right Column: Voucher + Single Unified Invoice Summary (5 cols) -->
+              <!-- Right Column: Voucher + Single Unified Invoice Summary (5 cols) -->
             <div class="lg:col-span-5 flex flex-col gap-3 sm:gap-4 sticky top-20 min-w-0">
               <!-- Vouchers & Offers (Zero-Waste, Compact Luxury) -->
               ${(() => {
@@ -4773,7 +4750,7 @@ function renderWishlistItemCard(p) {
                 </div>
                 <div class="flex justify-between items-center text-xs text-outline">
                   <span id="cart-gst">Includes ₹${summary.gstAmount.toFixed(2)} GST (18%)</span>
-                  <span id="cart-gst-itc-badge">${gstInfo.enabled ? 'Eligible 18% ITC' : 'Tax Inclusive'}</span>
+                  <span class="text-[#266b4e] font-medium">All Taxes Included</span>
                 </div>
                 <div class="pt-2.5 mt-0.5 border-t border-surface-container flex justify-between items-baseline bg-surface-container-low p-3 rounded-xl">
                   <div>
@@ -4821,7 +4798,7 @@ function renderWishlistItemCard(p) {
                 <div class="flex items-baseline gap-1.5">
                   <span id="cart-sticky-total-payable" class="font-spec-numeral text-lg sm:text-xl font-extrabold text-primary tracking-tight">${formatINR(summary.payable)}</span>
                 </div>
-                <span id="cart-sticky-shipping-notice" class="text-[10px] text-on-surface-variant truncate">${summary.isFreeShipping ? '<span class="text-[#266b4e] font-semibold">Free Express Shipping</span>' : 'Tax Inclusive (18% GST)'}</span>
+                <span id="cart-sticky-shipping-notice" class="text-[10px] text-on-surface-variant truncate">${summary.isFreeShipping ? '<span class="text-[#266b4e] font-semibold">Free Express Shipping</span>' : 'All Taxes Included'}</span>
               </div>
               ${summary.hasOutOfStock ? `
                 <button type="button" onclick="window.handleRemoveAllOutOfStock()" class="h-12 px-5 rounded-xl bg-[#9e3322] hover:bg-[#85281a] text-white text-xs font-bold shadow-sm active:scale-[0.96] transition-all cursor-pointer shrink-0">
@@ -5036,7 +5013,6 @@ function renderWishlistItemCard(p) {
                     <div class="flex flex-col gap-1">
                       <div class="flex flex-wrap items-center gap-2">
                         <span class="font-mono text-xs sm:text-sm font-bold text-primary tracking-tight whitespace-nowrap">ORDER #${esc(cleanOrderId)}</span>
-                        ${ord.id && ord.id !== cleanOrderId ? `<span class="text-[10.5px] font-mono text-on-surface-variant/80 bg-surface-container-low px-1.5 py-0.5 rounded border border-[#e4e0d8]">ID: ${esc(ord.id)}</span>` : ''}
                         <span class="text-xs text-on-surface-variant font-medium">• ${esc(orderTimestamp)}</span>
                         ${isCustom ? `<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-[#fdf6f3] text-[#9e3322] border border-[#f5c2b7]/60 text-[10px] font-bold uppercase tracking-wider">🌸 Bespoke Keepsake</span>` : ''}
                         ${ord.giftWrap ? `<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-[#fdf6f3] text-[#9e3322] border border-[#f5c2b7]/60 text-[10px] font-semibold"><span class="material-symbols-outlined text-[13px]" aria-hidden="true">featured_seasonal_and_gifts</span><span>Silk Potli</span></span>` : ''}
@@ -5202,7 +5178,7 @@ function renderWishlistItemCard(p) {
                   <div class="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-[#f0ece4]">
                     <div class="flex items-center gap-1.5 text-[11px] sm:text-xs text-on-surface-variant font-medium">
                       <span class="material-symbols-outlined text-sm text-emerald-700" aria-hidden="true">check_circle</span>
-                      <span>${ord.paymentMethod ? esc(ord.paymentMethod) : 'Payment Confirmed'} • GST Tax Invoice Included</span>
+                      <span>${ord.paymentMethod ? esc(ord.paymentMethod) : 'Payment Confirmed'} • Tax Invoice Included</span>
                     </div>
                     <div class="flex items-center gap-2 shrink-0 ml-auto">
                       <button type="button" onclick="window.openOrderInvoiceModal('${esc(cleanOrderId)}')" class="min-h-[38px] px-3.5 py-1.5 rounded-xl border border-[#e4e0d8] bg-white hover:bg-surface-container-low text-xs font-semibold text-primary flex items-center gap-1.5 active:scale-95 transition-all cursor-pointer">
@@ -5229,7 +5205,6 @@ function renderWishlistItemCard(p) {
   // =========================================================================
   function renderProfileView() {
     const profile = Store.getPatronProfile();
-    const gstInfo = Store.getGstInfo();
     const isAuth = typeof Store.isAuthenticated === 'function' ? Store.isAuthenticated() : false;
     const auth = (typeof Store.getAuthSession === 'function' && Store.getAuthSession()) || {};
 
@@ -5238,8 +5213,6 @@ function renderWishlistItemCard(p) {
     const activePhone = (isAuth ? (auth.phone || profile.phone) : (profile.phone || '')).trim();
     const activeAddress = (isAuth ? (auth.address || profile.defaultAddress) : (profile.defaultAddress || '')).trim();
     const userInitial = (activeName[0] || activeEmail[0] || 'V').toUpperCase();
-    const memberTier = profile.memberTier || profile.tier || 'Gold Atelier Member';
-    const rewardPoints = Number(profile.loyaltyPoints || 250);
 
     return `
       <div class="route-view-enter flex flex-col w-full max-w-3xl mx-auto px-4 sm:px-6 py-5 sm:py-7 gap-5">
@@ -5256,7 +5229,7 @@ function renderWishlistItemCard(p) {
           </button>
         </nav>
 
-        <!-- 1. Gestalt Region: Patron Identity & Membership Card -->
+        <!-- 1. Gestalt Region: Patron Identity & Account Card -->
         <section aria-labelledby="patron-identity-heading" class="ram-card p-5 sm:p-6 bg-white border border-[#e4e0d8] rounded-2xl shadow-xs flex flex-col gap-4">
           <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 min-w-0">
             <div class="flex items-center gap-3.5 sm:gap-4 min-w-0 flex-1">
@@ -5275,17 +5248,9 @@ function renderWishlistItemCard(p) {
               <!-- Identity Credentials & Title -->
               <div class="min-w-0 flex-1">
                 <div class="flex flex-wrap items-center gap-1.5 sm:gap-2 mb-1">
-                  <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-secondary-container/70 text-on-secondary-container text-[10px] font-bold uppercase tracking-wider">
-                    <span class="material-symbols-outlined text-[12px]" aria-hidden="true">workspace_premium</span>
-                    ${esc(memberTier)}
-                  </span>
-                  <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full ${isAuth ? 'bg-[#e8f5e9] text-[#266b4e]' : 'bg-[#fff3e0] text-[#b06000]'} text-[10px] font-bold">
-                    <span class="material-symbols-outlined text-[12px]" aria-hidden="true">${isAuth ? 'verified' : 'person'}</span>
-                    ${isAuth ? `Verified (${esc(String(auth.provider || 'email').toUpperCase())})` : 'Guest Session'}
-                  </span>
-                  <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-surface-container-high text-primary font-spec-numeral text-[10px] font-bold">
-                    <span class="material-symbols-outlined text-[12px] text-secondary" aria-hidden="true">stars</span>
-                    ${rewardPoints} Reward Points
+                  <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full ${isAuth ? 'bg-[#e8f5e9] text-[#266b4e]' : 'bg-surface-container-high text-on-surface-variant'} text-[11px] font-semibold">
+                    <span class="w-1.5 h-1.5 rounded-full ${isAuth ? 'bg-[#266b4e]' : 'bg-on-surface-variant/50'}"></span>
+                    ${isAuth ? 'Signed In' : 'Guest Session'}
                   </span>
                 </div>
                 <h1 id="patron-identity-heading" class="font-headline-sm text-lg sm:text-2xl text-primary font-bold tracking-tight truncate">
@@ -5294,12 +5259,6 @@ function renderWishlistItemCard(p) {
                 <p class="text-xs text-on-surface-variant truncate mt-0.5">
                   ${esc(activeName ? `${activeName} • ${activeEmail || activePhone || 'Patron'}` : (activeEmail || 'Sign in to access your saved addresses across devices'))}
                 </p>
-                ${isAuth && (auth.id || auth.userId || profile.id) ? `
-                  <div class="flex items-center gap-1.5 mt-1 text-[11px] font-mono text-on-surface-variant">
-                    <span class="text-[9.5px] uppercase font-bold text-outline">User ID:</span>
-                    <span class="bg-surface-container-low px-1.5 py-0.5 rounded border border-[#e4e0d8] text-primary font-semibold select-all">${esc(auth.id || auth.userId || profile.id)}</span>
-                  </div>
-                ` : ''}
               </div>
             </div>
 
@@ -5370,7 +5329,6 @@ function renderWishlistItemCard(p) {
             <div class="flex flex-col gap-1.5 sm:col-span-2">
               <label for="acc-prof-email" class="text-xs font-bold text-primary flex items-center justify-between">
                 <span>Email Address (for invoices &amp; tracking) <span class="text-[#9e3322]">*</span></span>
-                ${gstInfo.gstin ? `<span class="text-[10.5px] text-secondary font-mono">GSTIN: ${esc(gstInfo.gstin)}</span>` : ''}
               </label>
               <div class="relative">
                 <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-[18px] text-outline-variant pointer-events-none" aria-hidden="true">mail</span>
@@ -5712,10 +5670,10 @@ function renderWishlistItemCard(p) {
         },
         {
           '@type': 'Question',
-          name: 'Do you provide GST tax invoices, express shipping, and instant UPI payments in India?',
+          name: 'Do you provide tax invoices, express shipping, and instant UPI payments in India?',
           acceptedAnswer: {
             '@type': 'Answer',
-            text: `Yes. Every order includes an official 18% GST Tax Invoice (HSN 39073010 for epoxy resins) for B2B input tax credit. Orders above ₹${currentShipThreshold.toLocaleString('en-IN')} qualify for free express shipping via BlueDart and Delhivery across 28,000+ Indian PIN codes, with instant UPI, Credit/Debit Cards, and NetBanking supported.`
+            text: `Yes. Every order includes an official retail tax invoice with all taxes included. Orders above ₹${currentShipThreshold.toLocaleString('en-IN')} qualify for free express shipping via BlueDart and Delhivery across 28,000+ Indian PIN codes, with instant UPI, Credit/Debit Cards, and NetBanking supported.`
           }
         }
       ]
@@ -8838,7 +8796,7 @@ function renderWishlistItemCard(p) {
     if (stickyNotice) {
       stickyNotice.innerHTML = summary.isFreeShipping
         ? '<span class="text-[#266b4e] font-semibold">Free Express Shipping</span>'
-        : 'Tax Inclusive (18% GST)';
+        : 'All Taxes Included';
     }
   }
 
@@ -9083,29 +9041,12 @@ function renderWishlistItemCard(p) {
     }
   };
 
-  window.toggleGstClaim = function (checked) {
-    Store.saveGstInfo({ enabled: checked });
-    const gstFields = document.getElementById('cart-gst-fields');
-    if (gstFields) {
-      if (checked) {
-        gstFields.classList.remove('hidden');
-        gstFields.classList.add('grid');
-      } else {
-        gstFields.classList.add('hidden');
-        gstFields.classList.remove('grid');
-      }
-    }
-    const itcBadge = document.getElementById('cart-gst-itc-badge');
-    if (itcBadge) {
-      itcBadge.textContent = checked ? 'Eligible 18% ITC' : 'Tax Inclusive';
-    }
+  window.toggleGstClaim = function (_checked) {
+    // B2C storefront - GST claims removed
   };
 
   window.saveGstField = function () {
-    const gstin = document.getElementById('cart-gstin-input')?.value.trim().toUpperCase() || '';
-    const tradeName = document.getElementById('cart-tradename-input')?.value.trim() || '';
-    Store.saveGstInfo({ gstin, tradeName });
-    window.showToast('GST Invoice Details Updated', gstin);
+    // B2C storefront - GST claims removed
   };
 
   window.promptChangePincode = function () {
@@ -10701,7 +10642,6 @@ function renderWishlistItemCard(p) {
   window.openOrderInvoiceModal = function (orderId) {
     const ord = Store.getOrders().find(o => o.orderId === orderId);
     if (!ord) return;
-    const gstInfo = Store.getGstInfo();
     const modal = document.getElementById('tds-spec-modal');
     const title = document.getElementById('tds-modal-title');
     const body = document.getElementById('tds-modal-body');
@@ -10709,17 +10649,17 @@ function renderWishlistItemCard(p) {
 
     const gstAmt = Number(ord.gstAmount) || Number((ord.total * (18 / 118)).toFixed(2));
     const cleanId = String(ord.orderId || ord.orderNumber || ord.id || '').replace(/^#/, '');
-    title.textContent = `GST Tax Invoice — Order #${cleanId}`;
+    title.textContent = `Tax Invoice — Order #${cleanId}`;
     body.innerHTML = `
       <div class="flex flex-col gap-3 text-xs text-primary">
         <div class="flex flex-wrap justify-between gap-2 p-3 rounded-lg bg-surface-container-low border border-[#e4e0d8]">
           <div>
-            <p class="font-bold">Vistāra Krafts Chemical &amp; Keepsake Atelier</p>
-            <p class="text-[11px] text-on-surface-variant">Supplier GSTIN: 29AABCV4820K1Z5 • HSN: 39073010</p>
+            <p class="font-bold">Vistāra Krafts Keepsake Atelier</p>
+            <p class="text-[11px] text-on-surface-variant">Handcrafted Resin Crafts &amp; Botanical Keepsakes</p>
           </div>
           <div class="text-right">
             <p class="font-spec-numeral font-bold">Date: ${esc(ord.date)}</p>
-            <p class="text-[11px] text-on-surface-variant">Buyer GSTIN: ${esc(gstInfo.gstin || 'Unregistered B2C')}</p>
+            <p class="text-[11px] text-on-surface-variant font-medium">B2C Retail Tax Invoice</p>
           </div>
         </div>
         <div class="border border-[#e4e0d8] rounded-lg overflow-hidden">
@@ -11757,7 +11697,7 @@ function renderWishlistItemCard(p) {
       const storeName = settings.storeName || 'Vistāra Krafts';
       const cleanStoreName = storeName.replace(/\s+Studio$/i, '');
       const thresholdStr = Number(threshold).toLocaleString('en-IN');
-      const headlineMarkup = `<strong>${esc(cleanStoreName)}</strong> • 24h Bridal Varmala Pickup • Free Express Shipping &gt; ₹${thresholdStr}<span class="hidden sm:inline"> • 18% GST ITC • Handcrafted Bengaluru Atelier • Insured Air Dispatch</span>`;
+      const headlineMarkup = `<strong>${esc(cleanStoreName)}</strong> • 24h Bridal Varmala Pickup • Free Express Shipping &gt; ₹${thresholdStr}<span class="hidden sm:inline"> • Handcrafted Bengaluru Atelier • Insured Air Dispatch</span>`;
       const announcementHeadlineEls = document.querySelectorAll('.js-announcement-headline, #announcement-text, #announcement-text-dup');
       announcementHeadlineEls.forEach(el => {
         el.innerHTML = headlineMarkup;
