@@ -821,6 +821,21 @@ body.has-mini-cart-toast #global-toast {
   }
 }
 
+/* Respect Reduced Transparency Preferences (Apple HIG Standard) */
+@media (prefers-reduced-transparency: reduce) {
+  header,
+  .sticky-bottom-bar,
+  #bottom-nav-dock,
+  .ram-modal-box,
+  #cloudflare-auth-modal > div,
+  #checkout-modal > div,
+  .pdp-sticky-bar {
+    background-color: #faf8f5 !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+}
+
 /* ==========================================================================
    Vistāra Krafts (VK) Animated Vector Splash Screen Styles
    ========================================================================== */

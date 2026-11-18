@@ -1384,7 +1384,7 @@ ${avgRating ? `
               <span class="px-1.5 py-0.5 rounded-md bg-primary/90 text-on-primary font-label-sm text-[8.5px] sm:text-[9px] font-semibold tracking-normal shadow-2xs leading-tight truncate block">${esc(p.badge)}</span>
               ${affinityTag}
             </div>
-            <button type="button" aria-label="Save to Wishlist" data-wishlist-btn="${esc(p.id)}" onclick="event.stopPropagation(); window.handleWishlistToggle(event, '${esc(p.id)}')" class="absolute top-1.5 right-1.5 z-10 min-w-[36px] min-h-[36px] p-1.5 bg-transparent border-0 flex items-center justify-center ${isFav ? 'text-[#9e3322]' : 'text-white'} hover:scale-110 active:scale-95 transition-transform cursor-pointer" title="Save to Wishlist">
+            <button type="button" aria-label="Save to Wishlist" data-wishlist-btn="${esc(p.id)}" onclick="event.stopPropagation(); window.handleWishlistToggle(event, '${esc(p.id)}')" class="absolute top-1.5 right-1.5 z-10 w-10 h-10 min-w-[40px] min-h-[40px] p-2 bg-transparent border-0 flex items-center justify-center ${isFav ? 'text-[#9e3322]' : 'text-white'} hover:scale-110 active:scale-95 transition-transform cursor-pointer" title="Save to Wishlist">
               <svg class="w-4 h-4 ${isFav ? 'fill-[#9e3322]' : 'fill-none'} filter drop-shadow-[0_1px_3px_rgba(0,0,0,0.6)] transition-colors" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                 <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/>
               </svg>
@@ -1403,7 +1403,7 @@ ${avgRating ? `
             ${discountPct > 0 ? `<span class="font-spec-numeral text-[9px] font-bold px-1 py-0.5 rounded bg-[#ffe4de] text-[#9e3322] shrink-0 leading-none">${discountPct}% OFF</span>` : ''}
           </div>
 
-          <h2 class="font-title-md text-[12.5px] sm:text-[13.5px] leading-snug text-primary font-semibold line-clamp-2 cursor-pointer hover:text-secondary transition-colors break-words mt-0.5" onclick="window.navigateTo('product', '${esc(p.id)}')">
+          <h2 class="font-title-md text-[13.5px] sm:text-[14px] leading-snug text-primary font-semibold tracking-[-0.015em] line-clamp-2 cursor-pointer hover:text-secondary transition-colors break-words mt-0.5" onclick="window.navigateTo('product', '${esc(p.id)}')">
             ${esc(p.shortName || p.name)}
           </h2>
 
@@ -1424,7 +1424,7 @@ ${avgRating ? `
             </div>
             <button type="button" onclick="window.navigateTo('product', '${esc(p.id)}')" class="px-1.5 py-0.5 inline-flex items-center text-[11px] font-semibold text-secondary hover:underline cursor-pointer shrink-0">Details</button>
           </div>
-          <button type="button" onclick="window.handleQuickAdd(this, '${esc(p.id)}')" ${p.inStock === false ? 'disabled' : ''} class="catalog-quick-add-btn btn-shimmer sotd-magnetic w-full h-9 py-2 px-3 rounded-lg ${p.inStock === false ? 'bg-surface-container text-on-surface-variant cursor-not-allowed opacity-60' : 'bg-primary hover:bg-primary-container text-on-primary cursor-pointer'} font-label-md text-xs font-semibold flex items-center justify-center gap-2 active:scale-[0.98] transition-all shadow-2xs">
+          <button type="button" onclick="window.handleQuickAdd(this, '${esc(p.id)}')" ${p.inStock === false ? 'disabled' : ''} class="catalog-quick-add-btn btn-shimmer sotd-magnetic w-full h-10 min-h-[40px] py-2 px-3 rounded-xl ${p.inStock === false ? 'bg-surface-container text-on-surface-variant cursor-not-allowed opacity-60' : 'bg-primary hover:bg-primary-container text-on-primary cursor-pointer'} font-label-md text-xs font-semibold flex items-center justify-center gap-2 active:scale-[0.98] transition-all shadow-2xs">
             <span class="material-symbols-outlined text-[16px] shrink-0 leading-none" aria-hidden="true">${p.inStock === false ? 'block' : 'add_shopping_cart'}</span>
             <span class="truncate leading-none">${p.inStock === false ? 'Sold Out' : 'Quick Add'}</span>
           </button>
@@ -2046,75 +2046,7 @@ ${avgRating ? `
           </div>
         </section>
 
-        <!-- 10. Social Commerce & Customer Stories (@resin.art.memories) -->
-        <section class="px-4 sm:px-8 py-8 sm:py-10 bg-white border-b border-[#e4e0d8] flex flex-col gap-6">
-          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-            <div>
-              <span class="text-xs font-bold text-secondary uppercase tracking-widest block">Behind The Scenes</span>
-              <h2 class="font-headline-sm text-2xl sm:text-3xl text-primary font-bold tracking-tight mt-0.5">Shop Our Reels &amp; Stories</h2>
-            </div>
-            <button type="button" onclick="window.navigateTo('social')" class="self-start sm:self-auto min-h-[42px] px-5 py-2 rounded-xl bg-primary text-white font-label-md text-xs font-bold flex items-center gap-1.5 shadow-2xs hover:opacity-95 cursor-pointer">
-              <span>Explore Community Feed</span>
-              <span class="material-symbols-outlined text-base" aria-hidden="true">arrow_forward</span>
-            </button>
-          </div>
-
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-            ${socialPosts.map(post => {
-              const taggedProduct = Store.getProductById(post.productId);
-              return `
-                <div class="rounded-2xl overflow-hidden flex flex-col justify-between bg-white border border-[#e4e0d8] shadow-2xs">
-                  <div>
-                    <div class="p-3 flex items-center justify-between border-b border-[#e4e0d8]">
-                      <div class="flex items-center gap-2">
-                        <img src="${esc(post.avatar)}" alt="${esc(post.handle)}" class="w-8 h-8 rounded-full object-cover ring-2 ring-[#aa771c]">
-                        <div>
-                          <p class="text-xs font-bold text-primary leading-none">${esc(post.handle)}</p>
-                          <p class="text-[10px] text-on-surface-variant mt-0.5">${esc(post.location)}</p>
-                        </div>
-                      </div>
-                      <span class="px-2 py-0.5 rounded-full bg-[#fbf6ee] text-[#855d14] text-[10px] font-bold">#${esc(post.tag)}</span>
-                    </div>
-                    <div class="relative aspect-square bg-surface-container overflow-hidden cursor-pointer group" onclick="window.navigateTo('social')">
-                      <img src="${esc(post.image)}" alt="${esc(post.caption)}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
-                      <span class="absolute top-2.5 left-2.5 px-2.5 py-0.5 rounded-full bg-black/70 text-white text-[10px] font-semibold">${esc(post.badge)}</span>
-                    </div>
-                    <div class="p-3.5">
-                      <div class="flex items-center justify-between mb-1">
-                        <div class="flex items-center gap-2">
-                          <button type="button" onclick="window.handleSocialLike('${esc(post.id)}')" class="min-h-[38px] px-2 flex items-center gap-1 text-xs font-semibold ${post.liked ? 'text-[#9e3322]' : 'text-primary'} cursor-pointer">
-                            <span class="material-symbols-outlined text-lg" style="font-variation-settings: 'FILL' ${post.liked ? 1 : 0};" aria-hidden="true">favorite</span>
-                            <span class="font-spec-numeral">${post.likes.toLocaleString('en-IN')}</span>
-                          </button>
-                        </div>
-                        <button type="button" aria-label="Save post" onclick="window.handleSocialSave('${esc(post.id)}')" class="w-9 h-9 flex items-center justify-center text-primary hover:text-secondary cursor-pointer">
-                          <span class="material-symbols-outlined text-lg" style="font-variation-settings: 'FILL' ${post.saved ? 1 : 0};" aria-hidden="true">bookmark</span>
-                        </button>
-                      </div>
-                      <p class="text-xs text-on-surface line-clamp-2 leading-relaxed">${esc(post.caption)}</p>
-                    </div>
-                  </div>
-                  ${taggedProduct ? `
-                    <div class="px-3.5 py-2.5 bg-[#faf8f5] border-t border-[#e4e0d8] flex items-center justify-between gap-2">
-                      <div class="flex items-center gap-2 min-w-0 cursor-pointer" onclick="window.navigateTo('product', '${esc(taggedProduct.id)}')">
-                        <img src="${esc(taggedProduct.image)}" alt="${esc(taggedProduct.shortName)}" class="w-9 h-9 rounded-lg object-cover shrink-0 border border-[#e4e0d8]">
-                        <div class="min-w-0">
-                          <p class="text-xs font-bold text-primary truncate">${esc(taggedProduct.shortName)}</p>
-                          <p class="font-spec-numeral text-[11px] text-secondary font-bold">${formatINR(taggedProduct.price)}</p>
-                        </div>
-                      </div>
-                      <button type="button" onclick="window.handleQuickAdd(this, '${esc(taggedProduct.id)}')" class="min-h-[38px] px-3.5 py-1.5 rounded-lg bg-primary text-on-primary text-[11px] font-semibold shrink-0 cursor-pointer">
-                        Add to Bag
-                      </button>
-                    </div>
-                  ` : ''}
-                </div>
-              `;
-            }).join('')}
-          </div>
-        </section>
-
-        <!-- 11. Real Customer Reviews & Verified Buyer Love -->
+        <!-- 10. Real Customer Reviews & Verified Buyer Love -->
         <section class="px-4 sm:px-8 py-8 sm:py-10 bg-[#faf8f5] border-b border-[#e4e0d8] flex flex-col gap-6">
           <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
             <div>
@@ -3389,7 +3321,7 @@ ${avgRating ? `
             </div>
             <div>
               <div class="flex items-center gap-2 flex-wrap">
-                <h1 class="font-headline-sm text-xl sm:text-2xl font-bold">@resin.art.memories</h1>
+                <h1 class="font-headline-sm text-xl sm:text-2xl font-bold tracking-tight">@resin.art.memories</h1>
                 <span class="px-2.5 py-0.5 rounded-full bg-[#9e3322] text-white text-[10px] font-bold uppercase whitespace-nowrap">Verified Official Storefront</span>
               </div>
               <p class="text-xs sm:text-sm text-white/90 mt-1.5 max-w-xl leading-relaxed">
@@ -3779,7 +3711,7 @@ ${avgRating ? `
 
       return `
         <div>
-          <h2 class="font-headline-md text-xl sm:text-2xl text-primary font-bold">What would you like to make?</h2>
+          <h2 class="font-headline-md text-xl sm:text-2xl text-primary font-bold tracking-tight">What would you like to make?</h2>
           <p class="text-xs sm:text-sm text-on-surface-variant mt-1">Choose a product type.</p>
         </div>
 
@@ -3817,7 +3749,7 @@ ${avgRating ? `
 
       return `
         <div>
-          <h2 class="font-headline-md text-xl sm:text-2xl text-primary font-bold">What would you like to preserve?</h2>
+          <h2 class="font-headline-md text-xl sm:text-2xl text-primary font-bold tracking-tight">What would you like to preserve?</h2>
           <p class="text-xs sm:text-sm text-on-surface-variant mt-1">Choose the item.</p>
         </div>
 
@@ -3855,7 +3787,7 @@ ${avgRating ? `
 
       return `
         <div>
-          <h2 class="font-headline-md text-xl sm:text-2xl text-primary font-bold">Show us your item</h2>
+          <h2 class="font-headline-md text-xl sm:text-2xl text-primary font-bold tracking-tight">Show us your item</h2>
           <p class="text-xs sm:text-sm text-on-surface-variant mt-1">Upload a photo and, optionally, a reference for the design.</p>
         </div>
 
@@ -3998,7 +3930,7 @@ ${avgRating ? `
 
       return `
         <div>
-          <h2 class="font-headline-md text-xl sm:text-2xl text-primary font-bold">Choose a size</h2>
+          <h2 class="font-headline-md text-xl sm:text-2xl text-primary font-bold tracking-tight">Choose a size</h2>
           <p class="text-xs sm:text-sm text-on-surface-variant mt-1">Show available sizes and their prices for ${esc(b.productName || 'your keepsake')}.</p>
         </div>
 
@@ -4038,7 +3970,7 @@ ${avgRating ? `
     if (step === 5) {
       return `
         <div>
-          <h2 class="font-headline-md text-xl sm:text-2xl text-primary font-bold">Make it yours</h2>
+          <h2 class="font-headline-md text-xl sm:text-2xl text-primary font-bold tracking-tight">Make it yours</h2>
           <p class="text-xs sm:text-sm text-on-surface-variant mt-1">Choose extras and see any added cost.</p>
         </div>
 
@@ -4172,7 +4104,7 @@ ${avgRating ? `
 
       return `
         <div>
-          <h2 class="font-headline-md text-xl sm:text-2xl text-primary font-bold">Review your keepsake</h2>
+          <h2 class="font-headline-md text-xl sm:text-2xl text-primary font-bold tracking-tight">Review your keepsake</h2>
           <p class="text-xs sm:text-sm text-on-surface-variant mt-1">Show the choices, photo previews, total, and Add to bag.</p>
         </div>
 
@@ -4365,34 +4297,29 @@ function renderWishlistItemCard(p) {
     const savedPosts = Store.getSocialPosts().filter(p => p.saved);
 
     return `
-      <div class="route-view-enter flex flex-col w-full max-w-7xl mx-auto px-3.5 sm:px-8 pt-2.5 sm:pt-4 pb-8 gap-3 sm:gap-4.5">
-        <!-- Atelier Wishlist Header (Mobile-First Unified Architecture) -->
-        <div class="flex flex-col gap-2 border-b border-[#e4e0d8] pb-3">
-          <!-- Top Row: Back Action + Atelier Badge -->
-          <div class="flex items-center justify-between gap-3 w-full">
-            <button type="button" onclick="window.handleBackButton('home')" aria-label="Go back to shopping" class="inline-flex items-center gap-1.5 text-xs font-semibold text-primary/80 hover:text-primary min-h-[36px] py-1 px-3 rounded-xl bg-surface-container-low hover:bg-surface-container border border-[#e4e0d8] active:scale-[0.97] transition-all cursor-pointer">
-              <span class="material-symbols-outlined text-base" aria-hidden="true">arrow_back</span>
-              <span class="tracking-tight">Back to Shopping</span>
+      <div class="route-view-enter flex flex-col w-full max-w-7xl mx-auto px-3.5 sm:px-8 py-3.5 sm:py-5 gap-4">
+        <!-- Atelier Wishlist Header -->
+        <div class="flex items-center justify-between gap-3 border-b border-[#e4e0d8] pb-3">
+          <div class="flex items-center gap-2.5 min-w-0">
+            <button type="button" onclick="window.handleBackButton('home')" aria-label="Go back to shopping" class="w-10 h-10 min-w-[40px] min-h-[40px] rounded-full bg-surface-container-low hover:bg-surface-container border border-[#e4e0d8] text-primary flex items-center justify-center shrink-0 active:scale-[0.95] transition cursor-pointer">
+              <span class="material-symbols-outlined text-lg" aria-hidden="true">arrow_back</span>
             </button>
-            <span class="font-label-sm text-[10.5px] uppercase tracking-wider text-[#9e3322] font-bold px-2.5 py-0.5 rounded-full bg-[#fdf5f3] border border-[#f5c2b7]">
-              Personal Atelier
-            </span>
-          </div>
-
-          <!-- Title Row + Live Counter + Responsive Add All to Bag -->
-          <div class="flex items-center justify-between gap-2.5 flex-wrap">
-            <div class="flex items-baseline gap-2">
-              <h1 class="font-headline-lg text-xl sm:text-2xl lg:text-3xl text-primary font-bold tracking-tight">Saved Keepsakes</h1>
-              <span id="wishlist-header-count" class="font-spec-numeral text-xs sm:text-sm px-2.5 py-0.5 rounded-full bg-[#f4f2ee] border border-[#e4e0d8] font-bold text-primary">${products.length} ${products.length === 1 ? 'item' : 'items'}</span>
+            <div class="min-w-0">
+              <h1 class="font-headline-lg text-xl sm:text-2xl text-primary font-bold tracking-tight truncate">
+                Saved Keepsakes <span id="wishlist-header-count" class="font-spec-numeral text-sm sm:text-base font-medium text-secondary">(${products.length})</span>
+              </h1>
             </div>
-            ${products.length > 0 ? `
-              <button type="button" onclick="window.moveAllWishlistToCart()" class="btn-shimmer h-9 px-4 rounded-xl bg-primary hover:bg-primary-container text-white text-xs font-bold inline-flex items-center gap-1.5 shadow-2xs active:scale-95 transition-all cursor-pointer">
-                <span class="material-symbols-outlined text-sm" aria-hidden="true">shopping_bag</span>
-                <span>Add All to Bag</span>
-              </button>
-            ` : ''}
           </div>
-          <p class="text-[11px] sm:text-xs text-on-surface-variant leading-tight">Formulations, botanical keepsakes, and craft tools reserved for your pours.</p>
+          ${products.length > 0 ? `
+            <button type="button" onclick="window.moveAllWishlistToCart()" class="btn-shimmer h-9 px-3.5 sm:px-4 rounded-xl bg-primary hover:bg-primary-container text-white text-xs font-bold inline-flex items-center gap-1.5 shadow-2xs active:scale-95 transition-all cursor-pointer shrink-0">
+              <span class="material-symbols-outlined text-sm" aria-hidden="true">shopping_bag</span>
+              <span class="hidden min-[360px]:inline">Add All to Bag</span>
+            </button>
+          ` : `
+            <span class="font-label-sm text-[10.5px] uppercase tracking-wider text-[#9e3322] font-bold px-2.5 py-0.5 rounded-full bg-[#fdf5f3] border border-[#f5c2b7] shrink-0">
+              Atelier
+            </span>
+          `}
         </div>
 
         ${products.length === 0 ? `
@@ -4510,26 +4437,22 @@ function renderWishlistItemCard(p) {
 
     return `
       <div class="route-view-enter cart-scroll-content flex flex-col w-full max-w-7xl mx-auto px-3.5 sm:px-8 py-3.5 sm:py-5 gap-4">
-        <!-- Shopping Bag Header Navigation & Title (Unconstrained, Zero Truncation) -->
-        <div class="flex flex-col gap-2.5 w-full border-b border-[#e4e0d8] pb-3">
-          <div class="flex items-center justify-between gap-3 w-full">
-            <button type="button" onclick="window.handleBackButton('catalog')" aria-label="Go back to catalogue" class="inline-flex items-center gap-1.5 text-xs font-semibold text-primary/80 hover:text-primary min-h-[38px] py-1.5 px-3 rounded-xl bg-surface-container-low hover:bg-surface-container border border-[#e4e0d8] active:scale-[0.97] transition-all cursor-pointer">
-              <span class="material-symbols-outlined text-base" aria-hidden="true">arrow_back</span>
-              <span class="tracking-tight">Back to Shopping</span>
+        <!-- Shopping Bag Header Navigation & Title -->
+        <div class="flex items-center justify-between gap-3 w-full border-b border-[#e4e0d8] pb-3">
+          <div class="flex items-center gap-2.5 min-w-0">
+            <button type="button" onclick="window.handleBackButton('catalog')" aria-label="Go back to catalogue" class="w-10 h-10 min-w-[40px] min-h-[40px] rounded-full bg-surface-container-low hover:bg-surface-container border border-[#e4e0d8] text-primary flex items-center justify-center shrink-0 active:scale-[0.95] transition cursor-pointer">
+              <span class="material-symbols-outlined text-lg" aria-hidden="true">arrow_back</span>
             </button>
-            <span class="text-[11px] sm:text-xs px-2.5 py-1 rounded-full bg-surface-container-high text-primary font-semibold whitespace-nowrap border border-[#e4e0d8] shrink-0 flex items-center gap-1">
-              <span class="material-symbols-outlined text-xs text-[#266b4e]" aria-hidden="true">verified_user</span>
-              100% Secure Checkout
-            </span>
+            <div class="min-w-0">
+              <h1 class="font-headline-md text-xl sm:text-2xl text-primary font-bold tracking-tight truncate">
+                Shopping Bag <span id="cart-header-count" class="text-secondary font-spec-numeral text-base sm:text-lg font-medium">(${summary.itemsCount})</span>
+              </h1>
+            </div>
           </div>
-          <div class="flex items-baseline justify-between gap-2">
-            <h1 class="font-headline-md text-2xl sm:text-3xl text-primary font-bold tracking-tight">
-              Shopping Bag <span id="cart-header-count" class="text-secondary font-spec-numeral text-lg sm:text-xl font-medium">(${summary.itemsCount})</span>
-            </h1>
-            ${summary.cart.length > 0 ? `
-              <span class="text-xs text-on-surface-variant hidden sm:inline">Handcrafted atelier dispatch</span>
-            ` : ''}
-          </div>
+          <span class="text-[11px] sm:text-xs px-2.5 py-1 rounded-full bg-surface-container-high text-primary font-semibold whitespace-nowrap border border-[#e4e0d8] shrink-0 flex items-center gap-1">
+            <span class="material-symbols-outlined text-xs text-[#266b4e]" aria-hidden="true">verified_user</span>
+            <span class="hidden min-[380px]:inline">100% Secure</span>
+          </span>
         </div>
 
         ${summary.cart.length === 0 ? `
@@ -4693,8 +4616,8 @@ function renderWishlistItemCard(p) {
                       <div>
                         <div class="flex items-start justify-between gap-1.5">
                           <h2 onclick="window.navigateTo('product', '${esc(item.productId)}')" class="font-title-md text-xs sm:text-sm text-primary font-bold line-clamp-1 cursor-pointer hover:text-secondary break-words leading-tight">${esc(item.name)}</h2>
-                          <button type="button" aria-label="Remove item" onclick="window.handleCartRemove('${esc(itemId)}')" class="w-7 h-7 rounded-lg text-on-surface-variant hover:text-error hover:bg-surface-container-low flex items-center justify-center shrink-0 cursor-pointer transition-colors -mr-1 -mt-1">
-                            <span class="material-symbols-outlined text-sm" aria-hidden="true">close</span>
+                          <button type="button" aria-label="Remove item" onclick="window.handleCartRemove('${esc(itemId)}')" class="w-9 h-9 min-w-[36px] min-h-[36px] rounded-lg text-on-surface-variant hover:text-error hover:bg-surface-container-low flex items-center justify-center shrink-0 cursor-pointer transition-colors active:scale-95 -mr-1 -mt-1">
+                            <span class="material-symbols-outlined text-base" aria-hidden="true">close</span>
                           </button>
                         </div>
                         ${specLine ? `<p class="text-[11px] text-on-surface-variant truncate font-normal mt-0.5 leading-tight">${esc(specLine)}</p>` : ''}
@@ -4722,13 +4645,13 @@ function renderWishlistItemCard(p) {
                             <span>Volume Tier Applied</span>
                           </span>
                         </div>
-                        <div class="flex items-center bg-surface-container-low rounded-lg p-0.5 border border-[#e4e0d8] shrink-0">
-                          <button type="button" aria-label="Decrease quantity" onclick="window.handleCartQty('${esc(itemId)}', -1)" class="w-6 h-6 rounded-md bg-white text-primary flex items-center justify-center font-bold hover:bg-surface-container cursor-pointer transition-colors shadow-2xs">
-                            <span class="material-symbols-outlined text-xs" aria-hidden="true">remove</span>
+                        <div class="flex items-center bg-surface-container-low rounded-xl p-0.5 border border-[#e4e0d8] shrink-0">
+                          <button type="button" aria-label="Decrease quantity" onclick="window.handleCartQty('${esc(itemId)}', -1)" class="w-8 h-8 min-w-[32px] min-h-[32px] rounded-lg bg-white text-primary flex items-center justify-center font-bold hover:bg-surface-container cursor-pointer transition-colors shadow-2xs active:scale-95">
+                            <span class="material-symbols-outlined text-sm" aria-hidden="true">remove</span>
                           </button>
-                          <span class="js-cart-item-qty font-spec-numeral text-xs font-bold px-2 text-primary">${item.qty}</span>
-                          <button type="button" aria-label="Increase quantity" onclick="window.handleCartQty('${esc(itemId)}', 1)" class="w-6 h-6 rounded-md bg-white text-primary flex items-center justify-center font-bold hover:bg-surface-container cursor-pointer transition-colors shadow-2xs">
-                            <span class="material-symbols-outlined text-xs" aria-hidden="true">add</span>
+                          <span class="js-cart-item-qty font-spec-numeral text-xs font-bold px-2.5 text-primary">${item.qty}</span>
+                          <button type="button" aria-label="Increase quantity" onclick="window.handleCartQty('${esc(itemId)}', 1)" class="w-8 h-8 min-w-[32px] min-h-[32px] rounded-lg bg-white text-primary flex items-center justify-center font-bold hover:bg-surface-container cursor-pointer transition-colors shadow-2xs active:scale-95">
+                            <span class="material-symbols-outlined text-sm" aria-hidden="true">add</span>
                           </button>
                         </div>
                       </div>
