@@ -11062,7 +11062,13 @@ function renderWishlistItemCard(p) {
 
     if (nameEl) nameEl.value = resolvedName;
     if (phoneEl) phoneEl.value = resolvedPhone;
-    if (addrEl) addrEl.value = resolvedAddr;
+    if (addrEl) {
+      addrEl.value = resolvedAddr;
+      addrEl.style.height = 'auto';
+      if (addrEl.scrollHeight > 52) {
+        addrEl.style.height = Math.min(addrEl.scrollHeight, 140) + 'px';
+      }
+    }
     if (pinEl) pinEl.value = resolvedPin;
     if (payEl && draft.paymentMethod) payEl.value = draft.paymentMethod;
     if (giftEl && typeof draft.giftWrap === 'boolean') giftEl.checked = draft.giftWrap;
@@ -11079,6 +11085,12 @@ function renderWishlistItemCard(p) {
         el.dataset.draftBound = 'true';
         el.addEventListener('input', () => {
           clearCheckoutFieldError(inputId, errId);
+          if (inputId === 'chk-address') {
+            el.style.height = 'auto';
+            if (el.scrollHeight > 52) {
+              el.style.height = Math.min(el.scrollHeight, 140) + 'px';
+            }
+          }
           persistCurrentCheckoutDraft();
         });
       }
@@ -11097,10 +11109,11 @@ function renderWishlistItemCard(p) {
     const amountEl = document.getElementById('checkout-modal-payable');
     if (amountEl) amountEl.textContent = formatINR(summary.payable);
     const submitBtnText = document.getElementById('checkout-submit-btn-text');
-    if (submitBtnText) submitBtnText.textContent = `Pay ${formatINR(summary.payable)} via Razorpay Secure`;
+    if (submitBtnText) submitBtnText.textContent = `Pay ${formatINR(summary.payable)} securely`;
     const itemsCountEl = document.getElementById('checkout-modal-items-count');
     if (itemsCountEl) {
-      itemsCountEl.textContent = `${summary.itemsCount} ${summary.itemsCount === 1 ? 'item' : 'items'} in Studio Bag`;
+      const shipLabel = summary.shippingFee > 0 ? `Shipping ${formatINR(summary.shippingFee)}` : 'Shipping Free';
+      itemsCountEl.textContent = `${summary.itemsCount} ${summary.itemsCount === 1 ? 'item' : 'items'} • ${shipLabel}`;
     }
     if (modal) modal.classList.remove('hidden');
     if (typeof window !== 'undefined' && window.VistaraAnalytics && typeof window.VistaraAnalytics.trackInitiateCheckout === 'function') {

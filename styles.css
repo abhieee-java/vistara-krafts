@@ -1743,3 +1743,13 @@ ascii-art {
   text-transform: uppercase;
   letter-spacing: 0.04em;
 }
+
+/* Minimal Mobile Checkout Modal — Stack Fields on Mobile (<640px) to Match Figma */
+@media (max-width: 639px) {
+  #checkout-modal .grid-cols-1 {
+    grid-template-columns: 1fr !important;
+  }
+  #checkout-modal .grid-cols-1 > * {
+    grid-column: span 1 / span 1 !important;
+  }
+}
