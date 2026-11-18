@@ -4361,7 +4361,6 @@
             </svg>
             <span>Continue with Google</span>
           </button>
-          <button type="button" id="cf-oauth-apple-btn" style="display:none;" class="hidden" aria-hidden="true" tabindex="-1"></button>
         </div>
 
         <!-- Social Divider -->
@@ -4451,25 +4450,6 @@
         </p>
 
         <div id="cf-google-gis-button-slot" class="hidden justify-center shrink-0"></div>
-
-        <!-- 1-Click OAuth Account Chooser Sheet (Google) -->
-        <div id="cf-oauth-chooser-sheet" class="hidden rounded-[12px] border border-[#d1d1d6] bg-[#fcf9f5] p-3 space-y-2 shrink-0 shadow-lg">
-          <div class="flex items-center justify-between gap-2">
-            <span id="cf-oauth-chooser-title" class="text-xs font-bold text-primary">Choose an account to continue to Vistāra Krafts</span>
-            <button type="button" id="cf-oauth-chooser-close-btn" aria-label="Close Account Chooser" onclick="window.closeOAuthChooser()" style="height: 36px; min-height: 36px; width: 36px; min-width: 36px;" class="w-9 h-9 min-w-[36px] min-h-[36px] shrink-0 rounded-lg flex items-center justify-center text-on-surface-variant hover:text-primary cursor-pointer">
-              <span class="material-symbols-outlined text-base" aria-hidden="true">close</span>
-            </button>
-          </div>
-          <div id="cf-oauth-chooser-accounts" class="space-y-1.5"></div>
-          <div class="pt-2 border-t border-surface-container space-y-1.5">
-            <label for="cf-oauth-custom-email" class="text-[11px] font-semibold text-on-surface-variant block">Or sign in with another account email</label>
-            <div class="flex flex-col sm:flex-row gap-1.5">
-              <input id="cf-oauth-custom-name" type="text" aria-label="Your Name" placeholder="Your Name" style="min-height: 40px; height: 40px;" class="min-w-0 sm:w-2/5 h-10 min-h-[40px] px-3 py-2 rounded-[10px] bg-white border border-[#d1d1d6] text-primary text-[13.5px] box-border">
-              <input id="cf-oauth-custom-email" type="email" autocomplete="email" aria-label="Google Email Address" placeholder="you@gmail.com" style="min-height: 40px; height: 40px;" class="min-w-0 sm:flex-1 h-10 min-h-[40px] px-3 py-2 rounded-[10px] bg-white border border-[#d1d1d6] text-primary text-[13.5px] box-border">
-              <button type="button" id="cf-oauth-custom-submit" onclick="window.submitOAuthChooserCustom()" style="min-height: 40px; height: 40px;" class="min-h-[40px] h-10 px-4 rounded-[10px] bg-primary text-white text-[13.5px] font-semibold shrink-0 cursor-pointer">Continue</button>
-            </div>
-          </div>
-        </div>
       </div>
 
         <!-- PART 1.5: 6-Digit Email Verification OTP Step -->

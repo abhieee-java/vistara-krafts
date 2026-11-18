@@ -9329,39 +9329,6 @@ function renderWishlistItemCard(p) {
     }
   }
 
-  function initAppleSignInIfConfigured() {
-    try {
-      const cfg = getOAuthProviderConfig('apple');
-      if (!cfg || cfg.enabled === false || isPlaceholderClientId(cfg.clientId)) {
-        return false;
-      }
-      const setupAppleClient = () => {
-        if (appleSdkInitialized || !(window.AppleID && window.AppleID.auth)) return;
-        appleSdkInitialized = true;
-        window.AppleID.auth.init({
-          clientId: cfg.clientId,
-          scope: cfg.scope || 'name email',
-          redirectURI: cfg.redirectURI || window.location.origin,
-          usePopup: true
-        });
-      };
-      if (!document.getElementById('vk-apple-auth-script') && !(window.AppleID && window.AppleID.auth)) {
-        const script = document.createElement('script');
-        script.id = 'vk-apple-auth-script';
-        script.src = 'https://appleid.cdn-apple.com/appleauth/static/jsapi/appleid/1/en_US/appleid.auth.js';
-        script.async = true;
-        script.defer = true;
-        script.onload = setupAppleClient;
-        document.head.appendChild(script);
-      } else if (window.AppleID && window.AppleID.auth) {
-        setupAppleClient();
-      }
-      return true;
-    } catch (_e) {
-      return false;
-    }
-  }
-
   let isForgotAuthMode = false;
 
   window.toggleAuthPasswordVisibility = function () {
@@ -9532,7 +9499,7 @@ function renderWishlistItemCard(p) {
   };
 
   window.completeOAuthChooserAccount = function (provider, email, name) {
-    const cleanProvider = provider === 'apple' ? 'apple' : 'google';
+    const cleanProvider = 'google';
     const personaPreference = document.getElementById('cf-auth-selected-persona')?.value || 'all';
     const res = Store.loginPatron({
       provider: cleanProvider,
@@ -9564,14 +9531,12 @@ function renderWishlistItemCard(p) {
       AppState.feedPersona = Store.getPersonaPreference() || personaPreference;
       updateGlobalBadges();
       renderActiveView();
-      const providerLabel = cleanProvider === 'apple' ? 'Apple ID' : 'Google';
-      window.showToast(`Signed in as ${res.session.name}`, `Verified via ${providerLabel}`);
+      window.showToast(`Signed in as ${res.session.name}`, `Verified via Google`);
       window.openCheckoutModal();
       return;
     }
 
-    const providerLabel = cleanProvider === 'apple' ? 'Apple ID' : 'Google';
-    window.showToast(`Signed in as ${res.session.name}! ✨`, `Verified via ${providerLabel}`);
+    window.showToast(`Signed in as ${res.session.name}! ✨`, `Verified via Google`);
     if (typeof window.finishLoginAndNavigate === 'function') {
       window.finishLoginAndNavigate(res.session);
     } else {
@@ -9583,16 +9548,7 @@ function renderWishlistItemCard(p) {
   };
 
   window.submitOAuthChooserCustom = function () {
-    const emailEl = document.getElementById('cf-oauth-custom-email');
-    const nameEl = document.getElementById('cf-oauth-custom-name');
-    const email = emailEl?.value.trim() || '';
-    const name = nameEl?.value.trim() || '';
-    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      window.showToast('Enter Valid Email', 'Please enter a valid Google or Apple email address to continue.');
-      if (emailEl && typeof emailEl.focus === 'function') emailEl.focus();
-      return;
-    }
-    window.completeOAuthChooserAccount(activeOAuthChooserProvider, email, name);
+    window.closeOAuthChooser();
   };
 
   window.onAuthEmailInput = function (emailInput) {
@@ -9698,7 +9654,6 @@ function renderWishlistItemCard(p) {
       window.setAuthPersona(Store.getPersonaPreference() || AppState.feedPersona || 'all');
     }
     initGoogleIdentityServicesIfConfigured();
-    initAppleSignInIfConfigured();
 
     const bannerEl = document.getElementById('cloudflare-auth-reason-banner');
     if (bannerEl) {
@@ -9789,7 +9744,7 @@ function renderWishlistItemCard(p) {
   };
 
   window.startCloudflareOAuth = function (provider) {
-    const cleanProvider = ['google', 'apple', 'email'].includes(provider) ? provider : 'google';
+    const cleanProvider = provider === 'email' ? 'email' : 'google';
     const provInput = document.getElementById('cf-auth-provider');
     if (provInput) provInput.value = cleanProvider;
 
@@ -9800,62 +9755,9 @@ function renderWishlistItemCard(p) {
       return;
     }
 
-    if (cleanProvider === 'apple') {
-      console.info('[Vistāra Auth] Apple Sign-In is not enabled.');
-      return;
-    }
-
-    if (cleanProvider === 'google') {
-      // In live environment, trigger authentic Supabase Google OAuth
-      window.closeOAuthChooser();
-      window.redirectToGoogleOAuth();
-      return;
-    }
-
-    const isApple = cleanProvider === 'apple';
-    const defaultAccounts = [];
-
-    let savedAccounts = [];
-    try {
-      const rawUsers = localStorage.getItem('ram_vk_cf_users_v2');
-      if (rawUsers) {
-        const parsed = JSON.parse(rawUsers) || {};
-        savedAccounts = Object.values(parsed)
-          .filter(u => u && u.email && (!u.provider || u.provider === cleanProvider))
-          .map(u => ({
-            name: u.name || u.email.split('@')[0],
-            email: u.email,
-            badge: isApple ? 'Saved Apple ID' : 'Saved Google Account'
-          }));
-      }
-    } catch (_e) { /* ignore */ }
-
-    const seenEmails = new Set();
-    const chooserAccounts = [...savedAccounts, ...defaultAccounts].filter(acc => {
-      const key = String(acc.email || '').toLowerCase();
-      if (!key || seenEmails.has(key)) return false;
-      seenEmails.add(key);
-      return true;
-    });
-
-    if (accountsContainer) {
-      accountsContainer.innerHTML = chooserAccounts.map(acc => `
-        <button type="button" onclick="window.completeOAuthChooserAccount('${cleanProvider}', '${esc(acc.email)}', '${esc(acc.name)}')" style="min-height: 48px; height: 48px;" class="w-full min-h-[48px] h-12 px-3 py-2 rounded-xl bg-white hover:bg-surface-container-low border border-[#e4e0d8] flex items-center justify-between gap-2 text-left transition cursor-pointer shadow-2xs">
-          <div class="flex items-center gap-2.5 min-w-0">
-            <span class="w-8 h-8 rounded-full bg-primary text-white text-xs font-bold flex items-center justify-center shrink-0">${esc(acc.name.charAt(0))}</span>
-            <div class="min-w-0">
-              <p class="text-xs font-bold text-primary truncate">${esc(acc.name)}</p>
-              <p class="text-[11px] text-on-surface-variant truncate">${esc(acc.email)}</p>
-            </div>
-          </div>
-          <span class="text-[10px] font-bold text-secondary shrink-0">1-Click Sign In →</span>
-        </button>
-      `).join('');
-    }
-
-    if (sheet) {
-      sheet.classList.remove('hidden');
-    }
+    // Authentic Supabase Google OAuth
+    window.closeOAuthChooser();
+    window.redirectToGoogleOAuth();
   };
 
   let pendingEmailOtpPayload = null;
@@ -10770,7 +10672,7 @@ function renderWishlistItemCard(p) {
 
     if (typeof Store.isAuthenticated === 'function' && !Store.isAuthenticated()) {
       window.openCloudflareAuthModal(true);
-      window.showToast('Sign In Required to Place Order', 'Sign in with Google, Apple, or Email to continue to checkout');
+      window.showToast('Sign In Required to Place Order', 'Sign in with Google or Email to continue to checkout');
       return;
     }
 
@@ -11894,6 +11796,12 @@ function renderWishlistItemCard(p) {
 
   // Robust Application Boot Controller
   function bootApplication() {
+    // Purge any legacy mock user accounts or test keys from localStorage
+    try {
+      localStorage.removeItem('ram_vk_cf_users_v2');
+      localStorage.removeItem('vk_mock_users');
+    } catch (_e) {}
+
     // When booting or refreshing the application, clear any stale catalog scroll targets
     try {
       enforceCatalogScrollTop();

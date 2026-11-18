@@ -11,17 +11,21 @@ export class OrderService {
   /**
    * Helper to execute Supabase query safely
    */
-  static async supabaseRequest(endpoint, method = 'GET', body = null) {
+  static async supabaseRequest(endpoint, method = 'GET', body = null, customHeaders = {}) {
     const key = CONFIG.SUPABASE_SERVICE_ROLE_KEY || CONFIG.SUPABASE_ANON_KEY;
     try {
+      const headers = {
+        'apikey': key,
+        'Authorization': `Bearer ${key}`,
+        'Content-Type': 'application/json',
+        'Prefer': (CONFIG.SUPABASE_SERVICE_ROLE_KEY && method === 'POST')
+          ? 'return=representation'
+          : 'return=minimal',
+        ...customHeaders
+      };
       const res = await fetch(`${CONFIG.SUPABASE_URL}/rest/v1/${endpoint}`, {
         method,
-        headers: {
-          'apikey': key,
-          'Authorization': `Bearer ${key}`,
-          'Content-Type': 'application/json',
-          'Prefer': (CONFIG.SUPABASE_SERVICE_ROLE_KEY && method === 'POST') ? 'return=representation' : 'return=minimal'
-        },
+        headers,
         body: body ? JSON.stringify(body) : undefined
       });
       if (!res.ok) {
@@ -30,6 +34,31 @@ export class OrderService {
       const text = await res.text();
       let data = null;
       try { data = text ? JSON.parse(text) : null; } catch (_e) { data = text; }
+      return { data, status: res.status };
+    } catch (err) {
+      return { error: err.message, status: 500 };
+    }
+  }
+
+  /**
+   * Helper to invoke Supabase RPC stored procedures safely
+   */
+  static async supabaseRpc(fnName, params = {}) {
+    const key = CONFIG.SUPABASE_SERVICE_ROLE_KEY || CONFIG.SUPABASE_ANON_KEY;
+    try {
+      const res = await fetch(`${CONFIG.SUPABASE_URL}/rest/v1/rpc/${fnName}`, {
+        method: 'POST',
+        headers: {
+          'apikey': key,
+          'Authorization': `Bearer ${key}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(params)
+      });
+      if (!res.ok) {
+        return { error: await res.text(), status: res.status };
+      }
+      const data = await res.json();
       return { data, status: res.status };
     } catch (err) {
       return { error: err.message, status: 500 };
@@ -140,8 +169,8 @@ export class OrderService {
 
     // 3. Generate Canonical Identifiers
     const year = new Date().getFullYear();
-    const random4 = Math.floor(1000 + Math.random() * 9000);
-    const orderNumber = `VK-${year}-${random4}`;
+    const entropy = `${Date.now().toString(36).slice(-4).toUpperCase()}${Math.floor(100 + Math.random() * 900)}`;
+    const orderNumber = `VK-${year}-${entropy}`;
     const uniqueId = `ord_${Date.now().toString(36)}_${Math.random().toString(36).substring(2, 7)}`;
 
     // 4. Create Order on Razorpay
@@ -184,7 +213,7 @@ export class OrderService {
       mockup_approved: false,
       items: calc.items,
       courier: null,
-      tracking_number: null,
+      tracking_number: rzpOrder.id,
       notes: notes ? `${String(notes).substring(0, 400)} | RZP:${rzpOrder.id}` : `RZP:${rzpOrder.id}`,
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString()
@@ -274,16 +303,22 @@ export class OrderService {
       throw new Error(`Currency mismatch: Gateway (${gatewayPayment.currency}) vs Expected (${CONFIG.CURRENCY})`);
     }
 
-    // 4. Locate Internal Order (In-memory or Supabase via valid columns)
+    // 4. Locate Internal Order (In-memory or Supabase RPC)
     let order = inMemoryOrders.get(orderId) ||
                 inMemoryOrders.get(razorpay_order_id) ||
                 null;
 
     if (!order) {
-      // Query valid columns: order_number or tracking_number (which stores razorpay_order_id)
-      const lookup = await this.supabaseRequest(`orders?or=(order_number.eq.${encodeURIComponent(orderId || '')},tracking_number.eq.${encodeURIComponent(razorpay_order_id)})&select=*`);
-      if (lookup.data && Array.isArray(lookup.data) && lookup.data.length > 0) {
-        order = lookup.data[0];
+      const rpcLookup = await this.supabaseRpc('get_order_by_identifier', {
+        p_identifier: orderId || razorpay_order_id
+      });
+      if (rpcLookup.data) {
+        order = rpcLookup.data;
+      } else {
+        const lookup = await this.supabaseRequest(`orders?or=(order_number.eq.${encodeURIComponent(orderId || '')},tracking_number.eq.${encodeURIComponent(razorpay_order_id)})&select=*`);
+        if (lookup.data && Array.isArray(lookup.data) && lookup.data.length > 0) {
+          order = lookup.data[0];
+        }
       }
     }
 
@@ -297,67 +332,47 @@ export class OrderService {
       throw new Error(`Payment amount mismatch! Expected: ${expectedPaise} paise, Paid: ${gatewayPayment.amount} paise.`);
     }
 
-    // 6. Idempotency Check — If order is already paid, return safely without duplicating side-effects
-    if (order.payment_status === 'paid') {
-      return {
-        success: true,
-        verified: true,
-        alreadyProcessed: true,
-        orderId: order.order_number,
-        total: order.total,
-        paymentId: razorpay_payment_id,
-        items: order.items
-      };
+    // 6. ACID Cross-Instance Reconciliation via Supabase Stored Procedure
+    const recon = await this.supabaseRpc('reconcile_order_payment', {
+      p_order_number: order.order_number,
+      p_payment_id: razorpay_payment_id,
+      p_razorpay_order_id: razorpay_order_id,
+      p_amount: Number(order.total),
+      p_signature: razorpay_signature || '',
+      p_method: gatewayPayment.method || 'upi'
+    });
+
+    if (recon.error) {
+      throw new Error(`Database error reconciling payment: ${recon.error}`);
     }
 
-    // 7. Transition Order State to Paid ('processing' status complies with orders_order_status_check)
+    const reconData = recon.data || {};
+    if (reconData.success === false) {
+      if (reconData.code === 'OUT_OF_STOCK') {
+        return {
+          success: false,
+          verified: true,
+          status: 'out_of_stock',
+          error: 'Product went out of stock during payment completion. Automatic refund scheduled.',
+          orderId: order.order_number,
+          paymentId: razorpay_payment_id
+        };
+      }
+      throw new Error(`Reconciliation failure: ${reconData.error || reconData.code}`);
+    }
+
+    // 7. Update in-memory cache
     const updatedOrder = {
       ...order,
       payment_status: 'paid',
       order_status: 'processing',
-      stage_index: 1,
       tracking_number: order.tracking_number || razorpay_order_id,
       notes: `${order.notes || ''} | PAID:${razorpay_payment_id}`.trim(),
-      payment_method: gatewayPayment.method ? `Razorpay (${gatewayPayment.method.toUpperCase()})` : 'Razorpay Instant',
       updated_at: new Date().toISOString()
     };
-
     inMemoryOrders.set(updatedOrder.order_number, updatedOrder);
     inMemoryOrders.set(updatedOrder.id, updatedOrder);
     inMemoryOrders.set(razorpay_order_id, updatedOrder);
-
-    // Update in Supabase orders table
-    await this.supabaseRequest(
-      `orders?order_number=eq.${encodeURIComponent(updatedOrder.order_number)}`,
-      'PATCH',
-      {
-        payment_status: 'paid',
-        order_status: 'processing',
-        tracking_number: updatedOrder.tracking_number,
-        notes: updatedOrder.notes,
-        updated_at: updatedOrder.updated_at
-      }
-    );
-
-    // 8. Record Ledger Entry in Payments Table (id generated by gen_random_uuid in postgres)
-    const paymentRecord = {
-      payment_id: razorpay_payment_id,
-      order_id: updatedOrder.id,
-      amount: order.total,
-      currency: CONFIG.CURRENCY,
-      status: 'captured',
-      method: gatewayPayment.method || 'upi',
-      razorpay_order_id,
-      razorpay_payment_id,
-      razorpay_signature,
-      created_at: new Date().toISOString()
-    };
-
-    inMemoryPayments.set(razorpay_payment_id, paymentRecord);
-    await this.supabaseRequest('payments', 'POST', paymentRecord);
-
-    // 9. Idempotent inventory deduction and logging
-    await this.recordInventorySale(updatedOrder);
 
     return {
       success: true,
@@ -365,6 +380,7 @@ export class OrderService {
       status: 'paid',
       paymentStatus: 'paid',
       orderStatus: 'confirmed',
+      alreadyProcessed: Boolean(reconData.already_paid),
       orderId: updatedOrder.order_number,
       total: updatedOrder.total,
       paymentId: razorpay_payment_id,
@@ -376,90 +392,46 @@ export class OrderService {
    * Idempotently deduct stock and record ledger entry in inventory_logs table
    */
   static async recordInventorySale(order) {
-    if (!order || !Array.isArray(order.items) || order.inventory_deducted) return;
-    order.inventory_deducted = true;
+    if (!order || !Array.isArray(order.items)) return { success: true };
 
-    // Do not mutate live database on mock/test orders or test runs
-    const emailStr = String(order.customer_email || order.customerEmail || order.email || '').toLowerCase();
-    const orderNumStr = String(order.order_number || order.orderId || '').toUpperCase();
-    const userStr = String(order.user_id || order.userId || '').toLowerCase();
+    const orderNumber = order.order_number || order.orderId;
+    if (!orderNumber) return { success: true };
 
-    if (
-      process.env.NODE_ENV === 'test' ||
-      orderNumStr.startsWith('VK-TEST') ||
-      orderNumStr.includes('MOCK') ||
-      orderNumStr.includes('TEST') ||
-      emailStr.includes('@test.com') ||
-      emailStr.includes('test_') ||
-      emailStr.includes('mock') ||
-      userStr.includes('test')
-    ) {
-      return;
-    }
+    // Cross-instance idempotency check: check if inventory for this order was already deducted in Supabase
+    try {
+      const logCheck = await this.supabaseRequest(`inventory_logs?notes=like.*Order%20%23${encodeURIComponent(orderNumber)}*&select=id`);
+      if (logCheck.data && Array.isArray(logCheck.data) && logCheck.data.length > 0) {
+        return { success: true, alreadyDeducted: true };
+      }
+    } catch (_e) {}
 
     for (const item of order.items) {
       const productId = item.productId || item.id;
-      const qty = item.qty || item.quantity || 1;
+      const qty = Number(item.qty || item.quantity || 1);
       const sku = item.sku || 'VK-STD';
-      const variantKey = item.variantId || item.variant_id || item.variantLabel;
 
       if (!productId) continue;
 
-      try {
-        const prodLookup = await this.supabaseRequest(`products?id=eq.${encodeURIComponent(productId)}&select=id,stock,in_stock,variants`);
-        let currentStock = 50;
-        let variants = [];
-        if (prodLookup.data && Array.isArray(prodLookup.data) && prodLookup.data.length > 0) {
-          currentStock = Number(prodLookup.data[0].stock ?? 50);
-          variants = Array.isArray(prodLookup.data[0].variants) ? prodLookup.data[0].variants : [];
-        }
-        const newStock = Math.max(0, currentStock - qty);
+      const rpcRes = await this.supabaseRpc('deduct_product_stock_atomic', {
+        p_product_id: productId,
+        p_qty: qty,
+        p_order_number: orderNumber,
+        p_sku: sku
+      });
 
-        // Deduct specific variant stock if found
-        if (variantKey && variants.length > 0) {
-          variants = variants.map(v => {
-            if (v.id === variantKey || v.label === variantKey) {
-              const vStock = Math.max(0, (Number(v.stock) || 0) - qty);
-              return { ...v, stock: vStock };
-            }
-            return v;
-          });
-        }
-
-        const anyVariantInStock = variants.length > 0 && variants.some(v => (Number(v.stock) || 0) > 0);
-        const isStillInStock = newStock > 0 || anyVariantInStock;
-
-        // Update authoritative product stock in database
-        const updatePayload = {
-          stock: newStock,
-          in_stock: isStillInStock,
-          updated_at: new Date().toISOString()
+      if (rpcRes.error || (rpcRes.data && rpcRes.data.success === false)) {
+        const failure = rpcRes.data || { error: rpcRes.error };
+        console.error('[OrderService] Atomic inventory deduction failed:', failure);
+        return {
+          success: false,
+          error: failure.error || 'Inventory deduction failed',
+          code: failure.code || 'OUT_OF_STOCK',
+          details: failure
         };
-        if (variants.length > 0) {
-          updatePayload.variants = variants;
-        }
-
-        await this.supabaseRequest(
-          `products?id=eq.${encodeURIComponent(productId)}`,
-          'PATCH',
-          updatePayload
-        );
-
-        const logRecord = {
-          product_id: productId,
-          sku: sku,
-          change: -qty,
-          previous_stock: currentStock,
-          new_stock: newStock,
-          reason: 'SALE',
-          notes: `Order #${order.order_number} confirmed paid via Razorpay`,
-          created_by: 'system',
-          created_at: new Date().toISOString()
-        };
-
-        await this.supabaseRequest('inventory_logs', 'POST', logRecord);
-      } catch (_e) {}
+      }
     }
+
+    return { success: true, deducted: true };
   }
 
   /**
@@ -480,11 +452,10 @@ export class OrderService {
     const event = typeof rawBody === 'string' ? JSON.parse(rawBody) : rawBody;
     const eventId = event.id || `${event.event}_${event.created_at}`;
 
-    // Deduplicate webhook event
+    // Deduplicate webhook event in memory
     if (processedWebhookEvents.has(eventId)) {
       return { success: true, duplicate: true, message: 'Event already processed.' };
     }
-    processedWebhookEvents.add(eventId);
 
     const eventType = event.event;
     const payload = event.payload || {};
@@ -496,9 +467,16 @@ export class OrderService {
       if (rzpOrderId) {
         let order = inMemoryOrders.get(rzpOrderId);
         if (!order) {
-          const lookup = await this.supabaseRequest(`orders?tracking_number=eq.${encodeURIComponent(rzpOrderId)}&select=*`);
-          if (lookup.data && Array.isArray(lookup.data) && lookup.data.length > 0) {
-            order = lookup.data[0];
+          const rpcLookup = await this.supabaseRpc('get_order_by_identifier', {
+            p_identifier: rzpOrderId
+          });
+          if (rpcLookup.data) {
+            order = rpcLookup.data;
+          } else {
+            const lookup = await this.supabaseRequest(`orders?tracking_number=eq.${encodeURIComponent(rzpOrderId)}&select=*`);
+            if (lookup.data && Array.isArray(lookup.data) && lookup.data.length > 0) {
+              order = lookup.data[0];
+            }
           }
         }
 
@@ -514,27 +492,38 @@ export class OrderService {
             }
           }
 
-          if (order.payment_status !== 'paid') {
-            order.payment_status = 'paid';
-            order.order_status = 'processing';
-            order.updated_at = new Date().toISOString();
+          const paymentId = paymentEntity ? paymentEntity.id : `pay_wh_${rzpOrderId}`;
 
-            inMemoryOrders.set(order.order_number, order);
-            inMemoryOrders.set(order.id, order);
+          // ACID Cross-Instance Reconciliation via Supabase Stored Procedure
+          const recon = await this.supabaseRpc('reconcile_order_payment', {
+            p_order_number: order.order_number,
+            p_payment_id: paymentId,
+            p_razorpay_order_id: rzpOrderId,
+            p_amount: Number(order.total),
+            p_signature: signature || '',
+            p_method: (paymentEntity && paymentEntity.method) || 'webhook'
+          });
 
-            await this.supabaseRequest(
-              `orders?order_number=eq.${encodeURIComponent(order.order_number)}`,
-              'PATCH',
-              {
-                payment_status: 'paid',
-                order_status: 'processing',
-                updated_at: order.updated_at
-              }
-            );
-
-            // Record inventory deduction
-            await this.recordInventorySale(order);
+          if (recon.error) {
+            throw new Error(`Database write error processing webhook order: ${recon.error}`);
           }
+
+          const reconData = recon.data || {};
+          if (reconData.success === false && reconData.code !== 'OUT_OF_STOCK') {
+            throw new Error(`Webhook reconciliation failure: ${reconData.error || reconData.code}`);
+          }
+
+          // Update in-memory cache
+          order.payment_status = 'paid';
+          order.order_status = 'processing';
+          order.updated_at = new Date().toISOString();
+          inMemoryOrders.set(order.order_number, order);
+          inMemoryOrders.set(order.id, order);
+
+          // Mark event as processed only upon confirmed database success
+          processedWebhookEvents.add(eventId);
+
+          return { success: true, processed: true, event: eventType, recon: reconData };
         }
       }
     } else if (eventType === 'payment.failed') {
@@ -556,6 +545,7 @@ export class OrderService {
       }
     }
 
+    processedWebhookEvents.add(eventId);
     return { success: true, processed: true, event: eventType };
   }
 }
