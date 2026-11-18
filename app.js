@@ -5217,151 +5217,119 @@ function renderWishlistItemCard(p) {
     const userInitial = (activeName[0] || activeEmail[0] || 'V').toUpperCase();
 
     return `
-      <div class="route-view-enter flex flex-col w-full max-w-3xl mx-auto px-4 sm:px-6 py-5 sm:py-7 gap-5">
-        <!-- Top Navigation & Order Shortcuts -->
+      <div class="route-view-enter flex flex-col w-full max-w-2xl mx-auto px-3.5 sm:px-6 py-3.5 sm:py-5 gap-3">
+        <!-- Top Navigation -->
         <nav aria-label="Profile Breadcrumb Navigation" class="flex items-center justify-between gap-3">
-          <button type="button" onclick="window.handleBackButton('home')" aria-label="Go back to home" class="inline-flex items-center gap-2 text-xs font-bold text-primary/80 hover:text-primary min-h-[44px] py-2 px-3.5 rounded-xl bg-white border border-[#e4e0d8] shadow-2xs hover:bg-surface-container-low active:scale-95 transition cursor-pointer">
-            <span class="material-symbols-outlined text-[18px]" aria-hidden="true">arrow_back</span>
+          <button type="button" onclick="window.handleBackButton('home')" aria-label="Go back to home" class="inline-flex items-center gap-1.5 text-xs font-semibold text-gray-700 hover:text-gray-900 h-9 min-h-[36px] px-3 rounded-[10px] bg-white border border-[#d1d1d6] shadow-2xs hover:border-gray-400 active:scale-95 transition cursor-pointer">
+            <span class="material-symbols-outlined text-[16px]" aria-hidden="true">arrow_back</span>
             <span>Home</span>
           </button>
-          <button type="button" onclick="window.navigateTo('orders')" aria-label="View order history" class="inline-flex items-center gap-2 text-xs font-bold text-secondary hover:text-primary min-h-[44px] py-2 px-3.5 rounded-xl bg-white border border-[#e4e0d8] shadow-2xs hover:bg-surface-container-low active:scale-95 transition cursor-pointer">
-            <span class="material-symbols-outlined text-[18px]" aria-hidden="true">package_2</span>
+          <button type="button" onclick="window.navigateTo('orders')" aria-label="View order history" class="inline-flex items-center gap-1.5 text-xs font-semibold text-primary hover:text-[#06244c] h-9 min-h-[36px] px-3 rounded-[10px] bg-white border border-[#d1d1d6] shadow-2xs hover:border-gray-400 active:scale-95 transition cursor-pointer">
+            <span class="material-symbols-outlined text-[16px] text-secondary" aria-hidden="true">package_2</span>
             <span>My Orders</span>
-            <span class="text-xs">→</span>
+            <span class="text-xs text-gray-400">→</span>
           </button>
         </nav>
 
-        <!-- 1. Gestalt Region: Patron Identity & Account Card -->
-        <section aria-labelledby="patron-identity-heading" class="ram-card p-5 sm:p-6 bg-white border border-[#e4e0d8] rounded-2xl shadow-xs flex flex-col gap-4">
-          <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 min-w-0">
-            <div class="flex items-center gap-3.5 sm:gap-4 min-w-0 flex-1">
-              <!-- Personalized Patron Monogram Avatar -->
-              <div class="relative shrink-0">
-                <div class="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-gradient-to-br from-[#031a38] via-[#1b2f4e] to-[#775928] text-white flex items-center justify-center font-headline-sm text-2xl font-bold shadow-xs border-2 border-white ring-1 ring-[#e4e0d8]" aria-hidden="true">
-                  ${esc(userInitial)}
-                </div>
-                ${isAuth ? `
-                  <span class="absolute -bottom-1 -right-1 w-5 h-5 rounded-full bg-[#266b4e] text-white flex items-center justify-center border-2 border-white shadow-2xs" title="Verified Customer Account">
-                    <span class="material-symbols-outlined text-[12px]" aria-hidden="true">check</span>
-                  </span>
-                ` : ''}
+        <!-- 1. Apple-Standard Patron Identity Card -->
+        <section aria-labelledby="patron-identity-heading" class="p-3.5 sm:p-4 bg-white border border-[#d1d1d6] rounded-[12px] shadow-2xs flex items-center justify-between gap-3">
+          <div class="flex items-center gap-3 min-w-0 flex-1">
+            <div class="relative shrink-0">
+              <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-gradient-to-br from-[#031a38] via-[#1b2f4e] to-[#775928] text-white flex items-center justify-center font-bold text-sm sm:text-base shadow-2xs border border-white" aria-hidden="true">
+                ${esc(userInitial)}
               </div>
-
-              <!-- Identity Credentials & Title -->
-              <div class="min-w-0 flex-1">
-                <div class="flex flex-wrap items-center gap-1.5 sm:gap-2 mb-1">
-                  <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full ${isAuth ? 'bg-[#e8f5e9] text-[#266b4e]' : 'bg-surface-container-high text-on-surface-variant'} text-[11px] font-semibold">
-                    <span class="w-1.5 h-1.5 rounded-full ${isAuth ? 'bg-[#266b4e]' : 'bg-on-surface-variant/50'}"></span>
-                    ${isAuth ? 'Signed In' : 'Guest Session'}
-                  </span>
-                </div>
-                <h1 id="patron-identity-heading" class="font-headline-sm text-lg sm:text-2xl text-primary font-bold tracking-tight truncate">
-                  Account &amp; Delivery Address
-                </h1>
-                <p class="text-xs text-on-surface-variant truncate mt-0.5">
-                  ${esc(activeName ? `${activeName} • ${activeEmail || activePhone || 'Patron'}` : (activeEmail || 'Sign in to access your saved addresses across devices'))}
-                </p>
-              </div>
-            </div>
-
-            <!-- Sign Out / Sign In Action -->
-            <div class="flex items-center gap-2 w-full sm:w-auto shrink-0 pt-2 sm:pt-0 border-t sm:border-t-0 border-[#e4e0d8]/60">
               ${isAuth ? `
-                <button type="button" onclick="window.handlePatronLogout()" aria-label="Sign out of your account" class="w-full sm:w-auto min-h-[44px] px-4 py-2 rounded-xl bg-white hover:bg-[#fff5f5] active:bg-[#ffe4de] border border-[#9e3322]/30 text-[#9e3322] text-xs font-bold inline-flex items-center justify-center gap-2 cursor-pointer transition shadow-2xs">
-                  <span class="material-symbols-outlined text-[18px]" aria-hidden="true">logout</span>
-                  <span>Sign Out</span>
-                </button>
-              ` : `
-                <button type="button" onclick="window.openCloudflareAuthModal(false)" aria-label="Sign in to your account" class="w-full sm:w-auto min-h-[44px] px-5 py-2.5 rounded-xl bg-primary hover:bg-primary-container text-white text-xs font-bold inline-flex items-center justify-center gap-2 cursor-pointer transition shadow-xs active:scale-95">
-                  <span class="material-symbols-outlined text-[18px]" aria-hidden="true">login</span>
-                  <span>Sign In</span>
-                </button>
-              `}
+                <span class="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 rounded-full bg-[#266b4e] text-white flex items-center justify-center border border-white shadow-2xs" title="Verified Customer">
+                  <span class="material-symbols-outlined text-[9px]" aria-hidden="true">check</span>
+                </span>
+              ` : ''}
             </div>
+
+            <div class="min-w-0 flex-1">
+              <div class="flex items-center gap-1.5 mb-0.5">
+                <h1 id="patron-identity-heading" class="text-[14px] sm:text-[15px] text-gray-900 font-bold tracking-tight truncate">
+                  ${esc(activeName || 'Customer Profile')}
+                </h1>
+                <span class="inline-flex items-center px-1.5 py-0.2 rounded-full ${isAuth ? 'bg-[#e8f5e9] text-[#266b4e]' : 'bg-gray-100 text-gray-600'} text-[10px] font-semibold shrink-0">
+                  ${isAuth ? 'Signed In' : 'Guest'}
+                </span>
+              </div>
+              <p class="text-[12px] text-gray-500 truncate leading-snug">
+                ${esc(activeEmail || activePhone || 'Sign in to sync your delivery address across devices')}
+              </p>
+            </div>
+          </div>
+
+          <div class="shrink-0">
+            ${isAuth ? `
+              <button type="button" onclick="window.handlePatronLogout()" aria-label="Sign out of your account" class="h-8 min-h-[32px] px-2.5 rounded-[8px] bg-white hover:bg-red-50 border border-[#d1d1d6] hover:border-red-200 text-red-700 text-[11.5px] font-semibold inline-flex items-center gap-1 cursor-pointer transition active:scale-95 shadow-2xs">
+                <span class="material-symbols-outlined text-[14px]" aria-hidden="true">logout</span>
+                <span>Sign Out</span>
+              </button>
+            ` : `
+              <button type="button" onclick="window.openCloudflareAuthModal(false)" aria-label="Sign in to your account" class="h-8 min-h-[32px] px-3 rounded-[8px] bg-primary hover:bg-[#06244c] text-white text-[11.5px] font-semibold inline-flex items-center gap-1 cursor-pointer transition active:scale-95 shadow-2xs">
+                <span class="material-symbols-outlined text-[14px]" aria-hidden="true">login</span>
+                <span>Sign In</span>
+              </button>
+            `}
           </div>
         </section>
 
-        <!-- Saved Delivery Address Preview Box (Gestalt Common Region) -->
-        <div class="p-3.5 sm:p-4 rounded-xl bg-surface-container-low/80 border border-[#e4e0d8] flex items-start gap-3">
-          <span class="material-symbols-outlined text-secondary text-xl shrink-0 mt-0.5" aria-hidden="true">location_on</span>
-          <div class="min-w-0 flex-1">
-            <strong class="block text-xs font-bold text-primary uppercase tracking-wider mb-0.5">Saved Delivery Address</strong>
-            <p class="text-xs text-on-surface-variant break-words leading-relaxed">${esc(activeAddress || 'No address saved yet. Will be collected at checkout or you can enter it below.')}</p>
-          </div>
-        </div>
-
-        <!-- 2. Gestalt Region: Delivery & Contact Coordinates Form -->
-        <section aria-labelledby="profile-form-heading" class="ram-card p-5 sm:p-6 bg-white border border-[#e4e0d8] rounded-2xl shadow-xs flex flex-col gap-5">
-          <div class="border-b border-[#e4e0d8]/70 pb-3">
-            <h2 id="profile-form-heading" class="text-xs font-bold uppercase tracking-wider text-primary flex items-center gap-2">
-              <span class="material-symbols-outlined text-[18px] text-secondary" aria-hidden="true">local_shipping</span>
-              <span>Delivery Address &amp; Contact</span>
+        <!-- 2. Apple Form Card: Delivery Coordinates & Contact -->
+        <section aria-labelledby="profile-form-heading" class="p-3.5 sm:p-5 bg-white border border-[#d1d1d6] rounded-[12px] shadow-2xs flex flex-col gap-3">
+          <div class="flex items-center justify-between pb-2 border-b border-gray-100">
+            <h2 id="profile-form-heading" class="text-[12.5px] font-bold text-gray-900 tracking-tight flex items-center gap-1.5">
+              <span class="material-symbols-outlined text-[16px] text-secondary" aria-hidden="true">local_shipping</span>
+              <span>Delivery Coordinates</span>
             </h2>
-            <p class="text-[11px] text-on-surface-variant mt-0.5">
-              Changes saved here will apply automatically to your future checkouts.
-            </p>
+            <span class="text-[11px] text-gray-400 font-normal">Auto-applies at checkout</span>
           </div>
 
-          <form id="account-profile-form" onsubmit="window.saveAccountProfile(event)" class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
-            <!-- Full Name -->
-            <div class="flex flex-col gap-1">
-              <label for="acc-prof-name" class="text-[11.5px] font-semibold text-primary flex items-center justify-between">
-                <span>Full Name <span class="text-[#9e3322]">*</span></span>
-              </label>
-              <div class="relative">
-                <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[16px] text-outline-variant pointer-events-none" aria-hidden="true">person</span>
-                <input id="acc-prof-name" type="text" required value="${esc(activeName)}" placeholder="e.g. Meera Kapoor" style="height: 40px; min-height: 40px;" class="w-full h-10 min-h-[40px] pl-9 pr-3 py-2 rounded-[10px] bg-white border border-[#d1d1d6] hover:border-gray-400 text-[13.5px] sm:text-[14px] text-primary placeholder:text-gray-400 placeholder:text-[13px] focus:ring-1 focus:ring-primary/20 focus:border-primary transition-all outline-none font-normal box-border leading-normal">
+          <form id="account-profile-form" onsubmit="window.saveAccountProfile(event)" class="flex flex-col gap-2.5">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+              <!-- Full Name -->
+              <div class="flex flex-col gap-1">
+                <label for="acc-prof-name" class="text-[11.5px] font-semibold text-gray-700 block">
+                  Full Name <span class="text-[#9e3322]">*</span>
+                </label>
+                <input id="acc-prof-name" type="text" required value="${esc(activeName)}" placeholder="e.g. Meera Kapoor" style="height: 40px; min-height: 40px;" class="w-full h-10 min-h-[40px] px-3 py-2 rounded-[10px] bg-white border border-[#d1d1d6] hover:border-gray-400 focus:border-primary focus:ring-1 focus:ring-primary/20 text-[13.5px] sm:text-[14px] text-gray-900 placeholder:text-gray-400 placeholder:text-[13px] transition-all outline-none box-border leading-normal">
               </div>
-              <p class="text-[10px] text-on-surface-variant">Name printed on delivery parcel label</p>
-            </div>
 
-            <!-- Mobile / WhatsApp -->
-            <div class="flex flex-col gap-1">
-              <label for="acc-prof-phone" class="text-[11.5px] font-semibold text-primary flex items-center justify-between">
-                <span>Mobile / WhatsApp Number <span class="text-[#9e3322]">*</span></span>
-              </label>
-              <div class="relative">
-                <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[16px] text-outline-variant pointer-events-none" aria-hidden="true">call</span>
-                <input id="acc-prof-phone" type="tel" required value="${esc(activePhone)}" placeholder="+91 98765 43210" style="height: 40px; min-height: 40px;" class="w-full h-10 min-h-[40px] pl-9 pr-3 py-2 rounded-[10px] bg-white border border-[#d1d1d6] hover:border-gray-400 font-spec-numeral text-[13.5px] sm:text-[14px] text-primary placeholder:text-gray-400 placeholder:text-[13px] focus:ring-1 focus:ring-primary/20 focus:border-primary transition-all outline-none font-normal box-border leading-normal">
+              <!-- Mobile / WhatsApp -->
+              <div class="flex flex-col gap-1">
+                <label for="acc-prof-phone" class="text-[11.5px] font-semibold text-gray-700 block">
+                  Mobile Number <span class="text-[#9e3322]">*</span>
+                </label>
+                <input id="acc-prof-phone" type="tel" required value="${esc(activePhone)}" placeholder="+91 98765 43210" style="height: 40px; min-height: 40px;" class="w-full h-10 min-h-[40px] px-3 py-2 rounded-[10px] bg-white border border-[#d1d1d6] hover:border-gray-400 focus:border-primary focus:ring-1 focus:ring-primary/20 font-spec-numeral text-[13.5px] sm:text-[14px] text-gray-900 placeholder:text-gray-400 placeholder:text-[13px] transition-all outline-none box-border leading-normal">
               </div>
-              <p class="text-[10px] text-on-surface-variant">For courier OTP and live dispatch WhatsApp tracking</p>
             </div>
 
             <!-- Email Address -->
-            <div class="flex flex-col gap-1 sm:col-span-2">
-              <label for="acc-prof-email" class="text-[11.5px] font-semibold text-primary flex items-center justify-between">
-                <span>Email Address (for invoices &amp; tracking) <span class="text-[#9e3322]">*</span></span>
+            <div class="flex flex-col gap-1">
+              <label for="acc-prof-email" class="text-[11.5px] font-semibold text-gray-700 block">
+                Email Address (for invoices &amp; tracking) <span class="text-[#9e3322]">*</span>
               </label>
-              <div class="relative">
-                <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[16px] text-outline-variant pointer-events-none" aria-hidden="true">mail</span>
-                <input id="acc-prof-email" type="email" required value="${esc(activeEmail)}" placeholder="you@example.com" style="height: 40px; min-height: 40px;" class="w-full h-10 min-h-[40px] pl-9 pr-3 py-2 rounded-[10px] bg-white border border-[#d1d1d6] hover:border-gray-400 text-[13.5px] sm:text-[14px] text-primary placeholder:text-gray-400 placeholder:text-[13px] focus:ring-1 focus:ring-primary/20 focus:border-primary transition-all outline-none font-normal box-border leading-normal">
-              </div>
-              <p class="text-[10px] text-on-surface-variant">Tax invoices, payment receipts, and tracking links are dispatched here</p>
+              <input id="acc-prof-email" type="email" required value="${esc(activeEmail)}" placeholder="you@example.com" style="height: 40px; min-height: 40px;" class="w-full h-10 min-h-[40px] px-3 py-2 rounded-[10px] bg-white border border-[#d1d1d6] hover:border-gray-400 focus:border-primary focus:ring-1 focus:ring-primary/20 text-[13.5px] sm:text-[14px] text-gray-900 placeholder:text-gray-400 placeholder:text-[13px] transition-all outline-none box-border leading-normal">
             </div>
 
-            <!-- Default Delivery Address -->
-            <div class="flex flex-col gap-1 sm:col-span-2">
-              <label for="acc-prof-address" class="text-[11.5px] font-semibold text-primary flex items-center justify-between">
-                <span>Default Delivery Address <span class="text-[#9e3322]">*</span></span>
-                <span class="text-[10px] text-secondary font-semibold">Pan-India Delivery</span>
-              </label>
-              <div class="relative">
-                <span class="material-symbols-outlined absolute left-3 top-3 text-[16px] text-outline-variant pointer-events-none" aria-hidden="true">home_pin</span>
-                <input id="acc-prof-address" type="text" required value="${esc(activeAddress)}" placeholder="House/Flat No., Street, Landmark, City &amp; 6-digit PIN Code" style="height: 40px; min-height: 40px;" class="w-full h-10 min-h-[40px] pl-9 pr-3 py-2 rounded-[10px] bg-white border border-[#d1d1d6] hover:border-gray-400 text-[13.5px] sm:text-[14px] text-primary placeholder:text-gray-400 placeholder:text-[13px] focus:ring-1 focus:ring-primary/20 focus:border-primary transition-all outline-none font-normal box-border leading-normal">
+            <!-- Default Delivery Address & PIN -->
+            <div class="flex flex-col gap-1">
+              <div class="flex items-center justify-between">
+                <label for="acc-prof-address" class="text-[11.5px] font-semibold text-gray-700 block">
+                  Default Delivery Address &amp; PIN Code <span class="text-[#9e3322]">*</span>
+                </label>
+                <span class="text-[10px] text-[#266b4e] font-semibold">Express Air Shipping</span>
               </div>
-              <p class="text-[10px] text-on-surface-variant flex items-center gap-1.5">
-                <span class="material-symbols-outlined text-[13px] text-[#266b4e]" aria-hidden="true">verified_user</span>
-                <span>Include your 6-digit Indian PIN code for express BlueDart/Delhivery air shipping</span>
-              </p>
+              <input id="acc-prof-address" type="text" required value="${esc(activeAddress)}" placeholder="House/Flat No., Street, City &amp; 6-digit PIN Code" style="height: 40px; min-height: 40px;" class="w-full h-10 min-h-[40px] px-3 py-2 rounded-[10px] bg-white border border-[#d1d1d6] hover:border-gray-400 focus:border-primary focus:ring-1 focus:ring-primary/20 text-[13.5px] sm:text-[14px] text-gray-900 placeholder:text-gray-400 placeholder:text-[13px] transition-all outline-none box-border leading-normal">
             </div>
 
-            <!-- Status Feedback & Save Action -->
-            <div class="sm:col-span-2 flex flex-col sm:flex-row items-center justify-between gap-3 pt-3 border-t border-[#e4e0d8]/70 mt-0.5">
-              <div id="acc-prof-status" class="text-[11px] font-medium text-on-surface-variant flex items-center gap-1.5 text-center sm:text-left">
-                <span class="material-symbols-outlined text-[15px] text-secondary" aria-hidden="true">shield</span>
-                <span>Your contact coordinates remain strictly private under DPDP Act 2023</span>
+            <!-- Save Action & Privacy Seal -->
+            <div class="flex flex-col sm:flex-row items-center justify-between gap-2.5 pt-2 border-t border-gray-100 mt-0.5">
+              <div id="acc-prof-status" class="text-[11px] text-gray-500 flex items-center gap-1.5 text-center sm:text-left">
+                <span class="material-symbols-outlined text-[14px] text-[#266b4e]" aria-hidden="true">verified_user</span>
+                <span>Address securely stored under DPDP Act 2023</span>
               </div>
-              <button type="submit" aria-label="Save updated profile and delivery details" style="height: 40px; min-height: 40px;" class="w-full sm:w-auto min-h-[40px] h-10 px-6 py-2 rounded-[10px] bg-primary text-white text-[13.5px] font-semibold inline-flex items-center justify-center gap-2 cursor-pointer hover:bg-primary-container active:scale-[0.98] transition shadow-2xs">
+              <button type="submit" aria-label="Save updated profile and delivery details" style="height: 40px; min-height: 40px;" class="btn-shimmer w-full sm:w-auto min-h-[40px] h-10 px-5 py-2 rounded-[10px] bg-primary text-white text-[13.5px] font-semibold inline-flex items-center justify-center gap-1.5 cursor-pointer hover:bg-[#06244c] active:scale-[0.98] transition shadow-xs">
                 <span class="material-symbols-outlined text-[16px]" aria-hidden="true">save</span>
                 <span>Save Details</span>
               </button>
