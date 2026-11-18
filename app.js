@@ -9945,63 +9945,20 @@ function renderWishlistItemCard(p) {
       return;
     }
 
-    if (cleanProvider === 'google') {
-      // In live browser (outside automated test harness), immediately trigger Google account selection
-      if (!window.__VK_TEST_ENV__ && typeof window.process === 'undefined') {
-        window.redirectToGoogleOAuth();
-        return;
-      }
-      const hasProdGoogle = initGoogleIdentityServicesIfConfigured();
-      if (hasProdGoogle && window.google && window.google.accounts && window.google.accounts.id && typeof window.google.accounts.id.prompt === 'function') {
-        try { window.google.accounts.id.prompt(); } catch (_e) { /* continue to chooser */ }
-      }
-    } else if (cleanProvider === 'apple') {
-      const hasProdApple = initAppleSignInIfConfigured();
-      if (hasProdApple && window.AppleID && window.AppleID.auth && typeof window.AppleID.auth.signIn === 'function') {
-        try {
-          window.AppleID.auth.signIn().then((res) => {
-            if (res && res.authorization && res.authorization.id_token) {
-              lastGisCredential = res.authorization.id_token;
-              const parts = res.authorization.id_token.split('.');
-              const payload = parts.length > 1 ? JSON.parse(atob(parts[1].replace(/-/g, '+').replace(/_/g, '/'))) : {};
-              const userObj = res.user || {};
-              const fullName = userObj.name ? `${userObj.name.firstName || ''} ${userObj.name.lastName || ''}`.trim() : '';
-              const email = userObj.email || payload.email || '';
-              if (email) {
-                window.completeOAuthChooserAccount('apple', email, fullName);
-              }
-            }
-          }).catch(() => { /* fall back to interactive account chooser */ });
-        } catch (_e) { /* fall back to interactive account chooser */ }
-      }
+    if (cleanProvider === 'apple') {
+      console.info('[Vistāra Auth] Apple Sign-In is not enabled.');
+      return;
     }
 
-    // Open the interactive 1-click Google / Apple Account Chooser sheet
-    activeOAuthChooserProvider = cleanProvider;
-    const sheet = document.getElementById('cf-oauth-chooser-sheet');
-    const titleEl = document.getElementById('cf-oauth-chooser-title');
-    const accountsContainer = document.getElementById('cf-oauth-chooser-accounts');
-    const customEmailEl = document.getElementById('cf-oauth-custom-email');
+    if (cleanProvider === 'google') {
+      // In live environment, trigger authentic Supabase Google OAuth
+      window.closeOAuthChooser();
+      window.redirectToGoogleOAuth();
+      return;
+    }
 
     const isApple = cleanProvider === 'apple';
-    if (titleEl) {
-      titleEl.textContent = isApple
-        ? 'Sign in with Apple ID to Vistāra Krafts'
-        : 'Choose a Google Account to continue to Vistāra Krafts';
-    }
-    if (customEmailEl) {
-      customEmailEl.placeholder = isApple ? 'you@icloud.com' : 'you@gmail.com';
-    }
-
-    const defaultAccounts = isApple
-      ? [
-          { name: 'Aarav Mehta', email: 'aarav.mehta@icloud.com', badge: 'Apple ID • Hide My Email Supported' },
-          { name: 'Meera Kapoor', email: 'meera.kapoor@icloud.com', badge: 'iCloud Keychain Verified' }
-        ]
-      : [
-          { name: 'Aarav Mehta', email: 'aarav.mehta@gmail.com', badge: 'Google Account' },
-          { name: 'Meera Kapoor', email: 'meera.kapoor@gmail.com', badge: 'Google Workspace' }
-        ];
+    const defaultAccounts = [];
 
     let savedAccounts = [];
     try {

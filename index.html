@@ -4346,20 +4346,12 @@
         </div>
 
         <p id="cloudflare-auth-reason-banner" class="hidden text-xs text-on-surface-variant bg-[#fdf8f0] border border-[#725a19]/20 rounded-xl px-3 py-2 leading-relaxed shrink-0 text-center">
-          Sign in with <strong>Apple</strong>, <strong>Google</strong> or your <strong>Email</strong> to save your favorites, personalize your feed, and track orders.
+          Sign in with <strong>Google</strong> or your <strong>Email</strong> to save your favorites, personalize your feed, and track orders.
         </p>
 
-        <!-- 1-Click Social Sign-In Buttons (Apple First + Google, Apple HIG Standard) -->
-        <div id="cf-auth-social-row" class="w-full shrink-0 flex flex-col gap-2.5">
-          <!-- Sign in with Apple (HIG Black Pill) -->
-          <button type="button" id="cf-oauth-apple-btn" onclick="window.startCloudflareOAuth('apple')" aria-label="Sign in with Apple" style="min-height: 48px; height: 48px;" class="w-full min-h-[48px] h-12 px-4 py-2.5 rounded-xl bg-black hover:bg-zinc-900 active:scale-[0.98] text-white text-xs font-semibold flex items-center justify-center gap-2.5 shadow-sm transition cursor-pointer">
-            <svg class="w-4 h-4 fill-white shrink-0" viewBox="0 0 170 170" aria-hidden="true">
-              <path d="M150.37 130.25c-2.45 5.66-5.35 10.87-8.71 15.66-4.58 6.53-8.33 11.05-11.22 13.56-4.48 4.12-9.28 6.23-14.42 6.35-3.69 0-8.14-1.05-13.32-3.18-5.19-2.12-9.97-3.17-14.34-3.17-4.58 0-9.49 1.05-14.75 3.17-5.26 2.13-9.5 3.24-12.74 3.35-4.35.13-9.16-1.9-14.42-6.08-3.7-3.04-7.58-7.74-11.64-14.1-6.19-9.77-10.9-20.73-14.13-32.9C8.35 100.86 6.7 89.28 6.7 77.96c0-15.63 4.2-28.77 12.61-39.42 8.4-10.65 19.12-16.14 32.14-16.48 5.02 0 10.42 1.25 16.2 3.75 5.78 2.5 9.77 3.82 11.97 3.97 1.83-.24 5.92-1.66 12.27-4.27 6.35-2.6 11.75-3.74 16.2-3.41 12.06.87 21.84 5.16 29.35 12.87-10.53 6.41-15.67 15.34-15.42 26.79.24 9.12 3.72 16.79 10.43 23.01 6.71 6.22 14.67 9.77 23.88 10.65-2.28 7.06-5.24 14.38-8.87 21.96zM119.22 3.24c0 7.82-2.93 15.32-8.8 22.5-7.07 8.46-15.67 13.43-24.81 12.89-.25-1.52-.37-2.93-.37-4.24 0-7.39 3.05-15.01 9.15-22.86C100.49 3.68 109.12 0 120.27 0c.12 1.08.18 2.16.18 3.24z"/>
-            </svg>
-            <span>Sign in with Apple</span>
-          </button>
-
-          <!-- Continue with Google (Clean White Pill) -->
+        <!-- 1-Click Social Sign-In Button (Google Premier 1-Click) -->
+        <div id="cf-auth-social-row" class="w-full shrink-0">
+          <!-- Continue with Google (Clean White Pill, 48px) -->
           <button type="button" id="cf-oauth-google-btn" onclick="window.startCloudflareOAuth('google')" aria-label="Continue with Google" style="min-height: 48px; height: 48px;" class="w-full min-h-[48px] h-12 px-4 py-2.5 rounded-xl bg-white hover:bg-surface-container-low border border-[#dadce0] hover:border-secondary/40 text-primary text-xs font-semibold flex items-center justify-center gap-2.5 shadow-2xs active:scale-[0.98] transition cursor-pointer">
             <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" aria-hidden="true">
               <path fill="#4285F4" d="M23.49 12.27c0-.79-.07-1.54-.19-2.27H12v4.51h6.47c-.29 1.48-1.14 2.73-2.4 3.58v3h3.86c2.26-2.09 3.56-5.17 3.56-8.82z"/>
@@ -4369,6 +4361,7 @@
             </svg>
             <span>Continue with Google</span>
           </button>
+          <button type="button" id="cf-oauth-apple-btn" style="display:none;" class="hidden" aria-hidden="true" tabindex="-1"></button>
         </div>
 
         <!-- Social Divider -->
