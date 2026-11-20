@@ -904,8 +904,8 @@
       return { valid: true, ok: true, coupon, message: coupon.desc };
     },
 
-    getCartSummary() {
-      const cart = this.getCart();
+    getCartSummary(overrideCart = null) {
+      const cart = Array.isArray(overrideCart) ? overrideCart : this.getCart();
       const itemsCount = cart.reduce((acc, item) => acc + Number(item.qty || 0), 0);
       const subtotal = cart.reduce((acc, item) => {
         const effectiveUnitPrice = this.getEffectiveUnitPrice(item);
@@ -977,6 +977,11 @@
         gstAmount,
         payable
       };
+    },
+
+    getBuyNowSummary(item) {
+      if (!item) return this.getCartSummary([]);
+      return this.getCartSummary([item]);
     },
 
     calculateResinNeeded({ shape = 'rect', lengthCm = 20, widthCm = 20, diameterCm = 20, depthCm = 1.5, ratioSystem = '3:1' } = {}) {
@@ -1548,9 +1553,11 @@
     },
 
     placeOrder(checkoutDetails = {}) {
-      const summary = this.getCartSummary();
+      const isBuyNow = Boolean(checkoutDetails.isBuyNow && (checkoutDetails.buyNowItem || Array.isArray(checkoutDetails.items)));
+      const itemsList = isBuyNow ? (checkoutDetails.buyNowItem ? [checkoutDetails.buyNowItem] : checkoutDetails.items) : null;
+      const summary = this.getCartSummary(itemsList);
       if (summary.itemsCount === 0) {
-        return { success: false, message: 'Your Studio Bag is empty.' };
+        return { success: false, message: isBuyNow ? 'Item unavailable for Instant Checkout.' : 'Your Studio Bag is empty.' };
       }
       const outOfStockItem = summary.cart.find(i => {
         const prod = this.getProductById(i.productId);
@@ -1717,7 +1724,9 @@
         }
       } catch (_e) {}
 
-      this.clearCart();
+      if (!isBuyNow) {
+        this.clearCart();
+      }
       this.notify('order_placed', newOrder);
       this.clearCheckoutDraft();
       return { success: true, order: newOrder, supabasePayload };
@@ -1762,9 +1771,11 @@
         try { await this.verifyCheckoutProducts(); } catch (_) {}
       }
 
-      const summary = this.getCartSummary();
+      const isBuyNow = Boolean(checkoutDetails.isBuyNow && (checkoutDetails.buyNowItem || Array.isArray(checkoutDetails.items)));
+      const itemsList = isBuyNow ? (checkoutDetails.buyNowItem ? [checkoutDetails.buyNowItem] : checkoutDetails.items) : null;
+      const summary = this.getCartSummary(itemsList);
       if (summary.itemsCount === 0) {
-        return { success: false, message: 'Your Studio Bag is empty.' };
+        return { success: false, message: isBuyNow ? 'Item unavailable for Instant Checkout.' : 'Your Studio Bag is empty.' };
       }
       const outOfStockItem = summary.cart.find(i => {
         const prod = this.getProductById(i.productId);
@@ -1989,7 +2000,9 @@
                 // Commit confirmed order to local state immediately so it's impossible to lose
                 const orders = [confirmedOrder, ...this.getOrders().filter(o => o.orderId !== confirmedOrder.orderId)];
                 safeWrite(STORAGE_KEYS.ORDERS, orders);
-                this.clearCart();
+                if (!isBuyNow) {
+                  this.clearCart();
+                }
                 this.notify('order_placed', confirmedOrder);
                 this.clearCheckoutDraft();
 

@@ -35,6 +35,8 @@ if (typeof window !== 'undefined' && typeof window.dismissVkSplash !== 'function
     catalogRatioFilter: 'all',
     catalogMaxPrice: 12000,
     catalogVisibleCount: 8,
+    checkoutMode: 'cart', // 'cart' | 'buy_now'
+    buyNowItem: null,
     socialTagFilter: 'all',
     feedPersona: (typeof Store !== 'undefined' && typeof Store.getPersonaPreference === 'function' ? Store.getPersonaPreference() : 'all') || 'all',
     cardVarieties: {},
@@ -198,8 +200,12 @@ if (typeof window !== 'undefined' && typeof window.dismissVkSplash !== 'function
     if (el) {
       el.classList.add('hidden');
       syncBodyModalLock();
-      if (id === 'checkout-modal' && typeof syncAdaptiveNavigation === 'function') {
-        syncAdaptiveNavigation();
+      if (id === 'checkout-modal') {
+        AppState.checkoutMode = 'cart';
+        AppState.buyNowItem = null;
+        if (typeof syncAdaptiveNavigation === 'function') {
+          syncAdaptiveNavigation();
+        }
       }
     }
   };
@@ -7817,27 +7823,10 @@ function renderWishlistItemCard(p) {
     renderActiveView();
   };
 
-  window.addPdpToCart = function (opts = {}) {
+  window.getCurrentPdpCartItem = function () {
     const prod = Store.getProductById(AppState.currentProductId);
-    if (!prod) return;
-    if (prod.inStock === false) {
-      window.showToast('Item Out of Stock', 'This piece is currently unavailable.', {
-        type: 'error',
-        icon: 'block'
-      });
-      return;
-    }
-    const cart = Store.getCart();
-    const existingInCart = cart.find(i => i.productId === prod.id);
-    const maxStock = prod.stockQuantity || 10;
-    const reqQty = (existingInCart ? existingInCart.qty : 0) + (AppState.pdpQty || 1);
-    if (reqQty > maxStock) {
-      window.showToast('Maximum Artisan Stock Reached', `Only ${maxStock} units available for this handcrafted batch.`, {
-        type: 'warning',
-        icon: 'inventory_2'
-      });
-      return;
-    }
+    if (!prod) return null;
+
     const activeVarIdx = AppState.selectedVariantIdx || 0;
     const v = (prod.variants && prod.variants[activeVarIdx]) || {
       label: 'Standard Edition',
@@ -7863,10 +7852,9 @@ function renderWishlistItemCard(p) {
 
     const finalPrice = baseVPrice + sizeDelta;
     const finalRegPrice = Math.max(finalPrice, baseVRegPrice + sizeDelta);
-
     const varietyParts = [v.label, activeShape?.label, activeSize?.label ? `(${activeSize.label})` : ''].filter(Boolean);
 
-    Store.addToCart({
+    return {
       productId: prod.id,
       sku: prod.sku,
       name: prod.name,
@@ -7876,31 +7864,59 @@ function renderWishlistItemCard(p) {
       size: activeSize ? activeSize.label : '',
       price: finalPrice,
       regularPrice: finalRegPrice,
-      qty: AppState.pdpQty,
+      qty: Math.max(1, AppState.pdpQty || 1),
       image: prod.image,
       customNote: AppState.pdpCustomNote
-    });
+    };
+  };
+
+  window.addPdpToCart = function (opts = {}) {
+    const prod = Store.getProductById(AppState.currentProductId);
+    if (!prod) return;
+    if (prod.inStock === false) {
+      window.showToast('Item Out of Stock', 'This piece is currently unavailable.', {
+        type: 'error',
+        icon: 'block'
+      });
+      return;
+    }
+    const cart = Store.getCart();
+    const existingInCart = cart.find(i => i.productId === prod.id);
+    const maxStock = prod.stockQuantity || 10;
+    const reqQty = (existingInCart ? existingInCart.qty : 0) + (AppState.pdpQty || 1);
+    if (reqQty > maxStock) {
+      window.showToast('Maximum Artisan Stock Reached', `Only ${maxStock} units available for this handcrafted batch.`, {
+        type: 'warning',
+        icon: 'inventory_2'
+      });
+      return;
+    }
+
+    const item = window.getCurrentPdpCartItem();
+    if (!item) return;
+
+    Store.addToCart(item);
     updateGlobalBadges();
 
     if (typeof window !== 'undefined' && window.VistaraAnalytics && typeof window.VistaraAnalytics.trackAddToCart === 'function') {
       window.VistaraAnalytics.trackAddToCart(
-        { ...prod, price: finalPrice },
-        { label: varietyParts.join(' • '), price: finalPrice },
-        AppState.pdpQty
+        { ...prod, price: item.price },
+        { label: item.variantLabel, price: item.price },
+        item.qty
       );
     }
-    const detailSubtitle = [activeColor?.label, activeShape?.label, activeSize?.label ? `(${activeSize.label})` : ''].filter(Boolean).join(' • ');
+    const detailSubtitle = [item.color, item.shape, item.size ? `(${item.size})` : ''].filter(Boolean).join(' • ');
     if (!opts || !opts.silent) {
       window.showToast(
-        `Added ${AppState.pdpQty} × ${prod.shortName || prod.name} to Bag`,
+        `Added ${item.qty} × ${prod.shortName || prod.name} to Bag`,
         detailSubtitle ? `${detailSubtitle} • Ready for checkout` : 'Ready for checkout'
       );
       if (typeof window.showMiniCartToast === 'function') {
         window.showMiniCartToast({
           name: prod.shortName || prod.name,
-          price: finalPrice * AppState.pdpQty,
+          price: item.price * item.qty,
           image: prod.image,
-          variantLabel: varietyParts.join(' • ')
+          variantLabel: item.variantLabel
         });
       }
     }
@@ -7912,8 +7928,14 @@ function renderWishlistItemCard(p) {
       window.showToast('Item Out of Stock', 'This piece is currently unavailable.');
       return;
     }
-    window.addPdpToCart({ silent: true });
-    window.openCheckoutModal();
+    const item = window.getCurrentPdpCartItem();
+    if (!item) return;
+
+    // Isolate single product directly for Buy Now without touching or clearing general cart
+    AppState.checkoutMode = 'buy_now';
+    AppState.buyNowItem = item;
+
+    window.openCheckoutModal({ mode: 'buy_now', item });
   };
 
   window.addStudioBundle = function () {
@@ -10648,7 +10670,7 @@ function renderWishlistItemCard(p) {
   }
 
   // Checkout Modal (Step 2: Collect Delivery Address & Confirm Payment after Sign-In)
-  window.openCheckoutModal = function () {
+  window.openCheckoutModal = function (opts = {}) {
     if (isAccountSuspendedActive) {
       window.renderSuspensionLockoutScreen(suspendedUserEmail);
       return;
@@ -10659,9 +10681,18 @@ function renderWishlistItemCard(p) {
       Store.verifyCheckoutProducts().catch(() => {});
     }
 
-    const summary = Store.getCartSummary();
+    const isBuyNow = (opts && opts.mode === 'buy_now') || (AppState.checkoutMode === 'buy_now' && Boolean(AppState.buyNowItem));
+    if (!isBuyNow) {
+      AppState.checkoutMode = 'cart';
+      AppState.buyNowItem = null;
+    }
+
+    const summary = isBuyNow
+      ? Store.getCartSummary([AppState.buyNowItem])
+      : Store.getCartSummary();
+
     if (summary.itemsCount === 0) {
-      window.showToast('Your Bag is Empty');
+      window.showToast(isBuyNow ? 'Item Unavailable for Instant Checkout' : 'Your Bag is Empty');
       return;
     }
 
@@ -10753,6 +10784,14 @@ function renderWishlistItemCard(p) {
     }
 
     const modal = document.getElementById('checkout-modal');
+    const titleEl = document.getElementById('checkout-modal-title');
+    const subtitleEl = document.getElementById('checkout-modal-subtitle');
+    if (titleEl) {
+      titleEl.textContent = isBuyNow ? 'Instant Checkout' : 'Confirm delivery';
+    }
+    if (subtitleEl) {
+      subtitleEl.textContent = isBuyNow ? 'Review shipping address for this single piece' : 'Check your address before paying';
+    }
     const amountEl = document.getElementById('checkout-modal-payable');
     if (amountEl) amountEl.textContent = formatINR(summary.payable);
     const submitBtnText = document.getElementById('checkout-submit-btn-text');
@@ -10760,7 +10799,9 @@ function renderWishlistItemCard(p) {
     const itemsCountEl = document.getElementById('checkout-modal-items-count');
     if (itemsCountEl) {
       const shipLabel = summary.shippingFee > 0 ? `Shipping ${formatINR(summary.shippingFee)}` : 'Shipping Free';
-      itemsCountEl.textContent = `${summary.itemsCount} ${summary.itemsCount === 1 ? 'item' : 'items'} • ${shipLabel}`;
+      itemsCountEl.textContent = isBuyNow
+        ? `1 item (Instant Buy) • ${shipLabel}`
+        : `${summary.itemsCount} ${summary.itemsCount === 1 ? 'item' : 'items'} • ${shipLabel}`;
     }
     if (modal) modal.classList.remove('hidden');
     if (typeof window !== 'undefined' && window.VistaraAnalytics && typeof window.VistaraAnalytics.trackInitiateCheckout === 'function') {
@@ -10877,7 +10918,17 @@ function renderWishlistItemCard(p) {
 
     // Persist draft and prepare payload
     persistCurrentCheckoutDraft();
-    const payload = { name, phone, address, pincode, paymentMethod, giftWrap };
+    const isBuyNow = AppState.checkoutMode === 'buy_now' && Boolean(AppState.buyNowItem);
+    const payload = {
+      name,
+      phone,
+      address,
+      pincode,
+      paymentMethod,
+      giftWrap,
+      isBuyNow,
+      buyNowItem: isBuyNow ? AppState.buyNowItem : null
+    };
     lastCheckoutSubmissionPayload = payload;
 
     // Show Payment Processing State & disable submit to prevent duplicate submissions
@@ -10926,6 +10977,8 @@ function renderWishlistItemCard(p) {
       }
 
       if (res.success) {
+        AppState.checkoutMode = 'cart';
+        AppState.buyNowItem = null;
         if (modal) modal.classList.add('hidden');
         if (procModal) procModal.classList.add('hidden');
         if (typeof window.closeModalById === 'function') {
