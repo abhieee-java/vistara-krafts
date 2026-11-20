@@ -1,6 +1,6 @@
 # Vistāra Krafts (@resin.art.memories)
 
-> India’s premier Bridal Varmala & Floral Memory Preservation Atelier (`@resin.art.memories`) and ISO 9001:2015 Certified Optical Epoxy Resin Manufacturer (`Vistāra Krafts Studio & Chemical Atelier`). Based in Guwahati, Assam, India (PIN 781001) with 24-hour doorstep floral pickup and insured air delivery across 19,000+ Indian PIN codes. Official storefront: `https://www.vistarakrafts.com` (apex domain: `https://vistarakrafts.com`).
+> India’s premier Bridal Varmala & Floral Memory Preservation Atelier (`@resin.art.memories`) and ISO 9001:2015 Certified Optical Epoxy Resin Manufacturer (`Vistāra Krafts Studio & Chemical Atelier`). Based in Guwahati, Assam, India (PIN 781001) with 24-hour doorstep floral pickup and insured express delivery across 19,000+ Indian PIN codes via DTDC Express & Speed Post. Official storefront: `https://www.vistarakrafts.com` (apex domain: `https://vistarakrafts.com`).
 
 ## Storefront & Discovery Links
 
@@ -39,11 +39,11 @@
 2. **Stage 02 — Cryo-Silica Drying (10–14 Days)**: Gentle dehydration in grade-A floral silica crystals to preserve natural rose, orchid, and marigold pigments.
 3. **Stage 03 — Digital Mockup Approval**: Pre-pour petal arrangement & calligraphy layout preview sent to the patron for 1-click approval.
 4. **Stage 04 — 50mm Multi-Layer Optical Pour**: 4 vacuum-degassed pours using Vistāra 2:1 Deep Pour epoxy fortified with HALS + UV400 non-yellowing armor.
-5. **Stage 05 — Diamond Buff & Insured Air Return**: Polished to 85D mirror glass and delivered in a velvet heirloom trunk via BlueDart Priority Air.
+5. **Stage 05 — Diamond Buff & Insured Express Return**: Polished to 85D mirror glass and delivered in a velvet heirloom trunk via insured express courier (DTDC Express / Speed Post).
 
 ## Geo-Targeting, Shipping, GST & Offers
 
 - **Headquarters & Lab**: Vistāra Krafts Studio & Chemical Atelier, Bengaluru, Karnataka 560001, India (`geo.region: IN-KA`, `12.9716, 77.5946`).
-- **Pan-India Express Air Delivery**: Free shipping on orders above ₹999 (₹99 below ₹999). Priority 1–3 day transit to Bengaluru (`560001`), Mumbai (`400001`), New Delhi (`110001`), Hyderabad (`500001`), Chennai (`600001`), Pune (`411001`), Jaipur (`302001`), Kolkata (`700001`), and 19,000+ PIN codes via BlueDart & Delhivery.
+- **Pan-India Express Delivery**: Free shipping on orders above ₹999 (₹99 below ₹999). Priority 2–4 day transit to Bengaluru (`560001`), Mumbai (`400001`), New Delhi (`110001`), Hyderabad (`500001`), Chennai (`600001`), Pune (`411001`), Jaipur (`302001`), Kolkata (`700001`), and 19,000+ PIN codes via DTDC Express & Speed Post.
 - **Volume Discounts & Coupons**: Save 8% on 3–5 units, 16% on 6+ units. Active vouchers: `KRAFTFIRST` (₹150 off min ₹500), `MEMORIES10` (10% off min ₹1,000), `FLIRTY15` (15% off min ₹2,500), `STUDIO20` (20% off min ₹5,000).
 - **Tax & Compliance**: HSN `39073010` (Epoxy Resins in Primary Forms) & `69120010` (Ceramic Stoneware), 18% GST inclusive with B2B Input Tax Credit (ITC) tax invoices, ISO 9001:2015 & ISO 11014 SDS certified.

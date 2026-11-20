@@ -342,6 +342,52 @@ CREATE TABLE IF NOT EXISTS public.dpdp_consents (
 CREATE INDEX IF NOT EXISTS idx_dpdp_consents_user_id ON public.dpdp_consents(user_id);
 
 -- ============================================================================
+-- 10B. DPDP Grievance & Rights Tickets Table (DPDP Act 2023 Statutory SLA Tracking)
+-- ============================================================================
+CREATE TABLE IF NOT EXISTS public.dpdp_grievances (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  ticket_id TEXT NOT NULL UNIQUE,
+  request_type TEXT NOT NULL DEFAULT 'Grievance Redressal',
+  full_name TEXT NOT NULL,
+  email TEXT NOT NULL,
+  mobile TEXT DEFAULT '',
+  order_id TEXT DEFAULT '',
+  details TEXT NOT NULL,
+  status TEXT NOT NULL DEFAULT 'open' CHECK (status IN ('open', 'in_progress', 'resolved')),
+  sla_deadline TIMESTAMPTZ NOT NULL DEFAULT (timezone('utc'::text, now()) + interval '7 days'),
+  resolution_notes TEXT DEFAULT '',
+  resolved_at TIMESTAMPTZ,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT timezone('utc'::text, now()),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT timezone('utc'::text, now())
+);
+
+CREATE INDEX IF NOT EXISTS idx_dpdp_grievances_ticket_id ON public.dpdp_grievances(ticket_id);
+CREATE INDEX IF NOT EXISTS idx_dpdp_grievances_email ON public.dpdp_grievances(email);
+CREATE INDEX IF NOT EXISTS idx_dpdp_grievances_status ON public.dpdp_grievances(status);
+CREATE INDEX IF NOT EXISTS idx_dpdp_grievances_created_at ON public.dpdp_grievances(created_at DESC);
+
+ALTER TABLE public.dpdp_grievances ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "Anyone can submit a DPDP grievance" ON public.dpdp_grievances;
+CREATE POLICY "Anyone can submit a DPDP grievance"
+  ON public.dpdp_grievances
+  FOR INSERT
+  WITH CHECK (true);
+
+DROP POLICY IF EXISTS "Public and Admin read DPDP grievances" ON public.dpdp_grievances;
+CREATE POLICY "Public and Admin read DPDP grievances"
+  ON public.dpdp_grievances
+  FOR SELECT
+  USING (true);
+
+DROP POLICY IF EXISTS "Admin update DPDP grievances" ON public.dpdp_grievances;
+CREATE POLICY "Admin update DPDP grievances"
+  ON public.dpdp_grievances
+  FOR UPDATE
+  USING (true)
+  WITH CHECK (true);
+
+-- ============================================================================
 -- 11. Row Level Security (RLS) Policies (Idempotent with DROP IF EXISTS)
 -- ============================================================================
 ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;

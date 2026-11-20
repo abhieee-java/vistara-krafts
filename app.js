@@ -663,7 +663,7 @@ if (typeof window !== 'undefined' && typeof window.dismissVkSplash !== 'function
               </div>
             `).join('')}
           </div>
-          <p class="text-[10px] text-on-surface-variant truncate">🚚 ${esc(ord.courier || 'BlueDart Air Priority')}${(ord.trackingNumber || ord.tracking_number) ? ` • AWB: <strong class="text-emerald-800">${esc(ord.trackingNumber || ord.tracking_number)}</strong>` : ''}</p>
+          <p class="text-[10px] text-on-surface-variant truncate">🚚 ${esc(ord.courier || 'DTDC Express')}${(ord.trackingNumber || ord.tracking_number) ? ` • AWB: <strong class="text-emerald-800">${esc(ord.trackingNumber || ord.tracking_number)}</strong>` : ''}</p>
           <div class="flex flex-wrap items-center gap-1.5 pt-1">
             ${!ord.mockupApproved ? `
               <button type="button" onclick="window.handleApproveOrderMockup('${esc(ord.orderId)}')" class="flex-1 min-h-[44px] px-2.5 py-1.5 rounded-lg bg-[#9e3322] text-white text-[11px] font-bold cursor-pointer">
@@ -1717,8 +1717,8 @@ ${avgRating ? `
             <div class="flex items-center gap-2.5 p-2.5 rounded-xl bg-[#faf8f5] border border-[#e4e0d8]">
               <span class="material-symbols-outlined text-[#266b4e] text-2xl" aria-hidden="true">local_shipping</span>
               <div>
-                <p class="font-bold text-xs text-primary leading-tight">Insured Air Express</p>
-                <p class="text-[11px] text-on-surface-variant leading-tight">Pan-India via BlueDart</p>
+                <p class="font-bold text-xs text-primary leading-tight">Insured Express Delivery</p>
+                <p class="text-[11px] text-on-surface-variant leading-tight">Pan-India via DTDC &amp; Speed Post</p>
               </div>
             </div>
             <div class="flex items-center gap-2.5 p-2.5 rounded-xl bg-[#faf8f5] border border-[#e4e0d8]">
@@ -4026,9 +4026,9 @@ ${avgRating ? `
           <select id="custom-pickup-slot" onchange="window.updateCustomPickupSlot(this.value)" style="height: 40px; min-height: 40px;" class="w-full h-10 min-h-[40px] px-3 py-2 rounded-[10px] bg-white border border-[#d1d1d6] hover:border-gray-400 text-[13.5px] font-medium text-primary">
             <option value="Morning Slot (9:00 AM – 1:00 PM)" ${(b.pickupSlot || '').startsWith('Morning') ? 'selected' : ''}>Morning Slot (9:00 AM – 1:00 PM)</option>
             <option value="Afternoon Slot (2:00 PM – 6:00 PM)" ${(b.pickupSlot || '').startsWith('Afternoon') ? 'selected' : ''}>Afternoon Slot (2:00 PM – 6:00 PM)</option>
-            <option value="Self-Ship via Air Courier (Reimbursed)" ${(b.pickupSlot || '').startsWith('Self') ? 'selected' : ''}>Self-Ship via Air Courier (Reimbursed)</option>
+            <option value="Self-Ship via Express Courier (Reimbursed)" ${(b.pickupSlot || '').startsWith('Self') ? 'selected' : ''}>Self-Ship via Express Courier (Reimbursed)</option>
           </select>
-          <p class="text-[11px] text-on-surface-variant">We send an insulated air courier kit directly to your address across India.</p>
+          <p class="text-[11px] text-on-surface-variant">We send an insulated courier kit directly to your address across India.</p>
         </div>
       `;
     }
@@ -4523,7 +4523,7 @@ function renderWishlistItemCard(p) {
                 <span id="cart-free-shipping-icon" class="material-symbols-outlined text-base sm:text-lg ${isFreeUnlocked ? 'text-[#266b4e] scale-110' : 'text-secondary'} shrink-0 transition-transform" style="font-variation-settings: 'FILL' 1;" aria-hidden="true">${isFreeUnlocked ? 'verified' : 'local_shipping'}</span>
                 <span id="cart-free-shipping-message" class="tracking-tight text-[11px] sm:text-xs break-words leading-tight">
                   ${isFreeUnlocked
-                    ? 'Unlocked! Eligible for <strong class="text-[#266b4e]">Free Pan-India BlueDart Air Express Delivery</strong>!'
+                    ? 'Unlocked! Eligible for <strong class="text-[#266b4e]">Free Pan-India Express Delivery</strong> via DTDC &amp; Speed Post!'
                     : `Add <strong class="text-secondary font-bold font-spec-numeral">${formatINR(summary.amountToFreeShipping)}</strong> more for <strong>Free Express Delivery</strong>!`}
                 </span>
               </div>
@@ -4751,7 +4751,7 @@ function renderWishlistItemCard(p) {
                   <span id="cart-voucher-discount-val" class="font-spec-numeral font-bold">-${formatINR(summary.couponDiscount)}</span>
                 </div>
                 <div class="flex justify-between items-center text-xs sm:text-sm text-on-surface-variant">
-                  <span>Express Air Logistics</span>
+                  <span>Express Ground Logistics</span>
                   <span id="cart-shipping-fee-val" class="font-spec-numeral font-bold ${summary.isFreeShipping ? 'text-[#266b4e]' : 'text-primary'}">
                     ${summary.isFreeShipping ? 'FREE' : formatINR(summary.shippingFee)}
                   </span>
@@ -4926,7 +4926,7 @@ function renderWishlistItemCard(p) {
               </svg>
             </div>
             <h2 class="text-lg sm:text-xl font-bold text-primary">${allOrders.length === 0 ? 'Your Orders &amp; Keepsakes' : 'No Matching Orders Found'}</h2>
-            <p class="text-xs sm:text-sm text-on-surface-variant max-w-md leading-relaxed">${allOrders.length === 0 ? 'When you place an order, live crafting stages, silica dehydration updates, and BlueDart air express tracking appear right here.' : 'No orders matched your search query. Try clearing your search.'}</p>
+            <p class="text-xs sm:text-sm text-on-surface-variant max-w-md leading-relaxed">${allOrders.length === 0 ? 'When you place an order, live crafting stages, silica dehydration updates, and courier express tracking appear right here.' : 'No orders matched your search query. Try clearing your search.'}</p>
             ${allOrders.length === 0 ? `
               <div class="flex flex-col items-center gap-3 w-full max-w-sm mt-1">
                 <button type="button" onclick="window.navigateTo('catalog', 'all')" class="btn-shimmer w-full sm:w-auto min-h-[44px] px-8 py-2.5 rounded-xl bg-primary text-white text-xs font-bold shadow-sm hover:bg-primary-container active:scale-[0.97] transition-all cursor-pointer">
@@ -4956,7 +4956,7 @@ function renderWishlistItemCard(p) {
               const isProcessing = st === 'processing' || st === 'curing';
               const isNewOrPending = st === 'new' || st === 'pending' || st === 'confirmed';
               const trackingNum = ord.trackingNumber || ord.tracking_number;
-              const courierName = ord.carrier || ord.courier || 'BlueDart Air Express';
+              const courierName = ord.carrier || ord.courier || 'DTDC Express';
               const hasValidCourierTracking = Boolean(
                 trackingNum &&
                 !String(trackingNum).startsWith('order_') &&
@@ -5137,12 +5137,33 @@ function renderWishlistItemCard(p) {
                   ` : ''}
 
                   <!-- Authoritative Courier Tracking Banner (Rendered ONLY when order is actually in transit/delivered) -->
-                  ${hasValidCourierTracking ? `
-                    <div class="flex items-center gap-2.5 p-3 rounded-xl bg-surface-container-low border border-[#e4e0d8] text-xs">
-                      <span class="material-symbols-outlined text-secondary text-base shrink-0" aria-hidden="true">local_shipping</span>
-                      <span class="text-primary">Shipped via <strong>${esc(courierName)}</strong> • AWB Tracking ID: <strong class="font-mono text-secondary">${esc(trackingNum)}</strong></span>
+                  ${hasValidCourierTracking ? (() => {
+                    let trackUrl = '';
+                    const cLow = String(courierName).toLowerCase();
+                    if (cLow.includes('dtdc')) {
+                      trackUrl = 'https://www.dtdc.in/tracking.asp';
+                    } else if (cLow.includes('speed post') || cLow.includes('india post')) {
+                      trackUrl = 'https://www.indiapost.gov.in/_layouts/15/dpt.cept.tracking/trackconsignment.aspx';
+                    } else if (cLow.includes('delhivery')) {
+                      trackUrl = `https://www.delhivery.com/track/package/${trackingNum}`;
+                    } else if (cLow.includes('bluedart')) {
+                      trackUrl = `https://www.bluedart.com/tracking?handler=tnt&action=custtrack&track=track&numbers=${trackingNum}`;
+                    }
+                    return `
+                    <div class="flex items-center justify-between gap-2.5 p-3 rounded-xl bg-surface-container-low border border-[#e4e0d8] text-xs">
+                      <div class="flex items-center gap-2 min-w-0">
+                        <span class="material-symbols-outlined text-secondary text-base shrink-0" aria-hidden="true">local_shipping</span>
+                        <span class="text-primary truncate">Shipped via <strong>${esc(courierName)}</strong> • AWB: <strong class="font-mono text-secondary">${esc(trackingNum)}</strong></span>
+                      </div>
+                      ${trackUrl ? `
+                        <a href="${trackUrl}" target="_blank" rel="noopener noreferrer" class="shrink-0 px-2.5 py-1 rounded-lg bg-white border border-[#d1d1d6] hover:border-gray-400 text-[11px] font-semibold text-primary transition inline-flex items-center gap-1">
+                          <span>Track</span>
+                          <span class="material-symbols-outlined text-xs">open_in_new</span>
+                        </a>
+                      ` : ''}
                     </div>
-                  ` : ''}
+                    `;
+                  })() : ''}
 
                   <!-- Order Items: High-Craft Restraint & Clean Single-Line Typography -->
                   <div class="divide-y divide-[#f4f0e8] py-0.5">
@@ -5324,7 +5345,7 @@ function renderWishlistItemCard(p) {
                 <label for="acc-prof-address" class="text-[11.5px] font-semibold text-gray-700 block">
                   Default Delivery Address &amp; PIN Code <span class="text-[#9e3322]">*</span>
                 </label>
-                <span class="text-[10px] text-[#266b4e] font-semibold">Express Air Shipping</span>
+                <span class="text-[10px] text-[#266b4e] font-semibold">Express Surface / Speed Post Shipping</span>
               </div>
               <input id="acc-prof-address" type="text" required value="${esc(activeAddress)}" placeholder="House/Flat No., Street, City &amp; 6-digit PIN Code" style="height: 40px; min-height: 40px;" class="w-full h-10 min-h-[40px] px-3 py-2 rounded-[10px] bg-white border border-[#d1d1d6] hover:border-gray-400 focus:border-primary focus:ring-1 focus:ring-primary/20 text-[13.5px] sm:text-[14px] text-gray-900 placeholder:text-gray-400 placeholder:text-[13px] transition-all outline-none box-border leading-normal">
             </div>
@@ -5617,7 +5638,7 @@ function renderWishlistItemCard(p) {
           name: 'How do I preserve my wedding varmala or bridal bouquet in epoxy resin across India?',
           acceptedAnswer: {
             '@type': 'Answer',
-            text: 'Book a commission on the Vistāra Krafts Custom Bridal Studio (#/custom-studio). Keep your flowers in a refrigerator (4°C–8°C, never frozen) wrapped in breathable paper. Vistāra Krafts arranges free doorstep BlueDart Priority Air flower pickup across 28,000+ Indian PIN codes, performs 7-day silica gel chromatic dehydration, and casts your flowers in 50mm museum-grade HALS UV-stabilized 2:1 deep-pour epoxy.'
+            text: 'Book a commission on the Vistāra Krafts Custom Bridal Studio (#/custom-studio). Keep your flowers in a refrigerator (4°C–8°C, never frozen) wrapped in breathable paper. Vistāra Krafts arranges doorstep flower pickup across 28,000+ Indian PIN codes, performs 7-day silica gel chromatic dehydration, and casts your flowers in 50mm museum-grade HALS UV-stabilized 2:1 deep-pour epoxy.'
           }
         },
         {
@@ -5663,11 +5684,11 @@ function renderWishlistItemCard(p) {
       totalTime: 'P21D',
       estimatedCost: { '@type': 'MonetaryAmount', currency: 'INR', value: '2999' },
       step: [
-        { '@type': 'HowToStep', position: 1, name: 'Chilled Flower Care & Air Pickup', text: 'Refrigerate garlands at 4°C–8°C in breathable newspaper and schedule free BlueDart Priority Air pickup.' },
+        { '@type': 'HowToStep', position: 1, name: 'Chilled Flower Care & Doorstep Pickup', text: 'Refrigerate garlands at 4°C–8°C in breathable newspaper and schedule doorstep flower pickup.' },
         { '@type': 'HowToStep', position: 2, name: '7-Day Silica Gel Chromatic Dehydration', text: 'Submerge petals in fine optical silica crystals to lock in natural crimson, pastel, and ivory pigments.' },
         { '@type': 'HowToStep', position: 3, name: 'Bespoke Layout & WhatsApp Mockup Approval', text: 'Approve the 1:1 floral arrangement, 24K gold leaf accents, and custom calligraphy tag before pouring.' },
         { '@type': 'HowToStep', position: 4, name: 'Vacuum-Degassed Multi-Layer 2:1 Deep Pour', text: 'Cast in 12mm thermal-controlled stages up to 50mm depth inside a dust-free cleanroom.' },
-        { '@type': 'HowToStep', position: 5, name: '5000-Grit Diamond Polish & Insured Delivery', text: 'Wet-sand, buff to optical refraction, and ship via insured air courier across India.' }
+        { '@type': 'HowToStep', position: 5, name: '5000-Grit Diamond Polish & Insured Delivery', text: 'Wet-sand, buff to optical refraction, and ship via insured express courier across India.' }
       ]
     };
 
@@ -6121,7 +6142,7 @@ function renderWishlistItemCard(p) {
       routeMeta = {
         ...routeMeta,
         title: `Custom Bridal Varmala Preservation & Epoxy Pour Calculator | Vistāra Krafts (@resin.art.memories)`,
-        description: `Commission a bespoke 50mm museum-grade bridal varmala or wedding bouquet resin block with free Pan-India BlueDart air flower pickup, or calculate exact Part A + Part B epoxy resin weight with our interactive calculator.`,
+        description: `Commission a bespoke 50mm museum-grade bridal varmala or wedding bouquet resin block with free Pan-India courier flower pickup, or calculate exact Part A + Part B epoxy resin weight with our interactive calculator.`,
         canonicalUrl,
         priceAmount: String(shapePrice),
         pageSchemaType: 'WebPage',
@@ -6905,8 +6926,8 @@ function renderWishlistItemCard(p) {
         iconEl.classList.remove('text-error');
         iconEl.classList.add('text-[#266b4e]');
       }
-      msgEl.innerHTML = `<strong>PIN ${esc(res.pin)} (${esc(res.city)})</strong> — Express Delivery in <strong>${esc(res.days)}</strong> via ${esc(res.courier)}. Express Air Delivery &amp; Instant UPI active.`;
-      window.showToast(`Delivery Available to ${res.city} (${res.pin})`, `Express Air delivery in ${res.days} via ${res.courier}`, {
+      msgEl.innerHTML = `<strong>PIN ${esc(res.pin)} (${esc(res.city)})</strong> — Express Delivery in <strong>${esc(res.days)}</strong> via ${esc(res.courier)}. Instant UPI active.`;
+      window.showToast(`Delivery Available to ${res.city} (${res.pin})`, `Express delivery in ${res.days} via ${res.courier}`, {
         type: 'success',
         icon: 'local_shipping'
       });
@@ -7964,7 +7985,7 @@ function renderWishlistItemCard(p) {
         icon: 'pin_drop'
       });
     } else {
-      window.showToast(`Delivery Available to ${res.city} (${res.pin})`, `Express Air delivery in ${res.days} via ${res.courier}`, {
+      window.showToast(`Delivery Available to ${res.city} (${res.pin})`, `Express delivery in ${res.days} via ${res.courier}`, {
         type: 'success',
         icon: 'local_shipping'
       });
@@ -8717,7 +8738,7 @@ function renderWishlistItemCard(p) {
     const message = document.getElementById('cart-free-shipping-message');
     if (message) {
       message.innerHTML = isFreeUnlocked
-        ? 'Unlocked! Eligible for <strong class="text-[#266b4e]">Free Pan-India BlueDart Air Express Delivery</strong>!'
+        ? 'Unlocked! Eligible for <strong class="text-[#266b4e]">Free Pan-India Express Delivery</strong> via DTDC &amp; Speed Post!'
         : `Add <strong class="text-secondary font-bold font-spec-numeral">${formatINR(summary.amountToFreeShipping)}</strong> more for <strong>Free Express Delivery</strong>!`;
     }
 
@@ -9075,7 +9096,7 @@ function renderWishlistItemCard(p) {
     syncBodyModalLock();
     updateGlobalBadges();
     renderActiveView();
-    window.showToast(`Delivery Available to ${res.city} (${res.pin})`, `Express Air delivery in ${res.days} via ${res.courier}`, {
+    window.showToast(`Delivery Available to ${res.city} (${res.pin})`, `Express delivery in ${res.days} via ${res.courier}`, {
       type: 'success',
       icon: 'local_shipping'
     });
@@ -9138,7 +9159,7 @@ function renderWishlistItemCard(p) {
         <p class="text-xs text-on-surface-variant"><strong>Formulation:</strong> Vistāra Krafts Zero-VOC Archival Epoxy System (HSN 39073010)</p>
         <ul class="list-disc pl-5 space-y-1 text-xs text-on-surface mt-2">
           <li><strong>VOC Content:</strong> 0.0 g/L (100% reactive solids, solvent-free).</li>
-          <li><strong>Flash Point:</strong> &gt; 150°C (Non-flammable air &amp; surface cargo certified).</li>
+          <li><strong>Flash Point:</strong> &gt; 150°C (Non-flammable surface cargo certified).</li>
           <li><strong>PPE Recommendation:</strong> Nitrile gloves and splash eyewear in ventilated work area.</li>
           <li><strong>Food Contact Safety:</strong> Complies with FDA 21 CFR 175.300 once fully cured for 72 hours at 25°C.</li>
         </ul>
@@ -11449,20 +11470,30 @@ function renderWishlistItemCard(p) {
     }
 
     slotEl.classList.remove('hidden');
-    listEl.innerHTML = tickets.map(t => `
+    listEl.innerHTML = tickets.map(t => {
+      const isResolved = t.status === 'resolved' || String(t.status).toLowerCase().includes('resolved');
+      const isInProgress = t.status === 'in_progress' || String(t.status).toLowerCase().includes('progress');
+      const badgeClass = isResolved
+        ? 'text-emerald-800 bg-emerald-50 border-emerald-200'
+        : (isInProgress ? 'text-blue-800 bg-blue-50 border-blue-200' : 'text-amber-800 bg-amber-50 border-amber-200');
+      const displayStatus = isResolved ? 'Resolved' : (isInProgress ? 'In Review' : (t.statusDisplay || t.status || 'Open (SLA 7d)'));
+
+      return `
       <div class="p-3 rounded-xl bg-surface-container-low border border-[#e4e0d8] space-y-1">
         <div class="flex items-center justify-between gap-2">
           <span class="font-bold text-primary text-xs font-spec-numeral">${esc(t.ticketId)}</span>
-          <span class="text-[10px] uppercase font-bold text-amber-800 bg-amber-50 px-2 py-0.5 rounded border border-amber-200 shrink-0">${esc(t.status)}</span>
+          <span class="text-[10px] uppercase font-bold px-2 py-0.5 rounded border shrink-0 ${badgeClass}">${esc(displayStatus)}</span>
         </div>
         <p class="text-[11px] font-semibold text-primary truncate">${esc(t.requestType)}</p>
         <p class="text-[10px] text-on-surface-variant line-clamp-2">${esc(t.details)}</p>
+        ${t.resolutionNotes ? `<p class="text-[10px] text-emerald-800 bg-emerald-50/70 p-1.5 rounded border border-emerald-200/60 mt-1"><strong>Atelier Resolution:</strong> ${esc(t.resolutionNotes)}</p>` : ''}
         <div class="text-[10px] text-on-surface-variant/80 pt-1 border-t border-surface-container flex items-center justify-between gap-2">
-          <span>Submitted: ${esc(t.timestamp)}</span>
+          <span>Submitted: ${esc(t.timestamp || (t.createdAtIso ? new Date(t.createdAtIso).toLocaleDateString() : 'Recent'))}</span>
           <span>DPO SLA: 7 Days</span>
         </div>
       </div>
-    `).join('');
+      `;
+    }).join('');
   };
 
   window.exportDpdpUserData = function () {
@@ -11622,7 +11653,7 @@ function renderWishlistItemCard(p) {
       const storeName = settings.storeName || 'Vistāra Krafts';
       const cleanStoreName = storeName.replace(/\s+Studio$/i, '');
       const thresholdStr = Number(threshold).toLocaleString('en-IN');
-      const headlineMarkup = `<strong>${esc(cleanStoreName)}</strong> • 24h Bridal Varmala Pickup • Free Express Shipping &gt; ₹${thresholdStr}<span class="hidden sm:inline"> • Handcrafted Bengaluru Atelier • Insured Air Dispatch</span>`;
+      const headlineMarkup = `<strong>${esc(cleanStoreName)}</strong> • 24h Bridal Varmala Pickup • Free Express Shipping &gt; ₹${thresholdStr}<span class="hidden sm:inline"> • Handcrafted Guwahati Atelier • Insured Express Dispatch</span>`;
       const announcementHeadlineEls = document.querySelectorAll('.js-announcement-headline, #announcement-text, #announcement-text-dup');
       announcementHeadlineEls.forEach(el => {
         el.innerHTML = headlineMarkup;

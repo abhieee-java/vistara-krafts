@@ -314,15 +314,15 @@
   }
 
   const PINCODE_DIRECTORY = {
-    '781001': { city: 'Guwahati, AS', days: '1–2 business days', courier: 'BlueDart Priority Air', floralPickup: true },
-    '560001': { city: 'Bengaluru Urban, KA', days: '2 business days', courier: 'BlueDart Priority Air', floralPickup: true },
-    '400001': { city: 'Mumbai South, MH', days: '1–2 business days', courier: 'BlueDart Express & Studio Runner', floralPickup: true },
-    '110001': { city: 'New Delhi Central, DL', days: '2 business days', courier: 'Delhivery Air Cargo', floralPickup: true },
-    '500001': { city: 'Hyderabad, TS', days: '2 business days', courier: 'BlueDart Air', floralPickup: true },
-    '600001': { city: 'Chennai, TN', days: '2–3 business days', courier: 'Delhivery Surface/Air', floralPickup: true },
-    '411001': { city: 'Pune, MH', days: '2 business days', courier: 'BlueDart Express', floralPickup: true },
-    '302001': { city: 'Jaipur, RJ', days: '2–3 business days', courier: 'Delhivery Express', floralPickup: true },
-    '700001': { city: 'Kolkata, WB', days: '3 business days', courier: 'BlueDart Air Cargo', floralPickup: true }
+    '781001': { city: 'Guwahati, AS', days: '1–2 business days', courier: 'DTDC Express', floralPickup: true },
+    '560001': { city: 'Bengaluru Urban, KA', days: '2–3 business days', courier: 'DTDC Express', floralPickup: true },
+    '400001': { city: 'Mumbai South, MH', days: '2–3 business days', courier: 'DTDC Express & Studio Runner', floralPickup: true },
+    '110001': { city: 'New Delhi Central, DL', days: '2–3 business days', courier: 'Speed Post / Delhivery', floralPickup: true },
+    '500001': { city: 'Hyderabad, TS', days: '2–3 business days', courier: 'DTDC Express', floralPickup: true },
+    '600001': { city: 'Chennai, TN', days: '2–3 business days', courier: 'DTDC Express / Speed Post', floralPickup: true },
+    '411001': { city: 'Pune, MH', days: '2–3 business days', courier: 'DTDC Express', floralPickup: true },
+    '302001': { city: 'Jaipur, RJ', days: '2–3 business days', courier: 'Speed Post / Delhivery', floralPickup: true },
+    '700001': { city: 'Kolkata, WB', days: '2–3 business days', courier: 'Speed Post', floralPickup: true }
   };
 
   const memoryStorage = new Map();
@@ -1078,7 +1078,7 @@
         pin: '560001',
         city: 'Guwahati, AS',
         days: '2 business days',
-        courier: 'BlueDart Priority Air',
+        courier: 'DTDC Express',
         floralPickup: true
       });
     },
@@ -1091,7 +1091,7 @@
       const match = PINCODE_DIRECTORY[pin] || {
         city: `Zone PIN ${pin} (Pan-India Hub)`,
         days: '2–4 business days',
-        courier: 'BlueDart / Delhivery Express',
+        courier: 'DTDC Express / Speed Post',
         floralPickup: ['1', '2', '3', '4', '5', '6', '7', '8'].includes(pin[0])
       };
       const record = { pin, ...match, etaDays: match.days };
@@ -1100,7 +1100,7 @@
       return {
         valid: true,
         ...record,
-        message: `${pin} (${record.city}) — Delivery in ${record.days} via ${record.courier}. Instant UPI, Cards & Air Express.`
+        message: `${pin} (${record.city}) — Delivery in ${record.days} via ${record.courier}. Instant UPI, Cards & Express Delivery.`
       };
     },
 
@@ -2374,9 +2374,9 @@
         contactPhone: '+91 70022 70886',
         supportPhone: '+91 70022 70886',
         freeShippingThreshold: 999,
-        defaultCourier: 'Delhivery Express',
+        defaultCourier: 'DTDC Express',
         announcementBarActive: true,
-        announcementBarText: 'Vistāra Krafts • 24h Bridal Varmala Pickup • Free Express Shipping > ₹999 • Handcrafted Guwahati Atelier • Insured Air Dispatch',
+        announcementBarText: 'Vistāra Krafts • 24h Bridal Varmala Pickup • Free Express Shipping > ₹999 • Handcrafted Guwahati Atelier • Insured Express Dispatch',
         enableFloralTransformationSection: false
       };
       const v2 = safeRead(STORAGE_KEYS.SETTINGS, null);
@@ -2657,6 +2657,16 @@
           log.unshift(entry);
           safeWrite(STORAGE_KEYS.STUDIO_SYNC_LOG, log.slice(0, 20));
           return { ok: true, deletedId: delId };
+        }
+      }
+
+      if (payload.type === 'DPDP_TICKET_UPDATED' || payload.action === 'DPDP_TICKET_UPDATED') {
+        const t = payload.ticket;
+        if (t && (t.ticketId || t.id)) {
+          this.updateDpdpTicket(t.ticketId || t.id, t);
+          log.unshift(entry);
+          safeWrite(STORAGE_KEYS.STUDIO_SYNC_LOG, log.slice(0, 20));
+          return { ok: true, ticket: t };
         }
       }
 
@@ -3003,6 +3013,8 @@
     submitDpdpTicket(payload) {
       const tickets = this.getDpdpTickets().slice();
       const ticketId = `DPDP-2026-${Math.floor(10000 + Math.random() * 90000)}`;
+      const now = new Date();
+      const slaDeadline = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000).toISOString();
       const newTicket = {
         ticketId,
         requestType: String(payload.requestType || 'Grievance Redressal'),
@@ -3011,14 +3023,68 @@
         mobile: String(payload.mobile || '').trim(),
         orderId: String(payload.orderId || '').trim(),
         details: String(payload.details || '').trim(),
-        status: 'In Review (SLA <= 7 Days)',
-        timestamp: new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' }),
-        createdAtIso: new Date().toISOString()
+        status: 'open',
+        statusDisplay: 'In Review (SLA <= 7 Days)',
+        slaDeadline,
+        resolutionNotes: '',
+        resolvedAt: null,
+        timestamp: now.toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' }),
+        createdAtIso: now.toISOString(),
+        updatedAtIso: now.toISOString()
       };
       tickets.unshift(newTicket);
       safeWrite(STORAGE_KEYS.DPDP_TICKETS, tickets);
       this.notify('dpdp_ticket_created', newTicket);
+
+      // Async write to Supabase dpdp_grievances table
+      try {
+        if (global.VistaraSupabase && typeof global.VistaraSupabase.getClient === 'function') {
+          const client = global.VistaraSupabase.getClient();
+          if (client) {
+            client.from('dpdp_grievances').insert([{
+              ticket_id: newTicket.ticketId,
+              request_type: newTicket.requestType,
+              full_name: newTicket.fullName,
+              email: newTicket.email,
+              mobile: newTicket.mobile,
+              order_id: newTicket.orderId,
+              details: newTicket.details,
+              status: 'open',
+              sla_deadline: newTicket.slaDeadline,
+              resolution_notes: '',
+              created_at: newTicket.createdAtIso,
+              updated_at: newTicket.updatedAtIso
+            }]).then(({ error }) => {
+              if (error) console.warn('[DPDP] Supabase grievance sync note:', error.message);
+            }).catch(err => {
+              console.warn('[DPDP] Supabase grievance insert warning:', err);
+            });
+          }
+        }
+      } catch (_e) {}
+
+      // Broadcast across tabs to Admin Portal
+      try {
+        if (typeof global.BroadcastChannel !== 'undefined') {
+          const channel = new global.BroadcastChannel('RAM_STUDIO_LIVE_DROP_CHANNEL');
+          channel.postMessage({ type: 'DPDP_TICKET_SUBMITTED', ticket: newTicket });
+          channel.close();
+        }
+      } catch (_e) {}
+
       return newTicket;
+    },
+
+    updateDpdpTicket(ticketId, updates = {}) {
+      const tickets = this.getDpdpTickets().slice();
+      const idx = tickets.findIndex(t => t.ticketId === ticketId || t.id === ticketId);
+      if (idx !== -1) {
+        tickets[idx] = { ...tickets[idx], ...updates, updatedAtIso: new Date().toISOString() };
+        safeWrite(STORAGE_KEYS.DPDP_TICKETS, tickets);
+        this.notify('dpdp_ticket_updated', tickets[idx]);
+        return tickets[idx];
+      }
+      return null;
     },
 
     exportUserDataSummary() {

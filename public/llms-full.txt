@@ -11,16 +11,16 @@
 - **Social Community Handle**: `@resin.art.memories` (`https://www.instagram.com/resin.art.memories`)
 - **Primary Studio & ISO 9001:2015 Formulation Lab**: Guwahati, Assam 781001, India
 - **Geo Coordinates**: `26.1445, 91.7362` (`geo.region: IN-AS`, `geo.placename: Guwahati, Assam, India`)
-- **Area Served**: Pan-India (`IN`) across 19,000+ Indian PIN codes via BlueDart Priority Air, Delhivery Air Cargo, and studio runners.
+- **Area Served**: Pan-India (`IN`) across 19,000+ Indian PIN codes via DTDC Express, Speed Post, and studio runners.
 - **Priority Serviceable Hubs**:
-  - `560001` — Bengaluru Urban, KA (2 business days, BlueDart Priority Air, 24h Floral Pickup active)
-  - `400001` — Mumbai South, MH (1–2 business days, BlueDart Express & Studio Runner, 24h Floral Pickup active)
-  - `110001` — New Delhi Central, DL (2 business days, Delhivery Air Cargo, 24h Floral Pickup active)
-  - `500001` — Hyderabad, TS (2 business days, BlueDart Air, 24h Floral Pickup active)
-  - `600001` — Chennai, TN (2–3 business days, Delhivery Surface/Air, 24h Floral Pickup active)
-  - `411001` — Pune, MH (2 business days, BlueDart Express, 24h Floral Pickup active)
-  - `302001` — Jaipur, RJ (2–3 business days, Delhivery Express, 24h Floral Pickup active)
-  - `700001` — Kolkata, WB (3 business days, BlueDart Air Cargo, 24h Floral Pickup active)
+  - `560001` — Bengaluru Urban, KA (2–3 business days, DTDC Express, 24h Floral Pickup active)
+  - `400001` — Mumbai South, MH (2–3 business days, DTDC Express & Studio Runner, 24h Floral Pickup active)
+  - `110001` — New Delhi Central, DL (2–3 business days, Speed Post / Delhivery, 24h Floral Pickup active)
+  - `500001` — Hyderabad, TS (2–3 business days, DTDC Express, 24h Floral Pickup active)
+  - `600001` — Chennai, TN (2–3 business days, DTDC Express / Speed Post, 24h Floral Pickup active)
+  - `411001` — Pune, MH (2–3 business days, DTDC Express, 24h Floral Pickup active)
+  - `302001` — Jaipur, RJ (2–3 business days, Speed Post / Delhivery, 24h Floral Pickup active)
+  - `700001` — Kolkata, WB (2–3 business days, Speed Post, 24h Floral Pickup active)
 - **Shipping Policy**: Free express shipping across India on orders of ₹999 or above; flat ₹99 shipping fee on orders below ₹999.
 - **Payment Methods**: UPI Instant (GPay, PhonePe, Paytm), Credit/Debit Cards (Visa, Mastercard, RuPay), No-Cost 3-Month EMI, NetBanking/Corporate NEFT, and Cash on Delivery (BlueDart COD).
 - **GST & Tax Compliance**: All prices are in Indian Rupees (`INR`) inclusive of 18% GST. B2B patrons can claim 18% GST Input Tax Credit (ITC) with GSTIN and Trade Name at checkout. Primary HSN codes: `39073010` (Epoxy Resins / Polyacetals in Primary Forms & Castings) and `69120010` (Ceramic Stoneware Tableware).
@@ -221,4 +221,4 @@
 2. **Stage 02 — Cryo-Silica Drying (10–14 Days)**: Gentle dehydration in grade-A floral silica crystals to preserve natural rose, orchid, and marigold pigments.
 3. **Stage 03 — Digital Mockup Approval**: Pre-pour petal arrangement & calligraphy layout preview sent to the patron for 1-click approval.
 4. **Stage 04 — 50mm Multi-Layer Optical Pour**: 4 vacuum-degassed pours using Vistāra 2:1 Deep Pour epoxy fortified with HALS + UV400 non-yellowing armor.
-5. **Stage 05 — Diamond Buff & Insured Air Return**: Polished to 85D mirror glass and delivered in a velvet heirloom trunk via BlueDart Priority Air.
+5. **Stage 05 — Diamond Buff & Insured Express Return**: Polished to 85D mirror glass and delivered in a velvet heirloom trunk via insured express courier (DTDC Express / Speed Post).

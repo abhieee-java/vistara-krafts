@@ -317,7 +317,7 @@ export class EmailService {
                   <strong>Authoritative Live Tracking:</strong> Transparent production timelines tracking silica curing, casting, diamond-edge polishing, and dispatch.
                 </div>
                 <div class="feature-item">
-                  <strong>Air Express Pan-India:</strong> Solvent-safe, multi-layered shockproof packaging with guaranteed BlueDart air transit and 18% GST tax invoices.
+                  <strong>Express Pan-India:</strong> Solvent-safe, multi-layered shockproof packaging with reliable DTDC Express &amp; Speed Post transit and 18% GST tax invoices.
                 </div>
               </div>
 
@@ -332,7 +332,7 @@ export class EmailService {
             <!-- Footer -->
             <div class="footer-bar">
               <div class="footer-trust">
-                ✦ 100% Verified Atelier • BlueDart Air Logistics • 18% GST ITC Invoicing
+                ✦ 100% Verified Atelier • DTDC &amp; Speed Post Logistics • 18% GST ITC Invoicing
               </div>
               <p class="footer-text">
                 <strong>Vistāra Krafts Studio</strong> • Guwahati Atelier, Assam 781001, India
@@ -383,7 +383,7 @@ Enjoy 10% off your first handcrafted keepsake, ocean serving board, or optical r
 THE VISTĀRA ATELIER GUARANTEE:
 • Museum-Grade Preservation: Custom 5-stage silica dehydration ensuring vibrant petals and crystal-clear 50mm resin casting without yellowing.
 • Authoritative Live Tracking: Transparent production timelines tracking silica curing, casting, diamond-edge polishing, and dispatch.
-• Air Express Pan-India: Solvent-safe, multi-layered shockproof packaging with guaranteed BlueDart air transit and 18% GST tax invoices.
+• Express Pan-India: Solvent-safe, multi-layered shockproof packaging with reliable DTDC Express & Speed Post transit and 18% GST tax invoices.
 
 EXPLORE THE STORE:
 Visit our storefront to discover our collections:
