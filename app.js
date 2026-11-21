@@ -754,13 +754,6 @@ if (typeof window !== 'undefined' && typeof window.dismissVkSplash !== 'function
             <span class="material-symbols-outlined text-secondary text-xl shrink-0 mt-1" aria-hidden="true">verified_user</span>
           </div>
           ${addrText ? `<p class="text-[11px] text-on-surface-variant line-clamp-1 mt-2 bg-surface-container-low px-2 py-1 rounded border border-[#e4e0d8]">📍 ${esc(addrText)}</p>` : ''}
-          <div class="flex items-center gap-2 pt-2.5 border-t border-[#e4e0d8] mt-2.5">
-            <button type="button" onclick="window.closeModalById('mobile-menu-drawer'); window.navigateTo('profile');" class="flex-1 min-h-[44px] px-3 py-2 rounded-lg bg-primary text-white text-[11px] font-bold cursor-pointer flex items-center justify-center gap-1.5 shadow-xs hover:bg-primary-container transition">
-              <span class="material-symbols-outlined text-sm" aria-hidden="true">badge</span>
-              <span>Manage Profile &amp; Address</span>
-            </button>
-            <button type="button" onclick="window.handlePatronLogout()" class="min-h-[44px] px-3 py-1.5 rounded-lg bg-white border border-[#e4e0d8] text-[#9e3322] hover:bg-[#ffe4de]/40 text-[11px] font-bold cursor-pointer shrink-0">Sign Out</button>
-          </div>
         `;
       } else {
         drawerSlot.innerHTML = `
@@ -799,7 +792,7 @@ if (typeof window !== 'undefined' && typeof window.dismissVkSplash !== 'function
           <button type="button" data-drawer-route="profile" onclick="window.closeModalById('mobile-menu-drawer'); window.navigateTo('profile');" class="drawer-nav-item min-h-[44px] p-2.5 rounded-xl text-left text-xs font-semibold text-primary hover:bg-surface-container flex items-center justify-between cursor-pointer transition">
             <span class="flex items-center gap-2.5">
               <span class="material-symbols-outlined text-base text-secondary" aria-hidden="true">badge</span>
-              <span>Manage Addresses</span>
+              <span>Manage Profile &amp; Address</span>
             </span>
             <span class="material-symbols-outlined text-base text-outline drawer-nav-chevron" aria-hidden="true">chevron_right</span>
           </button>
@@ -11332,6 +11325,7 @@ function renderWishlistItemCard(p) {
     }
 
     if (tab === 'grievance') {
+      window.populateDpdpGrievanceForm();
       window.renderDpdpTickets();
     }
 
@@ -11435,6 +11429,62 @@ function renderWishlistItemCard(p) {
     }
   };
 
+  window.populateDpdpGrievanceForm = function () {
+    const nameEl = document.getElementById('dpdp-req-name');
+    const emailEl = document.getElementById('dpdp-req-email');
+    const mobileEl = document.getElementById('dpdp-req-mobile');
+    const orderIdEl = document.getElementById('dpdp-req-orderid');
+    const authStatusBadge = document.getElementById('dpdp-auth-autofill-badge');
+
+    const auth = (typeof ResinStore !== 'undefined' && ResinStore.getAuthSession) ? ResinStore.getAuthSession() : null;
+    const profile = (typeof ResinStore !== 'undefined' && ResinStore.getPatronProfile) ? ResinStore.getPatronProfile() : {};
+    const isAuth = Boolean(auth && auth.email);
+
+    if (isAuth) {
+      const curName = auth.name || profile.name || '';
+      const curEmail = auth.email || profile.email || '';
+      const curPhone = auth.phone || profile.phone || '';
+
+      if (nameEl && !nameEl.value.trim()) nameEl.value = curName;
+      if (emailEl && !emailEl.value.trim()) emailEl.value = curEmail;
+      if (mobileEl && !mobileEl.value.trim()) mobileEl.value = curPhone;
+
+      // Auto-populate latest order if available
+      if (orderIdEl && !orderIdEl.value.trim()) {
+        try {
+          const orders = ResinStore.getOrders ? ResinStore.getOrders() : [];
+          const userEmail = (curEmail || '').toLowerCase();
+          const userOrders = orders.filter(o =>
+            (o.customerEmail && o.customerEmail.toLowerCase() === userEmail) ||
+            (o.customerPhone && o.customerPhone === curPhone)
+          );
+          const latestOrder = userOrders[0];
+          if (latestOrder) {
+            orderIdEl.value = latestOrder.orderNumber || latestOrder.orderId || latestOrder.id || '';
+          }
+        } catch (_e) {}
+      }
+
+      if (authStatusBadge) {
+        authStatusBadge.classList.remove('hidden');
+        authStatusBadge.innerHTML = `
+          <div class="p-2.5 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 flex items-center justify-between gap-2 text-[11px]">
+            <div class="flex items-center gap-1.5 truncate">
+              <span class="material-symbols-outlined text-sm text-emerald-600 shrink-0" aria-hidden="true">verified_user</span>
+              <span class="truncate">Verified Patron: <strong>${esc(curName || curEmail)}</strong> (${esc(curEmail)})</span>
+            </div>
+            <span class="text-[9.5px] uppercase font-bold tracking-wider bg-emerald-100 text-emerald-800 px-1.5 py-0.5 rounded shrink-0">Auto-Filled</span>
+          </div>
+        `;
+      }
+    } else {
+      if (authStatusBadge) {
+        authStatusBadge.classList.add('hidden');
+        authStatusBadge.innerHTML = '';
+      }
+    }
+  };
+
   window.submitDpdpGrievanceForm = function (ev) {
     if (ev) ev.preventDefault();
     const typeEl = document.getElementById('dpdp-req-type');
@@ -11455,7 +11505,9 @@ function renderWishlistItemCard(p) {
 
     window.renderDpdpTickets();
     window.showToast('Grievance Ticket Raised', `Ticket ${ticket.ticketId} assigned (7-Day SLA)`);
-    if (ev && ev.target && ev.target.reset) ev.target.reset();
+    if (detailsEl) detailsEl.value = '';
+    // Re-populate verified patron fields if authenticated
+    window.populateDpdpGrievanceForm();
   };
 
   window.renderDpdpTickets = function () {

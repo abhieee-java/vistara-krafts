@@ -2155,6 +2155,9 @@
         shippingFee: Number(row.shipping_fee ?? row.shippingFee ?? 0),
         paymentMethod: row.payment_method || row.paymentMethod || 'UPI / Razorpay',
         customerName: row.customer_name || row.customerName || (row.shippingAddress && row.shippingAddress.fullName) || 'Valued Patron',
+        customerEmail: row.customer_email || row.customerEmail || row.email || '',
+        email: row.customer_email || row.customerEmail || row.email || '',
+        customerPhone: row.phone || row.customerPhone || (row.shippingAddress && row.shippingAddress.phone) || '',
         phone: row.phone || row.customerPhone || (row.shippingAddress && row.shippingAddress.phone) || '',
         address: row.address || (row.shippingAddress && row.shippingAddress.street) || '',
         pincode: row.pincode || (row.shippingAddress && row.shippingAddress.pincode) || '',
@@ -3015,14 +3018,23 @@
       const ticketId = `DPDP-2026-${Math.floor(10000 + Math.random() * 90000)}`;
       const now = new Date();
       const slaDeadline = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000).toISOString();
+      const auth = (typeof this.getAuthSession === 'function') ? this.getAuthSession() : null;
+      const profile = (typeof this.getPatronProfile === 'function') ? this.getPatronProfile() : {};
+      const resolvedName = String((payload && payload.fullName) || (auth && auth.name) || (profile && profile.name) || 'Patron').trim();
+      const resolvedEmail = String((payload && payload.email) || (auth && auth.email) || (profile && profile.email) || '').trim();
+      const resolvedMobile = String((payload && payload.mobile) || (auth && auth.phone) || (profile && profile.phone) || '').trim();
+      const userId = (auth && (auth.userId || auth.id)) || null;
+
       const newTicket = {
         ticketId,
-        requestType: String(payload.requestType || 'Grievance Redressal'),
-        fullName: String(payload.fullName || 'Patron').trim(),
-        email: String(payload.email || '').trim(),
-        mobile: String(payload.mobile || '').trim(),
-        orderId: String(payload.orderId || '').trim(),
-        details: String(payload.details || '').trim(),
+        requestType: String((payload && payload.requestType) || 'Grievance Redressal'),
+        fullName: resolvedName,
+        email: resolvedEmail,
+        mobile: resolvedMobile,
+        orderId: String((payload && payload.orderId) || '').trim(),
+        details: String((payload && payload.details) || '').trim(),
+        userId,
+        authenticatedSubmission: Boolean(auth),
         status: 'open',
         statusDisplay: 'In Review (SLA <= 7 Days)',
         slaDeadline,
