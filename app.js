@@ -2023,7 +2023,7 @@ ${avgRating ? `
             <div class="flex items-start justify-between gap-3">
               <div>
                 <h3 class="font-headline-sm text-lg text-primary font-bold">Check Delivery &amp; Pickup Speed</h3>
-                <p class="text-xs text-on-surface-variant mt-0.5">Check BlueDart Express transit days &amp; 24h floral pickup across India:</p>
+                <p id="home-delivery-explainer" class="text-xs text-on-surface-variant mt-0.5">Check ${esc(Store.getSettings()?.defaultCourier || 'DTDC Express')} transit days &amp; 24h floral pickup across India:</p>
               </div>
               <span class="material-symbols-outlined text-[#266b4e] text-2xl" aria-hidden="true">local_shipping</span>
             </div>
@@ -4467,9 +4467,9 @@ function renderWishlistItemCard(p) {
                 Explore our preserved bridal keepsakes, ocean serving boards, or optical 3:1 &amp; 2:1 epoxy systems.
               </p>
             </div>
-            <div class="flex items-center gap-1.5 text-[11px] text-[#266b4e] font-semibold bg-[#f0f7f3] border border-[#266b4e]/20 px-3 py-1.5 rounded-full">
+            <div id="cart-empty-shipping-banner" class="flex items-center gap-1.5 text-[11px] text-[#266b4e] font-semibold bg-[#f0f7f3] border border-[#266b4e]/20 px-3 py-1.5 rounded-full">
               <span class="material-symbols-outlined text-sm" aria-hidden="true">local_shipping</span>
-              <span>Free Pan-India BlueDart Express on orders over ₹${summary.freeShippingThreshold}</span>
+              <span>Free Pan-India <span id="cart-empty-courier-name">${esc(Store.getSettings()?.defaultCourier || 'DTDC Express')}</span> on orders over ₹<span id="cart-empty-threshold">${summary.freeShippingThreshold}</span></span>
             </div>
             <button type="button" onclick="window.navigateTo('catalog', 'all')" class="btn-shimmer min-h-[44px] px-7 py-2.5 rounded-xl bg-primary hover:bg-primary-container text-on-primary text-xs font-bold shadow-sm active:scale-[0.97] transition-all cursor-pointer">
               Browse Catalogue
@@ -4949,7 +4949,10 @@ function renderWishlistItemCard(p) {
               const isProcessing = st === 'processing' || st === 'curing';
               const isNewOrPending = st === 'new' || st === 'pending' || st === 'confirmed';
               const trackingNum = ord.trackingNumber || ord.tracking_number;
-              const courierName = ord.carrier || ord.courier || 'DTDC Express';
+              const defaultStoreCourier = (Store && typeof Store.getSettings === 'function' && Store.getSettings()?.defaultCourier) || 'DTDC Express';
+              const rawCourier = ord.carrier || ord.courier || '';
+              const isBlueDart = String(rawCourier).toLowerCase().includes('bluedart');
+              const courierName = (rawCourier && !isBlueDart) ? rawCourier : defaultStoreCourier;
               const hasValidCourierTracking = Boolean(
                 trackingNum &&
                 !String(trackingNum).startsWith('order_') &&
@@ -5016,7 +5019,6 @@ function renderWishlistItemCard(p) {
                         <span class="font-mono text-xs sm:text-sm font-bold text-primary tracking-tight whitespace-nowrap">ORDER #${esc(cleanOrderId)}</span>
                         <span class="text-xs text-on-surface-variant font-medium">• ${esc(orderTimestamp)}</span>
                         ${isCustom ? `<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-[#fdf6f3] text-[#9e3322] border border-[#f5c2b7]/60 text-[10px] font-bold uppercase tracking-wider">🌸 Bespoke Keepsake</span>` : ''}
-                        ${ord.giftWrap ? `<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-[#fdf6f3] text-[#9e3322] border border-[#f5c2b7]/60 text-[10px] font-semibold"><span class="material-symbols-outlined text-[13px]" aria-hidden="true">featured_seasonal_and_gifts</span><span>Silk Potli</span></span>` : ''}
                       </div>
                       ${ord.status ? `<p class="text-xs font-semibold text-primary mt-0.5">${esc(String(ord.status).replace(/\s*•\s*(Oracle|Studio)\s*Batch\s*Allocated/gi, '').trim())}</p>` : ''}
                     </div>
@@ -5663,7 +5665,7 @@ function renderWishlistItemCard(p) {
           name: 'Do you provide tax invoices, express shipping, and instant UPI payments in India?',
           acceptedAnswer: {
             '@type': 'Answer',
-            text: `Yes. Every order includes an official retail tax invoice with all taxes included. Orders above ₹${currentShipThreshold.toLocaleString('en-IN')} qualify for free express shipping via BlueDart and Delhivery across 28,000+ Indian PIN codes, with instant UPI, Credit/Debit Cards, and NetBanking supported.`
+            text: `Yes. Every order includes an official retail tax invoice with all taxes included. Orders above ₹${currentShipThreshold.toLocaleString('en-IN')} qualify for free express shipping via ${esc(Store.getSettings()?.defaultCourier || 'DTDC Express')} and Speed Post across 28,000+ Indian PIN codes, with instant UPI, Credit/Debit Cards, and NetBanking supported.`
           }
         }
       ]
@@ -10639,7 +10641,7 @@ function renderWishlistItemCard(p) {
     const address = document.getElementById('chk-address')?.value || '';
     const pincode = document.getElementById('chk-pincode')?.value || '';
     const paymentMethod = document.getElementById('chk-payment')?.value || 'UPI Instant (GPay / PhonePe)';
-    const giftWrap = Boolean(document.getElementById('chk-gift-wrap')?.checked);
+    const giftWrap = false;
     Store.saveCheckoutDraft({ name, phone, address, pincode, paymentMethod, giftWrap });
   }
 
@@ -10730,7 +10732,6 @@ function renderWishlistItemCard(p) {
     const addrEl = document.getElementById('chk-address');
     const pinEl = document.getElementById('chk-pincode');
     const payEl = document.getElementById('chk-payment');
-    const giftEl = document.getElementById('chk-gift-wrap');
 
     // Clear previous inline errors
     clearCheckoutFieldError('chk-name', 'chk-name-err');
@@ -10763,7 +10764,6 @@ function renderWishlistItemCard(p) {
     }
     if (pinEl) pinEl.value = resolvedPin;
     if (payEl && draft.paymentMethod) payEl.value = draft.paymentMethod;
-    if (giftEl && typeof draft.giftWrap === 'boolean') giftEl.checked = draft.giftWrap;
 
     // Attach real-time input listeners to persist draft and clear errors as customer types
     [
@@ -10791,10 +10791,6 @@ function renderWishlistItemCard(p) {
     if (payEl && !payEl.dataset.draftBound) {
       payEl.dataset.draftBound = 'true';
       payEl.addEventListener('change', persistCurrentCheckoutDraft);
-    }
-    if (giftEl && !giftEl.dataset.draftBound) {
-      giftEl.dataset.draftBound = 'true';
-      giftEl.addEventListener('change', persistCurrentCheckoutDraft);
     }
 
     const modal = document.getElementById('checkout-modal');
@@ -10878,7 +10874,7 @@ function renderWishlistItemCard(p) {
     let address = document.getElementById('chk-address')?.value.trim() || auth.address || profile.defaultAddress || '';
     let pincode = document.getElementById('chk-pincode')?.value.trim() || auth.pincode || profile.pincode || '';
     const paymentMethod = document.getElementById('chk-payment')?.value || 'UPI Instant (GPay / PhonePe)';
-    const giftWrap = Boolean(document.getElementById('chk-gift-wrap')?.checked);
+    const giftWrap = false;
 
     if (typeof window !== 'undefined' && window.ContentModeration) {
       name = window.ContentModeration.sanitizeRecipientName(name);
@@ -11710,6 +11706,45 @@ function renderWishlistItemCard(p) {
       announcementHeadlineEls.forEach(el => {
         el.innerHTML = headlineMarkup;
       });
+    }
+
+    const defaultCourier = settings.defaultCourier || (typeof Store !== 'undefined' && typeof Store.getSettings === 'function' ? Store.getSettings()?.defaultCourier : null) || 'DTDC Express';
+
+    // 1. Dynamic Empty Cart Banner
+    const cartEmptyCourier = document.getElementById('cart-empty-courier-name');
+    const cartEmptyThreshold = document.getElementById('cart-empty-threshold');
+    if (cartEmptyCourier) cartEmptyCourier.textContent = defaultCourier;
+    if (cartEmptyThreshold) cartEmptyThreshold.textContent = Number(threshold).toLocaleString('en-IN');
+
+    // 2. Dynamic Checkout DPDP Consent Notice
+    const dpdpConsentEl = document.getElementById('chk-dpdp-consent-text');
+    if (dpdpConsentEl) {
+      dpdpConsentEl.textContent = `I consent to processing my address & contact for ${defaultCourier} delivery & order invoicing under the Digital Personal Data Protection (DPDP) Act 2023.`;
+    }
+
+    // 3. Dynamic Modal & Home Pincode Explainers
+    const pincodeModalExplainer = document.getElementById('modal-pincode-explainer');
+    if (pincodeModalExplainer) {
+      pincodeModalExplainer.textContent = `Check ${defaultCourier} transit & 24-hour bridal floral pickup availability:`;
+    }
+    const homeDeliveryExplainer = document.getElementById('home-delivery-explainer');
+    if (homeDeliveryExplainer) {
+      homeDeliveryExplainer.textContent = `Check ${defaultCourier} transit days & 24h floral pickup across India:`;
+    }
+
+    // 4. Reconcile Cart summary & progression if cart is open or rendered
+    if (typeof reconcileCartInvoiceDom === 'function' && typeof Store !== 'undefined' && typeof Store.getCartSummary === 'function') {
+      try {
+        reconcileCartInvoiceDom(Store.getCartSummary());
+      } catch (_e) {}
+    }
+
+    // 5. Re-render Orders view if customer is currently viewing #orders
+    if (AppState.currentRoute === 'orders') {
+      const root = document.getElementById('app-view-root');
+      if (root && typeof renderOrdersView === 'function') {
+        root.innerHTML = renderOrdersView();
+      }
     }
   };
 

@@ -3961,7 +3961,7 @@
               <span class="text-[10px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-800 border border-emerald-300">Strictly Necessary</span>
             </div>
             <p class="text-[11px] text-on-surface-variant leading-relaxed">
-              Required to process orders, ship preserved varmala blocks via BlueDart, issue tax invoices, and send WhatsApp delivery updates. Cannot be toggled off for active orders.
+              Required to process orders, ship preserved varmala blocks via DTDC Express &amp; Speed Post, issue tax invoices, and send WhatsApp delivery updates. Cannot be toggled off for active orders.
             </p>
           </div>
           <input type="checkbox" checked disabled class="w-5 h-5 accent-primary cursor-not-allowed shrink-0 mt-0.5" aria-label="Essential Order Fulfillment (Required)">
@@ -4215,21 +4215,12 @@
         </div>
       </div>
 
-      <!-- Delivery Preferences & Legal DPDP Consent Card -->
-      <div class="shrink-0 rounded-[10px] bg-[#FAF9F6] border border-[#EAE6DE] px-3 py-2 flex flex-col gap-1.5">
-        <label for="chk-gift-wrap" class="flex items-center justify-between gap-2 cursor-pointer text-xs font-medium text-gray-700 select-none">
-          <span class="flex items-center gap-1.5 truncate">
-            <span class="material-symbols-outlined text-sm text-[#9e3322]" aria-hidden="true">featured_seasonal_and_gifts</span>
-            <span>Complimentary Silk Potli &amp; Gift Note</span>
-          </span>
-          <input id="chk-gift-wrap" type="checkbox" checked aria-label="Add Complimentary Silk Potli and Wax-Sealed Gift Note" class="w-4 h-4 accent-primary rounded cursor-pointer shrink-0">
+      <!-- Legal DPDP Delivery Consent Card -->
+      <div class="shrink-0 rounded-[10px] bg-[#FAF9F6] border border-[#EAE6DE] px-3 py-2 flex items-start gap-2 text-left">
+        <input id="chk-dpdp-consent" type="checkbox" checked required class="w-3.5 h-3.5 mt-0.5 accent-primary rounded cursor-pointer shrink-0" aria-label="Consent to processing contact and address for delivery under DPDP Act 2023">
+        <label for="chk-dpdp-consent" class="text-[10px] text-gray-500 font-normal leading-tight cursor-pointer select-none">
+          <span id="chk-dpdp-consent-text">I consent to processing my address &amp; contact for DTDC Express delivery &amp; order invoicing under the Digital Personal Data Protection (DPDP) Act 2023.</span>
         </label>
-        <div class="flex items-start gap-2 pt-1.5 border-t border-[#EAE6DE]/70 text-left">
-          <input id="chk-dpdp-consent" type="checkbox" checked required class="w-3.5 h-3.5 mt-0.5 accent-primary rounded cursor-pointer shrink-0" aria-label="Consent to processing contact and address for delivery under DPDP Act 2023">
-          <label for="chk-dpdp-consent" class="text-[10px] text-gray-500 font-normal leading-tight cursor-pointer select-none">
-            I consent to processing my address &amp; contact for BlueDart delivery &amp; order invoicing under the Digital Personal Data Protection (DPDP) Act 2023.
-          </label>
-        </div>
       </div>
 
       <!-- Order Summary & Total Line (Figma: Left item/shipping + total to pay, Right bold total) -->
@@ -4304,7 +4295,7 @@
           <span class="material-symbols-outlined text-lg" aria-hidden="true">close</span>
         </button>
       </div>
-      <p class="text-xs text-on-surface-variant shrink-0">Check BlueDart / Delhivery express transit &amp; 24-hour bridal floral pickup availability:</p>
+      <p id="modal-pincode-explainer" class="text-xs text-on-surface-variant shrink-0">Check DTDC Express transit &amp; 24-hour bridal floral pickup availability:</p>
       <form method="POST" class="flex flex-col gap-2 shrink-0" onsubmit="event.preventDefault(); window.saveModalPincode();">
         <label for="modal-pincode-input" class="text-[11.5px] font-semibold text-primary block">6-Digit Indian PIN Code</label>
         <div class="flex gap-2">

@@ -1635,7 +1635,7 @@
         city: checkoutDetails.city || (resolvedPin ? `Zone PIN ${resolvedPin}` : ''),
         state: checkoutDetails.state || '',
         pincode: resolvedPin || this.getPincodeInfo().pin,
-        giftWrap: checkoutDetails.giftWrap !== undefined ? Boolean(checkoutDetails.giftWrap) : true,
+        giftWrap: false,
         mockupApproved: false,
         status: isCustomOrder ? 'Custom Keepsake Commission • Floral Awaiting Pickup' : 'Order Confirmed',
         orderStatus: 'new',
@@ -1665,7 +1665,8 @@
           isCustomPreservation: Boolean(i.isCustomPreservation || (i.sku && i.sku === 'RAM-CUSTOM-KEEP')),
           customDetails: i.customDetails || null
         })),
-        courier: '',
+        giftWrap: false,
+        courier: (this.getSettings && this.getSettings()?.defaultCourier) || 'DTDC Express',
         trackingNumber: '',
         tracking_number: '',
         createdAt: new Date().toISOString()
@@ -1695,7 +1696,7 @@
         preservation_stage: isCustomOrder ? ((customPreservationDetails && customPreservationDetails.preservationStage) || 'Floral Awaiting Pickup') : null,
         custom_details: customPreservationDetails,
         stage_index: 1,
-        gift_wrap: Boolean(newOrder.giftWrap),
+        gift_wrap: false,
         mockup_approved: false,
         items: newOrder.items,
         courier: newOrder.courier,
@@ -1730,6 +1731,10 @@
       this.notify('order_placed', newOrder);
       this.clearCheckoutDraft();
       return { success: true, order: newOrder, supabasePayload };
+    },
+
+    createOrder(details = {}) {
+      return this.placeOrder(details);
     },
 
     saveCheckoutDraft(data = {}) {
@@ -1981,14 +1986,14 @@
                   phone: customerPhone,
                   address: customerAddress,
                   pincode: resolvedPin || this.getPincodeInfo().pin,
-                  giftWrap: checkoutDetails.giftWrap !== undefined ? Boolean(checkoutDetails.giftWrap) : true,
+                  giftWrap: false,
                   mockupApproved: false,
                   status: 'Confirmed & Prepping',
                   orderStatus: 'confirmed',
                   stageIndex: 1,
                   stages: ['Order Confirmed', 'Botanicals & Materials Prepped', 'Degassing & Optical Pour', 'Diamond Polish & QA', 'Dispatched'],
                   items: authoritativeItems,
-                  courier: '',
+                  courier: (this.getSettings && this.getSettings()?.defaultCourier) || 'DTDC Express',
                   trackingNumber: '',
                   tracking_number: '',
                   razorpay_order_id: response.razorpay_order_id,
@@ -2096,7 +2101,10 @@
     normalizeStorefrontOrder(row) {
       if (!row || typeof row !== 'object') return null;
       const ordStatus = String(row.order_status || row.orderStatus || 'new').toLowerCase();
-      const courierName = row.courier || row.carrier || 'Delhivery';
+      const configuredDefault = (this.getSettings && this.getSettings()?.defaultCourier) || 'DTDC Express';
+      const rawCourier = row.courier || row.carrier || '';
+      const isBlueDart = String(rawCourier).toLowerCase().includes('bluedart');
+      const courierName = (rawCourier && !isBlueDart) ? rawCourier : configuredDefault;
       const trackingNum = row.tracking_number || row.trackingNumber || '';
       const statusText = ordStatus === 'shipped'
         ? `Dispatched via ${courierName} (AWB: ${trackingNum || 'Pending'})`
@@ -2378,6 +2386,7 @@
         supportPhone: '+91 70022 70886',
         freeShippingThreshold: 999,
         defaultCourier: 'DTDC Express',
+        standardShippingFee: 99,
         announcementBarActive: true,
         announcementBarText: 'Vistāra Krafts • 24h Bridal Varmala Pickup • Free Express Shipping > ₹999 • Handcrafted Guwahati Atelier • Insured Express Dispatch',
         enableFloralTransformationSection: false
@@ -2489,7 +2498,10 @@
               : (catPayload?.freeShippingThreshold !== undefined && !isNaN(Number(catPayload.freeShippingThreshold)))
                 ? Number(catPayload.freeShippingThreshold)
                 : (currentSettings.freeShippingThreshold !== undefined ? Number(currentSettings.freeShippingThreshold) : 999),
-          defaultCourier: shipRow?.value?.default_courier || catPayload?.defaultCourier || currentSettings.defaultCourier || 'Delhivery Express',
+          defaultCourier: shipRow?.value?.default_courier || catPayload?.defaultCourier || currentSettings.defaultCourier || 'DTDC Express',
+          standardShippingFee: (shipRow && shipRow.value && shipRow.value.standard_shipping_fee !== undefined && !isNaN(Number(shipRow.value.standard_shipping_fee)))
+            ? Number(shipRow.value.standard_shipping_fee)
+            : (catPayload?.standardShippingFee ? Number(catPayload.standardShippingFee) : (currentSettings.standardShippingFee || 99)),
           ...(sectionsRow && sectionsRow.value ? {
             enableFloralTransformationSection: Boolean(sectionsRow.value.enable_floral_transformation)
           } : (catPayload?.enableFloralTransformationSection !== undefined ? {
@@ -2502,7 +2514,7 @@
           'storeName', 'brandTagline', 'contactEmail', 'supportEmail',
           'contactPhone', 'supportPhone', 'instagramHandle',
           'announcementBarText', 'announcementBarActive',
-          'freeShippingThreshold', 'defaultCourier', 'enableFloralTransformationSection'
+          'freeShippingThreshold', 'defaultCourier', 'standardShippingFee', 'enableFloralTransformationSection'
         ];
         const isChanged = keysToCompare.some(k => currentSettings[k] !== nextSettings[k]);
 
@@ -2633,6 +2645,18 @@
         if (incomingVersion > cachedVersion) {
           safeWrite('vk_store_published_version', incomingVersion);
           this.refreshCatalog({ smooth: true });
+        }
+        if (payload.settings && typeof payload.settings === 'object') {
+          const cur = safeRead(STORAGE_KEYS.SETTINGS, {});
+          const merged = { ...cur, ...payload.settings, updated_at: new Date().toISOString() };
+          safeWrite(STORAGE_KEYS.SETTINGS, merged);
+          safeWrite('vk_settings_v1', merged);
+          safeWrite('ram_vk_settings_v2', merged);
+          if (typeof global.applyStorefrontSettings === 'function') {
+            global.applyStorefrontSettings(merged);
+          }
+          this.notify('settings_updated', merged);
+          this.notify('cart_updated', this.getCartSummary());
         }
         log.unshift(entry);
         safeWrite(STORAGE_KEYS.STUDIO_SYNC_LOG, log.slice(0, 20));
@@ -2824,6 +2848,8 @@
         const cur = safeRead(STORAGE_KEYS.SETTINGS, {});
         const merged = { ...cur, ...payload.settings, updated_at: payload.settings.updated_at || new Date().toISOString() };
         safeWrite(STORAGE_KEYS.SETTINGS, merged);
+        safeWrite('vk_settings_v1', merged);
+        safeWrite('ram_vk_settings_v2', merged);
         if (merged.announcementBarText !== undefined) {
           this.applyAnnouncementBar(merged.announcementBarText, merged.announcementBarActive, merged.freeShippingThreshold);
         }
@@ -2831,6 +2857,7 @@
           global.applyStorefrontSettings(merged);
         }
         this.notify('settings_updated', merged);
+        this.notify('cart_updated', this.getCartSummary());
       }
 
       if (payload.type === 'COUPONS_UPDATED' && Array.isArray(payload.coupons)) {

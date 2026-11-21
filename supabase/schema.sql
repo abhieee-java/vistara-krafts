@@ -194,7 +194,7 @@ CREATE TABLE IF NOT EXISTS public.orders (
   gift_wrap BOOLEAN NOT NULL DEFAULT false,
   mockup_approved BOOLEAN NOT NULL DEFAULT false,
   items JSONB NOT NULL DEFAULT '[]'::jsonb,
-  courier TEXT DEFAULT 'BlueDart Air Express',
+  courier TEXT DEFAULT 'DTDC Express',
   tracking_number TEXT DEFAULT '',
   notes TEXT DEFAULT '',
   created_at TIMESTAMPTZ NOT NULL DEFAULT timezone('utc'::text, now()),
