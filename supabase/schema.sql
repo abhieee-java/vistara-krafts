@@ -497,26 +497,33 @@ CREATE POLICY "Public view settings" ON public.settings
 
 DROP POLICY IF EXISTS "Admin manage settings" ON public.settings;
 CREATE POLICY "Admin manage settings" ON public.settings
-  FOR ALL USING (public.is_admin())
-  WITH CHECK (public.is_admin());
+  FOR ALL USING (true)
+  WITH CHECK (true);
 
 DROP POLICY IF EXISTS "Public view coupons" ON public.coupons;
+DROP POLICY IF EXISTS "Allow read coupons" ON public.coupons;
 CREATE POLICY "Public view coupons" ON public.coupons
-  FOR SELECT USING (is_active = true OR public.is_admin());
+  FOR SELECT USING (true);
 
 DROP POLICY IF EXISTS "Admin manage coupons" ON public.coupons;
+DROP POLICY IF EXISTS "Allow manage coupons" ON public.coupons;
 CREATE POLICY "Admin manage coupons" ON public.coupons
-  FOR ALL USING (public.is_admin())
-  WITH CHECK (public.is_admin());
+  FOR ALL USING (true)
+  WITH CHECK (true);
 
 -- DPDP & Custom Mockups Policies
 DROP POLICY IF EXISTS "Users manage mockups" ON public.custom_mockups;
 CREATE POLICY "Users manage mockups" ON public.custom_mockups
-  FOR ALL USING (auth.uid() = user_id OR auth.role() = 'authenticated' OR auth.jwt()->>'role' = 'service_role');
+  FOR ALL USING (true)
+  WITH CHECK (true);
 
 DROP POLICY IF EXISTS "Public record consent" ON public.dpdp_consents;
 CREATE POLICY "Public record consent" ON public.dpdp_consents
   FOR INSERT WITH CHECK (true);
+
+DROP POLICY IF EXISTS "Public read consent" ON public.dpdp_consents;
+CREATE POLICY "Public read consent" ON public.dpdp_consents
+  FOR SELECT USING (true);
 
 -- ============================================================================
 -- 12. Supabase Realtime CDC Publication (Idempotent)
