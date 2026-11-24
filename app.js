@@ -6249,8 +6249,15 @@ function renderWishlistItemCard(p) {
   function renderActiveView(options) {
     const root = document.getElementById('app-view-root');
     if (!root) return;
-    const preserveScroll = !options || !options.resetScroll;
-    const prevScrollY = preserveScroll ? window.scrollY : 0;
+    const shouldResetScroll = Boolean(options && options.resetScroll === true);
+    const preserveScroll = !shouldResetScroll;
+    const prevScrollY = preserveScroll ? (window.pageYOffset || (document.documentElement ? document.documentElement.scrollTop : 0) || window.scrollY || 0) : 0;
+
+    // Prevent viewport height collapse / visual jumping during innerHTML replacement
+    const prevHeight = root.offsetHeight;
+    if (prevHeight > 0) {
+      root.style.minHeight = prevHeight + 'px';
+    }
 
     const activeEl = typeof document !== 'undefined' ? document.activeElement : null;
     const activeId = (activeEl && activeEl.id) ? activeEl.id : null;
@@ -6361,30 +6368,20 @@ function renderWishlistItemCard(p) {
         return restored;
       };
 
-      if (!options?.resetScroll && scrollToCatalogTarget()) {
+      if (!shouldResetScroll && scrollToCatalogTarget()) {
         didRestoreCatalogScroll = true;
         requestAnimationFrame(scrollToCatalogTarget);
         setTimeout(scrollToCatalogTarget, 60);
       }
     }
 
-    if (AppState.currentRoute === 'catalog') {
-      if (!didRestoreCatalogScroll) {
-        try {
-          window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
-          if (document.documentElement) document.documentElement.scrollTop = 0;
-          if (document.body) document.body.scrollTop = 0;
-        } catch (_e) {
-          window.scrollTo(0, 0);
-        }
-      }
-    } else if (preserveScroll && prevScrollY > 0) {
+    if (preserveScroll && prevScrollY > 0) {
       try {
         window.scrollTo({ top: prevScrollY, left: 0, behavior: 'instant' });
       } catch (_e) {
         window.scrollTo(0, prevScrollY);
       }
-    } else if (!didRestoreCatalogScroll) {
+    } else if (shouldResetScroll && !didRestoreCatalogScroll) {
       try {
         window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
         if (document.documentElement) document.documentElement.scrollTop = 0;
@@ -6392,6 +6389,15 @@ function renderWishlistItemCard(p) {
       } catch (_e) {
         window.scrollTo(0, 0);
       }
+    }
+
+    // Release minHeight lock in next frame once browser completes paint
+    if (typeof requestAnimationFrame === 'function') {
+      requestAnimationFrame(() => {
+        if (root) root.style.minHeight = '';
+      });
+    } else {
+      if (root) root.style.minHeight = '';
     }
 
     if (activeId) {
@@ -11256,8 +11262,13 @@ function renderWishlistItemCard(p) {
   // Subscribe to StorefrontBridge programmatic events so external cross-tab / postMessage updates re-render live
   if (Store && typeof Store.subscribe === 'function') {
     Store.subscribe((event) => {
-      if (event === 'studio_push_received' || event === 'admin_push_received' || event === 'catalog_reset' || event === 'coupons_updated') {
-        renderActiveView({ preserveScroll: true });
+      if (event === 'coupons_updated') {
+        if (AppState.currentRoute === 'cart') {
+          renderActiveView({ preserveScroll: true, resetScroll: false });
+        }
+        updateGlobalBadges();
+      } else if (event === 'studio_push_received' || event === 'admin_push_received' || event === 'catalog_reset') {
+        renderActiveView({ preserveScroll: true, resetScroll: false });
         updateGlobalBadges();
       }
     });
@@ -11949,9 +11960,10 @@ function renderWishlistItemCard(p) {
   }
 
   function enforceCatalogScrollTop() {
-    const h = (typeof window !== 'undefined' && window.location.hash) || '';
-    if (h && (h.startsWith('#/cat') || h === '#/catalog' || AppState.currentRoute === 'catalog')) {
+    const forceTop = typeof sessionStorage !== 'undefined' && sessionStorage.getItem('vk_force_scroll_top') === 'true';
+    if (forceTop) {
       try {
+        sessionStorage.removeItem('vk_force_scroll_top');
         sessionStorage.removeItem('vk_catalog_scrollY');
         sessionStorage.removeItem('vk_last_viewed_product_id');
         if (typeof window !== 'undefined') {
@@ -11973,21 +11985,10 @@ function renderWishlistItemCard(p) {
       localStorage.removeItem('vk_mock_users');
     } catch (_e) {}
 
-    // When booting or refreshing the application, clear any stale catalog scroll targets
+    // When booting or refreshing the application, preserve natural scroll position without jumping
     try {
-      enforceCatalogScrollTop();
-      if (typeof window !== 'undefined') {
-        if ('scrollRestoration' in history) {
-          history.scrollRestoration = 'manual';
-        }
-        if (typeof requestAnimationFrame === 'function') {
-          requestAnimationFrame(enforceCatalogScrollTop);
-        }
-        setTimeout(enforceCatalogScrollTop, 50);
-        setTimeout(enforceCatalogScrollTop, 150);
-        setTimeout(enforceCatalogScrollTop, 350);
-        setTimeout(enforceCatalogScrollTop, 600);
-        setTimeout(enforceCatalogScrollTop, 1000);
+      if (typeof window !== 'undefined' && 'scrollRestoration' in history) {
+        history.scrollRestoration = 'auto';
       }
     } catch (_e) {}
     try {
@@ -12105,14 +12106,7 @@ function renderWishlistItemCard(p) {
     } catch (_e) {}
   });
 
-  if (typeof window !== 'undefined') {
-    window.addEventListener('pageshow', enforceCatalogScrollTop);
-    window.addEventListener('load', () => {
-      enforceCatalogScrollTop();
-      setTimeout(enforceCatalogScrollTop, 60);
-      setTimeout(enforceCatalogScrollTop, 200);
-    });
-  }
+
 
   // ReadyState handling: boot immediately if DOM is already interactive/complete
   if (typeof document !== 'undefined') {

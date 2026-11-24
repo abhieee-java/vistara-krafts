@@ -360,16 +360,41 @@ await test('CASE 3: Simulate a failed database write and recover via webhook rep
 await test('CASE 4: Two buyers compete for the last unit (Atomic Postgres lock prevents oversell)', async () => {
   const TEST_PRODUCT_ID = 'prod_test_compete_1unit';
 
-  // 1. Force exact stock = 1 in Supabase
+  // 1. Force exact stock = 1 in Supabase (upsert test product)
   const key = CONFIG.SUPABASE_SERVICE_ROLE_KEY || CONFIG.SUPABASE_ANON_KEY;
-  await fetch(`${CONFIG.SUPABASE_URL}/rest/v1/products?id=eq.${TEST_PRODUCT_ID}`, {
-    method: 'PATCH',
+  await fetch(`${CONFIG.SUPABASE_URL}/rest/v1/products`, {
+    method: 'POST',
     headers: {
       'apikey': key,
       'Authorization': `Bearer ${key}`,
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
+      'Prefer': 'resolution=merge-duplicates'
     },
-    body: JSON.stringify({ stock: 1, in_stock: true })
+    body: JSON.stringify({
+      id: TEST_PRODUCT_ID,
+      sku: 'SKU-COMPETE-1UNIT',
+      name: 'Limited Edition Competitor Piece',
+      brand: 'Vistāra Krafts',
+      category: 'keepsakes',
+      price: 1500,
+      stock: 1,
+      low_stock_threshold: 1,
+      in_stock: true,
+      status: 'active',
+      featured: false,
+      is_customizable: false,
+      image: 'https://res.cloudinary.com/ecugysfd/image/upload/v1/test.jpg',
+      gallery: [],
+      variants: [],
+      specs: {},
+      colors: [],
+      shapes: [],
+      sizes: [],
+      gender: 'all',
+      gender_affinity: 'neutral',
+      gifting_tags: [],
+      is_active: true
+    })
   });
 
   const checkInitialProd = await querySupabaseRest(`products?id=eq.${TEST_PRODUCT_ID}&select=id,stock,in_stock`);

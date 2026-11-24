@@ -104,7 +104,13 @@ export class PriceCalculator {
       });
       if (res.ok) {
         const rows = await res.json();
-        if (Array.isArray(rows) && rows.length > 0) {
+        if (Array.isArray(rows)) {
+          if (rows.length === 0) {
+            // DATABASE AUTHORITATIVE VERIFICATION: Coupon does not exist in Supabase (deleted or invalid)
+            // Purge any local memory cache so deleted coupon can NEVER resurrect
+            delete AUTHORITATIVE_COUPONS[cleanCode];
+            return null;
+          }
           const r = rows[0];
           // Check active status
           if (r.is_active === false) return null;
@@ -130,7 +136,7 @@ export class PriceCalculator {
 
     const localCoupon = AUTHORITATIVE_COUPONS[cleanCode];
     if (localCoupon) {
-      if (localCoupon.isActive === false) return null;
+      if (localCoupon.isActive === false || localCoupon.isDeleted === true) return null;
       if (localCoupon.expiresAt && new Date(localCoupon.expiresAt).getTime() < Date.now()) return null;
       return localCoupon;
     }
@@ -225,6 +231,11 @@ export class PriceCalculator {
       freeShippingThreshold: CONFIG.FREE_SHIPPING_THRESHOLD,
       standardShippingFee: CONFIG.STANDARD_SHIPPING_FEE
     };
+  }
+
+  static async fetchFreeShippingThreshold() {
+    const s = await this.fetchAuthoritativeShippingSettings();
+    return s.freeShippingThreshold;
   }
 
   /**

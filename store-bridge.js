@@ -30,7 +30,8 @@
     OFFLINE_QUEUE: 'ram_vk_offline_queue_v2',
     PERSONA_PREF: 'ram_vk_persona_pref_v2',
     SETTINGS: 'ram_vk_settings_v2',
-    DYNAMIC_COUPONS: 'ram_vk_dynamic_coupons_v2'
+    DYNAMIC_COUPONS: 'ram_vk_dynamic_coupons_v2',
+    DELETED_COUPONS: 'ram_vk_deleted_coupons_v2'
   };
 
   // Verified studio & product photography from Cloudinary CDN
@@ -283,6 +284,9 @@
   function getAllCoupons() {
     const isDbSynced = hasSyncedCouponsFromBackend || safeRead('vk_coupons_synced_from_db', false);
     const cached = safeRead(STORAGE_KEYS.DYNAMIC_COUPONS, {});
+    const deletedList = safeRead(STORAGE_KEYS.DELETED_COUPONS, []);
+    const deletedSet = new Set(Array.isArray(deletedList) ? deletedList.map(c => String(c).trim().toUpperCase()) : []);
+
     // If backend database has synced, the database state is STRICTLY authoritative.
     // Static COUPONS fallback is bypassed so deleted or ghost coupons cannot resurrect.
     const merged = isDbSynced
@@ -291,8 +295,9 @@
 
     const result = {};
     for (const [k, v] of Object.entries(merged)) {
-      if (!v || v.isDeleted) continue;
-      result[k] = v;
+      const codeUpper = String(k).trim().toUpperCase();
+      if (!v || v.isDeleted || deletedSet.has(codeUpper)) continue;
+      result[codeUpper] = v;
     }
     return result;
   }
@@ -462,6 +467,9 @@
   const Store = {
     IMAGES,
     get COUPONS() {
+      return getAllCoupons();
+    },
+    getAllCoupons() {
       return getAllCoupons();
     },
     getPublicCoupons() {
@@ -881,9 +889,16 @@
         this.notify('cart_updated', this.getCartSummary());
         return { valid: false, ok: false, message: 'Coupon removed.' };
       }
+      const deletedList = safeRead(STORAGE_KEYS.DELETED_COUPONS, []);
+      const deletedSet = new Set(Array.isArray(deletedList) ? deletedList.map(c => String(c).trim().toUpperCase()) : []);
+      if (deletedSet.has(normalized)) {
+        safeWrite(STORAGE_KEYS.COUPON, '');
+        this.notify('cart_updated', this.getCartSummary());
+        return { valid: false, ok: false, message: `Voucher code "${normalized}" is no longer available or has been deleted.` };
+      }
       const allCoupons = getAllCoupons();
       const coupon = allCoupons[normalized];
-      if (!coupon) {
+      if (!coupon || coupon.isDeleted) {
         return { valid: false, ok: false, message: `Invalid voucher code "${normalized}". Please check your code and try again.` };
       }
       if (coupon.isActive === false) {
@@ -904,6 +919,27 @@
       return { valid: true, ok: true, coupon, message: coupon.desc };
     },
 
+    deleteCoupon(code) {
+      const normalized = String(code || '').trim().toUpperCase();
+      if (!normalized) return false;
+      const deletedList = safeRead(STORAGE_KEYS.DELETED_COUPONS, []);
+      const deletedSet = new Set(Array.isArray(deletedList) ? deletedList.map(c => String(c).trim().toUpperCase()) : []);
+      deletedSet.add(normalized);
+      safeWrite(STORAGE_KEYS.DELETED_COUPONS, Array.from(deletedSet));
+
+      delete DYNAMIC_COUPONS[normalized];
+      const dynamicCache = safeRead(STORAGE_KEYS.DYNAMIC_COUPONS, {});
+      delete dynamicCache[normalized];
+      safeWrite(STORAGE_KEYS.DYNAMIC_COUPONS, dynamicCache);
+
+      if (this.getCouponCode() === normalized) {
+        safeWrite(STORAGE_KEYS.COUPON, '');
+        this.notify('cart_updated', this.getCartSummary());
+      }
+      this.notify('coupons_updated', getAllCoupons());
+      return true;
+    },
+
     getCartSummary(overrideCart = null) {
       const cart = Array.isArray(overrideCart) ? overrideCart : this.getCart();
       const itemsCount = cart.reduce((acc, item) => acc + Number(item.qty || 0), 0);
@@ -916,6 +952,9 @@
       const activeCode = this.getCouponCode();
       const allCoupons = getAllCoupons();
       const couponObj = activeCode ? allCoupons[activeCode] : null;
+      if (activeCode && !couponObj) {
+        safeWrite(STORAGE_KEYS.COUPON, '');
+      }
       let couponDiscount = 0;
       let couponMinOrderShortfall = 0;
       let couponInvalidReason = '';
@@ -2335,12 +2374,34 @@
         hasSyncedCouponsFromBackend = true;
         safeWrite('vk_coupons_synced_from_db', true);
 
+        const currentKnownCodes = new Set([
+          ...Object.keys(COUPONS),
+          ...Object.keys(DYNAMIC_COUPONS),
+          ...Object.keys(safeRead(STORAGE_KEYS.DYNAMIC_COUPONS, {}))
+        ]);
+
+        const dbCodes = new Set(data.map(c => String(c.code).trim().toUpperCase()));
+
+        // Any previously known coupon that is NOT in the database is authoritatively deleted!
+        const deletedList = safeRead(STORAGE_KEYS.DELETED_COUPONS, []);
+        const deletedSet = new Set(Array.isArray(deletedList) ? deletedList.map(c => String(c).trim().toUpperCase()) : []);
+
+        for (const code of currentKnownCodes) {
+          if (!dbCodes.has(code)) {
+            deletedSet.add(code);
+            delete DYNAMIC_COUPONS[code];
+          }
+        }
+
         for (const k of Object.keys(DYNAMIC_COUPONS)) {
           delete DYNAMIC_COUPONS[k];
         }
 
         data.forEach(c => {
           const code = String(c.code).trim().toUpperCase();
+          if (deletedSet.has(code)) {
+            deletedSet.delete(code);
+          }
           const isExpired = c.expires_at ? new Date(c.expires_at).getTime() < Date.now() : false;
           DYNAMIC_COUPONS[code] = {
             code,
@@ -2356,6 +2417,7 @@
               : `₹${c.discount_value} flat off on your studio bag!`
           };
         });
+        safeWrite(STORAGE_KEYS.DELETED_COUPONS, Array.from(deletedSet));
         safeWrite(STORAGE_KEYS.DYNAMIC_COUPONS, DYNAMIC_COUPONS);
         this.notify('coupons_updated', DYNAMIC_COUPONS);
 
@@ -2860,21 +2922,57 @@
         this.notify('cart_updated', this.getCartSummary());
       }
 
+      if (payload.type === 'COUPON_DELETED' || payload.action === 'COUPON_DELETED' || payload.action === 'ADMIN_DELETE_COUPON') {
+        const delCode = String(payload.deletedCode || payload.code || payload.couponCode || '').trim().toUpperCase();
+        if (delCode) {
+          const deletedList = safeRead(STORAGE_KEYS.DELETED_COUPONS, []);
+          const deletedSet = new Set(Array.isArray(deletedList) ? deletedList.map(c => String(c).trim().toUpperCase()) : []);
+          deletedSet.add(delCode);
+          safeWrite(STORAGE_KEYS.DELETED_COUPONS, Array.from(deletedSet));
+
+          delete DYNAMIC_COUPONS[delCode];
+          const dynamicCache = safeRead(STORAGE_KEYS.DYNAMIC_COUPONS, {});
+          delete dynamicCache[delCode];
+          safeWrite(STORAGE_KEYS.DYNAMIC_COUPONS, dynamicCache);
+
+          const active = this.getCouponCode();
+          if (active === delCode) {
+            safeWrite(STORAGE_KEYS.COUPON, '');
+            this.notify('cart_updated', this.getCartSummary());
+          }
+          this.notify('coupons_updated', getAllCoupons());
+          log.unshift(entry);
+          safeWrite(STORAGE_KEYS.STUDIO_SYNC_LOG, log.slice(0, 20));
+          return { ok: true, deletedCode: delCode };
+        }
+      }
+
       if (payload.type === 'COUPONS_UPDATED' && Array.isArray(payload.coupons)) {
         hasSyncedCouponsFromBackend = true;
         safeWrite('vk_coupons_synced_from_db', true);
+        const deletedList = safeRead(STORAGE_KEYS.DELETED_COUPONS, []);
+        const deletedSet = new Set(Array.isArray(deletedList) ? deletedList.map(c => String(c).trim().toUpperCase()) : []);
+
+        if (payload.deletedCode) {
+          const del = String(payload.deletedCode).trim().toUpperCase();
+          deletedSet.add(del);
+          delete DYNAMIC_COUPONS[del];
+        }
+
         const nextCodes = new Set(payload.coupons.map(c => String(c.code).trim().toUpperCase()));
         for (const k of Object.keys(DYNAMIC_COUPONS)) {
           if (!nextCodes.has(k)) {
+            deletedSet.add(k);
             DYNAMIC_COUPONS[k] = { code: k, isDeleted: true, isActive: false };
           }
         }
-        if (payload.deletedCode) {
-          const del = String(payload.deletedCode).trim().toUpperCase();
-          DYNAMIC_COUPONS[del] = { code: del, isDeleted: true, isActive: false };
-        }
+        safeWrite(STORAGE_KEYS.DELETED_COUPONS, Array.from(deletedSet));
+
         payload.coupons.forEach(c => {
           const code = String(c.code).trim().toUpperCase();
+          if (deletedSet.has(code)) {
+            deletedSet.delete(code);
+          }
           const isExpired = c.expiryDate ? new Date(c.expiryDate).getTime() < Date.now() : false;
           DYNAMIC_COUPONS[code] = {
             code,
@@ -2888,6 +2986,7 @@
             desc: c.discountType === 'percentage' ? `${c.discountValue}% Studio Promo discount applied!` : `₹${c.discountValue} flat off on your studio bag!`
           };
         });
+        safeWrite(STORAGE_KEYS.DELETED_COUPONS, Array.from(deletedSet));
         safeWrite(STORAGE_KEYS.DYNAMIC_COUPONS, DYNAMIC_COUPONS);
 
         // Auto-reconcile active cart coupon if it was deleted, disabled, or expired
@@ -3462,7 +3561,19 @@
     // ignore in restricted environments
   }
 
-  global.ResinStore = Store;
-  global.StorefrontBridge = Store;
-  global.VistaraStore = Store;
-})(window);
+  if (typeof window !== 'undefined') {
+    window.ResinStore = Store;
+    window.StorefrontBridge = Store;
+    window.VistaraStore = Store;
+    window.Store = Store;
+  }
+  if (typeof globalThis !== 'undefined') {
+    globalThis.ResinStore = Store;
+    globalThis.StorefrontBridge = Store;
+    globalThis.VistaraStore = Store;
+    globalThis.Store = Store;
+  }
+  if (typeof module !== 'undefined' && module.exports) {
+    module.exports = { Store, StorefrontBridge: Store };
+  }
+})(typeof globalThis !== 'undefined' ? globalThis : (typeof window !== 'undefined' ? window : this));

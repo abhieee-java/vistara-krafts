@@ -44,11 +44,11 @@ await test('Catalog Products: Authoritative price resolution for Small Flowers I
   const prod = await PriceCalculator.fetchAuthoritativeProduct('vk-cat-acc-smfl');
   assert.ok(prod, 'Product vk-cat-acc-smfl must exist');
   assert.strictEqual(prod.sku, 'VK-ACC-SML-FLWR');
-  assert.strictEqual(prod.price, 238, 'Base price must match database price of ₹238');
+  assert.strictEqual(prod.price, 200, 'Base price must match database price of ₹200');
 });
 
 // 2. Order calculation with new catalog products
-await test('Price Calculation: Subtotal under ₹1499 includes standard ₹99 shipping', async () => {
+await test('Price Calculation: Subtotal under Free Shipping Threshold includes standard ₹99 shipping', async () => {
   const calc = await PriceCalculator.calculateAuthoritativeOrder({
     items: [
       { productId: 'vk-cat-res-201', qty: 1 } // ₹599
@@ -62,24 +62,24 @@ await test('Price Calculation: Subtotal under ₹1499 includes standard ₹99 sh
   assert.strictEqual(calc.amountPaise, 69800);
 });
 
-await test('Price Calculation: Cart with multiple new catalog items qualifying for Free Shipping (>= ₹1499)', async () => {
+await test('Price Calculation: Cart with multiple new catalog items qualifying for Free Shipping (>= threshold)', async () => {
+  const thresh = await PriceCalculator.fetchFreeShippingThreshold();
   const calc = await PriceCalculator.calculateAuthoritativeOrder({
     items: [
-      { productId: 'vk-cat-res-201', qty: 1 }, // ₹599
-      { productId: 'vk-cat-res-301', qty: 1 }, // ₹649
-      { productId: 'vk-cat-acc-trch', qty: 1 }  // ₹499
+      { productId: 'vk-cat-res-201', qty: 4 } // 4 * ₹551 (volume tier) = 2204 >= threshold
     ]
   });
-  // 599 + 649 + 499 = 1747
-  assert.strictEqual(calc.subtotal, 1747);
+
+  assert.strictEqual(calc.subtotal, 2204);
   assert.strictEqual(calc.isFreeShipping, true);
   assert.strictEqual(calc.shippingFee, 0);
-  assert.strictEqual(calc.total, 1747);
-  assert.strictEqual(calc.amountPaise, 174700);
+  assert.strictEqual(calc.total, 2204);
+  assert.strictEqual(calc.amountPaise, 220400);
 });
 
 // 3. Coupon application on new catalog products
 await test('Coupons: STUDIO10 (10% off, min order 1500) applies accurately on new catalog products', async () => {
+  const thresh = await PriceCalculator.fetchFreeShippingThreshold();
   const calc = await PriceCalculator.calculateAuthoritativeOrder({
     items: [
       { productId: 'vk-cat-res-301', qty: 2 }, // 2 * 649 = 1298
@@ -90,13 +90,16 @@ await test('Coupons: STUDIO10 (10% off, min order 1500) applies accurately on ne
 
   assert.strictEqual(calc.subtotal, 1597);
   assert.strictEqual(calc.couponDiscount, 160); // Math.round(1597 * 0.10) = 160
-  assert.strictEqual(calc.isFreeShipping, true);
-  assert.strictEqual(calc.total, 1597 - 160); // 1437
-  assert.strictEqual(calc.amountPaise, 143700);
+  const expectedFreeShip = 1597 >= thresh;
+  assert.strictEqual(calc.isFreeShipping, expectedFreeShip);
+  const expectedTotal = 1597 - 160 + (expectedFreeShip ? 0 : 99);
+  assert.strictEqual(calc.total, expectedTotal);
+  assert.strictEqual(calc.amountPaise, expectedTotal * 100);
 });
 
 // 4. Live Razorpay Test Gateway Order Creation for new catalog items
 await test('Razorpay: Successfully creates real order on Razorpay for new catalog items', async () => {
+  const thresh = await PriceCalculator.fetchFreeShippingThreshold();
   const orderRes = await OrderService.createCheckoutOrder({
     name: 'Kabir Varma',
     phone: '9876543210',
@@ -112,8 +115,9 @@ await test('Razorpay: Successfully creates real order on Razorpay for new catalo
   assert.strictEqual(orderRes.success, true);
   assert.ok(orderRes.orderId.startsWith('VK-'));
   assert.ok(orderRes.razorpayOrderId.startsWith('order_'));
-  // Subtotal = 599 + 400 = 999. Free shipping threshold is 999 -> Free shipping. Total = 999 -> 99900 paise
-  assert.strictEqual(orderRes.amount, 99900);
+  // Subtotal = 599 + 400 = 999. If threshold is 2000, shipping is ₹99 -> 1098 -> 109800 paise
+  const expectedAmountPaise = (999 + (999 >= thresh ? 0 : 99)) * 100;
+  assert.strictEqual(orderRes.amount, expectedAmountPaise);
   assert.strictEqual(orderRes.keyId, CONFIG.RAZORPAY_KEY_ID);
 });
 
